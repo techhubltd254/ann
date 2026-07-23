@@ -5,9 +5,9 @@ database: false
 build:
   - mkdir -p bootstrap/cache storage/framework/cache/data storage/framework/sessions storage/framework/views storage/logs
   - composer install --no-dev --no-interaction --prefer-dist --optimize-autoloader
-  - php artisan storage:link
 
 deploy:
+  - php artisan storage:link --force
   - php artisan migrate --force
 
 environments:
