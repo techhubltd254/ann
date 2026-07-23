@@ -1,0 +1,11 @@
+/vendor/
+/node_modules/
+/.env
+/storage/app/kicc.sqlite
+/storage/app/public/screens/*.mp4
+/storage/framework/cache/data/
+/storage/framework/sessions/*
+/storage/framework/views/*
+/storage/logs/*
+/bootstrap/cache/*
+!.gitignore
