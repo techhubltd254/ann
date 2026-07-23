@@ -1,0 +1,611 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>KICC Digital Economy Platform — Refined Architecture Blueprint</title>
+<style>
+  @page { size: A4; margin: 1.5cm; }
+  * { box-sizing: border-box; }
+  body { font-family: 'Segoe UI', Arial, sans-serif; font-size: 10pt; line-height: 1.5; color: #1a1a1a; }
+  h1 { font-size: 20pt; text-align: center; color: #1a3a5c; margin-bottom: 2px; }
+  h2 { font-size: 14pt; color: #1a3a5c; border-bottom: 2px solid #c8a84e; padding-bottom: 4px; margin-top: 24px; }
+  h3 { font-size: 11pt; color: #2a5a8c; margin-top: 16px; }
+  h4 { font-size: 10pt; color: #444; margin-top: 10px; }
+  hr { border: none; border-top: 1px solid #ccc; margin: 12px 0; }
+  .subtitle { text-align: center; font-size: 11pt; color: #555; margin-bottom: 20px; }
+  .box { border: 1px solid #c8a84e; border-radius: 6px; padding: 10px 14px; margin: 8px 0; background: #faf8f0; }
+  .box-blue { border: 1px solid #2a5a8c; background: #f0f4fa; }
+  pre { font-family: 'Consolas', monospace; font-size: 8.5pt; background: #f5f5f5; padding: 8px; border-radius: 4px; overflow-x: auto; }
+  table { width: 100%; border-collapse: collapse; margin: 8px 0; font-size: 9pt; }
+  th, td { border: 1px solid #ccc; padding: 4px 8px; text-align: left; }
+  th { background: #1a3a5c; color: #fff; }
+  tr:nth-child(even) { background: #f9f9f9; }
+  ul, ol { margin: 4px 0; padding-left: 20px; }
+  li { margin: 2px 0; }
+  .toc { columns: 2; column-gap: 20px; }
+  .toc a { color: #2a5a8c; text-decoration: none; }
+  .badge { display: inline-block; background: #c8a84e; color: #fff; padding: 1px 6px; border-radius: 3px; font-size: 8pt; }
+  .badge-blue { background: #2a5a8c; }
+  .page-break { page-break-before: always; }
+</style>
+</head>
+<body>
+
+<h1>KICC DIGITAL ECONOMY PLATFORM</h1>
+<p class="subtitle">Refined Architecture Blueprint — Full Production Deployment</p>
+<p class="subtitle" style="font-size:9pt;color:#888;">Version 2.0 • July 2026</p>
+
+<h2>Table of Contents</h2>
+<div class="toc">
+<ol>
+<li><a href="#s1">Platform Vision</a></li>
+<li><a href="#s2">Architecture Layers</a></li>
+<li><a href="#s3">Domain Model</a></li>
+<li><a href="#s4">Integration Architecture</a></li>
+<li><a href="#s5">Data Flow Examples</a></li>
+<li><a href="#s6">Deployment Strategy</a></li>
+<li><a href="#s7">Project Structure</a></li>
+</ol>
+</div>
+
+<!-- ============================== SECTION 1 ============================== -->
+<h2 id="s1">1. Platform Vision</h2>
+<p>A unified global-facing Kenyan digital economy super-app serving 5 user roles:</p>
+
+<div class="box">
+<h4>👁 VIEWER (Free — Global Population)</h4>
+<ul>
+<li>Personalized feed from SEO + search history + cross-platform social media signals</li>
+<li>Contact sellers directly or use platform escrow</li>
+<li>Browse 47 counties, products, travel, events, 3D/VR experiences</li>
+<li>Government services suggested contextually (Super eCitizen)</li>
+<li>No subscription required — monetized via ads + transaction fees</li>
+</ul>
+</div>
+
+<div class="box">
+<h4>📦 EXHIBITOR (Subscription — Tiered by Company Size)</h4>
+<ul>
+<li>Tiers: Starter (KSh 25k/yr) → Standard (KSh 60k) → Premium (KSh 120k) → Platinum (KSh 250k)</li>
+<li>Private portal — only exhibitor + KICC admin can see</li>
+<li>Post products/services for global visibility (B2C, B2B, G2C)</li>
+<li>Auto-generated promo videos from still images (AI video sampler)</li>
+<li>Content pre-approved by KICC or delegated authority (county gov)</li>
+<li>Add-ons: 3D walkthrough, VR experience, advertising campaigns</li>
+<li>Every sector of Kenyan economy supported — sectors dynamically managed in admin</li>
+</ul>
+</div>
+
+<div class="box">
+<h4>🏛 KICC ADMIN (Super — Full Control)</h4>
+<ul>
+<li>Full authority over ALL counties + system-wide settings</li>
+<li>Organize & host MICE events (14+ venues: Tsavo Hall, Amphitheater, COMESA, Shimba Hills, VVIP Lounge, Courtyard, Lawn, Bilateral Rooms, Taifa Hall, etc.)</li>
+<li>3D venue rendering — public spaces only (security classification restricts sensitive areas)</li>
+<li>Venue booking with cost & revenue-share calculations</li>
+<li>Approve/reject exhibitor & advertiser content</li>
+<li>Manage: visa rules, courier partners, payment gateways, subscription plans, pricing</li>
+<li>EVERYTHING adjustable via Filament admin — zero hardcoded configs</li>
+</ul>
+</div>
+
+<div class="box">
+<h4>🏘 COUNTY GOVERNMENT (47 Counties — Each a Full Platform)</h4>
+<ul>
+<li>Login → select county → personalized county hub</li>
+<li>Can personalize: sectors displayed, service pricing, content showcase</li>
+<li>Pay for services they subscribe to</li>
+<li>Sell county products directly (bulk & retail worldwide)</li>
+<li>Sponsor advertising for local small exhibitors</li>
+<li>Approve county-level content (if KICC has delegated authority)</li>
+<li>14 devolved functions managed digitally: agriculture, health, transport, trade, planning, pre-primary education, environment, public works, firefighting, disaster management, drugs control, community participation, culture, natural resources</li>
+<li>Government structure: Governor → Deputy → CECM departments → Chief Officers → Sub-county → Ward → Village administrators</li>
+</ul>
+</div>
+
+<div class="box">
+<h4>🏛 NATIONAL GOVERNMENT (21 Ministries + Agencies — NEW)</h4>
+<ul>
+<li>21 Ministries with 50+ State Departments, Judiciary, Constitutional Commissions</li>
+<li>Hierarchical permissions: Cabinet Secretary → Principal Secretary → Director → Officer</li>
+<li>Higher ranks inherit visibility of lower, not edit unless assigned</li>
+<li>Sell products/services directly (bulk & retail)</li>
+<li>Super eCitizen: contextual government service suggestions based on user location + behavior</li>
+<li>Specific integrations: Ministry of Lands (title verification), Ministry of Security (review validation), Ministry of Tourism (listing approval)</li>
+</ul>
+</div>
+
+<div class="box">
+<h4>🏢 THIRD-PARTY VENUE (White-Label Package — NEW)</h4>
+<ul>
+<li>Sarit Centre, Bomas of Kenya, etc. buy a venue package</li>
+<li>Get their own admin panel (white-labeled)</li>
+<li>Manage their own exhibitors, set pricing, ticketing</li>
+<li>KICC manages software + compliance + security</li>
+<li>Fixed package fee (no per-transaction royalties)</li>
+<li>Payment: merchant-direct OR KICC-handled (selectable)</li>
+</ul>
+</div>
+
+<!-- ============================== SECTION 2 ============================== -->
+<div class="page-break"></div>
+<h2 id="s2">2. Architecture Layers</h2>
+
+<h3>Layer 1: Database — TiDB (MySQL-Compatible Distributed)</h3>
+<div class="box">
+<ul>
+<li><strong>Production:</strong> TiDB Dedicated cluster — auto-sharding, HTAP, multi-region</li>
+<li><strong>Backup:</strong> 2 immediate-failover replicas (active standby)</li>
+<li><strong>Dev/Testing:</strong> TiDB Serverless (upgraded as development progresses)</li>
+<li><strong>Data Sovereignty:</strong> Kenyan data center for production (Data Protection Act 2019)</li>
+<li>Zero code changes between tiers — same Eloquent, same migrations</li>
+<li>TiFlash columnar replicas for real-time analytics without ETL</li>
+</ul>
+</div>
+
+<h3>Layer 2: Application — Laravel 13</h3>
+<div class="box">
+<ul>
+<li>Web Controllers (Blade SSR — SEO-optimized)</li>
+<li>API Controllers (REST — for 3D engine, mobile, third-party)</li>
+<li>Filament Admin (simplified UI per role: KICC super admin vs county admin vs exhibitor)</li>
+<li>Services: VideoGen, Payment, Shipping, AI Client, SMS, Multi-currency</li>
+<li>Queue workers (pipeline jobs, notifications, escrow triggers)</li>
+<li>Filament admin: EVERYTHING adjustable — plans, pricing, sectors, gateways, partners, fees, content</li>
+</ul>
+</div>
+
+<h3>Layer 3: AI Pipeline & Automation</h3>
+<div class="box">
+<p><strong>Tree-and-Branch Architecture</strong> — each branch independent, priority-ordered:</p>
+<ol>
+<li><strong>Trade Branch</strong> (1st priority — KICC mission: trade)</li>
+<li><strong>Tourism Branch</strong> (2nd priority)</li>
+<li><strong>Government Services Branch</strong> (Super eCitizen)</li>
+<li><strong>County & National Content Branch</strong></li>
+<li><strong>Advertising Branch</strong> (video sampler, 3D, programmatic)</li>
+<li><strong>Education & Culture Branch</strong></li>
+</ol>
+<p>Each branch: Observer → Decider (LLM + rules) → Actor (n8n/APIs) → Learner (reinforcement)</p>
+<p>Existing "monster" software used (n8n, Unreal/Unity) — no custom training models unless necessary</p>
+</div>
+
+<h3>Layer 4: Frontend Delivery</h3>
+<div class="box">
+<ul>
+<li><strong>Marketing/SPA:</strong> Existing Cloudflare Worker + R2 (LottieFlow icons, county portal — kept & enhanced)</li>
+<li><strong>Application:</strong> Laravel Blade SSR (SEO-optimized, full capability)</li>
+<li><strong>Three.js 3D:</strong> Embedded in Blade pages for venue maps, county maps</li>
+<li><strong>Cloudflare:</strong> Static assets, CDN, API caching, DDoS protection</li>
+</ul>
+</div>
+
+<h3>Layer 5: Interactive 3D / Game Engine</h3>
+<div class="box">
+<ul>
+<li>Best-in-class engine: Unreal Engine / Unity (KICC developers only)</li>
+<li>Connected as independent layer via REST APIs</li>
+<li>Security classification: <span class="badge">public</span> <span class="badge badge-blue">restricted</span> <span class="badge" style="background:#8b0000;">classified</span></li>
+<li>PUBG/CoD-style interactive controls on mobile & desktop</li>
+<li>VR tourism, education visualizations, venue walkthroughs</li>
+</ul>
+</div>
+
+<!-- ============================== SECTION 3 ============================== -->
+<div class="page-break"></div>
+<h2 id="s3">3. Domain Model — All Tables</h2>
+
+<h3>3.1 Core Platform (~70 tables)</h3>
+<table>
+<tr><th>Group</th><th>Tables</th><th>Notes</th></tr>
+<tr><td>Users & Identity</td><td>users, viewer_profiles, exhibitor_profiles, kicc_admin_profiles, county_gov_profiles, national_gov_profiles, user_communication_channels</td><td>Auth isolated from profiles. Phone + Google login. MFA for gov accounts</td></tr>
+<tr><td>Auth & Security</td><td>password_reset_tokens, sessions, phone_verification_codes, user_mfa_devices, oauth_clients, oauth_tokens</td><td></td></tr>
+<tr><td>Permissions</td><td>permissions, roles, model_has_permissions, model_has_roles, role_has_permissions</td><td>Spatie RBAC + hierarchical government inheritance</td></tr>
+<tr><td>Government Hierarchy</td><td>government_levels, ministries, state_departments, government_agencies, government_officials, county_governments, county_executive_committee, county_departments, county_chief_officers, county_assembly, county_assembly_members, county_sub_counties, county_wards, county_villages, county_public_service_board, constitutional_commissions, commission_members, judiciary_bodies, judiciary_officials</td><td>NEW — full national + county structure</td></tr>
+<tr><td>Counties & Sectors</td><td>counties, sectors, county_sector, seasonal_calendars, county_user</td><td>47 counties, dynamic sectors</td></tr>
+<tr><td>Exhibitions</td><td>exhibitions, venues, event_sessions, booths, bookings, booking_booths, ticket_types, tickets</td><td>Physical + virtual + third-party</td></tr>
+<tr><td>Subscriptions</td><td>subscription_plans, user_subscriptions, subscription_features, subscription_plan_features</td><td>Tiered pricing, all adjustable</td></tr>
+<tr><td>County Entities</td><td>sector_entities, sector_entity_reviews, entity_trust_scores, county_tourism_attractions, county_hotels, county_products, county_institutions, county_farms, county_transport, county_health_facilities, county_culture_sites, entity_media, immersive_content_records</td><td>Per entity type, independent tables with government_level field</td></tr>
+<tr><td>Audit & Logs</td><td>audit_logs, notification_logs, dispute_cases</td><td>Both TiDB + OpenSearch</td></tr>
+<tr><td>Cache & Jobs</td><td>cache, cache_locks, jobs, job_batches, failed_jobs</td><td></td></tr>
+</table>
+
+<h3>3.2 E-Commerce Marketplace (30 tables)</h3>
+<table>
+<tr><th>Group</th><th>Tables</th></tr>
+<tr><td>Catalog</td><td>product_categories, products, product_variants, product_images, product_reviews, product_questions</td></tr>
+<tr><td>Suppliers</td><td>suppliers, supplier_products</td></tr>
+<tr><td>Inventory</td><td>warehouses, inventory, inventory_movements</td></tr>
+<tr><td>Cart & Orders</td><td>shopping_carts, cart_items, orders, order_items, order_addresses, order_status_history</td></tr>
+<tr><td>Fulfillment</td><td>shipments, shipment_items, shipment_tracking_events, return_requests</td></tr>
+<tr><td>Wishlists & Coupons</td><td>wishlists, wishlist_items, coupon_codes, coupon_usages</td></tr>
+<tr><td>Shipping</td><td>shipping_zones, shipping_rates, courier_partners, pickup_requests</td></tr>
+<tr><td>Pricing</td><td>price_history</td></tr>
+</table>
+<p><strong>Features:</strong> Multi-currency (all currencies, real-time rates), B2C + B2B + G2C, Escrow for goods & services</p>
+
+<h3>3.3 Travel & Tourism (~32 tables)</h3>
+<table>
+<tr><th>Group</th><th>Tables</th></tr>
+<tr><td>Flights</td><td>airlines, airports, flights, flight_inventory, flight_bookings, flight_passengers</td></tr>
+<tr><td>Hotels</td><td>hotels, hotel_rooms, hotel_room_inventory, hotel_bookings, hotel_room_bookings</td></tr>
+<tr><td>Restaurants</td><td>restaurants, restaurant_tables, restaurant_menu_items, restaurant_bookings</td></tr>
+<tr><td>Transfers</td><td>airport_transfers, transfer_bookings, ride_hailing_partners</td></tr>
+<tr><td>Travel</td><td>travel_packages, travel_package_items, travel_package_bookings, attractions, attraction_tickets, attraction_bookings, traveler_profiles, travel_itineraries, travel_itinerary_items, car_rentals, car_rental_bookings</td></tr>
+<tr><td>Supporting</td><td>visa_rules (NEW), exchange_rates (NEW), gds_config (NEW)</td></tr>
+</table>
+
+<h3>3.4 AI Pipeline (~22 tables)</h3>
+<table>
+<tr><th>Group</th><th>Tables</th></tr>
+<tr><td>Models & Embeddings</td><td>ml_models, model_versions, embeddings</td></tr>
+<tr><td>Recommendations</td><td>user_segments, user_segment_assignments, match_scores, recommendations, recommendation_interactions</td></tr>
+<tr><td>Pipeline</td><td>pipeline_branches (NEW), pipeline_jobs, pipeline_runs, pipeline_run_steps</td></tr>
+<tr><td>Agentic Loop</td><td>agentic_loop_configs, agentic_loop_cycles, agentic_loop_logs</td></tr>
+<tr><td>Experiments</td><td>a_b_tests, a_b_test_assignments, dynamic_pricing_rules</td></tr>
+<tr><td>Content & SEO</td><td>content_generation_queue, seo_keyword_tracking</td></tr>
+<tr><td>Operations</td><td>feature_flags</td></tr>
+</table>
+
+<h3>3.5 Advertising (18 tables)</h3>
+<table>
+<tr><th>Group</th><th>Tables</th></tr>
+<tr><td>Campaigns</td><td>advertisers, ad_campaigns, ad_groups, ad_creatives, ad_placements, ad_targeting</td></tr>
+<tr><td>Performance</td><td>ad_impressions, ad_clicks, ad_conversions, ad_budget_pacing</td></tr>
+<tr><td>Programmatic</td><td>ad_programmatic_bids</td></tr>
+<tr><td>Analytics</td><td>ad_analytics_daily</td></tr>
+<tr><td>Payouts</td><td>ad_publisher_payouts</td></tr>
+<tr><td>Moderation</td><td>ad_pre_approvals (NEW), video_sampler_jobs (NEW)</td></tr>
+<tr><td>Billing</td><td>advertiser_payment_methods, advertiser_transactions</td></tr>
+</table>
+
+<h3>3.6 Payments & Subscriptions (16 tables)</h3>
+<table>
+<tr><th>Group</th><th>Tables</th></tr>
+<tr><td>Gateways</td><td>payment_gateways</td></tr>
+<tr><td>Transactions</td><td>payment_intents, transaction_logs, refunds, payment_disputes</td></tr>
+<tr><td>Settlements</td><td>seller_payouts, settlement_batches, settlement_transactions</td></tr>
+<tr><td>Billing</td><td>billing_cycles, invoices, invoice_items, tax_rates, currency_rates</td></tr>
+<tr><td>Usage</td><td>usage_logs, payment_methods</td></tr>
+</table>
+
+<h3>3.7 SEO & Content (13 tables)</h3>
+<table>
+<tr><th>Group</th><th>Tables</th></tr>
+<tr><td>CMS</td><td>content_pages, content_blocks, news_posts</td></tr>
+<tr><td>SEO</td><td>seo_metadata, redirect_rules, sitemap_urls</td></tr>
+<tr><td>Search</td><td>search_queries, tags, taggables</td></tr>
+<tr><td>Analytics</td><td>page_views, analytics_events, page_speed_results, performance_kpis</td></tr>
+</table>
+
+<h3>3.8 3D Assets & Interactive Experiences (NEW — 8 tables)</h3>
+<table>
+<tr><th>Tables</th><th>Purpose</th></tr>
+<tr><td>3d_scenes</td><td>Environments (county maps, venues, tourism sites)</td></tr>
+<tr><td>3d_models</td><td>Individual objects (booths, buildings, rooms)</td></tr>
+<tr><td>3d_walkthroughs</td><td>Guided paths through scenes</td></tr>
+<tr><td>vr_sessions</td><td>User VR experience logs</td></tr>
+<tr><td>interactive_experiences</td><td>Game-engine projects (Unreal/Unity)</td></tr>
+<tr><td>experience_bookings</td><td>3D service orders by exhibitors/venues</td></tr>
+<tr><td>3d_asset_versions</td><td>Versioning for models/scenes</td></tr>
+<tr><td>asset_approvals</td><td>KICC moderation of 3D content</td></tr>
+</table>
+<p>Security classification: <span class="badge">public</span> <span class="badge badge-blue">restricted</span> <span class="badge" style="background:#8b0000;">classified</span></p>
+
+<h3>3.9 Communications (NEW — 6 tables)</h3>
+<table>
+<tr><th>Tables</th><th>Purpose</th></tr>
+<tr><td>communication_channels</td><td>Master list (WhatsApp, Telegram, WeChat, SMS, Email, Russian apps)</td></tr>
+<tr><td>user_channel_preferences</td><td>User → channel → identifier mapping</td></tr>
+<tr><td>message_queue</td><td>Outbound messages pending send</td></tr>
+<tr><td>message_logs</td><td>Sent messages with delivery status</td></tr>
+<tr><td>message_templates</td><td>Reusable templates per channel</td></tr>
+<tr><td>channel_providers</td><td>API config per provider (Twilio, Telegram bot, etc.)</td></tr>
+</table>
+<p><strong>One-way only.</strong> User replies → external support system (never stored in platform DB — SQL injection prevention)</p>
+
+<!-- ============================== SECTION 4 ============================== -->
+<div class="page-break"></div>
+<h2 id="s4">4. Integration Architecture</h2>
+
+<pre>
+  ┌─────────────────────────────────────────────────────────────────────────┐
+  │                          CLOUDFLARE (CDN + Edge)                        │
+  │  • Static assets  • Images/Videos  • 3D HTML  • API caching             │
+  │  • DDoS protection  • SSL  • Workers (geo-routing)                       │
+  └─────────────────────────────────┬───────────────────────────────────────┘
+                                    │
+  ┌─────────────────────────────────▼───────────────────────────────────────┐
+  │                 LARAVEL APPLICATION (Kenyan Host)                        │
+  │                                                                          │
+  │  ┌──────────────┐  ┌──────────────┐  ┌──────────────────────────────┐  │
+  │  │  Blade SSR   │  │  REST API    │  │     Filament Admin           │  │
+  │  │ (SEO pages)  │  │ (3D engine,  │  │  • KICC Super Admin         │  │
+  │  │              │  │  mobile,     │  │  • County Admin (per county) │  │
+  │  │              │  │  third-party)│  │  • Exhibitor Portal          │  │
+  │  └──────────────┘  └──────┬───────┘  └──────────────────────────────┘  │
+  │                           │                                             │
+  │                    ┌──────▼───────┐                                     │
+  │                    │   Services   │                                     │
+  │                    │ • Payment    │  • VideoGen                        │
+  │                    │ • Shipping   │  • AI Client                       │
+  │                    │ • SMS/Msg    │  • Multi-currency                  │
+  │                    └──────────────┘                                     │
+  └─────────────────────────────────┬───────────────────────────────────────┘
+                                    │
+  ┌─────────────────────────────────▼───────────────────────────────────────┐
+  │                     TIDB CLUSTER (Auto-sharding, HTAP)                  │
+  │  ┌──────────────┐  ┌──────────────┐  ┌──────────────┐                  │
+  │  │  Primary DB  │  │ TiFlash (Ana)│  │  Failover 1  │  Failover 2     │
+  │  │  ~200+ tbls  │  │ Real-time    │  │  Active      │  Active          │
+  │  └──────────────┘  └──────────────┘  └──────────────┘                  │
+  └─────────────────────────────────┬───────────────────────────────────────┘
+                                    │
+  ┌─────────────────────────────────▼───────────────────────────────────────┐
+  │                     CLOUDFLARE R2 (Media Storage)                       │
+  │  • County images  • Product images  • Videos  • 3D assets  • Backups   │
+  └─────────────────────────────────┬───────────────────────────────────────┘
+                                    │
+  ┌─────────────────────────────────▼───────────────────────────────────────┐
+  │                  3D / GAME ENGINE LAYER (Unreal/Unity)                  │
+  │  • Connected via REST API  • KICC developers only                       │
+  │  • Security classification: public / restricted / classified            │
+  └─────────────────────────────────┬───────────────────────────────────────┘
+                                    │
+  ┌─────────────────────────────────▼───────────────────────────────────────┐
+  │                        EXTERNAL APIs                                     │
+  │                                                                          │
+  │  Payments:        M-Pesa  |  Banks  |  Cards (Stripe)  |  Crypto        │
+  │  Messaging:       Twilio (WhatsApp)  |  Telegram  |  WeChat  |  SMS     │
+  │  Courier:         Uber  |  G4S  |  Amazon  |  Alibaba  |  DHL          │
+  │  Travel:          Amadeus/Travelport (flights)  |  Hotels  |  Ride-hail │
+  │  Government:      Ministry of Lands  |  eCitizen  |  KNBS              │
+  │  Authentication:  Google OAuth  |  Africa's Talking (SMS OTP)           │
+  │  Automation:      n8n / Zapier (pipeline workflows)                     │
+  └─────────────────────────────────────────────────────────────────────────┘
+</pre>
+
+<!-- ============================== SECTION 5 ============================== -->
+<div class="page-break"></div>
+<h2 id="s5">5. Data Flow Examples (15 Scenarios)</h2>
+
+<h3>5.1 Viewer (Free — Global Population)</h3>
+<div class="box">
+<ol>
+<li>User lands on platform (organic SEO / social ad / geo-targeted ad / direct)</li>
+<li>AI Pipeline — SEO branch analyzes: location, device, season, weather, referrer, search query, cross-platform signals</li>
+<li>Personalized landing page generated: winter user in Seattle → "Escape to Mombasa" / student in Nairobi → "47 counties"</li>
+<li>User browses freely: county pages, exhibitor portfolios, travel, 3D/VR, government services (contextual suggestions)</li>
+<li>Every action tracked → feeds AI Pipeline for better personalization</li>
+<li>User finds something → Option A: Contact seller directly / Option B: Platform escrow (login required) / Option C: Book travel</li>
+<li>Login via Google (preferred — enhances SEO) or Phone (SMS OTP — international provider)</li>
+<li>Future visits: progressive personalization → builds trust → conversion</li>
+</ol>
+</div>
+
+<h3>5.2 Tourist (International — Full Travel Booking)</h3>
+<div class="box">
+<ol>
+<li>Geo-targeted ad: "Visit Kenya — 28°C in Mombasa" → user clicks</li>
+<li>Destination page shows: 3D/VR preview, packages, hotels, restaurants, visa info (auto-checked by nationality)</li>
+<li>User selects destination → AI recommends: flights (GDS), hotels, restaurants, transfers</li>
+<li>Book flight → PNR generated → passenger manifest → payment (card/crypto/M-Pesa)</li>
+<li>AI auto-suggests: airport transfer (Uber assigned + driver details sent), hotel, restaurant aligned with arrival</li>
+<li>Multi-stop itinerary builder: Mombasa → Tsavo → Nairobi (auto-books all segments)</li>
+<li>Reminders via preferred channel (WhatsApp/Telegram/SMS/): 7 days → 24 hours → day of (driver name, plate)</li>
+<li>Post-trip: rating & review prompted for every service</li>
+<li>All listings pre-approved by Tourism (national + county) — quality control enforced</li>
+</ol>
+</div>
+
+<h3>5.3 Exhibitor (Subscriber — Private Portal)</h3>
+<div class="box">
+<ol>
+<li>Register → select tier (Starter/Standard/Premium/Platinum) → pay → portal activated</li>
+<li>Private portal: dashboard (views, inquiries, revenue, ratings), product management, media upload, communications</li>
+<li>Upload product images → AI video sampler generates promo video automatically</li>
+<li>Content → moderation queue → KICC/county approval → live</li>
+<li>AI generates embedding vector + SEO metadata via n8n</li>
+<li>Product visibility determined by: trust_score + review_rating + recency (fairness via rating, not paid placement)</li>
+<li>Viewer inquiries: direct contact OR platform escrow</li>
+<li>Add-ons: book physical/virtual booths, order 3D visualization, buy ads, B2B matchmaking</li>
+<li>Tier limits enforced by system (usage_logs) — upgrade to unlock</li>
+</ol>
+</div>
+
+<h3>5.4 KICC Admin</h3>
+<div class="box">
+<ol>
+<li>Login with official account → MFA → admin dashboard</li>
+<li>Modules: Exhibition Management (14+ venues, 3D rendering public-only), Content Moderation (approve/reject/delegate), Subscriptions & Plans (create/edit/delete), Payment Gateways (add/edit M-Pesa/Stripe/crypto/banks, set fees, handle escrow disputes), Courier Partners (add/edit Uber/G4S/Amazon, configure APIs, set zones/rates), Travel & Tourism (visa rules, GDS creds, approve listings), Government Relations (map officials, set hierarchical permissions), Advertising (placement slots, approve campaigns, set pricing), 3D & Immersive (manage scene library, security classification), System (audit logs, pipeline jobs, feature flags, user management, KPIs)</li>
+<li>EVERYTHING adjustable — no hardcoded configs</li>
+</ol>
+</div>
+
+<h3>5.5 County Government</h3>
+<div class="box">
+<ol>
+<li>Login → select county → county hub</li>
+<li>Personalize: sectors displayed, service pricing, content showcase</li>
+<li>County profile: hero image, tagline, economic data, population, climate, seasonal calendar, tourism highlights</li>
+<li>Manage: tourism attractions, hotels, products, institutions, farms, transport, health facilities, culture sites</li>
+<li>Sell products directly (bulk & retail worldwide) — payment via escrow or direct, courier picks up from county depot</li>
+<li>Sponsor advertising for local small exhibitors</li>
+<li>Approve county-level content (if KICC delegated)</li>
+<li>Analytics: who bought, from where, revenue</li>
+<li>CEDP departments reflected in permissions structure</li>
+</ol>
+</div>
+
+<h3>5.6 National Government</h3>
+<div class="box">
+<ol>
+<li>Login → ministry/agency dashboard (permissions based on position in hierarchy)</li>
+<li>Higher ranks inherit visibility of lower, not edit unless assigned</li>
+<li>Sell products/services directly (bulk & retail)</li>
+<li>Super eCitizen: platform detects user context → queries government service DB → suggests relevant services as contextual links ("Need a business permit? Mombasa County Trade Dept")</li>
+<li>Ministry of Lands: land title verification API</li>
+<li>Ministry of Security: review & rating validation</li>
+<li>Ministry of Tourism: approves travel/hospitality listings</li>
+</ol>
+</div>
+
+<h3>5.7 Escrow Flow (Goods & Services)</h3>
+<div class="box">
+<p><strong>Goods:</strong> Buyer pays → platform holds → quality inspection → courier picks up → tracking events flow → buyer confirms → funds released to seller minus commission. Dispute → frozen, KICC mediates via dispute_cases.</p>
+<p><strong>Services:</strong> Book → receive ticket/voucher immediately → pay. No hold — service delivered at booking.</p>
+</div>
+
+<h3>5.8 B2B Flow</h3>
+<div class="box">
+Buyer → search → AI recommends suppliers → RFQ → seller responds with bulk pricing → contract generated → escrow payment → bulk courier → both parties rate each other.</div>
+
+<h3>5.9 Third-Party Venue</h3>
+<div class="box">
+Venue buys package → white-label admin panel → manage own exhibitors, pricing, ticketing → KICC handles software + compliance + security → fixed package fee (no royalties).</div>
+
+<h3>5.10 Private Individual (Landlord/Property Seller)</h3>
+<div class="box">
+List property with images + exact location → Ministry of Lands verifies title → credibility scored → buyers view + see validated neighborhood reviews → contact seller or use escrow → legal transfer per Kenyan property law → bank financing optional.</div>
+
+<h3>5.11 Super eCitizen</h3>
+<div class="box">
+System watches user behavior + location + profile → queries government service DB → inserts contextual suggestion links in UI ("Based on your location in Mombasa, here are 3 county services you may need").</div>
+
+<h3>5.12 AI Pipeline Tree</h3>
+<div class="box">
+<p><strong>6 branches, priority-ordered:</strong> Trade (1st) → Tourism (2nd) → Government Services (3rd) → County/National Content (4th) → Advertising (5th) → Education & Culture (6th)</p>
+<p>Each branch: Observer ↔ Decider (LLM + rules) ↔ Actor (n8n/APIs) ↔ Learner (reinforcement)</p>
+<p>All run independently, conjoined at master pipeline level. Existing software used — no custom training unless necessary.</p>
+</div>
+
+<h3>5.13 Advertising Pipeline</h3>
+<div class="box">
+Upload images → AI video sampler (priority queue) → 3D model (high-value) → 4K for big screens/VR → campaign created with targeting → KICC approval → live (web + big screens + VR) → performance tracked → AI optimizes → programmatic bidding for premium slots.</div>
+
+<h3>5.14 Education Institution</h3>
+<div class="box">
+Subscribe → access 3D library: Mt. Kenya VR climb, Menengai crater flyover, Maasai Mara migration, Lake Nakuru flamingos → interactive controls (walk/climb/look) → curriculum-matching reports for teachers.</div>
+
+<h3>5.15 Communications (One-Way)</h3>
+<div class="box">
+System event → user's preferred channel (WhatsApp/Telegram/WeChat/SMS/Email) → message queued → provider API called → delivered → logged. User replies → external support (never in platform DB — SQL injection prevention).</div>
+
+<!-- ============================== SECTION 6 ============================== -->
+<div class="page-break"></div>
+<h2 id="s6">6. Deployment Strategy</h2>
+
+<div class="box" style="border-color:#8b0000;background:#fff5f5;">
+<h3>Single Phase — Full Production (All-in)</h3>
+<p>No staged rollout. Everything deploys at once:</p>
+<ul>
+<li>Laravel 13 on Kenyan-hosted servers (data sovereignty per Data Protection Act 2019)</li>
+<li>TiDB Dedicated cluster (auto-sharding, HTAP, 2 active failover replicas)</li>
+<li>All ~240+ tables across 9 domains deployed with initial seed data (47 counties, 21 ministries, pricing plans, sectors, etc.)</li>
+<li>3D Engine layer operational (Unreal/Unity — KICC developers only)</li>
+<li>All payment gateways live: M-Pesa, banks, cards (Stripe), crypto, alternatives</li>
+<li>All courier partners integrated: Uber, G4S, Amazon, Alibaba, KICC-approved</li>
+<li>All 6 AI pipeline branches running (Trade, Tourism, Gov, Content, Advertising, Education)</li>
+<li>Super eCitizen contextual suggestions live across platform</li>
+<li>Multi-currency with real-time exchange rate feeds</li>
+<li>Full government hierarchy populated (national + 47 counties + judiciary + commissions)</li>
+<li>Cloudflare CDN + DDoS for static assets and API caching</li>
+<li>Admin portal: KICC super admin + 47 county admins with full personalization</li>
+<li>Filament admin: every setting, price, plan, partner, and policy adjustable without code</li>
+</ul>
+</div>
+
+<h3>Recommended Hosting Stack (Testing)</h3>
+<table>
+<tr><th>Component</th><th>Testing (Current)</th><th>Production (Future)</th></tr>
+<tr><td>Application</td><td>Laravel local (php artisan serve)</td><td>Kenyan data center (EADC/iColo/Safaricom Cloud)</td></tr>
+<tr><td>Database</td><td>TiDB Cloud (MySQL protocol)</td><td>TiDB Dedicated + 2 failover replicas</td></tr>
+<tr><td>Media Storage</td><td>Cloudflare R2</td><td>Cloudflare R2 + Kenyan backup</td></tr>
+<tr><td>3D Engine</td><td>Local Unreal/Unity builds</td><td>GPU server (Hetzner/Dedicated)</td></tr>
+<tr><td>CDN</td><td>Cloudflare (free)</td><td>Cloudflare (enterprise)</td></tr>
+<tr><td>Auth</td><td>Laravel Sanctum + Google OAuth + SMS OTP</td><td>Same + MFA for all gov accounts</td></tr>
+</table>
+
+<!-- ============================== SECTION 7 ============================== -->
+<div class="page-break"></div>
+<h2 id="s7">7. Project Structure</h2>
+
+<pre>
+/home/kicc/Desktop/kicc/kicc-platform/
+│
+├── app/
+│   ├── Console/Commands/          Artisan commands
+│   ├── Http/
+│   │   ├── Controllers/
+│   │   │   ├── Api/               REST API (Auth, Booking, Booth, County,
+│   │   │   │                        Exhibition, Pipeline, Ticket, Venue, Travel…)
+│   │   │   └── Web/               Blade SSR (Home, Counties, Exhibitions,
+│   │   │                              Dashboard, Venue, Screen, Social Auth…)
+│   │   └── Middleware/            AgenticSEO, auth, security
+│   ├── Models/                    32+ Eloquent models
+│   ├── Services/                  VideoGen, Payment, Shipping, SMS, AI Client
+│   ├── Filament/                  Admin panel resources (all adjustable)
+│   └── Providers/                 AppServiceProvider
+│
+├── config/
+│   ├── database.php               TiDB + SQLite
+│   ├── screens.php
+│   └── ...                        All Laravel configs
+│
+├── database/
+│   ├── schema.sql                 Core Platform (56 tables)
+│   ├── schema-commerce.sql        E-Commerce (30)
+│   ├── schema-travel.sql          Travel & Tourism (28)
+│   ├── schema-ai-pipeline.sql     AI Pipeline (20)
+│   ├── schema-advertising.sql     Advertising (15)
+│   ├── schema-payments.sql        Payments & Subscriptions (16)
+│   ├── schema-seo-content.sql     SEO & Content (13)
+│   ├── schema-full.sql            Loads all above
+│   ├── migrations/                Laravel migration files
+│   └── seeders/                   Initial data seeders
+│
+├── public/
+│   ├── 3d/                        Three.js experiences
+│   └── index.php
+│
+├── resources/views/
+│   ├── counties/                  County pages (47)
+│   ├── exhibitions/               Exhibition listings & booking
+│   ├── travel/                    Travel booking UI
+│   ├── dashboard/                 Exhibitor portals
+│   ├── auth/                      Login, register, verify
+│   ├── layouts/                   App shell, SEO headers
+│   └── screens/                   Screen display
+│
+├── routes/
+│   ├── web.php                    Browser routes (Blade SSR)
+│   ├── api.php                    REST API routes
+│   └── console.php                Scheduled tasks
+│
+├── storage/app/public/            County images, videos, 3D assets
+│
+├── setup.sh                       One-command setup
+├── composer.json                  Laravel 13 + Filament + Sanctum + Socialite + Cashier
+├── BLUEPRINT.md                   This document (Markdown)
+├── BLUEPRINT.pdf                  This document (PDF)
+└── README.md
+</pre>
+
+<h3>Key Dependencies (composer.json)</h3>
+<table>
+<tr><th>Package</th><th>Purpose</th></tr>
+<tr><td>laravel/framework ^13.8</td><td>Core framework</td></tr>
+<tr><td>laravel/sanctum ^4.0</td><td>API tokens (millions of users)</td></tr>
+<tr><td>laravel/socialite ^5.29</td><td>Google login (primary auth method)</td></tr>
+<tr><td>laravel/cashier ^15.0</td><td>Subscription billing</td></tr>
+<tr><td>filament/filament ^5.7</td><td>Admin panel (everything adjustable)</td></tr>
+<tr><td>spatie/laravel-permission ^8.3</td><td>RBAC + hierarchical permissions</td></tr>
+<tr><td>africastalking/africastalking ^3.0</td><td>SMS (international provider)</td></tr>
+<tr><td>league/flysystem-aws-s3-v3 ^3.35</td><td>Cloudflare R2 storage</td></tr>
+</table>
+
+<hr>
+<p style="text-align:center;color:#888;font-size:9pt;">KICC Digital Economy Platform — Refined Blueprint v2.0 • July 2026</p>
+
+</body>
+</html>

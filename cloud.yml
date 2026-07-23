@@ -1,0 +1,16 @@
+id: kicc
+region: eu-central-1
+database: false
+
+build:
+  - composer install --no-dev --no-interaction --prefer-dist --optimize-autoloader
+  - php artisan storage:link
+
+deploy:
+  - php artisan migrate --force
+
+environments:
+  production:
+    domain: kicc.co.ke
+  preview:
+    domain: '{default}'
