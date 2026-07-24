@@ -5,7 +5,7 @@
 @section('content')
 <div class="relative bg-gradient-to-br from-gray-900 via-gray-800 to-amber-900 overflow-hidden min-h-[85vh] flex items-center">
     <div class="absolute inset-0">
-        <img src="{{ asset('storage/kicc-hero.jpg') }}" class="w-full h-full object-cover opacity-20">
+        <img src="{{ media('kicc-hero.jpg') }}" class="w-full h-full object-cover opacity-20">
     </div>
     <div class="absolute inset-0 bg-gradient-to-r from-black/60 via-transparent to-black/30"></div>
     <div class="relative max-w-7xl mx-auto px-6 lg:px-8 w-full py-20">
@@ -44,7 +44,7 @@
     </div>
     <div id="county-scroll" class="flex gap-4 overflow-x-auto px-6 lg:px-8 pb-4 scroll-smooth scrollbar-hide">
         @foreach($counties as $county)
-        @php $heroImg = asset('storage/counties/' . $county->slug . '/hero.jpeg'); @endphp
+        @php $heroImg = media('counties/' . $county->slug . '/hero.jpeg'); @endphp
         <a href="{{ route('counties.show', $county->slug) }}" class="flex-shrink-0 w-48 group">
             <div class="bg-gray-800 rounded-2xl overflow-hidden border-2 border-transparent hover:border-amber-500 transition-all duration-200 shadow-lg hover:shadow-amber-500/20">
                 <div class="h-32 overflow-hidden">

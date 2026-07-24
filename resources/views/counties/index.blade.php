@@ -26,7 +26,7 @@
     @if($counties->count() > 0)
     <div class="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-6 gap-4" id="county-grid">
         @foreach($counties as $county)
-        @php $heroImg = asset('storage/counties/' . $county->slug . '/hero.jpeg'); @endphp
+        @php $heroImg = media('counties/' . $county->slug . '/hero.jpeg'); @endphp
         <a href="{{ route('counties.show', $county->slug) }}"
            class="group block county-card"
            data-name="{{ strtolower($county->name) }}">

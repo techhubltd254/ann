@@ -5,14 +5,14 @@
 
 @php
 $sectorMeta = [
-    'Tourism' => ['route' => 'tourism', 'icon' => '🏖️', 'color' => 'amber', 'label' => 'Attractions'],
-    'Hospitality' => ['route' => 'hotels', 'icon' => '🏨', 'color' => 'rose', 'label' => 'Hotels'],
-    'Trade & Products' => ['route' => 'products', 'icon' => '🛍️', 'color' => 'violet', 'label' => 'Products'],
-    'Education' => ['route' => 'institutions', 'icon' => '🎓', 'color' => 'blue', 'label' => 'Institutions'],
-    'Agriculture' => ['route' => 'farms', 'icon' => '🌾', 'color' => 'emerald', 'label' => 'Farms'],
-    'Transport' => ['route' => 'transport', 'icon' => '🚢', 'color' => 'cyan', 'label' => 'Transport'],
-    'Healthcare' => ['route' => 'health', 'icon' => '🏥', 'color' => 'red', 'label' => 'Health'],
-    'Culture' => ['route' => 'culture', 'icon' => '🎭', 'color' => 'orange', 'label' => 'Culture'],
+    'Tourism' => ['route' => 'tourism', 'icon' => 'camera', 'color' => 'amber', 'label' => 'Attractions'],
+    'Hospitality' => ['route' => 'hotels', 'icon' => 'star', 'color' => 'rose', 'label' => 'Hotels'],
+    'Trade & Products' => ['route' => 'products', 'icon' => 'bag2', 'color' => 'violet', 'label' => 'Products'],
+    'Education' => ['route' => 'institutions', 'icon' => 'lightbulb', 'color' => 'blue', 'label' => 'Institutions'],
+    'Agriculture' => ['route' => 'farms', 'icon' => 'box1', 'color' => 'emerald', 'label' => 'Farms'],
+    'Transport' => ['route' => 'transport', 'icon' => 'truck', 'color' => 'cyan', 'label' => 'Transport'],
+    'Healthcare' => ['route' => 'health', 'icon' => 'heart', 'color' => 'red', 'label' => 'Health'],
+    'Culture' => ['route' => 'culture', 'icon' => 'movie', 'color' => 'orange', 'label' => 'Culture'],
 ];
 @endphp
 
@@ -20,14 +20,14 @@ $sectorMeta = [
 <div class="relative h-[85vh] min-h-[600px] flex items-center overflow-hidden">
     <div class="absolute inset-0">
         <video autoplay muted loop playsinline
-               poster="{{ asset('storage/counties/' . $county->slug . '/hero.jpeg') }}"
+               poster="{{ media('counties/' . $county->slug . '/hero.jpeg') }}"
                class="w-full h-full object-cover"
                onerror="this.style.display='none';this.nextElementSibling.style.display='block'"
                onloadeddata="this.style.opacity='1'"
                style="opacity:0;transition:opacity 0.8s">
-            <source src="{{ asset('storage/counties/' . $county->slug . '/showcase.mp4') }}" type="video/mp4">
+            <source src="{{ media('counties/' . $county->slug . '/showcase.mp4') }}" type="video/mp4">
         </video>
-        <img src="{{ asset('storage/counties/' . $county->slug . '/hero.jpeg') }}"
+        <img src="{{ media('counties/' . $county->slug . '/hero.jpeg') }}"
              alt="{{ $county->name }} County"
              class="w-full h-full object-cover"
              style="display:none"
@@ -119,7 +119,7 @@ $sectorMeta = [
             $key = $keys[$sectorIndex] ?? $sector->name;
             $meta = $sectorMeta[$key] ?? ['route' => '#', 'icon' => '📋', 'color' => 'gray', 'label' => ''];
             $sd = $sectorData[$key] ?? ['count' => 0];
-            $img = asset('storage/counties/' . $county->slug . '/' . $meta['route'] . '.jpeg');
+            $img = media('counties/' . $county->slug . '/' . $meta['route'] . '.jpeg');
             $sectorIndex++;
         @endphp
         <a href="{{ route('counties.sector', [$county->slug, $meta['route']]) }}"
@@ -130,7 +130,7 @@ $sectorMeta = [
                      onerror="this.parentElement.innerHTML='<div class=\'w-full h-full flex items-center justify-center text-6xl bg-gradient-to-br from-gray-100 to-gray-200\'>{{ $meta['icon'] }}</div>'">
                 <div class="absolute inset-0 bg-gradient-to-t from-black/70 via-transparent to-transparent"></div>
                 <div class="absolute bottom-4 left-4 right-4">
-                    <span class="text-white text-lg font-bold drop-shadow-lg">{{ $meta['icon'] }} {{ $key }}</span>
+                    <span class="text-white text-lg font-bold drop-shadow-lg">{!! lottie($meta['icon'], 'w-6 h-6') !!} {{ $key }}</span>
                 </div>
             </div>
             <div class="p-5">

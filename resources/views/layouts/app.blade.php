@@ -6,6 +6,7 @@
     <title>@yield('title', config('app.name')) - KICC</title>
     <meta name="description" content="@yield('description', 'Kenya International Convention Centre - Exhibition & Booking Platform')">
     <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://unpkg.com/@lottiefiles/lottie-player@2.0.2/dist/lottie-player.js"></script>
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
@@ -18,7 +19,20 @@
         .btn-amber { @apply bg-amber-500 text-white px-6 py-2.5 rounded-xl font-semibold hover:bg-amber-600 shadow-lg shadow-amber-500/25 transition-all; }
         .btn-outline { @apply bg-white/10 backdrop-blur-sm text-white px-6 py-2.5 rounded-xl font-semibold border border-white/20 hover:bg-white/20 transition-all; }
         body { background-color: #f8fafc; }
+        lottie-player { display: inline-block; width: 1em; height: 1em; vertical-align: middle; }
     </style>
+    @php
+        if (!function_exists('media')) {
+            function media(string $path = ''): string {
+                return rtrim(env('MEDIA_CDN_URL', asset('storage')), '/') . '/' . ltrim($path, '/');
+            }
+        }
+        if (!function_exists('lottie')) {
+            function lottie(string $icon, string $cls = ''): string {
+                return '<lottie-player src="' . media('icons/' . $icon . '.json') . '" ' . $cls . ' autoplay loop mode="normal"></lottie-player>';
+            }
+        }
+    @endphp
     @stack('styles')
 </head>
 <body class="text-gray-900 antialiased flex flex-col min-h-screen">
