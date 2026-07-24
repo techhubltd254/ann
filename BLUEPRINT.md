@@ -300,6 +300,42 @@ A unified **Kenyan Digital Economy Super-App** connecting:
 
 ## Payments & Subscriptions — Deep Dive
 
+### Hierarchical Subscription Model
+
+The key insight: **Platform sells to counties. Counties manage their own businesses.**
+
+```
+Platform sells "County Premium" (50,000 KES/mo)
+  │
+  ├── County gets management dashboard
+  │
+  ├── Model 1: Bulk Slots
+  │     County buys 50 slots → assigns to businesses
+  │     Each business gets a login → uses the platform
+  │     County decides who gets a slot
+  │
+  ├── Model 2: Sub-portal
+  │     County runs their own subscription page
+  │     Businesses sign up and pay the county directly
+  │     County allocates slots from their pool
+  │
+  └── Model 3: Custom Plans
+        County creates plans with their own pricing:
+        • Basic: 500 KES/mo → 1 booth, basic listing
+        • Silver: 2,000 KES/mo → 5 booths, analytics
+        • Gold: 5,000 KES/mo → 20 booths, priority
+        County collects payment, platform doesn't see end-user money
+```
+
+### Subscription Tiers (sold to counties/enterprises)
+
+| Tier | Price (KES/mo) | What county gets | Businesses served |
+|------|---------------|------------------|-------------------|
+| **County Basic** | 10,000 | 10 bulk slots, basic dashboard | Up to 10 businesses |
+| **County Premium** | 50,000 | 50 bulk slots, sub-portal, custom plans, analytics | Up to 50 businesses |
+| **County Enterprise** | 200,000 | Unlimited slots, custom domain, API, dedicated support | Unlimited businesses |
+| **Corporate** | 500,000 | White-label, multi-county, AI pipeline access | Enterprise use |
+
 ### Payment Flow Architecture
 
 ```
@@ -387,7 +423,7 @@ Product sold (1,000 KES)
 **Revenue sources per county:**
 
 | Source | County Share | Platform Share |
-|--------|-------------|----------------|
+|-------|-------------|----------------|
 | Booth bookings | 70% | 30% |
 | Marketplace sales | 70% | 30% |
 | Travel commissions | 50% | 50% |

@@ -299,6 +299,62 @@ CREATE TABLE IF NOT EXISTS county_wallet_transactions (
 CREATE INDEX IF NOT EXISTS_idx_cwt_county ON county_wallet_transactions(county_id);
 CREATE INDEX IF NOT EXISTS_idx_cwt_type ON county_wallet_transactions(type);
 
+-- ── 19. County Subscription Plans (created by county for its businesses) ──
+CREATE TABLE IF NOT EXISTS county_subscription_plans (
+    id INTEGER PRIMARY KEY AUTO_INCREMENT,
+    county_id INTEGER NOT NULL REFERENCES counties(id) ON DELETE CASCADE,
+    name VARCHAR(255) NOT NULL,
+    description TEXT,
+    price REAL NOT NULL,
+    currency VARCHAR(3) DEFAULT 'KES',
+    billing_interval VARCHAR(20) DEFAULT 'monthly',
+    features TEXT,
+    max_booths INTEGER DEFAULT 1,
+    max_products INTEGER DEFAULT 5,
+    has_analytics INTEGER DEFAULT 0,
+    has_livestream INTEGER DEFAULT 0,
+    has_priority_support INTEGER DEFAULT 0,
+    is_active INTEGER DEFAULT 1,
+    created_at DATETIME,
+    updated_at DATETIME
+);
+CREATE INDEX IF NOT EXISTS_idx_csp_county ON county_subscription_plans(county_id);
+
+-- ── 20. County Subscribers (businesses under a county plan) ──
+CREATE TABLE IF NOT EXISTS county_subscribers (
+    id INTEGER PRIMARY KEY AUTO_INCREMENT,
+    county_id INTEGER NOT NULL REFERENCES counties(id) ON DELETE CASCADE,
+    user_id INTEGER NOT NULL REFERENCES users(id) ON DELETE CASCADE,
+    plan_id INTEGER NOT NULL REFERENCES county_subscription_plans(id) ON DELETE CASCADE,
+    slot_id INTEGER REFERENCES county_bulk_slot_allocations(id) ON DELETE SET NULL,
+    starts_at DATETIME NOT NULL,
+    ends_at DATETIME,
+    status VARCHAR(20) DEFAULT 'active',
+    created_at DATETIME,
+    updated_at DATETIME,
+    UNIQUE(county_id, user_id)
+);
+CREATE INDEX IF NOT EXISTS_idx_csub_county ON county_subscribers(county_id);
+CREATE INDEX IF NOT EXISTS_idx_csub_plan ON county_subscribers(plan_id);
+
+-- ── 21. County Bulk Slot Allocations (model 1: county buys slots) ──
+CREATE TABLE IF NOT EXISTS county_bulk_slot_allocations (
+    id INTEGER PRIMARY KEY AUTO_INCREMENT,
+    county_id INTEGER NOT NULL REFERENCES counties(id) ON DELETE CASCADE,
+    total_slots INTEGER NOT NULL,
+    used_slots INTEGER DEFAULT 0,
+    available_slots INTEGER GENERATED ALWAYS AS (total_slots - used_slots) STORED,
+    slot_type VARCHAR(50) NOT NULL,
+    price_per_slot REAL NOT NULL,
+    currency VARCHAR(3) DEFAULT 'KES',
+    purchase_date DATE NOT NULL,
+    expiry_date DATE,
+    status VARCHAR(20) DEFAULT 'active',
+    created_at DATETIME,
+    updated_at DATETIME
+);
+CREATE INDEX IF NOT EXISTS_idx_cbsa_county ON county_bulk_slot_allocations(county_id);
+
 -- =============================================================
--- END OF PAYMENTS SCHEMA — 18 tables
+-- END OF PAYMENTS SCHEMA — 21 tables
 -- =============================================================
