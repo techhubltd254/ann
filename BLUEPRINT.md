@@ -274,22 +274,163 @@ A unified **Kenyan Digital Economy Super-App** connecting:
 ### Payments (expanded)
 | Table | Purpose |
 |-------|---------|
-| `payment_gateways` | Gateway configs |
-| `payouts` | Seller/partner payouts |
-| `settlements` | Batch settlement records |
-| `refunds` | Refund processing |
-| `disputes` | Payment disputes |
-| `transaction_logs` | Raw gateway logs |
+| `payment_gateways` | Gateway configs (M-Pesa, Stripe, etc.) |
+| `payment_intents` | Unified payment record across all domains |
+| `transaction_logs` | Raw gateway request/response payloads |
+| `refunds` | Full/partial refund processing |
+| `payment_disputes` | Buyer/seller dispute resolution |
+| `seller_payouts` | Bulk payout to suppliers (weekly/monthly) |
+| `settlement_batches` | Gateway settlement reconciliation |
+| `settlement_transactions` | Individual txns in a settlement batch |
+| `tax_rates` | VAT, withholding tax configs per product/county |
+| `currency_rates` | KES→USD→EUR→GBP exchange rates |
+| `advertiser_transactions` | Ad account top-ups and spend |
 
 ### Subscriptions (expanded)
 | Table | Purpose |
 |-------|---------|
-| `subscription_features` | Feature catalog |
-| `subscription_plan_features` | Plan→feature mapping |
-| `usage_logs` | API/feature usage |
-| `billing_cycles` | Invoice cycles |
-| `invoices` | Generated invoices |
-| `invoice_items` | Line items |
+| `subscription_features` | Feature catalog (max_booths, analytics, etc.) |
+| `subscription_plan_features` | Plan→feature value mapping |
+| `usage_logs` | Metered API/feature usage per subscriber |
+| `billing_cycles` | Monthly/yearly billing periods |
+| `invoices` | Generated invoice records |
+| `invoice_items` | Individual line items per invoice |
+
+---
+
+## Payments & Subscriptions — Deep Dive
+
+### Payment Flow Architecture
+
+```
+                    ┌──────────────────────────────────┐
+                    │      User selects a service        │
+                    │  (Booth booking, product, flight)  │
+                    └────────────┬─────────────────────┘
+                                 │
+                    ┌────────────▼─────────────────────┐
+                    │       Payment Intents              │
+                    │  • Single unified record           │
+                    │  • reference_type → points to      │
+                    │    orders/bookings/escrows         │
+                    │  • status: pending→processing→     │
+                    │    confirmed→failed→refunded       │
+                    └────────────┬─────────────────────┘
+                                 │
+              ┌──────────────────┼──────────────────┐
+              ▼                  ▼                  ▼
+    ┌─────────────────┐ ┌─────────────────┐ ┌─────────────────┐
+    │    M-Pesa        │ │    Stripe        │ │   Escrow         │
+    │  • Lipa Na M-Pesa│ │  • Card payment  │ │  • Buyer pays    │
+    │  • M-Pesa Express│ │  • SEPA/methods  │ │  • Seller ships  │
+    │  • Buy Goods Till │ │  • Subscription  │ │  • Buyer confirms│
+    │  • Paybill        │ │    recurring    │ │  • Funds released │
+    └────────┬────────┘ └────────┬────────┘ └────────┬────────┘
+             │                   │                    │
+             └───────────────────┼────────────────────┘
+                                 ▼
+                    ┌──────────────────────────────────┐
+                    │        Transaction Logs           │
+                    │  • Raw request/response payloads  │
+                    │  • Audit trail for disputes       │
+                    │  • Gateway reconciliation         │
+                    └────────────┬─────────────────────┘
+                                 │
+                    ┌────────────▼─────────────────────┐
+                    │        Settlement Batches         │
+                    │  • Daily/weekly gateway payouts   │
+                    │  • Fee calculation per gateway    │
+                    │  • Net amount to platform bank    │
+                    └────────────┬─────────────────────┘
+                                 │
+              ┌──────────────────┼──────────────────┐
+              ▼                  ▼                  ▼
+    ┌──────────────┐   ┌──────────────┐   ┌────────────────┐
+    │  Platform     │   │  County 70%  │   │  Seller Payout  │
+    │  Revenue 30%  │   │  Revenue     │   │  (less comm.)   │
+    │  (Ops cost)   │   │  (Dev fund)  │   │                 │
+    └──────────────┘   └──────────────┘   └────────────────┘
+```
+
+### 3-Tier Subscription Model
+
+| Tier | Target | Price (KES) | Key Features | County Benefit |
+|------|--------|-------------|-------------|----------------|
+| **Free** | All users | 0 | 1 booth listing, basic profile | County gets free visibility |
+| **County Premium** | County govt | 50,000/mo | 20 booths, analytics, SEO boost, priority support | County promotes all local businesses |
+| **Exhibitor Pro** | Businesses | 5,000/mo | 5 booths, analytics, livestream, multi-event | County earns 30% commission |
+| **Enterprise** | Corporates | 50,000/mo | Unlimited booths, API access, white-label, dedicated support | County earns 25% commission |
+
+### County Revenue Model
+
+Each county has its own financial configuration in TiDB:
+
+```
+county_financial_config:
+  ├── revenue_share_pct: 70        # 70% to county, 30% to platform
+  ├── mpesa_paybill: "123456"       # County-specific M-Pesa till
+  ├── settlement_period: "monthly"  # Monthly/weekly payouts
+  ├── county_wallet_balance: 0      # Running balance in KES
+  └── subscription_discount: 0.20   # 20% discount for county residents
+```
+
+**How money flows to counties:**
+
+```
+Product sold (1,000 KES)
+  ├── Platform fee (10%):    100 KES
+  ├── Payment gateway (3%):   30 KES
+  ├── County revenue share:   609 KES (70% of remaining 870)
+  └── Seller nets:           261 KES (30% of remaining 870)
+```
+
+**Revenue sources per county:**
+
+| Source | County Share | Platform Share |
+|--------|-------------|----------------|
+| Booth bookings | 70% | 30% |
+| Marketplace sales | 70% | 30% |
+| Travel commissions | 50% | 50% |
+| Ad revenue (local) | 80% | 20% |
+| Subscription fees | 30% | 70% |
+| Escrow fees | 50% | 50% |
+
+### Reconciliation & Settlement
+
+```
+Daily cutoff (23:59 EAT)
+  │
+  ├── Aggregate all intents by county
+  │
+  ├── Deduct gateway fees + platform commission
+  │
+  ├── Generate settlement_batch per county
+  │
+  ├── Auto-transfer to county M-Pesa paybill
+  │     (or accumulate for monthly lump sum)
+  │
+  └── Log in county_wallet_transactions table
+```
+
+### Subscription + Usage Metering
+
+```
+User signs up for "County Premium" (50,000 KES/mo)
+  │
+  ├── billing_cycles created (monthly periods)
+  ├── invoice generated
+  ├── payment_intent via M-Pesa/Stripe
+  │
+  After payment:
+  ├── subscription_plan_features grants:
+  │   • max_booths = 20
+  │   • has_analytics = true
+  │   • has_livestream = true
+  │
+  usage_logs tracks:
+  ├── Booth slots used (counted against max)
+  ├── Analytics queries this month
+  ├── API calls
 
 ---
 

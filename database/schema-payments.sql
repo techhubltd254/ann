@@ -264,6 +264,41 @@ CREATE TABLE IF NOT EXISTS currency_rates (
     UNIQUE(base_currency, target_currency, valid_from)
 );
 
+-- ── 17. County Financial Config ──
+CREATE TABLE IF NOT EXISTS county_financial_config (
+    id INTEGER PRIMARY KEY AUTO_INCREMENT,
+    county_id INTEGER NOT NULL UNIQUE REFERENCES counties(id) ON DELETE CASCADE,
+    revenue_share_pct REAL DEFAULT 70 NOT NULL,
+    subscription_discount REAL DEFAULT 0,
+    mpesa_paybill VARCHAR(20),
+    mpesa_till VARCHAR(20),
+    settlement_period VARCHAR(20) DEFAULT 'monthly',
+    settlement_day INTEGER DEFAULT 1,
+    min_payout REAL DEFAULT 1000,
+    wallet_balance REAL DEFAULT 0,
+    lifetime_earnings REAL DEFAULT 0,
+    total_payouts REAL DEFAULT 0,
+    created_at DATETIME,
+    updated_at DATETIME
+);
+
+-- ── 18. County Wallet Transactions ──
+CREATE TABLE IF NOT EXISTS county_wallet_transactions (
+    id INTEGER PRIMARY KEY AUTO_INCREMENT,
+    county_id INTEGER NOT NULL REFERENCES counties(id) ON DELETE CASCADE,
+    transaction_id VARCHAR(255) NOT NULL UNIQUE,
+    type VARCHAR(30) NOT NULL,
+    amount REAL NOT NULL,
+    currency VARCHAR(3) DEFAULT 'KES',
+    running_balance REAL NOT NULL,
+    reference_type VARCHAR(50),
+    reference_id INTEGER,
+    description TEXT,
+    created_at DATETIME
+);
+CREATE INDEX IF NOT EXISTS_idx_cwt_county ON county_wallet_transactions(county_id);
+CREATE INDEX IF NOT EXISTS_idx_cwt_type ON county_wallet_transactions(type);
+
 -- =============================================================
--- END OF PAYMENTS SCHEMA — 16 tables
+-- END OF PAYMENTS SCHEMA — 18 tables
 -- =============================================================
