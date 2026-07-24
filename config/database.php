@@ -5,7 +5,10 @@ use Pdo\Mysql;
 
 return [
 
-    'default' => env('DB_CONNECTION', 'sqlite'),
+    /*
+    | Default: TiDB Cloud (production). Local dev overrides to sqlite via .env
+    */
+    'default' => env('DB_CONNECTION', 'mysql'),
 
     'connections' => [
 
@@ -24,10 +27,10 @@ return [
         'mysql' => [
             'driver' => 'mysql',
             'url' => env('DB_URL'),
-            'host' => env('DB_HOST', '127.0.0.1'),
-            'port' => env('DB_PORT', '3306'),
-            'database' => env('DB_DATABASE', 'laravel'),
-            'username' => env('DB_USERNAME', 'root'),
+            'host' => env('DB_HOST', 'gateway01.eu-central-1.prod.aws.tidbcloud.com'),
+            'port' => env('DB_PORT', '4000'),
+            'database' => env('DB_DATABASE', 'kicc'),
+            'username' => env('DB_USERNAME', '28dbcDfwh5hEbSc.root'),
             'password' => env('DB_PASSWORD', ''),
             'unix_socket' => env('DB_SOCKET', ''),
             'charset' => env('DB_CHARSET', 'utf8mb4'),
@@ -37,7 +40,7 @@ return [
             'strict' => true,
             'engine' => null,
             'options' => extension_loaded('pdo_mysql') ? array_filter([
-                Mysql::ATTR_SSL_CA => env('MYSQL_ATTR_SSL_CA'),
+                Mysql::ATTR_SSL_CA => env('MYSQL_ATTR_SSL_CA', '/etc/ssl/certs/ca-certificates.crt'),
                 Mysql::ATTR_SSL_VERIFY_SERVER_CERT => env('DB_SSL_VERIFY', true),
             ], fn($v) => $v !== null && $v !== '') : [],
         ],
