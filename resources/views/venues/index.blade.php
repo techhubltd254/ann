@@ -3,7 +3,7 @@
 @section('title', 'Venues')
 
 @section('content')
-<div class="bg-gradient-to-br from-amber-50 to-cream py-12">
+<div class="bg-gradient-to-br from-amber-50 to-kicc-cream py-12">
     <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <h1 class="text-4xl font-bold text-gray-900 mb-4">Venues</h1>
         <p class="text-lg text-gray-600">Browse our world-class exhibition and convention venues.</p>

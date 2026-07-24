@@ -4,11 +4,11 @@
 @section('description', 'Discover Kenya\'s top attractions, hotels, and destinations across 47 counties.')
 
 @section('content')
-<div class="relative bg-charcoal overflow-hidden">
+<div class="relative bg-kicc-dark overflow-hidden">
     <div class="absolute inset-0">
         <img src="{{ media('kicc/tower-night.jpg') }}" alt="" class="w-full h-full object-cover object-top opacity-20">
     </div>
-    <div class="absolute inset-0 bg-gradient-to-b from-charcoal/60 via-charcoal/80 to-charcoal"></div>
+    <div class="absolute inset-0 bg-gradient-to-b from-kicc-dark/60 via-kicc-dark/80 to-kicc-dark"></div>
     <div class="relative max-w-7xl mx-auto px-6 lg:px-8 py-16">
         <div class="flex items-center gap-3 mb-4">
             <span class="h-px w-10 bg-gold-400"></span>

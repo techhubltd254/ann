@@ -7,24 +7,27 @@
     <meta name="description" content="@yield('description', 'Kenya International Convention Centre - Exhibition & Booking Platform')">
     <script src="https://cdn.tailwindcss.com"></script>
     <script>
-        /* KICC brand system — amber scale is remapped to KICC crimson so all
-           existing amber-* classes inherit the brand automatically. */
         tailwind.config = {
             theme: {
                 extend: {
                     colors: {
                         amber: {
-                            50: '#FBEBEC', 100: '#F6D7D9', 200: '#EEAFB3', 300: '#E1868C',
-                            400: '#CE4B54', 500: '#B0212A', 600: '#981C24', 700: '#7D161D',
-                            800: '#611117', 900: '#460C10',
+                            50: '#FDF2F2', 100: '#F9E1E1', 200: '#F3C3C3', 300: '#E99A9A',
+                            400: '#DE6868', 500: '#901C1E', 600: '#7A1819', 700: '#631314',
+                            800: '#4D0F0F', 900: '#360A0B',
                         },
                         gold: {
-                            50: '#FEF7E6', 100: '#FDEDC2', 200: '#FBDD8A', 300: '#F8C94D',
-                            400: '#F5B81F', 500: '#F0A500', 600: '#C78900', 700: '#9E6D00',
-                            800: '#755100', 900: '#4C3500',
+                            50: '#FFF9E6', 100: '#FFF0BF', 200: '#FFE480', 300: '#FFD940',
+                            400: '#FFCD05', 500: '#E6B800', 600: '#CCA300', 700: '#B38E00',
+                            800: '#997900', 900: '#806400',
                         },
-                        charcoal: '#17151A',
-                        cream: '#FAF7F2',
+                        kicc: {
+                            navy: '#0B1E57',
+                            red: '#901C1E',
+                            gold: '#FFCD05',
+                            dark: '#0a1024',
+                            cream: '#F9FAFB',
+                        }
                     }
                 }
             }
@@ -33,9 +36,9 @@
     <script src="https://unpkg.com/@lottiefiles/lottie-player@2.0.2/dist/lottie-player.js"></script>
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet">
     <style>
-        * { font-family: 'Inter', system-ui, -apple-system, sans-serif; }
+        * { font-family: 'Montserrat', system-ui, -apple-system, sans-serif; }
         .line-clamp-2 { display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; overflow: hidden; }
         .line-clamp-3 { display: -webkit-box; -webkit-line-clamp: 3; -webkit-box-orient: vertical; overflow: hidden; }
         .scrollbar-hide { scrollbar-width: none; -ms-overflow-style: none; }
@@ -48,12 +51,12 @@
     {{-- media() and lottie() helpers live in app/Support/helpers.php (composer-autoloaded) --}}
     @stack('styles')
 </head>
-<body class="text-gray-900 antialiased flex flex-col min-h-screen bg-cream">
+<body class="text-gray-900 antialiased flex flex-col min-h-screen bg-kicc-cream">
     <nav class="bg-white/85 backdrop-blur-lg border-b border-gray-200/60 sticky top-0 z-50">
         <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
             <div class="flex justify-between h-16 items-center">
                 <a href="/" class="flex items-center gap-3">
-                    <img src="{{ media('kicc/logo.png') }}" alt="KICC" class="h-10 w-auto object-contain">
+                    <img src="{{ media('kicc/kicc-logo.png') }}" alt="KICC" class="h-12 w-auto object-contain">
                     <div class="border-l border-gray-200 pl-3">
                         <span class="text-sm font-extrabold text-amber-600 leading-none tracking-tight">KICC</span>
                         <span class="text-[10px] text-gray-500 block leading-tight tracking-wide">Kenyatta International Convention Centre</span>
@@ -87,7 +90,7 @@
         @yield('content')
     </main>
 
-    <footer class="bg-charcoal text-gray-400 pt-16 pb-8 mt-auto">
+    <footer class="bg-kicc-dark text-gray-400 pt-16 pb-8 mt-auto">
         <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
             <div class="grid grid-cols-2 md:grid-cols-4 gap-8 pb-12 border-b border-white/10">
                 <div class="col-span-2 md:col-span-1">

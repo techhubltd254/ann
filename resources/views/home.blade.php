@@ -4,13 +4,13 @@
 
 @section('content')
 {{-- ═══ HERO — the tower in national colours ═══ --}}
-<div class="relative overflow-hidden min-h-[92vh] flex items-center bg-charcoal">
+<div class="relative overflow-hidden min-h-[92vh] flex items-center bg-kicc-dark">
     <div class="absolute inset-0">
         <img src="{{ media('kicc/tower-night.jpg') }}" alt="KICC tower illuminated in Kenya's national colours"
              class="w-full h-full object-cover object-center opacity-70">
     </div>
-    <div class="absolute inset-0 bg-gradient-to-r from-charcoal/95 via-charcoal/60 to-charcoal/20"></div>
-    <div class="absolute inset-x-0 bottom-0 h-40 bg-gradient-to-t from-charcoal to-transparent"></div>
+    <div class="absolute inset-0 bg-gradient-to-r from-kicc-dark/95 via-kicc-dark/60 to-kicc-dark/20"></div>
+    <div class="absolute inset-x-0 bottom-0 h-40 bg-gradient-to-t from-kicc-dark to-transparent"></div>
 
     <div class="relative max-w-7xl mx-auto px-6 lg:px-8 w-full py-24">
         <div class="max-w-3xl">
@@ -52,7 +52,7 @@
 
 {{-- ═══ COUNTY RAIL ═══ --}}
 @if($counties && $counties->count() > 0)
-<div class="bg-cream py-14 overflow-hidden">
+<div class="bg-kicc-cream py-14 overflow-hidden">
     <div class="max-w-7xl mx-auto px-6 lg:px-8 mb-6">
         <div class="flex items-end justify-between">
             <div>
@@ -123,7 +123,7 @@
 
 {{-- ═══ 3D EXPERIENCES ═══ --}}
 <div class="max-w-7xl mx-auto px-6 lg:px-8 pb-20">
-    <div class="bg-charcoal rounded-3xl p-8 md:p-10 relative overflow-hidden">
+    <div class="bg-kicc-dark rounded-3xl p-8 md:p-10 relative overflow-hidden">
         <div class="absolute -top-20 -right-20 w-64 h-64 bg-amber-500/10 rounded-full blur-3xl"></div>
         <div class="flex items-center justify-between mb-8">
             <div>
@@ -236,7 +236,7 @@
     <div class="relative max-w-7xl mx-auto px-6 lg:px-8 text-center">
         <h2 class="text-4xl font-extrabold text-white tracking-tight mb-4">Ready to Showcase Your Business?</h2>
         <p class="text-amber-100 text-lg mb-8 max-w-xl mx-auto">Book a booth at our next exhibition and connect with thousands of visitors from across Kenya.</p>
-        <a href="{{ route('exhibitions.index') }}" class="bg-white text-amber-700 px-8 py-3.5 rounded-xl text-lg font-bold hover:bg-cream shadow-xl transition-all inline-block">
+        <a href="{{ route('exhibitions.index') }}" class="bg-white text-amber-700 px-8 py-3.5 rounded-xl text-lg font-bold hover:bg-kicc-cream shadow-xl transition-all inline-block">
             Get Started Today
         </a>
     </div>

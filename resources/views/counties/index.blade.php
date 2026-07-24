@@ -4,11 +4,11 @@
 @section('description', 'Explore all 47 counties of Kenya — each with its own unique sectors, attractions, and exhibition opportunities.')
 
 @section('content')
-<div class="relative bg-charcoal overflow-hidden">
+<div class="relative bg-kicc-dark overflow-hidden">
     <div class="absolute inset-0">
         <img src="{{ media('kicc/tower-night.jpg') }}" alt="" class="w-full h-full object-cover object-top opacity-25">
     </div>
-    <div class="absolute inset-0 bg-gradient-to-b from-charcoal/70 via-charcoal/85 to-charcoal"></div>
+    <div class="absolute inset-0 bg-gradient-to-b from-kicc-dark/70 via-kicc-dark/85 to-kicc-dark"></div>
     <div class="relative max-w-7xl mx-auto px-6 lg:px-8 py-20">
         <div class="text-center">
             <div class="flex items-center justify-center gap-3 mb-5">
