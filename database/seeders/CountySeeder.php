@@ -11,7 +11,7 @@ class CountySeeder extends Seeder
 {
     public function run(): void
     {
-        $path = base_path('../data/counties.json');
+        $path = database_path('data/counties.json');
         if (!file_exists($path)) {
             $this->command->error("File not found at: $path");
             return;
@@ -59,7 +59,7 @@ class CountySeeder extends Seeder
 
     private function seedSeasonalCalendars(): void
     {
-        $path = base_path('../data/seasonal_calendar.csv');
+        $path = database_path('data/seasonal_calendar.csv');
 
         if (!file_exists($path)) {
             $this->command->warn('seasonal_calendar.csv not found');

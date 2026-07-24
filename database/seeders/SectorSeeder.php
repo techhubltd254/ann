@@ -10,7 +10,7 @@ class SectorSeeder extends Seeder
 {
     public function run(): void
     {
-        $path = base_path('../data/sectors.json');
+        $path = database_path('data/sectors.json');
         if (!file_exists($path)) {
             $this->command->error("File not found at: $path");
             return;
