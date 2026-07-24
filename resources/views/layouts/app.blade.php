@@ -21,18 +21,7 @@
         body { background-color: #f8fafc; }
         lottie-player { display: inline-block; width: 1em; height: 1em; vertical-align: middle; }
     </style>
-    @php
-        if (!function_exists('media')) {
-            function media(string $path = ''): string {
-                return rtrim(env('MEDIA_CDN_URL', asset('storage')), '/') . '/' . ltrim($path, '/');
-            }
-        }
-        if (!function_exists('lottie')) {
-            function lottie(string $icon, string $cls = ''): string {
-                return '<lottie-player src="' . media('icons/' . $icon . '.json') . '" ' . $cls . ' autoplay loop mode="normal"></lottie-player>';
-            }
-        }
-    @endphp
+    {{-- media() and lottie() helpers live in app/Support/helpers.php (composer-autoloaded) --}}
     @stack('styles')
 </head>
 <body class="text-gray-900 antialiased flex flex-col min-h-screen">

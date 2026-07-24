@@ -5,6 +5,7 @@ use App\Http\Controllers\Api\AuthController;
 use App\Http\Controllers\Api\BookingController;
 use App\Http\Controllers\Api\BoothController;
 use App\Http\Controllers\Api\CountyController;
+use App\Http\Controllers\Api\CountySectorController;
 use App\Http\Controllers\Api\ExhibitionController;
 use App\Http\Controllers\Api\PipelineController;
 use App\Http\Controllers\Api\TicketController;
