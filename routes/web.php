@@ -9,6 +9,7 @@ use App\Http\Controllers\Web\DashboardController;
 use App\Http\Controllers\Web\ExhibitionController;
 use App\Http\Controllers\Web\HomeController;
 use App\Http\Controllers\Web\MarketplaceController;
+use App\Http\Controllers\Web\OperationsController;
 use App\Http\Controllers\Web\ScreenController;
 use App\Http\Controllers\Web\TravelController;
 use App\Http\Controllers\Web\VenueController;
@@ -39,6 +40,9 @@ Route::get('/subscriptions', [CountySubscriptionController::class, 'index'])->na
 
 // Travel & Tourism
 Route::get('/travel', [TravelController::class, 'index'])->name('travel.index');
+
+// Platform operations (Advertising, SEO, Logistics)
+Route::get('/operations', [OperationsController::class, 'index'])->name('operations.index');
 
 Route::get('/exhibitions', [ExhibitionController::class, 'index'])->name('exhibitions.index');
 Route::get('/exhibitions/{slug}', [ExhibitionController::class, 'show'])->name('exhibitions.show');
