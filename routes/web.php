@@ -1,20 +1,35 @@
 <?php
 
 use App\Http\Controllers\Web\AuthController;
+use App\Http\Controllers\Web\CartController;
+use App\Http\Controllers\Web\CheckoutController;
 use App\Http\Controllers\Web\CountyController;
 use App\Http\Controllers\Web\DashboardController;
 use App\Http\Controllers\Web\ExhibitionController;
 use App\Http\Controllers\Web\HomeController;
+use App\Http\Controllers\Web\MarketplaceController;
 use App\Http\Controllers\Web\ScreenController;
 use App\Http\Controllers\Web\VenueController;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\Web\SocialAuthController;
+use App\Http\Controllers\Web\Room3dController;
 
 Route::get('/', HomeController::class)->name('home');
 
 Route::get('/counties', [CountyController::class, 'index'])->name('counties.index');
 Route::get('/counties/{county}', [CountyController::class, 'show'])->name('counties.show');
 Route::get('/counties/{county}/sector/{sector}', [CountyController::class, 'sector'])->name('counties.sector');
+
+// Marketplace
+Route::get('/marketplace', [MarketplaceController::class, 'index'])->name('marketplace.index');
+Route::get('/marketplace/{slug}', [MarketplaceController::class, 'show'])->name('marketplace.show');
+Route::get('/cart', [CartController::class, 'index'])->name('cart.index');
+Route::post('/cart/add', [CartController::class, 'add'])->name('cart.add');
+Route::patch('/cart/{item}', [CartController::class, 'update'])->name('cart.update');
+Route::delete('/cart/{item}', [CartController::class, 'destroy'])->name('cart.destroy');
+Route::get('/checkout', [CheckoutController::class, 'index'])->name('checkout.index');
+Route::post('/checkout', [CheckoutController::class, 'store'])->name('checkout.store');
+Route::get('/checkout/success/{orderNumber}', [CheckoutController::class, 'success'])->name('checkout.success');
 
 Route::get('/exhibitions', [ExhibitionController::class, 'index'])->name('exhibitions.index');
 Route::get('/exhibitions/{slug}', [ExhibitionController::class, 'show'])->name('exhibitions.show');
@@ -30,6 +45,12 @@ Route::get('/screens/{id}', [ScreenController::class, 'show'])->name('screens.sh
 Route::view('/exhibition-3d/map', 'exhibition-3d.map')->name('exhibition-3d.map');
 Route::view('/exhibition-3d/sector', 'exhibition-3d.sector')->name('exhibition-3d.sector');
 Route::view('/exhibition-3d/booth', 'exhibition-3d.booth')->name('exhibition-3d.booth');
+
+// 3D Room Explorer
+Route::get('/room3d', [Room3dController::class, 'index'])->name('room3d.index');
+Route::get('/room3d/{room3d}', [Room3dController::class, 'show'])->name('room3d.show');
+Route::get('/room3d/{room3d}/viewer', [Room3dController::class, 'viewer'])->name('room3d.viewer');
+Route::get('/room3d/{room3d}/api', [Room3dController::class, 'api'])->name('room3d.api');
 
 Route::middleware('guest')->group(function () {
     Route::get('/register', [AuthController::class, 'showRegister'])->name('register');

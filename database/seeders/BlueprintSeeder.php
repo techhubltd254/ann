@@ -35,7 +35,7 @@ class BlueprintSeeder extends Seeder
         ];
 
         foreach ($plans as $plan) {
-            SubscriptionPlan::create($plan);
+            SubscriptionPlan::updateOrCreate(['slug' => $plan['slug']], $plan);
         }
 
         $this->command->info('Seeded ' . count($plans) . ' subscription plans');
