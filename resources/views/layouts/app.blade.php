@@ -62,6 +62,7 @@
                 <div class="flex items-center gap-1">
                     <a href="{{ route('counties.index') }}" class="text-gray-600 hover:text-amber-600 hover:bg-amber-50 px-3 py-2 rounded-lg text-sm font-medium transition-all">Counties</a>
                     <a href="{{ route('marketplace.index') }}" class="text-gray-600 hover:text-amber-600 hover:bg-amber-50 px-3 py-2 rounded-lg text-sm font-medium transition-all">Marketplace</a>
+                    <a href="{{ route('travel.index') }}" class="text-gray-600 hover:text-amber-600 hover:bg-amber-50 px-3 py-2 rounded-lg text-sm font-medium transition-all">Travel</a>
                     <a href="{{ route('exhibitions.index') }}" class="text-gray-600 hover:text-amber-600 hover:bg-amber-50 px-3 py-2 rounded-lg text-sm font-medium transition-all">Exhibitions</a>
                     <a href="{{ route('venues.index') }}" class="text-gray-600 hover:text-amber-600 hover:bg-amber-50 px-3 py-2 rounded-lg text-sm font-medium transition-all">Venues</a>
                     <a href="{{ route('screens.directory') }}" class="text-gray-600 hover:text-amber-600 hover:bg-amber-50 px-3 py-2 rounded-lg text-sm font-medium transition-all">Screens</a>

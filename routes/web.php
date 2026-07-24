@@ -10,6 +10,7 @@ use App\Http\Controllers\Web\ExhibitionController;
 use App\Http\Controllers\Web\HomeController;
 use App\Http\Controllers\Web\MarketplaceController;
 use App\Http\Controllers\Web\ScreenController;
+use App\Http\Controllers\Web\TravelController;
 use App\Http\Controllers\Web\VenueController;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\Web\SocialAuthController;
@@ -35,6 +36,9 @@ Route::get('/checkout/success/{orderNumber}', [CheckoutController::class, 'succe
 // County subscriptions
 Route::get('/county/{slug}/subscriptions', [CountySubscriptionController::class, 'index'])->name('county.subscriptions');
 Route::get('/subscriptions', [CountySubscriptionController::class, 'index'])->name('subscriptions.index');
+
+// Travel & Tourism
+Route::get('/travel', [TravelController::class, 'index'])->name('travel.index');
 
 Route::get('/exhibitions', [ExhibitionController::class, 'index'])->name('exhibitions.index');
 Route::get('/exhibitions/{slug}', [ExhibitionController::class, 'show'])->name('exhibitions.show');
