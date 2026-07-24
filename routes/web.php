@@ -4,6 +4,7 @@ use App\Http\Controllers\Web\AuthController;
 use App\Http\Controllers\Web\CartController;
 use App\Http\Controllers\Web\CheckoutController;
 use App\Http\Controllers\Web\CountyController;
+use App\Http\Controllers\Web\CountySubscriptionController;
 use App\Http\Controllers\Web\DashboardController;
 use App\Http\Controllers\Web\ExhibitionController;
 use App\Http\Controllers\Web\HomeController;
@@ -30,6 +31,10 @@ Route::delete('/cart/{item}', [CartController::class, 'destroy'])->name('cart.de
 Route::get('/checkout', [CheckoutController::class, 'index'])->name('checkout.index');
 Route::post('/checkout', [CheckoutController::class, 'store'])->name('checkout.store');
 Route::get('/checkout/success/{orderNumber}', [CheckoutController::class, 'success'])->name('checkout.success');
+
+// County subscriptions
+Route::get('/county/{slug}/subscriptions', [CountySubscriptionController::class, 'index'])->name('county.subscriptions');
+Route::get('/subscriptions', [CountySubscriptionController::class, 'index'])->name('subscriptions.index');
 
 Route::get('/exhibitions', [ExhibitionController::class, 'index'])->name('exhibitions.index');
 Route::get('/exhibitions/{slug}', [ExhibitionController::class, 'show'])->name('exhibitions.show');

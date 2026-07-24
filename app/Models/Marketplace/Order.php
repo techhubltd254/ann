@@ -2,6 +2,8 @@
 
 namespace App\Models\Marketplace;
 
+use App\Models\Payment\PaymentIntent;
+use App\Models\Payment\SettlementBatch;
 use App\Models\User;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\SoftDeletes;
@@ -34,4 +36,6 @@ class Order extends Model
 
     public function user() { return $this->belongsTo(User::class); }
     public function items() { return $this->hasMany(OrderItem::class); }
+    public function paymentIntents() { return $this->morphMany(PaymentIntent::class, 'reference'); }
+    public function settlementBatches() { return $this->morphMany(SettlementBatch::class, 'reference'); }
 }

@@ -5,15 +5,23 @@ namespace App\Http\Controllers\Web;
 use App\Http\Controllers\Controller;
 use App\Models\Marketplace\Order;
 use App\Models\Marketplace\ShoppingCart;
+use App\Services\PaymentService;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 
 class CheckoutController extends Controller
 {
+    protected PaymentService $payments;
+
+    public function __construct(PaymentService $payments)
+    {
+        $this->payments = $payments;
+    }
+
     protected function cart(Request $request): ?ShoppingCart
     {
         $userId = $request->user()?->id;
-        return ShoppingCart::with('items.variant.product')
+        return ShoppingCart::with('items.variant.product.county')
             ->when($userId, fn ($q) => $q->where('user_id', $userId))
             ->when(!$userId, fn ($q) => $q->where('session_id', $request->session()->getId()))
             ->latest('id')
@@ -78,17 +86,22 @@ class CheckoutController extends Controller
             $cart->items()->delete();
             $cart->delete();
 
+            // Create a unified payment intent via the active gateway (M-Pesa when key is set)
+            $this->payments->charge($order, $order->grand_total, [
+                'description' => "Order {$order->order_number}",
+                'phone' => $data['phone'],
+            ]);
+
             return $order;
         });
 
-        // TODO (Phase C): create payment_intent + M-Pesa STK push here.
         return redirect()->route('checkout.success', $order->order_number)
             ->with('customer', $data);
     }
 
     public function success(string $orderNumber)
     {
-        $order = Order::with('items')->where('order_number', $orderNumber)->firstOrFail();
+        $order = Order::with('items', 'paymentIntents')->where('order_number', $orderNumber)->firstOrFail();
         return view('checkout.success', compact('order'));
     }
 }
