@@ -165,7 +165,7 @@ class VideoService
             'ffmpeg', '-y',
             '-loop', '1', '-i', $inputPath,
             '-vf', $vf,
-            '-c:v', 'libx264', '-preset', 'ultrafast', '-crf', '28',
+            '-c:v', 'libx264', '-preset', 'veryfast', '-crf', '24',
             '-pix_fmt', 'yuv420p',
             '-vsync', 'vfr',
             '-t', (string) $duration,
