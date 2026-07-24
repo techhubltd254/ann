@@ -3,7 +3,7 @@
 @section('title', 'Exhibition Screen Videos — KICC')
 
 @section('content')
-<div class="bg-gray-900 py-12">
+<div class="bg-charcoal py-12">
     <div class="max-w-7xl mx-auto px-6 lg:px-8">
         <a href="{{ route('home') }}" class="inline-flex items-center gap-2 text-gray-400 hover:text-white mb-6 transition-colors text-sm">
             <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 19l-7-7 7-7"/></svg>

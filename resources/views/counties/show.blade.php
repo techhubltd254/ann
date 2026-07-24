@@ -31,7 +31,7 @@ $sectorMeta = [
              alt="{{ $county->name }} County"
              class="w-full h-full object-cover"
              style="display:none"
-             onerror="this.style.display='block';this.style.objectFit='none';this.parentElement.style.background='linear-gradient(135deg, #1a1a2e 0%, #16213e 50%, #0f3460 100%)'">
+             onerror="this.style.display='block';this.style.objectFit='none';this.parentElement.style.background='linear-gradient(135deg, #17151A 0%, #460C10 50%, #7D161D 100%)'">
         <div class="absolute inset-0 bg-gradient-to-r from-black/80 via-black/50 to-transparent"></div>
     </div>
 

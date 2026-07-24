@@ -4,18 +4,25 @@
 @section('description', 'Explore all 47 counties of Kenya — each with its own unique sectors, attractions, and exhibition opportunities.')
 
 @section('content')
-<div class="relative bg-gradient-to-br from-gray-900 via-gray-800 to-amber-900 overflow-hidden">
-    <div class="absolute inset-0 bg-[url('https://images.unsplash.com/photo-1580060839134-75a5edca2e99?w=1600&q=80')] bg-cover bg-center opacity-10"></div>
+<div class="relative bg-charcoal overflow-hidden">
+    <div class="absolute inset-0">
+        <img src="{{ media('kicc/tower-night.jpg') }}" alt="" class="w-full h-full object-cover object-top opacity-25">
+    </div>
+    <div class="absolute inset-0 bg-gradient-to-b from-charcoal/70 via-charcoal/85 to-charcoal"></div>
     <div class="relative max-w-7xl mx-auto px-6 lg:px-8 py-20">
         <div class="text-center">
-            <div class="text-6xl mb-4">🇰🇪</div>
-            <h1 class="text-5xl md:text-6xl font-bold text-white mb-4">Explore Kenya's <span class="text-amber-400">47 Counties</span></h1>
+            <div class="flex items-center justify-center gap-3 mb-5">
+                <span class="h-px w-10 bg-gold-400"></span>
+                <span class="text-gold-400 text-xs font-semibold uppercase tracking-[0.25em]">Destinations</span>
+                <span class="h-px w-10 bg-gold-400"></span>
+            </div>
+            <h1 class="text-5xl md:text-6xl font-extrabold tracking-tight text-white mb-4">Explore Kenya's <span class="text-amber-500">47 Counties</span></h1>
             <p class="text-xl text-gray-300 mb-10 max-w-2xl mx-auto">Discover economic sectors, investment opportunities, tourism attractions, and trade exhibitions across every county.</p>
             <div class="max-w-md mx-auto">
                 <div class="relative">
                     <svg class="absolute left-4 top-1/2 -translate-y-1/2 w-5 h-5 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"/></svg>
                     <input type="text" id="county-search" placeholder="Search counties..."
-                           class="w-full pl-12 pr-5 py-3.5 rounded-2xl bg-white/10 backdrop-blur-md border border-white/20 text-white placeholder-gray-400 focus:outline-none focus:border-amber-400 focus:ring-2 focus:ring-amber-400/30 text-lg">
+                           class="w-full pl-12 pr-5 py-3.5 rounded-2xl bg-white/10 backdrop-blur-md border border-white/20 text-white placeholder-gray-400 focus:outline-none focus:border-gold-400 focus:ring-2 focus:ring-gold-400/30 text-lg">
                 </div>
             </div>
         </div>
