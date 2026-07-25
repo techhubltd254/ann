@@ -5,7 +5,8 @@ namespace App\Http\Controllers\Web;
 use App\Http\Controllers\Controller;
 use App\Models\County;
 use App\Models\Exhibition;
-use Illuminate\Support\Facades\Cache;
+use App\Models\Marketplace\Product;
+use App\Models\Venue;
 
 class HomeController extends Controller
 {
@@ -19,7 +20,9 @@ class HomeController extends Controller
             ->get();
 
         $counties = County::orderBy('name')->get();
+        $products = Product::with(['county', 'variants'])->active()->latest()->take(8)->get();
+        $venues = Venue::where('is_active', true)->orderBy('name')->take(4)->get();
 
-        return view('home', compact('featuredExhibitions', 'counties'));
+        return view('home', compact('featuredExhibitions', 'counties', 'products', 'venues'));
     }
 }
