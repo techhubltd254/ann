@@ -6,6 +6,7 @@ use App\Http\Controllers\Web\CheckoutController;
 use App\Http\Controllers\Web\CountyController;
 use App\Http\Controllers\Web\CountySubscriptionController;
 use App\Http\Controllers\Web\DashboardController;
+use App\Http\Controllers\Web\DashboardV2Controller;
 use App\Http\Controllers\Web\ExhibitionController;
 use App\Http\Controllers\Web\HomeController;
 use App\Http\Controllers\Web\MarketplaceController;
@@ -37,6 +38,9 @@ Route::get('/checkout/success/{orderNumber}', [CheckoutController::class, 'succe
 // County subscriptions
 Route::get('/county/{slug}/subscriptions', [CountySubscriptionController::class, 'index'])->name('county.subscriptions');
 Route::get('/subscriptions', [CountySubscriptionController::class, 'index'])->name('subscriptions.index');
+
+// Dashboards
+Route::get('/dashboard/county', [DashboardV2Controller::class, 'county'])->name('dashboard.county');
 
 // Travel & Tourism
 Route::get('/travel', [TravelController::class, 'index'])->name('travel.index');
