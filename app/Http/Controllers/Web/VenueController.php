@@ -4,6 +4,8 @@ namespace App\Http\Controllers\Web;
 
 use App\Http\Controllers\Controller;
 use App\Models\Venue;
+use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Log;
 
 class VenueController extends Controller
 {
@@ -19,5 +21,24 @@ class VenueController extends Controller
             ->get();
 
         return view('venues.show', compact('venue', 'upcomingExhibitions'));
+    }
+
+    public function inquire(Request $request, Venue $venue)
+    {
+        $validated = $request->validate([
+            'name' => 'required|string|max:255',
+            'email' => 'required|email|max:255',
+            'phone' => 'nullable|string|max:30',
+            'event_date' => 'required|date|after:today',
+            'message' => 'nullable|string|max:2000',
+        ]);
+
+        Log::info('Venue booking inquiry', [
+            'venue' => $venue->name,
+            'venue_id' => $venue->id,
+            ...$validated,
+        ]);
+
+        return back()->with('success', "Inquiry sent! Our events team will contact you about {$venue->name} within 24 hours.");
     }
 }

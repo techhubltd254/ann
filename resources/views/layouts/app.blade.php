@@ -15,8 +15,55 @@
         body { background-color: #07090F; }
         .scrollbar-hide { scrollbar-width: none; -ms-overflow-style: none; }
         .scrollbar-hide::-webkit-scrollbar { display: none; }
-        .card-hover { @apply transition-all duration-200; }
-        .card-hover:hover { @apply -translate-y-1; }
+        [x-cloak] { display: none !important; }
+
+        /* ── Scroll Reveal ─────────────────────────── */
+        .reveal-init { opacity: 0; transform: translateY(28px); transition: opacity 0.7s cubic-bezier(0.22,1,0.36,1), transform 0.7s cubic-bezier(0.22,1,0.36,1); will-change: opacity, transform; }
+        .reveal-init.revealed { opacity: 1; transform: translateY(0); }
+        .reveal-init[data-reveal="left"] { transform: translateX(-36px); }
+        .reveal-init[data-reveal="right"] { transform: translateX(36px); }
+        .reveal-init[data-reveal="zoom"] { transform: scale(0.92); }
+        .reveal-init[data-reveal="left"].revealed,
+        .reveal-init[data-reveal="right"].revealed,
+        .reveal-init[data-reveal="zoom"].revealed { transform: none; }
+
+        /* ── Card hover lift ───────────────────────── */
+        .card-hover { transition: transform 0.25s cubic-bezier(0.22,1,0.36,1), box-shadow 0.25s, border-color 0.25s; }
+        .card-hover:hover { transform: translateY(-4px); }
+
+        /* ── 3D tilt glare overlay ─────────────────── */
+        [data-tilt] { position: relative; transform-style: preserve-3d; }
+        .tilt-glare { position: absolute; inset: 0; border-radius: inherit; pointer-events: none; }
+
+        /* ── Marquee ───────────────────────────────── */
+        @keyframes marquee { from { transform: translateX(0); } to { transform: translateX(-50%); } }
+        .animate-marquee { animation: marquee 30s linear infinite; }
+        .marquee-paused:hover .animate-marquee { animation-play-state: paused; }
+
+        /* ── Floating orbs ─────────────────────────── */
+        @keyframes float-slow { 0%,100% { transform: translateY(0) translateX(0); } 50% { transform: translateY(-30px) translateX(20px); } }
+        @keyframes float-slower { 0%,100% { transform: translateY(0) translateX(0); } 50% { transform: translateY(25px) translateX(-25px); } }
+        .animate-float-slow { animation: float-slow 9s ease-in-out infinite; }
+        .animate-float-slower { animation: float-slower 13s ease-in-out infinite; }
+
+        /* ── Shimmer text ──────────────────────────── */
+        @keyframes shimmer { 0% { background-position: -200% center; } 100% { background-position: 200% center; } }
+        .text-shimmer {
+            background: linear-gradient(110deg, #FFCD05 25%, #fff 40%, #FFCD05 55%);
+            background-size: 200% auto;
+            -webkit-background-clip: text; background-clip: text;
+            -webkit-text-fill-color: transparent;
+            animation: shimmer 4s linear infinite;
+        }
+
+        /* ── Pulse glow ────────────────────────────── */
+        @keyframes pulse-glow { 0%,100% { box-shadow: 0 0 0 0 rgba(255,205,5,0.35); } 50% { box-shadow: 0 0 30px 6px rgba(255,205,5,0.15); } }
+        .animate-pulse-glow { animation: pulse-glow 3.2s ease-in-out infinite; }
+
+        @media (prefers-reduced-motion: reduce) {
+            .reveal-init { opacity: 1; transform: none; transition: none; }
+            .animate-marquee, .animate-float-slow, .animate-float-slower, .text-shimmer, .animate-pulse-glow { animation: none; }
+        }
     </style>
     @stack('styles')
 </head>
@@ -33,32 +80,53 @@
                     <div class="text-[9px] text-kicc-gold font-bold tracking-[0.18em] uppercase">Platform</div>
                 </div>
             </a>
-            <nav class="hidden md:flex items-center gap-1">
-                <a href="{{ route('counties.index') }}" class="px-4 py-2 text-sm font-semibold text-white/70 hover:text-white hover:bg-white/8 rounded-lg transition-all">Counties</a>
-                <a href="{{ route('marketplace.index') }}" class="px-4 py-2 text-sm font-semibold text-white/70 hover:text-white hover:bg-white/8 rounded-lg transition-all">Marketplace</a>
-                <a href="{{ route('travel.index') }}" class="px-4 py-2 text-sm font-semibold text-white/70 hover:text-white hover:bg-white/8 rounded-lg transition-all">Travel</a>
-                <a href="{{ route('venues.index') }}" class="px-4 py-2 text-sm font-semibold text-white/70 hover:text-white hover:bg-white/8 rounded-lg transition-all">Venues</a>
-                <a href="{{ route('exhibitions.index') }}" class="px-4 py-2 text-sm font-semibold text-white/70 hover:text-white hover:bg-white/8 rounded-lg transition-all">Events</a>
-                <a href="{{ route('subscriptions.index') }}" class="px-4 py-2 text-sm font-semibold text-white/70 hover:text-white hover:bg-white/8 rounded-lg transition-all">Plans</a>
+            <nav class="hidden lg:flex items-center gap-1">
+                <a href="{{ route('counties.index') }}" class="px-3.5 py-2 text-sm font-semibold rounded-lg transition-all {{ request()->routeIs('counties.*') ? 'text-kicc-gold bg-white/8' : 'text-white/70 hover:text-white hover:bg-white/8' }}">Counties</a>
+                <a href="{{ route('marketplace.index') }}" class="px-3.5 py-2 text-sm font-semibold rounded-lg transition-all {{ request()->routeIs('marketplace.*') ? 'text-kicc-gold bg-white/8' : 'text-white/70 hover:text-white hover:bg-white/8' }}">Marketplace</a>
+                <a href="{{ route('travel.index') }}" class="px-3.5 py-2 text-sm font-semibold rounded-lg transition-all {{ request()->routeIs('travel.*') ? 'text-kicc-gold bg-white/8' : 'text-white/70 hover:text-white hover:bg-white/8' }}">Travel</a>
+                <a href="{{ route('venues.index') }}" class="px-3.5 py-2 text-sm font-semibold rounded-lg transition-all {{ request()->routeIs('venues.*') ? 'text-kicc-gold bg-white/8' : 'text-white/70 hover:text-white hover:bg-white/8' }}">Venues</a>
+                <a href="{{ route('exhibitions.index') }}" class="px-3.5 py-2 text-sm font-semibold rounded-lg transition-all {{ request()->routeIs('exhibitions.*') ? 'text-kicc-gold bg-white/8' : 'text-white/70 hover:text-white hover:bg-white/8' }}">Events</a>
+                <a href="{{ route('screens.directory') }}" class="px-3.5 py-2 text-sm font-semibold rounded-lg transition-all {{ request()->routeIs('screens.*') ? 'text-kicc-gold bg-white/8' : 'text-white/70 hover:text-white hover:bg-white/8' }}">Screens</a>
+                <a href="{{ route('exhibition-3d.map') }}" class="px-3.5 py-2 text-sm font-semibold rounded-lg transition-all {{ request()->routeIs('exhibition-3d.*') ? 'text-kicc-gold bg-white/8' : 'text-white/70 hover:text-white hover:bg-white/8' }}">3D Tour</a>
             </nav>
             <div class="flex items-center gap-2">
-                <a href="{{ route('cart.index') }}" class="relative p-2 text-white/60 hover:text-white transition-colors">
+                <a href="{{ route('cart.index') }}" class="relative p-2 text-white/60 hover:text-white transition-colors" aria-label="Cart">
                     <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 3h2l.4 2M7 13h10l4-8H5.4M7 13L5.4 5M7 13l-2.293 2.293c-.63.63-.184 1.707.707 1.707H17m0 0a2 2 0 100 4 2 2 0 000-4zm-8 2a2 2 0 11-4 0 2 2 0 014 0z"/></svg>
                 </a>
+                @auth
+                <a href="{{ route('dashboard.index') }}" class="inline-flex items-center gap-2 font-bold tracking-wide transition-all duration-200 px-4 text-xs h-9 rounded-xl bg-kicc-gold text-[#07090F] hover:bg-[#e6b904]">
+                    Dashboard
+                </a>
+                <a href="{{ route('admin.portal') }}" class="hidden sm:inline-flex items-center gap-2 font-bold tracking-wide transition-all duration-200 px-4 text-xs h-9 rounded-xl border border-[#901C1E]/50 text-[#e86f71] hover:bg-[#901C1E]/15" title="Admin">
+                    Admin
+                </a>
+                <form method="POST" action="{{ route('logout') }}" class="inline">@csrf
+                    <button type="submit" class="inline-flex items-center gap-2 font-bold tracking-wide transition-all duration-200 px-3 text-xs h-9 rounded-xl border border-white/25 text-white/70 hover:bg-white/10">Logout</button>
+                </form>
+                @else
                 <a href="{{ route('login') }}" class="inline-flex items-center gap-2 font-bold tracking-wide transition-all duration-200 px-4 text-xs h-9 rounded-xl border border-white/25 text-white hover:bg-white/10 hover:border-white/50">Sign In</a>
-                <button @click="open = !open" class="md:hidden text-white/70 hover:text-white p-2">
+                @endauth
+                <button @click="open = !open" class="lg:hidden text-white/70 hover:text-white p-2" aria-label="Menu">
                     <svg class="w-5 h-5" x-show="!open" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16"/></svg>
                     <svg class="w-5 h-5" x-show="open" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"/></svg>
                 </button>
             </div>
         </div>
-        <div x-show="open" x-cloak class="md:hidden absolute top-full left-0 right-0 bg-[#0D1220] border-b border-white/8 p-4 flex flex-col gap-1">
+        <div x-show="open" x-cloak x-transition class="lg:hidden absolute top-full left-0 right-0 bg-[#0D1220] border-b border-white/8 p-4 flex flex-col gap-1">
             <a href="{{ route('counties.index') }}" class="text-left px-4 py-3 text-sm font-semibold text-white/70 hover:text-white hover:bg-white/8 rounded-lg">Counties</a>
             <a href="{{ route('marketplace.index') }}" class="text-left px-4 py-3 text-sm font-semibold text-white/70 hover:text-white hover:bg-white/8 rounded-lg">Marketplace</a>
             <a href="{{ route('travel.index') }}" class="text-left px-4 py-3 text-sm font-semibold text-white/70 hover:text-white hover:bg-white/8 rounded-lg">Travel</a>
             <a href="{{ route('venues.index') }}" class="text-left px-4 py-3 text-sm font-semibold text-white/70 hover:text-white hover:bg-white/8 rounded-lg">Venues</a>
             <a href="{{ route('exhibitions.index') }}" class="text-left px-4 py-3 text-sm font-semibold text-white/70 hover:text-white hover:bg-white/8 rounded-lg">Events</a>
+            <a href="{{ route('screens.directory') }}" class="text-left px-4 py-3 text-sm font-semibold text-white/70 hover:text-white hover:bg-white/8 rounded-lg">Screens</a>
+            <a href="{{ route('exhibition-3d.map') }}" class="text-left px-4 py-3 text-sm font-semibold text-white/70 hover:text-white hover:bg-white/8 rounded-lg">3D Tour</a>
+            <a href="{{ route('subscriptions.index') }}" class="text-left px-4 py-3 text-sm font-semibold text-white/70 hover:text-white hover:bg-white/8 rounded-lg">Plans</a>
+            @auth
+            <a href="{{ route('dashboard.index') }}" class="text-left px-4 py-3 text-sm font-semibold text-kicc-gold hover:bg-white/8 rounded-lg">Dashboard</a>
+            <a href="{{ route('admin.portal') }}" class="text-left px-4 py-3 text-sm font-semibold text-[#e86f71] hover:bg-white/8 rounded-lg">Admin</a>
+            @else
             <a href="{{ route('login') }}" class="text-left px-4 py-3 text-sm font-semibold text-white/70 hover:text-white hover:bg-white/8 rounded-lg">Sign In</a>
+            @endauth
         </div>
     </nav>
 
@@ -86,8 +154,8 @@
             </div>
             @php $footerLinks = [
                 'Platform' => [['Counties','counties.index'],['Marketplace','marketplace.index'],['Travel','travel.index'],['Exhibitions','exhibitions.index'],['Venues','venues.index']],
-                'Dashboards' => [['Subscriptions','subscriptions.index'],['Screens','screens.directory'],['Operations','operations.index']],
-                'Information' => [['About KICC','home'],['Contact Us','home']],
+                'Experiences' => [['3D County Map','exhibition-3d.map'],['Sector Explorer','exhibition-3d.sector'],['Booth Tour','exhibition-3d.booth'],['3D Rooms','room3d.index'],['Screens','screens.directory']],
+                'Account' => [['Subscriptions','subscriptions.index'],['Operations','operations.index'],['Admin Portal','admin.portal']],
             ]; @endphp
             @foreach($footerLinks as $title => $links)
             <div>
@@ -112,5 +180,6 @@
     </footer>
     @stack('scripts')
     <script defer src="https://cdn.jsdelivr.net/npm/alpinejs@3.x.x/dist/cdn.min.js"></script>
+    <script src="{{ asset('js/animations.js') }}"></script>
 </body>
 </html>

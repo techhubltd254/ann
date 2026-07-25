@@ -40,6 +40,22 @@
                         @if($screen->description)
                         <p class="text-white/40 text-sm mt-1">{{ $screen->description }}</p>
                         @endif
+                        <div class="flex items-center gap-4 mt-2 text-xs text-white/30">
+                            @if($screen->video_exists)
+                            <span class="text-emerald-400">● Video ready ({{ $screen->video_size_mb }} MB)</span>
+                            @else
+                            <span class="text-white/30">○ Video pending</span>
+                            @endif
+                            @if(isset($screen->image_count))
+                            <span>{{ $screen->image_count }} images</span>
+                            @endif
+                        </div>
+                    </div>
+                    <div class="flex gap-2 mt-4">
+                        <a href="{{ route('screens.show', $screen->id) }}" class="inline-flex items-center gap-2 px-4 py-2 rounded-lg bg-kicc-gold text-[#07090F] text-xs font-bold hover:bg-[#e6b904] transition-colors">
+                            <svg class="w-3.5 h-3.5" fill="currentColor" viewBox="0 0 20 20"><path d="M6.3 2.841A1.5 1.5 0 004 4.11V15.89a1.5 1.5 0 002.3 1.269l9.344-5.89a1.5 1.5 0 000-2.538L6.3 2.84z"/></svg>
+                            Play Showcase
+                        </a>
                     </div>
                 </div>
             </div>

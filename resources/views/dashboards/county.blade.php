@@ -18,8 +18,8 @@ $activeSubs = $subscribers->where('status', 'active')->count();
             </div>
             <div class="flex-1 py-3 overflow-y-auto">
                 @foreach($navItems as $item)
-                <a href="{{ $item['route'] ?? '#' }}" class="w-full flex items-center gap-3 px-4 py-2.5 text-sm font-semibold transition-all text-white/35 hover:bg-white/5 hover:text-white"
-                   style="{{ ($item['active'] ?? false) ? 'background: #0B1E5722; border-right: 2px solid #0B1E57; color: white' : '' }}">
+                <a href="{{ route('dashboard.county', ['tab' => $item['tab']]) }}" class="w-full flex items-center gap-3 px-4 py-2.5 text-sm font-semibold transition-all text-white/35 hover:bg-white/5 hover:text-white"
+                   style="{{ $tab === $item['tab'] ? 'background: #0B1E5722; border-right: 2px solid #0B1E57; color: white' : '' }}">
                     @if(isset($item['icon']))
                     <svg class="w-4 h-4 shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="{{ $item['icon'] }}"/></svg>
                     @endif
@@ -44,7 +44,7 @@ $activeSubs = $subscribers->where('status', 'active')->count();
             </div>
         </div>
         <div class="flex-1 overflow-y-auto p-6 space-y-8">
-            {{-- KPI Cards --}}
+            {{-- KPI Cards (always visible) --}}
             <div class="grid grid-cols-2 lg:grid-cols-4 gap-4">
                 <div class="bg-[#0D1220] border border-white/8 rounded-2xl p-5">
                     <div class="flex items-start justify-between mb-4"><div class="p-2.5 rounded-xl" style="background: #0B1E5722"><svg class="w-4 h-4 text-[#0B1E57]" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2"/></svg></div></div>
@@ -68,6 +68,7 @@ $activeSubs = $subscribers->where('status', 'active')->count();
                 </div>
             </div>
 
+            @if($tab === 'overview')
             {{-- Slots + Subscribers --}}
             <div class="grid lg:grid-cols-2 gap-6">
                 <div class="bg-[#0D1220] border border-white/8 rounded-2xl p-6">
@@ -108,6 +109,119 @@ $activeSubs = $subscribers->where('status', 'active')->count();
                     </div>
                 </div>
             </div>
+
+            @elseif($tab === 'slots')
+            <div class="bg-[#0D1220] border border-white/8 rounded-2xl p-6">
+                <div class="flex items-center justify-between mb-5">
+                    <h3 class="font-bold text-white">Slot Management</h3>
+                    <span class="text-xs text-white/35">{{ $totalSlots - $usedSlots }} of {{ $totalSlots }} available</span>
+                </div>
+                <div class="overflow-x-auto">
+                    <table class="w-full text-sm">
+                        <thead><tr class="text-white/40 text-[10px] uppercase tracking-wider border-b border-white/8">
+                            <th class="text-left py-3 px-3">Slot Type</th><th class="text-right py-3 px-3">Total</th><th class="text-right py-3 px-3">Used</th><th class="text-right py-3 px-3">Available</th><th class="text-center py-3 px-3">Status</th>
+                        </tr></thead>
+                        <tbody>
+                        @forelse($allocation as $a)
+                        <tr class="border-b border-white/5 hover:bg-white/5">
+                            <td class="py-3 px-3 text-white font-semibold capitalize">{{ $a->slot_type }}s</td>
+                            <td class="py-3 px-3 text-white/50 text-right">{{ $a->total_slots }}</td>
+                            <td class="py-3 px-3 text-white/50 text-right">{{ $a->used_slots }}</td>
+                            <td class="py-3 px-3 text-kicc-gold text-right font-bold">{{ $a->availableSlots() }}</td>
+                            <td class="py-3 px-3 text-center"><span class="text-[10px] font-bold px-2.5 py-1 rounded-full border text-emerald-400 bg-emerald-500/15 border-emerald-500/25">{{ $a->status }}</span></td>
+                        </tr>
+                        @empty
+                        <tr><td colspan="5" class="py-8 text-center text-white/40">No slot allocations yet.</td></tr>
+                        @endforelse
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+
+            @elseif($tab === 'subscribers')
+            <div class="bg-[#0D1220] border border-white/8 rounded-2xl p-6">
+                <div class="flex items-center justify-between mb-5">
+                    <h3 class="font-bold text-white">All Subscribers ({{ $subscribers->count() }})</h3>
+                </div>
+                <div class="overflow-x-auto">
+                    <table class="w-full text-sm">
+                        <thead><tr class="text-white/40 text-[10px] uppercase tracking-wider border-b border-white/8">
+                            <th class="text-left py-3 px-3">Business</th><th class="text-left py-3 px-3">Plan</th><th class="text-center py-3 px-3">Status</th><th class="text-right py-3 px-3">Joined</th>
+                        </tr></thead>
+                        <tbody>
+                        @forelse($subscribers as $s)
+                        <tr class="border-b border-white/5 hover:bg-white/5">
+                            <td class="py-3 px-3 text-white font-semibold">{{ $s->user?->name ?? 'Anonymous' }}</td>
+                            <td class="py-3 px-3 text-white/50">{{ $s->plan?->name ?? 'No plan' }}</td>
+                            <td class="py-3 px-3 text-center"><span class="text-[10px] font-bold px-2.5 py-1 rounded-full border {{ $s->status === 'active' ? 'text-emerald-400 bg-emerald-500/15 border-emerald-500/25' : 'text-[#FFCD05] bg-[#FFCD05]/15 border-[#FFCD05]/25' }} capitalize">{{ $s->status }}</span></td>
+                            <td class="py-3 px-3 text-white/40 text-right text-xs">{{ $s->created_at?->format('M d, Y') }}</td>
+                        </tr>
+                        @empty
+                        <tr><td colspan="4" class="py-8 text-center text-white/40">No subscribers yet.</td></tr>
+                        @endforelse
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+
+            @elseif($tab === 'content')
+            <div class="bg-[#0D1220] border border-white/8 rounded-2xl p-6">
+                <h3 class="font-bold text-white mb-5">County Content</h3>
+                <div class="grid sm:grid-cols-2 lg:grid-cols-3 gap-4">
+                    <a href="{{ route('counties.show', $county->slug) }}" class="bg-[#141B2E] border border-white/8 rounded-xl p-5 hover:border-kicc-gold/40 transition-all group block">
+                        <div class="font-bold text-white text-sm group-hover:text-kicc-gold transition-colors">Tourism Attractions</div>
+                        <div class="text-white/35 text-xs mt-1">Manage &rarr;</div>
+                    </a>
+                    <a href="{{ route('counties.show', $county->slug) }}" class="bg-[#141B2E] border border-white/8 rounded-xl p-5 hover:border-kicc-gold/40 transition-all group block">
+                        <div class="font-bold text-white text-sm group-hover:text-kicc-gold transition-colors">Hotels & Lodges</div>
+                        <div class="text-white/35 text-xs mt-1">Manage &rarr;</div>
+                    </a>
+                    <a href="{{ route('marketplace.index') }}" class="bg-[#141B2E] border border-white/8 rounded-xl p-5 hover:border-kicc-gold/40 transition-all group block">
+                        <div class="font-bold text-white text-sm group-hover:text-kicc-gold transition-colors">Local Products</div>
+                        <div class="text-white/35 text-xs mt-1">Manage &rarr;</div>
+                    </a>
+                    <a href="{{ route('counties.show', $county->slug) }}" class="bg-[#141B2E] border border-white/8 rounded-xl p-5 hover:border-kicc-gold/40 transition-all group block">
+                        <div class="font-bold text-white text-sm group-hover:text-kicc-gold transition-colors">County Profile</div>
+                        <div class="text-white/35 text-xs mt-1">Manage &rarr;</div>
+                    </a>
+                    <a href="{{ route('exhibitions.index') }}" class="bg-[#141B2E] border border-white/8 rounded-xl p-5 hover:border-kicc-gold/40 transition-all group block">
+                        <div class="font-bold text-white text-sm group-hover:text-kicc-gold transition-colors">Events</div>
+                        <div class="text-white/35 text-xs mt-1">Manage &rarr;</div>
+                    </a>
+                    <a href="{{ route('room3d.index') }}" class="bg-[#141B2E] border border-white/8 rounded-xl p-5 hover:border-kicc-gold/40 transition-all group block">
+                        <div class="font-bold text-white text-sm group-hover:text-kicc-gold transition-colors">3D Experiences</div>
+                        <div class="text-white/35 text-xs mt-1">Manage &rarr;</div>
+                    </a>
+                </div>
+            </div>
+
+            @elseif($tab === 'settlements')
+            <div class="bg-[#0D1220] border border-white/8 rounded-2xl p-6">
+                <div class="flex items-center justify-between mb-5">
+                    <h3 class="font-bold text-white">Settlement History</h3>
+                    <span class="text-xs text-white/35">Wallet: KES {{ number_format($config->wallet_balance) }}</span>
+                </div>
+                <div class="overflow-x-auto">
+                    <table class="w-full text-sm">
+                        <thead><tr class="text-white/40 text-[10px] uppercase tracking-wider border-b border-white/8">
+                            <th class="text-left py-3 px-3">Date</th><th class="text-left py-3 px-3">Description</th><th class="text-right py-3 px-3">Amount</th><th class="text-center py-3 px-3">Type</th>
+                        </tr></thead>
+                        <tbody>
+                        @forelse($transactions as $t)
+                        <tr class="border-b border-white/5 hover:bg-white/5">
+                            <td class="py-3 px-3 text-white/50 text-xs">{{ $t->created_at?->format('M d, Y') }}</td>
+                            <td class="py-3 px-3 text-white font-semibold">{{ $t->description ?? $t->type ?? 'Transaction' }}</td>
+                            <td class="py-3 px-3 text-right font-bold {{ ($t->amount ?? 0) >= 0 ? 'text-emerald-400' : 'text-[#e86f71]' }}">KES {{ number_format($t->amount ?? 0) }}</td>
+                            <td class="py-3 px-3 text-center"><span class="text-[10px] font-bold px-2.5 py-1 rounded-full border text-white/50 bg-white/5 border-white/10 capitalize">{{ $t->type ?? 'txn' }}</span></td>
+                        </tr>
+                        @empty
+                        <tr><td colspan="4" class="py-8 text-center text-white/40">No transactions yet.</td></tr>
+                        @endforelse
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+            @endif
         </div>
     </div>
 </div>

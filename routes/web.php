@@ -60,6 +60,7 @@ Route::get('/exhibitions/{slug}', [ExhibitionController::class, 'show'])->name('
 
 Route::get('/venues', [ExhibitionController::class, 'venues'])->name('venues.index');
 Route::get('/venues/{venue}', [VenueController::class, 'show'])->name('venues.show');
+Route::post('/venues/{venue}/inquire', [VenueController::class, 'inquire'])->name('venues.inquire');
 
 // Exhibition screen videos
 Route::get('/screens', [ScreenController::class, 'directory'])->name('screens.directory');
@@ -72,6 +73,8 @@ Route::view('/exhibition-3d/booth', 'exhibition-3d.booth')->name('exhibition-3d.
 
 // 3D Room Explorer
 Route::get('/room3d', [Room3dController::class, 'index'])->name('room3d.index');
+Route::get('/room3d/create', [Room3dController::class, 'create'])->name('room3d.create');
+Route::post('/room3d', [Room3dController::class, 'store'])->name('room3d.store');
 Route::get('/room3d/{room3d}', [Room3dController::class, 'show'])->name('room3d.show');
 Route::get('/room3d/{room3d}/viewer', [Room3dController::class, 'viewer'])->name('room3d.viewer');
 Route::get('/room3d/{room3d}/api', [Room3dController::class, 'api'])->name('room3d.api');
