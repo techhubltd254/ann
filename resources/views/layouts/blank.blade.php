@@ -5,11 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <title>@yield('title') - KICC Platform</title>
     <script src="https://cdn.tailwindcss.com"></script>
-    <script>
-        tailwind.config = {
-            theme: { extend: { colors: { kicc: { bg: '#07090F', card: '#0D1220', surface: '#141B2E', red: '#901C1E', gold: '#FFCD05', navy: '#0B1E57' } } } }
-        }
-    </script>
+    <script src="{{ asset('js/theme.js') }}"></script>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&display=swap" rel="stylesheet">
     <style>
         * { font-family: 'Inter', system-ui, sans-serif; }

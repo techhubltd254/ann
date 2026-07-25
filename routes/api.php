@@ -12,6 +12,12 @@ use App\Http\Controllers\Api\TicketController;
 use App\Http\Controllers\Api\TicketTypeController;
 use App\Http\Controllers\Api\VenueController;
 use Illuminate\Support\Facades\Route;
+use Illuminate\Cache\RateLimiting\Limit;
+use Illuminate\Support\Facades\RateLimiter;
+
+RateLimiter::for('api', function () {
+    return Limit::perMinute(60)->by(optional(request()->user())->id ?: request()->ip());
+});
 
 // Auth
 Route::post('/auth/register', [AuthController::class, 'register']);

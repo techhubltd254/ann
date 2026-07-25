@@ -6,22 +6,7 @@
     <title>@yield('title', 'KICC') - Global Exhibition Platform</title>
     <meta name="description" content="Africa's Premier Meeting Venue. A national icon since 1973.">
     <script src="https://cdn.tailwindcss.com"></script>
-    <script>
-        tailwind.config = {
-            theme: {
-                extend: {
-                    fontFamily: { sans: ['Inter', 'system-ui', 'sans-serif'] },
-                    colors: {
-                        kicc: {
-                            bg: '#07090F', card: '#0D1220', surface: '#141B2E',
-                            red: '#901C1E', gold: '#FFCD05', navy: '#0B1E57',
-                            cream: '#F9FAFB',
-                        }
-                    }
-                }
-            }
-        }
-    </script>
+    <script src="{{ asset('js/theme.js') }}"></script>
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&display=swap" rel="stylesheet">
