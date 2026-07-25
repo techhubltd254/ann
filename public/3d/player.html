@@ -1,0 +1,424 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+<meta name="theme-color" content="#0a0a12">
+<link rel="manifest" href="/manifest.json">
+<title>KICC 3D Player</title>
+<style>
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  html, body { height: 100%; background: #05050a; overflow: hidden;
+    font-family: system-ui, -apple-system, 'Segoe UI', sans-serif; color: #fff; }
+  #stage { position: fixed; inset: 0; background: #000; }
+  #video, #glcanvas { position: absolute; inset: 0; width: 100%; height: 100%; }
+  #video { object-fit: contain; }
+  #glcanvas { display: none; }
+  #video.hidden-src { width: 2px; height: 2px; opacity: 0.01; pointer-events: none; }
+
+  /* Header */
+  #topbar {
+    position: fixed; top: 0; left: 0; right: 0; z-index: 20;
+    display: flex; align-items: center; gap: 12px; padding: 12px 16px;
+    background: linear-gradient(to bottom, rgba(0,0,0,0.75), transparent);
+    transition: opacity 0.35s;
+  }
+  #topbar a { color: rgba(255,255,255,0.6); text-decoration: none; font-size: 14px; }
+  #title { font-size: 14px; font-weight: 600; color: #FFD700;
+    white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+
+  /* Center play */
+  #bigplay {
+    position: fixed; inset: 0; z-index: 30; display: flex;
+    align-items: center; justify-content: center; cursor: pointer;
+  }
+  #bigplay span {
+    width: 84px; height: 84px; border-radius: 50%;
+    background: rgba(255,215,0,0.92); color: #111; font-size: 30px;
+    display: flex; align-items: center; justify-content: center;
+    box-shadow: 0 4px 30px rgba(255,215,0,0.35);
+  }
+
+  /* Bottom controls */
+  #controls {
+    position: fixed; left: 0; right: 0; bottom: 0; z-index: 20;
+    padding: 10px 14px calc(10px + env(safe-area-inset-bottom));
+    background: linear-gradient(to top, rgba(0,0,0,0.85), transparent);
+    transition: opacity 0.35s;
+  }
+  #controls.hidden, #topbar.hidden { opacity: 0; pointer-events: none; }
+  #seek { width: 100%; accent-color: #FFD700; height: 28px; }
+  #row { display: flex; align-items: center; gap: 10px; margin-top: 2px; }
+  .cbtn {
+    min-width: 44px; min-height: 44px; border: none; border-radius: 10px;
+    background: rgba(255,255,255,0.08); color: #fff; font-size: 16px;
+    display: flex; align-items: center; justify-content: center;
+    cursor: pointer; touch-action: manipulation; padding: 0 10px;
+  }
+  .cbtn:active { background: rgba(255,215,0,0.3); }
+  #time { font-size: 12px; color: rgba(255,255,255,0.7); min-width: 86px; text-align: center; }
+  #quality {
+    background: rgba(255,255,255,0.08); color: #fff; border: none;
+    border-radius: 10px; min-height: 44px; padding: 0 8px; font-size: 13px;
+  }
+  #quality option { color: #000; }
+  #modes { display: flex; gap: 6px; margin-left: auto; }
+  .mbtn {
+    min-height: 44px; padding: 0 14px; border-radius: 22px;
+    border: 1px solid rgba(255,215,0,0.35); background: rgba(10,10,18,0.7);
+    color: rgba(255,255,255,0.75); font: 600 12px system-ui; cursor: pointer;
+  }
+  .mbtn.active { background: #FFD700; color: #111; border-color: #FFD700; }
+  .mbtn:disabled { opacity: 0.3; }
+
+  /* Messages */
+  #msg {
+    position: fixed; inset: 0; z-index: 40; display: none;
+    align-items: center; justify-content: center; text-align: center;
+    background: #05050a; padding: 24px; font-size: 15px; line-height: 1.6;
+  }
+  #rotate {
+    position: fixed; inset: 0; z-index: 35; display: none;
+    align-items: center; justify-content: center; background: rgba(0,0,0,0.85);
+    color: #FFD700; font: 600 15px system-ui; pointer-events: none; text-align: center;
+  }
+</style>
+</head>
+<body>
+
+<div id="stage">
+  <video id="video" playsinline webkit-playsinline crossorigin="anonymous"></video>
+  <canvas id="glcanvas"></canvas>
+</div>
+
+<div id="topbar">
+  <a href="/3d/index.html">←</a>
+  <div id="title">KICC 3D Player</div>
+</div>
+
+<div id="bigplay"><span>▶</span></div>
+
+<div id="controls">
+  <input id="seek" type="range" min="0" max="1000" value="0">
+  <div id="row">
+    <button class="cbtn" id="playbtn">▶</button>
+    <div id="time">0:00 / 0:00</div>
+    <select id="quality"><option>Auto</option></select>
+    <button class="cbtn" id="fsbtn">⛶</button>
+    <div id="modes">
+      <button class="mbtn active" data-mode="2d">2D</button>
+      <button class="mbtn" data-mode="3d">3D</button>
+      <button class="mbtn" data-mode="vr">VR</button>
+    </div>
+  </div>
+</div>
+
+<div id="msg"></div>
+<div id="rotate">🔄 Rotate your phone to landscape for VR</div>
+
+<script src="https://cdn.jsdelivr.net/npm/hls.js@1.5.13/dist/hls.min.js"></script>
+<script>
+(function () {
+  'use strict';
+
+  /* ── Params & elements ─────────────────────────────────────────────── */
+  var params = new URLSearchParams(location.search);
+  var src = params.get('src');
+  var forceSbs = params.get('sbs') === '1';
+  var startMode = params.get('mode') || '2d';
+  var title = params.get('title');
+
+  var video = document.getElementById('video');
+  var canvas = document.getElementById('glcanvas');
+  var bigplay = document.getElementById('bigplay');
+  var controlsEl = document.getElementById('controls');
+  var topbar = document.getElementById('topbar');
+  var playbtn = document.getElementById('playbtn');
+  var seek = document.getElementById('seek');
+  var timeEl = document.getElementById('time');
+  var qualityEl = document.getElementById('quality');
+  var msg = document.getElementById('msg');
+  var rotateEl = document.getElementById('rotate');
+  var modeBtns = Array.prototype.slice.call(document.querySelectorAll('.mbtn'));
+
+  if (title) document.getElementById('title').textContent = title;
+
+  function fail(text) {
+    msg.style.display = 'flex';
+    msg.innerHTML = text;
+    bigplay.style.display = 'none';
+    controlsEl.style.display = 'none';
+  }
+
+  if (!src) {
+    fail('No video specified.<br><br>Usage: <b>player.html?src=URL.m3u8</b><br>' +
+         'Optional: &amp;title=Name &amp;sbs=1 &amp;mode=2d|3d|vr');
+    return;
+  }
+
+  var mode = '2d';
+  var isSbs = forceSbs;
+  var hls = null;
+
+  /* ── Source setup: HLS (hls.js or native) or plain file ────────────── */
+  var isHls = /\.m3u8($|\?)/.test(src);
+
+  function populateQuality(levels) {
+    qualityEl.innerHTML = '<option value="-1">Auto</option>';
+    levels.forEach(function (lv, i) {
+      var o = document.createElement('option');
+      o.value = i;
+      o.textContent = lv.height ? lv.height + 'p' : Math.round(lv.bitrate / 1000) + 'k';
+      qualityEl.appendChild(o);
+    });
+  }
+
+  if (isHls && window.Hls && Hls.isSupported()) {
+    hls = new Hls({
+      capLevelToPlayerSize: true,           // don't pull 4K on a 360p screen
+      maxBufferLength: 30,
+      startLevel: -1                        // adaptive start
+    });
+    hls.loadSource(src);
+    hls.attachMedia(video);
+    hls.on(Hls.Events.MANIFEST_PARSED, function (e, data) {
+      populateQuality(data.levels);
+    });
+    hls.on(Hls.Events.LEVEL_SWITCHED, function (e, data) {
+      if (qualityEl.value === '-1') {
+        // reflect the auto-selected level visually (informational only)
+      }
+    });
+    hls.on(Hls.Events.ERROR, function (e, data) {
+      if (!data.fatal) return;
+      if (data.type === Hls.ErrorTypes.NETWORK_ERROR) hls.startLoad();
+      else if (data.type === Hls.ErrorTypes.MEDIA_ERROR) hls.recoverMediaError();
+      else fail('Playback error. The stream may be offline.');
+    });
+    qualityEl.addEventListener('change', function () {
+      hls.currentLevel = parseInt(qualityEl.value, 10);
+    });
+  } else if (isHls && video.canPlayType('application/vnd.apple.mpegurl')) {
+    video.src = src;                        // iOS Safari native HLS
+    qualityEl.disabled = true;
+  } else {
+    video.src = src;                        // plain mp4/webm
+    qualityEl.disabled = true;
+  }
+
+  /* ── WebGL SBS processing (anaglyph / VR split) ────────────────────── */
+  var gl = null, prog = null, tex = null, posBuf = null;
+  var uMode, uTex;
+
+  var VERT =
+    'attribute vec2 aPos; varying vec2 vUV;' +
+    'void main(){ vUV = vec2(aPos.x * 0.5 + 0.5, 0.5 - aPos.y * 0.5);' +
+    '  gl_Position = vec4(aPos, 0.0, 1.0); }';
+
+  // uMode: 0 = anaglyph (luminance red/cyan), 1 = left eye, 2 = right eye
+  var FRAG =
+    'precision mediump float; varying vec2 vUV;' +
+    'uniform sampler2D uTex; uniform int uMode;' +
+    'void main(){' +
+    '  if (uMode == 1) { gl_FragColor = texture2D(uTex, vec2(vUV.x * 0.5, vUV.y)); return; }' +
+    '  if (uMode == 2) { gl_FragColor = texture2D(uTex, vec2(vUV.x * 0.5 + 0.5, vUV.y)); return; }' +
+    '  vec3 L = texture2D(uTex, vec2(vUV.x * 0.5, vUV.y)).rgb;' +
+    '  vec3 R = texture2D(uTex, vec2(vUV.x * 0.5 + 0.5, vUV.y)).rgb;' +
+    '  float l = dot(L, vec3(0.299, 0.587, 0.114));' +
+    '  float r = dot(R, vec3(0.299, 0.587, 0.114));' +
+    '  gl_FragColor = vec4(l, r, r, 1.0);' +
+    '}';
+
+  function initGL() {
+    if (gl) return true;
+    gl = canvas.getContext('webgl', { alpha: false, antialias: false });
+    if (!gl) return false;
+
+    function shader(type, srcCode) {
+      var s = gl.createShader(type);
+      gl.shaderSource(s, srcCode);
+      gl.compileShader(s);
+      return s;
+    }
+    prog = gl.createProgram();
+    gl.attachShader(prog, shader(gl.VERTEX_SHADER, VERT));
+    gl.attachShader(prog, shader(gl.FRAGMENT_SHADER, FRAG));
+    gl.linkProgram(prog);
+    if (!gl.getProgramParameter(prog, gl.LINK_STATUS)) return false;
+    gl.useProgram(prog);
+
+    posBuf = gl.createBuffer();
+    gl.bindBuffer(gl.ARRAY_BUFFER, posBuf);
+    gl.bufferData(gl.ARRAY_BUFFER,
+      new Float32Array([-1, -1, 1, -1, -1, 1, 1, 1]), gl.STATIC_DRAW);
+    var aPos = gl.getAttribLocation(prog, 'aPos');
+    gl.enableVertexAttribArray(aPos);
+    gl.vertexAttribPointer(aPos, 2, gl.FLOAT, false, 0, 0);
+
+    tex = gl.createTexture();
+    gl.bindTexture(gl.TEXTURE_2D, tex);
+    gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_MIN_FILTER, gl.LINEAR);
+    gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_MAG_FILTER, gl.LINEAR);
+    gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_WRAP_S, gl.CLAMP_TO_EDGE);
+    gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_WRAP_T, gl.CLAMP_TO_EDGE);
+
+    uMode = gl.getUniformLocation(prog, 'uMode');
+    uTex = gl.getUniformLocation(prog, 'uTex');
+    gl.uniform1i(uTex, 0);
+    return true;
+  }
+
+  function sizeCanvas() {
+    var dpr = Math.min(window.devicePixelRatio || 1, 2);
+    canvas.width = Math.floor(window.innerWidth * dpr);
+    canvas.height = Math.floor(window.innerHeight * dpr);
+    if (gl) gl.viewport(0, 0, canvas.width, canvas.height);
+  }
+  window.addEventListener('resize', sizeCanvas);
+  sizeCanvas();
+
+  function drawFrame() {
+    if (mode === '2d' || !gl) return;
+    if (video.readyState >= 2) {
+      gl.bindTexture(gl.TEXTURE_2D, tex);
+      try { gl.texImage2D(gl.TEXTURE_2D, 0, gl.RGB, gl.RGB, gl.UNSIGNED_BYTE, video); }
+      catch (e) { /* cross-origin or not-ready: keep last frame */ }
+    }
+    if (mode === '3d') {
+      gl.viewport(0, 0, canvas.width, canvas.height);
+      gl.uniform1i(uMode, 0);
+      gl.drawArrays(gl.TRIANGLE_STRIP, 0, 4);
+    } else if (mode === 'vr') {
+      var w = canvas.width, h = canvas.height;
+      gl.viewport(0, 0, w / 2, h);
+      gl.uniform1i(uMode, 1);
+      gl.drawArrays(gl.TRIANGLE_STRIP, 0, 4);
+      gl.viewport(w / 2, 0, w / 2, h);
+      gl.uniform1i(uMode, 2);
+      gl.drawArrays(gl.TRIANGLE_STRIP, 0, 4);
+    }
+  }
+
+  (function loop() {
+    requestAnimationFrame(loop);
+    drawFrame();
+    updateRotateHint();
+  })();
+
+  /* ── Mode switching ────────────────────────────────────────────────── */
+  function detectSbs() {
+    if (forceSbs) { isSbs = true; return; }
+    if (video.videoWidth && video.videoHeight) {
+      isSbs = (video.videoWidth / video.videoHeight) > 2.4; // e.g. 3840x1080
+    }
+    modeBtns.forEach(function (b) {
+      var m = b.getAttribute('data-mode');
+      if (m === '3d' || m === 'vr') b.disabled = !isSbs;
+    });
+  }
+  video.addEventListener('loadedmetadata', detectSbs);
+
+  function setMode(m) {
+    if ((m === '3d' || m === 'vr') && !isSbs) return;
+    if (m !== '2d' && !initGL()) { alert('WebGL is not available on this device.'); return; }
+    mode = m;
+    var glMode = m !== '2d';
+    canvas.style.display = glMode ? 'block' : 'none';
+    video.classList.toggle('hidden-src', glMode);
+    modeBtns.forEach(function (b) {
+      b.classList.toggle('active', b.getAttribute('data-mode') === m);
+    });
+    if (m === 'vr') enterFullscreen();
+    sizeCanvas();
+  }
+
+  modeBtns.forEach(function (b) {
+    b.addEventListener('click', function () { setMode(b.getAttribute('data-mode')); });
+  });
+
+  function updateRotateHint() {
+    var portrait = window.innerHeight > window.innerWidth;
+    rotateEl.style.display = (mode === 'vr' && portrait) ? 'flex' : 'none';
+  }
+
+  /* ── Transport controls ────────────────────────────────────────────── */
+  function fmt(s) {
+    if (!isFinite(s)) return '0:00';
+    s = Math.floor(s);
+    var m = Math.floor(s / 60), sec = s % 60;
+    return m + ':' + (sec < 10 ? '0' : '') + sec;
+  }
+
+  function togglePlay() {
+    if (video.paused) video.play().catch(function () {});
+    else video.pause();
+  }
+  bigplay.addEventListener('click', togglePlay);
+  playbtn.addEventListener('click', togglePlay);
+  canvas.addEventListener('click', togglePlay);
+
+  video.addEventListener('play', function () {
+    playbtn.textContent = '⏸';
+    bigplay.style.display = 'none';
+    scheduleHide();
+  });
+  video.addEventListener('pause', function () {
+    playbtn.textContent = '▶';
+    bigplay.style.display = 'flex';
+    showControls();
+  });
+  video.addEventListener('timeupdate', function () {
+    if (video.duration) {
+      seek.value = Math.round((video.currentTime / video.duration) * 1000);
+      timeEl.textContent = fmt(video.currentTime) + ' / ' + fmt(video.duration);
+    }
+  });
+  seek.addEventListener('input', function () {
+    if (video.duration) video.currentTime = (seek.value / 1000) * video.duration;
+  });
+
+  var hideT = null;
+  function showControls() {
+    controlsEl.classList.remove('hidden');
+    topbar.classList.remove('hidden');
+  }
+  function scheduleHide() {
+    showControls();
+    clearTimeout(hideT);
+    hideT = setTimeout(function () {
+      if (!video.paused) {
+        controlsEl.classList.add('hidden');
+        topbar.classList.add('hidden');
+      }
+    }, 3000);
+  }
+  document.getElementById('stage').addEventListener('touchstart', scheduleHide, { passive: true });
+  document.getElementById('stage').addEventListener('click', scheduleHide);
+
+  function enterFullscreen() {
+    var el = document.documentElement;
+    var req = el.requestFullscreen || el.webkitRequestFullscreen;
+    if (req) req.call(el).catch(function () {});
+    else if (video.webkitEnterFullscreen && mode === '2d') video.webkitEnterFullscreen();
+  }
+  document.getElementById('fsbtn').addEventListener('click', enterFullscreen);
+
+  /* ── Boot ──────────────────────────────────────────────────────────── */
+  if (startMode !== '2d') {
+    // wait for SBS detection before honoring &mode=
+    video.addEventListener('loadedmetadata', function once() {
+      video.removeEventListener('loadedmetadata', once);
+      setMode(startMode);
+    });
+  }
+
+  /* ── PWA ───────────────────────────────────────────────────────────── */
+  if ('serviceWorker' in navigator) {
+    window.addEventListener('load', function () {
+      navigator.serviceWorker.register('/sw.js').catch(function () {});
+    });
+  }
+})();
+</script>
+</body>
+</html>

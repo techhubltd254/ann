@@ -3,6 +3,9 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+<meta name="theme-color" content="#0a0a12">
+<link rel="manifest" href="/manifest.json">
+<link rel="apple-touch-icon" href="/icons/apple-touch-icon.png">
 <title>KICC National Exhibition — 3D Interactive Tour</title>
 <style>
   * { margin: 0; padding: 0; box-sizing: border-box; }
@@ -115,7 +118,8 @@
 {
   "imports": {
     "three": "https://cdn.jsdelivr.net/npm/three@0.170.0/build/three.module.js",
-    "three/addons/": "https://cdn.jsdelivr.net/npm/three@0.170.0/examples/jsm/"
+    "three/addons/": "https://cdn.jsdelivr.net/npm/three@0.170.0/examples/jsm/",
+    "gsap": "https://cdn.jsdelivr.net/npm/gsap@3.13.0/index.js"
   }
 }
 </script>
@@ -123,8 +127,10 @@
 <script type="module">
 import * as THREE from 'three';
 import { OrbitControls } from 'three/addons/controls/OrbitControls.js';
+import { Mobile3DControls } from './mobile_3d_viewer.js';
+import { GSAPDirector } from './gsap_director.js';
 
-let scene, camera, renderer, controls;
+let scene, camera, renderer, controls, mobile, director;
 const boothObjects = [];
 const raycaster = new THREE.Raycaster();
 const mouse = new THREE.Vector2();
@@ -154,6 +160,12 @@ function init() {
   controls.maxDistance = 12;
   controls.maxPolarAngle = Math.PI / 2.1;
   controls.update();
+
+  // Mobile: gyroscope look-around, virtual joystick movement, VR split-screen
+  mobile = new Mobile3DControls({ camera, renderer, controls, moveSpeed: 2.0 });
+
+  // GSAP director: cinematic camera flights, load-in choreography
+  director = new GSAPDirector({ camera, controls });
 
   // Lights
   const ambient = new THREE.AmbientLight(0x223355, 0.4);
@@ -303,6 +315,9 @@ function init() {
     if (hint) hint.style.opacity = '0';
   }, 4000);
 
+  // Cinematic load-in: booths pop in with a stagger
+  director.intro(boothObjects);
+
   animate();
 }
 
@@ -317,17 +332,22 @@ function checkHit() {
   const hits = raycaster.intersectObjects(boothObjects);
   if (hits.length > 0) {
     const obj = hits[0].object;
-    if (obj.userData.isBooth) openBooth(obj.userData);
+    if (obj.userData.isBooth) openBooth(obj.userData, obj);
   }
 }
 
-function openBooth(data) {
+function openBooth(data, obj) {
   const popup = document.getElementById('booth-popup');
   document.getElementById('booth-title').textContent = data.title;
   document.getElementById('booth-desc').textContent = data.description;
   document.getElementById('booth-sector').textContent = `Sector: ${data.sector}`;
   popup.style.display = 'block';
   window._boothVideo = data.video;
+  // Cinematic dolly to the tapped booth + staggered popup reveal
+  if (obj && mobile.getMode() === 'orbit') {
+    director.flyToObject(obj, { distance: 2.4, height: 1.1, duration: 1.6 });
+  }
+  director.revealChildren('#booth-popup > *');
 }
 
 window.closePopup = () => { document.getElementById('booth-popup').style.display = 'none'; };
@@ -351,11 +371,20 @@ window.closeVideo = () => {
 
 function animate() {
   requestAnimationFrame(animate);
-  controls.update();
-  renderer.render(scene, camera);
+  if (mobile.getMode() === 'orbit') controls.update();
+  mobile.update();
+  mobile.render(scene, camera);
 }
 
 init();
+</script>
+
+<script>
+if ('serviceWorker' in navigator) {
+  window.addEventListener('load', function () {
+    navigator.serviceWorker.register('/sw.js').catch(function () {});
+  });
+}
 </script>
 </body>
 </html>

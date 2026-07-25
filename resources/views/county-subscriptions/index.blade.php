@@ -14,7 +14,7 @@
 
     {{-- Overview cards --}}
     <div class="grid grid-cols-2 lg:grid-cols-4 gap-4 mb-10">
-        <div class="bg-charcoal rounded-2xl p-5 text-white">
+        <div class="bg-kicc-dark rounded-2xl p-5 text-white">
             <div class="text-gold-400 text-xs uppercase tracking-wider mb-1">Available Slots</div>
             <div class="text-3xl font-extrabold">{{ $allocation->sum('availableSlots') }}</div>
             <div class="text-gray-400 text-sm">of {{ $allocation->sum('total_slots') }} total</div>

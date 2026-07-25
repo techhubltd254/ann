@@ -1,0 +1,190 @@
+zzz
+
+
+
+
+KENYA NATIONAL EXHIBITION, IMMERSIVE EXPERIENCE & COMMERCE PLATFORM
+System Design & Architecture Blueprint 
+
+
+Prepared for KICC, Nairobi — July 2026
+
+
+
+1. Executive Summary
+Kenya hosts exhibitions, conventions, and trade showcases across KICC, Bomas of Kenya, and county-level venues. Still, these remain fragmented, physical, one-off events with no persistent digital layer, no unified discovery, no data-driven matchmaking between exhibitors and buyers, and no mechanism to convert a visitor’s interest into a completed transaction.
+This document specifies a single national platform combining four functions: (1) an exhibition and convention management system open to any verified individual, SME, school, or government entity; (2) a tiered immersive digital-twin experience layer letting anyone experience any county across every economic sector; (3) a commerce layer with escrow and courier fulfilment; and (4) an AI intelligence layer that personalises discovery, grades vendors, and monetises visibility.
+This document incorporates all 13 competency areas from the KICC specification — including the specific technology stack (Laravel/PHP, Python, JavaScript, Bootstrap, MySQL/MariaDB), hands-on server administration, database administration, SDLC process, QA/testing, software maintenance, and technical documentation — alongside the platform’s existing architecture, security, and content design.
+All examples of specific attractions are illustrative. Every county has its own unique attractions. The 3-tier immersive model (360°, cinematic 4D, interactive twin) applies uniformly across all 47 counties and 7 economic sectors.
+2. Global Benchmark Analysis
+Virtual Singapore proves the digital-twin layer at a national scale. Museum of the Future in Dubai proves full sensory immersion design. Irembo Rwanda proves the commission-funded, government-partnered model. Zhejiang rural tourism digital twin proves game-engine viability below national-flagship level. None combine all four layers — that gap is the opportunity.
+3. Technology Stack
+The platform is built on the following technology stack, directly aligned with the KICC specification requirements:
+Database notes: MySQL 8.4 is the primary relational database as specified. MariaDB 11.4 is used in a subset of read-replica configurations where Galera Cluster synchronous multi-master replication is beneficial. PostgreSQL is not used in the production stack.
+
+4. System Architecture — Six Layers
+The system is designed as six layers, each independently buildable and independently monetisable, sharing one identity system and one data backbone.
+5. Layer 1: Identity & Access
+Account types: Individual/Tourist (light + verified), SME/Exhibitor, School/Institution, County Government, National Ministry, Platform Admin, NIS Security. Registration: zero-friction browsing (no account), light registration (phone+OTP), enhanced verification (ID+Huduma), business verification (KRA PIN+MOU). MFA mandatory for all financial and admin accounts. OAuth2/OIDC protocol throughout.
+6. Layer 2: Exhibition & Booking Engine
+Core objects: Venues → Events → Booths → Tickets → Livestream Channels. Three subscription tiers (Basic KES 500/mo, Premium KES 2,500/mo, Enterprise KES 10,000/mo). Multi-camera livestream (keycam, stagecam, floorcam, boothcam, aerial). Monetisation: free (ad-supported), premium single-event, all-access annual.
+7. Layer 3: Immersive Content & Digital Twin
+Three tiers: Tier C (interactive twin, Unity/Unreal + Cesium, mobile + touch tables), Tier B (360° spherical, 8K, mobile + web), Tier A (cinematic 4D, 4K projection + motion + scent + wind + temperature, physical booths only). Centralized production team moves county-to-county with drone, 360° camera, cinema camera, LIDAR. Staged rollout: pilot counties first, all 47 counties at Tier B baseline within 18 months.
+8. Layer 4: Commerce — Escrow & Courier
+Bank-partnered trust account (licensed Kenyan bank). Payment rails: M-Pesa, Airtel Money, T-Kash, Visa/Mastercard, bank EFT, crypto. Eight-step escrow flow. Two-tier dispute resolution (automated < KES 5,000, human-reviewed above). Single exclusive courier partner with nationwide coverage and real-time tracking API.
+9. Layer 5: Discovery & Cross-Lingual Search
+Unified search service using multilingual vector embeddings (Swahili, English, Sheng → same concept space). Voice search via on-device Whisper ASR at launch. Image search via computer vision pipeline. Graceful degradation to BM25 keyword search on poor connections. All queries route through a single semantic gateway.
+10. Layer 6: Intelligence — AI Engine
+Hybrid recommender: behavioral (50%) + Trust Score (30%) + demographic (20%) signals. Two-score vendor grading: Trust Score (0-100, earned, publicly visible as A/B/C/D) + Visibility Score (purchasable, labeled Sponsored). Fairness rule: paid placement cannot override earned trust. Predictive analytics (foot traffic, tourism trends, demand sensing). Anomaly detection (fraud, account takeover, review manipulation, infrastructure). Four advertising products.
+
+11. Data Architecture & Database Administration
+11.1 Schema Design
+Every record across all 7 sectors carries: id (UUID), county_id, sector (ENUM), sponsor_funder_tag, capture_status (Tier A/B/C), verification_owner, verification_date, last_updated, created_at, is_published, language_primary, tags.
+Sectors: Tourism (attractions, hotels, tours, restaurants, events), Trade/SME (exhibitors, products, booths), Education (institutions, festivals, programs), Agriculture (farms, markets, co-ops, products), Transport (airports, taxis, roads, PSVs), Health (facilities, wellness), Culture (heritage sites, communities, arts, music).
+11.2 Database Administration (Ongoing Operations)
+The following DBA activities are performed on a defined cadence to maintain MySQL/MariaDB performance and reliability:
+
+12. Physical Experience Design
+Locations: KICC (flagship, 500 concurrent), Bomas (flagship, 300), JKIA (arrival kiosks), 5-10 county hubs (mini 4D pods, 50-100 each). Each zone has its own sensory design language matching that county’s unique character. Hardware per flagship zone: 2-3 Barco 40K laser projectors, curved 270° or dome screen, D-BOX 6-DOF motion platform, Olorama scent system, L-Acoustics L-ISA spatial audio, ETC lighting, MDG haze machine, Ideum 65" multi-touch table.
+13. Mobile Experience Design
+Native Unity/Unreal mobile app. Features: Explore Kenya (all counties/sectors), Live Conventions (multi-camera), Marketplace, My Journey, AR Mode (geofence/QR triggered), Offline Tours, Voice Search, Personalized Recommendations. 4D effects (motion, scent, temperature) are exclusive to physical booths; visual/audio parity is maintained through phone gyroscope, binaural audio, and adaptive streaming (144p to 4K).
+14. Cloud Infrastructure & Server Administration
+14.1 Hosting Model
+The platform is deployed on a hybrid infrastructure model: production workloads run on government-approved cloud infrastructure (GovCloud or government-procured VPS), with staging and development environments deployed on standard VPS/cloud infrastructure for development flexibility.
+14.2 Server Administration (Hands-On Operations)
+
+15. Security & Compliance
+15.1 Compliance Frameworks: ISO 27001 (ISMS, pre-launch), PCI DSS v4.0 (from first payment code), Kenya Data Protection Act 2019 (pre-launch registration with the Data Commissioner), SOC 2 Type II (within 12 months).
+15.2 Encryption: AES-256 at rest, TLS 1.3 in transit, E2E for sensitive fields, HSM for escrow signing keys.
+15.3 Application Security (input validation, OWASP Top 10): All user input is validated and sanitised at the controller level in Laravel (FormRequest validation, prepared statements for SQL queries). XSS protection via Blade escaping + Content-Security-Policy headers. CSRF protection via Laravel’s built-in CSRF token middleware. SQL injection is prevented through Eloquent ORM parameter binding. Rate limiting via Laravel throttle middleware on all API routes. Payload size limits are enforced on file uploads.
+15.4 Zero-trust network segmentation: Public Zone (CDN) → Restricted Zone (API/App) → Sensitive Zone (DB/Escrow) → Admin Zone (UI/Ministry). Lateral movement requires re-authentication.
+15.5 NIS coordination: Threat intelligence sharing, joint incident response drills (quarterly), KE-CIRT integration.
+15.6 Penetration testing: Full-scope pre-launch + quarterly periodic + per-change triggered + continuous bug bounty + annual red team.
+16. Government Systems Integration
+Integrations structured as live API agreements (not one-time data dumps): eKRA/iTax (business verification), Huduma/eCitizen (identity), NTSA (transport licensing), KWS (parks data), Ministry of Education (schools), Ministry of Tourism (star ratings), Ministry of Agriculture (crop/market data), Ministry of Trade (registrations), Ministry of Health (facilities), National Museums of Kenya (heritage), County Governments (local content). SMS/email/notification services: integrated via Africa’s Talking API (SMS), Laravel Mail + SendGrid/Mailgun (email), and Firebase Cloud Messaging (push notifications) for real-time alerts on bookings, escrow status, delivery updates, and system notices.
+
+17. Revenue Model
+Three equal revenue streams: escrow commission (2-5% per transaction), exhibitor subscriptions (Basic/Premium/Enterprise), advertising (featured placement, county co-marketing, referral/click-out fees, sponsored livestream banners). Irembo-inspired: the the platform earns when transactions complete, aligning incentives with users, vendors, and government.
+18. Software Development Lifecycle (SDLC)
+Every feature, fix, or change follows a defined SDLC process from requirements through production support:
+Release cadence: Minor features and bug fixes are deployed weekly. Major features are deployed bi-weekly. Hotfixes deployed within 2 hours of a a confirmed P1/P2 issue. Each release is versioned using semantic versioning (MAJOR.MINOR.PATCH).
+19. Quality Assurance & Testing
+19.1 Testing Types
+19.2 Error Tracking & Monitoring
+Sentry is integrated into all application layers (Laravel backend, React frontend, Unity mobile app). Errors tagged by severity (fatal, error, warning, info). Alerts are routed to Slack channels per team. Monthly error review meeting to identify patterns and prioritise fixes.
+
+20. Software Maintenance & Continuous Improvement
+Post-launch maintenance is structured into four categories following the ISO/IEC 14764 maintenance framework:
+Maintenance workflow: All maintenance tasks are tracked in Linear/Jira. Corrective tasks triaged immediately. Preventive tasks scheduled on a calendar-based cadence. Perfective tasks prioritised in sprint planning alongside feature work. Every maintenance task follows the same SDLC process (Section 18) — no direct-to-production changes except emergency security hotfixes with post-hoc review.
+Version upgrade policy: Laravel version upgrades follow the official support timeline (currently Laravel 11 receives security fixes through 2026). PHP version upgrades aligned with active support (PHP 8.2+). MySQL upgrades are performed in staging first, tested against the full regression suite, then production with a rollback plan. Node.js, Redis, Elasticsearch, and other dependencies are similarly tracked through Dependabot alerts.
+21. Technical Documentation
+Comprehensive documentation is produced and maintained alongside the codebase, not retroactively:
+Documentation is stored in a central, version-controlled wiki (GitHub Wiki + /docs directory in the main repository). API documentation is additionally published via a public developer portal (Swagger UI / Stoplight). All documentation is reviewed for accuracy at least quarterly.
+
+22. Risk Analysis
+
+Closing Note
+This  document is structured so that each competency area from the KICC specification can be independently evaluated. Every required technology, process, and practice has been explicitly named and described — not assumed or implied.
+The core discipline across all layers remains: separate what is proven elsewhere from what is genuinely novel, separate the flagship physical showpiece from the mass-market mobile experience, and never let paid visibility override earned trust. Each county tells its own unique story through its own distinctive attractions, sectors, and cultural heritage.
+These three disciplines — honest innovation boundaries, tiered physical-to-mobile experience, and trust-before-profit ranking — are what will let this scale from one convention at KICC to a system serving every county in Kenya.
+
+=== TABLE 1 ===
+Layer | Technology | Version / Spec | Purpose
+Backend Framework | Laravel (PHP) | Laravel 11.x + PHP 8.2+ | Primary API and web application framework. Handles all business logic, REST APIs, queued jobs, event broadcasting, and authentication.
+Backend (ML/AI) | Python | Python 3.12+ | ML model training, recommendation engine, predictive analytics, natural language processing for cross-lingual search.
+Frontend | HTML5 + CSS3 + Bootstrap 5 + JavaScript (ES2023) | Latest standards | Responsive web interface. Bootstrap for admin dashboards, public pages, exhibitor portals. Works across all browsers and devices.
+Frontend (Enhanced) | React 19 / Next.js 15 | Latest LTS | Dynamic UI components for interactive experiences, real-time dashboards, and complex data visualization.
+Mobile | Unity (C#) + Native iOS/Android wrappers | Unity 6 LTS | Immersive 3D/360° mobile app. C# for all app logic. Builds for iOS and Android from a single codebase.
+Database | MySQL 8.4 + MariaDB 11.4 | Primary: MySQL 8.4 LTS. Replica/MariaDB: Galera Cluster | All transactional data — accounts, listings, bookings, escrow transactions, grading. MariaDB for specific high-availability read-replica workloads.
+Caching / Session | Redis 7.2 | Latest stable | Session management, recommendation cache, rate limiting, job queues.
+Search | Elasticsearch 8.x | Latest LTS | Keyword search fallback. Log analytics.
+Vector Search | Qdrant / Pinecone | Managed or self-hosted | Multilingual semantic search embeddings (Swahili/English/Sheng).
+API | RESTful JSON API | Laravel Sanctum + OAuth2 | All internal and external integrations. Standard JSON request/response. API versioning (v1, v2).
+Queue / Workers | Laravel Horizon + Redis | Default | Async job processing for notifications, email, escrow release, courier tracking updates.
+CI/CD | GitHub Actions / Laravel Forge | Managed | Automated testing, deployment to staging, and production. Zero-downtime deployments.
+Version Control | Git (GitHub Enterprise) | Latest | Source control, code review via pull requests, branch strategy (main/staging/feature).
+
+=== TABLE 2 ===
+Layer | Function | Key Components
+6 — Intelligence (AI) | Personalisation, grading, analytics, ads | Hybrid recommender, two-score model (Trust + Visibility), predictive analytics, anomaly detection, 4 advertising products, fairness floor
+5 — Discovery & Search | Unified cross-lingual discovery | Semantic vector search (SW/EN/Sheng), voice search, image search, Elasticsearch fallback, faceted filtering
+4 — Commerce | Escrow-secured marketplace | Bank trust account, 6 payment rails (M-Pesa/Airtel/Card/Bank/Crypto), 8-step escrow flow, 2-tier dispute resolution, courier API
+3 — Immersive Content | 3D/4D digital twin & physical experience | Tier C (interactive twin), Tier B (360°), Tier A (cinematic 4D), Unity/Unreal mobile app, 4D sensory hardware
+2 — Exhibition & Booking | Venue/event management & livestreaming | Venue mgmt, booth inventory, ticketing, 3 subscription tiers, multi-camera livestreams, persistent digital storefronts
+1 — Identity & Access | Single verified account | OAuth2/OIDC, MFA, Huduma integration, 8 account types, zero-friction browsing, DPA compliance
+
+=== TABLE 3 ===
+Activity | Frequency | Tool / Method
+Query optimisation | Continuous/weekly review | MySQL EXPLAIN, slow query log analysis, Percona Toolkit (pt-query-digest)
+Index management | Monthly | Review index usage (SHOW INDEX, INFORMATION_SCHEMA), drop unused, add missing composite indexes for frequent JOIN patterns.
+Stored procedures & triggers | As needed (new features) | Version-controlled in Git alongside migrations. All procedures are documented in the schema reference.
+Data migration | Per release | Laravel migrations (versioned, reversible). Production migrations run via GitHub Actions with a rollback plan.
+Backup management | Daily automated + weekly manual verification | Automated: mysqldump / Percona XtraBackup to encrypted S3-compatible storage. Manual: Weekly restore-to-test-stand verification. Point-in-time recovery via binary logs.
+Database replication | Continuous monitoring | MySQL Group Replication for high availability. Read replicas for search and reporting workloads.
+Performance monitoring | Real-time dashboards | Percona Monitoring and Management (PMM) or Laravel Telescope for query profiling, connection pooling, and cache hit ratio.
+Capacity planning | Quarterly | Disk growth trend analysis, connection pool sizing, buffer pool tuning based on working set size.
+Disaster recovery | Quarterly drill | Restore from backup to staging environment. Validate data integrity. Documented runbook for full recovery < 4 hours RTO, < 1 hour RPO.
+
+=== TABLE 4 ===
+Activity | Tool / Method | Detail
+Linux server administration | Ubuntu 24.04 LTS, SSH, systemd, journalctl | All application servers run Ubuntu. Regular security patching via unattended-upgrades + manual monthly review. Systemd unit files for all services.
+Windows Server (if required) | Windows Server 2022, IIS, RDP | For specific government integration points requiring a Windows environment. Minimal footprint.
+Web server / reverse proxy | Nginx 1.26+ (primary), Apache 2.4 (secondary) | Nginx as reverse proxy + static file server. Apache for legacy compatibility if needed. SSL termination at the Nginx level.
+SSL/TLS certificate management | Let’s Encrypt + Certbot (automated) | Auto-renewal via cron. Full chain certificate management. HSTS, OCSP stapling enabled.
+DNS management | Cloudflare DNS or equivalent | All domain/zoner ecords managed via API. A, CNAME, MX, TXT records. TTL optimisation for failover.
+VPS / cloud provisioning | Laravel Forge / Ansible playbooks | Infrastructure-as-code. Repeatable provisioning for staging, production, and disaster recovery environments.
+Containerisation (if needed) | Docker Compose (staging) / Kubernetes (production scale) | Docker for consistent environments. Kubernetes if orchestration needed when the scale exceeds a single server.
+Monitoring & alerting | Laravel Pulse, Prometheus + Grafana, Uptime Robot | Application metrics, server metrics (CPU, RAM, disk, network), endpoint uptime, alert thresholds via Slack/email.
+Log management | Laravel logging + Elasticsearch + Kibana (ELK) | Centralised log aggregation. Log rotation policies. Retention: 30 days active, 90 days archived.
+Deployment automation | GitHub Actions + Laravel Forge | Zero-downtime deployments. Automated build, test, and deploy to staging. Manual approval gate to production. Rollback capability (one-click to previous release).
+
+=== TABLE 5 ===
+Phase | Activities | Deliverables | Gate / Approval
+1. Requirements Analysis | Stakeholder meeting, user story mapping, acceptance criteria definition | User stories, technical requirements document | Product owner sign-off
+2. Design | System design, database schema design, API contract definition, UML/sequence diagrams for complex flows | Technical design document, API specification (OpenAPI 3.0), database migration plan | Lead architect approval
+3. Development | Feature branch from staging, code implementation following Laravel/PHP conventions, PSR-12 coding standards, and unit test writing | Code on feature branch, passing unit tests, code coverage > 80% | Self-review complete
+4. Code Review | Pull request to staging branch, at least 2 peer reviews, automated linting (PHP_CodeSniffer, Laravel Pint), CI pipeline runs | Approved PR, CI green, no linting violations | 2 approving reviews required
+5. Testing (QA) | Deploy to staging environment, integration tests, functional tests, manual QA, regression test suite, UAT with stakeholder. | QA report, bug list (severity-tagged), UAT sign-off | QA lead + stakeholder sign-off
+6. Deployment | Merge to main branch, GitHub Actions build + test + deploy to production (zero-downtime), database migrations run, cache clear. | Deployment log, monitoring dashboards green | Release manager approval
+7. Production Support | Post-deployment monitoring (24-48h), error tracking via Sentry, performance monitoring via Laravel Pulse, user feedback collection | Incident log, performance report | On-call engineer handover
+
+=== TABLE 6 ===
+Testing Type | Scope | Tool / Framework | Frequency
+Unit Testing | Individual functions, methods, models, and controllers | PHPUnit (Laravel), Pytest (Python) | Every commit (CI pipeline)
+Integration Testing | API endpoints, database interactions, external service mocking | Laravel Dusk, PHPUnit feature tests | Every push to staging
+Functional Testing | User workflows end-to-end (registration, booking, escrow flow) | Laravel Dusk (browser tests), custom test suites | Every staging deployment
+Regression Testing | All previously passing tests are re-run to detect regressions | Automated test suite (CI) | Every commit + full suite pre-release
+Performance Testing | API response times, database query performance, page load times | Lighthouse, k6 (load testing), Laravel Telescope | Monthly + pre-major-release
+Security Testing | OWASP Top 10, dependency scanning, secrets scanning | Burp Suite (quarterly), Dependabot (continuous), GitLeaks (pre-commit) | Quarterly full + continuous automated
+User Acceptance Testing (UAT) | Stakeholder validation against acceptance criteria | Staging environment + feedback form | Per release
+Load / Stress Testing | Simulate concurrent user load (target: 10K simultaneous API calls) | k6 / Locust | Pre-launch + quarterly
+
+=== TABLE 7 ===
+Maintenance Type | Definition | Examples (This Platform) | Cadence
+Corrective | Bug fixes and defect remediation | Payment flow timeout fix, search result pagination error, mobile app crash on a specific device | P1/P2: within 2-4 hours. P3/P4: next release cycle.
+Adaptive | Changes required by external environment changes | Laravel/PHP version upgrades, MySQL security patch, payment gateway API version update, third-party library deprecation | Within 1 week of upstream release (security patches within 48 hours)
+Perfective | Enhancements to improve performance, usability, or maintainability | Query optimisation for report generation, UI responsiveness improvement, recommendation engine accuracy tuning, and cache strategy optimisation | Continuous (backlog-managed). 20% of each sprint is allocated.
+Preventive | Proactive measures to prevent future issues | Database index health monitoring, log rotation setup, SSL certificate renewal automation, dependency audit (npm/composer outdated) | Regularly scheduled (see DBA and server administration cadences)
+
+=== TABLE 8 ===
+Document | Contents | Audience | Maintenance Cadence
+System Architecture Document | Overall system design, 6-layer model, data flow diagrams, network topology, deployment architecture | Engineers, architects, NIS | Updated per major feature or architecture change
+API Documentation | All REST endpoints, request/response schemas, authentication, rate limits, webhooks, error codes | Third-party integrators, frontend developers, government systems | Auto-generated from OpenAPI spec. Updated per API change.
+Database Schema Reference | All tables, columns, types, indexes, foreign keys, stored procedures, and migration history | DBAs, backend developers | Updated per migration. Auto-generated from MySQL INFORMATION_SCHEMA.
+Deployment Guide | Server requirements, environment variables, deployment steps (staging + production), rollback procedure, zero-downtime process | DevOps, engineers | Updated per infrastructure or deployment process change
+User Manual (Admin) | Platform administration — user management, content moderation, escrow dispute handling, analytics | County admin, platform admin, ministry users | Updated per UI or workflow change
+User Manual (Vendor) | Exhibitor profile, product listing, booth booking, subscription management, payout process | SMEs, schools, vendors | Updated per UI or workflow change
+User Manual (Visitor) | Registration, browsing, booking, purchasing, reviews, mobile app guide | General public | Updated per UI change
+Disaster Recovery Plan | Recovery procedures, RTO/RPO targets, backup restoration steps, contact tree | Engineers, NIS | Quarterly review + drills
+Runbook / Operations Manual | Monitoring alerts and response procedures, common incident resolution steps, and escalation paths | On-call engineers | Updated per incident post-mortem
+Knowledge Transfer Document | System overview for incoming team members, key decisions log, architecture rationale, and common pitfalls | New engineers | Per team change or annually
+
+=== TABLE 9 ===
+Risk | Impact | Mitigation
+Content production velocity vs. 47-county scope | County experiences the launch incomplete. | Staged rollout (3-5 pilot first). The capture-status field prevents showing incomplete content. Centralised production team with clear prioritisation.
+Low rural mobile coverage limits app adoption | 30M user target is unreachable | Offline mode for 360° tours. Graceful degradation. USSD fallback. Partnerships for zero-rated data.
+Government data-sharing agreements stall | Authoritative feeds unavailable | Start with self-registered vendor data. Build a submission portal. Phase government APIs as MOUs signed.
+Escrow/payment regulatory complexity | Delayed commerce launch | Bank-partnered trust account. Engage CBK early. PCI-DSS from day one.
+Trust Score credibility with small businesses | Vendor distrust | Fairness rule (minimum organic-visibility floor). Transparent two-score model. Public grade brackets. Government verification as an anchor.
+Security breach at the national scale | Reputation, financial, regulatory | Full compliance pre-launch. NIS coordination. Aggressive pentest cadence. Segregated escrow. Bug bounty. 72-hour DPA notification plan.
+Physical 4D booth capital costs | Reduced physical footprint | Tiered: flagship first to prove ROI. County hubs start with Tier C (touch tables) + Tier B (VR headsets). Tier A 4D upgrades as revenue justifies.

@@ -1,0 +1,52 @@
+{
+  "source": "kenya-3d-platform/pipeline/webgl_viewer/auto_sector_education.mp4",
+  "master": "public/hls/education/master.m3u8",
+  "master_relative": "master.m3u8",
+  "duration": 15.0,
+  "fps": 25.0,
+  "ladder": "mobile",
+  "segment_time": 6,
+  "poster": "public/hls/education/poster.jpg",
+  "renditions": [
+    {
+      "name": "144p",
+      "width": 256,
+      "height": 144,
+      "video_bitrate_kbps": 108,
+      "audio_bitrate_kbps": 48,
+      "bandwidth": 171600,
+      "codecs": "avc1.64001E,mp4a.40.2",
+      "playlist": "v144/index.m3u8"
+    },
+    {
+      "name": "360p",
+      "width": 640,
+      "height": 360,
+      "video_bitrate_kbps": 800,
+      "audio_bitrate_kbps": 96,
+      "bandwidth": 985600,
+      "codecs": "avc1.64001F,mp4a.40.2",
+      "playlist": "v360/index.m3u8"
+    },
+    {
+      "name": "720p",
+      "width": 1280,
+      "height": 720,
+      "video_bitrate_kbps": 2800,
+      "audio_bitrate_kbps": 128,
+      "bandwidth": 3220800,
+      "codecs": "avc1.64001F,mp4a.40.2",
+      "playlist": "v720/index.m3u8"
+    },
+    {
+      "name": "1080p",
+      "width": 1920,
+      "height": 1080,
+      "video_bitrate_kbps": 5000,
+      "audio_bitrate_kbps": 192,
+      "bandwidth": 5711200,
+      "codecs": "avc1.640028,mp4a.40.2",
+      "playlist": "v1080/index.m3u8"
+    }
+  ]
+}

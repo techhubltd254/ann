@@ -1,0 +1,31 @@
+{
+  "name": "KICC 3D Platform",
+  "short_name": "KICC 3D",
+  "description": "Kenya National Exhibition — 3D videos, VR tours and interactive scenes from the 47 counties",
+  "id": "/3d/player.html",
+  "start_url": "/3d/player.html",
+  "scope": "/",
+  "display": "standalone",
+  "orientation": "any",
+  "background_color": "#0a0a12",
+  "theme_color": "#0a0a12",
+  "categories": ["entertainment", "education", "travel"],
+  "icons": [
+    {
+      "src": "/icons/icon-192.png",
+      "sizes": "192x192",
+      "type": "image/png"
+    },
+    {
+      "src": "/icons/icon-512.png",
+      "sizes": "512x512",
+      "type": "image/png"
+    },
+    {
+      "src": "/icons/icon-maskable-512.png",
+      "sizes": "512x512",
+      "type": "image/png",
+      "purpose": "maskable"
+    }
+  ]
+}

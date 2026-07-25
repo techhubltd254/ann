@@ -1,0 +1,61 @@
+KICC DIGITAL ECONOMY PLATFORM — full clickable prototype, every screen linked.
+
+BRAND (apply everywhere)
+#901C1E red primary · #0B1E57 navy · #FFCD05 gold accent · #F9FAFB bg · Montserrat
+Cards radius 16, buttons radius 12 h48, sticky white nav 80px with KICC logo, navy footer.
+Every card/row/badge below is CLICKABLE — wire prototype links exactly as the arrows show.
+
+=== TREE 1 — PUBLIC DRILL-DOWN (the core UX) ===
+Homepage
+ -> click county card -> COUNTY PAGE (video/image hero, stats, 8 sector cards)
+   -> click sector card -> SECTOR PAGE (e.g. Tourism in Kilifi: grid of entities, sector video, map strip)
+     -> click entity card -> ENTITY DETAIL (attraction/hotel/farm/hospital: gallery, description,
+        contact, "Book" or "Order" CTA, related entities)
+   -> click "Showcase video" -> fullscreen SCREEN PLAYER
+   -> click "View products" -> MARKETPLACE pre-filtered to that county
+ -> click product card -> PRODUCT DETAIL (gallery, variant radio-cards, qty, Add to Cart)
+   -> Add to Cart -> CART (slide-over + full page) -> CHECKOUT (delivery form + summary)
+     -> Place Order -> M-PESA STK MODAL (phone, "Check your phone" state, spinner)
+       -> states: processing / confirmed (green receipt) / failed (retry) -> ORDER SUCCESS + tracking
+ -> click exhibition card -> EXHIBITION DETAIL (dates, venue, sessions, floor plan)
+   -> click "Book Booth" -> BOOTH PICKER (interactive floor grid, booth states: free/held/sold)
+     -> booth -> BOOTH CHECKOUT -> payment states -> BOOKING CONFIRMED + QR ticket
+ -> click venue room card (Tsavo, Amphitheatre, Aberdares, Lenana Hills, Shimba Hills, Courtyard,
+    Lawn, Upper/Lower COMESA) -> ROOM DETAIL (capacity, amenities, gallery,
+    availability calendar, "Request Event" form)
+ -> click travel item -> attraction/hotel detail -> "Book stay" -> HOTEL BOOKING (dates, rooms, pay)
+ -> click 3D Map -> 3D COUNTY MAP (47 counties) -> county -> 3D SECTOR -> booth walk-through
+
+=== TREE 2 — ROLE DASHBOARDS (each role = its own UI shell after login) ===
+AUTH: login -> phone OTP (6 boxes) -> role detection -> routed to one of:
+
+A. BUYER/VISITOR ACCOUNT: my orders (status timeline), my tickets (QR cards), wishlist, profile
+
+B. PRIVATE EXHIBITOR (Exhibitor Pro 5K/mo): sidebar dashboard —
+   Overview (bookings, views, leads) -> My Booths (per-event cards -> booth editor: images, video,
+   staff) -> Livestream studio -> Analytics (charts) -> Billing (plan card, invoices, upgrade modal)
+
+C. SELLER/SUPPLIER: Products table (+ New Product wizard: 4 steps info/variants/images/shipping)
+   -> Orders (fulfillment states: unfulfilled -> shipped -> delivered) -> Payouts (balance, settlement
+   history) -> Reviews -> Store settings (KYC/verification badge states)
+
+D. COUNTY ADMIN (Basic 10K / Premium 50K / Enterprise 200K): county-branded sidebar —
+   Overview (wallet KES, revenue share 70%, earnings chart)
+   -> Slots (progress bar used/total -> "Assign slot" modal: search business, grant login)
+   -> Sub-portal builder (county landing preview, custom plan cards: create Basic/Silver/Gold
+     with own pricing) -> Subscribers table (active/expired, per business)
+   -> Content (sector images/videos manager, upload) -> Settlements (batch list, paybill config)
+   -> Upgrade tier comparison page (4 tiers side-by-side)
+
+E. CORPORATE (500K): multi-county switcher dropdown, white-label theme settings, API keys screen
+
+F. PLATFORM ADMIN: KPI overview, counties table, payments/settlements, ads campaigns,
+   SEO manager, automation tree (n8n workflows with run states)
+
+=== SHARED STATES (design once) ===
+Empty / loading skeleton / error retry / success toast · payment states pending -> processing ->
+confirmed -> failed -> refunded · booth states free/held/sold · KYC pending/verified/rejected ·
+subscription active/expiring/lapsed banner · mobile: hamburger nav, 2-col grids, stacked dashboards.
+
+DELIVERABLE: one Figma file, pages grouped per tree, all frames wired with prototype
+connections following the arrows above, desktop 1440 + mobile 390 for every screen.

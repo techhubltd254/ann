@@ -1,7 +1,7 @@
 {
     "name": "kicc/national-exhibition",
     "type": "project",
-    "description": "KICC National Exhibition Platform — Full-Stack Laravel Application",
+    "description": "KICC National Exhibition Platform \u2014 Full-Stack Laravel Application",
     "version": "1.0.0",
     "require": {
         "php": "^8.3",
@@ -42,7 +42,8 @@
         "post-autoload-dump": [
             "@php -r \"is_dir('bootstrap/cache') || mkdir('bootstrap/cache', 0755, true); is_dir('storage/framework/cache') || mkdir('storage/framework/cache', 0755, true); is_dir('storage/framework/sessions') || mkdir('storage/framework/sessions', 0755, true); is_dir('storage/framework/views') || mkdir('storage/framework/views', 0755, true); is_dir('storage/logs') || mkdir('storage/logs', 0755, true);\"",
             "Illuminate\\Foundation\\ComposerScripts::postAutoloadDump",
-            "@php artisan package:discover --ansi"
+            "@php artisan package:discover --ansi",
+            "@php artisan filament:upgrade"
         ],
         "post-update-cmd": [],
         "post-root-package-install": [
