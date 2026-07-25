@@ -8,6 +8,8 @@ build:
 
 deploy:
   - php artisan storage:link --force || true
+  - php artisan migrate --force || true
+  - php artisan db:seed --class=ExhibitionSeeder --force || true
 
 environments:
   production:
