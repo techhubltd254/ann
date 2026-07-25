@@ -1,89 +1,69 @@
 @extends('layouts.app')
 
-@section('title', $venue->name)
-@section('description', $venue->description)
+@section('title', $venue->name . ' — KICC Venues')
+@section('description', Str::limit($venue->description ?? '', 160))
 
 @section('content')
-<div class="bg-gradient-to-br from-blue-50 to-indigo-100 py-12">
-    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-        <a href="{{ route('venues.index') }}" class="text-blue-600 hover:text-blue-700 mb-4 inline-block">&larr; All Venues</a>
-        <div class="flex flex-col lg:flex-row lg:items-end lg:justify-between gap-4">
-            <div>
-                <h1 class="text-4xl font-bold text-gray-900 mb-2">{{ $venue->name }}</h1>
-                @if($venue->city)<p class="text-lg text-gray-600">{{ $venue->city }}{{ $venue->county ? ', ' . $venue->county : '' }}</p>@endif
-                <div class="flex flex-wrap gap-3 mt-4">
-                    <span class="bg-white px-3 py-1 rounded-lg text-sm shadow-sm">{{ ucfirst($venue->venue_type) }}</span>
-                    @if($venue->capacity)<span class="bg-white px-3 py-1 rounded-lg text-sm shadow-sm">Capacity: {{ number_format($venue->capacity) }}</span>@endif
-                    @if($venue->contact_info && $venue->contact_info['phone'] ?? null)<span class="bg-white px-3 py-1 rounded-lg text-sm shadow-sm">{{ $venue->contact_info['phone'] }}</span>@endif
-                </div>
-            </div>
-        </div>
-    </div>
-</div>
+<div class="pt-20 max-w-7xl mx-auto px-5 py-10">
+    <a href="{{ route('venues.index') }}" class="inline-flex items-center gap-1.5 text-white/40 hover:text-white text-sm mb-6 transition-colors">
+        <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 19l-7-7 7-7"/></svg>
+        All Venues
+    </a>
 
-<div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
-    @if($venue->cover_image)
-    <img src="{{ $venue->cover_image }}" alt="{{ $venue->name }}" class="w-full h-64 lg:h-96 object-cover rounded-xl mb-8">
-    @else
-    <div class="w-full h-64 bg-gradient-to-br from-blue-200 to-indigo-300 rounded-xl mb-8 flex items-center justify-center text-6xl">📍</div>
-    @endif
-
-    <div class="grid grid-cols-1 lg:grid-cols-3 gap-8">
+    <div class="grid lg:grid-cols-3 gap-8">
         <div class="lg:col-span-2">
-            @if($venue->description)
-            <div class="bg-white rounded-xl p-6 shadow-sm border border-gray-100 mb-6">
-                <h2 class="text-xl font-semibold mb-4">About This Venue</h2>
-                <p class="text-gray-600 leading-relaxed">{{ $venue->description }}</p>
+            <div class="rounded-2xl overflow-hidden h-80 bg-[#141B2E]">
+                @php $img = media("kicc/{$venue->slug}.jpg"); @endphp
+                <img src="{{ $img }}" alt="{{ $venue->name }}" class="w-full h-full object-cover"
+                     onerror="this.style.display='none';this.parentElement.innerHTML='<div class=\'w-full h-full flex items-center justify-center text-6xl font-black text-white/20\'>{{ $venue->name[0] }}</div>'">
             </div>
-            @endif
-
-            @if($upcomingExhibitions && $upcomingExhibitions->count() > 0)
-            <div class="bg-white rounded-xl p-6 shadow-sm border border-gray-100">
-                <h2 class="text-xl font-semibold mb-4">Upcoming Exhibitions at {{ $venue->name }}</h2>
-                <div class="space-y-4">
-                    @foreach($upcomingExhibitions as $exhibition)
-                    <div class="flex items-center justify-between p-4 bg-gray-50 rounded-lg">
-                        <div>
-                            <h4 class="font-semibold">{{ $exhibition->name }}</h4>
-                            <p class="text-sm text-gray-500">{{ $exhibition->start_date->format('M d, Y') }} - {{ $exhibition->end_date->format('M d, Y') }}</p>
-                        </div>
-                        <a href="{{ route('exhibitions.show', $exhibition->slug) }}" class="text-amber-600 font-medium text-sm hover:text-amber-700">Details &rarr;</a>
-                    </div>
-                    @endforeach
+            <div class="mt-8">
+                <h1 class="text-3xl font-black text-white">{{ $venue->name }}</h1>
+                <div class="flex flex-wrap items-center gap-3 mt-3">
+                    <span class="px-2.5 py-0.5 rounded-full text-[11px] font-semibold tracking-wide border bg-[#FFCD05]/15 text-[#FFCD05] border-[#FFCD05]/30 capitalize">{{ $venue->venue_type }}</span>
+                    @if($venue->capacity)
+                    <span class="text-sm text-white/60">{{ $venue->capacity }} capacity</span>
+                    @endif
+                    @if($venue->city)
+                    <span class="flex items-center gap-1.5 text-sm text-white/40">
+                        <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z"/><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 11a3 3 0 11-6 0 3 3 0 016 0z"/></svg>
+                        {{ $venue->city }}, Kenya
+                    </span>
+                    @endif
                 </div>
+                @if($venue->description)
+                <p class="mt-5 text-white/50 leading-relaxed text-sm">{{ $venue->description }}</p>
+                @endif
             </div>
-            @endif
         </div>
+        <div class="lg:col-span-1">
+            <div class="bg-[#0D1220] border border-white/10 rounded-2xl p-6 sticky top-24">
+                <div class="font-black text-kicc-gold text-xl">{{ $venue->venue_type }}</div>
+                <div class="text-white/35 text-sm">Venue</div>
 
-        <div class="space-y-6">
-            @if($venue->amenities && count($venue->amenities) > 0)
-            <div class="bg-white rounded-xl p-6 shadow-sm border border-gray-100">
-                <h3 class="font-semibold mb-4">Amenities</h3>
-                <div class="flex flex-wrap gap-2">
-                    @foreach($venue->amenities as $amenity)
-                    <span class="bg-blue-50 text-blue-700 px-3 py-1 rounded-lg text-sm">{{ $amenity }}</span>
-                    @endforeach
+                <div class="mt-6 space-y-3">
+                    <a href="#" class="w-full inline-flex items-center justify-center gap-2 font-bold tracking-wide transition-all duration-200 px-8 text-base h-14 rounded-xl bg-[#901C1E] text-white hover:bg-[#7b1618]">Request Booking</a>
+                    <a href="{{ route('venues.index') }}" class="w-full inline-flex items-center justify-center gap-2 font-bold tracking-wide transition-all duration-200 px-4 text-xs h-11 rounded-xl border border-white/25 text-white hover:bg-white/10">Explore Other Venues</a>
+                </div>
+
+                @if($venue->amenities)
+                @php $amenities = json_decode($venue->amenities, true) ?? []; @endphp
+                @if(count($amenities) > 0)
+                <div class="mt-6 pt-5 border-t border-white/8">
+                    <h4 class="text-xs font-bold text-white/40 uppercase tracking-wider mb-3">Amenities</h4>
+                    <div class="flex flex-wrap gap-2">
+                        @foreach($amenities as $a)
+                        <span class="px-2.5 py-0.5 rounded-full text-[10px] font-semibold tracking-wide border bg-white/5 text-white/60 border-white/10">{{ $a }}</span>
+                        @endforeach
+                    </div>
+                </div>
+                @endif
+                @endif
+
+                <div class="mt-6 pt-5 border-t border-white/8 space-y-3">
+                    @if($venue->city)<div class="flex items-center gap-3 text-sm text-white/40"><svg class="w-3.5 h-3.5 text-kicc-gold shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z"/><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 11a3 3 0 11-6 0 3 3 0 016 0z"/></svg><span>{{ $venue->city }}, Kenya</span></div>@endif
                 </div>
             </div>
-            @endif
-
-            @if($venue->contact_info)
-            <div class="bg-white rounded-xl p-6 shadow-sm border border-gray-100">
-                <h3 class="font-semibold mb-4">Contact Information</h3>
-                <ul class="space-y-2 text-sm text-gray-600">
-                    @if($venue->contact_info['phone'] ?? null)<li>📞 {{ $venue->contact_info['phone'] }}</li>@endif
-                    @if($venue->contact_info['email'] ?? null)<li>✉️ {{ $venue->contact_info['email'] }}</li>@endif
-                    @if($venue->contact_info['website'] ?? null)<li>🌐 {{ $venue->contact_info['website'] }}</li>@endif
-                </ul>
-            </div>
-            @endif
-
-            @if($venue->address)
-            <div class="bg-white rounded-xl p-6 shadow-sm border border-gray-100">
-                <h3 class="font-semibold mb-2">Address</h3>
-                <p class="text-sm text-gray-600">{{ $venue->address }}, {{ $venue->city }}</p>
-            </div>
-            @endif
         </div>
     </div>
 </div>
