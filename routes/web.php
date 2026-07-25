@@ -3,6 +3,7 @@
 use App\Http\Controllers\Web\AuthController;
 use App\Http\Controllers\Web\CartController;
 use App\Http\Controllers\Web\CheckoutController;
+use App\Http\Controllers\Web\AdminDashboardController;
 use App\Http\Controllers\Web\CountyController;
 use App\Http\Controllers\Web\CountySubscriptionController;
 use App\Http\Controllers\Web\DashboardController;
@@ -41,6 +42,7 @@ Route::get('/subscriptions', [CountySubscriptionController::class, 'index'])->na
 
 // Dashboards
 Route::get('/dashboard/county', [DashboardV2Controller::class, 'county'])->name('dashboard.county');
+Route::get('/dashboard/admin', [AdminDashboardController::class, 'index'])->name('dashboard.admin');
 
 // Travel & Tourism
 Route::get('/travel', [TravelController::class, 'index'])->name('travel.index');
