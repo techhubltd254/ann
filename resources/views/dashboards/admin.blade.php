@@ -62,7 +62,8 @@
                     @forelse($recentPayments as $p)
                     <div class="flex items-center gap-3 py-3 border-b border-white/5 last:border-0">
                         <div class="flex-1 min-w-0"><div class="font-semibold text-white text-sm font-mono">{{ $p->intent_id }}</div><div class="text-xs text-white/30">KES {{ number_format($p->amount) }}</div></div>
-                        <span class="text-[10px] font-bold px-2.5 py-1 rounded-full border {{ $p->status === 'confirmed' ? 'text-emerald-400 bg-emerald-500/15 border-emerald-500/25' : $p->status === 'failed' ? 'text-[#901C1E] bg-[#901C1E]/15 border-[#901C1E]/25' : 'text-[#FFCD05] bg-[#FFCD05]/15 border-[#FFCD05]/25' }} capitalize">{{ $p->status }}</span>
+                        @php $cls = $p->status === 'confirmed' ? 'text-emerald-400 bg-emerald-500/15 border-emerald-500/25' : ($p->status === 'failed' ? 'text-[#901C1E] bg-[#901C1E]/15 border-[#901C1E]/25' : 'text-[#FFCD05] bg-[#FFCD05]/15 border-[#FFCD05]/25'); @endphp
+                        <span class="text-[10px] font-bold px-2.5 py-1 rounded-full border {{ $cls }} capitalize">{{ $p->status }}</span>
                     </div>
                     @empty
                     <p class="text-white/40 text-sm">No payments yet.</p>
