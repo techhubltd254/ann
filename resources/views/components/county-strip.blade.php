@@ -2,13 +2,9 @@
 
 @php
 $regions = ['All', 'Central', 'Coast', 'Eastern', 'Nyanza', 'North Eastern', 'Rift Valley', 'Western'];
-$countyImages = ['nairobi','mombasa','kisumu','nakuru','kilifi','laikipia','kajiado','machakos','kiambu','muranga','nyeri','kirinyaga','tana-river','lamu','taita-taveta','garissa','wajir','turkana','kakamega','bungoma','baringo','narok','kericho','uashin-gishu','meru','nandi','siaya','homa-bay','kisii','nyamira','trans-nzoia','west-pokot','samburu','isiolo','marsabit','mandera','elgeyo-marakwet','kitui','makueni','kwale','vihiga','bomet','busia','tharaka-nithi','nyandarua','embe'];
 @endphp
-<div x-data="{ query: '', region: 'All', activeRegion: 'All' }"
-     x-init="
-        $watch('region', v => activeRegion = v)
-     "
-     class="py-20 overflow-hidden bg-[#07090F]">
+
+<div x-data="countyStrip()" class="py-20 overflow-hidden bg-[#07090F]">
     <div class="max-w-7xl mx-auto px-5">
         <div class="mb-10">
             <div class="flex items-center gap-3 mb-3">
@@ -42,10 +38,10 @@ $countyImages = ['nairobi','mombasa','kisumu','nakuru','kilifi','laikipia','kaji
         <div class="flex items-center justify-between mb-3">
             <span class="text-white/30 text-xs font-semibold" x-text="filteredCount + ' county' + (filteredCount !== 1 ? 'ies' : '')"></span>
             <div class="flex gap-2">
-                <button @click="scrollLeft()" class="w-8 h-8 rounded-full border border-white/20 text-white/60 hover:border-[#FFCD05] hover:text-[#FFCD05] flex items-center justify-center transition-all">
+                <button @click="scrollStrip('left')" class="w-8 h-8 rounded-full border border-white/20 text-white/60 hover:border-[#FFCD05] hover:text-[#FFCD05] flex items-center justify-center transition-all">
                     <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 19l-7-7 7-7"/></svg>
                 </button>
-                <button @click="scrollRight()" class="w-8 h-8 rounded-full border border-white/20 text-white/60 hover:border-[#FFCD05] hover:text-[#FFCD05] flex items-center justify-center transition-all">
+                <button @click="scrollStrip('right')" class="w-8 h-8 rounded-full border border-white/20 text-white/60 hover:border-[#FFCD05] hover:text-[#FFCD05] flex items-center justify-center transition-all">
                     <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"/></svg>
                 </button>
             </div>
@@ -54,11 +50,11 @@ $countyImages = ['nairobi','mombasa','kisumu','nakuru','kilifi','laikipia','kaji
 
     <div class="relative">
         <div class="max-w-7xl mx-auto px-0">
-            <div x-ref="strip" @scroll="updateScroll()" class="flex gap-4 overflow-x-auto pb-4 px-5 scrollbar-hide">
+            <div x-ref="strip" class="flex gap-4 overflow-x-auto pb-4 px-5 scrollbar-hide">
                 @foreach($counties as $c)
                 <a href="{{ route('counties.show', $c->slug) }}" x-show="
                     '{{ $c->name }}'.toLowerCase().includes(query.toLowerCase()) &&
-                    (region === 'All' || '{{ $c->former_province ?? $c->slug }}'.includes(region))
+                    (region === 'All' || '{{ $c->former_province ?? 'Central' }}'.includes(region))
                 "
                    class="shrink-0 group relative overflow-hidden rounded-2xl cursor-pointer block" style="width: 200px; height: 280px;">
                     <img src="{{ media('counties/' . $c->slug . '/hero.jpeg') }}" alt="{{ $c->name }}"
@@ -80,3 +76,21 @@ $countyImages = ['nairobi','mombasa','kisumu','nakuru','kilifi','laikipia','kaji
         </div>
     </div>
 </div>
+
+@once
+<script>
+function countyStrip() {
+    return {
+        query: '',
+        region: 'All',
+        get filteredCount() {
+            return this.$el.querySelectorAll('a[x-show]').length
+        },
+        scrollStrip(dir) {
+            const el = this.$refs.strip
+            if (el) el.scrollBy({ left: dir === 'right' ? 320 : -320, behavior: 'smooth' })
+        }
+    }
+}
+</script>
+@endonce
