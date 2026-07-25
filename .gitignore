@@ -13,3 +13,4 @@
 /bootstrap/cache/*
 !.gitignore
 .tools/
+/kenya-3d-platform/
