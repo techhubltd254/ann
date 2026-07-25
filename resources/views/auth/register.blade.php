@@ -1,32 +1,40 @@
 @extends('layouts.app')
 
-@section('title', 'Register')
-@section('description', 'Create your KICC account.')
-
+@section('title', 'Register — KICC Platform')
 @section('content')
-<div class="min-h-[60vh] flex items-center justify-center py-12">
-    <div class="max-w-md w-full mx-4">
-        <div class="bg-white rounded-xl p-8 shadow-sm border border-gray-100">
-            <h1 class="text-2xl font-bold text-center mb-2">Create Account</h1>
-            <p class="text-center text-gray-500 text-sm mb-6">Enter your phone number to get a verification code.</p>
-
-            <form method="POST" action="{{ route('register.send-code') }}">
+<div class="min-h-screen flex items-center justify-center px-5 pt-20">
+    <div class="w-full max-w-md">
+        <div class="text-center mb-8">
+            <img src="{{ media('kicc/kicc-logo.png') }}" alt="KICC" class="h-14 w-auto mx-auto mb-4 brightness-0 invert" style="filter: brightness(0) invert(1);">
+            <h1 class="text-2xl font-black text-white">Create your account</h1>
+            <p class="text-white/50 text-sm mt-2">Join Kenya's premier exhibition platform</p>
+        </div>
+        <div class="bg-[#0D1220] border border-white/10 rounded-2xl p-7">
+            <form method="POST" action="{{ route('register.complete') }}">
                 @csrf
-                <div class="mb-6">
-                    <label class="block text-sm font-medium text-gray-700 mb-1">Phone Number</label>
-                    <div class="flex">
-                        <span class="inline-flex items-center px-3 bg-gray-100 border border-r-0 border-gray-300 rounded-l-lg text-gray-500 text-sm">+254</span>
-                        <input type="text" name="phone" value="{{ old('phone') }}" placeholder="712345678" class="flex-1 px-4 py-2 border border-gray-300 rounded-r-lg focus:ring-2 focus:ring-amber-500 focus:border-amber-500" required>
+                <div class="space-y-4">
+                    <div>
+                        <label class="block text-[10px] font-bold text-white/35 uppercase tracking-wider mb-1.5">Full name</label>
+                        <input type="text" name="name" required class="w-full bg-[#141B2E] border border-white/10 focus:border-[#FFCD05]/50 rounded-xl px-4 py-2.5 text-sm text-white outline-none transition-colors">
                     </div>
-                    <p class="text-xs text-gray-500 mt-1">Enter without the leading 0. e.g. 712345678</p>
-                    @error('phone')<p class="text-red-500 text-sm mt-1">{{ $message }}</p>@enderror
+                    <div>
+                        <label class="block text-[10px] font-bold text-white/35 uppercase tracking-wider mb-1.5">Phone number</label>
+                        <input type="tel" name="phone" required class="w-full bg-[#141B2E] border border-white/10 focus:border-[#FFCD05]/50 rounded-xl px-4 py-2.5 text-sm text-white outline-none transition-colors">
+                    </div>
+                    <div>
+                        <label class="block text-[10px] font-bold text-white/35 uppercase tracking-wider mb-1.5">Email (optional)</label>
+                        <input type="email" name="email" class="w-full bg-[#141B2E] border border-white/10 focus:border-[#FFCD05]/50 rounded-xl px-4 py-2.5 text-sm text-white outline-none transition-colors">
+                    </div>
+                    <div>
+                        <label class="block text-[10px] font-bold text-white/35 uppercase tracking-wider mb-1.5">Password</label>
+                        <input type="password" name="password" required class="w-full bg-[#141B2E] border border-white/10 focus:border-[#FFCD05]/50 rounded-xl px-4 py-2.5 text-sm text-white outline-none transition-colors">
+                    </div>
                 </div>
-                <button type="submit" class="w-full bg-amber-600 text-white py-2.5 rounded-lg font-medium hover:bg-amber-700">Send Verification Code</button>
+                <button type="submit" class="w-full inline-flex items-center justify-center gap-2 font-bold tracking-wide transition-all duration-200 mt-6 px-8 text-base h-14 rounded-xl bg-[#901C1E] text-white hover:bg-[#7b1618]">Create Account</button>
             </form>
-
-            <p class="text-center text-sm text-gray-500 mt-6">
-                Already have an account? <a href="{{ route('login') }}" class="text-amber-600 hover:text-amber-700 font-medium">Sign In</a>
-            </p>
+            <div class="mt-6 pt-5 border-t border-white/8 text-center">
+                <a href="{{ route('login') }}" class="text-kicc-gold text-sm font-bold hover:underline">Already have an account? Sign in</a>
+            </div>
         </div>
     </div>
 </div>
