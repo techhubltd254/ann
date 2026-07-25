@@ -4,285 +4,102 @@
 @section('description', $county->tagline ?? 'Explore ' . $county->name . ' County')
 
 @php
-$sectorMeta = [
-    'Tourism' => ['route' => 'tourism', 'icon' => 'camera', 'color' => 'amber', 'label' => 'Attractions'],
-    'Hospitality' => ['route' => 'hotels', 'icon' => 'star', 'color' => 'rose', 'label' => 'Hotels'],
-    'Trade & Products' => ['route' => 'products', 'icon' => 'bag2', 'color' => 'violet', 'label' => 'Products'],
-    'Education' => ['route' => 'institutions', 'icon' => 'lightbulb', 'color' => 'blue', 'label' => 'Institutions'],
-    'Agriculture' => ['route' => 'farms', 'icon' => 'box1', 'color' => 'emerald', 'label' => 'Farms'],
-    'Transport' => ['route' => 'transport', 'icon' => 'truck', 'color' => 'cyan', 'label' => 'Transport'],
-    'Healthcare' => ['route' => 'health', 'icon' => 'heart', 'color' => 'red', 'label' => 'Health'],
-    'Culture' => ['route' => 'culture', 'icon' => 'movie', 'color' => 'orange', 'label' => 'Culture'],
+$sectors = [
+    ['id' => 'tourism', 'name' => 'Tourism & Hospitality', 'route' => 'tourism', 'svg' => 'M10 6H5a2 2 0 00-2 2v9a2 2 0 002 2h14a2 2 0 002-2V8a2 2 0 00-2-2h-5m-4 0V5a2 2 0 114 0v1m-4 0a2 2 0 104 0'],
+    ['id' => 'hotels', 'name' => 'Hotels & Resorts', 'route' => 'hotels', 'svg' => 'M19 21V5a2 2 0 00-2-2H7a2 2 0 00-2 2v16m14 0h2m-2 0h-5m-9 0H3m2 0h5M9 7h1m-1 4h1m4-4h1m-1 4h1m-5 10v-5a1 1 0 011-1h2a1 1 0 011 1v5m-4 0h4'],
+    ['id' => 'products', 'name' => 'Products & Trade', 'route' => 'products', 'svg' => 'M16 11V7a4 4 0 00-8 0v4M5 9h14l1 12H4L5 9z'],
+    ['id' => 'institutions', 'name' => 'Education & Institutions', 'route' => 'institutions', 'svg' => 'M12 14l9-5-9-5-9 5 9 5zm0 7l5.5-3M12 21l-5.5-3M12 14l5.5-3'],
+    ['id' => 'farms', 'name' => 'Agriculture & Farming', 'route' => 'farms', 'svg' => 'M3 12l2-2m0 0l7-7 7 7M5 10v10a1 1 0 001 1h3m10-11l2 2m-2-2v10a1 1 0 01-1 1h-3m-6 0a1 1 0 001-1v-4a1 1 0 011-1h2a1 1 0 011 1v4a1 1 0 001 1m-6 0h6'],
+    ['id' => 'transport', 'name' => 'Transport & Logistics', 'route' => 'transport', 'svg' => 'M8 7h8m0 0v12H8V7zm0 0a2 2 0 014 0m-4 0a2 2 0 00-2 2v12a2 2 0 002 2h4a2 2 0 002-2V5a2 2 0 00-2-2h-4a2 2 0 00-2 2v2'],
+    ['id' => 'health', 'name' => 'Healthcare', 'route' => 'health', 'svg' => 'M4.318 6.318a4.5 4.5 0 000 6.364L12 20.364l7.682-7.682a4.5 4.5 0 00-6.364-6.364L12 7.636l-1.318-1.318a4.5 4.5 0 00-6.364 0z'],
+    ['id' => 'culture', 'name' => 'Culture & Heritage', 'route' => 'culture', 'svg' => 'M3.055 11H5a2 2 0 012 2v1a2 2 0 002 2 2 2 0 012 2v2.945M8 3.935V5.5A2.5 2.5 0 0010.5 8h.5a2 2 0 012 2 2 2 0 104 0 2 2 0 012-2h1.064'],
 ];
 @endphp
 
 @section('content')
-<div class="relative h-[85vh] min-h-[600px] flex items-center overflow-hidden">
-    <div class="absolute inset-0">
+<div class="pt-20">
+    <div class="relative h-72 md:h-96 overflow-hidden">
         <video autoplay muted loop playsinline
                poster="{{ media('counties/' . $county->slug . '/hero.jpeg') }}"
                class="w-full h-full object-cover"
                onerror="this.style.display='none';this.nextElementSibling.style.display='block'"
-               onloadeddata="this.style.opacity='1'"
                style="opacity:0;transition:opacity 0.8s">
             <source src="{{ media('counties/' . $county->slug . '/showcase.mp4') }}" type="video/mp4">
         </video>
         <img src="{{ media('counties/' . $county->slug . '/hero.jpeg') }}"
-             alt="{{ $county->name }} County"
+             alt="{{ $county->name }}"
              class="w-full h-full object-cover"
              style="display:none"
-             onerror="this.style.display='block';this.style.objectFit='none';this.parentElement.style.background='linear-gradient(135deg, #17151A 0%, #460C10 50%, #7D161D 100%)'">
-        <div class="absolute inset-0 bg-gradient-to-r from-black/80 via-black/50 to-transparent"></div>
+             onerror="this.style.display='block';this.parentElement.style.background='#0D1220'">
+        <div class="absolute inset-0 bg-gradient-to-t from-[#07090F] via-[#07090F]/50 to-transparent"></div>
+        <div class="absolute bottom-0 left-0 right-0 max-w-7xl mx-auto px-5 pb-8">
+            <a href="{{ route('counties.index') }}" class="inline-flex items-center gap-1.5 text-white/50 hover:text-white text-sm mb-3 transition-colors">
+                <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 19l-7-7 7-7"/></svg>
+                Back to counties
+            </a>
+            <h1 class="text-4xl font-black text-white">{{ $county->name }} County</h1>
+            @if($county->tagline)
+            <p class="text-white/50 mt-1">{{ $county->tagline }}</p>
+            @endif
+        </div>
     </div>
 
-    <div class="relative w-full max-w-7xl mx-auto px-6 lg:px-8 py-20">
-        <a href="{{ route('counties.index') }}" class="inline-flex items-center gap-2 text-white/70 hover:text-white mb-8 transition-colors">
-            <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 19l-7-7 7-7"/></svg>
-            <span class="text-sm font-medium">All Counties</span>
-        </a>
-        <div class="max-w-3xl">
-            <div class="text-5xl mb-4 drop-shadow-lg">{{ $county->icon_emoji ?? '📍' }}</div>
-            <h1 class="text-5xl md:text-7xl font-bold text-white mb-4 leading-tight">{{ $county->name }} County</h1>
-            @if($county->tagline)
-            <p class="text-xl md:text-2xl text-amber-300 font-light mb-6">{{ $county->tagline }}</p>
-            @endif
+    <div class="max-w-7xl mx-auto px-5 py-10">
+        @if($county->description || $county->capital || $county->population_2024 || $county->area_km2)
+        <div class="bg-[#0D1220] border border-white/8 rounded-2xl p-6 mb-10">
             @if($county->description)
-            <p class="text-gray-300 text-lg leading-relaxed max-w-2xl">{{ Str::limit($county->description, 250) }}</p>
+            <p class="text-white/50 text-sm leading-relaxed mb-4">{{ $county->description }}</p>
             @endif
-        </div>
-
-        <div class="mt-10 flex flex-wrap gap-4">
-            @if($county->capital)
-            <div class="bg-white/10 backdrop-blur-md rounded-2xl px-6 py-4 border border-white/10 min-w-[140px]">
-                <div class="text-xs text-gray-400 uppercase tracking-widest mb-1">Capital</div>
-                <div class="text-white font-bold text-xl">{{ $county->capital }}</div>
+            <div class="grid grid-cols-3 gap-4 text-center">
+                @if($county->capital)
+                <div>
+                    <div class="text-xs text-white/35 uppercase tracking-wider">Capital</div>
+                    <div class="text-white font-bold text-lg">{{ $county->capital }}</div>
+                </div>
+                @endif
+                @if($county->population_2024)
+                <div>
+                    <div class="text-xs text-white/35 uppercase tracking-wider">Population</div>
+                    <div class="text-white font-bold text-lg">{{ number_format($county->population_2024) }}</div>
+                </div>
+                @endif
+                @if($county->area_km2)
+                <div>
+                    <div class="text-xs text-white/35 uppercase tracking-wider">Area</div>
+                    <div class="text-white font-bold text-lg">{{ number_format($county->area_km2) }} km²</div>
+                </div>
+                @endif
             </div>
-            @endif
-            @if($county->population_2024)
-            <div class="bg-white/10 backdrop-blur-md rounded-2xl px-6 py-4 border border-white/10 min-w-[140px]">
-                <div class="text-xs text-gray-400 uppercase tracking-widest mb-1">Population</div>
-                <div class="text-white font-bold text-xl">{{ number_format($county->population_2024) }}</div>
-            </div>
-            @endif
-            @if($county->area_km2)
-            <div class="bg-white/10 backdrop-blur-md rounded-2xl px-6 py-4 border border-white/10 min-w-[140px]">
-                <div class="text-xs text-gray-400 uppercase tracking-widest mb-1">Area</div>
-                <div class="text-white font-bold text-xl">{{ number_format($county->area_km2) }} km²</div>
-            </div>
-            @endif
-        </div>
-
-        @if($county->primary_sectors)
-        <div class="mt-6 flex flex-wrap gap-2">
-            @foreach($county->primary_sectors as $ps)
-            <span class="text-xs bg-amber-500/20 text-amber-300 px-3 py-1.5 rounded-full border border-amber-500/30 font-medium">{{ $ps }}</span>
-            @endforeach
         </div>
         @endif
-    </div>
-</div>
 
-<div class="max-w-7xl mx-auto px-6 lg:px-8 -mt-8 relative z-20">
-    <div class="bg-white rounded-2xl shadow-xl border border-gray-100 p-8">
-        <div class="grid grid-cols-2 md:grid-cols-4 gap-8">
-            <div class="text-center">
-                <div class="text-3xl font-bold text-amber-600">{{ $sectors->count() }}</div>
-                <div class="text-sm text-gray-500 mt-1">Economic Sectors</div>
-            </div>
-            <div class="text-center">
-                <div class="text-3xl font-bold text-amber-600">{{ array_sum(array_column($sectorData, 'count')) }}</div>
-                <div class="text-sm text-gray-500 mt-1">Total Listings</div>
-            </div>
-            <div class="text-center">
-                <div class="text-3xl font-bold text-amber-600">{{ $exhibitions->count() }}</div>
-                <div class="text-sm text-gray-500 mt-1">Exhibitions</div>
-            </div>
-            <div class="text-center">
-                <div class="text-3xl font-bold text-amber-600">{{ number_format($county->population_2024 ?? 0) }}</div>
-                <div class="text-sm text-gray-500 mt-1">Population</div>
-            </div>
-        </div>
-    </div>
-</div>
-
-<section class="max-w-7xl mx-auto px-6 lg:px-8 py-20">
-    <div class="text-center mb-12">
-        <h2 class="text-4xl font-bold text-gray-900 mb-3">Explore {{ $county->name }} by Sector</h2>
-        <p class="text-lg text-gray-500 max-w-2xl mx-auto">Discover businesses, attractions, and opportunities across every sector.</p>
-    </div>
-
-    @php $sectorIndex = 0; @endphp
-    <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
-        @foreach($sectors as $sector)
-        @php
-            $keys = array_keys($sectorMeta);
-            $key = $keys[$sectorIndex] ?? $sector->name;
-            $meta = $sectorMeta[$key] ?? ['route' => '#', 'icon' => '📋', 'color' => 'gray', 'label' => ''];
-            $sd = $sectorData[$key] ?? ['count' => 0];
-            $img = media('counties/' . $county->slug . '/' . $meta['route'] . '.jpeg');
-            $sectorIndex++;
-        @endphp
-        <a href="{{ route('counties.sector', [$county->slug, $meta['route']]) }}"
-           class="group relative rounded-2xl overflow-hidden bg-white shadow-md hover:shadow-2xl transition-all duration-500 border border-gray-100 hover:border-{{ $meta['color'] }}-300 hover:-translate-y-1">
-            <div class="h-52 overflow-hidden relative">
-                <img src="{{ $img }}" alt="{{ $key }}"
-                     class="w-full h-full object-cover group-hover:scale-110 transition-transform duration-700"
-                     onerror="this.parentElement.innerHTML='<div class=\'w-full h-full flex items-center justify-center text-6xl bg-gradient-to-br from-gray-100 to-gray-200\'>{{ $meta['icon'] }}</div>'">
-                <div class="absolute inset-0 bg-gradient-to-t from-black/70 via-transparent to-transparent"></div>
-                <div class="absolute bottom-4 left-4 right-4">
-                    <span class="text-white text-lg font-bold drop-shadow-lg">{!! lottie($meta['icon'], 'w-6 h-6') !!} {{ $key }}</span>
-                </div>
-            </div>
-            <div class="p-5">
-                <div class="flex items-baseline gap-2 mb-1">
-                    <span class="text-3xl font-bold text-gray-900">{{ $sd['count'] }}</span>
-                    <span class="text-sm text-gray-400">{{ $meta['label'] }}</span>
-                </div>
-                @if($sector->description)
-                <p class="text-sm text-gray-500 line-clamp-2 mb-3">{{ $sector->description }}</p>
-                @endif
-                <div class="flex items-center text-{{ $meta['color'] }}-600 font-medium text-sm group-hover:gap-2 transition-all">
-                    Browse {{ $key }}
-                    <svg class="w-4 h-4 ml-1 group-hover:ml-2 transition-all" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"/></svg>
-                </div>
-            </div>
-        </a>
-        @endforeach
-    </div>
-</section>
-
-@if($featuredAttractions->count() > 0)
-<section class="bg-gradient-to-br from-amber-50 via-orange-50 to-amber-100 py-20">
-    <div class="max-w-7xl mx-auto px-6 lg:px-8">
-        <div class="flex items-end justify-between mb-10">
+        <div class="flex items-center justify-between mb-8">
             <div>
-                <h2 class="text-4xl font-bold text-gray-900">Top Attractions</h2>
-                <p class="text-lg text-gray-600 mt-1">Must-visit destinations in {{ $county->name }}</p>
+                <div class="flex items-center gap-3 mb-3">
+                    <div class="h-px w-8 bg-kicc-gold"></div>
+                    <span class="text-kicc-gold text-xs font-bold tracking-[0.2em] uppercase">{{ $county->name }}</span>
+                </div>
+                <h2 class="text-3xl md:text-4xl font-black text-white">Explore <span class="text-kicc-gold">Sectors</span></h2>
             </div>
-            <a href="{{ route('counties.sector', [$county->slug, 'tourism']) }}"
-               class="hidden sm:flex items-center gap-2 text-amber-600 hover:text-amber-700 font-semibold transition-colors">
-                View All
-                <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 8l4 4m0 0l-4 4m4-4H3"/></svg>
+            <a href="{{ route('marketplace.index', ['county' => $county->slug]) }}" class="inline-flex items-center justify-center gap-2 font-bold tracking-wide transition-all duration-200 px-4 text-xs h-9 rounded-xl bg-[#901C1E] text-white hover:bg-[#7b1618]">
+                View Products
+                <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 8l4 4m0 0l-4 4m4-4H3"/></svg>
             </a>
         </div>
-        <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
-            @foreach($featuredAttractions as $attraction)
-            <div class="bg-white rounded-2xl shadow-md overflow-hidden hover:shadow-xl transition-shadow group">
-                <div class="h-52 bg-gradient-to-br from-amber-100 to-orange-200 overflow-hidden relative">
-                    <div class="w-full h-full flex items-center justify-center text-6xl group-hover:scale-110 transition-transform duration-500">🏛️</div>
-                </div>
-                <div class="p-5">
-                    <h4 class="font-bold text-gray-900 mb-1">{{ $attraction->name }}</h4>
-                    @if($attraction->category)
-                    <span class="inline-block text-xs font-medium bg-amber-100 text-amber-700 px-2.5 py-1 rounded-full mb-2">{{ $attraction->category }}</span>
-                    @endif
-                    @if($attraction->location)
-                    <p class="text-sm text-gray-500 flex items-center gap-1.5 mt-2">
-                        <svg class="w-4 h-4 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z"/><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 11a3 3 0 11-6 0 3 3 0 016 0z"/></svg>
-                        {{ $attraction->location }}
-                    </p>
-                    @endif
-                </div>
-            </div>
-            @endforeach
-        </div>
-    </div>
-</section>
-@endif
 
-@if($featuredHotels->count() > 0)
-<section class="py-20">
-    <div class="max-w-7xl mx-auto px-6 lg:px-8">
-        <div class="flex items-end justify-between mb-10">
-            <div>
-                <h2 class="text-4xl font-bold text-gray-900">Places to Stay</h2>
-                <p class="text-lg text-gray-500 mt-1">Hotels and resorts in {{ $county->name }}</p>
-            </div>
-            <a href="{{ route('counties.sector', [$county->slug, 'hotels']) }}"
-               class="hidden sm:flex items-center gap-2 text-rose-600 hover:text-rose-700 font-semibold transition-colors">
-                View All
-                <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 8l4 4m0 0l-4 4m4-4H3"/></svg>
+        <div class="grid grid-cols-2 md:grid-cols-4 gap-4">
+            @foreach($sectors as $s)
+            @php $count = \App\Models\SectorEntity::where('county_id', $county->id)->where('sector_ids', 'like', '%' . $s['route'] . '%')->count(); @endphp
+            <a href="{{ route('counties.sector', [$county->slug, $s['route']]) }}"
+               class="group bg-[#0D1220] border border-white/8 hover:border-[#FFCD05]/40 rounded-2xl p-6 text-center transition-all block">
+                <div class="w-14 h-14 rounded-2xl mx-auto mb-4 flex items-center justify-center bg-white/5 group-hover:bg-[#FFCD05]/10 transition-colors">
+                    <svg class="w-6 h-6 text-kicc-gold" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="{{ $s['svg'] }}"/></svg>
+                </div>
+                <div class="font-bold text-white text-sm leading-snug">{{ $s['name'] }}</div>
+                <div class="text-white/35 text-xs mt-1">{{ $count }} {{ Str::plural('entity', $count) }}</div>
             </a>
-        </div>
-        <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
-            @foreach($featuredHotels as $hotel)
-            <div class="bg-white rounded-2xl shadow-md overflow-hidden hover:shadow-xl transition-shadow group">
-                <div class="h-48 bg-gradient-to-br from-rose-100 to-pink-200 overflow-hidden relative">
-                    <div class="w-full h-full flex items-center justify-center">
-                        <div class="text-center">
-                            <div class="text-5xl mb-2 group-hover:scale-110 transition-transform duration-500">🏨</div>
-                            @if($hotel->star_rating)
-                            <div class="text-yellow-500 text-sm">{{ str_repeat('⭐', $hotel->star_rating) }}</div>
-                            @endif
-                        </div>
-                    </div>
-                </div>
-                <div class="p-5">
-                    <h4 class="font-bold text-gray-900 mb-1">{{ $hotel->name }}</h4>
-                    @if($hotel->category)
-                    <span class="text-xs font-medium text-rose-600 bg-rose-50 px-2.5 py-1 rounded-full">{{ $hotel->category }}</span>
-                    @endif
-                    @if($hotel->price_range_min && $hotel->price_range_max)
-                    <p class="text-sm font-semibold text-gray-700 mt-2">KSh {{ number_format($hotel->price_range_min) }} – {{ number_format($hotel->price_range_max) }}</p>
-                    @endif
-                </div>
-            </div>
             @endforeach
         </div>
     </div>
-</section>
-@endif
-
-@if($exhibitions->count() > 0)
-<section class="bg-gray-50 py-20">
-    <div class="max-w-7xl mx-auto px-6 lg:px-8">
-        <div class="text-center mb-12">
-            <h2 class="text-4xl font-bold text-gray-900 mb-3">Upcoming Exhibitions</h2>
-            <p class="text-lg text-gray-500">Trade shows and events in {{ $county->name }}</p>
-        </div>
-        <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
-            @foreach($exhibitions as $exhibition)
-            <div class="bg-white rounded-2xl shadow-md p-6 hover:shadow-xl transition-shadow border border-gray-100">
-                <div class="w-14 h-14 bg-amber-100 rounded-2xl flex items-center justify-center text-2xl mb-4">📅</div>
-                <h4 class="font-bold text-gray-900 text-lg mb-2">{{ $exhibition->name }}</h4>
-                <p class="text-sm text-gray-500 mb-4">{{ $exhibition->start_date->format('M d, Y') }} – {{ $exhibition->end_date->format('M d, Y') }}</p>
-                <a href="{{ route('exhibitions.show', $exhibition->slug) }}" class="inline-flex items-center gap-2 text-amber-600 hover:text-amber-700 font-semibold text-sm transition-colors">
-                    View Details
-                    <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 8l4 4m0 0l-4 4m4-4H3"/></svg>
-                </a>
-            </div>
-            @endforeach
-        </div>
-    </div>
-</section>
-@endif
-
-@if($county->tourism_highlights && count($county->tourism_highlights) > 0)
-<section class="bg-gradient-to-br from-gray-900 via-gray-800 to-gray-900 py-20">
-    <div class="max-w-7xl mx-auto px-6 lg:px-8 text-center">
-        <h2 class="text-4xl font-bold text-white mb-3">Discover {{ $county->name }}</h2>
-        <p class="text-gray-400 text-lg mb-10">Featured highlights and destinations</p>
-        <div class="flex flex-wrap justify-center gap-3">
-            @foreach($county->tourism_highlights as $highlight)
-            <span class="bg-white/10 backdrop-blur-sm text-white px-6 py-3 rounded-xl text-sm font-medium border border-white/10 hover:bg-white/20 transition-colors shadow-lg">
-                {{ $highlight }}
-            </span>
-            @endforeach
-        </div>
-    </div>
-</section>
-@endif
-
-@push('styles')
-<style>
-    .line-clamp-2 {
-        display: -webkit-box;
-        -webkit-line-clamp: 2;
-        -webkit-box-orient: vertical;
-        overflow: hidden;
-    }
-    .group:hover .group-hover\:gap-2 { gap: 0.5rem; }
-    .group:hover .group-hover\:ml-2 { margin-left: 0.5rem; }
-</style>
-@endpush
+</div>
 @endSection
