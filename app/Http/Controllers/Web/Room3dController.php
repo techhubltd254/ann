@@ -5,15 +5,22 @@ namespace App\Http\Controllers\Web;
 use App\Models\Room3d;
 use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
+use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Str;
 
 class Room3dController extends Controller
 {
     public function index()
     {
-        $rooms = Room3d::whereIn('status', ['ready', 'processed'])
-            ->orderBy('created_at', 'desc')
-            ->paginate(12);
+        try {
+            $rooms = Room3d::whereIn('status', ['ready', 'processed'])
+                ->orderBy('created_at', 'desc')
+                ->paginate(12);
+        } catch (\Throwable $e) {
+            Log::warning('Room3d index query failed: ' . $e->getMessage());
+            $rooms = collect([]);
+            $rooms = new \Illuminate\Pagination\LengthAwarePaginator([], 0, 12);
+        }
         return view('room3d.index', compact('rooms'));
     }
 
