@@ -1,9 +1,80 @@
 /* ============================================================
    KICC Motion System — scroll reveal, 3D tilt, parallax,
-   animated counters, magnetic buttons, marquee
+   animated counters, magnetic buttons, marquee, 3D scroll depth
    ============================================================ */
 (function () {
   'use strict';
+
+  /* ---------- 3D Depth Scroll (multi-layer parallax) ---------- */
+  const depthLayers = [];
+  function initDepthScroll(root = document) {
+    root.querySelectorAll('[data-depth]').forEach((el) => {
+      if (!depthLayers.includes(el)) {
+        depthLayers.push(el);
+        const speed = parseFloat(el.dataset.depth || '0.3');
+        el.style.willChange = 'transform';
+        el.dataset._depthSpeed = speed;
+      }
+    });
+  }
+
+  let depthRaf = null;
+  function depthTick() {
+    const sy = window.scrollY;
+    const vh = window.innerHeight;
+    depthLayers.forEach((el) => {
+      const rect = el.getBoundingClientRect();
+      const center = rect.top + rect.height / 2;
+      const viewCenter = vh / 2;
+      const offset = (center - viewCenter) / vh;
+      const speed = parseFloat(el.dataset._depthSpeed || '0.3');
+      const translateY = offset * speed * 120;
+      const scale = 1 - Math.abs(offset) * speed * 0.08;
+      el.style.transform = `translate3d(0, ${translateY}px, 0) scale(${Math.max(scale, 0.85)})`;
+    });
+    depthRaf = null;
+  }
+
+  /* ---------- 3D Perspective Scroll sections ---------- */
+  const perspectiveSections = [];
+  function initScroll3d(root = document) {
+    root.querySelectorAll('[data-scroll-3d]').forEach((section) => {
+      if (!perspectiveSections.includes(section)) {
+        perspectiveSections.push(section);
+        section.style.perspective = '1200px';
+        section.style.transformStyle = 'preserve-3d';
+      }
+    });
+  }
+
+  let scroll3dRaf = null;
+  function scroll3dTick() {
+    const sy = window.scrollY;
+    const vh = window.innerHeight;
+    perspectiveSections.forEach((section) => {
+      const rect = section.getBoundingClientRect();
+      const progress = 1 - (rect.top + rect.height) / (vh + rect.height);
+      const clamped = Math.max(0, Math.min(1, progress));
+      const rotateX = (clamped - 0.5) * 3;
+      const translateZ = (clamped - 0.5) * 40;
+      section.style.transform = `rotateX(${rotateX}deg) translateZ(${translateZ}px)`;
+    });
+    scroll3dRaf = null;
+  }
+
+  /* ---------- Unified scroll handler for 3D effects ---------- */
+  let scrollRaf = null;
+  function onScroll() {
+    if (scrollRaf) return;
+    scrollRaf = requestAnimationFrame(() => {
+      depthTick();
+      scroll3dTick();
+      parallaxTick();
+      scrollRaf = null;
+    });
+  }
+
+  window.addEventListener('scroll', onScroll, { passive: true });
 
   /* ---------- Scroll Reveal (IntersectionObserver) ---------- */
   const revealObserver = new IntersectionObserver((entries) => {
@@ -81,9 +152,6 @@
     });
     parallaxRaf = null;
   }
-  window.addEventListener('scroll', () => {
-    if (!parallaxRaf) parallaxRaf = requestAnimationFrame(parallaxTick);
-  }, { passive: true });
 
   /* ---------- Animated Counters ---------- */
   const counterObserver = new IntersectionObserver((entries) => {
@@ -163,7 +231,6 @@
 
   /* ---------- Auto Reveal (grids, sections, cards without attributes) ---------- */
   function initAutoReveal(root = document) {
-    // Stagger direct children of grids
     root.querySelectorAll('main .grid').forEach((grid) => {
       if (grid.dataset.autoRevealed) return;
       grid.dataset.autoRevealed = '1';
@@ -173,7 +240,6 @@
         child.setAttribute('data-reveal-delay', String((i % 6) * 60));
       });
     });
-    // Reveal major content blocks
     root.querySelectorAll('main > section, main > div > section').forEach((section) => {
       if (section.dataset.reveal || section.dataset.autoRevealed) return;
       section.dataset.autoRevealed = '1';
@@ -192,6 +258,8 @@
     initProgress();
     initAnchors();
     initAutoReveal();
+    initDepthScroll();
+    initScroll3d();
   }
 
   if (document.readyState === 'loading') {
