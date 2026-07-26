@@ -68,10 +68,14 @@
           :class="scrolled ? 'bg-white/95 backdrop-blur-xl border-b border-[#0B1E57]/8 shadow-lg shadow-[#0B1E57]/5' : 'bg-transparent'">
         <div class="max-w-7xl mx-auto px-5 h-full flex items-center justify-between gap-4">
             <a href="/" class="flex items-center gap-3 shrink-0 group">
-                <img src="{{ media('kicc/kicc-logo.png') }}" alt="KICC" class="h-10 w-auto object-contain" style="filter: brightness(0) invert(0);">
-                <div class="hidden sm:block leading-tight border-l border-[#0B1E57]/20 pl-3">
-                    <div class="font-black text-[#901C1E] text-[11px] tracking-tight group-hover:text-[#FFCD05] transition-colors uppercase">Global Exhibition</div>
-                    <div class="text-[9px] text-[#FFCD05] font-bold tracking-[0.18em] uppercase">Platform</div>
+                <div class="flex items-center gap-2.5">
+                    <div class="w-9 h-9 rounded-xl bg-[#901C1E] flex items-center justify-center">
+                        <span class="font-black text-white text-sm tracking-tight">K</span>
+                    </div>
+                    <div class="leading-tight">
+                        <div class="font-black text-[#901C1E] text-sm tracking-tight group-hover:text-[#FFCD05] transition-colors uppercase">KICC</div>
+                        <div class="text-[8px] text-[#FFCD05] font-bold tracking-[0.15em] uppercase leading-tight">Global Exhibition</div>
+                    </div>
                 </div>
             </a>
             <nav class="hidden lg:flex items-center gap-1">
@@ -129,8 +133,15 @@
     <footer class="bg-[#050709] mt-20">
         <div class="max-w-7xl mx-auto px-5 py-14 grid grid-cols-1 md:grid-cols-4 gap-10">
             <div>
-                <img src="{{ media('kicc/kicc-logo.png') }}" alt="KICC" class="h-12 w-auto object-contain mb-3 brightness-0 invert" style="filter: brightness(0) invert(1);">
-                <div class="text-[#FFCD05] text-[10px] font-bold tracking-[0.18em] uppercase mb-3">Global Exhibition Platform</div>
+                <div class="flex items-center gap-2.5 mb-3">
+                    <div class="w-9 h-9 rounded-xl bg-[#901C1E] flex items-center justify-center">
+                        <span class="font-black text-white text-sm tracking-tight">K</span>
+                    </div>
+                    <div class="leading-tight">
+                        <div class="font-black text-white text-sm tracking-tight uppercase">KICC</div>
+                        <div class="text-[#FFCD05] text-[8px] font-bold tracking-[0.15em] uppercase">Global Exhibition</div>
+                    </div>
+                </div>
                 <p class="text-[#5A6480] text-sm leading-relaxed">Africa's Premier Meeting Venue. A national icon since 1973.</p>
                 <div class="mt-5 flex flex-col gap-1 text-sm text-[#5A6480]">
                     <span class="flex items-center gap-2">
