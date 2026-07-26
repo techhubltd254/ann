@@ -22,8 +22,12 @@ $sectors = [
         <video autoplay muted loop playsinline
                poster="{{ media('counties/' . $county->slug . '/hero.jpeg') }}"
                class="w-full h-full object-cover"
+               onloadeddata="this.style.opacity='1'"
                onerror="this.style.display='none';this.nextElementSibling.style.display='block'"
                style="opacity:0;transition:opacity 0.8s">
+            @if(in_array($county->slug, ['mombasa','kilifi']))
+            <source src="{{ media('counties/' . $county->slug . '/showcase_web.mp4') }}" type="video/mp4">
+            @endif
             <source src="{{ media('counties/' . $county->slug . '/showcase.mp4') }}" type="video/mp4">
         </video>
         <img src="{{ media('counties/' . $county->slug . '/hero.jpeg') }}"
