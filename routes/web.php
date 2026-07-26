@@ -43,13 +43,24 @@ Route::get('/checkout/success/{orderNumber}', [CheckoutController::class, 'succe
 Route::get('/county/{slug}/subscriptions', [CountySubscriptionController::class, 'index'])->name('county.subscriptions');
 Route::get('/subscriptions', [CountySubscriptionController::class, 'index'])->name('subscriptions.index');
 
-// Dashboards
-Route::get('/dashboard/county', [DashboardV2Controller::class, 'county'])->name('dashboard.county');
-Route::get('/dashboard/admin', [AdminDashboardController::class, 'index'])->name('dashboard.admin');
-Route::post('/dashboard/admin/delete-product/{id}', [AdminDashboardController::class, 'deleteProduct'])->name('admin.delete-product');
-Route::post('/dashboard/admin/delete-user/{id}', [AdminDashboardController::class, 'deleteUser'])->name('admin.delete-user');
-Route::post('/dashboard/admin/delete-order/{id}', [AdminDashboardController::class, 'deleteOrder'])->name('admin.delete-order');
-Route::get('/admin', [AdminPortalController::class, 'index'])->name('admin.portal');
+// 3-Tier Admin Portals
+Route::middleware('auth')->group(function () {
+    // KICC Admin — full control
+    Route::get('/admin/kicc', [AdminPortalController::class, 'index'])->name('admin.kicc');
+    // National Government Admin — ministries & agencies
+    Route::get('/admin/national', [AdminPortalController::class, 'national'])->name('admin.national');
+    // County Admin — scoped to own county
+    Route::get('/admin/county', [AdminPortalController::class, 'county'])->name('admin.county');
+    // Portal selector
+    Route::get('/admin', [AdminPortalController::class, 'selector'])->name('admin.portal');
+
+    // Dashboards (legacy, redirect to portals)
+    Route::get('/dashboard/county', [DashboardV2Controller::class, 'county'])->name('dashboard.county');
+    Route::get('/dashboard/admin', [AdminDashboardController::class, 'index'])->name('dashboard.admin');
+    Route::post('/dashboard/admin/delete-product/{id}', [AdminDashboardController::class, 'deleteProduct'])->name('admin.delete-product');
+    Route::post('/dashboard/admin/delete-user/{id}', [AdminDashboardController::class, 'deleteUser'])->name('admin.delete-user');
+    Route::post('/dashboard/admin/delete-order/{id}', [AdminDashboardController::class, 'deleteOrder'])->name('admin.delete-order');
+});
 
 // Travel & Tourism
 Route::get('/travel', [TravelController::class, 'index'])->name('travel.index');
