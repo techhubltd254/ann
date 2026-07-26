@@ -89,14 +89,20 @@ $sectors = [
 
         <div class="grid grid-cols-2 md:grid-cols-4 gap-4">
             @foreach($sectors as $s)
-            @php $count = \App\Models\SectorEntity::where('county_id', $county->id)->where('sector_ids', 'like', '%' . $s['route'] . '%')->count(); @endphp
+            @php
+                $route = $s['route'];
+                $entities = \App\Models\SectorEntity::where('county_id', $county->id)
+                    ->join('sectors', 'sector_entities.sector_id', '=', 'sectors.id')
+                    ->where('sectors.slug', $route)
+                    ->count();
+            @endphp
             <a href="{{ route('counties.sector', [$county->slug, $s['route']]) }}"
                class="group bg-[#0D1220] border border-white/8 hover:border-[#FFCD05]/40 rounded-2xl p-6 text-center transition-all block">
                 <div class="w-14 h-14 rounded-2xl mx-auto mb-4 flex items-center justify-center bg-white/5 group-hover:bg-[#FFCD05]/10 transition-colors">
                     <svg class="w-6 h-6 text-kicc-gold" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="{{ $s['svg'] }}"/></svg>
                 </div>
                 <div class="font-bold text-white text-sm leading-snug">{{ $s['name'] }}</div>
-                <div class="text-white/35 text-xs mt-1">{{ $count }} {{ Str::plural('entity', $count) }}</div>
+                <div class="text-white/35 text-xs mt-1">{{ $entities }} {{ Str::plural('entity', $entities) }}</div>
             </a>
             @endforeach
         </div>
