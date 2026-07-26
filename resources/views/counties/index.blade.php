@@ -38,8 +38,9 @@
                x-show="'{{ $c->name }}'.toLowerCase().includes(query.toLowerCase()) && (activeRegion === 'All' || '{{ $c->former_province ?? '' }}'.includes(activeRegion))"
                class="group bg-[#0D1220] rounded-2xl overflow-hidden border border-white/8 hover:border-kicc-gold/40 transition-all">
                 <div class="h-32 overflow-hidden bg-[#141B2E]">
-                    <img src="{{ media('counties/' . $c->slug . '/hero.jpeg') }}" alt="{{ $c->name }}"
-                         class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500"
+<img src="{{ media('counties/' . $c->slug . '/hero.jpeg') }}" alt="{{ $c->name }}"
+                     class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500"
+                     loading="lazy" decoding="async"
                          onerror="this.parentElement.innerHTML='<div class=\'w-full h-full flex items-center justify-center text-4xl bg-[#141B2E]\'>{{ $c->icon_emoji ?? '📍' }}</div>'">
                 </div>
                 <div class="p-3.5 text-center">

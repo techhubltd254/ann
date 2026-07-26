@@ -30,6 +30,7 @@ $sectors = [
              alt="{{ $county->name }}"
              class="w-full h-full object-cover"
              style="display:none"
+             loading="lazy" decoding="async"
              onerror="this.style.display='block';this.parentElement.style.background='#0D1220'">
         <div class="absolute inset-0 bg-gradient-to-t from-[#07090F] via-[#07090F]/50 to-transparent"></div>
         <div class="absolute bottom-0 left-0 right-0 max-w-7xl mx-auto px-5 pb-8">
