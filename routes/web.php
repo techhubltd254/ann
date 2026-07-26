@@ -43,12 +43,9 @@ Route::get('/__debug/{slug}', function ($slug) {
             $tests['ShippingZone'] = \App\Models\Logistics\ShippingZone::count();
             $tests['ContentPage'] = \App\Models\Seo\ContentPage::count();
             $tests['AutomationTree'] = app(\App\Services\AutomationTreeService::class)->getTree()['children'][0]['name'] ?? 'none';
-            $view = view('operations.index')->with([
-                'campaigns' => collect(), 'couriers' => collect(),
-                'zones' => collect(), 'pages' => collect(),
-                'automationTree' => app(\App\Services\AutomationTreeService::class)->getTree(),
-            ]);
-            $tests['render'] = $view->renderSections()['content'][0] ?? 'partial';
+            // Test full controller
+            $ctrl = app(\App\Http\Controllers\Web\OperationsController::class);
+            $tests['controller'] = $ctrl->index(app(\App\Services\AutomationTreeService::class))->render();
         } elseif ($slug === 'room3d') {
             $ctrl = app(\App\Http\Controllers\Web\Room3dController::class);
             $tests['response'] = $ctrl->index()->renderSections()['content'][0] ?? 'partial';
