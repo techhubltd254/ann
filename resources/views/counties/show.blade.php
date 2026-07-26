@@ -26,7 +26,7 @@ $sectors = [
                onerror="this.style.display='none';this.nextElementSibling.style.display='block'"
                style="opacity:0;transition:opacity 0.8s">
             @if(in_array($county->slug, ['mombasa','kilifi']))
-            <source src="{{ media('counties/' . $county->slug . '/showcase_web.mp4') }}" type="video/mp4">
+            <source src="{{ media('counties/' . $county->slug . '//videos/>slug.mp4') }}" type="video/mp4">
             @endif
             <source src="{{ media('counties/' . $county->slug . '/showcase.mp4') }}" type="video/mp4">
         </video>
