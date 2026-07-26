@@ -77,9 +77,9 @@ Route::view('/exhibition-3d/booth', 'exhibition-3d.booth')->name('exhibition-3d.
 Route::get('/room3d', [Room3dController::class, 'index'])->name('room3d.index');
 Route::get('/room3d/create', [Room3dController::class, 'create'])->name('room3d.create');
 Route::post('/room3d', [Room3dController::class, 'store'])->name('room3d.store');
-Route::get('/room3d/{room3d}', [Room3dController::class, 'show'])->name('room3d.show');
-Route::get('/room3d/{room3d}/viewer', [Room3dController::class, 'viewer'])->name('room3d.viewer');
-Route::get('/room3d/{room3d}/api', [Room3dController::class, 'api'])->name('room3d.api');
+Route::get('/room3d/{id}', [Room3dController::class, 'show'])->name('room3d.show');
+Route::get('/room3d/{id}/viewer', [Room3dController::class, 'viewer'])->name('room3d.viewer');
+Route::get('/room3d/{id}/api', [Room3dController::class, 'api'])->name('room3d.api');
 
 Route::middleware('guest')->group(function () {
     Route::get('/register', [AuthController::class, 'showRegister'])->name('register');

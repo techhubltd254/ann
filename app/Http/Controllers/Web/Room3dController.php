@@ -18,7 +18,6 @@ class Room3dController extends Controller
                 ->paginate(12);
         } catch (\Throwable $e) {
             Log::warning('Room3d index query failed: ' . $e->getMessage());
-            $rooms = collect([]);
             $rooms = new \Illuminate\Pagination\LengthAwarePaginator([], 0, 12);
         }
         return view('room3d.index', compact('rooms'));
@@ -59,24 +58,42 @@ class Room3dController extends Controller
             ->with('success', 'Room created! Explore it in 3D below.');
     }
 
-    public function show(Room3d $room3d)
+    public function show(string $id)
     {
+        try {
+            $room3d = Room3d::findOrFail($id);
+        } catch (\Throwable $e) {
+            Log::warning('Room3d show failed: ' . $e->getMessage());
+            abort(404);
+        }
         if (!$room3d->isReady()) {
             abort(404);
         }
         return view('room3d.show', compact('room3d'));
     }
 
-    public function viewer(Room3d $room3d)
+    public function viewer(string $id)
     {
+        try {
+            $room3d = Room3d::findOrFail($id);
+        } catch (\Throwable $e) {
+            Log::warning('Room3d viewer failed: ' . $e->getMessage());
+            abort(404);
+        }
         if (!$room3d->isReady()) {
             abort(404);
         }
         return view('room3d.viewer', compact('room3d'));
     }
 
-    public function api(Room3d $room3d)
+    public function api(string $id)
     {
+        try {
+            $room3d = Room3d::findOrFail($id);
+        } catch (\Throwable $e) {
+            Log::warning('Room3d api failed: ' . $e->getMessage());
+            return response()->json(['error' => 'not found'], 404);
+        }
         if (!$room3d->isReady()) {
             return response()->json(['error' => 'not ready'], 404);
         }
