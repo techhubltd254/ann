@@ -9,6 +9,7 @@ build:
 deploy:
   - php artisan storage:link --force || true
   - php artisan migrate --force 2>&1 || echo "migrate exit: $?"
+  - php -r "try{\DB::statement('CREATE TABLE IF NOT EXISTS room3ds (id BIGINT UNSIGNED AUTO_INCREMENT PRIMARY KEY, user_id BIGINT UNSIGNED NULL, title VARCHAR(255) NOT NULL, slug VARCHAR(255) NOT NULL UNIQUE, description TEXT NULL, image_paths JSON NULL, cover_image VARCHAR(255) NULL, status VARCHAR(50) DEFAULT \"draft\", pipeline VARCHAR(50) DEFAULT \"photo_sphere\", job_result JSON NULL, processed_at TIMESTAMP NULL, created_at TIMESTAMP NULL DEFAULT CURRENT_TIMESTAMP, updated_at TIMESTAMP NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci');echo\"room3ds table ok\n\";}catch(\Throwable\$e){echo\"room3ds error: \$e\n\";}"
   - php artisan db:seed --class=ExhibitionSeeder --force 2>&1 || echo "seed exit: $?"
 
 environments:
