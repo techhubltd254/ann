@@ -12,7 +12,7 @@ return new class extends Migration
             $table->id();
             $table->string('name');
             $table->string('slug')->unique();
-            $table->string('code')->unique(); // e.g., MOA, MOT, MOH
+            $table->string('code')->unique();
             $table->string('logo')->nullable();
             $table->string('color')->default('#0B1E57');
             $table->text('description')->nullable();
@@ -25,7 +25,7 @@ return new class extends Migration
 
         Schema::create('agencies', function (Blueprint $table) {
             $table->id();
-            $table->foreignId('ministry_id')->constrained('ministries')->cascadeOnDelete();
+            $table->unsignedBigInteger('ministry_id')->index();
             $table->string('name');
             $table->string('slug')->unique();
             $table->string('code')->unique();
@@ -39,15 +39,15 @@ return new class extends Migration
 
         Schema::create('ministry_user', function (Blueprint $table) {
             $table->id();
-            $table->foreignId('ministry_id')->constrained('ministries')->cascadeOnDelete();
-            $table->foreignId('user_id')->constrained('users')->cascadeOnDelete();
+            $table->unsignedBigInteger('ministry_id')->index();
+            $table->unsignedBigInteger('user_id')->index();
             $table->string('role')->default('admin');
             $table->timestamps();
             $table->unique(['ministry_id', 'user_id']);
         });
 
         Schema::table('users', function (Blueprint $table) {
-            $table->foreignId('ministry_id')->nullable()->after('county_id');
+            $table->unsignedBigInteger('ministry_id')->nullable()->after('county_id');
         });
     }
 

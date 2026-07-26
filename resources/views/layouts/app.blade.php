@@ -13,7 +13,7 @@
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&display=swap" rel="stylesheet">
     <style>
         * { font-family: 'Inter', system-ui, sans-serif; }
-        body { background-color: #F9FAFB; color: #0B1E57; }
+        body { background-color: #07090F; color: #ffffff; }
         .scrollbar-hide { scrollbar-width: none; -ms-overflow-style: none; }
         .scrollbar-hide::-webkit-scrollbar { display: none; }
         [x-cloak] { display: none !important; }
@@ -61,7 +61,7 @@
     </style>
     @stack('styles')
 </head>
-<body class="antialiased text-[#0B1E57] bg-[#F9FAFB]">
+<body class="antialiased text-white bg-[#07090F]">
     {{-- NAV --}}
     <nav x-data="{ scrolled: false, open: false }" x-init="window.addEventListener('scroll', () => scrolled = window.scrollY > 40)"
           class="fixed top-0 left-0 right-0 z-50 transition-all duration-500 h-20"
@@ -75,29 +75,29 @@
                 </div>
             </a>
             <nav class="hidden lg:flex items-center gap-1">
-                <a href="{{ route('counties.index') }}" class="px-3.5 py-2 text-sm font-semibold rounded-lg transition-all {{ request()->routeIs('counties.*') ? 'bg-[#901C1E] text-[#0B1E57]' : 'text-[#5A6480] hover:text-[#901C1E] hover:bg-[#0B1E57]/5' }}">Counties</a>
-                <a href="{{ route('marketplace.index') }}" class="px-3.5 py-2 text-sm font-semibold rounded-lg transition-all {{ request()->routeIs('marketplace.*') ? 'bg-[#901C1E] text-[#0B1E57]' : 'text-[#5A6480] hover:text-[#901C1E] hover:bg-[#0B1E57]/5' }}">Marketplace</a>
-                <a href="{{ route('exhibitions.index') }}" class="px-3.5 py-2 text-sm font-semibold rounded-lg transition-all {{ request()->routeIs('exhibitions.*') ? 'bg-[#901C1E] text-[#0B1E57]' : 'text-[#5A6480] hover:text-[#901C1E] hover:bg-[#0B1E57]/5' }}">Exhibitions</a>
-                <a href="{{ route('venues.index') }}" class="px-3.5 py-2 text-sm font-semibold rounded-lg transition-all {{ request()->routeIs('venues.*') ? 'bg-[#901C1E] text-[#0B1E57]' : 'text-[#5A6480] hover:text-[#901C1E] hover:bg-[#0B1E57]/5' }}">Venues</a>
-                <a href="{{ route('travel.index') }}" class="px-3.5 py-2 text-sm font-semibold rounded-lg transition-all {{ request()->routeIs('travel.*') ? 'bg-[#901C1E] text-[#0B1E57]' : 'text-[#5A6480] hover:text-[#901C1E] hover:bg-[#0B1E57]/5' }}">Live Events</a>
-                <a href="{{ route('screens.directory') }}" class="px-3.5 py-2 text-sm font-semibold rounded-lg transition-all {{ request()->routeIs('screens.*') ? 'bg-[#901C1E] text-[#0B1E57]' : 'text-[#5A6480] hover:text-[#901C1E] hover:bg-[#0B1E57]/5' }}">Screens</a>
+                <a href="{{ route('counties.index') }}" class="px-3.5 py-2 text-sm font-semibold rounded-lg transition-all {{ request()->routeIs('counties.*') ? 'bg-[#901C1E] text-white' : 'text-white/70 hover:text-white hover:bg-white/8' }}">Counties</a>
+                <a href="{{ route('marketplace.index') }}" class="px-3.5 py-2 text-sm font-semibold rounded-lg transition-all {{ request()->routeIs('marketplace.*') ? 'bg-[#901C1E] text-white' : 'text-white/70 hover:text-white hover:bg-white/8' }}">Marketplace</a>
+                <a href="{{ route('exhibitions.index') }}" class="px-3.5 py-2 text-sm font-semibold rounded-lg transition-all {{ request()->routeIs('exhibitions.*') ? 'bg-[#901C1E] text-white' : 'text-white/70 hover:text-white hover:bg-white/8' }}">Exhibitions</a>
+                <a href="{{ route('venues.index') }}" class="px-3.5 py-2 text-sm font-semibold rounded-lg transition-all {{ request()->routeIs('venues.*') ? 'bg-[#901C1E] text-white' : 'text-white/70 hover:text-white hover:bg-white/8' }}">Venues</a>
+                <a href="{{ route('travel.index') }}" class="px-3.5 py-2 text-sm font-semibold rounded-lg transition-all {{ request()->routeIs('travel.*') ? 'bg-[#901C1E] text-white' : 'text-white/70 hover:text-white hover:bg-white/8' }}">Live Events</a>
+                <a href="{{ route('screens.directory') }}" class="px-3.5 py-2 text-sm font-semibold rounded-lg transition-all {{ request()->routeIs('screens.*') ? 'bg-[#901C1E] text-white' : 'text-white/70 hover:text-white hover:bg-white/8' }}">Screens</a>
             </nav>
             <div class="flex items-center gap-2">
                 <a href="{{ route('cart.index') }}" class="relative p-2 text-[#5A6480] hover:text-[#901C1E] transition-colors" aria-label="Cart">
                     <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 3h2l.4 2M7 13h10l4-8H5.4M7 13L5.4 5M7 13l-2.293 2.293c-.63.63-.184 1.707.707 1.707H17m0 0a2 2 0 100 4 2 2 0 000-4zm-8 2a2 2 0 11-4 0 2 2 0 014 0z"/></svg>
                 </a>
                 @auth
-                <a href="{{ route('dashboard.index') }}" class="inline-flex items-center gap-2 font-bold tracking-wide transition-all duration-200 px-4 text-xs h-9 rounded-xl bg-[#901C1E] text-[#0B1E57] hover:bg-[#7a181a]">
+                <a href="{{ route('dashboard.index') }}" class="inline-flex items-center gap-2 font-bold tracking-wide transition-all duration-200 px-4 text-xs h-9 rounded-xl bg-[#901C1E] text-white hover:bg-[#7a181a]">
                     Dashboard
                 </a>
-                <a href="{{ route('admin.portal') }}" class="hidden sm:inline-flex items-center gap-2 font-bold tracking-wide transition-all duration-200 px-4 text-xs h-9 rounded-xl border border-[#901C1E]/30 text-[#901C1E] hover:bg-[#901C1E]/10" title="Admin">
+                <a href="{{ route('admin.portal') }}" class="hidden sm:inline-flex items-center gap-2 font-bold tracking-wide transition-all duration-200 px-4 text-xs h-9 rounded-xl border border-white/20 text-white/70 hover:bg-white/10" title="Admin">
                     Admin
                 </a>
                 <form method="POST" action="{{ route('logout') }}" class="inline">@csrf
-                    <button type="submit" class="inline-flex items-center gap-2 font-bold tracking-wide transition-all duration-200 px-3 text-xs h-9 rounded-xl border border-[#0B1E57]/20 text-[#5A6480] hover:bg-[#0B1E57]/5">Logout</button>
+                    <button type="submit" class="inline-flex items-center gap-2 font-bold tracking-wide transition-all duration-200 px-3 text-xs h-9 rounded-xl border border-white/20 text-white/60 hover:bg-white/10">Logout</button>
                 </form>
                 @else
-                <a href="{{ route('login') }}" class="inline-flex items-center gap-2 font-bold tracking-wide transition-all duration-200 px-4 text-xs h-9 rounded-xl bg-[#901C1E] text-[#0B1E57] hover:bg-[#7a181a]">Sign In</a>
+                <a href="{{ route('login') }}" class="inline-flex items-center gap-2 font-bold tracking-wide transition-all duration-200 px-4 text-xs h-9 rounded-xl bg-[#FFCD05] text-[#07090F] font-bold hover:bg-[#e6b904]">Sign In</a>
                 @endauth
                 <button @click="open = !open" class="lg:hidden text-[#5A6480] hover:text-[#901C1E] p-2" aria-label="Menu">
                     <svg class="w-5 h-5" x-show="!open" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16"/></svg>
@@ -105,16 +105,16 @@
                 </button>
             </div>
         </div>
-        <div x-show="open" x-cloak x-transition class="lg:hidden absolute top-full left-0 right-0 bg-white border-b border-[#0B1E57]/8 shadow-lg p-4 flex flex-col gap-1">
-            <a href="{{ route('counties.index') }}" class="text-left px-4 py-3 text-sm font-semibold text-[#5A6480] hover:text-[#901C1E] hover:bg-[#0B1E57]/5 rounded-lg">Counties</a>
-            <a href="{{ route('marketplace.index') }}" class="text-left px-4 py-3 text-sm font-semibold text-[#5A6480] hover:text-[#901C1E] hover:bg-[#0B1E57]/5 rounded-lg">Marketplace</a>
-            <a href="{{ route('exhibitions.index') }}" class="text-left px-4 py-3 text-sm font-semibold text-[#5A6480] hover:text-[#901C1E] hover:bg-[#0B1E57]/5 rounded-lg">Exhibitions</a>
-            <a href="{{ route('venues.index') }}" class="text-left px-4 py-3 text-sm font-semibold text-[#5A6480] hover:text-[#901C1E] hover:bg-[#0B1E57]/5 rounded-lg">Venues</a>
-            <a href="{{ route('travel.index') }}" class="text-left px-4 py-3 text-sm font-semibold text-[#5A6480] hover:text-[#901C1E] hover:bg-[#0B1E57]/5 rounded-lg">Live Events</a>
-            <a href="{{ route('screens.directory') }}" class="text-left px-4 py-3 text-sm font-semibold text-[#5A6480] hover:text-[#901C1E] hover:bg-[#0B1E57]/5 rounded-lg">Screens</a>
+        <div x-show="open" x-cloak x-transition class="lg:hidden absolute top-full left-0 right-0 bg-[#0D1220] border-b border-white/8 p-4 flex flex-col gap-1">
+            <a href="{{ route('counties.index') }}" class="text-left px-4 py-3 text-sm font-semibold text-white/70 hover:text-white hover:bg-white/8 rounded-lg">Counties</a>
+            <a href="{{ route('marketplace.index') }}" class="text-left px-4 py-3 text-sm font-semibold text-white/70 hover:text-white hover:bg-white/8 rounded-lg">Marketplace</a>
+            <a href="{{ route('exhibitions.index') }}" class="text-left px-4 py-3 text-sm font-semibold text-white/70 hover:text-white hover:bg-white/8 rounded-lg">Exhibitions</a>
+            <a href="{{ route('venues.index') }}" class="text-left px-4 py-3 text-sm font-semibold text-white/70 hover:text-white hover:bg-white/8 rounded-lg">Venues</a>
+            <a href="{{ route('travel.index') }}" class="text-left px-4 py-3 text-sm font-semibold text-white/70 hover:text-white hover:bg-white/8 rounded-lg">Live Events</a>
+            <a href="{{ route('screens.directory') }}" class="text-left px-4 py-3 text-sm font-semibold text-white/70 hover:text-white hover:bg-white/8 rounded-lg">Screens</a>
             @auth
-            <a href="{{ route('dashboard.index') }}" class="text-left px-4 py-3 text-sm font-semibold text-[#901C1E] font-bold hover:bg-[#0B1E57]/5 rounded-lg">Dashboard</a>
-            <a href="{{ route('admin.portal') }}" class="text-left px-4 py-3 text-sm font-semibold text-[#901C1E] hover:bg-[#0B1E57]/5 rounded-lg">Admin</a>
+            <a href="{{ route('dashboard.index') }}" class="text-left px-4 py-3 text-sm font-semibold text-kicc-gold hover:bg-white/8 rounded-lg">Dashboard</a>
+            <a href="{{ route('admin.portal') }}" class="text-left px-4 py-3 text-sm font-semibold text-white/70 hover:text-white hover:bg-white/8 rounded-lg">Admin</a>
             @else
             <a href="{{ route('login') }}" class="text-left px-4 py-3 text-sm font-semibold text-[#5A6480] hover:text-[#901C1E] hover:bg-[#0B1E57]/5 rounded-lg">Sign In</a>
             @endauth
@@ -126,7 +126,7 @@
     </main>
 
     {{-- FOOTER --}}
-    <footer class="bg-[#0B1E57] mt-20">
+    <footer class="bg-[#050709] mt-20">
         <div class="max-w-7xl mx-auto px-5 py-14 grid grid-cols-1 md:grid-cols-4 gap-10">
             <div>
                 <img src="{{ media('kicc/kicc-logo.png') }}" alt="KICC" class="h-12 w-auto object-contain mb-3 brightness-0 invert" style="filter: brightness(0) invert(1);">
@@ -144,30 +144,30 @@
                 </div>
             </div>
             <div>
-                <h4 class="font-bold text-[#5A6480] text-xs uppercase tracking-[0.15em] mb-4">Platform</h4>
+                <h4 class="font-bold text-white/60 text-xs uppercase tracking-[0.15em] mb-4">Platform</h4>
                 <ul class="space-y-2.5">
-                    <li><a href="{{ route('counties.index') }}" class="text-[#5A6480] hover:text-[#FFCD05] text-sm transition-colors">Counties</a></li>
-                    <li><a href="{{ route('marketplace.index') }}" class="text-[#5A6480] hover:text-[#FFCD05] text-sm transition-colors">Marketplace</a></li>
-                    <li><a href="{{ route('exhibitions.index') }}" class="text-[#5A6480] hover:text-[#FFCD05] text-sm transition-colors">Exhibitions</a></li>
-                    <li><a href="{{ route('venues.index') }}" class="text-[#5A6480] hover:text-[#FFCD05] text-sm transition-colors">Venues</a></li>
+                    <li><a href="{{ route('counties.index') }}" class="text-white/40 hover:text-kicc-gold text-sm transition-colors">Counties</a></li>
+                    <li><a href="{{ route('marketplace.index') }}" class="text-white/40 hover:text-kicc-gold text-sm transition-colors">Marketplace</a></li>
+                    <li><a href="{{ route('exhibitions.index') }}" class="text-white/40 hover:text-kicc-gold text-sm transition-colors">Exhibitions</a></li>
+                    <li><a href="{{ route('venues.index') }}" class="text-white/40 hover:text-kicc-gold text-sm transition-colors">Venues</a></li>
                 </ul>
             </div>
             <div>
-                <h4 class="font-bold text-[#5A6480] text-xs uppercase tracking-[0.15em] mb-4">Dashboards</h4>
+                <h4 class="font-bold text-white/60 text-xs uppercase tracking-[0.15em] mb-4">Dashboards</h4>
                 <ul class="space-y-2.5">
-                    <li><a href="{{ route('dashboard.index') }}" class="text-[#5A6480] hover:text-[#FFCD05] text-sm transition-colors">My Dashboard</a></li>
-                    <li><a href="{{ route('dashboard.exhibitions') }}" class="text-[#5A6480] hover:text-[#FFCD05] text-sm transition-colors">My Exhibitions</a></li>
-                    <li><a href="{{ route('dashboard.bookings') }}" class="text-[#5A6480] hover:text-[#FFCD05] text-sm transition-colors">My Bookings</a></li>
-                    <li><a href="{{ route('admin.portal') }}" class="text-[#5A6480] hover:text-[#FFCD05] text-sm transition-colors">Admin Portal</a></li>
+                    <li><a href="{{ route('dashboard.index') }}" class="text-white/40 hover:text-kicc-gold text-sm transition-colors">My Dashboard</a></li>
+                    <li><a href="{{ route('dashboard.exhibitions') }}" class="text-white/40 hover:text-kicc-gold text-sm transition-colors">My Exhibitions</a></li>
+                    <li><a href="{{ route('dashboard.bookings') }}" class="text-white/40 hover:text-kicc-gold text-sm transition-colors">My Bookings</a></li>
+                    <li><a href="{{ route('admin.portal') }}" class="text-white/40 hover:text-kicc-gold text-sm transition-colors">Admin Portal</a></li>
                 </ul>
             </div>
             <div>
-                <h4 class="font-bold text-[#5A6480] text-xs uppercase tracking-[0.15em] mb-4">Information</h4>
+                <h4 class="font-bold text-white/60 text-xs uppercase tracking-[0.15em] mb-4">Information</h4>
                 <ul class="space-y-2.5">
-                    <li><a href="{{ route('travel.index') }}" class="text-[#5A6480] hover:text-[#FFCD05] text-sm transition-colors">Travel</a></li>
-                    <li><a href="{{ route('screens.directory') }}" class="text-[#5A6480] hover:text-[#FFCD05] text-sm transition-colors">Screens</a></li>
-                    <li><a href="{{ route('exhibition-3d.map') }}" class="text-[#5A6480] hover:text-[#FFCD05] text-sm transition-colors">3D Tour</a></li>
-                    <li><a href="{{ route('operations.index') }}" class="text-[#5A6480] hover:text-[#FFCD05] text-sm transition-colors">Operations</a></li>
+                    <li><a href="{{ route('travel.index') }}" class="text-white/40 hover:text-kicc-gold text-sm transition-colors">Travel</a></li>
+                    <li><a href="{{ route('screens.directory') }}" class="text-white/40 hover:text-kicc-gold text-sm transition-colors">Screens</a></li>
+                    <li><a href="{{ route('exhibition-3d.map') }}" class="text-white/40 hover:text-kicc-gold text-sm transition-colors">3D Tour</a></li>
+                    <li><a href="{{ route('operations.index') }}" class="text-white/40 hover:text-kicc-gold text-sm transition-colors">Operations</a></li>
                 </ul>
             </div>
         </div>
