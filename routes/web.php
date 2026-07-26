@@ -22,8 +22,6 @@ use App\Http\Controllers\Web\Room3dController;
 
 Route::get('/', HomeController::class)->name('home');
 
-Route::get('/', HomeController::class)->name('home');
-
 Route::get('/counties', [CountyController::class, 'index'])->name('counties.index');
 Route::get('/counties/{county}', [CountyController::class, 'show'])->name('counties.show');
 Route::get('/counties/{county}/sector/{sector}', [CountyController::class, 'sector'])->name('counties.sector');

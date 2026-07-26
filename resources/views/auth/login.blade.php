@@ -46,9 +46,6 @@
                     </div>
                 </button>
             </div>
-            <div class="mt-6 text-center">
-                <a href="{{ route('login') }}" class="text-sm text-white/40 hover:text-kicc-gold font-semibold transition-colors">&larr; Standard user login</a>
-            </div>
         </div>
 
         {{-- STEP 2: Login form (shared) --}}
@@ -70,18 +67,18 @@
                     <input type="hidden" name="admin_type" :value="step">
                     <div class="space-y-4">
                         <div>
-                            <label class="block text-[10px] font-bold text-white/30 uppercase tracking-wider mb-1.5">Email</label>
-                            <input type="email" name="login" required class="w-full bg-[#141B2E] border border-white/10 focus:border-kicc-gold/60 rounded-xl px-4 py-2.5 text-sm text-white placeholder:text-white/25 outline-none transition-colors">
+                            <label class="block text-[10px] font-bold text-[#0B1E57]/35 uppercase tracking-wider mb-1.5">Email</label>
+                            <input type="email" name="login" required class="w-full bg-[#F9FAFB] border border-[#0B1E57]/10 focus:border-[#FFCD05]/60 rounded-xl px-4 py-2.5 text-sm text-[#0B1E57] placeholder:text-[#5A6480]/50 outline-none transition-colors">
                         </div>
                         <div>
-                            <label class="block text-[10px] font-bold text-white/30 uppercase tracking-wider mb-1.5">Password</label>
-                            <input type="password" name="password" required class="w-full bg-[#141B2E] border border-white/10 focus:border-kicc-gold/60 rounded-xl px-4 py-2.5 text-sm text-white placeholder:text-white/25 outline-none transition-colors">
+                            <label class="block text-[10px] font-bold text-[#0B1E57]/35 uppercase tracking-wider mb-1.5">Password</label>
+                            <input type="password" name="password" required class="w-full bg-[#F9FAFB] border border-[#0B1E57]/10 focus:border-[#FFCD05]/60 rounded-xl px-4 py-2.5 text-sm text-[#0B1E57] placeholder:text-[#5A6480]/50 outline-none transition-colors">
                         </div>
                     </div>
-                    <button type="submit" data-magnetic class="w-full inline-flex items-center justify-center gap-2 font-bold tracking-wide transition-all duration-200 mt-6 px-8 text-base h-14 rounded-xl bg-[#901C1E] text-white hover:bg-[#7b1618] active:scale-[0.97]">Sign In</button>
+                    <button type="submit" class="w-full inline-flex items-center justify-center gap-2 font-bold tracking-wide transition-all duration-200 mt-6 px-8 text-base h-14 rounded-xl bg-[#901C1E] text-white hover:bg-[#7b1618]">Sign In</button>
                 </form>
-                <div class="mt-6 pt-5 border-t border-white/8 text-center">
-                    <a href="{{ route('register') }}" class="text-kicc-gold text-sm font-bold hover:underline">Don't have an account? Register</a>
+                <div class="mt-6 pt-5 border-t border-[#0B1E57]/8 text-center">
+                    <a href="{{ route('register') }}" class="text-[#FFCD05] text-sm font-bold hover:underline">Don't have an account? Register</a>
                 </div>
             </div>
         </div>
