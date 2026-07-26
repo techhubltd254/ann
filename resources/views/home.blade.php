@@ -5,16 +5,16 @@
 
 @section('content')
 {{-- ═══ HERO — Parallax tower + floating orbs + animated headline ═══ --}}
-<section class="relative min-h-[92vh] flex items-center overflow-hidden">
+<section class="relative min-h-[92vh] flex items-center overflow-hidden" data-scroll-3d>
     <img src="{{ media('kicc/tower-night.jpg') }}" alt="KICC Tower"
-         class="absolute inset-0 w-full h-full object-cover" data-parallax="0.25">
-    <div class="absolute inset-0 bg-gradient-to-r from-[#07090F] via-[#07090F]/75 to-transparent"></div>
-    <div class="absolute inset-0 bg-gradient-to-t from-[#07090F] via-transparent to-[#07090F]/40"></div>
+         class="absolute inset-0 w-full h-full object-cover" data-parallax="0.25" data-depth="0.8" style="will-change: transform;">
+    <div class="absolute inset-0 bg-gradient-to-r from-[#0a1024] via-[#0a1024]/75 to-transparent" data-depth="0.2"></div>
+    <div class="absolute inset-0 bg-gradient-to-t from-[#0a1024] via-transparent to-[#0a1024]/40" data-depth="0.1"></div>
 
     {{-- Floating light orbs --}}
-    <div class="absolute w-72 h-72 rounded-full bg-[#FFCD05]/10 blur-3xl animate-float-slow top-[15%] right-[10%]"></div>
-    <div class="absolute w-96 h-96 rounded-full bg-[#901C1E]/15 blur-3xl animate-float-slower bottom-[5%] left-[35%]"></div>
-    <div class="absolute w-40 h-40 rounded-full bg-[#0B1E57]/25 blur-2xl animate-float-slow top-[55%] right-[35%]"></div>
+    <div class="absolute w-72 h-72 rounded-full bg-[#FFCD05]/10 blur-3xl animate-float-slow top-[15%] right-[10%]" data-depth="0.6"></div>
+    <div class="absolute w-96 h-96 rounded-full bg-[#901C1E]/15 blur-3xl animate-float-slower bottom-[5%] left-[35%]" data-depth="0.5"></div>
+    <div class="absolute w-40 h-40 rounded-full bg-[#0B1E57]/25 blur-2xl animate-float-slow top-[55%] right-[35%]" data-depth="0.7"></div>
 
     <div class="relative max-w-7xl mx-auto px-5 pt-28 pb-20 w-full grid md:grid-cols-2 gap-10 items-center">
         <div>
@@ -47,10 +47,10 @@
             </div>
         </div>
 
-        <div class="grid grid-cols-2 gap-4" data-reveal="zoom" data-reveal-delay="300">
+        <div class="grid grid-cols-2 gap-4" data-reveal="zoom" data-reveal-delay="300" data-depth="0.15">
             @php $stats = [['value'=>52,'suffix'=>'+','label'=>'Years of Excellence'],['value'=>47,'suffix'=>'','label'=>'Kenya Counties'],['value'=>18,'suffix'=>'','label'=>'Digital Screens'],['value'=>200,'suffix'=>'+','label'=>'Events per Year']]; @endphp
             @foreach($stats as $i => $s)
-            <div class="bg-white/5 backdrop-blur-sm border border-white/12 rounded-2xl p-6 card-hover" data-tilt="10">
+            <div class="bg-[#0a1024]/60 backdrop-blur-sm border border-white/12 rounded-2xl p-6 card-hover" data-tilt="10" data-depth="{{ 0.1 + $i * 0.05 }}">
                 <div class="tilt-glare"></div>
                 <div class="text-4xl font-black text-kicc-gold">
                     <span data-count="{{ $s['value'] }}" data-count-duration="{{ 1400 + $i * 250 }}">0</span><span class="text-2xl">{{ $s['suffix'] }}</span>
@@ -74,7 +74,7 @@
 </div>
 
 {{-- ═══ 3D EXPERIENCES — interactive cards ═══ --}}
-<section class="py-20 bg-[#07090F] relative overflow-hidden">
+<section class="py-20 bg-[#0a1024] relative overflow-hidden" data-scroll-3d>
     <div class="absolute w-[500px] h-[500px] rounded-full bg-[#0B1E57]/10 blur-3xl -top-40 -right-40"></div>
     <div class="max-w-7xl mx-auto px-5 relative">
         <div class="mb-10" data-reveal>
@@ -109,7 +109,7 @@
 </section>
 
 {{-- ═══ MARKETPLACE PRODUCTS ═══ --}}
-<section class="border-y border-white/8 py-20 bg-[#0D1220] relative overflow-hidden">
+<section class="border-y border-white/8 py-20 bg-[#0a1024] relative overflow-hidden" data-scroll-3d>
     <div class="absolute w-[400px] h-[400px] rounded-full bg-[#FFCD05]/5 blur-3xl top-0 left-1/3"></div>
     <div class="max-w-7xl mx-auto px-5 relative">
         <div class="flex flex-col md:flex-row md:items-end justify-between mb-10 gap-4" data-reveal>
@@ -200,7 +200,7 @@
 </section>
 
 {{-- ═══ VENUES ═══ --}}
-<section class="bg-[#0D1220] border-y border-white/8 py-20 relative overflow-hidden">
+<section class="bg-[#0a1024] border-y border-white/8 py-20 relative overflow-hidden" data-scroll-3d>
     <div class="absolute w-[450px] h-[450px] rounded-full bg-[#901C1E]/8 blur-3xl -bottom-40 -left-40"></div>
     <div class="max-w-7xl mx-auto px-5 relative">
         <div class="flex flex-col md:flex-row md:items-end justify-between mb-10 gap-4" data-reveal>
