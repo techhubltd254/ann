@@ -1,4 +1,7 @@
 <div class="flex items-center gap-2">
-    <span class="text-xl font-extrabold tracking-tight text-amber-600">K</span>
-    <span class="text-sm font-bold text-gray-900">Platform Admin</span>
+    <img src="{{ media('kicc/kicc-logo.png') }}" alt="KICC" class="h-8 w-auto brightness-0 invert" style="filter: brightness(0) invert(1);">
+    <div class="leading-tight">
+        <div class="text-xs font-extrabold tracking-tight text-amber-400">KICC</div>
+        <div class="text-[10px] font-bold text-gray-300">Platform Admin</div>
+    </div>
 </div>
