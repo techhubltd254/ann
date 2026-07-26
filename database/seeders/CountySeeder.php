@@ -32,6 +32,7 @@ class CountySeeder extends Seeder
                     'slug' => Str::slug($data['name']),
                     'former_province' => $data['former_province'],
                     'economic_zone' => $data['economic_zone'],
+                    'region' => $data['region'] ?? null,
                     'population_2024' => is_numeric($data['population_2024'])
                         ? (int) str_replace(',', '', (string) $data['population_2024'])
                         : null,
