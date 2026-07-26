@@ -10,7 +10,7 @@ class County extends Model
 {
     protected $fillable = [
         'name', 'capital', 'code', 'former_province', 'economic_zone',
-        'population_2024', 'area_km2', 'latitude', 'longitude',
+        'region', 'population_2024', 'area_km2', 'latitude', 'longitude',
         'weather_station_id',         'primary_sectors', 'icon_emoji', 'profile_image',
         'tagline', 'description', 'tourism_highlights',
         'warmest_month', 'coolest_month', 'rainy_season', 'dry_season',
