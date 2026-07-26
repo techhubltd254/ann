@@ -11,15 +11,27 @@
     "latitude": -4.0435,
     "longitude": 39.6682,
     "weather_station_id": "mombasa",
-    "primary_sectors": ["Tourism", "Transport", "Trade", "Manufacturing"],
+    "primary_sectors": [
+      "Tourism",
+      "Transport",
+      "Trade",
+      "Manufacturing"
+    ],
     "icon_emoji": "🏖️",
     "tagline": "Kenya's coastal gateway — tourism, trade, and cultural fusion",
     "description": "Mombasa is Kenya's second-largest city and primary port. Known for white sand beaches, historic Fort Jesus, and vibrant Swahili culture. The economic engine of the Coast region.",
-    "tourism_highlights": ["Diani Beach", "Fort Jesus", "Haller Park", "Mombasa Marine National Park", "Old Town"],
+    "tourism_highlights": [
+      "Diani Beach",
+      "Fort Jesus",
+      "Haller Park",
+      "Mombasa Marine National Park",
+      "Old Town"
+    ],
     "warmest_month": "February (33°C)",
     "coolest_month": "July (27°C)",
     "rainy_season": "April-June, October-November",
-    "dry_season": "December-March, July-September"
+    "dry_season": "December-March, July-September",
+    "region": "Coast"
   },
   {
     "id": 2,
@@ -33,15 +45,25 @@
     "latitude": -4.1814,
     "longitude": 39.4634,
     "weather_station_id": "ukunda",
-    "primary_sectors": ["Tourism", "Mining", "Agriculture"],
+    "primary_sectors": [
+      "Tourism",
+      "Mining",
+      "Agriculture"
+    ],
     "icon_emoji": "⛱️",
     "tagline": "Home to Diani — Kenya's premier beach destination",
     "description": "Kwale County features Diani Beach, Shimba Hills National Reserve, and titanium mining operations. A growing eco-tourism hub.",
-    "tourism_highlights": ["Diani Beach", "Shimba Hills National Reserve", "Wasini Island", "Kisite-Mpunguti Marine Park"],
+    "tourism_highlights": [
+      "Diani Beach",
+      "Shimba Hills National Reserve",
+      "Wasini Island",
+      "Kisite-Mpunguti Marine Park"
+    ],
     "warmest_month": "March (32°C)",
     "coolest_month": "August (26°C)",
     "rainy_season": "April-June, October-November",
-    "dry_season": "December-March, July-September"
+    "dry_season": "December-March, July-September",
+    "region": "Coast"
   },
   {
     "id": 3,
@@ -55,15 +77,25 @@
     "latitude": -3.5106,
     "longitude": 39.9093,
     "weather_station_id": "malindi",
-    "primary_sectors": ["Tourism", "Agriculture", "Fisheries"],
+    "primary_sectors": [
+      "Tourism",
+      "Agriculture",
+      "Fisheries"
+    ],
     "icon_emoji": "🌴",
     "tagline": "Coral coast — marine parks, resorts, and Swahili heritage",
     "description": "Kilifi County stretches along Kenya's coast from north of Mombasa to Malindi. Famous for Watamu Marine Park, Gede Ruins, and the Sabaki River Estuary.",
-    "tourism_highlights": ["Watamu Marine National Park", "Malindi Marine Park", "Gede Ruins", "Arabuko Sokoke Forest"],
+    "tourism_highlights": [
+      "Watamu Marine National Park",
+      "Malindi Marine Park",
+      "Gede Ruins",
+      "Arabuko Sokoke Forest"
+    ],
     "warmest_month": "March (33°C)",
     "coolest_month": "July (27°C)",
     "rainy_season": "April-June, October-November",
-    "dry_season": "December-March, July-September"
+    "dry_season": "December-March, July-September",
+    "region": "Coast"
   },
   {
     "id": 4,
@@ -77,15 +109,24 @@
     "latitude": -1.5114,
     "longitude": 40.0422,
     "weather_station_id": "hola",
-    "primary_sectors": ["Agriculture", "Pastoralism", "Energy"],
+    "primary_sectors": [
+      "Agriculture",
+      "Pastoralism",
+      "Energy"
+    ],
     "icon_emoji": "🌾",
     "tagline": "The river county — irrigation, livestock, and renewable energy",
     "description": "Tana River County is named after Kenya's longest river. Primarily pastoralist with irrigated agriculture along the Tana. Home to the Tana River Primate Reserve and large-scale wind power projects.",
-    "tourism_highlights": ["Tana River Primate Reserve", "Kora National Park", "wind farm tours"],
+    "tourism_highlights": [
+      "Tana River Primate Reserve",
+      "Kora National Park",
+      "wind farm tours"
+    ],
     "warmest_month": "February (35°C)",
     "coolest_month": "July (28°C)",
     "rainy_season": "March-May, October-December",
-    "dry_season": "January-February, June-September"
+    "dry_season": "January-February, June-September",
+    "region": "Coast"
   },
   {
     "id": 5,
@@ -99,15 +140,26 @@
     "latitude": -2.2694,
     "longitude": 40.9009,
     "weather_station_id": "lamu",
-    "primary_sectors": ["Tourism", "Fisheries", "Maritime Trade"],
+    "primary_sectors": [
+      "Tourism",
+      "Fisheries",
+      "Maritime Trade"
+    ],
     "icon_emoji": "⛵",
     "tagline": "UNESCO heritage island — Swahili culture, dhows, and untouched beaches",
     "description": "Lamu is Kenya's oldest continuously inhabited town and a UNESCO World Heritage site. Car-free streets, traditional Swahili architecture, and the famous Lamu Cultural Festival.",
-    "tourism_highlights": ["Lamu Old Town (UNESCO)", "Sheila Beach", "Kiwayu Island", "Lamu Cultural Festival", "Manda Island"],
+    "tourism_highlights": [
+      "Lamu Old Town (UNESCO)",
+      "Sheila Beach",
+      "Kiwayu Island",
+      "Lamu Cultural Festival",
+      "Manda Island"
+    ],
     "warmest_month": "March (34°C)",
     "coolest_month": "July (28°C)",
     "rainy_season": "April-June, October-November",
-    "dry_season": "December-March, July-September"
+    "dry_season": "December-March, July-September",
+    "region": "Coast"
   },
   {
     "id": 6,
@@ -121,15 +173,25 @@
     "latitude": -3.3942,
     "longitude": 38.5558,
     "weather_station_id": "voi",
-    "primary_sectors": ["Tourism", "Mining", "Agriculture"],
+    "primary_sectors": [
+      "Tourism",
+      "Mining",
+      "Agriculture"
+    ],
     "icon_emoji": "🐘",
     "tagline": "Safari capital — Tsavo's vast wilderness and gemstone mines",
     "description": "Taita-Taveta is home to Tsavo East and Tsavo West National Parks, Kenya's largest protected areas. Also known for gemstone mining (tsavorite, tanzanite) and the Taita Hills.",
-    "tourism_highlights": ["Tsavo East National Park", "Tsavo West National Park", "Taita Hills Wildlife Sanctuary", "Mzuguni Elephant Sanctuary"],
+    "tourism_highlights": [
+      "Tsavo East National Park",
+      "Tsavo West National Park",
+      "Taita Hills Wildlife Sanctuary",
+      "Mzuguni Elephant Sanctuary"
+    ],
     "warmest_month": "February (34°C)",
     "coolest_month": "July (25°C)",
     "rainy_season": "March-May, October-December",
-    "dry_season": "January-February, June-September"
+    "dry_season": "January-February, June-September",
+    "region": "Coast"
   },
   {
     "id": 7,
@@ -141,17 +203,26 @@
     "population_2024": 841000,
     "area_km2": 44174.1,
     "latitude": -0.4563,
-    "longitude": 39.6580,
+    "longitude": 39.658,
     "weather_station_id": "garissa",
-    "primary_sectors": ["Pastoralism", "Trade", "Cross-Border Commerce"],
+    "primary_sectors": [
+      "Pastoralism",
+      "Trade",
+      "Cross-Border Commerce"
+    ],
     "icon_emoji": "🐪",
     "tagline": "Gateway to North Eastern Kenya — livestock trade and Somali heritage",
     "description": "Garissa is the largest county in the former North Eastern Province. A centre for livestock trade and cross-border commerce with Somalia.",
-    "tourism_highlights": ["Tana River Basin", "Boni Forest Reserve", "Somali cultural heritage tours"],
+    "tourism_highlights": [
+      "Tana River Basin",
+      "Boni Forest Reserve",
+      "Somali cultural heritage tours"
+    ],
     "warmest_month": "March (37°C)",
     "coolest_month": "July (30°C)",
     "rainy_season": "April-June, October-November",
-    "dry_season": "January-March, July-September"
+    "dry_season": "January-March, July-September",
+    "region": "North Eastern"
   },
   {
     "id": 8,
@@ -165,15 +236,24 @@
     "latitude": 1.7471,
     "longitude": 40.0623,
     "weather_station_id": "wajir",
-    "primary_sectors": ["Pastoralism", "Trade", "Telecommunications"],
+    "primary_sectors": [
+      "Pastoralism",
+      "Trade",
+      "Telecommunications"
+    ],
     "icon_emoji": "📡",
     "tagline": "The frontier county — connectivity, livestock, and cultural richness",
     "description": "Wajir is Kenya's second-largest county by area. Emerging as a telecom and trade hub for the Northern region with growing mobile connectivity and livestock export markets.",
-    "tourism_highlights": ["Wajir Museum", "desert cultural experiences", "bird watching in seasonal wetlands"],
+    "tourism_highlights": [
+      "Wajir Museum",
+      "desert cultural experiences",
+      "bird watching in seasonal wetlands"
+    ],
     "warmest_month": "March (37°C)",
     "coolest_month": "July (29°C)",
     "rainy_season": "April-June, October-November",
-    "dry_season": "January-March, July-September"
+    "dry_season": "January-March, July-September",
+    "region": "North Eastern"
   },
   {
     "id": 9,
@@ -187,15 +267,24 @@
     "latitude": 3.9269,
     "longitude": 41.8461,
     "weather_station_id": "mandera",
-    "primary_sectors": ["Pastoralism", "Cross-Border Trade", "Education"],
+    "primary_sectors": [
+      "Pastoralism",
+      "Cross-Border Trade",
+      "Education"
+    ],
     "icon_emoji": "📚",
     "tagline": "Kenya's north-eastern anchor — education and cross-border trade",
     "description": "Mandera is Kenya's easternmost county, bordering Ethiopia and Somalia. Known for its investment in education, livestock economy, and growing cross-border trade.",
-    "tourism_highlights": ["Borger National Reserve", "Dawa River", "Cultural exchange experiences"],
+    "tourism_highlights": [
+      "Borger National Reserve",
+      "Dawa River",
+      "Cultural exchange experiences"
+    ],
     "warmest_month": "March (38°C)",
     "coolest_month": "July (30°C)",
     "rainy_season": "April-June, October-November",
-    "dry_season": "January-March, July-September"
+    "dry_season": "January-March, July-September",
+    "region": "North Eastern"
   },
   {
     "id": 10,
@@ -209,15 +298,26 @@
     "latitude": 2.3309,
     "longitude": 37.9945,
     "weather_station_id": "marsabit",
-    "primary_sectors": ["Pastoralism", "Conservation", "Renewable Energy"],
+    "primary_sectors": [
+      "Pastoralism",
+      "Conservation",
+      "Renewable Energy"
+    ],
     "icon_emoji": "🏔️",
     "tagline": "Lake Turkana's southern shore — volcanic landscapes and ancient culture",
     "description": "Marsabit County encompasses Mount Marsabit, the Chalbi Desert, and the southern shores of Lake Turkana. Rich in archaeological sites and wind energy potential.",
-    "tourism_highlights": ["Lake Turkana", "Marsabit National Park", "Chalbi Desert", "Mount Marsabit", "Koobi Fora archaeological site"],
+    "tourism_highlights": [
+      "Lake Turkana",
+      "Marsabit National Park",
+      "Chalbi Desert",
+      "Mount Marsabit",
+      "Koobi Fora archaeological site"
+    ],
     "warmest_month": "March (34°C)",
     "coolest_month": "July (24°C)",
     "rainy_season": "March-May, October-November",
-    "dry_season": "June-September, December-February"
+    "dry_season": "June-September, December-February",
+    "region": "Eastern"
   },
   {
     "id": 11,
@@ -231,15 +331,25 @@
     "latitude": 0.3576,
     "longitude": 37.5833,
     "weather_station_id": "isiolo",
-    "primary_sectors": ["Pastoralism", "Tourism", "Trade"],
+    "primary_sectors": [
+      "Pastoralism",
+      "Tourism",
+      "Trade"
+    ],
     "icon_emoji": "🦒",
     "tagline": "Gateway to the north — wildlife corridor and cultural melting pot",
     "description": "Isiolo is the gateway to Northern Kenya. Home to the Lewa Wildlife Conservancy and a key stop on the route to Marsabit and Ethiopia. A cultural crossroads of Borana, Samburu, Meru, and Somali peoples.",
-    "tourism_highlights": ["Lewa Wildlife Conservancy", "Buffalo Springs National Reserve", "Samburu National Reserve", "Bisanadi National Reserve"],
+    "tourism_highlights": [
+      "Lewa Wildlife Conservancy",
+      "Buffalo Springs National Reserve",
+      "Samburu National Reserve",
+      "Bisanadi National Reserve"
+    ],
     "warmest_month": "March (34°C)",
     "coolest_month": "July (25°C)",
     "rainy_season": "March-May, October-November",
-    "dry_season": "June-September, December-February"
+    "dry_season": "June-September, December-February",
+    "region": "Eastern"
   },
   {
     "id": 12,
@@ -250,18 +360,28 @@
     "economic_zone": "Central Highlands",
     "population_2024": 1529000,
     "area_km2": 7003.5,
-    "latitude": 0.0500,
-    "longitude": 37.6500,
+    "latitude": 0.05,
+    "longitude": 37.65,
     "weather_station_id": "meru",
-    "primary_sectors": ["Agriculture", "Tourism", "Education"],
+    "primary_sectors": [
+      "Agriculture",
+      "Tourism",
+      "Education"
+    ],
     "icon_emoji": "🌿",
     "tagline": "The green county — tea, coffee, and the Nyambene Hills",
     "description": "Meru County is a major agricultural producer (tea, coffee, miraa, dairy) on the eastern slopes of Mount Kenya. Home to Meru National Park, the Nyambene Hills, and the Meru people's rich cultural heritage.",
-    "tourism_highlights": ["Meru National Park", "Mount Kenya (eastern approach)", "Nyambene Hills", "Lewa Wildlife Conservancy (border)"],
+    "tourism_highlights": [
+      "Meru National Park",
+      "Mount Kenya (eastern approach)",
+      "Nyambene Hills",
+      "Lewa Wildlife Conservancy (border)"
+    ],
     "warmest_month": "March (28°C)",
     "coolest_month": "July (18°C)",
     "rainy_season": "March-May, October-December",
-    "dry_season": "January-February, June-September"
+    "dry_season": "January-February, June-September",
+    "region": "Eastern"
   },
   {
     "id": 13,
@@ -272,18 +392,28 @@
     "economic_zone": "Central Highlands",
     "population_2024": 393000,
     "area_km2": 2505.6,
-    "latitude": -0.3000,
+    "latitude": -0.3,
     "longitude": 37.8667,
     "weather_station_id": "chuka",
-    "primary_sectors": ["Agriculture", "Education", "Healthcare"],
+    "primary_sectors": [
+      "Agriculture",
+      "Education",
+      "Healthcare"
+    ],
     "icon_emoji": "🌽",
     "tagline": "Highland bounty — organic farming and academic excellence",
     "description": "Tharaka-Nithi is known for its highland agriculture (bananas, coffee, tea, macadamia, mangoes), scenic Nkunga Hills, and strong educational institutions including Chuka University.",
-    "tourism_highlights": ["Nkunga Hills", "Kithino Hills", "Chuka University botanical garden", "Mitunguu traditional dances"],
+    "tourism_highlights": [
+      "Nkunga Hills",
+      "Kithino Hills",
+      "Chuka University botanical garden",
+      "Mitunguu traditional dances"
+    ],
     "warmest_month": "March (26°C)",
     "coolest_month": "July (16°C)",
     "rainy_season": "March-May, October-December",
-    "dry_season": "January-February, June-September"
+    "dry_season": "January-February, June-September",
+    "region": "Eastern"
   },
   {
     "id": 14,
@@ -294,18 +424,28 @@
     "economic_zone": "Central Highlands",
     "population_2024": 608000,
     "area_km2": 2818.1,
-    "latitude": -0.5300,
-    "longitude": 37.4500,
+    "latitude": -0.53,
+    "longitude": 37.45,
     "weather_station_id": "embu",
-    "primary_sectors": ["Agriculture", "Education", "Technology"],
+    "primary_sectors": [
+      "Agriculture",
+      "Education",
+      "Technology"
+    ],
     "icon_emoji": "🍌",
     "tagline": "The banana county — fertile slopes of Mount Kenya",
     "description": "Embu County lies on the southeastern slopes of Mount Kenya. Famous for its banana and coffee production, the Embu people, and the emerging tech scene centred around the Embu University.",
-    "tourism_highlights": ["Mount Kenya National Park (south)", "Mbeere South game viewing", "Kindaruma Dam", "Mwea National Reserve"],
+    "tourism_highlights": [
+      "Mount Kenya National Park (south)",
+      "Mbeere South game viewing",
+      "Kindaruma Dam",
+      "Mwea National Reserve"
+    ],
     "warmest_month": "March (27°C)",
     "coolest_month": "July (17°C)",
     "rainy_season": "March-May, October-December",
-    "dry_season": "January-February, June-September"
+    "dry_season": "January-February, June-September",
+    "region": "Eastern"
   },
   {
     "id": 15,
@@ -319,15 +459,25 @@
     "latitude": -1.3667,
     "longitude": 37.8667,
     "weather_station_id": "kitui",
-    "primary_sectors": ["Agriculture", "Mining", "Solar Energy"],
+    "primary_sectors": [
+      "Agriculture",
+      "Mining",
+      "Solar Energy"
+    ],
     "icon_emoji": "☀️",
     "tagline": "The sun county — mangoes, minerals, and Kenya's largest solar farm",
     "description": "Kitui is known for its mangoes, sisal, and mineral deposits (iron ore, limestone, gemstones). Hosts Kenya's largest solar power plant and is a leader in dryland agriculture innovation.",
-    "tourism_highlights": ["Mwingi National Reserve", "Nzambani Rock", "Mutonguni Cultural Centre", "solar farm tours"],
+    "tourism_highlights": [
+      "Mwingi National Reserve",
+      "Nzambani Rock",
+      "Mutonguni Cultural Centre",
+      "solar farm tours"
+    ],
     "warmest_month": "March (34°C)",
     "coolest_month": "July (22°C)",
     "rainy_season": "March-May, October-December",
-    "dry_season": "June-September, January-February"
+    "dry_season": "June-September, January-February",
+    "region": "Eastern"
   },
   {
     "id": 16,
@@ -341,15 +491,27 @@
     "latitude": -1.5167,
     "longitude": 37.2667,
     "weather_station_id": "machakos",
-    "primary_sectors": ["Real Estate", "Education", "Agriculture", "Manufacturing"],
+    "primary_sectors": [
+      "Real Estate",
+      "Education",
+      "Agriculture",
+      "Manufacturing"
+    ],
     "icon_emoji": "🏙️",
     "tagline": "The frontier city — rapid urbanisation and the new Nairobi satellite",
     "description": "Machakos is one of Kenya's fastest-growing counties, driven by Nairobi spillover development, Konza Technopolis, and Machakos University. A hub for real estate, education, and manufacturing.",
-    "tourism_highlights": ["Machakos People's Park", "Iveti Hills", "Fourteen Falls", "Konza Technopolis", "Mua Hills"],
+    "tourism_highlights": [
+      "Machakos People's Park",
+      "Iveti Hills",
+      "Fourteen Falls",
+      "Konza Technopolis",
+      "Mua Hills"
+    ],
     "warmest_month": "March (30°C)",
     "coolest_month": "July (20°C)",
     "rainy_season": "March-May, October-December",
-    "dry_season": "June-September, January-February"
+    "dry_season": "June-September, January-February",
+    "region": "Eastern"
   },
   {
     "id": 17,
@@ -360,18 +522,28 @@
     "economic_zone": "Eastern Plateau",
     "population_2024": 987000,
     "area_km2": 8008.9,
-    "latitude": -1.8000,
+    "latitude": -1.8,
     "longitude": 37.6333,
     "weather_station_id": "makueni",
-    "primary_sectors": ["Agriculture", "Education", "Fruit Processing"],
+    "primary_sectors": [
+      "Agriculture",
+      "Education",
+      "Fruit Processing"
+    ],
     "icon_emoji": "🥭",
     "tagline": "The fruit basket — mangoes, oranges, and dryland innovation",
     "description": "Makueni County is Kenya's leading mango and citrus producer. Known for innovative dryland farming techniques, the Makueni Fruit Processing Plant, and South Eastern Kenya University.",
-    "tourism_highlights": ["Nzaui Hills", "Kibwezi Forest", "Chyulu Hills (border)", "Thwake Dam"],
+    "tourism_highlights": [
+      "Nzaui Hills",
+      "Kibwezi Forest",
+      "Chyulu Hills (border)",
+      "Thwake Dam"
+    ],
     "warmest_month": "March (32°C)",
     "coolest_month": "July (22°C)",
     "rainy_season": "March-May, October-December",
-    "dry_season": "June-September, January-February"
+    "dry_season": "June-September, January-February",
+    "region": "Eastern"
   },
   {
     "id": 18,
@@ -385,15 +557,25 @@
     "latitude": -0.1667,
     "longitude": 36.4167,
     "weather_station_id": "nyahururu",
-    "primary_sectors": ["Agriculture", "Dairy", "Tourism"],
+    "primary_sectors": [
+      "Agriculture",
+      "Dairy",
+      "Tourism"
+    ],
     "icon_emoji": "🏔️",
     "tagline": "The Aberdares highlands — Kenya's breadbasket and trout capital",
     "description": "Nyandarua County sits atop the Aberdare Range. Known for potato, wheat, and dairy farming, the Aberdare National Park, and trout fishing in cool mountain streams.",
-    "tourism_highlights": ["Aberdare National Park", "Ol Kalou trout fishing", "Kinangop Plateau", "Karatina traditional markets"],
+    "tourism_highlights": [
+      "Aberdare National Park",
+      "Ol Kalou trout fishing",
+      "Kinangop Plateau",
+      "Karatina traditional markets"
+    ],
     "warmest_month": "March (22°C)",
     "coolest_month": "July (12°C)",
     "rainy_season": "March-May, October-December",
-    "dry_season": "June-September, January-February"
+    "dry_season": "June-September, January-February",
+    "region": "Central"
   },
   {
     "id": 19,
@@ -405,17 +587,28 @@
     "population_2024": 759000,
     "area_km2": 3324.4,
     "latitude": -0.4167,
-    "longitude": 36.9500,
+    "longitude": 36.95,
     "weather_station_id": "nyeri",
-    "primary_sectors": ["Agriculture", "Tourism", "Education"],
+    "primary_sectors": [
+      "Agriculture",
+      "Tourism",
+      "Education"
+    ],
     "icon_emoji": "☕",
     "tagline": "Kenya's coffee heartland — Mount Kenya's lush slopes",
     "description": "Nyeri is the heart of Kenya's coffee country, producing some of the world's finest Arabica. Also home to the Mau Mau caves, the tomb of Lord Baden-Powell, and stunning views of Mount Kenya.",
-    "tourism_highlights": ["Aberdare National Park", "Mount Kenya (western approach)", "Nyeri Coffee Plantations", "Baden-Powell Museum", "Mau Mau Caves"],
+    "tourism_highlights": [
+      "Aberdare National Park",
+      "Mount Kenya (western approach)",
+      "Nyeri Coffee Plantations",
+      "Baden-Powell Museum",
+      "Mau Mau Caves"
+    ],
     "warmest_month": "March (24°C)",
     "coolest_month": "July (14°C)",
     "rainy_season": "March-May, October-December",
-    "dry_season": "June-September, January-February"
+    "dry_season": "June-September, January-February",
+    "region": "Central"
   },
   {
     "id": 20,
@@ -426,18 +619,27 @@
     "economic_zone": "Central Highlands",
     "population_2024": 640000,
     "area_km2": 1487.0,
-    "latitude": -0.5000,
+    "latitude": -0.5,
     "longitude": 37.2833,
     "weather_station_id": "kerugoya",
-    "primary_sectors": ["Agriculture", "Rice Farming", "Education"],
+    "primary_sectors": [
+      "Agriculture",
+      "Rice Farming",
+      "Education"
+    ],
     "icon_emoji": "🌾",
     "tagline": "Kenya's rice bowl — the Mwea irrigation scheme",
     "description": "Kirinyaga is Kenya's largest rice producer, powered by the Mwea Irrigation Scheme. Also known for coffee, tea, and the magnificent Mount Kenya National Park on its eastern slopes.",
-    "tourism_highlights": ["Mount Kenya National Park", "Mwea Rice Fields tours", "Ngurubani cultural festival"],
+    "tourism_highlights": [
+      "Mount Kenya National Park",
+      "Mwea Rice Fields tours",
+      "Ngurubani cultural festival"
+    ],
     "warmest_month": "March (26°C)",
     "coolest_month": "July (16°C)",
     "rainy_season": "March-May, October-December",
-    "dry_season": "June-September, January-February"
+    "dry_season": "June-September, January-February",
+    "region": "Central"
   },
   {
     "id": 21,
@@ -449,17 +651,27 @@
     "population_2024": 1086000,
     "area_km2": 2558.8,
     "latitude": -0.7167,
-    "longitude": 37.1500,
+    "longitude": 37.15,
     "weather_station_id": "muranga",
-    "primary_sectors": ["Agriculture", "Education", "Tea Farming"],
+    "primary_sectors": [
+      "Agriculture",
+      "Education",
+      "Tea Farming"
+    ],
     "icon_emoji": "🍃",
     "tagline": "The tea and coffee county — birthplace of Kenya's independence heroes",
     "description": "Murang'a produces some of Kenya's finest tea and coffee. Rich in Kikuyu cultural history, home to the Kimathi Institute of Technology, and the scenic Mugumo-ini Falls.",
-    "tourism_highlights": ["Mugumo-ini Falls", "Mukurwe wa Nyagathanga (Kikuyu origin site)", "tea plantation tours", "Kaihura cultural centre"],
+    "tourism_highlights": [
+      "Mugumo-ini Falls",
+      "Mukurwe wa Nyagathanga (Kikuyu origin site)",
+      "tea plantation tours",
+      "Kaihura cultural centre"
+    ],
     "warmest_month": "March (26°C)",
     "coolest_month": "July (16°C)",
     "rainy_season": "March-May, October-December",
-    "dry_season": "June-September, January-February"
+    "dry_season": "June-September, January-February",
+    "region": "Central"
   },
   {
     "id": 22,
@@ -473,15 +685,27 @@
     "latitude": -1.1667,
     "longitude": 36.8333,
     "weather_station_id": "kiambu",
-    "primary_sectors": ["Real Estate", "Manufacturing", "Agriculture", "Technology"],
+    "primary_sectors": [
+      "Real Estate",
+      "Manufacturing",
+      "Agriculture",
+      "Technology"
+    ],
     "icon_emoji": "🏘️",
     "tagline": "Nairobi's northern bedroom — corporate headquarters and coffee estates",
     "description": "Kiambu County is the most populous in Kenya outside Nairobi. A major residential and industrial area with a booming real estate sector, numerous coffee estates, and technology parks.",
-    "tourism_highlights": ["Karura Forest", "Paradise Lost", "Thika Falls", "Chania Falls", "coffee estate tours"],
+    "tourism_highlights": [
+      "Karura Forest",
+      "Paradise Lost",
+      "Thika Falls",
+      "Chania Falls",
+      "coffee estate tours"
+    ],
     "warmest_month": "March (26°C)",
     "coolest_month": "July (16°C)",
     "rainy_season": "March-May, October-December",
-    "dry_season": "June-September, January-February"
+    "dry_season": "June-September, January-February",
+    "region": "Central"
   },
   {
     "id": 23,
@@ -495,15 +719,27 @@
     "latitude": 3.1244,
     "longitude": 35.6042,
     "weather_station_id": "lodwar",
-    "primary_sectors": ["Energy", "Fisheries", "Pastoralism", "Oil"],
+    "primary_sectors": [
+      "Energy",
+      "Fisheries",
+      "Pastoralism",
+      "Oil"
+    ],
     "icon_emoji": "🔥",
     "tagline": "The cradle of humankind — Lake Turkana and Kenya's energy powerhouse",
     "description": "Turkana is Kenya's hottest county and the cradle of humankind (Koobi Fora). Home to Lake Turkana, the world's largest permanent desert lake, massive wind farms, and recent oil discoveries.",
-    "tourism_highlights": ["Lake Turkana (Jade Sea)", "Koobi Fora archaeological site", "Central Island National Park", "Sibiloi National Park", "Turkana wind farm"],
+    "tourism_highlights": [
+      "Lake Turkana (Jade Sea)",
+      "Koobi Fora archaeological site",
+      "Central Island National Park",
+      "Sibiloi National Park",
+      "Turkana wind farm"
+    ],
     "warmest_month": "March (36°C)",
     "coolest_month": "July (32°C)",
     "rainy_season": "March-May, October-November",
-    "dry_season": "June-September, December-February"
+    "dry_season": "June-September, December-February",
+    "region": "Rift Valley"
   },
   {
     "id": 24,
@@ -517,15 +753,25 @@
     "latitude": 1.2448,
     "longitude": 35.1196,
     "weather_station_id": "kapenguria",
-    "primary_sectors": ["Agriculture", "Mining", "Tourism"],
+    "primary_sectors": [
+      "Agriculture",
+      "Mining",
+      "Tourism"
+    ],
     "icon_emoji": "⛰️",
     "tagline": "The highlands of the north — fertile valleys and gold deposits",
     "description": "West Pokot County features the Cherangani Hills, gold mining, and rich agricultural lands. Known for its Pokot culture, traditional beadwork, and Weyer's Cave.",
-    "tourism_highlights": ["Cherangani Hills", "Nasolot National Reserve", "Weyer's Cave", "Pokot cultural festivals"],
+    "tourism_highlights": [
+      "Cherangani Hills",
+      "Nasolot National Reserve",
+      "Weyer's Cave",
+      "Pokot cultural festivals"
+    ],
     "warmest_month": "March (30°C)",
     "coolest_month": "July (20°C)",
     "rainy_season": "April-September",
-    "dry_season": "October-March"
+    "dry_season": "October-March",
+    "region": "Rift Valley"
   },
   {
     "id": 25,
@@ -539,15 +785,25 @@
     "latitude": 1.0833,
     "longitude": 36.6833,
     "weather_station_id": "maralal",
-    "primary_sectors": ["Tourism", "Pastoralism", "Conservation"],
+    "primary_sectors": [
+      "Tourism",
+      "Pastoralism",
+      "Conservation"
+    ],
     "icon_emoji": "🦁",
     "tagline": "The wild north — rare wildlife and timeless Samburu culture",
     "description": "Samburu County is one of Kenya's premier wildlife destinations. Home to unique northern species (Grevy's zebra, reticulated giraffe, Somali ostrich) and the vibrant Samburu culture.",
-    "tourism_highlights": ["Samburu National Reserve", "Buffalo Springs National Reserve", "Kalama Conservancy", "Mount Ololokwe"],
+    "tourism_highlights": [
+      "Samburu National Reserve",
+      "Buffalo Springs National Reserve",
+      "Kalama Conservancy",
+      "Mount Ololokwe"
+    ],
     "warmest_month": "March (33°C)",
     "coolest_month": "July (24°C)",
     "rainy_season": "March-May, October-November",
-    "dry_season": "June-September, December-February"
+    "dry_season": "June-September, December-February",
+    "region": "Rift Valley"
   },
   {
     "id": 26,
@@ -559,17 +815,27 @@
     "population_2024": 998000,
     "area_km2": 2495.6,
     "latitude": 1.0167,
-    "longitude": 35.0000,
+    "longitude": 35.0,
     "weather_station_id": "kitale",
-    "primary_sectors": ["Agriculture", "Dairy", "Education"],
+    "primary_sectors": [
+      "Agriculture",
+      "Dairy",
+      "Education"
+    ],
     "icon_emoji": "🌽",
     "tagline": "Kenya's granary — maize, dairy, and Kitale's agricultural legacy",
     "description": "Trans Nzoia is Kenya's leading maize producer. The fertile plains around Kitale also produce sunflowers, dairy, and pyrethrum. Home to Kitale Museum and the Saiwa Swamp National Park.",
-    "tourism_highlights": ["Saiwa Swamp National Park", "Kitale Museum", "Mount Elgon (border)", "Cherangani Hills (access)"],
+    "tourism_highlights": [
+      "Saiwa Swamp National Park",
+      "Kitale Museum",
+      "Mount Elgon (border)",
+      "Cherangani Hills (access)"
+    ],
     "warmest_month": "March (28°C)",
     "coolest_month": "July (18°C)",
     "rainy_season": "March-May, July-September",
-    "dry_season": "October-February"
+    "dry_season": "October-February",
+    "region": "Rift Valley"
   },
   {
     "id": 27,
@@ -583,15 +849,26 @@
     "latitude": 0.5167,
     "longitude": 35.2833,
     "weather_station_id": "eldoret",
-    "primary_sectors": ["Agriculture", "Manufacturing", "Education", "Sports"],
+    "primary_sectors": [
+      "Agriculture",
+      "Manufacturing",
+      "Education",
+      "Sports"
+    ],
     "icon_emoji": "🏃",
     "tagline": "The city of champions — world-class athletes and agricultural wealth",
     "description": "Eldoret is Kenya's athletic heartland, producing world champion runners. The county is also a major agricultural (wheat, maize, dairy) and manufacturing hub with a growing university town economy.",
-    "tourism_highlights": ["Eldoret Sports Centre", "Kapsimotwa Dam", "athlete training camps tours", "Iten viewpoint"],
+    "tourism_highlights": [
+      "Eldoret Sports Centre",
+      "Kapsimotwa Dam",
+      "athlete training camps tours",
+      "Iten viewpoint"
+    ],
     "warmest_month": "March (26°C)",
     "coolest_month": "July (16°C)",
     "rainy_season": "March-September",
-    "dry_season": "October-February"
+    "dry_season": "October-February",
+    "region": "Rift Valley"
   },
   {
     "id": 28,
@@ -605,15 +882,26 @@
     "latitude": 0.6667,
     "longitude": 35.5167,
     "weather_station_id": "iten",
-    "primary_sectors": ["Sports Tourism", "Agriculture", "Mining"],
+    "primary_sectors": [
+      "Sports Tourism",
+      "Agriculture",
+      "Mining"
+    ],
     "icon_emoji": "⛰️",
     "tagline": "The home of champions — Kerio Valley and the Rift Valley escarpment",
     "description": "Elgeyo-Marakwet is synonymous with Kenyan athletics (Iten is the training capital of the world). The Kerio Valley offers dramatic scenery, while the escarpment produces mangoes and traditional weaving.",
-    "tourism_highlights": ["Kerio Valley", "Rimoi National Reserve", "Iten athletic camps", "Torok Falls", "Chebara Dam"],
+    "tourism_highlights": [
+      "Kerio Valley",
+      "Rimoi National Reserve",
+      "Iten athletic camps",
+      "Torok Falls",
+      "Chebara Dam"
+    ],
     "warmest_month": "March (28°C)",
     "coolest_month": "July (18°C)",
     "rainy_season": "March-September",
-    "dry_season": "October-February"
+    "dry_season": "October-February",
+    "region": "Rift Valley"
   },
   {
     "id": 29,
@@ -627,15 +915,26 @@
     "latitude": 0.1667,
     "longitude": 35.1333,
     "weather_station_id": "kapsabet",
-    "primary_sectors": ["Agriculture", "Dairy", "Tea", "Education"],
+    "primary_sectors": [
+      "Agriculture",
+      "Dairy",
+      "Tea",
+      "Education"
+    ],
     "icon_emoji": "🍃",
     "tagline": "The tea highlands — Nandi Hills and Kenya's best milk",
     "description": "Nandi County produces world-class tea and dairy. The Nandi Hills are the traditional home of the Nandi people and the legendary Nandi Bear. Kapsabet is emerging as a university town.",
-    "tourism_highlights": ["Nandi Hills viewpoint", "Kapsabet cultural centre", "tea estate tours", "Nandi rock art sites"],
+    "tourism_highlights": [
+      "Nandi Hills viewpoint",
+      "Kapsabet cultural centre",
+      "tea estate tours",
+      "Nandi rock art sites"
+    ],
     "warmest_month": "March (26°C)",
     "coolest_month": "July (16°C)",
     "rainy_season": "March-September",
-    "dry_season": "October-February"
+    "dry_season": "October-February",
+    "region": "Rift Valley"
   },
   {
     "id": 30,
@@ -646,18 +945,29 @@
     "economic_zone": "Rift Valley",
     "population_2024": 669000,
     "area_km2": 11075.3,
-    "latitude": 0.5000,
-    "longitude": 35.7500,
+    "latitude": 0.5,
+    "longitude": 35.75,
     "weather_station_id": "kabarnet",
-    "primary_sectors": ["Tourism", "Energy", "Fisheries"],
+    "primary_sectors": [
+      "Tourism",
+      "Energy",
+      "Fisheries"
+    ],
     "icon_emoji": "🦛",
     "tagline": "Lakes of the Rift Valley — flamingos, geysers, and geothermal power",
     "description": "Baringo County features Lake Baringo, Lake Bogoria (with its geysers and flamingos), and the Tugen Hills. A hub for geothermal energy development and birdwatching tourism.",
-    "tourism_highlights": ["Lake Bogoria", "Lake Baringo", "Tugen Hills", "Kapedo Falls", "geothermal spa tours"],
+    "tourism_highlights": [
+      "Lake Bogoria",
+      "Lake Baringo",
+      "Tugen Hills",
+      "Kapedo Falls",
+      "geothermal spa tours"
+    ],
     "warmest_month": "March (32°C)",
     "coolest_month": "July (24°C)",
     "rainy_season": "March-September",
-    "dry_season": "October-February"
+    "dry_season": "October-February",
+    "region": "Rift Valley"
   },
   {
     "id": 31,
@@ -669,17 +979,28 @@
     "population_2024": 518000,
     "area_km2": 8696.1,
     "latitude": 0.0833,
-    "longitude": 36.9000,
+    "longitude": 36.9,
     "weather_station_id": "nanyuki",
-    "primary_sectors": ["Tourism", "Conservation", "Agriculture"],
+    "primary_sectors": [
+      "Tourism",
+      "Conservation",
+      "Agriculture"
+    ],
     "icon_emoji": "🦏",
     "tagline": "Kenya's conservation capital — wildlife conservancies and Mount Kenya views",
     "description": "Laikipia County is a world leader in community-based conservation. Home to numerous private wildlife conservancies, endangered species breeding programmes, and the Mount Kenya equator crossing.",
-    "tourism_highlights": ["Ol Pejeta Conservancy", "Lewa Wildlife Conservancy", "Mount Kenya (north)", "equator crossing points", "Sweetwaters Chimpanzee Sanctuary"],
+    "tourism_highlights": [
+      "Ol Pejeta Conservancy",
+      "Lewa Wildlife Conservancy",
+      "Mount Kenya (north)",
+      "equator crossing points",
+      "Sweetwaters Chimpanzee Sanctuary"
+    ],
     "warmest_month": "March (26°C)",
     "coolest_month": "July (16°C)",
     "rainy_season": "March-May, October-December",
-    "dry_season": "June-September, January-February"
+    "dry_season": "June-September, January-February",
+    "region": "Central"
   },
   {
     "id": 32,
@@ -691,17 +1012,29 @@
     "population_2024": 2193000,
     "area_km2": 7509.5,
     "latitude": -0.3031,
-    "longitude": 36.0800,
+    "longitude": 36.08,
     "weather_station_id": "nakuru",
-    "primary_sectors": ["Tourism", "Agriculture", "Manufacturing", "Education"],
+    "primary_sectors": [
+      "Tourism",
+      "Agriculture",
+      "Manufacturing",
+      "Education"
+    ],
     "icon_emoji": "🦩",
     "tagline": "The lake county — flamingos, geothermal, and the Rift Valley's economic hub",
     "description": "Nakuru is Kenya's fourth-largest urban centre and the economic capital of the Rift Valley. Home to Lake Nakuru National Park (flamingos), Menengai Crater, Hyrax Hill, and growing geothermal and manufacturing sectors.",
-    "tourism_highlights": ["Lake Nakuru National Park", "Menengai Crater", "Hell's Gate National Park (border)", "Hyrax Hill archaeological site", "Lake Elementaita"],
+    "tourism_highlights": [
+      "Lake Nakuru National Park",
+      "Menengai Crater",
+      "Hell's Gate National Park (border)",
+      "Hyrax Hill archaeological site",
+      "Lake Elementaita"
+    ],
     "warmest_month": "March (28°C)",
     "coolest_month": "July (18°C)",
     "rainy_season": "March-May, October-December",
-    "dry_season": "June-September, January-February"
+    "dry_season": "June-September, January-February",
+    "region": "Rift Valley"
   },
   {
     "id": 33,
@@ -715,15 +1048,26 @@
     "latitude": -1.0833,
     "longitude": 35.8667,
     "weather_station_id": "narok",
-    "primary_sectors": ["Tourism", "Agriculture", "Mining"],
+    "primary_sectors": [
+      "Tourism",
+      "Agriculture",
+      "Mining"
+    ],
     "icon_emoji": "🦒",
     "tagline": "Maasai Mara — the world's greatest wildlife spectacle",
     "description": "Narok County is home to the Maasai Mara National Reserve, the Great Migration of wildebeest and zebra, and the Maasai people. The agricultural Lolgorien highlands and gold mining add economic diversity.",
-    "tourism_highlights": ["Maasai Mara National Reserve", "Mara Triangle", "Olare Motorogi Conservancy", "Narok Museum", "Loita Hills"],
+    "tourism_highlights": [
+      "Maasai Mara National Reserve",
+      "Mara Triangle",
+      "Olare Motorogi Conservancy",
+      "Narok Museum",
+      "Loita Hills"
+    ],
     "warmest_month": "March (28°C)",
     "coolest_month": "July (18°C)",
     "rainy_season": "March-May, November-December",
-    "dry_season": "June-October, January-February"
+    "dry_season": "June-October, January-February",
+    "region": "Rift Valley"
   },
   {
     "id": 34,
@@ -734,18 +1078,30 @@
     "economic_zone": "Nairobi Metro",
     "population_2024": 1119000,
     "area_km2": 21700.9,
-    "latitude": -1.8500,
-    "longitude": 36.8000,
+    "latitude": -1.85,
+    "longitude": 36.8,
     "weather_station_id": "kajiado",
-    "primary_sectors": ["Real Estate", "Tourism", "Mining", "Manufacturing"],
+    "primary_sectors": [
+      "Real Estate",
+      "Tourism",
+      "Mining",
+      "Manufacturing"
+    ],
     "icon_emoji": "🏜️",
     "tagline": "Nairobi's southern frontier — Amboseli, Kitengela, and Maasai ranches",
     "description": "Kajiado County stretches from Nairobi's southern suburbs to the Tanzanian border. Home to Amboseli National Park (Mount Kilimanjaro views), Kitengela Glass, and rapid urbanisation.",
-    "tourism_highlights": ["Amboseli National Park", "Kitengela Glass", "Maasai cultural manyattas", "Magadi Soda Lake", "Ngong Hills"],
+    "tourism_highlights": [
+      "Amboseli National Park",
+      "Kitengela Glass",
+      "Maasai cultural manyattas",
+      "Magadi Soda Lake",
+      "Ngong Hills"
+    ],
     "warmest_month": "March (30°C)",
     "coolest_month": "July (20°C)",
     "rainy_season": "March-May, October-December",
-    "dry_season": "June-September, January-February"
+    "dry_season": "June-September, January-February",
+    "region": "Rift Valley"
   },
   {
     "id": 35,
@@ -759,15 +1115,25 @@
     "latitude": -0.3667,
     "longitude": 35.2833,
     "weather_station_id": "kericho",
-    "primary_sectors": ["Tea", "Agriculture", "Education"],
+    "primary_sectors": [
+      "Tea",
+      "Agriculture",
+      "Education"
+    ],
     "icon_emoji": "🍃",
     "tagline": "Green gold — the world's finest tea and the Kipsigis highlands",
     "description": "Kericho is synonymous with tea production — some of the world's finest black tea. The rolling green hills, tea estates, and Kipsigis culture make it a unique destination.",
-    "tourism_highlights": ["tea estate tours (Unilever, KETEPA)", "Chagaik Arboretum", "Kericho tea hotel", "Kipsigis cultural performances"],
+    "tourism_highlights": [
+      "tea estate tours (Unilever, KETEPA)",
+      "Chagaik Arboretum",
+      "Kericho tea hotel",
+      "Kipsigis cultural performances"
+    ],
     "warmest_month": "March (26°C)",
     "coolest_month": "July (16°C)",
     "rainy_season": "March-September",
-    "dry_season": "October-February"
+    "dry_season": "October-February",
+    "region": "Rift Valley"
   },
   {
     "id": 36,
@@ -779,17 +1145,27 @@
     "population_2024": 597000,
     "area_km2": 1630.0,
     "latitude": -0.7833,
-    "longitude": 35.3500,
+    "longitude": 35.35,
     "weather_station_id": "bomet",
-    "primary_sectors": ["Tea", "Dairy", "Agriculture"],
+    "primary_sectors": [
+      "Tea",
+      "Dairy",
+      "Agriculture"
+    ],
     "icon_emoji": "🌿",
     "tagline": "The tea and milk county — fertile highlands of the Kipsigis",
     "description": "Bomet County is a major tea and dairy producer, known for its high-quality produce and scenic highland landscapes. Home to the Tenwek Mission Hospital, one of Kenya's best rural hospitals.",
-    "tourism_highlights": ["Tenwek Falls", "Chepalungu Forest", "tea estate tours", "Kipsigis cultural centre"],
+    "tourism_highlights": [
+      "Tenwek Falls",
+      "Chepalungu Forest",
+      "tea estate tours",
+      "Kipsigis cultural centre"
+    ],
     "warmest_month": "March (25°C)",
     "coolest_month": "July (15°C)",
     "rainy_season": "March-September",
-    "dry_season": "October-February"
+    "dry_season": "October-February",
+    "region": "Rift Valley"
   },
   {
     "id": 37,
@@ -801,17 +1177,28 @@
     "population_2024": 1890000,
     "area_km2": 3033.8,
     "latitude": 0.2833,
-    "longitude": 34.7500,
+    "longitude": 34.75,
     "weather_station_id": "kakamega",
-    "primary_sectors": ["Agriculture", "Education", "Healthcare", "Mining"],
+    "primary_sectors": [
+      "Agriculture",
+      "Education",
+      "Healthcare",
+      "Mining"
+    ],
     "icon_emoji": "🌳",
     "tagline": "The rainforest county — Kenya's only tropical rainforest and gold",
     "description": "Kakamega County features Kakamega Forest — Kenya's last remaining tropical rainforest — with unique bird and primate species. Also known for gold mining, sugarcane, and Masinde Muliro University.",
-    "tourism_highlights": ["Kakamega Forest National Reserve", "Mumias Sugar tours", "Crying Stone of Ilesi", "gold mining site tours"],
+    "tourism_highlights": [
+      "Kakamega Forest National Reserve",
+      "Mumias Sugar tours",
+      "Crying Stone of Ilesi",
+      "gold mining site tours"
+    ],
     "warmest_month": "March (30°C)",
     "coolest_month": "July (22°C)",
     "rainy_season": "March-September",
-    "dry_season": "October-February"
+    "dry_season": "October-February",
+    "region": "Western"
   },
   {
     "id": 38,
@@ -822,18 +1209,27 @@
     "economic_zone": "Lake Region",
     "population_2024": 554000,
     "area_km2": 564.7,
-    "latitude": 0.0500,
+    "latitude": 0.05,
     "longitude": 34.7167,
     "weather_station_id": "vihiga",
-    "primary_sectors": ["Agriculture", "Education", "Healthcare"],
+    "primary_sectors": [
+      "Agriculture",
+      "Education",
+      "Healthcare"
+    ],
     "icon_emoji": "🌄",
     "tagline": "The hills of Maragoli — academic excellence and scenic beauty",
     "description": "Vihiga is Kenya's most densely populated county. Known for the Maragoli people, the scenic Kisumu-Kakamega escarpment, and high educational attainment with many national scholars.",
-    "tourism_highlights": ["Kisumu-Kakamega escarpment viewpoint", "Maragoli cultural centre", "Mwonzale Cultural Festival"],
+    "tourism_highlights": [
+      "Kisumu-Kakamega escarpment viewpoint",
+      "Maragoli cultural centre",
+      "Mwonzale Cultural Festival"
+    ],
     "warmest_month": "March (28°C)",
     "coolest_month": "July (20°C)",
     "rainy_season": "March-September",
-    "dry_season": "October-February"
+    "dry_season": "October-February",
+    "region": "Western"
   },
   {
     "id": 39,
@@ -847,15 +1243,26 @@
     "latitude": 0.4667,
     "longitude": 34.1167,
     "weather_station_id": "busia",
-    "primary_sectors": ["Trade", "Agriculture", "Cross-Border Commerce"],
+    "primary_sectors": [
+      "Trade",
+      "Agriculture",
+      "Cross-Border Commerce"
+    ],
     "icon_emoji": "🛂",
     "tagline": "Kenya's western gateway — border trade and Lake Victoria fish",
     "description": "Busia is Kenya's busiest land border crossing with Uganda. A centre for cross-border trade, fish processing from Lake Victoria, and sugarcane farming.",
-    "tourism_highlights": ["Lake Victoria beaches", "Busia border market", "Port Victoria", "Sio Port Beach", "cultural Luhya festivals"],
+    "tourism_highlights": [
+      "Lake Victoria beaches",
+      "Busia border market",
+      "Port Victoria",
+      "Sio Port Beach",
+      "cultural Luhya festivals"
+    ],
     "warmest_month": "March (32°C)",
     "coolest_month": "July (24°C)",
     "rainy_season": "March-September",
-    "dry_season": "October-February"
+    "dry_season": "October-February",
+    "region": "Western"
   },
   {
     "id": 40,
@@ -869,15 +1276,25 @@
     "latitude": 0.0667,
     "longitude": 34.2833,
     "weather_station_id": "siaya",
-    "primary_sectors": ["Fisheries", "Agriculture", "Education"],
+    "primary_sectors": [
+      "Fisheries",
+      "Agriculture",
+      "Education"
+    ],
     "icon_emoji": "🎣",
     "tagline": "Land of the mighty lake — Luo heritage and Lake Victoria's bounty",
     "description": "Siaya County borders Lake Victoria, providing livelihoods through fishing. Birthplace of Jaramogi Oginga Odinga (Kenya's first Vice President) and home to the historic Bondo University.",
-    "tourism_highlights": ["Lake Victoria beaches", "Jaramogi Oginga Odinga Museum (Bondo)", "Got Ramogi Hills", "Simenya Cultural Festival"],
+    "tourism_highlights": [
+      "Lake Victoria beaches",
+      "Jaramogi Oginga Odinga Museum (Bondo)",
+      "Got Ramogi Hills",
+      "Simenya Cultural Festival"
+    ],
     "warmest_month": "March (30°C)",
     "coolest_month": "July (22°C)",
     "rainy_season": "March-September",
-    "dry_season": "October-February"
+    "dry_season": "October-February",
+    "region": "Nyanza"
   },
   {
     "id": 41,
@@ -891,15 +1308,27 @@
     "latitude": -0.1022,
     "longitude": 34.7617,
     "weather_station_id": "kisumu",
-    "primary_sectors": ["Trade", "Fisheries", "Manufacturing", "Tourism"],
+    "primary_sectors": [
+      "Trade",
+      "Fisheries",
+      "Manufacturing",
+      "Tourism"
+    ],
     "icon_emoji": "⛵",
     "tagline": "Lakeside city — Lake Victoria's largest port and the heartbeat of Luo land",
     "description": "Kisumu is Kenya's third-largest city and the main port on Lake Victoria. A regional trade, manufacturing, and tourism hub with the Kisumu Impala Sanctuary, Hippo Point, and vibrant lakeside nightlife.",
-    "tourism_highlights": ["Lake Victoria (Hippo Point)", "Kisumu Impala Sanctuary", "Ndere Island National Park", "Kisumu Museum", "Dunga Hill Camp"],
+    "tourism_highlights": [
+      "Lake Victoria (Hippo Point)",
+      "Kisumu Impala Sanctuary",
+      "Ndere Island National Park",
+      "Kisumu Museum",
+      "Dunga Hill Camp"
+    ],
     "warmest_month": "March (32°C)",
     "coolest_month": "July (24°C)",
     "rainy_season": "March-September",
-    "dry_season": "October-February"
+    "dry_season": "October-February",
+    "region": "Nyanza"
   },
   {
     "id": 42,
@@ -911,17 +1340,28 @@
     "population_2024": 1131000,
     "area_km2": 3183.3,
     "latitude": -0.5167,
-    "longitude": 34.4500,
+    "longitude": 34.45,
     "weather_station_id": "homa_bay",
-    "primary_sectors": ["Fisheries", "Agriculture", "Tourism"],
+    "primary_sectors": [
+      "Fisheries",
+      "Agriculture",
+      "Tourism"
+    ],
     "icon_emoji": "🏝️",
     "tagline": "Rusinga Island — fossil discoveries and Lake Victoria's hidden gems",
     "description": "Homa Bay County features Rusinga Island (fossil-rich), Mfangano Island, and the scenic Homa Hills. Fishing is the economic backbone, with growing tourism around Lake Victoria's islands.",
-    "tourism_highlights": ["Rusinga Island", "Mfangano Island", "Homa Hills", "Kanjera archaeological site", "Lake Victoria island tours"],
+    "tourism_highlights": [
+      "Rusinga Island",
+      "Mfangano Island",
+      "Homa Hills",
+      "Kanjera archaeological site",
+      "Lake Victoria island tours"
+    ],
     "warmest_month": "March (32°C)",
     "coolest_month": "July (24°C)",
     "rainy_season": "March-September",
-    "dry_season": "October-February"
+    "dry_season": "October-February",
+    "region": "Nyanza"
   },
   {
     "id": 43,
@@ -935,15 +1375,25 @@
     "latitude": -1.0667,
     "longitude": 34.4667,
     "weather_station_id": "migori",
-    "primary_sectors": ["Mining", "Agriculture", "Fisheries"],
+    "primary_sectors": [
+      "Mining",
+      "Agriculture",
+      "Fisheries"
+    ],
     "icon_emoji": "⛏️",
     "tagline": "Gold and sugarcane — the mineral belt of western Kenya",
     "description": "Migori County has significant gold deposits (Macalder mines) and extensive sugarcane plantations. Also borders Lake Victoria, providing fishing livelihoods. The Kuria people's unique cultural traditions add to its diversity.",
-    "tourism_highlights": ["Macalder Gold Mine tours", "Lake Victoria (Migori gulf)", "Uriri cultural festival", "Kuria traditional dances"],
+    "tourism_highlights": [
+      "Macalder Gold Mine tours",
+      "Lake Victoria (Migori gulf)",
+      "Uriri cultural festival",
+      "Kuria traditional dances"
+    ],
     "warmest_month": "March (32°C)",
     "coolest_month": "July (24°C)",
     "rainy_season": "March-September",
-    "dry_season": "October-February"
+    "dry_season": "October-February",
+    "region": "Nyanza"
   },
   {
     "id": 44,
@@ -957,15 +1407,26 @@
     "latitude": -0.6833,
     "longitude": 34.7667,
     "weather_station_id": "kisii",
-    "primary_sectors": ["Agriculture", "Education", "Trade", "Soapstone"],
+    "primary_sectors": [
+      "Agriculture",
+      "Education",
+      "Trade",
+      "Soapstone"
+    ],
     "icon_emoji": "🪨",
     "tagline": "The soapstone county — bananas, education, and Kisii's entrepreneurial spirit",
     "description": "Kisii County is famous for its soapstone carvings, bananas, and high academic achievement. One of Kenya's most densely populated and entrepreneurial counties, with a vibrant SME sector.",
-    "tourism_highlights": ["Tabaka Soapstone Carvings", "Riana Falls", "Manga Ridge viewpoint", "Kisii Museum"],
+    "tourism_highlights": [
+      "Tabaka Soapstone Carvings",
+      "Riana Falls",
+      "Manga Ridge viewpoint",
+      "Kisii Museum"
+    ],
     "warmest_month": "March (28°C)",
     "coolest_month": "July (18°C)",
     "rainy_season": "March-September",
-    "dry_season": "October-February"
+    "dry_season": "October-February",
+    "region": "Nyanza"
   },
   {
     "id": 45,
@@ -979,15 +1440,25 @@
     "latitude": -0.5667,
     "longitude": 34.9333,
     "weather_station_id": "nyamira",
-    "primary_sectors": ["Agriculture", "Tea", "Education"],
+    "primary_sectors": [
+      "Agriculture",
+      "Tea",
+      "Education"
+    ],
     "icon_emoji": "🌱",
     "tagline": "The green highlands — tea, bananas, and panoramic valley views",
     "description": "Nyamira County sits on the highlands east of Lake Victoria. Known for tea farming, bananas, and the stunning Nyamira Hills viewpoints overlooking the Lake Victoria basin.",
-    "tourism_highlights": ["Nyamira Hills viewpoint", "tea estate tours", "Gesima Falls", "Borabu cultural centre"],
+    "tourism_highlights": [
+      "Nyamira Hills viewpoint",
+      "tea estate tours",
+      "Gesima Falls",
+      "Borabu cultural centre"
+    ],
     "warmest_month": "March (26°C)",
     "coolest_month": "July (16°C)",
     "rainy_season": "March-September",
-    "dry_season": "October-February"
+    "dry_season": "October-February",
+    "region": "Nyanza"
   },
   {
     "id": 46,
@@ -1001,15 +1472,32 @@
     "latitude": -1.2921,
     "longitude": 36.8219,
     "weather_station_id": "nairobi",
-    "primary_sectors": ["Technology", "Finance", "Manufacturing", "Tourism", "Education", "Healthcare", "Trade"],
+    "primary_sectors": [
+      "Technology",
+      "Finance",
+      "Manufacturing",
+      "Tourism",
+      "Education",
+      "Healthcare",
+      "Trade"
+    ],
     "icon_emoji": "🏙️",
     "tagline": "The Green City in the Sun — East Africa's startup and economic capital",
     "description": "Nairobi is Kenya's capital and Africa's most dynamic startup ecosystem. A global hub for tech (Silicon Savannah), finance, and diplomacy. The only city with a national park within its borders.",
-    "tourism_highlights": ["Nairobi National Park", "Karen Blixen Museum", "Giraffe Centre", "Bomas of Kenya", "Nairobi National Museum", "Kazuri Beads", "Karura Forest"],
+    "tourism_highlights": [
+      "Nairobi National Park",
+      "Karen Blixen Museum",
+      "Giraffe Centre",
+      "Bomas of Kenya",
+      "Nairobi National Museum",
+      "Kazuri Beads",
+      "Karura Forest"
+    ],
     "warmest_month": "March (26°C)",
     "coolest_month": "July (17°C)",
     "rainy_season": "March-May, October-December",
-    "dry_season": "June-September, January-February"
+    "dry_season": "June-September, January-February",
+    "region": "Central"
   },
   {
     "id": 47,
@@ -1023,14 +1511,24 @@
     "latitude": 0.5667,
     "longitude": 34.5667,
     "weather_station_id": "bungoma",
-    "primary_sectors": ["Agriculture", "Education", "Trade"],
+    "primary_sectors": [
+      "Agriculture",
+      "Education",
+      "Trade"
+    ],
     "icon_emoji": "🌾",
     "tagline": "The sugarcane county — Kenya's sugar belt and academic excellence",
     "description": "Bungoma County is the heart of Kenya's sugar industry, producing most of the country's sugarcane. Also known for its strong educational institutions, the scenic slopes of Mount Elgon, and the Bukusu cultural heritage.",
-    "tourism_highlights": ["Mount Elgon National Park", "Sang'alo cultural festival", "Nabongo cultural centre", "Chwele market"],
+    "tourism_highlights": [
+      "Mount Elgon National Park",
+      "Sang'alo cultural festival",
+      "Nabongo cultural centre",
+      "Chwele market"
+    ],
     "warmest_month": "March (30°C)",
     "coolest_month": "July (22°C)",
     "rainy_season": "March-September",
-    "dry_season": "October-February"
+    "dry_season": "October-February",
+    "region": "Western"
   }
 ]
