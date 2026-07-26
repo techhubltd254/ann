@@ -13,7 +13,7 @@
             @foreach($regions as $r)
             <button @click="region = '{{ $r }}'"
                 class="shrink-0 px-3 py-1.5 rounded-lg text-[11px] font-bold transition-all cursor-pointer"
-                :class="region === '{{ $r }}' ? 'bg-[#901C1E] text-white' : 'bg-white text-[#5A6480] border border-[#0B1E57]/10 hover:border-[#901C1E]/30'">{{ $r }}</button>
+                :class="region === '{{ $r }}' ? 'bg-[#901C1E] text-[#0B1E57]' : 'bg-white text-[#5A6480] border border-[#0B1E57]/10 hover:border-[#901C1E]/30'">{{ $r }}</button>
             @endforeach
         </div>
     </div>
@@ -41,8 +41,8 @@
                           onerror="this.remove()">
                      <div class="absolute inset-0 bg-gradient-to-t from-black/70 via-black/20 to-transparent"></div>
                     <div class="absolute inset-x-0 bottom-0 p-4">
-                        <div class="text-white font-black text-base leading-tight">{{ $c->name }}</div>
-                        <div class="text-white/60 text-[11px] mt-1">{{ $c->tagline ?? Str::limit($c->description ?? '', 40) }}</div>
+                        <div class="text-[#0B1E57] font-black text-base leading-tight">{{ $c->name }}</div>
+                        <div class="text-[#5A6480] text-[11px] mt-1">{{ $c->tagline ?? Str::limit($c->description ?? '', 40) }}</div>
                     </div>
                 </a>
                 @endforeach
