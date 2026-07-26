@@ -133,6 +133,7 @@
                 <div class="aspect-square overflow-hidden bg-[#0D1220]">
                     <img src="{{ $product->image_url }}" alt="{{ $product->name }}"
                          class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500"
+                         loading="lazy" decoding="async"
                          onerror="this.src='{{ media('kicc/kicc-logo.png') }}'">
                 </div>
                 <div class="p-4">
@@ -166,7 +167,7 @@
             <div class="tilt-glare"></div>
             <div class="h-44 overflow-hidden bg-[#141B2E] relative">
                 @if($ex->cover_image)
-                <img src="{{ $ex->cover_image }}" alt="{{ $ex->name }}" class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-700 opacity-80">
+                <img src="{{ $ex->cover_image }}" alt="{{ $ex->name }}" class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-700 opacity-80" loading="lazy" decoding="async">
                 @else
                 <div class="w-full h-full flex items-center justify-center text-kicc-gold/30 text-lg font-bold">KICC Exhibition</div>
                 @endif

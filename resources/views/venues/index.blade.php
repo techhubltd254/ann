@@ -44,7 +44,7 @@
             <div class="tilt-glare"></div>
             <div class="h-40 bg-[#141B2E] flex items-center justify-center overflow-hidden relative">
                 @php $img = media("kicc/{$v->slug}.jpg"); @endphp
-                <img src="{{ $img }}" alt="{{ $v->name }}" class="w-full h-full object-cover opacity-70 group-hover:opacity-100 group-hover:scale-105 transition-all duration-500"
+                <img src="{{ $img }}" alt="{{ $v->name }}" loading="lazy" decoding="async" class="w-full h-full object-cover opacity-70 group-hover:opacity-100 group-hover:scale-105 transition-all duration-500"
                      onerror="this.style.display='none'">
                 <span class="absolute text-white/15 text-6xl font-black">{{ $v->name[0] }}</span>
             </div>

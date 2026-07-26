@@ -109,3 +109,11 @@ Route::middleware('auth')->group(function () {
 // Google OAuth
 Route::get('/auth/google', [SocialAuthController::class, 'redirectToGoogle'])->name('auth.google');
 Route::get('/auth/google/callback', [SocialAuthController::class, 'handleGoogleCallback']);
+
+// [ADMIN] One-time image optimization trigger
+Route::post('/__admin/optimize-images', function () {
+    if (!app()->environment('local', 'production')) abort(404);
+    $artisan = new \App\Console\Commands\OptimizeImages();
+    $artisan->setLaravel(app());
+    return $artisan->handle(app(\App\Services\ImageOptimizer::class));
+})->middleware('auth');

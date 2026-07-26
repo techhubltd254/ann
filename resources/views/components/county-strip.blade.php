@@ -45,11 +45,12 @@
                 @foreach($counties as $c)
                 <a href="{{ route('counties.show', $c->slug) }}"
                    x-show="q === '' || '{{ strtolower($c->name) }}'.includes(q.toLowerCase())"
-                   class="county-card shrink-0 group relative overflow-hidden rounded-2xl block" style="width: 200px; height: 280px;">
-                    <img src="{{ media('counties/' . $c->slug . '/hero.jpeg') }}" alt="{{ $c->name }}"
-                         class="absolute inset-0 w-full h-full object-cover group-hover:scale-110 transition-transform duration-700"
-                         onerror="this.style.display='none'">
-                    <div class="absolute inset-0 bg-gradient-to-t from-black/95 via-black/30 to-transparent"></div>
+class="county-card shrink-0 group relative overflow-hidden rounded-2xl block bg-[#141B2E]" style="width: 200px; height: 280px;">
+                     <img src="{{ media('counties/' . $c->slug . '/hero.jpeg') }}" alt="{{ $c->name }}"
+                          class="absolute inset-0 w-full h-full object-cover group-hover:scale-110 transition-transform duration-700"
+                          loading="lazy" decoding="async"
+                          onerror="this.remove()">
+                     <div class="absolute inset-0 bg-gradient-to-t from-black/95 via-black/30 to-transparent"></div>
                     <div class="absolute inset-x-0 bottom-0 p-4">
                         <div class="text-white font-black text-base leading-tight">{{ $c->name }}</div>
                         <div class="text-white/50 text-[11px] mt-1">{{ $c->tagline ?? Str::limit($c->description ?? '', 40) }}</div>

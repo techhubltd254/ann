@@ -13,7 +13,7 @@
     <div class="grid lg:grid-cols-3 gap-8">
         <div class="lg:col-span-2">
             <div class="rounded-2xl overflow-hidden h-80 bg-[#141B2E]">
-                <img src="{{ $product->image_url }}" alt="{{ $product->name }}" class="w-full h-full object-cover"
+                <img src="{{ $product->image_url }}" alt="{{ $product->name }}" loading="lazy" decoding="async" class="w-full h-full object-cover"
                      onerror="this.src='{{ asset('storage/kicc/kicc-logo.png') }}'">
             </div>
             @if($product->images->count() > 1)

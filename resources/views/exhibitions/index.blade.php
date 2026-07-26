@@ -25,7 +25,7 @@
             <div class="tilt-glare"></div>
             @if($exhibition->cover_image)
             <div class="h-48 overflow-hidden relative">
-                <img src="{{ $exhibition->cover_image }}" alt="{{ $exhibition->name }}" class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-700 opacity-85">
+                <img src="{{ $exhibition->cover_image }}" alt="{{ $exhibition->name }}" class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-700 opacity-85" loading="lazy" decoding="async">
             </div>
             @else
             <div class="w-full h-48 bg-gradient-to-br from-[#141B2E] to-[#0D1220] flex items-center justify-center text-5xl relative">
