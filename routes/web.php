@@ -20,43 +20,7 @@ use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\Web\SocialAuthController;
 use App\Http\Controllers\Web\Room3dController;
 
-// [DEBUG: Remove after fix] Step-by-step diagnosis of 500 pages
-Route::get('/__debug/{slug}', function ($slug) {
-    $tests = [];
-    try {
-        if ($slug === 'county') {
-            $tests['query county'] = \App\Models\County::where('slug', 'mombasa')->firstOrFail()->name;
-            $county = \App\Models\County::where('slug', 'mombasa')->firstOrFail();
-            $tests['load sectors'] = $county->sectors()->count();
-            $tests['load tourismAttr'] = $county->tourismAttractions()->count();
-            $tests['load hotels'] = $county->hotels()->count();
-            $tests['load products'] = $county->products()->count();
-            $tests['load institutions'] = $county->institutions()->count();
-            $tests['load farms'] = $county->farms()->count();
-            $tests['load transport'] = $county->transport()->count();
-            $tests['load health'] = $county->healthFacilities()->count();
-            $tests['load culture'] = $county->cultureSites()->count();
-            $tests['render view'] = view('counties.show', compact('county'))->renderSections()['content'][0] ?? 'partial';
-        } elseif ($slug === 'operations') {
-            $tests['Campaign'] = \App\Models\Advertising\Campaign::count();
-            $tests['Courier'] = \App\Models\Logistics\CourierPartner::count();
-            $tests['ShippingZone'] = \App\Models\Logistics\ShippingZone::count();
-            $tests['ContentPage'] = \App\Models\Seo\ContentPage::count();
-            $tests['AutomationTree'] = app(\App\Services\AutomationTreeService::class)->getTree()['children'][0]['name'] ?? 'none';
-            // Test full controller
-            $ctrl = app(\App\Http\Controllers\Web\OperationsController::class);
-            $tests['controller'] = $ctrl->index(app(\App\Services\AutomationTreeService::class))->render();
-        } elseif ($slug === 'room3d') {
-            $ctrl = app(\App\Http\Controllers\Web\Room3dController::class);
-            $tests['response'] = $ctrl->index()->renderSections()['content'][0] ?? 'partial';
-        }
-    } catch (\Throwable $e) {
-        return '<pre>FAIL at: ' . $slug . "\nStep: " . array_key_last($tests ?? []) . "\n" .
-               get_class($e) . ': ' . $e->getMessage() . "\n" .
-               $e->getFile() . ':' . $e->getLine() . '</pre>';
-    }
-    return '<pre>' . implode("\n", array_map(fn($k, $v) => "OK: $k -> $v", array_keys($tests), $tests)) . '</pre>';
-});
+Route::get('/', HomeController::class)->name('home');
 
 Route::get('/', HomeController::class)->name('home');
 
