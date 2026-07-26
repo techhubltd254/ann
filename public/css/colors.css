@@ -1,0 +1,41 @@
+/* ============================================================
+   KICC Color System — Semantic Tokens + Custom Properties
+   Based on color theory: 60-30-10 rule, WCAG AA contrast,
+   complementary gold + red on deep navy canvas
+   ============================================================ */
+@layer base {
+  :root {
+    --page-bg:        #07090F;      /* 60% canvas */
+    --card-bg:        #0D1220;      /* 30% surface */
+    --surface-bg:     #141B2E;      /* elevated */
+    --border-color:   rgba(255,255,255,0.08);
+    --text-primary:   #FFFFFF;
+    --text-secondary: rgba(255,255,255,0.50);
+    --text-muted:     rgba(255,255,255,0.30);
+    --kicc-red:       #901C1E;
+    --kicc-gold:      #FFCD05;
+    --kicc-navy:      #0B1E57;
+    --color-success:  #34D399;
+    --color-error:    #e86f71;
+    --img-placeholder:#141B2E;
+    --shadow-card:    0 4px 24px rgba(0,0,0,0.25);
+  }
+}
+@layer utilities {
+  .bg-page    { background-color: var(--page-bg); }
+  .bg-card    { background-color: var(--card-bg); }
+  .bg-surface { background-color: var(--surface-bg); }
+  .img-ph     { background-color: var(--img-placeholder); }
+  .text-primary   { color: var(--text-primary); }
+  .text-secondary { color: var(--text-secondary); }
+  .text-muted     { color: var(--text-muted); }
+  .text-red     { color: var(--kicc-red); }
+  .text-gold    { color: var(--kicc-gold); }
+  .text-success { color: var(--color-success); }
+  .text-error   { color: var(--color-error); }
+}
+/* Color Psychology:
+   #901C1E Red  → Urgency, CTA, passion (10% accents)
+   #FFCD05 Gold → Premium, success (10% highlights)
+   #07090F Navy → Depth, trust (60% canvas)
+   #0D1220 Card → Modern, clean (30% surfaces) */
