@@ -17,7 +17,7 @@
     {{-- Tab Nav --}}
     <div class="flex gap-1 bg-white border border-[#0B1E57]/8 rounded-xl p-1 mb-8 overflow-x-auto">
         @foreach(['overview' => 'Overview', 'ministries' => 'Ministries', 'agencies' => 'Agencies', 'sectors' => 'Sectors', 'content' => 'Content'] as $key => $label)
-        <button @click="tab = '{{ $key }}'" :class="tab === '{{ $key }}' ? 'bg-[#0B1E57] text-white' : 'text-[#5A6480] hover:text-[#0B1E57]'" class="px-4 py-2 text-sm font-bold rounded-lg transition-all shrink-0">{{ $label }}</button>
+        <button @click="tab = '{{ $key }}'" :class="tab === '{{ $key }}' ? 'bg-[#0B1E57] text-[#0B1E57]' : 'text-[#5A6480] hover:text-[#0B1E57]'" class="px-4 py-2 text-sm font-bold rounded-lg transition-all shrink-0">{{ $label }}</button>
         @endforeach
     </div>
 
@@ -50,8 +50,8 @@
         <div class="bg-white rounded-2xl border border-[#0B1E57]/8 p-6">
             <h3 class="font-bold text-[#0B1E57] mb-4">Quick Actions</h3>
             <div class="flex flex-wrap gap-3">
-                <a href="/admin/ministries" class="px-4 py-2 text-sm font-bold bg-[#901C1E] text-white rounded-xl hover:bg-[#7a181a] transition-colors">Manage Ministries</a>
-                <a href="/admin/agencies" class="px-4 py-2 text-sm font-bold bg-[#0B1E57] text-white rounded-xl hover:bg-[#0a1a4a] transition-colors">Manage Agencies</a>
+                <a href="/admin/ministries" class="px-4 py-2 text-sm font-bold bg-[#901C1E] text-[#0B1E57] rounded-xl hover:bg-[#7a181a] transition-colors">Manage Ministries</a>
+                <a href="/admin/agencies" class="px-4 py-2 text-sm font-bold bg-[#0B1E57] text-[#0B1E57] rounded-xl hover:bg-[#0a1a4a] transition-colors">Manage Agencies</a>
                 <a href="/admin/sectors" class="px-4 py-2 text-sm font-bold bg-[#FFCD05] text-[#0B1E57] rounded-xl hover:bg-[#e6b904] transition-colors">Manage Sectors</a>
                 <a href="/admin/counties" class="px-4 py-2 text-sm font-bold border border-[#0B1E57]/20 text-[#0B1E57] rounded-xl hover:bg-[#0B1E57]/5 transition-colors">View Counties</a>
             </div>
@@ -62,13 +62,13 @@
     <div x-show="tab === 'ministries'" x-cloak>
         <div class="flex items-center justify-between mb-6">
             <h2 class="text-xl font-black text-[#0B1E57]">Ministries</h2>
-            <a href="/admin/ministries/create" class="px-4 py-2 text-sm font-bold bg-[#901C1E] text-white rounded-xl hover:bg-[#7a181a] transition-colors">+ Add Ministry</a>
+            <a href="/admin/ministries/create" class="px-4 py-2 text-sm font-bold bg-[#901C1E] text-[#0B1E57] rounded-xl hover:bg-[#7a181a] transition-colors">+ Add Ministry</a>
         </div>
         <div class="grid md:grid-cols-2 lg:grid-cols-3 gap-4">
             @foreach(\App\Models\Ministry::with('agencies')->get() as $ministry)
             <div class="bg-white rounded-2xl border border-[#0B1E57]/8 p-6 hover:shadow-lg transition-shadow">
                 <div class="flex items-start justify-between mb-3">
-                    <div class="w-12 h-12 rounded-xl flex items-center justify-center text-white font-black text-lg" style="background: {{ $ministry->color }}">{{ $ministry->code[0] }}</div>
+                    <div class="w-12 h-12 rounded-xl flex items-center justify-center text-[#0B1E57] font-black text-lg" style="background: {{ $ministry->color }}">{{ $ministry->code[0] }}</div>
                     <div class="flex gap-1">
                         <a href="/admin/ministries/{{ $ministry->id }}/edit" class="p-1.5 text-[#5A6480] hover:text-[#901C1E] hover:bg-gray-100 rounded-lg transition-colors" title="Edit">
                             <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z"/></svg>
@@ -99,7 +99,7 @@
     <div x-show="tab === 'agencies'" x-cloak>
         <div class="flex items-center justify-between mb-6">
             <h2 class="text-xl font-black text-[#0B1E57]">Agencies</h2>
-            <a href="/admin/agencies/create" class="px-4 py-2 text-sm font-bold bg-[#0B1E57] text-white rounded-xl hover:bg-[#0a1a4a] transition-colors">+ Add Agency</a>
+            <a href="/admin/agencies/create" class="px-4 py-2 text-sm font-bold bg-[#0B1E57] text-[#0B1E57] rounded-xl hover:bg-[#0a1a4a] transition-colors">+ Add Agency</a>
         </div>
         <div class="bg-white rounded-2xl border border-[#0B1E57]/8 overflow-hidden">
             <table class="w-full text-sm">
