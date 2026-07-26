@@ -9,12 +9,12 @@
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&display=swap" rel="stylesheet">
     <style>
         * { font-family: 'Inter', system-ui, sans-serif; }
-        body { background-color: #07090F; color: #ffffff; }
+        body { background-color: #F9FAFB; color: #0B1E57; }
         .scrollbar-hide { scrollbar-width: none; }
         .scrollbar-hide::-webkit-scrollbar { display: none; }
     </style>
 </head>
-<body class="antialiased text-white">
+<body class="antialiased text-[#0B1E57]">
     @yield('content')
     <script defer src="https://cdn.jsdelivr.net/npm/alpinejs@3.x.x/dist/cdn.min.js"></script>
 </body>
