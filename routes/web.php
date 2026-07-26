@@ -45,16 +45,13 @@ Route::get('/subscriptions', [CountySubscriptionController::class, 'index'])->na
 
 // 3-Tier Admin Portals
 Route::middleware('auth')->group(function () {
-    // KICC Admin — full control
-    Route::get('/admin/kicc', [AdminPortalController::class, 'index'])->name('admin.kicc');
+    // Portal selector (choose KICC/National/County admin)
+    Route::get('/portal', [AdminPortalController::class, 'selector'])->name('admin.portal');
     // National Government Admin — ministries & agencies
     Route::get('/admin/national', [AdminPortalController::class, 'national'])->name('admin.national');
     // County Admin — scoped to own county
     Route::get('/admin/county', [AdminPortalController::class, 'county'])->name('admin.county');
-    // Portal selector
-    Route::get('/admin', [AdminPortalController::class, 'selector'])->name('admin.portal');
-
-    // Dashboards (legacy, redirect to portals)
+    // Dashboards (legacy)
     Route::get('/dashboard/county', [DashboardV2Controller::class, 'county'])->name('dashboard.county');
     Route::get('/dashboard/admin', [AdminDashboardController::class, 'index'])->name('dashboard.admin');
     Route::post('/dashboard/admin/delete-product/{id}', [AdminDashboardController::class, 'deleteProduct'])->name('admin.delete-product');
