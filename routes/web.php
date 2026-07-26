@@ -20,33 +20,45 @@ use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\Web\SocialAuthController;
 use App\Http\Controllers\Web\Room3dController;
 
-// [DEBUG] Temporary — find exact 500 errors
+// [DEBUG: Remove after fix] Step-by-step diagnosis of 500 pages
 Route::get('/__debug/{slug}', function ($slug) {
-    $map = [
-        'county' => function () {
-            $county = \App\Models\County::where('slug', 'mombasa')->firstOrFail();
-            return view('counties.show', compact('county'))->render();
-        },
-        'operations' => function () {
-            $ctrl = app(\App\Http\Controllers\Web\OperationsController::class);
-            return $ctrl->index(app(\App\Services\AutomationTreeService::class))->render();
-        },
-        'room3d' => function () {
-            $ctrl = app(\App\Http\Controllers\Web\Room3dController::class);
-            return $ctrl->index()->render();
-        },
-    ];
-    if (!isset($map[$slug])) abort(404);
+    $tests = [];
     try {
-        return $map[$slug]();
-    } catch (\Throwable $e) {
-        $msg = get_class($e) . ': ' . $e->getMessage() . "\n";
-        $msg .= $e->getFile() . ':' . $e->getLine() . "\n";
-        foreach (array_slice($e->getTrace(), 0, 8) as $t) {
-            $msg .= ($t['class']??'') . ($t['type']??'') . ($t['function']??'') . ' at ' . ($t['file']??'?') . ':' . ($t['line']??'?') . "\n";
+        if ($slug === 'county') {
+            $tests['query county'] = \App\Models\County::where('slug', 'mombasa')->firstOrFail()->name;
+            $county = \App\Models\County::where('slug', 'mombasa')->firstOrFail();
+            $tests['load sectors'] = $county->sectors()->count();
+            $tests['load tourismAttr'] = $county->tourismAttractions()->count();
+            $tests['load hotels'] = $county->hotels()->count();
+            $tests['load products'] = $county->products()->count();
+            $tests['load institutions'] = $county->institutions()->count();
+            $tests['load farms'] = $county->farms()->count();
+            $tests['load transport'] = $county->transport()->count();
+            $tests['load health'] = $county->healthFacilities()->count();
+            $tests['load culture'] = $county->cultureSites()->count();
+            $tests['render view'] = view('counties.show', compact('county'))->renderSections()['content'][0] ?? 'partial';
+        } elseif ($slug === 'operations') {
+            $tests['Campaign'] = \App\Models\Advertising\Campaign::count();
+            $tests['Courier'] = \App\Models\Logistics\CourierPartner::count();
+            $tests['ShippingZone'] = \App\Models\Logistics\ShippingZone::count();
+            $tests['ContentPage'] = \App\Models\Seo\ContentPage::count();
+            $tests['AutomationTree'] = app(\App\Services\AutomationTreeService::class)->getTree()['children'][0]['name'] ?? 'none';
+            $view = view('operations.index')->with([
+                'campaigns' => collect(), 'couriers' => collect(),
+                'zones' => collect(), 'pages' => collect(),
+                'automationTree' => app(\App\Services\AutomationTreeService::class)->getTree(),
+            ]);
+            $tests['render'] = $view->renderSections()['content'][0] ?? 'partial';
+        } elseif ($slug === 'room3d') {
+            $ctrl = app(\App\Http\Controllers\Web\Room3dController::class);
+            $tests['response'] = $ctrl->index()->renderSections()['content'][0] ?? 'partial';
         }
-        return nl2br($msg);
+    } catch (\Throwable $e) {
+        return '<pre>FAIL at: ' . $slug . "\nStep: " . array_key_last($tests ?? []) . "\n" .
+               get_class($e) . ': ' . $e->getMessage() . "\n" .
+               $e->getFile() . ':' . $e->getLine() . '</pre>';
     }
+    return '<pre>' . implode("\n", array_map(fn($k, $v) => "OK: $k -> $v", array_keys($tests), $tests)) . '</pre>';
 });
 
 Route::get('/', HomeController::class)->name('home');
