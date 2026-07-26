@@ -71,61 +71,91 @@
     {{-- NAV — fixed top bar with glass effect on scroll --}}
     <nav x-data="{ scrolled: false, open: false }" x-init="window.addEventListener('scroll', () => scrolled = window.scrollY > 40)"
           class="fixed top-0 left-0 right-0 z-50 transition-all duration-500 h-20"
-          :class="scrolled ? 'bg-white/95 backdrop-blur-xl border-b border-gray-200 shadow-lg shadow-black/5' : 'bg-transparent'">
+          :class="scrolled ? 'bg-white/95 backdrop-blur-xl border-b border-gray-200 shadow-lg shadow-black/5' : 'bg-[#0a1024]/80 backdrop-blur-sm'">
         <div class="max-w-7xl mx-auto px-5 h-full flex items-center justify-between gap-4">
             <a href="/" class="flex items-center gap-3 shrink-0 group">
-                <img src="{{ media('kicc/kicc-logo.png') }}" alt="KICC" class="h-10 w-auto object-contain" style="filter: brightness(0) invert(0);">
-                <div class="hidden sm:block leading-tight border-l border-gray-300 pl-3">
-                    <div class="font-black text-[#901C1E] text-[11px] tracking-tight group-hover:text-kicc-gold transition-colors uppercase">Global Exhibition</div>
+                <img src="{{ media('kicc/kicc-logo.png') }}" alt="KICC" class="h-10 w-auto object-contain" :class="scrolled ? '' : 'brightness-0 invert'" style="filter: brightness(0) invert(0);">
+                <div class="hidden sm:block leading-tight border-l pl-3" :class="scrolled ? 'border-gray-300' : 'border-white/30'">
+                    <div class="font-black text-[#901C1E] text-[11px] tracking-tight group-hover:text-kicc-gold transition-colors uppercase" :class="scrolled ? 'text-[#901C1E]' : 'text-white'">Global Exhibition</div>
                     <div class="text-[9px] text-kicc-gold font-bold tracking-[0.18em] uppercase">Platform</div>
                 </div>
             </a>
             <nav class="hidden lg:flex items-center gap-1">
-                <a href="{{ route('counties.index') }}" class="px-3.5 py-2 text-sm font-semibold rounded-lg transition-all {{ request()->routeIs('counties.*') ? 'text-white bg-kicc-red' : 'text-gray-600 hover:text-kicc-red hover:bg-gray-100' }}">Counties</a>
-                <a href="{{ route('marketplace.index') }}" class="px-3.5 py-2 text-sm font-semibold rounded-lg transition-all {{ request()->routeIs('marketplace.*') ? 'text-white bg-kicc-red' : 'text-gray-600 hover:text-kicc-red hover:bg-gray-100' }}">Marketplace</a>
-                <a href="{{ route('travel.index') }}" class="px-3.5 py-2 text-sm font-semibold rounded-lg transition-all {{ request()->routeIs('travel.*') ? 'text-white bg-kicc-red' : 'text-gray-600 hover:text-kicc-red hover:bg-gray-100' }}">Travel</a>
-                <a href="{{ route('venues.index') }}" class="px-3.5 py-2 text-sm font-semibold rounded-lg transition-all {{ request()->routeIs('venues.*') ? 'text-white bg-kicc-red' : 'text-gray-600 hover:text-kicc-red hover:bg-gray-100' }}">Venues</a>
-                <a href="{{ route('exhibitions.index') }}" class="px-3.5 py-2 text-sm font-semibold rounded-lg transition-all {{ request()->routeIs('exhibitions.*') ? 'text-white bg-kicc-red' : 'text-gray-600 hover:text-kicc-red hover:bg-gray-100' }}">Events</a>
-                <a href="{{ route('screens.directory') }}" class="px-3.5 py-2 text-sm font-semibold rounded-lg transition-all {{ request()->routeIs('screens.*') ? 'text-white bg-kicc-red' : 'text-gray-600 hover:text-kicc-red hover:bg-gray-100' }}">Screens</a>
-                <a href="{{ route('exhibition-3d.map') }}" class="px-3.5 py-2 text-sm font-semibold rounded-lg transition-all {{ request()->routeIs('exhibition-3d.*') ? 'text-white bg-kicc-red' : 'text-gray-600 hover:text-kicc-red hover:bg-gray-100' }}">3D Tour</a>
+                <a href="{{ route('counties.index') }}" class="px-3.5 py-2 text-sm font-semibold rounded-lg transition-all"
+                   :class="scrolled ? 'text-gray-600 hover:text-kicc-red hover:bg-gray-100' : 'text-white/80 hover:text-white hover:bg-white/10'"
+                   {{ request()->routeIs('counties.*') ? 'style=background:#901C1E;color:white' : '' }}>Counties</a>
+                <a href="{{ route('marketplace.index') }}" class="px-3.5 py-2 text-sm font-semibold rounded-lg transition-all"
+                   :class="scrolled ? 'text-gray-600 hover:text-kicc-red hover:bg-gray-100' : 'text-white/80 hover:text-white hover:bg-white/10'"
+                   {{ request()->routeIs('marketplace.*') ? 'style=background:#901C1E;color:white' : '' }}>Marketplace</a>
+                <a href="{{ route('travel.index') }}" class="px-3.5 py-2 text-sm font-semibold rounded-lg transition-all"
+                   :class="scrolled ? 'text-gray-600 hover:text-kicc-red hover:bg-gray-100' : 'text-white/80 hover:text-white hover:bg-white/10'"
+                   {{ request()->routeIs('travel.*') ? 'style=background:#901C1E;color:white' : '' }}>Travel</a>
+                <a href="{{ route('venues.index') }}" class="px-3.5 py-2 text-sm font-semibold rounded-lg transition-all"
+                   :class="scrolled ? 'text-gray-600 hover:text-kicc-red hover:bg-gray-100' : 'text-white/80 hover:text-white hover:bg-white/10'"
+                   {{ request()->routeIs('venues.*') ? 'style=background:#901C1E;color:white' : '' }}>Venues</a>
+                <a href="{{ route('exhibitions.index') }}" class="px-3.5 py-2 text-sm font-semibold rounded-lg transition-all"
+                   :class="scrolled ? 'text-gray-600 hover:text-kicc-red hover:bg-gray-100' : 'text-white/80 hover:text-white hover:bg-white/10'"
+                   {{ request()->routeIs('exhibitions.*') ? 'style=background:#901C1E;color:white' : '' }}>Events</a>
+                <a href="{{ route('screens.directory') }}" class="px-3.5 py-2 text-sm font-semibold rounded-lg transition-all"
+                   :class="scrolled ? 'text-gray-600 hover:text-kicc-red hover:bg-gray-100' : 'text-white/80 hover:text-white hover:bg-white/10'"
+                   {{ request()->routeIs('screens.*') ? 'style=background:#901C1E;color:white' : '' }}>Screens</a>
+                <a href="{{ route('exhibition-3d.map') }}" class="px-3.5 py-2 text-sm font-semibold rounded-lg transition-all"
+                   :class="scrolled ? 'text-gray-600 hover:text-kicc-red hover:bg-gray-100' : 'text-white/80 hover:text-white hover:bg-white/10'"
+                   {{ request()->routeIs('exhibition-3d.*') ? 'style=background:#901C1E;color:white' : '' }}>3D Tour</a>
             </nav>
             <div class="flex items-center gap-2">
-                <a href="{{ route('cart.index') }}" class="relative p-2 text-gray-500 hover:text-kicc-red transition-colors" aria-label="Cart">
+                <a href="{{ route('cart.index') }}" class="relative p-2 transition-colors" :class="scrolled ? 'text-gray-500 hover:text-kicc-red' : 'text-white/70 hover:text-white'" aria-label="Cart">
                     <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 3h2l.4 2M7 13h10l4-8H5.4M7 13L5.4 5M7 13l-2.293 2.293c-.63.63-.184 1.707.707 1.707H17m0 0a2 2 0 100 4 2 2 0 000-4zm-8 2a2 2 0 11-4 0 2 2 0 014 0z"/></svg>
                 </a>
                 @auth
-                <a href="{{ route('dashboard.index') }}" class="inline-flex items-center gap-2 font-bold tracking-wide transition-all duration-200 px-4 text-xs h-9 rounded-xl bg-kicc-red text-white hover:bg-[#7a181a]">
+                <a href="{{ route('dashboard.index') }}" class="inline-flex items-center gap-2 font-bold tracking-wide transition-all duration-200 px-4 text-xs h-9 rounded-xl"
+                   :class="scrolled ? 'bg-kicc-red text-white hover:bg-[#7a181a]' : 'bg-white/20 text-white hover:bg-white/30'">
                     Dashboard
                 </a>
-                <a href="{{ route('admin.portal') }}" class="hidden sm:inline-flex items-center gap-2 font-bold tracking-wide transition-all duration-200 px-4 text-xs h-9 rounded-xl border border-kicc-red/50 text-kicc-red hover:bg-kicc-red/10" title="Admin">
+                <a href="{{ route('admin.portal') }}" class="hidden sm:inline-flex items-center gap-2 font-bold tracking-wide transition-all duration-200 px-4 text-xs h-9 rounded-xl border"
+                   :class="scrolled ? 'border-kicc-red/50 text-kicc-red hover:bg-kicc-red/10' : 'border-white/30 text-white/80 hover:bg-white/10'" title="Admin">
                     Admin
                 </a>
                 <form method="POST" action="{{ route('logout') }}" class="inline">@csrf
-                    <button type="submit" class="inline-flex items-center gap-2 font-bold tracking-wide transition-all duration-200 px-3 text-xs h-9 rounded-xl border border-gray-300 text-gray-600 hover:bg-gray-100">Logout</button>
+                    <button type="submit" class="inline-flex items-center gap-2 font-bold tracking-wide transition-all duration-200 px-3 text-xs h-9 rounded-xl border"
+                            :class="scrolled ? 'border-gray-300 text-gray-600 hover:bg-gray-100' : 'border-white/30 text-white/80 hover:bg-white/10'">Logout</button>
                 </form>
                 @else
-                <a href="{{ route('login') }}" class="inline-flex items-center gap-2 font-bold tracking-wide transition-all duration-200 px-4 text-xs h-9 rounded-xl bg-kicc-red text-white hover:bg-[#7a181a]">Sign In</a>
+                <a href="{{ route('login') }}" class="inline-flex items-center gap-2 font-bold tracking-wide transition-all duration-200 px-4 text-xs h-9 rounded-xl"
+                   :class="scrolled ? 'bg-kicc-red text-white hover:bg-[#7a181a]' : 'bg-white/20 text-white hover:bg-white/30'">Sign In</a>
                 @endauth
-                <button @click="open = !open" class="lg:hidden text-gray-600 hover:text-kicc-red p-2" aria-label="Menu">
+                <button @click="open = !open" class="lg:hidden p-2 transition-colors" :class="scrolled ? 'text-gray-600 hover:text-kicc-red' : 'text-white/70 hover:text-white'" aria-label="Menu">
                     <svg class="w-5 h-5" x-show="!open" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16"/></svg>
                     <svg class="w-5 h-5" x-show="open" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"/></svg>
                 </button>
             </div>
         </div>
-        <div x-show="open" x-cloak x-transition class="lg:hidden absolute top-full left-0 right-0 bg-white border-b border-gray-200 shadow-lg p-4 flex flex-col gap-1">
-            <a href="{{ route('counties.index') }}" class="text-left px-4 py-3 text-sm font-semibold text-gray-600 hover:text-kicc-red hover:bg-gray-100 rounded-lg">Counties</a>
-            <a href="{{ route('marketplace.index') }}" class="text-left px-4 py-3 text-sm font-semibold text-gray-600 hover:text-kicc-red hover:bg-gray-100 rounded-lg">Marketplace</a>
-            <a href="{{ route('travel.index') }}" class="text-left px-4 py-3 text-sm font-semibold text-gray-600 hover:text-kicc-red hover:bg-gray-100 rounded-lg">Travel</a>
-            <a href="{{ route('venues.index') }}" class="text-left px-4 py-3 text-sm font-semibold text-gray-600 hover:text-kicc-red hover:bg-gray-100 rounded-lg">Venues</a>
-            <a href="{{ route('exhibitions.index') }}" class="text-left px-4 py-3 text-sm font-semibold text-gray-600 hover:text-kicc-red hover:bg-gray-100 rounded-lg">Events</a>
-            <a href="{{ route('screens.directory') }}" class="text-left px-4 py-3 text-sm font-semibold text-gray-600 hover:text-kicc-red hover:bg-gray-100 rounded-lg">Screens</a>
-            <a href="{{ route('exhibition-3d.map') }}" class="text-left px-4 py-3 text-sm font-semibold text-gray-600 hover:text-kicc-red hover:bg-gray-100 rounded-lg">3D Tour</a>
-            <a href="{{ route('subscriptions.index') }}" class="text-left px-4 py-3 text-sm font-semibold text-gray-600 hover:text-kicc-red hover:bg-gray-100 rounded-lg">Plans</a>
+        <div x-show="open" x-cloak x-transition class="lg:hidden absolute top-full left-0 right-0 p-4 flex flex-col gap-1 border-b shadow-lg"
+             :class="scrolled ? 'bg-white border-gray-200' : 'bg-[#0a1024]/95 border-white/10'">
+            <a href="{{ route('counties.index') }}" class="text-left px-4 py-3 text-sm font-semibold rounded-lg"
+               :class="scrolled ? 'text-gray-600 hover:text-kicc-red hover:bg-gray-100' : 'text-white/70 hover:text-white hover:bg-white/10'">Counties</a>
+            <a href="{{ route('marketplace.index') }}" class="text-left px-4 py-3 text-sm font-semibold rounded-lg"
+               :class="scrolled ? 'text-gray-600 hover:text-kicc-red hover:bg-gray-100' : 'text-white/70 hover:text-white hover:bg-white/10'">Marketplace</a>
+            <a href="{{ route('travel.index') }}" class="text-left px-4 py-3 text-sm font-semibold rounded-lg"
+               :class="scrolled ? 'text-gray-600 hover:text-kicc-red hover:bg-gray-100' : 'text-white/70 hover:text-white hover:bg-white/10'">Travel</a>
+            <a href="{{ route('venues.index') }}" class="text-left px-4 py-3 text-sm font-semibold rounded-lg"
+               :class="scrolled ? 'text-gray-600 hover:text-kicc-red hover:bg-gray-100' : 'text-white/70 hover:text-white hover:bg-white/10'">Venues</a>
+            <a href="{{ route('exhibitions.index') }}" class="text-left px-4 py-3 text-sm font-semibold rounded-lg"
+               :class="scrolled ? 'text-gray-600 hover:text-kicc-red hover:bg-gray-100' : 'text-white/70 hover:text-white hover:bg-white/10'">Events</a>
+            <a href="{{ route('screens.directory') }}" class="text-left px-4 py-3 text-sm font-semibold rounded-lg"
+               :class="scrolled ? 'text-gray-600 hover:text-kicc-red hover:bg-gray-100' : 'text-white/70 hover:text-white hover:bg-white/10'">Screens</a>
+            <a href="{{ route('exhibition-3d.map') }}" class="text-left px-4 py-3 text-sm font-semibold rounded-lg"
+               :class="scrolled ? 'text-gray-600 hover:text-kicc-red hover:bg-gray-100' : 'text-white/70 hover:text-white hover:bg-white/10'">3D Tour</a>
+            <a href="{{ route('subscriptions.index') }}" class="text-left px-4 py-3 text-sm font-semibold rounded-lg"
+               :class="scrolled ? 'text-gray-600 hover:text-kicc-red hover:bg-gray-100' : 'text-white/70 hover:text-white hover:bg-white/10'">Plans</a>
             @auth
-            <a href="{{ route('dashboard.index') }}" class="text-left px-4 py-3 text-sm font-semibold text-kicc-red font-bold hover:bg-gray-100 rounded-lg">Dashboard</a>
-            <a href="{{ route('admin.portal') }}" class="text-left px-4 py-3 text-sm font-semibold text-kicc-red hover:bg-gray-100 rounded-lg">Admin</a>
+            <a href="{{ route('dashboard.index') }}" class="text-left px-4 py-3 text-sm font-semibold rounded-lg"
+               :class="scrolled ? 'text-kicc-red bg-gray-50' : 'text-kicc-gold hover:bg-white/10'">Dashboard</a>
+            <a href="{{ route('admin.portal') }}" class="text-left px-4 py-3 text-sm font-semibold rounded-lg"
+               :class="scrolled ? 'text-kicc-red hover:bg-gray-100' : 'text-white/70 hover:text-white hover:bg-white/10'">Admin</a>
             @else
-            <a href="{{ route('login') }}" class="text-left px-4 py-3 text-sm font-semibold text-gray-600 hover:text-kicc-red hover:bg-gray-100 rounded-lg">Sign In</a>
+            <a href="{{ route('login') }}" class="text-left px-4 py-3 text-sm font-semibold rounded-lg"
+               :class="scrolled ? 'text-gray-600 hover:text-kicc-red hover:bg-gray-100' : 'text-white/70 hover:text-white hover:bg-white/10'">Sign In</a>
             @endauth
         </div>
     </nav>
