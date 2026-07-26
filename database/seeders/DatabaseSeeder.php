@@ -12,6 +12,7 @@ class DatabaseSeeder extends Seeder
             RolePermissionSeeder::class,
             CountySeeder::class,
             SectorSeeder::class,
+            MinistrySeeder::class,
             BlueprintSeeder::class,
             ScreenSeeder::class,
             MarketplaceSeeder::class,
