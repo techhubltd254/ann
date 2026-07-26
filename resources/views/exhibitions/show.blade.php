@@ -4,26 +4,26 @@
 @section('description', $exhibition->tagline ?? $exhibition->description)
 
 @section('content')
-<div class="bg-[#0D1220] border-b border-white/8 py-12 relative overflow-hidden">
+<div class="bg-white border-b border-[#0B1E57]/8 py-12 relative overflow-hidden">
     <div class="absolute w-96 h-96 rounded-full bg-[#901C1E]/10 blur-3xl -top-20 right-0"></div>
     <div class="max-w-7xl mx-auto px-5 relative">
-        <a href="{{ route('exhibitions.index') }}" class="text-white/40 hover:text-kicc-gold text-sm mb-4 inline-block transition-colors">&larr; Back to Exhibitions</a>
+        <a href="{{ route('exhibitions.index') }}" class="text-[#5A6480] hover:text-kicc-gold text-sm mb-4 inline-block transition-colors">&larr; Back to Exhibitions</a>
         <div class="flex flex-col lg:flex-row lg:items-end lg:justify-between gap-4" data-reveal>
             <div>
-                <h1 class="text-3xl md:text-4xl font-black text-white mb-2">{{ $exhibition->name }}</h1>
+                <h1 class="text-3xl md:text-4xl font-black text-[#0B1E57] mb-2">{{ $exhibition->name }}</h1>
                 @if($exhibition->tagline)
-                <p class="text-lg text-white/50">{{ $exhibition->tagline }}</p>
+                <p class="text-lg text-[#5A6480]">{{ $exhibition->tagline }}</p>
                 @endif
                 <div class="flex flex-wrap gap-3 mt-4">
-                    <span class="bg-white/8 border border-white/10 text-white/70 px-3 py-1 rounded-lg text-xs font-semibold">{{ $exhibition->start_date->format('M d, Y') }} - {{ $exhibition->end_date->format('M d, Y') }}</span>
+                    <span class="bg-[#0B1E57]/8 border border-[#0B1E57]/10 text-[#5A6480] px-3 py-1 rounded-lg text-xs font-semibold">{{ $exhibition->start_date->format('M d, Y') }} - {{ $exhibition->end_date->format('M d, Y') }}</span>
                     @if($exhibition->county)
-                    <a href="{{ route('counties.show', $exhibition->county->slug) }}" class="bg-white/8 border border-white/10 text-white/70 px-3 py-1 rounded-lg text-xs font-semibold hover:border-kicc-gold/40 hover:text-kicc-gold transition-colors">{{ $exhibition->county->name }}</a>
+                    <a href="{{ route('counties.show', $exhibition->county->slug) }}" class="bg-[#0B1E57]/8 border border-[#0B1E57]/10 text-[#5A6480] px-3 py-1 rounded-lg text-xs font-semibold hover:border-kicc-gold/40 hover:text-kicc-gold transition-colors">{{ $exhibition->county->name }}</a>
                     @endif
                     <span class="bg-emerald-500/15 border border-emerald-500/25 text-emerald-400 px-3 py-1 rounded-lg text-xs font-semibold">{{ ucfirst($exhibition->status) }}</span>
                 </div>
             </div>
             @if($exhibition->status === 'published')
-            <a href="#booking" data-magnetic class="inline-flex items-center justify-center gap-2 font-bold tracking-wide transition-all duration-200 px-8 text-base h-14 rounded-xl bg-[#901C1E] text-white hover:bg-[#7b1618] active:scale-[0.97] shrink-0">Book a Booth</a>
+            <a href="#booking" data-magnetic class="inline-flex items-center justify-center gap-2 font-bold tracking-wide transition-all duration-200 px-8 text-base h-14 rounded-xl bg-[#901C1E] text-[#0B1E57] hover:bg-[#7b1618] active:scale-[0.97] shrink-0">Book a Booth</a>
             @endif
         </div>
     </div>
@@ -31,32 +31,32 @@
 
 <div class="max-w-7xl mx-auto px-5 py-12">
     @if($exhibition->cover_image)
-    <div class="rounded-2xl overflow-hidden mb-8 border border-white/8" data-reveal>
+    <div class="rounded-2xl overflow-hidden mb-8 border border-[#0B1E57]/8" data-reveal>
         <img src="{{ $exhibition->cover_image }}" alt="{{ $exhibition->name }}" class="w-full h-64 lg:h-96 object-cover">
     </div>
     @else
-    <div class="w-full h-64 bg-[#0D1220] rounded-2xl mb-8 flex items-center justify-center text-6xl border border-white/8" data-reveal>🏛️</div>
+    <div class="w-full h-64 bg-white rounded-2xl mb-8 flex items-center justify-center text-6xl border border-[#0B1E57]/8" data-reveal>🏛️</div>
     @endif
 
     <div class="grid grid-cols-1 lg:grid-cols-3 gap-6">
         <div class="lg:col-span-2 space-y-6">
             @if($exhibition->description)
-            <div class="bg-[#0D1220] rounded-2xl p-6 border border-white/8" data-reveal>
-                <h2 class="text-lg font-black text-white mb-4">About This Exhibition</h2>
-                <p class="text-white/50 leading-relaxed text-sm">{{ $exhibition->description }}</p>
+            <div class="bg-white rounded-2xl p-6 border border-[#0B1E57]/8" data-reveal>
+                <h2 class="text-lg font-black text-[#0B1E57] mb-4">About This Exhibition</h2>
+                <p class="text-[#5A6480] leading-relaxed text-sm">{{ $exhibition->description }}</p>
             </div>
             @endif
 
             @if($exhibition->sessions && $exhibition->sessions->count() > 0)
-            <div class="bg-[#0D1220] rounded-2xl p-6 border border-white/8" data-reveal>
-                <h2 class="text-lg font-black text-white mb-4">Schedule</h2>
+            <div class="bg-white rounded-2xl p-6 border border-[#0B1E57]/8" data-reveal>
+                <h2 class="text-lg font-black text-[#0B1E57] mb-4">Schedule</h2>
                 <div class="space-y-4">
                     @foreach($exhibition->sessions as $session)
                     <div class="border-l-2 border-kicc-gold pl-4">
-                        <div class="text-xs text-white/35">{{ $session->start_time->format('M d, Y g:i A') }}</div>
-                        <h4 class="font-bold text-white text-sm mt-0.5">{{ $session->name }}</h4>
-                        @if($session->speaker)<p class="text-xs text-white/50 mt-0.5">By {{ $session->speaker }}</p>@endif
-                        @if($session->description)<p class="text-xs text-white/35 mt-1">{{ $session->description }}</p>@endif
+                        <div class="text-xs text-[#0B1E57]/35">{{ $session->start_time->format('M d, Y g:i A') }}</div>
+                        <h4 class="font-bold text-[#0B1E57] text-sm mt-0.5">{{ $session->name }}</h4>
+                        @if($session->speaker)<p class="text-xs text-[#5A6480] mt-0.5">By {{ $session->speaker }}</p>@endif
+                        @if($session->description)<p class="text-xs text-[#0B1E57]/35 mt-1">{{ $session->description }}</p>@endif
                     </div>
                     @endforeach
                 </div>
@@ -66,26 +66,26 @@
 
         <div class="space-y-6">
             @if($exhibition->venue)
-            <div class="bg-[#0D1220] rounded-2xl p-6 border border-white/8" data-reveal>
-                <h3 class="font-bold text-white mb-3 text-sm uppercase tracking-wider">Venue</h3>
+            <div class="bg-white rounded-2xl p-6 border border-[#0B1E57]/8" data-reveal>
+                <h3 class="font-bold text-[#0B1E57] mb-3 text-sm uppercase tracking-wider">Venue</h3>
                 <a href="{{ route('venues.show', $exhibition->venue->slug) }}" class="text-kicc-gold hover:underline font-bold">{{ $exhibition->venue->name }}</a>
-                @if($exhibition->venue->city)<p class="text-xs text-white/40 mt-1">{{ $exhibition->venue->city }}</p>@endif
+                @if($exhibition->venue->city)<p class="text-xs text-[#5A6480] mt-1">{{ $exhibition->venue->city }}</p>@endif
             </div>
             @endif
 
-            <div id="booking" class="bg-[#0D1220] rounded-2xl p-6 border border-white/8" data-reveal>
-                <h3 class="font-bold text-white mb-4 text-sm uppercase tracking-wider">Available Booths</h3>
+            <div id="booking" class="bg-white rounded-2xl p-6 border border-[#0B1E57]/8" data-reveal>
+                <h3 class="font-bold text-[#0B1E57] mb-4 text-sm uppercase tracking-wider">Available Booths</h3>
                 @if($exhibition->booths && $exhibition->booths->count() > 0)
                 <div class="space-y-3 max-h-72 overflow-y-auto pr-1">
                     @foreach($exhibition->booths as $booth)
                     <div class="flex justify-between items-center pb-3 border-b border-white/5 last:border-0 last:pb-0">
                         <div>
-                            <p class="font-bold text-white text-sm">{{ $booth->booth_number }}@if($booth->name) — {{ $booth->name }}@endif</p>
-                            <p class="text-xs text-white/35">{{ ucfirst($booth->size) }} · {{ ucfirst($booth->category) }}</p>
+                            <p class="font-bold text-[#0B1E57] text-sm">{{ $booth->booth_number }}@if($booth->name) — {{ $booth->name }}@endif</p>
+                            <p class="text-xs text-[#0B1E57]/35">{{ ucfirst($booth->size) }} · {{ ucfirst($booth->category) }}</p>
                         </div>
                         <div class="text-right">
                             <p class="font-black text-kicc-gold text-sm">KES {{ number_format($booth->price) }}</p>
-                            <p class="text-[10px] text-white/30">{{ $booth->max_quantity - $booth->booked_quantity }} left</p>
+                            <p class="text-[10px] text-[#5A6480]">{{ $booth->max_quantity - $booth->booked_quantity }} left</p>
                         </div>
                     </div>
                     @endforeach
@@ -93,26 +93,26 @@
                 @auth
                 <a href="{{ route('dashboard.bookings') }}" data-magnetic class="mt-5 w-full inline-flex items-center justify-center gap-2 font-bold tracking-wide transition-all duration-200 px-4 text-sm h-11 rounded-xl bg-kicc-gold text-[#07090F] hover:bg-[#e6b904]">Book Your Booth</a>
                 @else
-                <a href="{{ route('login') }}" class="mt-5 w-full inline-flex items-center justify-center gap-2 font-bold tracking-wide transition-all duration-200 px-4 text-sm h-11 rounded-xl bg-[#901C1E] text-white hover:bg-[#7b1618]">Sign In to Book</a>
+                <a href="{{ route('login') }}" class="mt-5 w-full inline-flex items-center justify-center gap-2 font-bold tracking-wide transition-all duration-200 px-4 text-sm h-11 rounded-xl bg-[#901C1E] text-[#0B1E57] hover:bg-[#7b1618]">Sign In to Book</a>
                 @endauth
                 @else
-                <p class="text-white/40 text-sm">No booths available yet.</p>
+                <p class="text-[#5A6480] text-sm">No booths available yet.</p>
                 @endif
             </div>
 
             @if($exhibition->ticketTypes && $exhibition->ticketTypes->count() > 0)
-            <div class="bg-[#0D1220] rounded-2xl p-6 border border-white/8" data-reveal>
-                <h3 class="font-bold text-white mb-4 text-sm uppercase tracking-wider">Tickets</h3>
+            <div class="bg-white rounded-2xl p-6 border border-[#0B1E57]/8" data-reveal>
+                <h3 class="font-bold text-[#0B1E57] mb-4 text-sm uppercase tracking-wider">Tickets</h3>
                 <div class="space-y-3">
                     @foreach($exhibition->ticketTypes as $ticketType)
                     <div class="flex justify-between items-center pb-3 border-b border-white/5 last:border-0 last:pb-0">
                         <div>
-                            <p class="font-bold text-white text-sm">{{ $ticketType->name }}</p>
-                            @if($ticketType->description)<p class="text-xs text-white/35">{{ Str::limit($ticketType->description, 40) }}</p>@endif
+                            <p class="font-bold text-[#0B1E57] text-sm">{{ $ticketType->name }}</p>
+                            @if($ticketType->description)<p class="text-xs text-[#0B1E57]/35">{{ Str::limit($ticketType->description, 40) }}</p>@endif
                         </div>
                         <div class="text-right">
                             <p class="font-black text-kicc-gold text-sm">KES {{ number_format($ticketType->discount_price ?? $ticketType->price) }}</p>
-                            @if($ticketType->discount_price)<p class="text-[10px] line-through text-white/25">KES {{ number_format($ticketType->price) }}</p>@endif
+                            @if($ticketType->discount_price)<p class="text-[10px] line-through text-[#5A6480]">KES {{ number_format($ticketType->price) }}</p>@endif
                         </div>
                     </div>
                     @endforeach
@@ -120,7 +120,7 @@
                 @auth
                 <a href="{{ route('dashboard.bookings') }}" data-magnetic class="mt-5 w-full inline-flex items-center justify-center gap-2 font-bold tracking-wide transition-all duration-200 px-4 text-sm h-11 rounded-xl bg-kicc-gold text-[#07090F] hover:bg-[#e6b904]">Buy Tickets</a>
                 @else
-                <a href="{{ route('login') }}" class="mt-5 w-full inline-flex items-center justify-center gap-2 font-bold tracking-wide transition-all duration-200 px-4 text-sm h-11 rounded-xl bg-[#901C1E] text-white hover:bg-[#7b1618]">Sign In to Buy</a>
+                <a href="{{ route('login') }}" class="mt-5 w-full inline-flex items-center justify-center gap-2 font-bold tracking-wide transition-all duration-200 px-4 text-sm h-11 rounded-xl bg-[#901C1E] text-[#0B1E57] hover:bg-[#7b1618]">Sign In to Buy</a>
                 @endauth
             </div>
             @endif
