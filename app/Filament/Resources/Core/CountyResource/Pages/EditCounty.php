@@ -9,5 +9,11 @@ use Filament\Resources\Pages\EditRecord;
 class EditCounty extends EditRecord
 {
     protected static string $resource = CountyResource::class;
-    protected function getHeaderActions(): array { return [Actions\DeleteAction::make()]; }
+
+    protected function getHeaderActions(): array
+    {
+        return [
+            Actions\DeleteAction::make()->visible(fn () => auth()->user()?->can('delete_county')),
+        ];
+    }
 }
