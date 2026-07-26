@@ -14,3 +14,5 @@
 !.gitignore
 .tools/
 /kenya-3d-platform/
+*.webp
+optimized/
