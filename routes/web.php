@@ -20,6 +20,35 @@ use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\Web\SocialAuthController;
 use App\Http\Controllers\Web\Room3dController;
 
+// [DEBUG] Temporary — find exact 500 errors
+Route::get('/__debug/{slug}', function ($slug) {
+    $map = [
+        'county' => function () {
+            $county = \App\Models\County::where('slug', 'mombasa')->firstOrFail();
+            return view('counties.show', compact('county'))->render();
+        },
+        'operations' => function () {
+            $ctrl = app(\App\Http\Controllers\Web\OperationsController::class);
+            return $ctrl->index(app(\App\Services\AutomationTreeService::class))->render();
+        },
+        'room3d' => function () {
+            $ctrl = app(\App\Http\Controllers\Web\Room3dController::class);
+            return $ctrl->index()->render();
+        },
+    ];
+    if (!isset($map[$slug])) abort(404);
+    try {
+        return $map[$slug]();
+    } catch (\Throwable $e) {
+        $msg = get_class($e) . ': ' . $e->getMessage() . "\n";
+        $msg .= $e->getFile() . ':' . $e->getLine() . "\n";
+        foreach (array_slice($e->getTrace(), 0, 8) as $t) {
+            $msg .= ($t['class']??'') . ($t['type']??'') . ($t['function']??'') . ' at ' . ($t['file']??'?') . ':' . ($t['line']??'?') . "\n";
+        }
+        return nl2br($msg);
+    }
+});
+
 Route::get('/', HomeController::class)->name('home');
 
 Route::get('/counties', [CountyController::class, 'index'])->name('counties.index');
