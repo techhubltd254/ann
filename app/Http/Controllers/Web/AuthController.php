@@ -149,6 +149,7 @@ class AuthController extends Controller
         $data = $request->validate([
             'login' => 'required|string',
             'password' => 'required|string',
+            'admin_type' => 'nullable|string|in:kicc,national,county',
         ]);
 
         $key = 'login:' . $request->ip();
@@ -161,6 +162,31 @@ class AuthController extends Controller
         if (Auth::attempt([$field => $data['login'], 'password' => $data['password']], $request->boolean('remember'))) {
             $request->session()->regenerate();
             RateLimiter::clear($key);
+
+            $user = Auth::user();
+            $adminType = $request->input('admin_type');
+
+            // Role-based redirect
+            if ($adminType === 'kicc' && $user->hasRole('kicc_admin')) {
+                return redirect('/portal');
+            }
+            if ($adminType === 'national' && $user->hasRole('national_admin')) {
+                return redirect()->route('admin.national');
+            }
+            if ($adminType === 'county' && $user->hasRole('county_admin')) {
+                return redirect()->route('dashboard.county');
+            }
+            // Fallback: redirect by user's actual role
+            if ($user->hasRole('kicc_admin')) {
+                return redirect('/portal');
+            }
+            if ($user->hasRole('national_admin')) {
+                return redirect()->route('admin.national');
+            }
+            if ($user->hasRole('county_admin')) {
+                return redirect()->route('dashboard.county');
+            }
+
             return redirect()->intended(route('dashboard.index'));
         }
 
