@@ -13,7 +13,7 @@
             @foreach($regions as $r)
             <button @click="region = '{{ $r }}'"
                 class="shrink-0 px-3 py-1.5 rounded-lg text-[11px] font-bold transition-all cursor-pointer"
-                :class="region === '{{ $r }}' ? 'bg-[#901C1E] text-[#0B1E57]' : 'bg-white text-[#5A6480] border border-[#0B1E57]/10 hover:border-[#901C1E]/30'">{{ $r }}</button>
+                :class="region === '{{ $r }}' ? 'bg-[#901C1E] text-white' : 'bg-white text-[#5A6480] border border-[#0B1E57]/10 hover:border-[#901C1E]/30'">{{ $r }}</button>
             @endforeach
         </div>
     </div>
