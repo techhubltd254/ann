@@ -21,18 +21,18 @@
                     Africa's Premier Meeting Venue — Global Exhibition Platform
                 </span>
             </div>
-            <h1 class="text-5xl md:text-7xl font-black text-white leading-[1.0] tracking-tight">
+            <h1 class="text-5xl md:text-7xl font-black text-[#0B1E57] leading-[1.0] tracking-tight">
                 <span class="block" data-reveal>Kenya's</span>
                 <span class="block text-[#FFCD05]" data-reveal data-reveal-delay="120">Digital</span>
                 <span class="block" data-reveal data-reveal-delay="240">Economy</span>
                 <span class="block" data-reveal data-reveal-delay="360">Gateway</span>
             </h1>
-            <p class="text-white/55 text-lg leading-relaxed mt-6 max-w-md" data-reveal data-reveal-delay="450">
+            <p class="text-[#0B1E57]/55 text-lg leading-relaxed mt-6 max-w-md" data-reveal data-reveal-delay="450">
                 From 47 county markets to world-class exhibition halls — KICC connects Kenya's entire economy on one platform.
             </p>
             <div class="mt-8 flex flex-wrap gap-3" data-reveal data-reveal-delay="550">
                 <a href="{{ route('counties.index') }}"
-                   class="inline-flex items-center justify-center gap-2 font-bold tracking-wide transition-all duration-200 px-8 text-base h-14 rounded-xl bg-[#901C1E] text-white hover:bg-[#7b1618] active:scale-[0.97]">
+                   class="inline-flex items-center justify-center gap-2 font-bold tracking-wide transition-all duration-200 px-8 text-base h-14 rounded-xl bg-[#901C1E] text-[#0B1E57] hover:bg-[#7b1618] active:scale-[0.97]">
                     Explore Counties
                     <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 8l4 4m0 0l-4 4m4-4H3"/></svg>
                 </a>
@@ -46,7 +46,7 @@
         <div class="grid grid-cols-2 gap-4" data-reveal="zoom" data-reveal-delay="350">
             @php $stats = [['value'=>52,'suffix'=>'+','label'=>'Years of Excellence'],['value'=>47,'suffix'=>'','label'=>'Kenya Counties'],['value'=>18,'suffix'=>'','label'=>'Digital Screens'],['value'=>200,'suffix'=>'+','label'=>'Events per Year']]; @endphp
             @foreach($stats as $i => $s)
-            <div class="bg-white/5 backdrop-blur-sm border border-white/12 rounded-2xl p-6 card-hover hover:border-[#FFCD05]/40 transition-colors" data-tilt="10">
+            <div class="bg-black/40 backdrop-blur-sm border border-white/15 rounded-2xl p-6 card-hover hover:border-[#FFCD05]/40 transition-colors" data-tilt="10">
                 <div class="tilt-glare"></div>
                 <div class="text-4xl font-black text-[#FFCD05]">
                     <span data-count="{{ $s['value'] }}" data-count-duration="{{ 1400 + $i * 250 }}">0</span><span class="text-2xl">{{ $s['suffix'] }}</span>
@@ -90,7 +90,7 @@
                     <h2 class="text-3xl md:text-4xl font-black text-[#0B1E57] leading-[1.1]">Authentic Kenyan<br><span class="text-[#FFCD05]">Products</span></h2>
                     <p class="text-[#5A6480] mt-3 text-base max-w-xl leading-relaxed">Directly from county producers across Kenya.</p>
                 </div>
-                <a href="{{ route('marketplace.index') }}" class="inline-flex items-center justify-center gap-2 font-bold tracking-wide transition-all duration-200 px-4 text-xs h-9 rounded-xl bg-[#901C1E] text-white hover:bg-[#7a181a] shrink-0">
+                <a href="{{ route('marketplace.index') }}" class="inline-flex items-center justify-center gap-2 font-bold tracking-wide transition-all duration-200 px-4 text-xs h-9 rounded-xl bg-[#901C1E] text-[#0B1E57] hover:bg-[#7a181a] shrink-0">
                     Browse all
                     <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 8l4 4m0 0l-4 4m4-4H3"/></svg>
                 </a>
@@ -186,7 +186,7 @@
                     <h2 class="text-3xl md:text-4xl font-black text-[#0B1E57] leading-[1.1]">World-Class<br><span class="text-[#FFCD05]">Venues</span></h2>
                     <p class="text-[#5A6480] mt-3 text-base max-w-xl leading-relaxed">From intimate boardrooms to the 2,000-capacity Tsavo Hall.</p>
                 </div>
-                <a href="{{ route('venues.index') }}" class="inline-flex items-center justify-center gap-2 font-bold tracking-wide transition-all duration-200 px-4 text-xs h-9 rounded-xl bg-[#901C1E] text-white hover:bg-[#7a181a] shrink-0">
+                <a href="{{ route('venues.index') }}" class="inline-flex items-center justify-center gap-2 font-bold tracking-wide transition-all duration-200 px-4 text-xs h-9 rounded-xl bg-[#901C1E] text-[#0B1E57] hover:bg-[#7a181a] shrink-0">
                     All venues
                     <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 8l4 4m0 0l-4 4m4-4H3"/></svg>
                 </a>
@@ -232,12 +232,12 @@
         <div class="relative px-10 py-16 md:py-20 flex flex-col md:flex-row items-center justify-between gap-8">
             <div data-reveal>
                 <span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-[11px] font-semibold tracking-wide border bg-[#FFCD05]/15 text-[#FFCD05] border-[#FFCD05]/30">18 Digital Screens</span>
-                <h2 class="text-3xl md:text-5xl font-black text-white mt-4 leading-tight">Advertise on<br><span class="text-[#FFCD05]">Kenya's Most</span><br>Iconic Screens</h2>
-                <p class="text-white/45 mt-4 max-w-md text-sm leading-relaxed">The KICC tower rooftop LED, highway billboards, and premium screens reaching millions daily.</p>
+                <h2 class="text-3xl md:text-5xl font-black text-[#0B1E57] mt-4 leading-tight">Advertise on<br><span class="text-[#FFCD05]">Kenya's Most</span><br>Iconic Screens</h2>
+                <p class="text-[#0B1E57]/45 mt-4 max-w-md text-sm leading-relaxed">The KICC tower rooftop LED, highway billboards, and premium screens reaching millions daily.</p>
             </div>
             <div class="flex flex-col gap-3 shrink-0" data-reveal data-reveal-delay="200">
                 <a href="{{ route('screens.directory') }}" class="inline-flex items-center justify-center gap-2 font-bold tracking-wide transition-all duration-200 px-8 text-base h-14 rounded-xl bg-[#FFCD05] text-[#0B1E57] hover:bg-[#e6b904]">Book a Screen</a>
-                <a href="{{ route('screens.directory') }}" class="inline-flex items-center justify-center gap-2 font-bold tracking-wide transition-all duration-200 px-4 text-xs h-9 rounded-xl border border-white/25 text-white hover:bg-white/10">View all 18 screens</a>
+                <a href="{{ route('screens.directory') }}" class="inline-flex items-center justify-center gap-2 font-bold tracking-wide transition-all duration-200 px-4 text-xs h-9 rounded-xl border border-[#0B1E57]/25 text-[#0B1E57] hover:bg-[#0B1E57]/10">View all 18 screens</a>
             </div>
         </div>
     </div>
