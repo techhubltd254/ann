@@ -9,7 +9,7 @@
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&display=swap" rel="stylesheet">
     <style>
         * { font-family: 'Inter', system-ui, sans-serif; }
-        body { background-color: #07090F; }
+        body { background-color: #ffffff; color: #1a1a2e; }
         .scrollbar-hide { scrollbar-width: none; }
         .scrollbar-hide::-webkit-scrollbar { display: none; }
     </style>
