@@ -4,12 +4,15 @@
 @section('description', 'Africa\'s Premier Meeting Venue. A national icon since 1973.')
 
 @section('content')
-{{-- ═══ HERO — Parallax tower + floating orbs + animated headline ═══ --}}
+{{-- ═══ HERO — Alternating images + floating orbs + animated headline ═══ --}}
 <section class="relative min-h-[92vh] flex items-center overflow-hidden" data-scroll-3d>
-    <img src="{{ media('kicc/tower-night.jpg') }}" alt="KICC Tower"
-         class="absolute inset-0 w-full h-full object-cover" data-parallax="0.25" data-depth="0.8" style="will-change: transform;">
-    <div class="absolute inset-0 bg-gradient-to-r from-[#0a1024] via-[#0a1024]/75 to-transparent" data-depth="0.2"></div>
-    <div class="absolute inset-0 bg-gradient-to-t from-[#0a1024] via-transparent to-[#0a1024]/40" data-depth="0.1"></div>
+    <div x-data="{ current: 1, imgs: ['{{ media('kicc/hero-1.jpg') }}', '{{ media('kicc/hero-2.jpg') }}'] }" x-init="setInterval(() => current = current === 0 ? 1 : 0, 5000)" class="absolute inset-0 w-full h-full">
+        <template x-for="(img, i) in imgs" :key="i">
+            <img :src="img" :class="{ 'opacity-100': current === i, 'opacity-0': current !== i }" class="absolute inset-0 w-full h-full object-cover transition-opacity duration-1000" alt="KICC">
+        </template>
+    </div>
+    <div class="absolute inset-0 bg-gradient-to-r from-black/50 via-black/30 to-transparent"></div>
+    <div class="absolute inset-0 bg-gradient-to-t from-black/40 via-transparent to-black/20"></div>
 
     {{-- Floating light orbs --}}
     <div class="absolute w-72 h-72 rounded-full bg-[#FFCD05]/10 blur-3xl animate-float-slow top-[15%] right-[10%]" data-depth="0.6"></div>
