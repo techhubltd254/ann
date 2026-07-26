@@ -6,6 +6,9 @@ use Database\Factories\UserFactory;
 use Illuminate\Database\Eloquent\Attributes\Fillable;
 use Illuminate\Database\Eloquent\Attributes\Hidden;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
+use Illuminate\Database\Eloquent\Relations\BelongsTo;
+use Illuminate\Database\Eloquent\Relations\BelongsToMany;
+use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
 use Laravel\Sanctum\HasApiTokens;
@@ -18,6 +21,7 @@ use Spatie\Permission\Traits\HasRoles;
     'account_type',
     'phone',
     'county_id',
+    'ministry_id',
     'id_number',
     'kra_pin',
     'business_reg',
@@ -65,24 +69,68 @@ class User extends Authenticatable
         ];
     }
 
+    public function county(): BelongsTo
+    {
+        return $this->belongsTo(County::class);
+    }
+
+    public function counties(): BelongsToMany
+    {
+        return $this->belongsToMany(County::class, 'county_user')
+            ->withPivot('role')
+            ->withTimestamps();
+    }
+
+    public function ministry(): BelongsTo
+    {
+        return $this->belongsTo(Ministry::class);
+    }
+
+    public function ministries(): BelongsToMany
+    {
+        return $this->belongsToMany(Ministry::class, 'ministry_user')
+            ->withPivot('role')
+            ->withTimestamps();
+    }
+
+    public function products(): HasMany
+    {
+        return $this->hasMany(CountyProduct::class);
+    }
+
+    public function bookings(): HasMany
+    {
+        return $this->hasMany(Booking::class);
+    }
+
+    public function orders(): HasMany
+    {
+        return $this->hasMany(Marketplace\Order::class);
+    }
+
+    public function room3ds(): HasMany
+    {
+        return $this->hasMany(Room3d::class);
+    }
+
     public function isAdmin(): bool
     {
-        return $this->account_type === self::TYPE_ADMIN;
+        return $this->account_type === self::TYPE_ADMIN || $this->hasRole('kicc_admin');
     }
 
     public function isCounty(): bool
     {
-        return $this->account_type === self::TYPE_COUNTY;
+        return $this->account_type === self::TYPE_COUNTY || $this->hasRole('county_admin');
     }
 
     public function isMinistry(): bool
     {
-        return $this->account_type === self::TYPE_MINISTRY;
+        return $this->account_type === self::TYPE_MINISTRY || $this->hasRole('national_admin');
     }
 
     public function isSuperadmin(): bool
     {
-        return $this->account_type === self::TYPE_SUPERADMIN;
+        return $this->account_type === self::TYPE_SUPERADMIN || $this->hasRole('kicc_admin');
     }
 
     public function isNis(): bool
