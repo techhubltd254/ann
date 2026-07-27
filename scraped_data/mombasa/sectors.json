@@ -1,0 +1,82 @@
+[
+  {
+    "name": "Public Service Board",
+    "url": "https://web.mombasa.go.ke/public-service-board/",
+    "category": "public service"
+  },
+  {
+    "name": "Finance, Economic Planning &#038; Digital Transformation",
+    "url": "https://web.mombasa.go.ke/finance-economic-planning/",
+    "category": "planning"
+  },
+  {
+    "name": "Health",
+    "url": "https://web.mombasa.go.ke/health/",
+    "category": "health"
+  },
+  {
+    "name": "Climate Change, Energy &#038; Natural Resources",
+    "url": "https://web.mombasa.go.ke/water-natural-resources-climate-change-resilience/",
+    "category": "energy"
+  },
+  {
+    "name": "Blue Economy, Cooperatives, Agriculture and Livestock",
+    "url": "https://web.mombasa.go.ke/blue-economy-agriculture-livestock/",
+    "category": "agriculture"
+  },
+  {
+    "name": "Public Service Administration ,Youth, Gender &#038; Sports",
+    "url": "https://web.mombasa.go.ke/public-service-administration-youth-gender-social-services-sports/",
+    "category": "gender"
+  },
+  {
+    "name": "Education",
+    "url": "https://web.mombasa.go.ke/education-digital-transformation/",
+    "category": "education"
+  },
+  {
+    "name": "Tourism, Culture &#038; Trade",
+    "url": "https://web.mombasa.go.ke/tourism-culture-trade/",
+    "category": "tourism"
+  },
+  {
+    "name": "Transport, Infrastructure &#038; Governance",
+    "url": "https://web.mombasa.go.ke/transport-infrastructure/",
+    "category": "transport"
+  },
+  {
+    "name": "Lands, Urban Planning, Housing &#038; Serikali Mtaani",
+    "url": "https://web.mombasa.go.ke/lands-housing-urban-planning/",
+    "category": "land"
+  },
+  {
+    "name": "Environment &#038; Water",
+    "url": "https://web.mombasa.go.ke/environment-solid-waste-management/",
+    "category": "environment"
+  },
+  {
+    "name": "Land Rates",
+    "url": "https://eportal.mombasa.go.ke/",
+    "category": "land"
+  },
+  {
+    "name": "Quality Education",
+    "url": "",
+    "category": "education"
+  },
+  {
+    "name": "Tourism &amp; Culture",
+    "url": "",
+    "category": "tourism"
+  },
+  {
+    "name": "Affordable Healthcare",
+    "url": "",
+    "category": "health"
+  },
+  {
+    "name": "Water &amp; Sanitation",
+    "url": "",
+    "category": "water"
+  }
+]
