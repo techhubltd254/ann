@@ -4,14 +4,16 @@ namespace App\Http\Controllers\Web;
 
 use App\Http\Controllers\Controller;
 use App\Models\County;
-use App\Models\CountyTourismAttraction;
-use App\Models\CountyHotel;
-use App\Models\CountyProduct;
-use App\Models\CountyInstitution;
-use App\Models\CountyFarm;
-use App\Models\CountyTransport;
-use App\Models\CountyHealthFacility;
 use App\Models\CountyCultureSite;
+use App\Models\CountyFarm;
+use App\Models\CountyHealthFacility;
+use App\Models\CountyHotel;
+use App\Models\CountyInstitution;
+use App\Models\CountyProduct;
+use App\Models\CountyTourismAttraction;
+use App\Models\CountyTransport;
+use App\Models\SectorEntity;
+use Illuminate\Http\Request;
 
 class CountyController extends Controller
 {
@@ -19,7 +21,7 @@ class CountyController extends Controller
     {
         $counties = County::withCount('sectors')
             ->orderBy('name')
-            ->paginate(24);
+            ->get();
 
         return view('counties.index', compact('counties'));
     }
@@ -30,31 +32,7 @@ class CountyController extends Controller
             $q->orderBy('sort_order');
         }]);
 
-        $sectors = $county->sectors;
-
-        $tourismCount = $county->tourismAttractions()->count();
-        $hotelsCount = $county->hotels()->count();
-        $productsCount = $county->products()->count();
-        $institutionsCount = $county->institutions()->count();
-        $farmsCount = $county->farms()->count();
-        $transportCount = $county->transport()->count();
-        $healthCount = $county->healthFacilities()->count();
-        $cultureCount = $county->cultureSites()->count();
-
-        $sectorData = [
-            'Tourism' => ['count' => $tourismCount, 'icon' => '🏖️', 'color' => 'amber', 'route' => 'tourism'],
-            'Hospitality' => ['count' => $hotelsCount, 'icon' => '🏨', 'color' => 'rose', 'route' => 'hotels'],
-            'Trade & Products' => ['count' => $productsCount, 'icon' => '🛍️', 'color' => 'purple', 'route' => 'products'],
-            'Education' => ['count' => $institutionsCount, 'icon' => '🎓', 'color' => 'blue', 'route' => 'institutions'],
-            'Agriculture' => ['count' => $farmsCount, 'icon' => '🌾', 'color' => 'green', 'route' => 'farms'],
-            'Transport' => ['count' => $transportCount, 'icon' => '🚢', 'color' => 'cyan', 'route' => 'transport'],
-            'Healthcare' => ['count' => $healthCount, 'icon' => '🏥', 'color' => 'red', 'route' => 'health'],
-            'Culture' => ['count' => $cultureCount, 'icon' => '🎭', 'color' => 'orange', 'route' => 'culture'],
-        ];
-
-        $featuredAttractions = $county->tourismAttractions()->where('is_published', true)->take(4)->get();
-        $featuredHotels = $county->hotels()->where('is_published', true)->take(4)->get();
-
+        $linkedSectors = $county->sectors()->orderBy('name')->get();
         $exhibitions = $county->exhibitions()
             ->where('status', 'published')
             ->orderBy('start_date', 'desc')
@@ -62,14 +40,17 @@ class CountyController extends Controller
             ->get();
 
         return view('counties.show', compact(
-            'county', 'sectors', 'sectorData',
-            'featuredAttractions', 'featuredHotels',
-            'exhibitions'
+            'county', 'linkedSectors', 'exhibitions'
         ));
     }
 
     public function sector(County $county, string $sector)
     {
+        $sectorModel = $county->sectors()->where('slug', $sector)->first();
+        if (!$sectorModel) {
+            abort(404, "Sector '{$sector}' not found for {$county->name}");
+        }
+
         $models = [
             'tourism' => CountyTourismAttraction::class,
             'hotels' => CountyHotel::class,
@@ -92,15 +73,28 @@ class CountyController extends Controller
             'culture' => ['title' => 'Culture & Heritage', 'icon' => '🎭', 'desc' => 'Cultural sites, traditions, and heritage.'],
         ];
 
-        if (!isset($models[$sector])) {
-            abort(404);
+        if (isset($models[$sector])) {
+            $modelClass = $models[$sector];
+            $items = $modelClass::where('county_id', $county->id)
+                ->where('is_published', true)
+                ->paginate(12);
+        } else {
+            $items = SectorEntity::where('county_id', $county->id)
+                ->where('sector_id', $sectorModel->id)
+                ->where('is_published', true)
+                ->orderBy('name')
+                ->paginate(12);
         }
 
-        $modelClass = $models[$sector];
-        $items = $modelClass::where('county_id', $county->id)
-            ->where('is_published', true)
-            ->paginate(12);
+        $infoKey = isset($info[$sector]) ? $sector : 'generic';
+        if ($infoKey === 'generic') {
+            $info['generic'] = [
+                'title' => $sectorModel->name,
+                'icon' => '📋',
+                'desc' => "{$sectorModel->name} entities and resources in {$county->name} County.",
+            ];
+        }
 
-        return view('counties.sector', compact('county', 'items', 'sector', 'info'));
+        return view('counties.sector', compact('county', 'items', 'sector', 'info', 'sectorModel'));
     }
 }
