@@ -1,0 +1,48 @@
+{
+  "name": "Mombasa",
+  "slug": "mombasa",
+  "status": "scraped",
+  "source_url": "https://web.mombasa.go.ke/",
+  "final_url": "",
+  "scraped_at": "2026-07-27T14:42:53.947926",
+  "title": "Mombasa County &#8211; Utangamano Kwa Maendeleo",
+  "description": "",
+  "contacts": {
+    "emails": [
+      "corruptionreport@mombasa.go.ke",
+      "info@mombasa.go.ke",
+      "m.bates@mombasa.go.ke"
+    ],
+    "phones": [
+      "0785444001"
+    ]
+  },
+  "pages": {
+    "about": [],
+    "departments": [],
+    "services": [
+      "https://web.mombasa.go.ke/public-service-administration-youth-gender-social-services-sports/",
+      "https://web.mombasa.go.ke/citizens-budgets/",
+      "https://eservices.mombasa.go.ke/"
+    ],
+    "projects": [],
+    "tenders": [
+      "https://web.mombasa.go.ke/tenders/"
+    ],
+    "news": [
+      "https://web.mombasa.go.ke/notices/"
+    ],
+    "contact": [
+      "https://web.mombasa.go.ke/contact-us/",
+      "https://web.mombasa.go.ke/contact/"
+    ],
+    "downloads": [
+      "https://web.mombasa.go.ke/downloads/",
+      "https://web.mombasa.go.ke/public-participation-reports/",
+      "https://web.mombasa.go.ke/other-documents/"
+    ]
+  },
+  "stats": {},
+  "hero_images_count": 1,
+  "gallery_images_count": 5
+}
