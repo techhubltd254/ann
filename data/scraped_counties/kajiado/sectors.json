@@ -1,0 +1,189 @@
+[
+  {
+    "name": "Public Service, Administration, Social Services, Citizen Participation and Inspectorate Services",
+    "category": "social service",
+    "source": "https://www.kajiado.go.ke/"
+  },
+  {
+    "name": "Lands, Physical planning, Urban development, Housing and Municipalities",
+    "category": "housing",
+    "source": "https://www.kajiado.go.ke/"
+  },
+  {
+    "name": "Water, Environment, Natural Resources and Climate Change",
+    "category": "environment",
+    "source": "https://www.kajiado.go.ke/"
+  },
+  {
+    "name": "Natural Resources and Climate Change Public Service",
+    "category": "climate",
+    "source": "https://www.kajiado.go.ke/"
+  },
+  {
+    "name": "Agriculture, Livestock, Fisheries & Irrigation",
+    "category": "agriculture",
+    "source": "https://www.kajiado.go.ke/"
+  },
+  {
+    "name": "Gender, Culture, Cooperatives, Tourism and Wildlife",
+    "category": "tourism",
+    "source": "https://www.kajiado.go.ke/"
+  },
+  {
+    "name": "Education, Vocational training, youth and sports",
+    "category": "education",
+    "source": "https://www.kajiado.go.ke/"
+  },
+  {
+    "name": "Agriculture, Livestock, Fisheries and Irrigation",
+    "category": "agriculture",
+    "source": "https://www.kajiado.go.ke/"
+  },
+  {
+    "name": "Trade, Investments and Enterprise Development",
+    "category": "trade",
+    "source": "https://www.kajiado.go.ke/"
+  },
+  {
+    "name": "Investments and Enterprise Development Water",
+    "category": "investment",
+    "source": "https://www.kajiado.go.ke/"
+  },
+  {
+    "name": "Roads, Public Works, Transport and Energy",
+    "category": "energy",
+    "source": "https://www.kajiado.go.ke/"
+  },
+  {
+    "name": "Maa Cultural And Tourism Festival 2025",
+    "category": "tourism",
+    "source": "https://www.kajiado.go.ke/"
+  },
+  {
+    "name": "Medical Services and Public Health",
+    "category": "health",
+    "source": "https://www.kajiado.go.ke/"
+  },
+  {
+    "name": "mWATER- Asset Management Dashboard",
+    "category": "water",
+    "source": "https://www.kajiado.go.ke/"
+  },
+  {
+    "name": "Housing and Municipalities Roads",
+    "category": "roads",
+    "source": "https://www.kajiado.go.ke/"
+  },
+  {
+    "name": "Finance and Economic Planning",
+    "category": "planning",
+    "source": "https://www.kajiado.go.ke/"
+  },
+  {
+    "name": "County Public Service Board",
+    "category": "public service",
+    "source": "https://www.kajiado.go.ke/"
+  },
+  {
+    "name": "and Public Health Education",
+    "category": "health",
+    "source": "https://www.kajiado.go.ke/"
+  },
+  {
+    "name": "Transport and Energy Trade",
+    "category": "trade",
+    "source": "https://www.kajiado.go.ke/"
+  },
+  {
+    "name": "mWATER O&M Dashboard",
+    "category": "water",
+    "source": "https://www.kajiado.go.ke/"
+  },
+  {
+    "name": "Youth and Sports Lands",
+    "category": "lands",
+    "source": "https://www.kajiado.go.ke/"
+  },
+  {
+    "name": "Water and Irrigation",
+    "category": "irrigation",
+    "source": "https://www.kajiado.go.ke/"
+  },
+  {
+    "name": "Economic Activities",
+    "category": "economic",
+    "source": "https://www.kajiado.go.ke/"
+  },
+  {
+    "name": "Hon. Justus Ngossor",
+    "category": "ngo",
+    "source": "https://www.kajiado.go.ke/"
+  },
+  {
+    "name": "Ngong Municipality",
+    "category": "ngo",
+    "source": "https://www.kajiado.go.ke/"
+  },
+  {
+    "name": "GOVERNOR'S OFFICE",
+    "category": "general",
+    "source": "https://www.kajiado.go.ke/"
+  },
+  {
+    "name": "Department Links",
+    "category": "general",
+    "source": "https://www.kajiado.go.ke/"
+  },
+  {
+    "name": "ICT Department",
+    "category": "ict",
+    "source": "https://www.kajiado.go.ke/"
+  },
+  {
+    "name": "Infrastructure",
+    "category": "infrastructure",
+    "source": "https://www.kajiado.go.ke/"
+  },
+  {
+    "name": "Chief Officers",
+    "category": "general",
+    "source": "https://www.kajiado.go.ke/"
+  },
+  {
+    "name": "Forestry:",
+    "category": "forestry",
+    "source": "https://www.kajiado.go.ke/"
+  },
+  {
+    "name": "Agriculture & Farming",
+    "category": "agriculture"
+  },
+  {
+    "name": "Tourism & Hospitality",
+    "category": "tourism"
+  },
+  {
+    "name": "Hotels & Resorts",
+    "category": "tourism"
+  },
+  {
+    "name": "Products & Trade",
+    "category": "trade"
+  },
+  {
+    "name": "Education & Institutions",
+    "category": "education"
+  },
+  {
+    "name": "Transport & Logistics",
+    "category": "transport"
+  },
+  {
+    "name": "Healthcare",
+    "category": "health"
+  },
+  {
+    "name": "Culture & Heritage",
+    "category": "culture"
+  }
+]

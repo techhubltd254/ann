@@ -1,0 +1,54 @@
+{
+  "name": "Bungoma",
+  "slug": "bungoma",
+  "status": "scraped",
+  "source_url": "https://www.bungoma.go.ke/",
+  "final_url": "",
+  "scraped_at": "2026-07-27T14:44:23.134506",
+  "title": "Welcome to Bungoma - COUNTY GOVERNMENT OF BUNGOMA",
+  "description": "&gt;&gt;Upcoming Events &gt;&gt; Notice to Traders-Weights and Measures Act (CAP 513) Launching of the high altitude training centre-Chemonge \u2013 9th May, 2026 Public Participation Summaries \u2013 Medium Term Expenditure Framework (MTEF) Period 2025/26\u2013 2027/28 And County Fiscal Strategy Paper 2026 Summary. The public participation for Medium Term Expenditure Framework (MTEF) Budget for FY2026/2027\u20132028/2029 &amp; County",
+  "contacts": {
+    "emails": [
+      "demo@example.com",
+      "info@bungoma.go.ke"
+    ],
+    "phones": [
+      "+254722030039"
+    ],
+    "physical_address": ""
+  },
+  "pages": {
+    "about": [
+      "https://www.bungoma.go.ke/history/",
+      "https://www.facebook.com/profile.php?id=100067181829509&amp;mibextid=rS40aB7S9Ucbxw6v"
+    ],
+    "departments": [],
+    "services": [
+      "https://accounts.ecitizen.go.ke/"
+    ],
+    "projects": [
+      "https://www.bungoma.go.ke/ova_dep/agriculture-livestock-irrigation-fisheries-co-operative-development/"
+    ],
+    "tenders": [
+      "https://www.bungoma.go.ke/tenders-1/"
+    ],
+    "news": [
+      "https://www.bungoma.go.ke/notices/"
+    ],
+    "contact": [
+      "https://demo.ovatheme.com/egovt/contact-1/"
+    ],
+    "downloads": [
+      "https://www.bungoma.go.ke/county-budget-documents/",
+      "https://www.bungoma.go.ke/policy-documents/"
+    ]
+  },
+  "stats": {
+    "counter_0": "0",
+    "counter_1": "0",
+    "counter_2": "0",
+    "counter_3": "0"
+  },
+  "hero_images_count": 5,
+  "gallery_images_count": 3
+}

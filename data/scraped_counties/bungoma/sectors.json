@@ -1,0 +1,149 @@
+[
+  {
+    "name": "Agriculture, Livestock, Irrigation, Fisheries & Co-operative Development",
+    "category": "agriculture",
+    "source": "https://www.bungoma.go.ke/"
+  },
+  {
+    "name": "Environment, Climate Change, Water & Natural Resources",
+    "category": "environment",
+    "source": "https://www.bungoma.go.ke/"
+  },
+  {
+    "name": "Roads, Transport, Infrastructure & Public Works",
+    "category": "roads",
+    "source": "https://www.bungoma.go.ke/"
+  },
+  {
+    "name": "Public Service Management Administration & ICT",
+    "category": "ict",
+    "source": "https://www.bungoma.go.ke/"
+  },
+  {
+    "name": "H.E. Kenneth M. Lusaka-Governor Bungoma County",
+    "category": "ngo",
+    "source": "https://www.bungoma.go.ke/"
+  },
+  {
+    "name": "Lands, Housing, Urban & Physical Planning",
+    "category": "housing",
+    "source": "https://www.bungoma.go.ke/"
+  },
+  {
+    "name": "Trade, Energy & Industrialization",
+    "category": "trade",
+    "source": "https://www.bungoma.go.ke/"
+  },
+  {
+    "name": "Gender, Youth, Culture & Sports",
+    "category": "culture",
+    "source": "https://www.bungoma.go.ke/"
+  },
+  {
+    "name": "EDUCATION AND VOCATIONAL TRAINNING",
+    "category": "education",
+    "source": "https://www.bungoma.go.ke/"
+  },
+  {
+    "name": "Directorate of Special Programs",
+    "category": "general",
+    "source": "https://www.bungoma.go.ke/"
+  },
+  {
+    "name": "County Projects Stock Dashboard",
+    "category": "general",
+    "source": "https://www.bungoma.go.ke/"
+  },
+  {
+    "name": "Finance and Economic Planning",
+    "category": "planning",
+    "source": "https://www.bungoma.go.ke/"
+  },
+  {
+    "name": "The Municipality of Bungoma",
+    "category": "ngo",
+    "source": "https://www.bungoma.go.ke/"
+  },
+  {
+    "name": "County Public Service Board",
+    "category": "public service",
+    "source": "https://www.bungoma.go.ke/"
+  },
+  {
+    "name": "Health & Sanitation",
+    "category": "health",
+    "source": "https://www.bungoma.go.ke/"
+  },
+  {
+    "name": "County Budget Documents",
+    "category": "budget",
+    "source": "https://www.bungoma.go.ke/"
+  },
+  {
+    "name": "Directorate of Budget",
+    "category": "budget",
+    "source": "https://www.bungoma.go.ke/"
+  },
+  {
+    "name": "Council Of Governors",
+    "category": "general",
+    "source": "https://www.bungoma.go.ke/"
+  },
+  {
+    "name": "Bungoma Bajeti Yetu",
+    "category": "ngo",
+    "source": "https://www.bungoma.go.ke/"
+  },
+  {
+    "name": "County Departments",
+    "category": "general",
+    "source": "https://www.bungoma.go.ke/"
+  },
+  {
+    "name": "Bungoma Tourism",
+    "category": "tourism",
+    "source": "https://www.bungoma.go.ke/"
+  },
+  {
+    "name": "BUNGOMA-KENYA",
+    "category": "ngo",
+    "source": "https://www.bungoma.go.ke/"
+  },
+  {
+    "name": "Media Centre",
+    "category": "media",
+    "source": "https://www.bungoma.go.ke/"
+  },
+  {
+    "name": "Agriculture & Farming",
+    "category": "agriculture"
+  },
+  {
+    "name": "Tourism & Hospitality",
+    "category": "tourism"
+  },
+  {
+    "name": "Hotels & Resorts",
+    "category": "tourism"
+  },
+  {
+    "name": "Products & Trade",
+    "category": "trade"
+  },
+  {
+    "name": "Education & Institutions",
+    "category": "education"
+  },
+  {
+    "name": "Transport & Logistics",
+    "category": "transport"
+  },
+  {
+    "name": "Healthcare",
+    "category": "health"
+  },
+  {
+    "name": "Culture & Heritage",
+    "category": "culture"
+  }
+]

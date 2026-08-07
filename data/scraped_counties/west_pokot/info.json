@@ -1,0 +1,51 @@
+{
+  "name": "West Pokot",
+  "slug": "west-pokot",
+  "status": "scraped",
+  "source_url": "https://www.westpokot.go.ke/",
+  "final_url": "",
+  "scraped_at": "2026-07-27T14:43:20.272167",
+  "title": "County Government of West Pokot &#8211; The land of hidden Treasures",
+  "description": "",
+  "contacts": {
+    "emails": [
+      "climatechangeunit@westpokot.go.ke",
+      "info@westpokot.go.ke"
+    ],
+    "phones": []
+  },
+  "pages": {
+    "about": [
+      "https://westpokot.go.ke/about/"
+    ],
+    "departments": [
+      "https://www.westpokot.go.ke/county-departments/"
+    ],
+    "services": [
+      "https://www.westpokot.go.ke/tourism-youth-sports-gender-and-social-services/",
+      "https://ecitizen.go.ke/"
+    ],
+    "projects": [
+      "https://www.westpokot.go.ke/trade-industrialization-investmet-and-cooperative-development/",
+      "https://www.westpokot.go.ke/lands-housing-physical-planning-and-urban-development/"
+    ],
+    "tenders": [
+      "https://westpokot.go.ke/county-tenders/"
+    ],
+    "news": [
+      "https://www.westpokot.go.ke/county-news/",
+      "https://www.westpokot.go.ke/news/"
+    ],
+    "contact": [
+      "https://westpokot.go.ke/contact-us/"
+    ],
+    "downloads": [
+      "https://westpokot.go.ke/government-downloads/",
+      "https://www.westpokot.go.ke/documents/tender-one/",
+      "https://www.westpokot.go.ke/documents/"
+    ]
+  },
+  "stats": {},
+  "hero_images_count": 4,
+  "gallery_images_count": 12
+}

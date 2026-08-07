@@ -26,9 +26,9 @@
         </div>
 
         <div class="vid-container rounded-xl overflow-hidden shadow-2xl border border-gray-700/50 mb-8">
-            @if($screen->video_exists)
+            @if($screen->immersive_url || $screen->video_exists)
             <video controls autoplay muted loop playsinline>
-                <source src="{{ $screen->video_url }}" type="video/mp4">
+                <source src="{{ $screen->immersive_url ?? $screen->video_url }}" type="video/mp4">
             </video>
             @else
             <div class="flex items-center justify-center h-64 text-gray-500">

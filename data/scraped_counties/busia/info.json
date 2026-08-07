@@ -1,0 +1,53 @@
+{
+    "name": "Busia",
+    "slug": "busia",
+    "status": "scraped",
+    "source_url": "https://busiacounty.go.ke",
+    "title": "The County Government of Busia",
+    "description": "County Government of busia website. We are United For Development through exemplary service delivery.",
+    "contacts": {
+        "emails": [
+            "info@busiacounty.go.ke"
+        ],
+        "phones": [
+            "+254700106517"
+        ],
+        "physical_address": ""
+    },
+    "pages": {
+        "about": [
+            "https://busiacounty.go.ke/about/kdspii",
+            "https://busiacounty.go.ke/about/places-of-interest-in-busia-county",
+            "https://busiacounty.go.ke/about/history-of-busia-county"
+        ],
+        "departments": [
+            "https://busiacounty.go.ke/departments/department/education-and-industrial-skills-development",
+            "https://busiacounty.go.ke/departments/department/health-sanitation",
+            "https://busiacounty.go.ke/departments/department/lands-housing-and-urban-development"
+        ],
+        "services": [
+            "https://accounts.ecitizen.go.ke/en"
+        ],
+        "projects": [
+            "https://busiacounty.go.ke/departments/department/education-and-industrial-skills-development",
+            "https://busiacounty.go.ke/departments/department/lands-housing-and-urban-development",
+            "https://busiacounty.go.ke/projects"
+        ],
+        "tenders": [
+            "https://busiacounty.go.ke/resources/tenders"
+        ],
+        "news": [
+            "https://busiacounty.go.ke/resources/events",
+            "https://busiacounty.go.ke/media/category/news",
+            "https://busiacounty.go.ke/media/news-and-spechees"
+        ],
+        "contact": [],
+        "downloads": [
+            "https://busiacounty.go.ke/resources/all-documents",
+            "https://busiacounty.go.ke/assets/documents/uploads/APPROVED BUDGET ESTIMATES FY 2026-2027.pdf",
+            "https://busiacounty.go.ke/assets/documents/uploads/REHABILITATION AND EXPNASION OF CHANGARA  IRRIGATION SCHEME LOCATED AT ANGURAI EAST WARD,  TESO NORTH SUB COUNTY, BUSIA COUNTY.-UEH59.pdf"
+        ]
+    },
+    "stats": [],
+    "backfilled_at": "2026-08-02T23:34:57+00:00"
+}

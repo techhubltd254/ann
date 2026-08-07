@@ -1,0 +1,51 @@
+{
+  "name": "Elgeyo-Marakwet",
+  "slug": "elgeyo-marakwet",
+  "status": "scraped",
+  "source_url": "https://elgeyomarakwet.go.ke",
+  "final_url": "",
+  "scraped_at": "2026-07-27T14:43:28.917553",
+  "title": "Elgeyo Marakwet County &#8211; County of Champions",
+  "description": "",
+  "contacts": {
+    "emails": [
+      "info@elgeyomarakwet.go.ke"
+    ],
+    "phones": []
+  },
+  "pages": {
+    "about": [],
+    "departments": [
+      "https://elgeyomarakwet.go.ke/county-sectors/",
+      "https://elgeyomarakwet.go.ke/departments/office-of-the-governor/",
+      "https://elgeyomarakwet.go.ke/departments/"
+    ],
+    "services": [
+      "https://elgeyomarakwet.go.ke/departments/health-services/",
+      "https://elgeyomarakwet.go.ke/departments/sports-youth-affairs-social-services/",
+      "https://elgeyomarakwet.go.ke/e-services/"
+    ],
+    "projects": [
+      "https://elgeyomarakwet.go.ke/departments/livestock-development-cooperatives-fisheries/",
+      "https://elgeyomarakwet.go.ke/projects-data/",
+      "https://www.elgeyomarakwet.go.ke/projectsdata"
+    ],
+    "tenders": [
+      "https://elgeyomarakwet.go.ke/tenders/"
+    ],
+    "news": [
+      "https://elgeyomarakwet.go.ke/news-updates/",
+      "https://elgeyomarakwet.go.ke/category/news/"
+    ],
+    "contact": [
+      "https://elgeyomarakwet.go.ke/iten-municipality-feedback-form/"
+    ],
+    "downloads": [
+      "https://elgeyomarakwet.go.ke/iten-municipality-documents/",
+      "https://elgeyomarakwet.go.ke/climate-change-documents/"
+    ]
+  },
+  "stats": {},
+  "hero_images_count": 4,
+  "gallery_images_count": 14
+}

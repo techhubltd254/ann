@@ -26,6 +26,7 @@ class ScreenController extends Controller
             $screen->video_size_mb = $screen->video_exists
                 ? round(filesize($videoPath) / 1024 / 1024, 1)
                 : null;
+            $screen->immersive_url = $this->immersiveUrl($screen);
             return $screen;
         });
 
@@ -40,11 +41,44 @@ class ScreenController extends Controller
         $screen->video_size_mb = $screen->video_exists
             ? round(filesize($videoPath) / 1024 / 1024, 1)
             : null;
+        $screen->immersive_url = $this->immersiveUrl($screen);
 
         return view('screens.show', [
             'screen' => $screen,
             'adPackages' => self::AD_PACKAGES,
         ]);
+    }
+
+    /**
+     * Resolve the live 3D cinematic video for a screen: sector pavilions play the
+     * sector's depth-parallax cinematic; county booths play the county's immersive
+     * showcase. Falls back to null when no 3D asset exists yet.
+     */
+    private function immersiveUrl($screen): ?string
+    {
+        $base = '/media/derivatives/holo/';
+        // county booth → county immersive showcase
+        if (!empty($screen->county_id)) {
+            return $base . $screen->county_id . '-immersive.mp4';
+        }
+        // sector pavilion → sector cinematic (muranga content set)
+        if (!empty($screen->sector_id)) {
+            $map = [
+                'agriculture' => 'muranga-farms',
+                'fisheries' => 'muranga-farms',
+                'tourism' => 'muranga-tourism',
+                'culture' => 'muranga-culture',
+                'health' => 'muranga-health',
+                'environment' => 'muranga-tourism',
+                'education' => 'muranga-institutions',
+                'energy' => 'muranga-farms',
+                'manufacturing' => 'muranga-products',
+                'creative' => 'muranga-culture',
+            ];
+            $key = $map[$screen->sector_id] ?? 'muranga-tourism';
+            return $base . $key . '/cinematic.mp4';
+        }
+        return null;
     }
 
     /**
@@ -105,6 +139,7 @@ class ScreenController extends Controller
             $screen->video_size_mb = $screen->video_exists
                 ? round(filesize($videoPath) / 1024 / 1024, 1)
                 : null;
+            $screen->immersive_url = $this->immersiveUrl($screen);
 
             // Get image count from registry
             $screen->image_count = \App\Models\ScreenImage::where(function ($q) use ($screen) {

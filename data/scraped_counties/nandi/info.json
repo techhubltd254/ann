@@ -1,0 +1,60 @@
+{
+  "name": "Nandi",
+  "slug": "nandi",
+  "status": "scraped",
+  "source_url": "https://nandi.go.ke",
+  "final_url": "",
+  "scraped_at": "2026-07-27T14:43:30.102896",
+  "title": "County Government Of Nandi &#8211; Source of Champions",
+  "description": "",
+  "contacts": {
+    "emails": [],
+    "phones": []
+  },
+  "pages": {
+    "about": [
+      "https://nandi.go.ke/about-us/"
+    ],
+    "departments": [
+      "https://nandi.go.ke/departments_page/",
+      "https://nandi.go.ke/departments/department-of-administration-public-service-and-e-government/",
+      "https://nandi.go.ke/departments/department-of-administration/"
+    ],
+    "services": [
+      "https://nandi.go.ke/departments/medical-services/",
+      "https://nandi.go.ke/departments/preventive-and-promotive-services/"
+    ],
+    "projects": [
+      "https://nandi.go.ke/departments/department-of-agriculture-and-coooperative-development/",
+      "https://nandi.go.ke/departments/department-of-cooperative-development/",
+      "https://nandi.go.ke/news-category/agriculture-and-cooperative-development/"
+    ],
+    "tenders": [
+      "https://nandi.go.ke/tenders-2025-2026/",
+      "https://procurement.nandi.go.ke"
+    ],
+    "news": [
+      "https://nandi.go.ke/news/nandi-county-hands-over-meteitei-hospital-project-for-construction/",
+      "https://nandi.go.ke/news-category/health-and-sanitation/",
+      "https://nandi.go.ke/news/nandi-ranked-9th-nationally-as-big-catch-up-drive-hits-90-immunization-coverage/"
+    ],
+    "contact": [
+      "https://nandi.go.ke/contact-us/",
+      "https://nandi.go.ke/website-feedback/"
+    ],
+    "downloads": [
+      "https://nandi.go.ke/downloads"
+    ]
+  },
+  "stats": {
+    "counter_0": "0",
+    "counter_1": "0",
+    "counter_2": "0",
+    "counter_3": "1",
+    "counter_4": "2013",
+    "counter_5": "2,884",
+    "counter_6": "885,711"
+  },
+  "hero_images_count": 5,
+  "gallery_images_count": 11
+}

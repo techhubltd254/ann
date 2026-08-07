@@ -27,6 +27,8 @@
             <source src="{{ $heroMp4 }}" type="video/mp4">
             @endif
             @if(!$heroVideo)
+            {{-- immersive 3D cinematic showcase (depth-parallax through the sectors) first, then any showcase --}}
+            <source src="{{ media('counties/' . $county->slug . '/immersive.mp4') }}" type="video/mp4">
             <source src="/videos/{{ $county->slug }}.mp4" type="video/mp4">
             <source src="{{ media('counties/' . $county->slug . '/showcase.mp4') }}" type="video/mp4">
             @endif

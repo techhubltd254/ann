@@ -1,0 +1,35 @@
+{
+  "name": "Baringo",
+  "slug": "baringo",
+  "status": "scraped",
+  "source_url": "https://baringo.go.ke",
+  "final_url": "",
+  "scraped_at": "2026-07-27T14:43:31.916862",
+  "title": "Welcome - County Government of Baringo",
+  "description": "Baringo County is one of the 47 counties in Kenya situated at the heart of Rift Valley Region with a population of approximately 670,000",
+  "contacts": {
+    "emails": [
+      "info@baringo.go.ke",
+      "munene.murage@gmail.com"
+    ],
+    "phones": []
+  },
+  "pages": {
+    "about": [],
+    "departments": [],
+    "services": [],
+    "projects": [],
+    "tenders": [
+      "https://baringo.go.ke/tenders",
+      "https://baringo.go.ke/tenders/"
+    ],
+    "news": [
+      "https://www.youtube.com/@BCGNEWS"
+    ],
+    "contact": [],
+    "downloads": []
+  },
+  "stats": {},
+  "hero_images_count": 5,
+  "gallery_images_count": 1
+}

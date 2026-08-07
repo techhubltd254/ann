@@ -1,0 +1,264 @@
+[
+  {
+    "name": "Medical Services, Public Health and Sanitation",
+    "category": "health",
+    "source": "https://kisii.go.ke"
+  },
+  {
+    "name": "Ministry of Devolution and Planning",
+    "category": "planning",
+    "source": "https://kisii.go.ke"
+  },
+  {
+    "name": "Youth Development and Empowerment",
+    "category": "youth",
+    "source": "https://kisii.go.ke"
+  },
+  {
+    "name": "Commission on Revenue Allocation",
+    "category": "revenue",
+    "source": "https://kisii.go.ke"
+  },
+  {
+    "name": "Gender and Social Development",
+    "category": "gender",
+    "source": "https://kisii.go.ke"
+  },
+  {
+    "name": "Higher Education Loans Board",
+    "category": "education",
+    "source": "https://kisii.go.ke"
+  },
+  {
+    "name": "Cooperatives Sector \u00bb",
+    "category": "cooperative",
+    "source": "https://kisii.go.ke"
+  },
+  {
+    "name": "County Public Service Board",
+    "category": "public service",
+    "source": "https://kisii.go.ke"
+  },
+  {
+    "name": "South Mugirango Sub-county",
+    "category": "ngo",
+    "source": "https://kisii.go.ke"
+  },
+  {
+    "name": "\u00ab Agriculture Sector",
+    "category": "agriculture",
+    "source": "https://kisii.go.ke"
+  },
+  {
+    "name": "Infrastructure and Access",
+    "category": "infrastructure",
+    "source": "https://kisii.go.ke"
+  },
+  {
+    "name": "Veterinary Sector \u00bb",
+    "category": "general",
+    "source": "https://kisii.go.ke"
+  },
+  {
+    "name": "\u00ab Veterinary Sector",
+    "category": "general",
+    "source": "https://kisii.go.ke"
+  },
+  {
+    "name": "\u00ab Livestock Sector",
+    "category": "livestock",
+    "source": "https://kisii.go.ke"
+  },
+  {
+    "name": "Investment Opportunities",
+    "category": "investment",
+    "source": "https://kisii.go.ke"
+  },
+  {
+    "name": "Fisheries Sector \u00bb",
+    "category": "fisheries",
+    "source": "https://kisii.go.ke"
+  },
+  {
+    "name": "Livestock Sector \u00bb",
+    "category": "livestock",
+    "source": "https://kisii.go.ke"
+  },
+  {
+    "name": "Tourism and Hospitality",
+    "category": "hospital",
+    "source": "https://kisii.go.ke"
+  },
+  {
+    "name": "Hon. Davins Ngoge Onuso",
+    "category": "ngo",
+    "source": "https://kisii.go.ke"
+  },
+  {
+    "name": "Office of the Governor",
+    "category": "general",
+    "source": "https://kisii.go.ke"
+  },
+  {
+    "name": "Mechanical Engineering",
+    "category": "engineering",
+    "source": "https://kisii.go.ke"
+  },
+  {
+    "name": "Grace Kerubo Nyarango",
+    "category": "ngo",
+    "source": "https://kisii.go.ke"
+  },
+  {
+    "name": "Department Overview",
+    "category": "general",
+    "source": "https://kisii.go.ke"
+  },
+  {
+    "name": "Roads and Transport",
+    "category": "roads",
+    "source": "https://kisii.go.ke"
+  },
+  {
+    "name": "Corporate Services",
+    "category": "corporate service",
+    "source": "https://kisii.go.ke"
+  },
+  {
+    "name": "Physical Planning",
+    "category": "planning",
+    "source": "https://kisii.go.ke"
+  },
+  {
+    "name": "Economic Planning",
+    "category": "planning",
+    "source": "https://kisii.go.ke"
+  },
+  {
+    "name": "Youth Polytechnic",
+    "category": "youth",
+    "source": "https://kisii.go.ke"
+  },
+  {
+    "name": "Economic Advisor",
+    "category": "economic",
+    "source": "https://kisii.go.ke"
+  },
+  {
+    "name": "Socio-economics",
+    "category": "economic",
+    "source": "https://kisii.go.ke"
+  },
+  {
+    "name": "Climate Change",
+    "category": "climate",
+    "source": "https://kisii.go.ke"
+  },
+  {
+    "name": "Chief Officers",
+    "category": "general",
+    "source": "https://kisii.go.ke"
+  },
+  {
+    "name": "ICT Authority",
+    "category": "ict",
+    "source": "https://kisii.go.ke"
+  },
+  {
+    "name": "Media Center",
+    "category": "media",
+    "source": "https://kisii.go.ke"
+  },
+  {
+    "name": "Public Works",
+    "category": "public work",
+    "source": "https://kisii.go.ke"
+  },
+  {
+    "name": "Departments",
+    "category": "general",
+    "source": "https://kisii.go.ke"
+  },
+  {
+    "name": "Environment",
+    "category": "environment",
+    "source": "https://kisii.go.ke"
+  },
+  {
+    "name": "Forestry",
+    "category": "forestry",
+    "source": "https://kisii.go.ke"
+  },
+  {
+    "name": "Children",
+    "category": "children",
+    "source": "https://kisii.go.ke"
+  },
+  {
+    "name": "Housing",
+    "category": "housing",
+    "source": "https://kisii.go.ke"
+  },
+  {
+    "name": "Mining",
+    "category": "mining",
+    "source": "https://kisii.go.ke"
+  },
+  {
+    "name": "Energy",
+    "category": "energy",
+    "source": "https://kisii.go.ke"
+  },
+  {
+    "name": "Sports",
+    "category": "sports",
+    "source": "https://kisii.go.ke"
+  },
+  {
+    "name": "Lands",
+    "category": "lands",
+    "source": "https://kisii.go.ke"
+  },
+  {
+    "name": "Water",
+    "category": "water",
+    "source": "https://kisii.go.ke"
+  },
+  {
+    "name": "Trade",
+    "category": "trade",
+    "source": "https://kisii.go.ke"
+  },
+  {
+    "name": "Agriculture & Farming",
+    "category": "agriculture"
+  },
+  {
+    "name": "Tourism & Hospitality",
+    "category": "tourism"
+  },
+  {
+    "name": "Hotels & Resorts",
+    "category": "tourism"
+  },
+  {
+    "name": "Products & Trade",
+    "category": "trade"
+  },
+  {
+    "name": "Education & Institutions",
+    "category": "education"
+  },
+  {
+    "name": "Transport & Logistics",
+    "category": "transport"
+  },
+  {
+    "name": "Healthcare",
+    "category": "health"
+  },
+  {
+    "name": "Culture & Heritage",
+    "category": "culture"
+  }
+]

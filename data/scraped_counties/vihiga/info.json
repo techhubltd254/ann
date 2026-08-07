@@ -1,0 +1,50 @@
+{
+  "name": "Vihiga",
+  "slug": "vihiga",
+  "status": "scraped",
+  "source_url": "https://vihiga.go.ke",
+  "final_url": "",
+  "scraped_at": "2026-07-27T14:44:03.665563",
+  "title": "Home - Vihiga County",
+  "description": "",
+  "contacts": {
+    "emails": [],
+    "phones": []
+  },
+  "pages": {
+    "about": [
+      "https://vihiga.go.ke/countys-profile/",
+      "https://vihiga.go.ke/history-culture/"
+    ],
+    "departments": [
+      "https://vihiga.go.ke/departments/",
+      "https://vihiga.go.ke/departments/agriculture-livestock-fisheries-cooperatives/",
+      "https://vihiga.go.ke/departments/trade-industry-tourism-and-entrepreneurship/"
+    ],
+    "services": [
+      "https://vihiga.go.ke/departments/youth-gender-sports-culture-and-social-services/",
+      "https://vihiga.go.ke/departments/health-services/"
+    ],
+    "projects": [
+      "https://dev.vihiga.go.ke/projects/dashboard"
+    ],
+    "tenders": [
+      "https://vihiga.go.ke/tenders/"
+    ],
+    "news": [
+      "https://vihiga.go.ke/news-press-release/",
+      "https://vihiga.go.ke/news/"
+    ],
+    "contact": [
+      "https://vihiga.go.ke/contact-us/"
+    ],
+    "downloads": [
+      "https://vihiga.go.ke/downloads/",
+      "https://vihiga.go.ke/financial-documents-2/",
+      "https://vihiga.go.ke/general-documents-2/"
+    ]
+  },
+  "stats": {},
+  "hero_images_count": 5,
+  "gallery_images_count": 12
+}

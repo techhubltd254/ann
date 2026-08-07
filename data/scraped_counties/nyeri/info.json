@@ -1,0 +1,48 @@
+{
+  "name": "Nyeri",
+  "slug": "nyeri",
+  "status": "scraped",
+  "source_url": "https://www.nyeri.go.ke/",
+  "final_url": "",
+  "scraped_at": "2026-07-27T14:43:11.980618",
+  "title": "COUNTY GOVERNMENT OF NYERI",
+  "description": "",
+  "contacts": {
+    "emails": [
+      "info@nyeri.go.ke"
+    ],
+    "phones": [
+      "+254721019019"
+    ]
+  },
+  "pages": {
+    "about": [
+      "https://www.nyeri.go.ke/wp-content/uploads/2025/08/Nyeri-County-Investment-Profile.pdf"
+    ],
+    "departments": [],
+    "services": [
+      "http://services.nyeri.go.ke/pmts/index.php",
+      "https://services.nyeri.go.ke/cfms/",
+      "https://services.nyeri.go.ke"
+    ],
+    "projects": [
+      "https://www.nyeri.go.ke/physical-and-land-use-development-plan/"
+    ],
+    "tenders": [
+      "https://www.nyeri.go.ke/cgntenders/"
+    ],
+    "news": [
+      "https://www.nyeri.go.ke/newsletters",
+      "https://www.nyeri.go.ke/newsletters/"
+    ],
+    "contact": [
+      "https://www.nyeri.go.ke/contact-us/"
+    ],
+    "downloads": [
+      "https://www.nyeri.go.ke/reports/"
+    ]
+  },
+  "stats": {},
+  "hero_images_count": 5,
+  "gallery_images_count": 28
+}

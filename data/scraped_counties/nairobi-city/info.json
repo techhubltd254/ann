@@ -1,0 +1,48 @@
+{
+    "name": "Nairobi City",
+    "slug": "nairobi-city",
+    "status": "scraped",
+    "source_url": "https://web.archive.org/web/20250106003621id_/https://nairobi.go.ke/",
+    "title": "Home | Nairobi City County",
+    "description": "",
+    "contacts": {
+        "emails": [
+            "info@nairobi.go.ke",
+            "investigations@nairobi.go.ke"
+        ],
+        "phones": [
+            "0725-624489",
+            "0738 041 292"
+        ]
+    },
+    "pages": {
+        "about": [
+            "https://nairobi.go.ke/about-nairobi/",
+            "https://nairobi.go.ke/history/"
+        ],
+        "departments": [],
+        "services": [
+            "https://nairobi.go.ke/services/",
+            "https://nairobi.go.ke/emergency-services/",
+            "https://nairobiservices.go.ke/login"
+        ],
+        "projects": [
+            "https://nairobi.go.ke/talents-skills-development-and-care/",
+            "https://nairobi.go.ke/projects/"
+        ],
+        "tenders": [
+            "https://nairobi.go.ke/tenders/"
+        ],
+        "news": [
+            "https://nairobi.go.ke/news-events/"
+        ],
+        "contact": [
+            "https://nairobi.go.ke/contacts/"
+        ],
+        "downloads": [
+            "https://nairobi.go.ke/downloads/"
+        ]
+    },
+    "stats": [],
+    "backfilled_at": "2026-08-02T23:34:57+00:00"
+}
