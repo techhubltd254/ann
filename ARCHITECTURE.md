@@ -436,3 +436,24 @@ sudo ./install.sh && sudo systemctl start kicc-county
 ```
 Requires Java 21+. Bundles are offline-first: they run standalone and sync to the mother
 (HMAC push/pull + nightly backup).
+
+---
+
+## 16. Real content injection + fake-data purge (2026-08-07)
+
+**Source:** `kenya-3d-platform/SSSS/` — real Canon R5 photos + DJI 4K drone video (Murang'a county
+content: waterfalls, tea highlands, Sagana rafting, community projects, farm aerials).
+
+**Murang'a is now 100% real:** the 5 synthetic attractions (Beach/Coral Reef/etc. — geographically
+impossible for a landlocked county) replaced with real, image-backed attractions:
+Aberdare Forest Trails, Murang'a Waterfall, Sagana Rafting Experience, Tea Highlands Tour,
+Murang'a Hills Viewpoint — each wired to its real photo (`counties/muranga/tourism/{id}.jpeg`),
+plus a 6.4 MB web hero loop transcoded from the 1.9 GB drone master.
+
+**Fake-data purge (prod TiDB):** 146 auto-generated generic attractions unpublished
+("Garissa Beach", "Wajir Coral Reef"… same fake set per county) + 1,780 synthetic `sector_entities`
+("Tea Estate - Mombasa 1") unpublished. All recoverable (soft-unpublish, not deleted).
+Remaining published entities are real. Counties now show only genuine content until their admins add more.
+
+**Media size discipline:** originals (15–45 MB photos, 1.9 GB video) never shipped to browsers —
+web-sized derivatives (≈500 KB images, 6.4 MB hero loop) generated via the pipeline.
