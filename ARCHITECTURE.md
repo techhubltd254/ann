@@ -471,3 +471,21 @@ categories, replacing all fakes. Full roll organized into `counties/muranga/libr
 **3D-everywhere:** every rendering image (sector tiles + all entity cards) now serves a
 depth-wiggle holographic video (autoplay muted loop, poster fallback) — no bare stills.
 Entity card holo path: `/media/derivatives/holo/{county}-{sector}-{id}/wiggle.mp4` on R2.
+
+---
+
+## 18. Content accuracy overhaul (2026-08-07, DJI drone footage)
+
+**Source:** DJI drone (MTP) — 56 4K videos + 30 RAW/JPG photos. Content verified frame-by-frame.
+
+**Accuracy fixed (the photo↔name mismatches):**
+- tourism → verified waterfall footage (DJI 0019)
+- transport → verified river bridge (DJI 0021)
+- hotels → verified SUPER HOTEL building (DJI 0075) + ELIPER sign photo
+- products/trade → verified market-town bustle (DJI 0075)
+- farms → verified farmland (DJI 0050)
+- County main screen → trade/market footage (global-exhibition objective: commerce first)
+
+**Full cinematic sector videos** (not single-image wiggle): real 4K drone footage cut to
+web-optimized 12s clips, posted at derivatives/holo/muranga-{sector}/cinematic.mp4, tiles'
+poster frames extracted from the SAME footage (image now matches video exactly).
