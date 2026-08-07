@@ -1,0 +1,50 @@
+{
+  "name": "Lamu",
+  "slug": "lamu",
+  "status": "scraped",
+  "source_url": "https://lamu.go.ke",
+  "final_url": "",
+  "scraped_at": "2026-07-27T14:42:52.739951",
+  "title": "County Government of Lamu - For People and Progress",
+  "description": "",
+  "contacts": {
+    "emails": [
+      "info@lamu.go.ke"
+    ],
+    "phones": [
+      "+254715555111",
+      "013986454",
+      "0164536201",
+      "0715 555111",
+      "0738508659"
+    ]
+  },
+  "pages": {
+    "about": [
+      "https://lamu.go.ke/about-us/"
+    ],
+    "departments": [],
+    "services": [
+      "https://www.ecitizen.go.ke/",
+      "https://accounts.ecitizen.go.ke/"
+    ],
+    "projects": [
+      "https://lamu.go.ke/lamu-hosts-stakeholders-workshop-on-climate-change-policy-development/"
+    ],
+    "tenders": [
+      "https://lamu.go.ke/tenders/"
+    ],
+    "news": [
+      "https://lamu.go.ke/public-notices/"
+    ],
+    "contact": [
+      "https://lamu.go.ke/contacts/"
+    ],
+    "downloads": [
+      "https://lamu.go.ke/budget-documents/"
+    ]
+  },
+  "stats": {},
+  "hero_images_count": 5,
+  "gallery_images_count": 18
+}

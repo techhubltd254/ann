@@ -1,0 +1,57 @@
+{
+  "name": "Trans Nzoia",
+  "slug": "trans-nzoia",
+  "status": "scraped",
+  "source_url": "https://transnzoia.go.ke",
+  "final_url": "",
+  "scraped_at": "2026-07-27T14:43:24.458563",
+  "title": "Trans-Nzoia County &#8211; Unity in Diversity",
+  "description": "",
+  "contacts": {
+    "emails": [
+      "info@transnzoia.go.ke"
+    ],
+    "phones": [
+      "0700026026"
+    ],
+    "physical_address": ""
+  },
+  "pages": {
+    "about": [],
+    "departments": [
+      "https://transnzoia.go.ke/our-county-sectors/",
+      "https://transnzoia.go.ke/county-sectors/agriculture-irrigation-livestock-fisheries-cooperative-development/",
+      "https://transnzoia.go.ke/county-sectors/education-technical-training/"
+    ],
+    "services": [
+      "https://transnzoia.go.ke/county-sectors/health-services-sanitation/",
+      "https://transnzoia.go.ke/trans-nzoia-health-stakeholders-push-for-improved-maternal-health-services/",
+      "https://accounts.ecitizen.go.ke/login"
+    ],
+    "projects": [
+      "https://transnzoia.go.ke/trans-nzoia-county/county-annual-development-plan-2022-2023/",
+      "https://transnzoia.go.ke/county-sectors/agriculture-irrigation-livestock-fisheries-cooperative-development/",
+      "https://transnzoia.go.ke/county-sectors/lands-housing-physical-planning-urban-development/"
+    ],
+    "tenders": [
+      "https://transnzoia.go.ke/download-resources/tenders/",
+      "https://transnzoia.go.ke/downloads/tenders/"
+    ],
+    "news": [
+      "https://transnzoia.go.ke/download-resources/job-notices/",
+      "https://transnzoia.go.ke/download-resources/notices/",
+      "https://transnzoia.go.ke/media-center/news-updates/"
+    ],
+    "contact": [
+      "https://transnzoia.go.ke/contact-us/"
+    ],
+    "downloads": [
+      "https://transnzoia.go.ke/download-resources/key-documents/",
+      "https://transnzoia.go.ke/downloads/",
+      "https://transnzoia.go.ke/downloads/tenders/"
+    ]
+  },
+  "stats": {},
+  "hero_images_count": 0,
+  "gallery_images_count": 30
+}

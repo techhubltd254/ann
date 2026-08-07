@@ -1,0 +1,97 @@
+{
+  "name": "County Content Pipeline",
+  "nodes": [
+    {
+      "name": "Webhook - Content Uploaded",
+      "type": "n8n-nodes-base.webhook",
+      "typeVersion": 2,
+      "position": [250, 300],
+      "parameters": {
+        "path": "county-content-upload",
+        "options": {}
+      }
+    },
+    {
+      "name": "Validate & Classify",
+      "type": "n8n-nodes-base.function",
+      "typeVersion": 1,
+      "position": [500, 300],
+      "parameters": {
+        "functionCode": "const { county_id, sector, files, metadata } = $input.first().json;\n\nif (!county_id || !sector || !files) {\n  throw new Error('Missing required fields: county_id, sector, files');\n}\n\nconst validSectors = ['tourism', 'trade', 'education', 'agriculture', 'transport', 'health', 'culture'];\nif (!validSectors.includes(sector)) {\n  throw new Error(`Invalid sector: ${sector}. Must be one of: ${validSectors.join(', ')}`);\n}\n\nreturn {\n  county_id,\n  sector,\n  files,\n  metadata,\n  status: 'classified',\n  timestamp: new Date().toISOString()\n};"
+      }
+    },
+    {
+      "name": "Process Images",
+      "type": "n8n-nodes-base.function",
+      "typeVersion": 1,
+      "position": [750, 200],
+      "parameters": {
+        "functionCode": "const data = $input.first().json;\nconst imageFiles = data.files.filter(f => f.type.startsWith('image/'));\n\nif (imageFiles.length === 0) return;\n\nreturn imageFiles.map(f => ({\n  url: f.url,\n  county_id: data.county_id,\n  sector: data.sector,\n  type: 'image',\n  metadata: f.metadata || {}\n}));"
+      }
+    },
+    {
+      "name": "Store in DB",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4,
+      "position": [1000, 300],
+      "parameters": {
+        "method": "POST",
+        "url": "http://localhost:8080/api/county-sector/{{$json.county_id}}/media/{{$json.sector}}",
+        "authentication": "predefinedCredentialType",
+        "nodeCredentialType": "httpHeaderAuth",
+        "sendHeaders": true,
+        "headerParameters": {
+          "parameters": [
+            {
+              "name": "Authorization",
+              "value": "Bearer {{$env.API_TOKEN}}"
+            }
+          ]
+        },
+        "sendBody": true,
+        "bodyParameters": {
+          "parameters": []
+        },
+        "options": {}
+      }
+    },
+    {
+      "name": "Notify County Admin",
+      "type": "n8n-nodes-base.emailSend",
+      "typeVersion": 1,
+      "position": [1250, 400],
+      "parameters": {
+        "fromEmail": "noreply@kicc.go.ke",
+        "toEmail": "={{$json.county_email}}",
+        "subject": "Content Published Successfully",
+        "text": "Your content has been published on the KICC platform.\\n\\nCounty: {{$json.county_name}}\\nSector: {{$json.sector}}\\nFiles: {{$json.files.length}}\\n\\nView at: https://kicc-platform.pages.dev/counties/{{$json.county_slug}}"
+      }
+    },
+    {
+      "name": "Push to International Feed",
+      "type": "n8n-nodes-base.function",
+      "typeVersion": 1,
+      "position": [1500, 300],
+      "parameters": {
+        "functionCode": "const data = $input.first().json;\n\n// This node would push to international trade/tourism feeds:\n// - Export promotion platforms\n// - International exhibition calendars\n// - Tourism board international sites\n// - Trade mission newsletters\n\nreturn {\n  ...data,\n  international_push: true,\n  push_channel: 'trade_tourism_international',\n  pushed_at: new Date().toISOString()\n};"
+      }
+    }
+  ],
+  "connections": {
+    "Webhook - Content Uploaded": {
+      "main": [[{ "node": "Validate & Classify", "type": "main", "index": 0 }]]
+    },
+    "Validate & Classify": {
+      "main": [[{ "node": "Process Images", "type": "main", "index": 0 }]]
+    },
+    "Process Images": {
+      "main": [[{ "node": "Store in DB", "type": "main", "index": 0 }]]
+    },
+    "Store in DB": {
+      "main": [[{ "node": "Notify County Admin", "type": "main", "index": 0 }]]
+    },
+    "Notify County Admin": {
+      "main": [[{ "node": "Push to International Feed", "type": "main", "index": 0 }]]
+    }
+  }
+}

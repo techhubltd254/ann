@@ -1,0 +1,6 @@
+{
+  "name": "kicc-proxy",
+  "main": "worker.js",
+  "compatibility_date": "2025-01-01",
+  "r2_buckets": [{ "binding": "MEDIA", "bucket_name": "kicc-media" }]
+}

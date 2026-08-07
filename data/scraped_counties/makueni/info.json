@@ -1,0 +1,67 @@
+{
+  "name": "Makueni",
+  "slug": "makueni",
+  "status": "scraped",
+  "source_url": "https://makueni.go.ke",
+  "final_url": "",
+  "scraped_at": "2026-07-27T14:43:12.540232",
+  "title": "Wauni wa kwika nesa na ulungalu! - Makueni County Government",
+  "description": "",
+  "contacts": {
+    "emails": [
+      "info@makueni.go.ke"
+    ],
+    "phones": [
+      "0196078431",
+      "0780717885",
+      "0784313725",
+      "0795717885"
+    ],
+    "physical_address": ""
+  },
+  "pages": {
+    "about": [
+      "https://makueni.go.ke/about-2/",
+      "https://makueni.go.ke/sandbox/site/files/2026/01/County-Dev-Profile-2025.pdf",
+      "https://makueni.go.ke/document-category/ward-development-profile-for-financial-year-2022-23-2023-24-2024-25/"
+    ],
+    "departments": [
+      "https://makueni.go.ke/departments/",
+      "https://makueni.go.ke/2026/departments/health/elderly-makueni-resident-hails-mutula-care-after-years-of-costly-illness/",
+      "https://makueni.go.ke/category/departments/health/"
+    ],
+    "services": [
+      "https://eservices.makueni.go.ke/",
+      "https://makueni.go.ke/gender-children-culture-and-social-services/",
+      "https://makueni.go.ke/health-services-2/"
+    ],
+    "projects": [
+      "https://makueni.go.ke/school-for-devolution-community-led-development-sdcld/#",
+      "https://makueni.go.ke/2026/news/deputy-governor-lucy-mulili-commissions-twin-water-projects-to-boost-access-in-mulala-ward/",
+      "https://makueni.go.ke/agriculture-irrigation-livestock-and-fisheries-development/"
+    ],
+    "tenders": [
+      "https://makueni.go.ke/tenders/"
+    ],
+    "news": [
+      "https://makueni.go.ke/news-events-2/",
+      "https://makueni.go.ke/news-7/",
+      "https://makueni.go.ke/departmental-news-letters/"
+    ],
+    "contact": [
+      "https://makueni.go.ke/contacts/"
+    ],
+    "downloads": [
+      "https://makueni.go.ke/county-documents/",
+      "https://umanyi.makueni.go.ke/views/landing_publications?view=4&#038;name=County%20Planning%20and%20Budgeting%20Documents",
+      "https://umanyi.makueni.go.ke/views/landing_publications?view=16&#038;name=FInancial%20Audit%20Reports"
+    ]
+  },
+  "stats": {
+    "counter_0": "6",
+    "counter_1": "30",
+    "counter_2": "1042300"
+  },
+  "hero_images_count": 4,
+  "gallery_images_count": 17
+}

@@ -1,0 +1,45 @@
+{
+  "loop": {
+    "interval_minutes": 60,
+    "max_actions_per_cycle": 3,
+    "cooldown_after_action_minutes": 15
+  },
+  "observation": {
+    "seo": {
+      "enabled": true,
+      "google_trends_keywords": ["kenya tourism", "safari deals", "malindi beach", "nairobi exhibitions", "kenya trade fairs"],
+      "search_console_domain": "kenya-exhibition.go.ke"
+    },
+    "pipeline": {
+      "enabled": true,
+      "quality_threshold": 0.7,
+      "max_latency_seconds": 3600
+    },
+    "weather": {
+      "enabled": true,
+      "update_hours": 6
+    },
+    "user_behavior": {
+      "enabled": true,
+      "min_signals_for_action": 10
+    }
+  },
+  "decider": {
+    "model": "moonshotai/kimi-k3-mini",
+    "temperature": 0.2,
+    "max_analysis_per_day": 20,
+    "fallback_to_rules": true
+  },
+  "actions": {
+    "seo_tune": {"priority": 8, "cooldown_hours": 24},
+    "recommendation_refresh": {"priority": 6, "cooldown_hours": 6},
+    "pipeline_tune": {"priority": 7, "cooldown_hours": 48},
+    "content_promote": {"priority": 5, "cooldown_hours": 12},
+    "cache_warm": {"priority": 3, "cooldown_hours": 1}
+  },
+  "learning": {
+    "feedback_window_days": 7,
+    "min_outcomes_for_learning": 5,
+    "reinforcement_rate": 0.15
+  }
+}

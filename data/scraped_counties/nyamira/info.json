@@ -1,0 +1,39 @@
+{
+  "name": "Nyamira",
+  "slug": "nyamira",
+  "status": "scraped",
+  "source_url": "https://nyamira.go.ke",
+  "final_url": "",
+  "scraped_at": "2026-07-27T14:44:13.522318",
+  "title": "County Government of Nyamira",
+  "description": "",
+  "contacts": {
+    "emails": [
+      "aos@2.3.1",
+      "info@nyamira.go.ke"
+    ],
+    "phones": [],
+    "physical_address": "Location, Position\r\n                                        and Size"
+  },
+  "pages": {
+    "about": [
+      "https://www.facebook.com/profile.php?id=100063963438374"
+    ],
+    "departments": [],
+    "services": [
+      "https://ecitizen.go.ke"
+    ],
+    "projects": [
+      "https://nyamira.go.ke/templates/projects"
+    ],
+    "tenders": [],
+    "news": [
+      "https://nyamira.go.ke/templates/news_and_events"
+    ],
+    "contact": [],
+    "downloads": []
+  },
+  "stats": {},
+  "hero_images_count": 1,
+  "gallery_images_count": 28
+}

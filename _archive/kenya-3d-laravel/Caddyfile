@@ -1,0 +1,28 @@
+{
+    frankenphp
+    admin off
+}
+
+:8080 {
+    root * /home/kicc/Desktop/kicc/kenya-3d-platform/laravel-backend/public
+    encode gzip
+
+    route {
+        @storage path /storage/*
+        handle @storage {
+            file_server
+        }
+
+        @laravel {
+            not file
+            path /*
+        }
+        rewrite @laravel /index.php?{query}
+
+        php {
+            resolve_root_symlink
+        }
+
+        file_server
+    }
+}

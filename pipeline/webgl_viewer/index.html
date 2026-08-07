@@ -1,0 +1,102 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>KICC National Exhibition — 3D Experience</title>
+<style>
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  body {
+    background: #0a0a12; color: #fff; font-family: 'Segoe UI', system-ui, sans-serif;
+    min-height: 100vh; display: flex; flex-direction: column; align-items: center;
+    justify-content: center; padding: 40px 20px;
+  }
+  h1 { font-size: 28px; color: #FFD700; text-align: center; margin-bottom: 8px; }
+  .subtitle { color: rgba(255,255,255,0.4); font-size: 14px; margin-bottom: 40px; text-align: center; }
+  .card {
+    background: rgba(255,255,255,0.04); border: 1px solid rgba(255,255,255,0.08);
+    border-radius: 16px; padding: 32px; max-width: 600px; width: 100%;
+    margin-bottom: 16px; transition: background 0.2s, transform 0.2s;
+    cursor: pointer; text-decoration: none; display: block; color: #fff;
+  }
+  .card:hover { background: rgba(255,255,255,0.08); transform: translateY(-2px); }
+  .card h2 { font-size: 18px; margin-bottom: 4px; }
+  .card .badge {
+    display: inline-block; background: rgba(255,215,0,0.15); color: #FFD700;
+    padding: 2px 8px; border-radius: 8px; font-size: 11px; margin-left: 8px;
+  }
+  .card p { color: rgba(255,255,255,0.5); font-size: 13px; line-height: 1.5; }
+  .card .meta { font-size: 11px; color: rgba(255,255,255,0.25); margin-top: 8px; }
+  .footer { margin-top: 40px; font-size: 12px; color: rgba(255,255,255,0.2); text-align: center; }
+  .features { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; margin-top: 12px; }
+  .features span { font-size: 12px; color: rgba(255,255,255,0.4); }
+  .features span::before { content: "• "; color: #FFD700; }
+  @media (max-width: 480px) {
+    h1 { font-size: 22px; }
+    .card { padding: 20px; }
+    .features { grid-template-columns: 1fr; }
+  }
+</style>
+</head>
+<body>
+  <h1>🇰🇪 KICC National Exhibition</h1>
+  <p class="subtitle">Immersive 3D Digital Twin Platform</p>
+
+  <a class="card" href="kenya_3d_map.html">
+    <h2>🗺 47 Counties 3D Map <span class="badge">NEW</span></h2>
+    <p>Interactive 3D map of all 47 Kenyan counties. Click each county to explore landmark photos, key sectors, population data, and area statistics. Orbit and zoom controls. Three.js powered.</p>
+    <div class="features">
+      <span>47 interactive counties</span>
+      <span>County landmark billboards</span>
+      <span>Sector photo galleries</span>
+      <span>Population &amp; area data</span>
+      <span>Color-coded by scene type</span>
+      <span>Orbit &amp; zoom controls</span>
+    </div>
+    <div class="meta">Three.js + CSS2DRenderer · 47 county photos · 29 sector photos</div>
+  </a>
+
+  <a class="card" href="sector_map.html">
+    <h2>🏖 Mombasa &amp; Kilifi Sector Explorer <span class="badge">NEW</span></h2>
+    <p>Zoom into 29 sector photos across Mombasa (14) and Kilifi (15) counties arranged in 3D space. Orbit around to explore key sectors like Port of Mombasa, Fort Jesus, Watamu Marine Park, Gede Ruins, and more.</p>
+    <div class="features">
+      <span>14 Mombasa sectors</span>
+      <span>15 Kilifi sectors</span>
+      <span>Photo billboards in 3D</span>
+      <span>Click to explore details</span>
+      <span>OrbitControls navigation</span>
+      <span>Color-coded by county</span>
+    </div>
+    <div class="meta">Three.js + CSS2DRenderer · 655 KB · 29 sector photos</div>
+  </a>
+
+  <a class="card" href="screens.html">
+    <h2>🎬 Exhibition Screen Videos</h2>
+    <p>18 auto-generated showcase videos for every exhibition screen: county main booths, sector pavilions, hero walls, and hallway displays. Click a booth in the 3D hall to play its video.</p>
+    <div class="features">
+      <span>18 screen videos</span>
+      <span>2 county mains (240s)</span>
+      <span>2 county subs (90s)</span>
+      <span>11 sector pavilions (45s)</span>
+      <span>2 hallways (150s)</span>
+      <span>Hero entrance (90s)</span>
+    </div>
+    <div class="meta">auto_*.mp4 · 18 files · 37 MB–551 MB each</div>
+  </a>
+
+  <a class="card" href="booth_viewer.html">
+    <h2>🏛 Exhibition Hall 3D Tour</h2>
+    <p>Walk through the virtual KICC exhibition hall with interactive booth pavilions. Drag to look around, tap booths for information.</p>
+    <div class="features">
+      <span>3D exhibition hall</span>
+      <span>Interactive booths</span>
+      <span>VR mode</span>
+    </div>
+    <div class="meta">Three.js · OrbitControls · WebXR ready</div>
+  </a>
+
+  <div class="footer">
+    KICC National Exhibition Platform · Built for KICC
+  </div>
+</body>
+</html>

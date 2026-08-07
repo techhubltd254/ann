@@ -1,0 +1,51 @@
+# VCS hygiene for KICC ONE
+.env
+.env.*
+!.env.example
+*.local
+secrets/
+tokens.txt
+CREDENTIALS.md
+
+# dependencies & builds
+vendor/
+node_modules/
+dist/
+build/
+.gradle/
+__pycache__/
+*.pyc
+*.jar
+*.apk
+*.tsbuildinfo
+
+# runtime data
+data/backups/
+platform/storage/app/public/*
+platform/storage/logs/
+*.mv.db
+*.lock.db
+*.trace.db
+
+# media artifacts (built by pipeline, delivered via R2)
+*.mp4
+*.webm
+*.m3u8
+*.ts
+*.glb
+
+# os / editor
+.DS_Store
+.idea/
+.vscode/
+
+# heavy artifacts & secrets (never commit)
+dist/
+.tools/
+data/holographic/
+infra/ota/*.hex
+infra/ota/*.txt
+infra/ota/*.pem
+node_modules/
+vendor/
+*.log

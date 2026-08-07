@@ -1,0 +1,29 @@
+{
+  "name": "Isiolo",
+  "slug": "isiolo",
+  "status": "scraped",
+  "source_url": "https://isiolo.go.ke",
+  "final_url": "",
+  "scraped_at": "2026-07-27T14:42:55.297922",
+  "title": "County Government of Isiolo - Official Portal | Centre of Excellence & Economic Growth Hub",
+  "description": "Official website of Isiolo County Government Kenya - Centre of Excellence & Major Economic Growth Hub. Access public services, county tenders, development projects, job opportunities, and government information. Building resilient communities through sustainable development and inclusive governance.",
+  "contacts": {
+    "emails": [
+      "info@isiolo.go.ke"
+    ],
+    "phones": []
+  },
+  "pages": {
+    "about": [],
+    "departments": [],
+    "services": [],
+    "projects": [],
+    "tenders": [],
+    "news": [],
+    "contact": [],
+    "downloads": []
+  },
+  "stats": {},
+  "hero_images_count": 0,
+  "gallery_images_count": 0
+}

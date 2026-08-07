@@ -1,0 +1,18 @@
+# ---------- Stage 1: build ----------
+FROM gradle:8.10-jdk21 AS build
+WORKDIR /src
+COPY engine/build.gradle.kts engine/settings.gradle.kts ./
+COPY engine/gradle ./gradle
+RUN gradle dependencies --no-daemon >/dev/null || true
+COPY engine/src ./src
+RUN gradle bootJar --no-daemon -x test
+
+# ---------- Stage 2: runtime (distroless, non-root) ----------
+FROM gcr.io/distroless/java21-debian12:nonroot AS runtime
+LABEL org.opencontainers.image.source="https://github.com/techhubltd254/ann"
+WORKDIR /app
+COPY --from=build /src/build/libs/*.jar /app/kicc-engine.jar
+USER nonroot
+EXPOSE 8091
+ENV JAVA_TOOL_OPTIONS="-XX:MaxRAMPercentage=75 -XX:+UseZGC"
+CMD ["/app/kicc-engine.jar"]

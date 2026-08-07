@@ -1,0 +1,57 @@
+[
+    {
+        "name": "Education and Industrial Skills Development",
+        "url": "https://busiacounty.go.ke/departments/department/education-and-industrial-skills-development",
+        "category": "education"
+    },
+    {
+        "name": "Health &amp; Sanitation",
+        "url": "https://busiacounty.go.ke/departments/department/health-sanitation",
+        "category": "health"
+    },
+    {
+        "name": "Lands, Housing and Urban Development",
+        "url": "https://busiacounty.go.ke/departments/department/lands-housing-and-urban-development",
+        "category": "land"
+    },
+    {
+        "name": "Public Service Management &amp; Governance",
+        "url": "https://busiacounty.go.ke/departments/department/public-service-management-governance",
+        "category": "public service"
+    },
+    {
+        "name": "Smart Agriculture, Livestock, Fisheries, Blue Economy",
+        "url": "https://busiacounty.go.ke/departments/department/smart-agriculture-livestock-fisheries-blue-economy",
+        "category": "agriculture"
+    },
+    {
+        "name": "Strategic Partnerships, ICT and Digital Economy",
+        "url": "https://busiacounty.go.ke/departments/department/strategic-partnerships-ict-and-digital-economy",
+        "category": "ict"
+    },
+    {
+        "name": "The County Treasury and Economic Planning",
+        "url": "https://busiacounty.go.ke/departments/department/the-county-treasury-and-economic-planning",
+        "category": "planning"
+    },
+    {
+        "name": "Trade, Investment, Industrialization, Cooperatives and Small Micro Enterprises (SME)",
+        "url": "https://busiacounty.go.ke/departments/department/trade-investment-industrialization-cooperatives-and-small-micro-enterprises-sme",
+        "category": "trade"
+    },
+    {
+        "name": "Transport, Roads and Public Works",
+        "url": "https://busiacounty.go.ke/departments/department/transport-roads-and-public-works",
+        "category": "roads"
+    },
+    {
+        "name": "Water, Irrigation, Environment, Natural Resources, Climate Change and Energy",
+        "url": "https://busiacounty.go.ke/departments/department/water-irrigation-environment-natural-resources-climate-change-and-energy",
+        "category": "energy"
+    },
+    {
+        "name": "Youth, Sports, Tourism, Culture Social Protection, Gender Affairs and Creative Arts",
+        "url": "https://busiacounty.go.ke/departments/department/youth-sports-tourism-culture-social-protection-gender-affairs-and-creative-arts",
+        "category": "tourism"
+    }
+]

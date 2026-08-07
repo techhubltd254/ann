@@ -1,0 +1,78 @@
+server:
+  port: 8091
+
+spring:
+  application:
+    name: kicc-engine
+  datasource:
+    url: jdbc:h2:file:./data/engine;CIPHER=AES;MODE=MySQL;AUTO_SERVER=TRUE
+    driver-class-name: org.h2.Driver
+    username: sa
+    password: "${KICC_DB_FILE_KEY:default-dev-file-key-2026} ${KICC_DB_USER_PASSWORD:engine}"
+  jpa:
+    hibernate:
+      ddl-auto: update
+      naming:
+        # Must match production: the shared TiDB schema preserves camelCase
+        # columns (countyId, isPublished) alongside Laravel's snake_case.
+        physical-strategy: org.hibernate.boot.model.naming.PhysicalNamingStrategyStandardImpl
+    properties:
+      hibernate:
+        format_sql: false
+  h2:
+    console:
+      enabled: ${H2_CONSOLE_ENABLED:false}
+  servlet:
+    multipart:
+      max-file-size: 10MB
+      max-request-size: 12MB
+
+management:
+  endpoints:
+    web:
+      exposure:
+        include: health,info
+  endpoint:
+    health:
+      show-details: when-authorized
+
+kicc:
+  cors-origins: ${KICC_CORS_ORIGINS:http://localhost:5173}
+  cookie-secure: ${KICC_COOKIE_SECURE:false}
+  web-dir: ${KICC_WEB_DIR:../web}
+  jwt:
+    secret: ${JWT_SECRET:kicc-engine-phase1-change-this-secret-before-production-2026}
+    access-ttl: 900
+    refresh-ttl: 604800
+  source-db: ${KICC_SOURCE_DB:/home/kicc/Desktop/kicc/kicc-portable-admin/database/database.sqlite}
+  sync:
+    hmac-secret: ${SYNC_HMAC_SECRET:kicc-sync-dev-secret-2026}
+  payments:
+    revenue-share-kicc: ${REVENUE_SHARE_KICC:0.8}
+    revenue-share-county: ${REVENUE_SHARE_COUNTY:0.2}
+  backup:
+    ingest-key: ${BACKUP_INGEST_KEY:kicc-backup-ingest-dev-2026}
+    sink-url: ${BACKUP_SINK_URL:}
+    sink-key: ${BACKUP_SINK_KEY:}
+    sink-source: ${BACKUP_SINK_SOURCE:}
+  update:
+    enabled: ${KICC_UPDATE_ENABLED:false}
+    manifest-url: ${KICC_UPDATE_MANIFEST_URL:https://kicctest.org/api/updates/manifest}
+    channel: ${KICC_UPDATE_CHANNEL:stable}
+  mpesa:
+    base-url: ${MPESA_BASE_URL:https://sandbox.safaricom.co.ke}
+    consumer-key: ${MPESA_CONSUMER_KEY:}
+    consumer-secret: ${MPESA_CONSUMER_SECRET:}
+    passkey: ${MPESA_PASSKEY:}
+    shortcode: ${MPESA_SHORTCODE:174379}
+    callback-url: ${MPESA_CALLBACK_URL:}
+  stripe:
+    secret-key: ${STRIPE_SECRET_KEY:}
+  ai:
+    provider: ${AI_PROVIDER:mock}
+    gemini-api-key: ${GEMINI_API_KEY:}
+    gemini-endpoint: ${GEMINI_ENDPOINT:https://generativelanguage.googleapis.com/v1beta}
+
+springdoc:
+  swagger-ui:
+    path: /swagger-ui.html

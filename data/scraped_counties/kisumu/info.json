@@ -1,0 +1,55 @@
+{
+  "name": "Kisumu",
+  "slug": "kisumu",
+  "status": "scraped",
+  "source_url": "https://www.kisumu.go.ke/",
+  "final_url": "",
+  "scraped_at": "2026-07-27T14:44:03.694201",
+  "title": "County Government of Kisumu",
+  "description": "We transform the livelihood of the people of Kisumu county on a foundation of integrity through accountable, efficient, and effective leadership that invokes participation and pursuit of quality services, for a prosperous county that is a harbor of excellence.",
+  "contacts": {
+    "emails": [
+      "info@kisumu.go.ke"
+    ],
+    "phones": [
+      "0749728500",
+      "0769470406"
+    ]
+  },
+  "pages": {
+    "about": [
+      "https://www.kisumu.go.ke/about-kisumu-county"
+    ],
+    "departments": [],
+    "services": [
+      "https://www.kisumu.go.ke/finance-economic-planning-and-icte-government-services/",
+      "https://www.kisumu.go.ke/medical-services-public-health-and-sanitation/",
+      "https://www.kisumu.go.ke/education-technical-training-innovation-and-social-services/"
+    ],
+    "projects": [
+      "https://www.kisumu.go.ke/public-service-county-administration-and-participatory-development-office-of-the-governor/",
+      "https://www.kisumu.go.ke/agriculture-fisheries-livestock-development-and-irrigation/",
+      "https://www.kisumu.go.ke/lands-physical-planning-housing-and-urban-development/"
+    ],
+    "tenders": [
+      "https://www.kisumu.go.ke/tenders/",
+      "https://www.kisumu.go.ke/downloads/tenders/"
+    ],
+    "news": [
+      "https://www.kisumu.go.ke/news-events/",
+      "https://www.kisumu.go.ke/newsletters/",
+      "https://www.kisumu.go.ke/category/news-item/"
+    ],
+    "contact": [
+      "https://www.kisumu.go.ke/contact-us/"
+    ],
+    "downloads": [
+      "https://www.kisumu.go.ke/downloads/",
+      "https://www.kisumu.go.ke/downloads/tenders/",
+      "https://renewablesroadmap.iclei.org/resourcescategories/reports/"
+    ]
+  },
+  "stats": {},
+  "hero_images_count": 5,
+  "gallery_images_count": 20
+}

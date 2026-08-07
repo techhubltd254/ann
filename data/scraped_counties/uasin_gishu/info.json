@@ -1,0 +1,53 @@
+{
+  "name": "Uasin Gishu",
+  "slug": "uasin-gishu",
+  "status": "scraped",
+  "source_url": "https://uasingishu.go.ke",
+  "final_url": "",
+  "scraped_at": "2026-07-27T14:43:23.993537",
+  "title": "County Government of Uasin Gishu &#8211; The Champions",
+  "description": "",
+  "contacts": {
+    "emails": [
+      "info@uasingishu.go.ke"
+    ],
+    "phones": [
+      "0769986735",
+      "0786157122"
+    ]
+  },
+  "pages": {
+    "about": [
+      "https://uasingishu.go.ke/index.php/about-ug",
+      "https://uasingishu.go.ke/index.php/what-you-need-to-know-about-cancer"
+    ],
+    "departments": [
+      "https://uasingishu.go.ke/index.php/departments"
+    ],
+    "services": [
+      "https://accounts.ecitizen.go.ke/",
+      "https://uasingishu.go.ke/index.php/department/health-services",
+      "https://uasingishu.go.ke/index.php/services"
+    ],
+    "projects": [],
+    "tenders": [
+      "https://uasingishu.go.ke/index.php/tenders/",
+      "https://uasingishu.go.ke/index.php/tenders"
+    ],
+    "news": [
+      "https://uasingishu.go.ke/index.php/health-news",
+      "https://uasingishu.go.ke/index.php/news",
+      "https://uasingishu.go.ke/index.php/events/category/events"
+    ],
+    "contact": [
+      "https://uasingishu.go.ke/feedback/",
+      "https://uasingishu.go.ke/index.php/contact"
+    ],
+    "downloads": [
+      "https://uasingishu.go.ke/index.php/downloads"
+    ]
+  },
+  "stats": {},
+  "hero_images_count": 2,
+  "gallery_images_count": 12
+}

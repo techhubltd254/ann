@@ -1,0 +1,12 @@
+{
+  "main_module": "kicctest-gateway.js",
+  "compatibility_date": "2025-01-01",
+  "bindings": [
+    {"type":"kv_namespace","name":"RATE_LIMIT_KV","namespace_id":"e083d1fbc2304f7fba7ea52bd01ee2b3"},
+    {"type":"r2_bucket","name":"MEDIA_BUCKET","bucket_name":"kicc-media"},
+    {"type":"plain_text","name":"ORIGIN_HOST","text":"origin.kicctest.org"},
+    {"type":"plain_text","name":"ENGINE_HOST","text":"origin.kicctest.org"},
+    {"type":"plain_text","name":"ORIGIN_SCHEME","text":"https"},
+    {"type":"secret_text","name":"PURGE_HMAC_SECRET","text":"14ff48cb2acfeb652d2d024f1b96b2b18161d577fb630cec66090a7acc2392c1"}
+  ]
+}

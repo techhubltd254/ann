@@ -1,0 +1,14 @@
+{
+  "recommendation_refresh": {
+    "last_run": "2026-07-20T23:08:54.375658",
+    "last_reason": "Scheduled refresh (month 7)",
+    "last_trigger": "monthly_refresh",
+    "count": 1
+  },
+  "cache_warm": {
+    "last_run": "2026-07-20T23:08:54.375658",
+    "last_reason": "Routine cache pre-warm",
+    "last_trigger": "scheduled",
+    "count": 1
+  }
+}

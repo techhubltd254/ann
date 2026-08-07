@@ -1,0 +1,34 @@
+<?php
+
+use Illuminate\Foundation\Inspiring;
+use Illuminate\Support\Facades\Artisan;
+use Illuminate\Support\Facades\Schedule;
+
+Artisan::command('inspire', function () {
+    $this->comment(Inspiring::quote());
+})->purpose('Display an inspiring quote');
+
+// Travel recommendation engine — refresh origin-market weather hourly,
+// fire n8n SEO campaigns when a cold market is detected.
+Schedule::command('travel:refresh-recommendations')->hourly();
+
+// Build recommendation engine nightly from user behavior data.
+Schedule::command('recommendations:build')->dailyAt('02:00');
+
+// Rebuild semantic-search embeddings (new/changed content only).
+Schedule::command('embeddings:build')->dailyAt('02:30');
+
+// Two-score vendor grading (Trust earned + Visibility purchased) nightly.
+Schedule::command('vendors:score')->dailyAt('03:00');
+
+// Subscription billing cycles + invoices (16% VAT) daily.
+Schedule::command('billing:run')->dailyAt('04:00');
+
+// Anomaly sweeps (brute force, card testing, refund fraud) every 15 min.
+Schedule::command('anomalies:detect')->everyFifteenMinutes();
+
+// Predictive demand/trend rollups nightly.
+Schedule::command('analytics:trends')->dailyAt('04:30');
+
+// DBA cadence: weekly index/health audit (Sundays 05:00).
+Schedule::command('dba:index-audit')->weeklyOn(0, '05:00');

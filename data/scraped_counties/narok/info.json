@@ -1,0 +1,53 @@
+{
+  "name": "Narok",
+  "slug": "narok",
+  "status": "scraped",
+  "source_url": "https://narok.go.ke",
+  "final_url": "",
+  "scraped_at": "2026-07-27T14:43:33.800362",
+  "title": "Home - Narok County Government",
+  "description": "Narok County Government was formed by the County Governments Act of 2012 as prescribed in the 2010 Constitution of Kenya. It is one of the 47 devolved units situated in the Great Rift Valley in the Southern part of the Country where it boarders the republic of Tanzania. Narok County has its headquarters in Narok Town, off Narok Nakuru Road.Narok County comprises of six (6) sub-counties namely: Narok North, Narok West, Narok East, Narok South, Transmara East and Transmara West.The County shares a",
+  "contacts": {
+    "emails": [
+      "Info@narok.go.ke",
+      "info@narok.go.ke"
+    ],
+    "phones": [
+      "0700 320 775",
+      "0708 307 139"
+    ]
+  },
+  "pages": {
+    "about": [
+      "https://narok.go.ke/about-narok/"
+    ],
+    "departments": [],
+    "services": [
+      "https://narok.go.ke/e-services/",
+      "https://www.ecitizen.go.ke/",
+      "https://eservices.narok.go.ke/"
+    ],
+    "projects": [
+      "https://narok.go.ke/melelo-ward-development-tour/",
+      "https://narok.go.ke/projects-commissioning-in-keyian-ward/",
+      "https://narok.go.ke/angata-barrikoi-ward-development-tour/"
+    ],
+    "tenders": [],
+    "news": [
+      "https://narok.go.ke/events/",
+      "https://narok.go.ke/news/",
+      "https://narok.go.ke/public-notices/"
+    ],
+    "contact": [
+      "https://narok.go.ke/feedback/"
+    ],
+    "downloads": [
+      "https://narok.go.ke/audit-reports/",
+      "https://narok.go.ke/downloads/",
+      "https://narok.go.ke/budget-documents/"
+    ]
+  },
+  "stats": {},
+  "hero_images_count": 4,
+  "gallery_images_count": 26
+}

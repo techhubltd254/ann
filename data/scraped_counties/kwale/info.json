@@ -1,0 +1,60 @@
+{
+  "name": "Kwale",
+  "slug": "kwale",
+  "status": "scraped",
+  "source_url": "https://kwale.go.ke",
+  "final_url": "",
+  "scraped_at": "2026-07-27T14:42:53.883535",
+  "title": "County Government of Kwale &#8211; Welcome to the Official Kwale County Website",
+  "description": "",
+  "contacts": {
+    "emails": [
+      "info@kwale.go.ke"
+    ],
+    "phones": [
+      "0722 537263",
+      "0722537263",
+      "0723 678910",
+      "0731 678910",
+      "0739 002997",
+      "0758722002",
+      "0799 002997"
+    ]
+  },
+  "pages": {
+    "about": [
+      "https://kwale.go.ke/history-of-kwale/"
+    ],
+    "departments": [],
+    "services": [
+      "https://kwale.go.ke/water-services/",
+      "https://kwale.go.ke/health-services/",
+      "https://kwale.go.ke/wp-content/uploads/2026/04/COUNTY-CITIZEN-MWANANCHI-BUDGET-ESTIMATES-FOR-FY-2026-2027.pdf"
+    ],
+    "projects": [
+      "https://kwale.go.ke/tourism-trade-and-enterprise-development/",
+      "https://kwale.go.ke/county-projects/",
+      "https://kwale.go.ke/project/ict-infranstructure-development-project/"
+    ],
+    "tenders": [
+      "https://kwale.go.ke/all-tenders/",
+      "https://kwale.go.ke/active-tenders/",
+      "https://kwale.go.ke/closed-tenders/"
+    ],
+    "news": [
+      "https://kwale.go.ke/news/",
+      "https://kwale.go.ke/events/",
+      "https://kwale.go.ke/news/11980/"
+    ],
+    "contact": [
+      "https://kwale.go.ke/feedback/"
+    ],
+    "downloads": [
+      "https://kwale.go.ke/downloads/",
+      "https://kwale.go.ke/wp-content/uploads/2025/11/KWALE-COUNTY-GOVERMENT-COB-Q3-REPORTS-FY-24-25-II.pdf"
+    ]
+  },
+  "stats": {},
+  "hero_images_count": 1,
+  "gallery_images_count": 2
+}

@@ -1,0 +1,225 @@
+<?php
+
+namespace App\Http\Controllers\Web;
+
+use App\Http\Controllers\Controller;
+use App\Models\County;
+use App\Models\Exhibition;
+use App\Models\MediaAsset;
+use App\Models\PipelineJob;
+use App\Models\Product;
+use App\Models\Venue;
+use App\Services\MediaLibraryService;
+use App\Services\Pipeline\PipelineService;
+use Illuminate\Http\JsonResponse;
+use Illuminate\Http\RedirectResponse;
+use Illuminate\Http\Request;
+use Illuminate\Support\Facades\DB;
+use Illuminate\View\View;
+
+class MediaLibraryController extends Controller
+{
+    protected function authorizeMediaAccess(): void
+    {
+        if (!auth()->user()?->hasAnyRole(['kicc_admin', 'county_admin', 'national_admin', 'exhibitor', 'provider'])) {
+            abort(403, 'Media library requires an admin role.');
+        }
+    }
+
+    public function index(Request $request): View
+    {
+        $this->authorizeMediaAccess();
+
+        $kind = $request->get('kind');
+        $search = $request->get('q');
+        $status = $request->get('status');
+
+        $assets = MediaAsset::query()
+            ->with(['derivatives', 'pipelineJobs' => fn ($q) => $q->latest()])
+            ->when($kind, fn ($q, $k) => $q->where('kind', $k))
+            ->when($status, fn ($q, $s) => $q->where('status', $s))
+            ->when($search, fn ($q, $s) => $q->where('original_name', 'like', "%{$s}%"))
+            ->latest()
+            ->paginate(24)
+            ->withQueryString();
+
+        $counts = [
+            'all' => MediaAsset::count(),
+            'image' => MediaAsset::where('kind', 'image')->count(),
+            'video' => MediaAsset::where('kind', 'video')->count(),
+            'model' => MediaAsset::where('kind', 'model')->count(),
+            'ready' => MediaAsset::where('status', 'ready')->count(),
+            'processing' => MediaAsset::where('status', 'processing')->count(),
+        ];
+
+        $attachables = [
+            'counties' => County::orderBy('name')->pluck('name', 'id'),
+            'venues' => Venue::orderBy('name')->pluck('name', 'id'),
+            'exhibitions' => Exhibition::orderBy('name')->pluck('name', 'id'),
+        ];
+
+        return view('admin.media.index', compact('assets', 'counts', 'attachables', 'kind', 'search', 'status'));
+    }
+
+    protected function attachmentOptions(): array
+    {
+        $registry = config('pipeline.attachments', []);
+
+        $options = [];
+        foreach ($registry as $class => $slots) {
+            $options[$class] = [
+                'class' => $class,
+                'label' => class_basename($class) . 's',
+                'slots' => $slots,
+            ];
+        }
+
+        return $options;
+    }
+
+    public function upload(): View
+    {
+        $this->authorizeMediaAccess();
+
+        return view('admin.media.upload');
+    }
+
+    public function store(Request $request, MediaLibraryService $library): RedirectResponse
+    {
+        $this->authorizeMediaAccess();
+
+        $request->validate([
+            'files' => ['required', 'array', 'max:10'],
+            'files.*' => ['file', 'max:51200'],
+        ]);
+
+        foreach ($request->file('files', []) as $file) {
+            $library->store($file, ['alt_text' => $request->get('alt_text')]);
+        }
+
+        return redirect()->route('media.library')->with('success', count($request->file('files')) . ' file(s) uploaded. Pick one to run the pipeline.');
+    }
+
+    public function show(MediaAsset $asset, PipelineService $pipeline): View
+    {
+        $this->authorizeMediaAccess();
+
+        $asset->load(['derivatives', 'pipelineJobs' => fn ($q) => $q->latest()]);
+
+        $engines = collect($pipeline->allEngineDefinitions())
+            ->map(fn ($e, $key) => [
+                'key' => $key,
+                ...$e,
+                'available' => app($e['class'])->available(),
+                'note' => app($e['class'])->availabilityNote(),
+            ])
+            ->filter(fn ($e) => $e['enabled'] || $e['available'])
+            ->groupBy(fn ($e) => $e['type'] === 'api' ? 'API engines' : 'Local engines')
+            ->all();
+
+        $attachmentOptions = $this->attachmentOptions();
+        $slots = [];
+        $entities = [];
+        foreach ($attachmentOptions as $class => $def) {
+            $slots[$class] = $def['slots'];
+            $entities[$class] = $class::orderBy('name')->pluck('name', 'id');
+        }
+
+        return view('admin.media.show', compact('asset', 'engines', 'attachmentOptions', 'slots', 'entities'));
+    }
+
+    public function attach(Request $request, MediaAsset $asset): RedirectResponse
+    {
+        $this->authorizeMediaAccess();
+
+        $request->validate([
+            'entity_type' => ['required', 'string'],
+            'entity_id' => ['required', 'integer'],
+            'slot' => ['required', 'string'],
+        ]);
+
+        $class = $request->input('entity_type');
+        $registry = config('pipeline.attachments', []);
+
+        if (!isset($registry[$class])) {
+            abort(422, 'Unsupported entity type for attachments.');
+        }
+
+        if (!array_key_exists($request->input('slot'), $registry[$class])) {
+            abort(422, 'Slot is not allowed for this entity type.');
+        }
+
+        $entity = $class::find($request->input('entity_id'));
+        if (!$entity) {
+            abort(422, 'Entity not found.');
+        }
+
+        if ($asset->status !== 'ready') {
+            return back()->with('error', 'Asset must be ready before attaching (finish the pipeline first).');
+        }
+
+        $asset->forceFill([
+            'owner_id' => $entity->id,
+            'owner_type' => $class,
+            'slot' => $request->input('slot'),
+        ])->save();
+
+        return redirect()->route('media.show', $asset)->with(
+            'success',
+            "Attached to {$entity->name} as " . $registry[$class][$request->input('slot')] . '.'
+        );
+    }
+
+    public function detach(MediaAsset $asset): RedirectResponse
+    {
+        $this->authorizeMediaAccess();
+
+        $asset->forceFill(['owner_id' => null, 'owner_type' => null, 'slot' => null])->save();
+
+        return redirect()->route('media.show', $asset)->with('success', 'Asset detached. It stays in the library.');
+    }
+
+    public function dispatchPipeline(Request $request, MediaAsset $asset, PipelineService $pipeline): RedirectResponse
+    {
+        $this->authorizeMediaAccess();
+
+        $request->validate([
+            'engine' => ['required', 'string'],
+            'pipeline' => ['required', 'in:cinematic_video,image_to_3d'],
+        ]);
+
+        $job = $pipeline->dispatch(
+            asset: $asset,
+            pipeline: $request->input('pipeline'),
+            engine: $request->input('engine'),
+            options: $request->only(['prompt', 'duration', 'camera_path', 'model', 'aspect_ratio', 'seed']),
+        );
+
+        $asset->forceFill(['status' => 'processing'])->save();
+
+        return redirect()->route('media.show', $asset)->with('job_started', $job->id);
+    }
+
+    public function jobStatus(PipelineJob $job, PipelineService $pipeline): JsonResponse
+    {
+        return response()->json($pipeline->status($job));
+    }
+
+    public function cancelJob(PipelineJob $job, PipelineService $pipeline): RedirectResponse
+    {
+        $this->authorizeMediaAccess();
+
+        $pipeline->cancel($job);
+
+        return redirect()->route('media.show', $job->media_asset_id)->with('success', 'Pipeline job cancelled.');
+    }
+
+    public function destroy(MediaAsset $asset, MediaLibraryService $library): RedirectResponse
+    {
+        $this->authorizeMediaAccess();
+
+        $library->delete($asset);
+
+        return redirect()->route('media.library')->with('success', 'Asset deleted.');
+    }
+}

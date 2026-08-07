@@ -1,0 +1,11 @@
+# KICC platform scheduler — install to /etc/cron.d/kicc on the origin host
+# Fixes the previous workspace state: zero OS-level scheduling existed.
+SHELL=/bin/bash
+PATH=/usr/local/bin:/usr/bin:/bin
+
+# Laravel scheduler (fires travel:refresh-recommendations hourly + recommendations:build 02:00)
+* * * * * www-data cd /var/www/kicc-platform && php artisan schedule:run >> /dev/null 2>&1
+
+# n8n weekly trade promotion is scheduled inside n8n itself (scheduleTrigger, Sun 08:00).
+# Engine jobs (settlements, backups, sweeps) run inside the jar via @Scheduled — no cron needed.
+# Agentic loop runs via infra/agentic-loop.timer (systemd), not cron.

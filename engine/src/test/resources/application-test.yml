@@ -1,0 +1,15 @@
+spring:
+  datasource:
+    url: jdbc:h2:mem:engine;MODE=MySQL;DB_CLOSE_DELAY=-1
+    driver-class-name: org.h2.Driver
+    username: sa
+    password: ""
+  jpa:
+    hibernate:
+      ddl-auto: create-drop
+
+kicc:
+  rate-limit-enabled: false
+  source-db: src/test/resources/fixtures/source.db
+  backup:
+    ingest-key: test-ingest-key

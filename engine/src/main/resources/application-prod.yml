@@ -1,0 +1,47 @@
+server:
+  port: ${PORT:8091}
+  forward-headers-strategy: framework
+
+spring:
+  datasource:
+    url: jdbc:mysql://${DB_HOST:gateway01.eu-central-1.prod.aws.tidbcloud.com}:${DB_PORT:4000}/${DB_NAME:kicc}?useSSL=true&requireSSL=true&serverTimezone=UTC&allowPublicKeyRetrieval=true
+    driver-class-name: com.mysql.cj.jdbc.Driver
+    username: ${DB_USERNAME:28dbcDfwh5hEbSc.root}
+    password: ${DB_PASSWORD:D8trCZaYhqZWo5Vq}
+    hikari:
+      maximum-pool-size: 10
+      minimum-idle: 2
+      connection-timeout: 30000
+      idle-timeout: 600000
+      max-lifetime: 1800000
+  jpa:
+    hibernate:
+      ddl-auto: update
+    properties:
+      hibernate:
+        dialect: org.hibernate.dialect.MySQLDialect
+        format_sql: false
+        jdbc.batch_size: 20
+    open-in-view: false
+
+kicc:
+  cors-origins: ${KICC_CORS_ORIGINS:https://kicc.co.ke,http://localhost:5173,http://localhost:8091}
+  cookie-secure: true
+  jwt:
+    secret: ${JWT_SECRET:kicc-production-jwt-change-me-in-env-2026}
+    access-ttl: 900
+    refresh-ttl: 604800
+  web-dir: ${KICC_WEB_DIR:./web}
+  source-db: ""
+  backup:
+    ingest-key: ${BACKUP_INGEST_KEY:}
+    sink-url: ${BACKUP_SINK_URL:}
+  payments:
+    revenue-share-kicc: ${REVENUE_SHARE_KICC:0.8}
+    revenue-share-county: ${REVENUE_SHARE_COUNTY:0.2}
+
+management:
+  endpoints:
+    web:
+      exposure:
+        include: health,info

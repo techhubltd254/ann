@@ -1,0 +1,17 @@
+package ke.go.kicc.engine.rbac
+
+enum class Privilege {
+    CONTENT_MANAGE,
+    BOOKINGS_MANAGE,
+    PAYMENTS_MANAGE,
+    MEDIA_MANAGE,
+    ANALYTICS_VIEW,
+    REPORTS_VIEW,
+    MARKETPLACE_MANAGE,
+    SYNC_MANAGE,
+    SETTINGS_MANAGE,
+    USERS_MANAGE,
+    COUNTY_MANAGE,
+    SECTOR_MANAGE,
+    DELEGATE
+}

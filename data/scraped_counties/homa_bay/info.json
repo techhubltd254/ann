@@ -1,0 +1,67 @@
+{
+  "name": "Homa Bay",
+  "slug": "homa-bay",
+  "status": "scraped",
+  "source_url": "https://homabay.go.ke",
+  "final_url": "",
+  "scraped_at": "2026-07-27T14:44:03.106980",
+  "title": "Welcome to Homa Bay County | Homa Bay County Governance and Administration Management System",
+  "description": "",
+  "contacts": {
+    "emails": [
+      "wght@400..900"
+    ],
+    "phones": [],
+    "physical_address": ""
+  },
+  "pages": {
+    "about": [
+      "https://homabay.go.ke/about/governors-office",
+      "https://homabay.go.ke/about/faqs",
+      "https://web.facebook.com/profile.php?id=100095138725427"
+    ],
+    "departments": [
+      "https://homabay.go.ke/sectors/blue-economy-fisheries-mining-and-digital-economy",
+      "https://homabay.go.ke/sectors/county-public-service-board",
+      "https://homabay.go.ke/sectors/department-of-agriculture-irrigation-and-livestock-development"
+    ],
+    "services": [
+      "https://homabay.go.ke/sectors/public-health-and-medical-services",
+      "https://homabay.go.ke/sectors/sports-talent-development-cultural-heritage-gender-equality-inclusivity-and-social-services"
+    ],
+    "projects": [
+      "https://homabay.go.ke/sectors/department-of-agriculture-irrigation-and-livestock-development",
+      "https://homabay.go.ke/sectors/education-human-capital-development-and-vocational-training",
+      "https://homabay.go.ke/sectors/lands-physical-planning-housing-and-urban-development"
+    ],
+    "tenders": [
+      "https://homabay.go.ke/resources/tenders"
+    ],
+    "news": [
+      "https://homabay.go.ke/news",
+      "https://homabay.go.ke/events",
+      "https://homabay.go.ke/news/homa-bay-steps-up-disaster-readiness-with-anticipatory-action-dashboard-pilot-pE7oq"
+    ],
+    "contact": [
+      "https://homabay.go.ke/contact"
+    ],
+    "downloads": [
+      "https://homabay.go.ke/resources/downloads?category=kdsp",
+      "https://homabay.go.ke/resources/downloads"
+    ]
+  },
+  "stats": {
+    "counter_0": "1.3",
+    "counter_1": "2,421",
+    "counter_2": "24",
+    "counter_3": "275",
+    "counter_4": "1,200",
+    "counter_5": "316",
+    "counter_6": "5,786",
+    "counter_7": "25,730",
+    "counter_8": "27,095",
+    "counter_9": "9,970"
+  },
+  "hero_images_count": 4,
+  "gallery_images_count": 10
+}

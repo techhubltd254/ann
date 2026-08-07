@@ -1,0 +1,361 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+<title>KICC National Exhibition — 3D Interactive Tour</title>
+<style>
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  body { background: #000; overflow: hidden; font-family: 'Segoe UI', Tahoma, sans-serif; touch-action: none; }
+  canvas { display: block; width: 100vw; height: 100vh; }
+  #back-link {
+    position: fixed; top: 16px; left: 16px; z-index: 200;
+    color: rgba(255,255,255,0.5); font-size: 13px; text-decoration: none;
+    background: rgba(0,0,0,0.5); padding: 6px 14px; border-radius: 16px;
+    backdrop-filter: blur(4px);
+  }
+  #back-link:hover { color: #FFD700; }
+  #ui-overlay {
+    position: absolute; top: 0; left: 0; width: 100%; height: 100%;
+    pointer-events: none;
+  }
+  #ui-overlay > * { pointer-events: auto; }
+  #controls-hint {
+    position: absolute; bottom: 40px; left: 50%; transform: translateX(-50%);
+    color: rgba(255,255,255,0.6); font-size: 14px;
+    background: rgba(0,0,0,0.5); padding: 8px 16px; border-radius: 20px;
+    transition: opacity 1s;
+  }
+  #loading {
+    position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%);
+    color: #fff; text-align: center; z-index: 100;
+  }
+  #loading .spinner {
+    width: 48px; height: 48px; margin: 0 auto 16px;
+    border: 4px solid rgba(255,255,255,0.3);
+    border-top-color: #FFD700; border-radius: 50%;
+    animation: spin 1s linear infinite;
+  }
+  @keyframes spin { to { transform: rotate(360deg); } }
+  .booth-popup {
+    position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%);
+    background: rgba(0,0,0,0.85); color: #fff; padding: 24px; border-radius: 12px;
+    min-width: 320px; max-width: 90vw; display: none; z-index: 50;
+    border: 1px solid rgba(255,215,0,0.3);
+  }
+  .booth-popup h2 { color: #FFD700; margin-bottom: 8px; font-size: 20px; }
+  .booth-popup p { margin-bottom: 12px; line-height: 1.5; opacity: 0.9; }
+  .booth-popup button {
+    background: #FFD700; color: #000; border: none;
+    padding: 10px 24px; border-radius: 6px; font-weight: bold;
+    cursor: pointer; margin-right: 8px;
+  }
+  .booth-popup .close {
+    position: absolute; top: 8px; right: 12px; font-size: 24px;
+    cursor: pointer; color: rgba(255,255,255,0.5);
+  }
+  #video-overlay {
+    position: fixed; top: 0; left: 0; width: 100%; height: 100%;
+    background: rgba(0,0,0,0.9); z-index: 300; display: none;
+    align-items: center; justify-content: center;
+  }
+  #video-overlay video {
+    max-width: 90vw; max-height: 85vh; border-radius: 8px;
+    box-shadow: 0 0 60px rgba(255,215,0,0.2);
+  }
+  #video-overlay .close-vid {
+    position: absolute; top: 20px; right: 30px; font-size: 36px;
+    color: rgba(255,255,255,0.6); cursor: pointer; z-index: 310;
+  }
+  #video-overlay .close-vid:hover { color: #FFD700; }
+  #video-overlay .vid-label {
+    position: absolute; bottom: 40px; left: 50%; transform: translateX(-50%);
+    color: rgba(255,255,255,0.5); font-size: 13px;
+  }
+  #header {
+    position: absolute; top: 16px; left: 50%; transform: translateX(-50%);
+    color: #fff; text-align: center; z-index: 10;
+  }
+  #header h1 { font-size: 16px; color: #FFD700; text-shadow: 0 2px 8px rgba(0,0,0,0.8); }
+</style>
+</head>
+<body>
+
+<a id="back-link" href="index.html">← Back to Map</a>
+
+<div id="loading">
+  <div class="spinner"></div>
+  <div>Loading exhibition hall...</div>
+</div>
+
+<div id="header">
+  <h1>🏛 Exhibition Hall 3D Tour</h1>
+</div>
+
+<div id="ui-overlay">
+  <div class="booth-popup" id="booth-popup">
+    <span class="close" onclick="closePopup()">&times;</span>
+    <h2 id="booth-title">Booth</h2>
+    <p id="booth-desc">Description</p>
+    <p id="booth-sector" style="font-size:12px;opacity:0.6;"></p>
+    <button onclick="playBoothVideo()">▶ Play Showcase</button>
+    <button onclick="closePopup()" style="background:#333;color:#fff;">Close</button>
+  </div>
+</div>
+
+<div id="video-overlay">
+  <span class="close-vid" onclick="closeVideo()">&times;</span>
+  <video id="screen-video" controls autoplay></video>
+  <div class="vid-label" id="vid-label"></div>
+</div>
+
+<div id="controls-hint">🖱 Drag to look around · Tap a booth to learn more</div>
+
+<script type="importmap">
+{
+  "imports": {
+    "three": "https://cdn.jsdelivr.net/npm/three@0.170.0/build/three.module.js",
+    "three/addons/": "https://cdn.jsdelivr.net/npm/three@0.170.0/examples/jsm/"
+  }
+}
+</script>
+
+<script type="module">
+import * as THREE from 'three';
+import { OrbitControls } from 'three/addons/controls/OrbitControls.js';
+
+let scene, camera, renderer, controls;
+const boothObjects = [];
+const raycaster = new THREE.Raycaster();
+const mouse = new THREE.Vector2();
+
+function init() {
+  scene = new THREE.Scene();
+  scene.background = new THREE.Color(0x111118);
+  scene.fog = new THREE.Fog(0x111118, 8, 18);
+
+  camera = new THREE.PerspectiveCamera(75, window.innerWidth / window.innerHeight, 0.1, 50);
+  camera.position.set(0, 2.0, 6);
+
+  renderer = new THREE.WebGLRenderer({ antialias: true });
+  renderer.setSize(window.innerWidth, window.innerHeight);
+  renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
+  renderer.shadowMap.enabled = true;
+  renderer.shadowMap.type = THREE.PCFSoftShadowMap;
+  renderer.toneMapping = THREE.ACESFilmicToneMapping;
+  renderer.toneMappingExposure = 1.0;
+  document.body.appendChild(renderer.domElement);
+
+  controls = new OrbitControls(camera, renderer.domElement);
+  controls.target.set(0, 1.2, 0);
+  controls.enableDamping = true;
+  controls.dampingFactor = 0.08;
+  controls.minDistance = 1.5;
+  controls.maxDistance = 12;
+  controls.maxPolarAngle = Math.PI / 2.1;
+  controls.update();
+
+  // Lights
+  const ambient = new THREE.AmbientLight(0x223355, 0.4);
+  scene.add(ambient);
+  const hemi = new THREE.HemisphereLight(0x87ceeb, 0x3a2a1a, 0.5);
+  scene.add(hemi);
+  const sun = new THREE.DirectionalLight(0xffeedd, 1.5);
+  sun.position.set(3, 6, 4);
+  sun.castShadow = true;
+  scene.add(sun);
+  const fill = new THREE.DirectionalLight(0x4488ff, 0.3);
+  fill.position.set(-3, 1, -2);
+  scene.add(fill);
+
+  // Ground
+  const ground = new THREE.Mesh(
+    new THREE.PlaneGeometry(14, 14),
+    new THREE.MeshStandardMaterial({ color: 0x1a1a24, roughness: 0.9 })
+  );
+  ground.rotation.x = -Math.PI / 2;
+  ground.position.y = -0.01;
+  ground.receiveShadow = true;
+  scene.add(ground);
+
+  // Exhibition floor
+  const floor = new THREE.Mesh(
+    new THREE.RingGeometry(2.5, 5.5, 48),
+    new THREE.MeshStandardMaterial({ color: 0x222233, roughness: 0.7, metalness: 0.2, side: THREE.DoubleSide })
+  );
+  floor.rotation.x = -Math.PI / 2;
+  floor.position.y = 0;
+  scene.add(floor);
+
+  // Central display
+  const centerMat = new THREE.MeshStandardMaterial({
+    color: 0x1a1a2e, emissive: 0x16213e, roughness: 0.3, metalness: 0.7,
+  });
+  const center = new THREE.Mesh(new THREE.CylinderGeometry(0.6, 0.8, 0.4, 16), centerMat);
+  center.position.set(0, 0.2, 0);
+  center.castShadow = true;
+  scene.add(center);
+
+  // Booths around
+  const boothData = [
+    { name: 'Technology', color: 0x4488ff, sector: 'Technology & Innovation', video: 'auto_sector_education.mp4' },
+    { name: 'Agriculture', color: 0x44aa44, sector: 'Agriculture & Food Security', video: 'auto_sector_agriculture.mp4' },
+    { name: 'Tourism', color: 0xff6644, sector: 'Tourism & Wildlife', video: 'auto_sector_tourism.mp4' },
+    { name: 'Health', color: 0xff44aa, sector: 'Health Services', video: 'auto_sector_health.mp4' },
+    { name: 'Education', color: 0xffdd44, sector: 'Education & Research', video: 'auto_sector_education.mp4' },
+    { name: 'Energy', color: 0x8844ff, sector: 'Energy & Petroleum', video: 'auto_sector_energy.mp4' },
+    { name: 'Manufacturing', color: 0x44dddd, sector: 'Manufacturing & Trade', video: 'auto_sector_manufacturing.mp4' },
+    { name: 'Infrastructure', color: 0xdd8844, sector: 'Infrastructure & Transport', video: 'auto_sector_transport.mp4' },
+  ];
+
+  boothData.forEach((b, i) => {
+    const angle = (i / boothData.length) * Math.PI * 2 - Math.PI / 2;
+    const r = 3.2;
+    const bx = Math.cos(angle) * r;
+    const bz = Math.sin(angle) * r;
+
+    const booth = new THREE.Mesh(
+      new THREE.BoxGeometry(0.9, 1.2, 0.9),
+      new THREE.MeshStandardMaterial({ color: b.color, roughness: 0.4, metalness: 0.1 })
+    );
+    booth.position.set(bx, 0.6, bz);
+    booth.castShadow = true;
+    booth.userData = {
+      isBooth: true, title: `${b.name} Pavilion`,
+      sector: b.sector,
+      description: `Explore ${b.name.toLowerCase()} innovations driving Kenya's growth.`,
+      video: b.video,
+    };
+    scene.add(booth);
+    boothObjects.push(booth);
+
+    // Label
+    const canvas = document.createElement('canvas');
+    canvas.width = 256; canvas.height = 64;
+    const ctx = canvas.getContext('2d');
+    ctx.fillStyle = 'rgba(0,0,0,0.7)';
+    const r2 = 8;
+    ctx.beginPath(); ctx.moveTo(r2, 0);
+    ctx.lineTo(256 - r2, 0); ctx.quadraticCurveTo(256, 0, 256, r2);
+    ctx.lineTo(256, 64 - r2); ctx.quadraticCurveTo(256, 64, 256 - r2, 64);
+    ctx.lineTo(r2, 64); ctx.quadraticCurveTo(0, 64, 0, 64 - r2);
+    ctx.lineTo(0, r2); ctx.quadraticCurveTo(0, 0, r2, 0);
+    ctx.closePath(); ctx.fill();
+    ctx.fillStyle = '#FFD700';
+    ctx.font = 'bold 22px Segoe UI';
+    ctx.textAlign = 'center';
+    ctx.fillText(b.name, 128, 40);
+    const tex = new THREE.CanvasTexture(canvas);
+    const spriteMat = new THREE.SpriteMaterial({ map: tex, transparent: true, depthTest: false });
+    const sprite = new THREE.Sprite(spriteMat);
+    sprite.position.set(bx, 1.5, bz);
+    sprite.scale.set(1.4, 0.35, 1);
+    scene.add(sprite);
+
+    // Booth light
+    const light = new THREE.PointLight(b.color, 0.15, 2);
+    light.position.set(bx, 0.2, bz);
+    scene.add(light);
+  });
+
+  // Center glow
+  const glow = new THREE.PointLight(0xffd700, 0.3, 3);
+  glow.position.set(0, 0.5, 0);
+  scene.add(glow);
+
+  // Pillars
+  const pillarMat = new THREE.MeshStandardMaterial({ color: 0x334466, roughness: 0.6, metalness: 0.3 });
+  for (let i = 0; i < 4; i++) {
+    const a = (i / 4) * Math.PI * 2;
+    const px = Math.cos(a) * 2.0;
+    const pz = Math.sin(a) * 2.0;
+    const p = new THREE.Mesh(new THREE.CylinderGeometry(0.12, 0.15, 2.8, 8), pillarMat);
+    p.position.set(px, 1.4, pz);
+    p.castShadow = true;
+    scene.add(p);
+  }
+
+  // Ceiling ring
+  const ringMat = new THREE.MeshStandardMaterial({ color: 0x445577, roughness: 0.4, metalness: 0.5 });
+  const ring = new THREE.Mesh(new THREE.TorusGeometry(2.0, 0.04, 8, 32), ringMat);
+  ring.position.y = 2.8;
+  ring.rotation.x = Math.PI / 2;
+  scene.add(ring);
+
+  // Events
+  renderer.domElement.addEventListener('click', onPointerDown);
+  renderer.domElement.addEventListener('touchstart', (e) => {
+    const t = e.changedTouches[0];
+    mouse.x = (t.clientX / window.innerWidth) * 2 - 1;
+    mouse.y = -(t.clientY / window.innerHeight) * 2 + 1;
+    checkHit();
+  }, { passive: true });
+
+  window.addEventListener('resize', () => {
+    camera.aspect = window.innerWidth / window.innerHeight;
+    camera.updateProjectionMatrix();
+    renderer.setSize(window.innerWidth, window.innerHeight);
+  });
+
+  document.getElementById('loading').style.display = 'none';
+  setTimeout(() => {
+    const hint = document.getElementById('controls-hint');
+    if (hint) hint.style.opacity = '0';
+  }, 4000);
+
+  animate();
+}
+
+function onPointerDown(e) {
+  mouse.x = (e.clientX / window.innerWidth) * 2 - 1;
+  mouse.y = -(e.clientY / window.innerHeight) * 2 + 1;
+  checkHit();
+}
+
+function checkHit() {
+  raycaster.setFromCamera(mouse, camera);
+  const hits = raycaster.intersectObjects(boothObjects);
+  if (hits.length > 0) {
+    const obj = hits[0].object;
+    if (obj.userData.isBooth) openBooth(obj.userData);
+  }
+}
+
+function openBooth(data) {
+  const popup = document.getElementById('booth-popup');
+  document.getElementById('booth-title').textContent = data.title;
+  document.getElementById('booth-desc').textContent = data.description;
+  document.getElementById('booth-sector').textContent = `Sector: ${data.sector}`;
+  popup.style.display = 'block';
+  window._boothVideo = data.video;
+}
+
+window.closePopup = () => { document.getElementById('booth-popup').style.display = 'none'; };
+window.playBoothVideo = () => {
+  const v = window._boothVideo;
+  if (!v) return;
+  const el = document.getElementById('screen-video');
+  const label = document.getElementById('vid-label');
+  el.src = v;
+  label.textContent = v.replace('auto_', '').replace('.mp4', '').replace(/_/g, ' ').replace(/\b\w/g, c => c.toUpperCase());
+  document.getElementById('video-overlay').style.display = 'flex';
+  el.play().catch(() => {});
+  closePopup();
+};
+window.closeVideo = () => {
+  const el = document.getElementById('screen-video');
+  el.pause();
+  el.src = '';
+  document.getElementById('video-overlay').style.display = 'none';
+};
+
+function animate() {
+  requestAnimationFrame(animate);
+  controls.update();
+  renderer.render(scene, camera);
+}
+
+init();
+</script>
+</body>
+</html>

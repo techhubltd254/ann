@@ -1,0 +1,82 @@
+{
+  "name": "International Trade & Tourism Promotion",
+  "nodes": [
+    {
+      "name": "Schedule - Weekly Export Push",
+      "type": "n8n-nodes-base.scheduleTrigger",
+      "typeVersion": 1,
+      "position": [250, 300],
+      "parameters": {
+        "rule": {
+          "interval": [{ "field": "weeks", "hoursInterval": 168 }]
+        }
+      }
+    },
+    {
+      "name": "Fetch New County Content",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4,
+      "position": [500, 300],
+      "parameters": {
+        "method": "GET",
+        "url": "http://localhost:8080/api/counties",
+        "options": {}
+      }
+    },
+    {
+      "name": "Select Latest Export-Ready",
+      "type": "n8n-nodes-base.function",
+      "typeVersion": 1,
+      "position": [750, 300],
+      "parameters": {
+        "functionCode": "const counties = $input.all()[0].json;\nconst exportReady = counties.filter(c => \n  c.has_export_products || \n  c.international_tourism_ready\n).slice(0, 5);\n\nreturn exportReady.map(c => ({\n  county_name: c.name,\n  county_slug: c.slug,\n  top_products: c.top_products || [],\n  tourism_highlights: c.tourism_highlights || [],\n  trade_opportunities: c.trade_opportunities || [],\n  export_readiness_score: c.export_readiness_score || 50\n}));"
+      }
+    },
+    {
+      "name": "Generate International Post",
+      "type": "n8n-nodes-base.openAi",
+      "typeVersion": 2,
+      "position": [1000, 300],
+      "parameters": {
+        "resource": "text",
+        "model": "gpt-4",
+        "messages": {
+          "values": [
+            {
+              "role": "system",
+              "content": "You are a trade promotion specialist for Kenya. Write compelling international trade/tourism promotion content for Kenyan counties."
+            },
+            {
+              "role": "user",
+              "content": "=Create a trade and tourism promotion post for {{$json.county_name}}, Kenya. Include: top products for export, tourism attractions, and investment opportunities. Target: international buyers, investors, and tourists. Keep it professional and compelling."
+            }
+          ]
+        },
+        "options": {}
+      }
+    },
+    {
+      "name": "Publish to International Channels",
+      "type": "n8n-nodes-base.function",
+      "typeVersion": 1,
+      "position": [1250, 300],
+      "parameters": {
+        "functionCode": "const post = $input.first().json;\n\n// This node would:\n// 1. Post to international trade portals\n// 2. Send to embassy trade desks\n// 3. Push to tourism board international sites\n// 4. Post to social media for international audience\n// 5. Send newsletter to international subscribers\n\nreturn {\n  ...post,\n  published: true,\n  channels: ['trade_portal', 'embassy_network', 'tourism_board', 'social_media', 'newsletter'],\n  published_at: new Date().toISOString()\n};"
+      }
+    }
+  ],
+  "connections": {
+    "Schedule - Weekly Export Push": {
+      "main": [[{ "node": "Fetch New County Content", "type": "main", "index": 0 }]]
+    },
+    "Fetch New County Content": {
+      "main": [[{ "node": "Select Latest Export-Ready", "type": "main", "index": 0 }]]
+    },
+    "Select Latest Export-Ready": {
+      "main": [[{ "node": "Generate International Post", "type": "main", "index": 0 }]]
+    },
+    "Generate International Post": {
+      "main": [[{ "node": "Publish to International Channels", "type": "main", "index": 0 }]]
+    }
+  }
+}

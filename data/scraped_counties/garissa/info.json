@@ -1,0 +1,41 @@
+{
+    "name": "Garissa",
+    "slug": "garissa",
+    "status": "partial",
+    "source_url": "https://garissa.go.ke",
+    "title": "Home of The Hirola 007 - Garissa County Government",
+    "description": "The Garissa County is charged with the responsibility of providing a variety of services to residents within its area of jurisdiction.",
+    "contacts": {
+        "emails": [
+            "emergency@garissa.go.ke",
+            "info@garissa.go.ke"
+        ],
+        "phones": [
+            "0733089719"
+        ]
+    },
+    "pages": {
+        "about": [
+            "https://garissa.go.ke/about-us/",
+            "https://garissa.go.ke/garissa-history/"
+        ],
+        "departments": [],
+        "services": [],
+        "projects": [
+            "https://garissa.go.ke/trade-investment-enterprise-development/"
+        ],
+        "tenders": [
+            "https://garissa.go.ke/county-tenders/"
+        ],
+        "news": [
+            "https://garissa.go.ke/county-news/",
+            "https://garissa.go.ke/news-headlines/"
+        ],
+        "contact": [
+            "https://garissa.go.ke/contact/"
+        ],
+        "downloads": []
+    },
+    "stats": [],
+    "backfilled_at": "2026-08-02T23:35:18+00:00"
+}

@@ -1,0 +1,8 @@
+[Desktop Entry]
+Name=KICC Mother Engine
+Comment=KICC Digital Economy Platform — Mother Engine
+Exec=/home/kicc/Desktop/kicc/kicc-platform/kicc-app/server/start-kicc.sh
+Icon=applications-internet
+Terminal=false
+Type=Application
+Categories=Office;Development;

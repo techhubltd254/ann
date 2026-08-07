@@ -1,0 +1,57 @@
+{
+  "name": "Tana River",
+  "slug": "tana-river",
+  "status": "scraped",
+  "source_url": "https://tanariver.go.ke",
+  "final_url": "",
+  "scraped_at": "2026-07-27T14:42:53.273641",
+  "title": "Home - County Government of Tana River",
+  "description": "Tana River County is one of the forty seven (47) counties in the Republic of Kenya. The County takes its name from River Tana which is the longest river in Kenya. The \u2026",
+  "contacts": {
+    "emails": [
+      "complaints@trcg.go.ke",
+      "info@tanariver.go.ke"
+    ],
+    "phones": [
+      "019607843",
+      "0705882353"
+    ],
+    "physical_address": "Skip to content"
+  },
+  "pages": {
+    "about": [
+      "https://tanariver.go.ke/about-us/"
+    ],
+    "departments": [
+      "https://tanariver.go.ke/county-departments-and-agencies/"
+    ],
+    "services": [
+      "https://accounts.ecitizen.go.ke/en"
+    ],
+    "projects": [
+      "https://tanariver.go.ke/physical-land-use-development-plans/"
+    ],
+    "tenders": [
+      "https://tanariver.go.ke/tenders/",
+      "https://tenders.go.ke/OpenTenders"
+    ],
+    "news": [
+      "https://tanariver.go.ke/news/"
+    ],
+    "contact": [
+      "https://tanariver.go.ke/contacts/"
+    ],
+    "downloads": [
+      "https://tanariver.go.ke/kemfsed-reports/",
+      "https://tanariver.go.ke/water-sector-reports/"
+    ]
+  },
+  "stats": {
+    "counter_0": "0",
+    "counter_1": "0",
+    "counter_2": "0",
+    "counter_3": "0"
+  },
+  "hero_images_count": 5,
+  "gallery_images_count": 9
+}

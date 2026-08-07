@@ -1,0 +1,114 @@
+[
+  {
+    "name": "(FLLoCA ) Financing Locally-Led Climate Change Program (FLLoCA)",
+    "category": "climate",
+    "source": "https://kericho.go.ke"
+  },
+  {
+    "name": "Information, Communication, E-Government, Youth Affairs, Gender and Sports",
+    "category": "information",
+    "source": "https://kericho.go.ke"
+  },
+  {
+    "name": "Agriculture, Livestock and Co-operative Management",
+    "category": "agriculture",
+    "source": "https://kericho.go.ke"
+  },
+  {
+    "name": "Water, Environment, Energy and natural resources",
+    "category": "energy",
+    "source": "https://kericho.go.ke"
+  },
+  {
+    "name": "Trade, Industrialization, Tourism and wildlife",
+    "category": "tourism",
+    "source": "https://kericho.go.ke"
+  },
+  {
+    "name": "Education, Culture and Social Services",
+    "category": "education",
+    "source": "https://kericho.go.ke"
+  },
+  {
+    "name": "Lands, Housing and Physical Planning",
+    "category": "housing",
+    "source": "https://kericho.go.ke"
+  },
+  {
+    "name": "Public Works, Roads and Transport",
+    "category": "roads",
+    "source": "https://kericho.go.ke"
+  },
+  {
+    "name": "Kericho County Referral Hospital",
+    "category": "hospital",
+    "source": "https://kericho.go.ke"
+  },
+  {
+    "name": "Finance and Economic Planning",
+    "category": "planning",
+    "source": "https://kericho.go.ke"
+  },
+  {
+    "name": "DEPARTMENT'S PHOTO GALLERY",
+    "category": "general",
+    "source": "https://kericho.go.ke"
+  },
+  {
+    "name": "DEPARTMENT'S VIDEO GALLERY",
+    "category": "general",
+    "source": "https://kericho.go.ke"
+  },
+  {
+    "name": "Public Service Management",
+    "category": "public service",
+    "source": "https://kericho.go.ke"
+  },
+  {
+    "name": "Access to clean water",
+    "category": "water",
+    "source": "https://kericho.go.ke"
+  },
+  {
+    "name": "DEPARTMENT'S PROJECTS",
+    "category": "general",
+    "source": "https://kericho.go.ke"
+  },
+  {
+    "name": "Health Services",
+    "category": "health",
+    "source": "https://kericho.go.ke"
+  },
+  {
+    "name": "Agriculture & Farming",
+    "category": "agriculture"
+  },
+  {
+    "name": "Tourism & Hospitality",
+    "category": "tourism"
+  },
+  {
+    "name": "Hotels & Resorts",
+    "category": "tourism"
+  },
+  {
+    "name": "Products & Trade",
+    "category": "trade"
+  },
+  {
+    "name": "Education & Institutions",
+    "category": "education"
+  },
+  {
+    "name": "Transport & Logistics",
+    "category": "transport"
+  },
+  {
+    "name": "Healthcare",
+    "category": "health"
+  },
+  {
+    "name": "Culture & Heritage",
+    "category": "culture"
+  }
+]

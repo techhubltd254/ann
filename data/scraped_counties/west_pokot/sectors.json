@@ -1,0 +1,54 @@
+[
+  {
+    "name": "Climate Change Matters in West Pokot",
+    "category": "climate",
+    "source": "https://www.westpokot.go.ke/"
+  },
+  {
+    "name": "County Public Service Board",
+    "category": "public service",
+    "source": "https://www.westpokot.go.ke/"
+  },
+  {
+    "name": "Council of Governors",
+    "category": "general",
+    "source": "https://www.westpokot.go.ke/"
+  },
+  {
+    "name": "Sections",
+    "category": "general",
+    "source": "https://www.westpokot.go.ke/"
+  },
+  {
+    "name": "Agriculture & Farming",
+    "category": "agriculture"
+  },
+  {
+    "name": "Tourism & Hospitality",
+    "category": "tourism"
+  },
+  {
+    "name": "Hotels & Resorts",
+    "category": "tourism"
+  },
+  {
+    "name": "Products & Trade",
+    "category": "trade"
+  },
+  {
+    "name": "Education & Institutions",
+    "category": "education"
+  },
+  {
+    "name": "Transport & Logistics",
+    "category": "transport"
+  },
+  {
+    "name": "Healthcare",
+    "category": "health"
+  },
+  {
+    "name": "Culture & Heritage",
+    "category": "culture"
+  }
+]

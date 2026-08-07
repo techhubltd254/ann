@@ -1,0 +1,36 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@layer base {
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  body {
+    @apply bg-kicc-bg text-white antialiased;
+    font-family: system-ui, -apple-system, sans-serif;
+  }
+  ::-webkit-scrollbar { width: 6px; }
+  ::-webkit-scrollbar-track { background: transparent; }
+  ::-webkit-scrollbar-thumb { background: rgba(255,255,255,0.1); border-radius: 3px; }
+}
+
+@layer components {
+  .card-surface {
+    @apply bg-kicc-surface border border-kicc-border rounded-2xl;
+  }
+  .btn-primary {
+    @apply bg-kicc-red text-white px-4 py-2 rounded-xl text-sm font-bold hover:bg-kicc-red-hover transition-all disabled:opacity-50 disabled:pointer-events-none;
+  }
+  .btn-secondary {
+    @apply bg-kicc-navy text-white px-4 py-2 rounded-xl text-sm font-bold hover:bg-kicc-navy-hover transition-all;
+  }
+  .btn-ghost {
+    @apply text-white/40 hover:text-white px-3 py-1.5 rounded-lg text-xs font-bold transition-all hover:bg-white/5;
+  }
+  .badge-active { @apply inline-flex items-center px-2 py-0.5 rounded-md text-[10px] font-bold bg-emerald-500/15 text-emerald-400; }
+  .badge-pending { @apply inline-flex items-center px-2 py-0.5 rounded-md text-[10px] font-bold bg-amber-500/15 text-amber-400; }
+  .badge-canceled { @apply inline-flex items-center px-2 py-0.5 rounded-md text-[10px] font-bold bg-red-500/15 text-red-400; }
+  .badge-completed { @apply inline-flex items-center px-2 py-0.5 rounded-md text-[10px] font-bold bg-sky-500/15 text-sky-400; }
+  .input-field {
+    @apply w-full bg-kicc-card border border-white/10 rounded-xl px-4 py-2.5 text-sm text-white placeholder:text-white/20 focus:border-kicc-gold/50 focus:outline-none transition-all;
+  }
+}

@@ -1,0 +1,49 @@
+{
+  "name": "Wajir",
+  "slug": "wajir",
+  "status": "scraped",
+  "source_url": "https://wajir.go.ke",
+  "final_url": "",
+  "scraped_at": "2026-07-27T14:42:53.148362",
+  "title": "Wajir County Goverment",
+  "description": "",
+  "contacts": {
+    "emails": [
+      "info@wajir.go.ke"
+    ],
+    "phones": []
+  },
+  "pages": {
+    "about": [],
+    "departments": [
+      "https://wajir.go.ke/departments/health-services/",
+      "https://wajir.go.ke/departments/water-services/",
+      "https://wajir.go.ke/departments/executive-public-service-and-special-programmes/"
+    ],
+    "services": [
+      "https://wajir.go.ke/departments/health-services/",
+      "https://wajir.go.ke/departments/water-services/",
+      "https://wajir.go.ke/departments/agriculture-livestock-and-veterinary-services/"
+    ],
+    "projects": [
+      "https://wajir.go.ke/departments/lands-management-urban-development-public-works-housing/",
+      "https://projects.wajir.go.ke"
+    ],
+    "tenders": [],
+    "news": [
+      "https://wajir.go.ke/download-category/newsletter/"
+    ],
+    "contact": [
+      "https://wajir.go.ke/contact/",
+      "https://wajir.go.ke/contact"
+    ],
+    "downloads": [
+      "http://Media_Downloads",
+      "https://wajir.go.ke/download-category/reports/",
+      "https://wajir.go.ke/download-category/downloads/"
+    ]
+  },
+  "stats": {},
+  "hero_images_count": 2,
+  "gallery_images_count": 10
+}

@@ -1,0 +1,123 @@
+{
+  "timestamp": "2026-07-20T23:07:53.632984",
+  "seo": {
+    "trending_keywords": [],
+    "search_console_metrics": {
+      "clicks_7d": 0,
+      "impressions_7d": 0,
+      "avg_position": 0,
+      "top_queries": [],
+      "source": "placeholder"
+    },
+    "regional_interest": [
+      {
+        "region": "US",
+        "keywords": [
+          "safari",
+          "kenya beach"
+        ],
+        "intent": "warm_escape"
+      },
+      {
+        "region": "EU",
+        "keywords": [
+          "migration safari",
+          "luxury kenya"
+        ],
+        "intent": "adventure"
+      },
+      {
+        "region": "KE",
+        "keywords": [
+          "exhibition nairobi",
+          "county trade fair"
+        ],
+        "intent": "business"
+      }
+    ]
+  },
+  "pipeline": {
+    "total_jobs_7d": 0,
+    "avg_latency_s": 0.0,
+    "avg_quality": 0.0,
+    "failure_rate": 0.0,
+    "jobs": []
+  },
+  "weather": {
+    "month": 7,
+    "counties_monitored": 47,
+    "sample": [
+      {
+        "id": 1,
+        "name": "Mombasa",
+        "weather_station": "mombasa",
+        "lat": -4.0435,
+        "lon": 39.6682,
+        "primary_sectors": [
+          "Tourism",
+          "Transport",
+          "Trade",
+          "Manufacturing"
+        ]
+      },
+      {
+        "id": 2,
+        "name": "Kwale",
+        "weather_station": "ukunda",
+        "lat": -4.1814,
+        "lon": 39.4634,
+        "primary_sectors": [
+          "Tourism",
+          "Mining",
+          "Agriculture"
+        ]
+      },
+      {
+        "id": 3,
+        "name": "Kilifi",
+        "weather_station": "malindi",
+        "lat": -3.5106,
+        "lon": 39.9093,
+        "primary_sectors": [
+          "Tourism",
+          "Agriculture",
+          "Fisheries"
+        ]
+      },
+      {
+        "id": 4,
+        "name": "Tana River",
+        "weather_station": "hola",
+        "lat": -1.5114,
+        "lon": 40.0422,
+        "primary_sectors": [
+          "Agriculture",
+          "Pastoralism",
+          "Energy"
+        ]
+      },
+      {
+        "id": 5,
+        "name": "Lamu",
+        "weather_station": "lamu",
+        "lat": -2.2694,
+        "lon": 40.9009,
+        "primary_sectors": [
+          "Tourism",
+          "Fisheries",
+          "Maritime Trade"
+        ]
+      }
+    ]
+  },
+  "user_behavior": {
+    "signals_count": 0,
+    "users": 0,
+    "source": "sqlite"
+  },
+  "system": {
+    "cpu_percent": 59.2,
+    "memory_percent": 86.3,
+    "disk_percent": 99.7
+  }
+}

@@ -1,0 +1,31 @@
+# ---------- Stage 1: PHP dependencies ----------
+FROM composer:2 AS composer
+WORKDIR /app
+COPY composer.json composer.lock ./
+RUN composer install --no-dev --no-scripts --no-interaction --prefer-dist --optimize-autoloader
+
+# ---------- Stage 2: frontend assets (Inertia/React) ----------
+FROM node:22-alpine AS assets
+WORKDIR /app
+COPY package.json package-lock.json* ./
+RUN npm ci --no-audit --no-fund
+COPY resources ./resources
+COPY public ./public
+COPY tsconfig.json tailwind.config.js postcss.config.js vite.config.* ./
+RUN npm run build
+
+# ---------- Stage 3: runtime (FrankenPHP, non-root capable) ----------
+FROM dunglas/frankenphp:1-php8.3-alpine AS runtime
+LABEL org.opencontainers.image.source="https://github.com/techhubltd254/ann"
+RUN install-php-extensions pdo_mysql redis gd intl zip opcache
+WORKDIR /app
+COPY --from=composer /app/vendor ./vendor
+COPY --from=assets   /app/public/build ./public/build
+COPY . .
+RUN cp .env.example .env \
+ && mkdir -p storage/logs bootstrap/cache \
+ && chown -R www-data:www-data storage bootstrap/cache
+USER www-data
+EXPOSE 80
+HEALTHCHECK --interval=30s --timeout=5s CMD curl -fsS http://localhost/healthz || exit 1
+CMD ["frankenphp", "run", "--config", "/etc/caddy/Caddyfile"]

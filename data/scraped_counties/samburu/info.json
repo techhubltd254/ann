@@ -1,0 +1,44 @@
+{
+  "name": "Samburu",
+  "slug": "samburu",
+  "status": "scraped",
+  "source_url": "https://www.samburu.go.ke/",
+  "final_url": "",
+  "scraped_at": "2026-07-27T14:43:21.862406",
+  "title": "The County Government of Samburu",
+  "description": "",
+  "contacts": {
+    "emails": [
+      "info@samburu.go.ke"
+    ],
+    "phones": []
+  },
+  "pages": {
+    "about": [
+      "https://www.samburu.go.ke/index.php/who-we-are/",
+      "https://www.samburu.go.ke/index.php/our-profile/"
+    ],
+    "departments": [],
+    "services": [
+      "https://www.samburu.go.ke/index.php/medical-services-public-health-and-sanitation/",
+      "https://www.samburu.go.ke/index.php/culture-social-services-gender-sports-youth/",
+      "https://www.samburu.go.ke/index.php/agriculture-livestock-development-veterinary-services-fisheries/"
+    ],
+    "projects": [
+      "https://www.samburu.go.ke/index.php/lands-housing-physical-planning-urban-development/",
+      "https://www.samburu.go.ke/index.php/tourism-trade-enterprise-development-co-operatives/",
+      "https://www.samburu.go.ke/index.php/agriculture-livestock-development-veterinary-services-fisheries/"
+    ],
+    "tenders": [
+      "https://www.samburu.go.ke/index.php/tenders/"
+    ],
+    "news": [],
+    "contact": [],
+    "downloads": [
+      "https://www.samburu.go.ke/budgetdocuments/"
+    ]
+  },
+  "stats": {},
+  "hero_images_count": 0,
+  "gallery_images_count": 14
+}

@@ -1,0 +1,14 @@
+[Unit]
+Description=KICC Digital Economy Platform
+After=network.target
+
+[Service]
+Type=simple
+User=www-data
+WorkingDirectory=/home/www-data/kicc
+ExecStart=/usr/bin/java -jar -Dspring.profiles.active=prod /home/www-data/kicc/server/kicc-engine.jar --server.port=8091 --kicc.web-dir=/home/www-data/kicc/web
+Restart=always
+RestartSec=10
+
+[Install]
+WantedBy=multi-user.target

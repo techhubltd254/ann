@@ -1,0 +1,6 @@
+{
+  "name": "kicc-platform",
+  "version": "1.0.0",
+  "description": "KICC Digital Economy Platform",
+  "main": "main.js"
+}

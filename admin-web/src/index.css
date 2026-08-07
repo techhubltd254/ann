@@ -1,0 +1,33 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+:root {
+  /* KICC brand palette — extracted from kicc.co.ke (Elementor global colors, 2026-08-02)
+     Usage = share of all 369 color declarations across the site's page/theme CSS. */
+  --kicc-red: #901C1E;        /* 4.07%  dominant brand red — buttons, banners, gradients */
+  --kicc-red-bright: #AC2323; /* 0.27%  primary (Elementor global `primary`) */
+  --kicc-gold: #FFCD05;       /* 1.36%  gold accent — CTAs, highlights */
+  --kicc-navy: #142556;       /* 0.81%  deep navy — nav, headings */
+  --kicc-ink: #0C1734;        /* 0.27%  near-black navy — footer, overlays */
+  --kicc-burgundy: #440034;   /* 0.81%  burgundy — footer band, secondary surfaces */
+  --kicc-teal: #0C5F55;       /* 1.36%  teal — stats, badges */
+  --kicc-lime: #E5DC1E;       /* 1.36%  lime — accents, availability states */
+  --kicc-green: #11820B;      /* 2.17%  green — success, in-stock */
+  --kicc-gray: #54595F;       /* 0.27%  secondary gray (Elementor global `secondary`) */
+  --kicc-gray-text: #7A7A7A;  /* 0.27%  body text gray (Elementor global `text`) */
+}
+
+html { font-family: 'Montserrat', sans-serif; }
+
+body {
+  background-color: #07090F;
+  color: #ffffff;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+::-webkit-scrollbar { width: 6px; }
+::-webkit-scrollbar-track { background: transparent; }
+::-webkit-scrollbar-thumb { background: rgba(255,255,255,0.1); border-radius: 3px; }
+::-webkit-scrollbar-thumb:hover { background: rgba(255,255,255,0.2); }

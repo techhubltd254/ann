@@ -1,0 +1,54 @@
+{
+  "name": "Kakamega",
+  "slug": "kakamega",
+  "status": "scraped",
+  "source_url": "https://kakamega.go.ke",
+  "final_url": "",
+  "scraped_at": "2026-07-27T14:43:44.523658",
+  "title": "County Government of Kakamega &#8211; County Government of Kakamega",
+  "description": "",
+  "contacts": {
+    "emails": [],
+    "phones": []
+  },
+  "pages": {
+    "about": [
+      "https://kakamega.go.ke/category/about-us/political-units/county/",
+      "https://kakamega.go.ke/category/about-us/political-units/sub-counties/",
+      "https://kakamega.go.ke/history/"
+    ],
+    "departments": [
+      "https://kakamega.go.ke/category/government/county-departments/",
+      "https://kakamega.go.ke/category/government/departments/"
+    ],
+    "services": [
+      "https://kakamega.go.ke/health-services/",
+      "https://kakamega.go.ke/social-services-youth-sports/",
+      "https://kakamega.go.ke/internal-audit-services-unit/"
+    ],
+    "projects": [
+      "https://kakamega.go.ke/download-category/development-plan/",
+      "https://county-government-of-kakamega-projects-hub.base44.app/",
+      "https://kakamega.go.ke/governor-barasa-pays-last-respects-to-mama-joice-abungu-updates-mumias-west-residents-on-development-projects/"
+    ],
+    "tenders": [
+      "https://kakamega.go.ke/tenders/",
+      "https://kakamega.go.ke/download-category/tenders/"
+    ],
+    "news": [
+      "https://kakamega.go.ke/download-category/newsletter/",
+      "https://kakamega.go.ke/category/news/"
+    ],
+    "contact": [
+      "https://kakamega.go.ke/contact-us/"
+    ],
+    "downloads": [
+      "https://kakamega.go.ke/county-budget-documents/",
+      "https://kakamega.go.ke/download-category/county-capacity-and-performance-documents/",
+      "https://kakamega.go.ke/download-category/cpsb-annual-reports/"
+    ]
+  },
+  "stats": {},
+  "hero_images_count": 2,
+  "gallery_images_count": 13
+}

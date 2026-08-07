@@ -1,0 +1,54 @@
+{
+  "name": "Meru",
+  "slug": "meru",
+  "status": "scraped",
+  "source_url": "https://meru.go.ke",
+  "final_url": "",
+  "scraped_at": "2026-07-27T14:42:56.661426",
+  "title": "Welcome - County Government of Meru",
+  "description": "",
+  "contacts": {
+    "emails": [
+      "feedback@meru.go.ke",
+      "governor@meru.go.ke",
+      "merucounty@meru.go.ke"
+    ],
+    "phones": [
+      "+254116869976",
+      "+254709241000",
+      "0709-241-000"
+    ]
+  },
+  "pages": {
+    "about": [],
+    "departments": [],
+    "services": [
+      "https://itax.kra.go.ke/KRA-Portal/main.htm?actionCode=showOnlineServicesHomeLnclick",
+      "https://meru.go.ke/online-business-services/",
+      "https://meru.go.ke/dept/department-health-services/?tk=1785152576"
+    ],
+    "projects": [
+      "https://meru.go.ke/flagship-projects/?tk=1785152576",
+      "https://projects.meru.go.ke/",
+      "https://meru.go.ke/1502/governor-mutuma-commissions-key-development-projects-in-athwana-ward/"
+    ],
+    "tenders": [
+      "https://meru.go.ke/tenders/?tk=1785152576&res=tender",
+      "https://meru.go.ke/tenders/"
+    ],
+    "news": [
+      "https://meru.go.ke/news-updates/?tk=1785152576",
+      "https://meru.go.ke/news-updates/",
+      "https://meru.go.ke/events-calendar/"
+    ],
+    "contact": [
+      "mailto:feedback@meru.go.ke"
+    ],
+    "downloads": [
+      "https://meru.go.ke/downloads-resource-centre/"
+    ]
+  },
+  "stats": {},
+  "hero_images_count": 4,
+  "gallery_images_count": 8
+}

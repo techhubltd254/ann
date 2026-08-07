@@ -1,0 +1,17 @@
+[Unit]
+Description=KICC County Server ({{COUNTY_SLUG}})
+After=network.target
+
+[Service]
+Type=simple
+User=kicc-county
+WorkingDirectory=/opt/kicc-county-{{COUNTY_SLUG}}
+ExecStart=/opt/kicc-county-{{COUNTY_SLUG}}/server/start-county-server.sh
+Restart=always
+RestartSec=10
+LimitNOFILE=65536
+NoNewPrivileges=true
+PrivateTmp=true
+
+[Install]
+WantedBy=multi-user.target
