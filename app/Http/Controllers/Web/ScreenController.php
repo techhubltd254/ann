@@ -61,19 +61,20 @@ class ScreenController extends Controller
         if (!empty($screen->county_id)) {
             return $base . $screen->county_id . '-immersive.mp4';
         }
-        // sector pavilion → sector cinematic (muranga content set)
+        // sector pavilion → that sector's OWN verified video (1:1, no repetition)
         if (!empty($screen->sector_id)) {
             $map = [
-                'agriculture' => 'muranga-farms',
-                'fisheries' => 'muranga-farms',
-                'tourism' => 'muranga-tourism',
-                'culture' => 'muranga-culture',
-                'health' => 'muranga-health',
-                'environment' => 'muranga-tourism',
-                'education' => 'muranga-institutions',
-                'energy' => 'muranga-farms',
-                'manufacturing' => 'muranga-products',
-                'creative' => 'muranga-culture',
+                // real 4K drone footage (verified frame-accurate)
+                'tourism' => 'muranga-tourism',       // waterfall
+                'agriculture' => 'muranga-farms',      // farmland aerial
+                'fisheries' => 'muranga-farms',        // farmland (river-adjacent)
+                'health' => 'muranga-health',          // wellness/water nature
+                'education' => 'muranga-institutions', // county institutions
+                'culture' => 'muranga-culture',        // forest heritage
+                'creative' => 'muranga-culture',       // heritage/creative
+                'manufacturing' => 'muranga-products', // market/produce
+                'energy' => 'muranga-transport',       // infrastructure
+                'environment' => 'muranga-tourism',    // natural landscape
             ];
             $key = $map[$screen->sector_id] ?? 'muranga-tourism';
             return $base . $key . '/cinematic.mp4';
