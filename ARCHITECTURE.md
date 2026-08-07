@@ -457,3 +457,17 @@ Remaining published entities are real. Counties now show only genuine content un
 
 **Media size discipline:** originals (15–45 MB photos, 1.9 GB video) never shipped to browsers —
 web-sized derivatives (≈500 KB images, 6.4 MB hero loop) generated via the pipeline.
+
+---
+
+## 17. Murang'a real-content curation + 3D-everywhere (2026-08-07)
+
+**Sector-accurate curation from SSSS:** the 900-photo roll clustered by capture-time into 8 shoots
+(waterfall rappelling, river trek, forest canopy, tea estates, coffee/farm fields, garden retreat).
+Curated best-frames became **9 real published entities** (7 tourism + 2 farms) with correct
+categories, replacing all fakes. Full roll organized into `counties/muranga/library/<subject>/`
+(web-sized) for the county admin to publish more.
+
+**3D-everywhere:** every rendering image (sector tiles + all entity cards) now serves a
+depth-wiggle holographic video (autoplay muted loop, poster fallback) — no bare stills.
+Entity card holo path: `/media/derivatives/holo/{county}-{sector}-{id}/wiggle.mp4` on R2.

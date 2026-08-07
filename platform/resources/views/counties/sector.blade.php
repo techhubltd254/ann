@@ -29,12 +29,15 @@
             @foreach($items as $e)
             <div class="group bg-white rounded-2xl overflow-hidden border border-gray-200 hover:border-[#FFCD05]/40 hover:shadow-md transition-all">
                 <div class="h-40 overflow-hidden bg-gradient-to-br from-[#F9FAFB] to-gray-100 relative">
-                    {{-- media slot: fills once the county admin uploads counties/{slug}/{route}/{id}.jpeg --}}
+                    {{-- 3D holographic card: depth-wiggle video (autoplay muted loop), still as poster/fallback --}}
                     <div class="absolute inset-0 flex items-center justify-center text-4xl text-gray-300">{{ $sectorInfo['icon'] }}</div>
-                    <img src="{{ media('counties/' . $county->slug . '/' . $sector . '/' . $e->id . '.jpeg') }}"
-                         alt="{{ $e->name }}" loading="lazy"
-                         class="relative w-full h-full object-cover bg-[#F9FAFB] group-hover:scale-105 transition-transform duration-500"
-                         onerror="this.remove()">
+                    @php $holo = '/media/derivatives/holo/' . $county->slug . '-' . $sector . '-' . $e->id . '/wiggle.mp4'; @endphp
+                    <video autoplay muted loop playsinline preload="none"
+                           poster="{{ media('counties/' . $county->slug . '/' . $sector . '/' . $e->id . '.jpeg') }}"
+                           class="relative w-full h-full object-cover bg-[#F9FAFB] group-hover:scale-105 transition-transform duration-500"
+                           onerror="this.remove()">
+                        <source src="{{ $holo }}" type="video/mp4">
+                    </video>
                     @if($e->category)
                     <span class="absolute top-2.5 left-3 text-[10px] font-bold px-2 py-0.5 rounded-full bg-black/40 text-white/90 backdrop-blur-sm capitalize">{{ $e->category }}</span>
                     @endif
