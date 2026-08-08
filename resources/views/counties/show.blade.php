@@ -110,7 +110,6 @@
                             <source src="{{ '/media/derivatives/holo/' . $county->slug . '-' . $s['route'] . '/wiggle.mp4' }}" type="video/mp4">
                         </video>
                         <div class="absolute inset-0 bg-gradient-to-t from-black/60 via-black/10 to-transparent"></div>
-                        <span class="absolute bottom-2.5 left-3 text-2xl drop-shadow">{{ $s['icon'] }}</span>
                         <span class="absolute top-2.5 right-3 text-[10px] font-bold px-2 py-0.5 rounded-full bg-black/40 text-white/90 backdrop-blur-sm">
                             {{ $s['count'] }} {{ Str::plural('entity', $s['count']) }}
                         </span>

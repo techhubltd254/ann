@@ -13,7 +13,7 @@
             </a>
             <div class="flex items-center gap-5">
                 <div class="w-16 h-16 bg-[#901C1E]/20 border border-[#901C1E]/30 rounded-2xl flex items-center justify-center shrink-0">
-                    <span class="text-3xl">{{ $sectorInfo['icon'] }}</span>
+                    <svg class="w-7 h-7 text-[#901C1E]" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.8" d="M19 21V5a2 2 0 00-2-2H7a2 2 0 00-2 2v16m14 0h2m-2 0h-5m-9 0H3m2 0h5M9 7h1m-1 4h1m4-4h1m-1 4h1m-5 10v-5a1 1 0 011-1h2a1 1 0 011 1v5m-4 0h4"/></svg>
                 </div>
                 <div>
                     <h1 class="text-3xl font-black text-gray-900" data-split>{{ $sectorInfo['title'] }}</h1>
@@ -30,7 +30,9 @@
             <div class="group bg-white rounded-2xl overflow-hidden border border-gray-200 hover:border-[#FFCD05]/40 hover:shadow-md transition-all">
                 <div class="h-40 overflow-hidden bg-gradient-to-br from-[#F9FAFB] to-gray-100 relative">
                     {{-- 3D holographic card: depth-wiggle video (autoplay muted loop), still as poster/fallback --}}
-                    <div class="absolute inset-0 flex items-center justify-center text-4xl text-gray-300">{{ $sectorInfo['icon'] }}</div>
+                    <div class="absolute inset-0 flex items-center justify-center bg-gradient-to-br from-[#0A1024] to-[#901C1E]/50">
+                        <svg class="w-10 h-10 text-white/20" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z"/></svg>
+                    </div>
                     @php $holo = '/media/derivatives/holo/' . $county->slug . '-' . $sector . '-' . $e->id . '/wiggle.mp4'; @endphp
                     <video autoplay muted loop playsinline preload="none"
                            poster="{{ media('counties/' . $county->slug . '/' . $sector . '/' . $e->id . '.jpeg') }}"

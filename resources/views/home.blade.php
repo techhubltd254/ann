@@ -4,16 +4,16 @@
 @section('description', 'Africa\'s Premier Meeting Venue. A national icon since 1973.')
 
 @section('content')
-{{-- HERO — rotating through real Kenya content (schools, waterfalls, farms, markets, rafting, forest, hotels) --}}
+{{-- HERO — real KICC venue data from kicc.co.ke (exhibition halls, amphitheatre, exterior) --}}
 <section class="relative min-h-screen flex items-center overflow-hidden section-transition" data-section="hero">
     <div x-data="{ current: 0, slides: [
-            { img: '{{ media('kicc/hero/waterfall.jpg') }}', label: 'Murang\'a Waterfall', tag: 'Tourism' },
-            { img: '{{ media('kicc/hero/tea-farms.jpg') }}', label: 'Tea Highlands', tag: 'Agriculture' },
-            { img: '{{ media('kicc/hero/market.jpg') }}', label: 'County Market Trade', tag: 'Commerce' },
-            { img: '{{ media('kicc/hero/school.jpg') }}', label: 'Mbiri Primary School', tag: 'Education' },
-            { img: '{{ media('kicc/hero/rafting.jpg') }}', label: 'Sagana Rafting', tag: 'Adventure' },
-            { img: '{{ media('kicc/hero/forest.jpg') }}', label: 'Aberdare Forest', tag: 'Culture & Nature' },
-            { img: '{{ media('kicc/hero/hotel.jpg') }}', label: 'County Hospitality', tag: 'Hotels' },
+            { img: '{{ media('kicc/exterior-2.jpg') }}', label: 'Kenyatta International Convention Centre', tag: 'The Venue' },
+            { img: '{{ media('kicc/gate-day.jpg') }}', label: 'KICC Tower, Nairobi', tag: 'The Icon' },
+            { img: '{{ media('kicc/amphitheatre.jpg') }}', label: 'The Amphitheatre', tag: 'Events' },
+            { img: '{{ media('kicc/exterior-3.jpg') }}', label: 'KICC Grounds & Pavilions', tag: 'Exhibitions' },
+            { img: '{{ media('kicc/hall-interior-2.jpg') }}', label: 'Conference Halls', tag: 'Meetings' },
+            { img: '{{ media('kicc/kicc_ANP_3816.jpg') }}', label: 'Exhibition Floors', tag: 'Trade Shows' },
+            { img: '{{ media('kicc/courtyard.jpg') }}', label: 'The Courtyard', tag: 'Outdoor Events' },
         ] }"
          x-init="setInterval(() => current = (current + 1) % slides.length, 4500)"
          class="absolute inset-0 w-full h-full" data-depth="0.4">
