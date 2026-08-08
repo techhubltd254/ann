@@ -4,12 +4,26 @@
 @section('description', 'Africa\'s Premier Meeting Venue. A national icon since 1973.')
 
 @section('content')
-{{-- HERO — exactly from Figma --}}
+{{-- HERO — rotating through real Kenya content (schools, waterfalls, farms, markets, rafting, forest, hotels) --}}
 <section class="relative min-h-screen flex items-center overflow-hidden section-transition" data-section="hero">
-    <div x-data="{ current: 1, imgs: ['{{ media('kicc/hero-1.jpg') }}', '{{ media('kicc/hero-2.jpg') }}'] }" x-init="setInterval(() => current = current === 0 ? 1 : 0, 5000)" class="absolute inset-0 w-full h-full" data-depth="0.4">
-        <template x-for="(img, i) in imgs" :key="i">
-            <img :src="img" :class="{ 'opacity-100': current === i, 'opacity-0': current !== i } absolute inset-0 w-full h-full object-cover transition-opacity duration-1000" alt="KICC">
+    <div x-data="{ current: 0, slides: [
+            { img: '{{ media('kicc/hero/waterfall.jpg') }}', label: 'Murang\'a Waterfall', tag: 'Tourism' },
+            { img: '{{ media('kicc/hero/tea-farms.jpg') }}', label: 'Tea Highlands', tag: 'Agriculture' },
+            { img: '{{ media('kicc/hero/market.jpg') }}', label: 'County Market Trade', tag: 'Commerce' },
+            { img: '{{ media('kicc/hero/school.jpg') }}', label: 'Mbiri Primary School', tag: 'Education' },
+            { img: '{{ media('kicc/hero/rafting.jpg') }}', label: 'Sagana Rafting', tag: 'Adventure' },
+            { img: '{{ media('kicc/hero/forest.jpg') }}', label: 'Aberdare Forest', tag: 'Culture & Nature' },
+            { img: '{{ media('kicc/hero/hotel.jpg') }}', label: 'County Hospitality', tag: 'Hotels' },
+        ] }"
+         x-init="setInterval(() => current = (current + 1) % slides.length, 4500)"
+         class="absolute inset-0 w-full h-full" data-depth="0.4">
+        <template x-for="(slide, i) in slides" :key="i">
+            <img :src="slide.img" :class="{ 'opacity-100': current === i, 'opacity-0': current !== i }" class="absolute inset-0 w-full h-full object-cover transition-opacity duration-1000" :alt="slide.label">
         </template>
+        {{-- slide label chip (bottom-right) --}}
+        <div class="absolute bottom-6 right-6 z-10 hidden sm:block">
+            <div class="rounded-full bg-black/50 backdrop-blur px-4 py-2 text-xs font-bold text-white border border-white/20" x-text="slides[current].tag + ' · ' + slides[current].label"></div>
+        </div>
     </div>
     <div class="absolute inset-0 bg-gradient-to-r from-[#07090F] via-[#07090F]/80 to-transparent"></div>
     <div class="absolute inset-0 bg-gradient-to-t from-[#07090F] via-transparent to-transparent"></div>
