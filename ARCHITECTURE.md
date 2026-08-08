@@ -489,3 +489,16 @@ Entity card holo path: `/media/derivatives/holo/{county}-{sector}-{id}/wiggle.mp
 **Full cinematic sector videos** (not single-image wiggle): real 4K drone footage cut to
 web-optimized 12s clips, posted at derivatives/holo/muranga-{sector}/cinematic.mp4, tiles'
 poster frames extracted from the SAME footage (image now matches video exactly).
+
+---
+
+## 19. Real 3D from photo bursts + caption accuracy (2026-08-08)
+
+**Real 3D (not synthesized parallax):** the SSSS roll contains multi-angle bursts (up to 91 frames
+of one scene). Built genuine multi-angle videos via frame-sequencing + motion interpolation —
+real captured geometry, not single-image wiggle. Mapped to adventure entities:
+Waterfall Rappelling→waterfall burst, Sagana River Trek→river burst, Canopy Walk→canopy burst,
+Forest Trails→zipline burst.
+
+**Caption accuracy:** read sign text in images to correct names — institutions fixed to
+"Mbiri Primary School" (was wrongly "Kagaa"). Empty placeholders purged per sector.
