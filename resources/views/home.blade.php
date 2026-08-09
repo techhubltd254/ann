@@ -4,26 +4,14 @@
 @section('description', 'Africa\'s Premier Meeting Venue. A national icon since 1973.')
 
 @section('content')
-{{-- HERO — real KICC venue data from kicc.co.ke (exhibition halls, amphitheatre, exterior) --}}
+{{-- HERO — all-sectors cinematic video (best of every sector) + real KICC venue stills --}}
 <section class="relative min-h-screen flex items-center overflow-hidden section-transition" data-section="hero">
-    <div x-data="{ current: 0, slides: [
-            { img: '{{ media('kicc/exterior-2.jpg') }}', label: 'Kenyatta International Convention Centre', tag: 'The Venue' },
-            { img: '{{ media('kicc/gate-day.jpg') }}', label: 'KICC Tower, Nairobi', tag: 'The Icon' },
-            { img: '{{ media('kicc/amphitheatre.jpg') }}', label: 'The Amphitheatre', tag: 'Events' },
-            { img: '{{ media('kicc/exterior-3.jpg') }}', label: 'KICC Grounds & Pavilions', tag: 'Exhibitions' },
-            { img: '{{ media('kicc/hall-interior-2.jpg') }}', label: 'Conference Halls', tag: 'Meetings' },
-            { img: '{{ media('kicc/kicc_ANP_3816.jpg') }}', label: 'Exhibition Floors', tag: 'Trade Shows' },
-            { img: '{{ media('kicc/courtyard.jpg') }}', label: 'The Courtyard', tag: 'Outdoor Events' },
-        ] }"
-         x-init="setInterval(() => current = (current + 1) % slides.length, 4500)"
-         class="absolute inset-0 w-full h-full" data-depth="0.4">
-        <template x-for="(slide, i) in slides" :key="i">
-            <img :src="slide.img" :class="{ 'opacity-100': current === i, 'opacity-0': current !== i }" class="absolute inset-0 w-full h-full object-cover transition-opacity duration-1000" :alt="slide.label">
-        </template>
-        {{-- slide label chip (bottom-right) --}}
-        <div class="absolute bottom-6 right-6 z-10 hidden sm:block">
-            <div class="rounded-full bg-black/50 backdrop-blur px-4 py-2 text-xs font-bold text-white border border-white/20" x-text="slides[current].tag + ' · ' + slides[current].label"></div>
-        </div>
+    <div class="absolute inset-0 w-full h-full" data-depth="0.4">
+        <video autoplay muted loop playsinline
+               poster="{{ media('kicc/exterior-2.jpg') }}"
+               class="absolute inset-0 w-full h-full object-cover">
+            <source src="{{ media('kicc/hero/all-sectors.mp4') }}" type="video/mp4">
+        </video>
     </div>
     <div class="absolute inset-0 bg-gradient-to-r from-[#07090F] via-[#07090F]/80 to-transparent"></div>
     <div class="absolute inset-0 bg-gradient-to-t from-[#07090F] via-transparent to-transparent"></div>
