@@ -38,8 +38,8 @@ $kiccBlue = '#046bd2';
             <source src="{{ $heroMp4 }}" type="video/mp4">
             @endif
             @if(!$heroVideo)
-            <source src="{{ $fallbackVideo }}" type="video/mp4">
             <source src="{{ media('counties/' . $county->slug . '/showcase.mp4') }}" type="video/mp4">
+            <source src="{{ $fallbackVideo }}" type="video/mp4">
             @endif
         </video>
         <img src="{{ $heroPosterImg }}" alt="{{ $county->name }}"
