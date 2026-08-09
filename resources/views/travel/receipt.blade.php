@@ -6,8 +6,8 @@
 <div class="pt-20 min-h-screen flex items-center justify-center px-5 py-12">
     <div class="w-full max-w-2xl" data-reveal>
         <div class="text-center mb-8">
-            <div class="w-20 h-20 rounded-full bg-[#11820B]/15 border-2 border-[#11820B] flex items-center justify-center mx-auto mb-6">
-                <svg class="w-10 h-10 text-[#11820B]" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M5 13l4 4L19 7"/></svg>
+            <div class="w-20 h-20 rounded-full bg-[#0B1E57]/15 border-2 border-[#0B1E57] flex items-center justify-center mx-auto mb-6">
+                <svg class="w-10 h-10 text-[#0B1E57]" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M5 13l4 4L19 7"/></svg>
             </div>
             <h1 class="text-3xl font-black text-gray-900 mb-2" data-split>Package Booked!</h1>
             <p class="text-gray-400 text-sm">Your receipts are below — payment confirmation follows via M-Pesa.</p>
@@ -23,7 +23,7 @@
             <div class="p-5">
                 <div class="flex justify-between items-start">
                     <div>
-                        <div class="text-[10px] font-bold text-[#1890D7] uppercase tracking-widest mb-1">✈️ Flight</div>
+                        <div class="text-[10px] font-bold text-[#0EA5E9] uppercase tracking-widest mb-1">✈️ Flight</div>
                         <div class="text-gray-900 font-bold">{{ $flightDetail->flight_number ?? '' }}</div>
                         <div class="text-gray-400 text-xs mt-1">Ref {{ $flight->booking_reference }} · PNR {{ $flight->pnr_code }} · {{ $flight->passenger_count }} pax</div>
                     </div>
@@ -36,7 +36,7 @@
             <div class="p-5">
                 <div class="flex justify-between items-start">
                     <div>
-                        <div class="text-[10px] font-bold text-[#FFCD05] uppercase tracking-widest mb-1">🏨 Hotel</div>
+                        <div class="text-[10px] font-bold text-[#F59E0B] uppercase tracking-widest mb-1">🏨 Hotel</div>
                         <div class="text-gray-900 font-bold">{{ $hotelDetail->name ?? '' }}</div>
                         <div class="text-gray-400 text-xs mt-1">Ref {{ $hotel->booking_reference }} · {{ $hotel->check_in }} → {{ $hotel->check_out }} · {{ $hotel->guest_count }} guests</div>
                     </div>
@@ -50,7 +50,7 @@
             <div class="p-5">
                 <div class="flex justify-between items-start">
                     <div>
-                        <div class="text-[10px] font-bold text-[#11820B] uppercase tracking-widest mb-1">{{ ($transferDetail->vehicle_type ?? '') === 'helicopter' ? '🚁' : '🚗' }} Transfer ({{ $transferDetail->vehicle_type ?? '' }})</div>
+                        <div class="text-[10px] font-bold text-[#0B1E57] uppercase tracking-widest mb-1">{{ ($transferDetail->vehicle_type ?? '') === 'helicopter' ? '🚁' : '🚗' }} Transfer ({{ $transferDetail->vehicle_type ?? '' }})</div>
                         <div class="text-gray-900 font-bold">{{ $transferDetail->provider_name ?? '' }}</div>
                         <div class="text-gray-400 text-xs mt-1">Ref {{ $transfer->booking_reference }} · status: {{ $transfer->status }}</div>
                     </div>
@@ -61,7 +61,7 @@
 
             <div class="p-5 flex justify-between items-center bg-gray-50">
                 <span class="text-gray-900 font-bold">Package total</span>
-                <span class="text-[#11820B] font-black text-2xl">KES {{ number_format($total) }}</span>
+                <span class="text-[#0B1E57] font-black text-2xl">KES {{ number_format($total) }}</span>
             </div>
         </div>
 

@@ -25,6 +25,9 @@ Route::get('/', HomeController::class)->name('home');
 Route::get('/counties', [CountyController::class, 'index'])->name('counties.index');
 Route::get('/counties/{county}', [CountyController::class, 'show'])->name('counties.show');
 Route::get('/counties/{county}/sector/{sector}', [CountyController::class, 'sector'])->name('counties.sector');
+Route::get('/counties/{county}/products/{product}/book', [\App\Http\Controllers\Web\CountyProductBookingController::class, 'show'])->name('county.product.booking');
+Route::post('/counties/{county}/products/{product}/book', [\App\Http\Controllers\Web\CountyProductBookingController::class, 'book'])->name('county.product.booking.store');
+Route::get('/counties/{county}/products/{product}/book/success/{reference}', [\App\Http\Controllers\Web\CountyProductBookingController::class, 'success'])->name('county.product.booking.success');
 
 // Marketplace
 Route::get('/marketplace', [MarketplaceController::class, 'index'])->name('marketplace.index');
@@ -114,7 +117,6 @@ Route::middleware('auth')->group(function () {
 
 // Public exhibitor websites (independent, interconnected)
 Route::get('/exhibitor/{slug}', [\App\Http\Controllers\Web\ExhibitorSiteController::class, 'show'])->name('exhibitor.site');
-Route::get('/national', [\App\Http\Controllers\Web\NationalSiteController::class, 'index'])->name('national.index');
 Route::get('/national/{slug}', [\App\Http\Controllers\Web\NationalSiteController::class, 'show'])->name('national.site');
 
 // Attraction booking (every tourist attraction is bookable)
@@ -122,9 +124,6 @@ Route::get('/attractions/{id}', [\App\Http\Controllers\Web\AttractionBookingCont
 Route::post('/attractions/{id}/book', [\App\Http\Controllers\Web\AttractionBookingController::class, 'book'])->name('attractions.book');
 
 // Travel & Tourism
-Route::get('/livestreams', [\App\Http\Controllers\Web\LivestreamController::class, 'index'])->name('livestreams.index');
-Route::get('/livestreams/{slug}', [\App\Http\Controllers\Web\LivestreamController::class, 'show'])->name('livestreams.show');
-
 Route::get('/travel', [TravelController::class, 'index'])->name('travel.index');
 Route::get('/travel/flights', [TravelController::class, 'flights'])->name('travel.flights');
 Route::post('/travel/book', [TravelController::class, 'book'])->name('travel.book');

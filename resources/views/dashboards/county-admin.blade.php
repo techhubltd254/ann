@@ -3,7 +3,7 @@
 @section('title', $county->name . ' County — Professional Admin')
 
 @section('content')
-@php $accent = '#11820B'; @endphp
+@php $accent = '#0B1E57'; @endphp
 <div class="flex min-h-screen bg-[#F3F4F6]">
     {{-- Sidebar --}}
     <div class="w-60 bg-white border-r border-gray-200 flex flex-col shrink-0 min-h-screen">
@@ -67,10 +67,10 @@
             <div class="grid lg:grid-cols-2 gap-6 mb-8">
                 <div class="bg-white border border-gray-200 rounded-2xl p-6"><h3 class="font-bold text-gray-900 mb-4">Quick Actions</h3>
                     <div class="grid grid-cols-2 gap-3">
-                        <a href="{{ route('county.admin.pro', [$county->slug, 'tab' => 'content']) }}" class="border border-gray-200 rounded-xl p-4 text-sm font-semibold text-gray-700 hover:border-[#11820B]/40 hover:text-[#11820B] transition-all text-center">✏️ Edit Content</a>
-                        <a href="{{ route('county.admin.pro', [$county->slug, 'tab' => 'images']) }}" class="border border-gray-200 rounded-xl p-4 text-sm font-semibold text-gray-700 hover:border-[#11820B]/40 hover:text-[#11820B] transition-all text-center">🖼️ Manage Images</a>
-                        <a href="{{ route('county.admin.pro', [$county->slug, 'tab' => 'prices']) }}" class="border border-gray-200 rounded-xl p-4 text-sm font-semibold text-gray-700 hover:border-[#11820B]/40 hover:text-[#11820B] transition-all text-center">💰 Set Prices</a>
-                        <a href="{{ route('county.admin.pro', [$county->slug, 'tab' => 'ads']) }}" class="border border-gray-200 rounded-xl p-4 text-sm font-semibold text-gray-700 hover:border-[#11820B]/40 hover:text-[#11820B] transition-all text-center">📢 Advertise</a>
+                        <a href="{{ route('county.admin.pro', [$county->slug, 'tab' => 'content']) }}" class="border border-gray-200 rounded-xl p-4 text-sm font-semibold text-gray-700 hover:border-[#0B1E57]/40 hover:text-[#0B1E57] transition-all text-center">✏️ Edit Content</a>
+                        <a href="{{ route('county.admin.pro', [$county->slug, 'tab' => 'images']) }}" class="border border-gray-200 rounded-xl p-4 text-sm font-semibold text-gray-700 hover:border-[#0B1E57]/40 hover:text-[#0B1E57] transition-all text-center">🖼️ Manage Images</a>
+                        <a href="{{ route('county.admin.pro', [$county->slug, 'tab' => 'prices']) }}" class="border border-gray-200 rounded-xl p-4 text-sm font-semibold text-gray-700 hover:border-[#0B1E57]/40 hover:text-[#0B1E57] transition-all text-center">💰 Set Prices</a>
+                        <a href="{{ route('county.admin.pro', [$county->slug, 'tab' => 'ads']) }}" class="border border-gray-200 rounded-xl p-4 text-sm font-semibold text-gray-700 hover:border-[#0B1E57]/40 hover:text-[#0B1E57] transition-all text-center">📢 Advertise</a>
                     </div>
                 </div>
                 <div class="bg-white border border-gray-200 rounded-2xl p-6"><h3 class="font-bold text-gray-900 mb-4">Current Package</h3>
@@ -142,7 +142,7 @@
                             <label class="block text-sm font-semibold text-gray-700 mb-1">Description</label>
                             <textarea name="description" rows="4" class="w-full px-4 py-3 rounded-xl border border-gray-200 text-sm">{{ $county->description }}</textarea>
                         </div>
-                        <button class="h-12 px-8 rounded-xl text-white font-bold text-sm" style="background: #11820B">Save All Details</button>
+                        <button class="h-12 px-8 rounded-xl text-white font-bold text-sm" style="background: #0B1E57">Save All Details</button>
                     </form>
                 </div>
             </div>
@@ -187,7 +187,7 @@
                         <input name="name" required placeholder="Entity name *" class="w-full h-11 px-4 rounded-xl border border-gray-200 text-sm">
                         <input name="entity_type" required placeholder="Type (e.g. hotel, school, farm)" class="w-full h-11 px-4 rounded-xl border border-gray-200 text-sm">
                         <textarea name="description" rows="2" placeholder="Description" class="w-full px-4 py-3 rounded-xl border border-gray-200 text-sm"></textarea>
-                        <button class="w-full h-12 rounded-xl text-white font-bold text-sm" style="background: #11820B">Add Entity</button>
+                        <button class="w-full h-12 rounded-xl text-white font-bold text-sm" style="background: #0B1E57">Add Entity</button>
                     </form>
                     <h4 class="font-bold text-gray-900 mt-6 mb-3">Existing Entities ({{ $sectorEntities->count() }})</h4>
                     <div class="space-y-2 max-h-80 overflow-y-auto">
@@ -249,7 +249,7 @@
                                 <form method="POST" action="{{ route('county.admin.image.upload', $county->slug) }}" enctype="multipart/form-data" class="flex-1">
                                     @csrf
                                     <input type="hidden" name="sector" value="{{ $sector }}">
-                                    <label class="flex items-center justify-center h-8 rounded-lg border border-gray-200 text-[10px] font-bold text-gray-500 cursor-pointer hover:border-[#11820B]/40 transition-all">
+                                    <label class="flex items-center justify-center h-8 rounded-lg border border-gray-200 text-[10px] font-bold text-gray-500 cursor-pointer hover:border-[#0B1E57]/40 transition-all">
                                         <input type="file" name="image" accept="image/*" class="sr-only" onchange="this.form.submit()">
                                         Upload
                                     </label>
@@ -394,9 +394,9 @@
             @if($tab === 'packages')
             <div class="grid sm:grid-cols-2 lg:grid-cols-4 gap-4">
                 @foreach($plans as $p)
-                <div class="bg-white border-2 border-gray-200 rounded-2xl p-6 flex flex-col {{ $p->slug === 'county-premium' ? 'border-[#11820B] shadow-lg' : '' }}">
+                <div class="bg-white border-2 border-gray-200 rounded-2xl p-6 flex flex-col {{ $p->slug === 'county-premium' ? 'border-[#0B1E57] shadow-lg' : '' }}">
                     @if($p->slug === 'county-premium')
-                    <span class="text-[10px] font-black uppercase tracking-widest text-[#11820B] mb-1">Recommended</span>
+                    <span class="text-[10px] font-black uppercase tracking-widest text-[#0B1E57] mb-1">Recommended</span>
                     @endif
                     <div class="font-black text-gray-900 text-lg">{{ $p->name }}</div>
                     <div class="text-3xl font-black text-gray-900 mt-2">KES {{ number_format($p->price) }}<span class="text-sm font-medium text-gray-400">/mo</span></div>
@@ -424,7 +424,7 @@
                     <p class="text-xs text-gray-400 mb-4">CSV reports of your county data — open in Excel, Sheets, or any analytics tool.</p>
                     <div class="space-y-2">
                         @foreach([['products', 'Products Report'], ['attractions', 'Tourism Attractions Report'], ['hotels', 'Hotels Report']] as $r)
-                        <a href="{{ route('county.admin.report', [$county->slug, $r[0]]) }}" class="flex items-center justify-between bg-gray-50 border border-gray-200 rounded-xl px-4 py-3 hover:border-[#11820B]/40 transition-all">
+                        <a href="{{ route('county.admin.report', [$county->slug, $r[0]]) }}" class="flex items-center justify-between bg-gray-50 border border-gray-200 rounded-xl px-4 py-3 hover:border-[#0B1E57]/40 transition-all">
                             <div class="flex items-center gap-3">
                                 <svg class="w-5 h-5 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 17v-2m3 2v-4m3 4v-6m2 10H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"/></svg>
                                 <div class="font-semibold text-gray-900 text-sm">{{ $r[1] }}</div>

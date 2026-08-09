@@ -26,9 +26,9 @@
         </div>
 
         <div class="vid-container rounded-xl overflow-hidden shadow-2xl border border-gray-700/50 mb-8">
-            @if($screen->immersive_url || $screen->video_exists)
+            @if($screen->video_exists)
             <video controls autoplay muted loop playsinline>
-                <source src="{{ $screen->immersive_url ?? $screen->video_url }}" type="video/mp4">
+                <source src="{{ $screen->video_url }}" type="video/mp4">
             </video>
             @else
             <div class="flex items-center justify-center h-64 text-gray-500">
@@ -80,7 +80,7 @@
         @endif
 
         {{-- ═══ ADVERTISE ON THIS SCREEN ═══ --}}
-        <div class="mt-8 bg-gradient-to-r from-[#1890D7]/20 to-[#11820B]/20 border border-[#1890D7]/30 rounded-2xl p-6" x-data="{ adOpen: false, pkg: 'week' }">
+        <div class="mt-8 bg-gradient-to-r from-[#0EA5E9]/20 to-[#0B1E57]/20 border border-[#0EA5E9]/30 rounded-2xl p-6" x-data="{ adOpen: false, pkg: 'week' }">
             @if(session('success'))
             <div class="bg-emerald-500/15 border border-emerald-500/25 text-emerald-400 rounded-xl px-5 py-3 mb-5 text-sm">{{ session('success') }}</div>
             @endif
@@ -89,11 +89,11 @@
             @endif
             <div class="flex flex-wrap items-center justify-between gap-4">
                 <div>
-                    <div class="text-[#1890D7] text-xs font-black uppercase tracking-widest mb-1">Advertise Here</div>
+                    <div class="text-[#0EA5E9] text-xs font-black uppercase tracking-widest mb-1">Advertise Here</div>
                     <h3 class="text-gray-900 font-black text-xl">Your brand on this screen</h3>
                     <p class="text-gray-400 text-sm mt-1">Seen by thousands of exhibition visitors at {{ $screen->location ?: 'KICC' }}.</p>
                 </div>
-                <button @click="adOpen = true" class="px-6 py-3 rounded-xl bg-[#FFCD05] text-[#07090F] font-black text-sm hover:bg-[#d97706] transition-all active:scale-95">Book This Space</button>
+                <button @click="adOpen = true" class="px-6 py-3 rounded-xl bg-[#F59E0B] text-[#07090F] font-black text-sm hover:bg-[#d97706] transition-all active:scale-95">Book This Space</button>
             </div>
 
             {{-- Booking modal --}}
@@ -114,7 +114,7 @@
                             @foreach($adPackages as $key => $p)
                             <label class="cursor-pointer">
                                 <input type="radio" name="package" value="{{ $key }}" class="peer sr-only" {{ $key === 'week' ? 'checked' : '' }}>
-                                <div class="border-2 border-gray-200 peer-checked:border-[#1890D7] peer-checked:bg-[#1890D7]/5 rounded-xl p-3 text-center transition-all">
+                                <div class="border-2 border-gray-200 peer-checked:border-[#0EA5E9] peer-checked:bg-[#0EA5E9]/5 rounded-xl p-3 text-center transition-all">
                                     <div class="text-[10px] font-bold text-gray-400 uppercase">{{ $p['label'] }}</div>
                                     <div class="text-sm font-black text-gray-900">KES {{ number_format($p['price']) }}</div>
                                 </div>
@@ -122,16 +122,16 @@
                             @endforeach
                         </div>
                         <input type="text" name="business_name" required placeholder="Business / brand name *"
-                               class="w-full h-11 px-4 rounded-xl bg-[#F9FAFB] border border-gray-200 text-gray-900 text-sm placeholder:text-[#5A6480] outline-none focus:ring-2 focus:ring-[#1890D7]/60">
+                               class="w-full h-11 px-4 rounded-xl bg-[#F9FAFB] border border-gray-200 text-gray-900 text-sm placeholder:text-[#5A6480] outline-none focus:ring-2 focus:ring-[#0EA5E9]/60">
                         <input type="email" name="email" required placeholder="Email address *"
-                               class="w-full h-11 px-4 rounded-xl bg-[#F9FAFB] border border-gray-200 text-gray-900 text-sm placeholder:text-[#5A6480] outline-none focus:ring-2 focus:ring-[#1890D7]/60">
+                               class="w-full h-11 px-4 rounded-xl bg-[#F9FAFB] border border-gray-200 text-gray-900 text-sm placeholder:text-[#5A6480] outline-none focus:ring-2 focus:ring-[#0EA5E9]/60">
                         <input type="tel" name="phone" required placeholder="Phone number *"
-                               class="w-full h-11 px-4 rounded-xl bg-[#F9FAFB] border border-gray-200 text-gray-900 text-sm placeholder:text-[#5A6480] outline-none focus:ring-2 focus:ring-[#1890D7]/60">
+                               class="w-full h-11 px-4 rounded-xl bg-[#F9FAFB] border border-gray-200 text-gray-900 text-sm placeholder:text-[#5A6480] outline-none focus:ring-2 focus:ring-[#0EA5E9]/60">
                         <input type="url" name="target_url" placeholder="Link when screen is tapped (optional)"
-                               class="w-full h-11 px-4 rounded-xl bg-[#F9FAFB] border border-gray-200 text-gray-900 text-sm placeholder:text-[#5A6480] outline-none focus:ring-2 focus:ring-[#1890D7]/60">
+                               class="w-full h-11 px-4 rounded-xl bg-[#F9FAFB] border border-gray-200 text-gray-900 text-sm placeholder:text-[#5A6480] outline-none focus:ring-2 focus:ring-[#0EA5E9]/60">
                         <textarea name="message" rows="2" placeholder="What are you advertising?"
-                                  class="w-full px-4 py-3 rounded-xl bg-[#F9FAFB] border border-gray-200 text-gray-900 text-sm placeholder:text-[#5A6480] outline-none focus:ring-2 focus:ring-[#1890D7]/60"></textarea>
-                        <button type="submit" class="w-full h-12 rounded-xl bg-[#FFCD05] text-[#07090F] font-black text-sm hover:bg-[#d97706] transition-colors active:scale-[0.98]">
+                                  class="w-full px-4 py-3 rounded-xl bg-[#F9FAFB] border border-gray-200 text-gray-900 text-sm placeholder:text-[#5A6480] outline-none focus:ring-2 focus:ring-[#0EA5E9]/60"></textarea>
+                        <button type="submit" class="w-full h-12 rounded-xl bg-[#F59E0B] text-[#07090F] font-black text-sm hover:bg-[#d97706] transition-colors active:scale-[0.98]">
                             Reserve Slot &amp; Pay
                         </button>
                         <p class="text-[#5A6480] text-[11px] text-center">Slot goes live after payment confirmation. Artwork collected within 24h.</p>

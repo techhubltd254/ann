@@ -23,12 +23,12 @@
                     <div>
                         <label class="block text-[10px] font-bold text-gray-400 uppercase tracking-wider mb-1.5">Email or Phone</label>
                         <input type="text" name="login" value="{{ old('login') }}" required autofocus
-                               class="w-full bg-[#F9FAFB] border border-gray-200 focus:border-[#FFCD05]/60 rounded-xl px-4 py-2.5 text-sm text-gray-900 placeholder:text-[#5A6480]/50 outline-none transition-colors">
+                               class="w-full bg-[#F9FAFB] border border-gray-200 focus:border-[#F59E0B]/60 rounded-xl px-4 py-2.5 text-sm text-gray-900 placeholder:text-[#5A6480]/50 outline-none transition-colors">
                     </div>
                     <div>
                         <label class="block text-[10px] font-bold text-gray-400 uppercase tracking-wider mb-1.5">Password</label>
                         <input type="password" name="password" required
-                               class="w-full bg-[#F9FAFB] border border-gray-200 focus:border-[#FFCD05]/60 rounded-xl px-4 py-2.5 text-sm text-gray-900 placeholder:text-[#5A6480]/50 outline-none transition-colors">
+                               class="w-full bg-[#F9FAFB] border border-gray-200 focus:border-[#F59E0B]/60 rounded-xl px-4 py-2.5 text-sm text-gray-900 placeholder:text-[#5A6480]/50 outline-none transition-colors">
                     </div>
                 </div>
                 <button type="submit" :disabled="loading"
@@ -60,15 +60,15 @@
                 <div x-show="staff" x-cloak x-transition class="mt-3">
                     <div class="grid grid-cols-3 gap-2 text-center text-[11px] font-bold">
                         <div class="border border-[#901C1E]/30 rounded-xl py-2 text-[#e86f71]">KICC Admin</div>
-                        <div class="border border-[#7C3AED]/30 rounded-xl py-2 text-[#901C1E]">National</div>
-                        <div class="border border-[#FFCD05]/30 rounded-xl py-2 text-[#fbbf24]">County</div>
+                        <div class="border border-[#7C3AED]/30 rounded-xl py-2 text-[#a78bfa]">National</div>
+                        <div class="border border-[#F59E0B]/30 rounded-xl py-2 text-[#fbbf24]">County</div>
                     </div>
                 </div>
             </div>
         </div>
 
         {{-- RIGHT: Sign Up as Exhibitor --}}
-        <div class="bg-gradient-to-br from-[#1890D7] to-[#11820B] rounded-2xl p-6 md:p-8 flex flex-col justify-between">
+        <div class="bg-gradient-to-br from-[#0EA5E9] to-[#0B1E57] rounded-2xl p-6 md:p-8 flex flex-col justify-between">
             <div>
                 <div class="flex items-center gap-2 mb-4">
                     <span class="bg-white/20 text-white text-[10px] font-black uppercase tracking-widest px-2.5 py-1 rounded-full">New</span>

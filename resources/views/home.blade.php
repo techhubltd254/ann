@@ -4,14 +4,12 @@
 @section('description', 'Africa\'s Premier Meeting Venue. A national icon since 1973.')
 
 @section('content')
-{{-- HERO — all-sectors cinematic video (best of every sector) + real KICC venue stills --}}
+{{-- HERO — exactly from Figma --}}
 <section class="relative min-h-screen flex items-center overflow-hidden section-transition" data-section="hero">
-    <div class="absolute inset-0 w-full h-full" data-depth="0.4">
-        <video autoplay muted loop playsinline
-               poster="{{ media('kicc/exterior-2.jpg') }}"
-               class="absolute inset-0 w-full h-full object-cover">
-            <source src="{{ media('kicc/hero/all-sectors.mp4') }}" type="video/mp4">
-        </video>
+    <div x-data="{ current: 1, imgs: ['{{ media('kicc/tower-night.jpg') }}', '{{ media('kicc/exterior-1.jpg') }}', '{{ media('kicc/tsavo-hall.jpg') }}'] }" x-init="setInterval(() => current = current === imgs.length - 1 ? 0 : current + 1, 5000)" class="absolute inset-0 w-full h-full" data-depth="0.4">
+        <template x-for="(img, i) in imgs" :key="i">
+            <img :src="img" :class="{ 'opacity-100': current === i, 'opacity-0': current !== i } absolute inset-0 w-full h-full object-cover transition-opacity duration-1000" alt="KICC">
+        </template>
     </div>
     <div class="absolute inset-0 bg-gradient-to-r from-[#07090F] via-[#07090F]/80 to-transparent"></div>
     <div class="absolute inset-0 bg-gradient-to-t from-[#07090F] via-transparent to-transparent"></div>
@@ -91,18 +89,11 @@
             <a href="{{ route('national.admin') }}" class="hidden md:inline-flex items-center justify-center gap-2 font-bold tracking-wide transition-all duration-200 px-4 text-xs h-9 rounded-xl bg-gray-100 text-gray-900 hover:bg-gray-100 border border-gray-200 shrink-0 card-hover">National portal</a>
         </div>
 
-        {{-- Major sector groups — canonical groups; junk/dupes cleaned from the scrape --}}
-        @if(($sectorGroups ?? collect())->isNotEmpty())
-        <div class="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 gap-4 mb-12" data-reveal>
-            @foreach($sectorGroups as $g)
-            <a href="{{ route('national.index') }}#group-{{ $g['key'] }}"
-               class="group bg-white border border-gray-200 rounded-2xl p-5 hover:border-[#FFCD05]/50 hover:shadow-md transition-all block">
-                <div class="w-11 h-11 rounded-xl bg-[#11820B]/10 flex items-center justify-center text-xl mb-3 group-hover:bg-[#FFCD05]/20 transition-colors">
-                    {{ $g['icon'] }}
-                </div>
-                <div class="font-bold text-gray-900 text-sm leading-snug group-hover:text-[#901C1E] transition-colors">{{ $g['name'] }}</div>
-                <div class="text-gray-400 text-xs mt-1">{{ $g['count'] }} county {{ Str::plural('department', $g['count']) }}</div>
-            </a>
+        {{-- Sector chips --}}
+        @if(($sectors ?? collect())->isNotEmpty())
+        <div class="flex flex-wrap gap-2 mb-10" data-reveal>
+            @foreach($sectors as $s)
+            <a href="{{ route('counties.index') }}" class="px-3.5 py-1.5 rounded-full text-xs font-bold bg-[#0B1E57]/10 text-[#0B1E57] border border-[#0B1E57]/25 hover:bg-[#0B1E57]/20 transition-all">{{ $s->name }}</a>
             @endforeach
         </div>
         @endif
@@ -110,7 +101,7 @@
         <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-5 gap-4">
             @foreach(($ministries ?? collect())->take(10) as $i => $m)
             <a href="{{ route('national.site', $m->slug) }}" class="group bg-gray-50 rounded-2xl p-5 border border-gray-100 hover:border-[#FFCD05]/40 transition-all card-hover" data-reveal data-reveal-delay="{{ ($i % 5) * 60 }}">
-                <div class="w-10 h-10 rounded-xl flex items-center justify-center text-gray-900 font-black text-[10px] mb-4" style="background: {{ $m->color ?: '#1890D7' }}">{{ $m->code }}</div>
+                <div class="w-10 h-10 rounded-xl flex items-center justify-center text-gray-900 font-black text-[10px] mb-4" style="background: {{ $m->color ?: '#0EA5E9' }}">{{ $m->code }}</div>
                 <div class="font-bold text-gray-900 text-sm leading-snug mb-2 group-hover:text-[#FFCD05] transition-colors">{{ $m->name }}</div>
                 <div class="text-gray-400 text-[10px] font-bold uppercase tracking-widest">{{ $m->agencies->count() }} {{ Str::plural('agency', $m->agencies->count()) }}</div>
                 @if($m->agencies->isNotEmpty())
@@ -285,7 +276,7 @@
                 <p class="text-white/60 mt-4 max-w-md text-sm leading-relaxed">The KICC tower rooftop LED, highway billboards, and premium screens reaching millions daily.</p>
             </div>
             <div class="flex flex-col gap-3 shrink-0" data-reveal data-reveal-delay="200">
-                <a href="{{ route('screens.directory') }}" class="inline-flex items-center justify-center gap-2 font-bold tracking-wide transition-all duration-200 px-8 text-base h-14 rounded-xl bg-[#FFCD05] text-[#07090F] hover:bg-[#FFCD05]" data-magnetic>Book a Screen</a>
+                <a href="{{ route('screens.directory') }}" class="inline-flex items-center justify-center gap-2 font-bold tracking-wide transition-all duration-200 px-8 text-base h-14 rounded-xl bg-[#FFCD05] text-[#07090F] hover:bg-[#e6b904]" data-magnetic>Book a Screen</a>
                 <a href="{{ route('screens.directory') }}" class="inline-flex items-center justify-center gap-2 font-bold tracking-wide transition-all duration-200 px-4 text-xs h-9 rounded-xl border border-white/25 text-white hover:bg-white/10">View all 18 screens</a>
             </div>
         </div>

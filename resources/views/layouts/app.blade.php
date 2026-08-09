@@ -49,7 +49,7 @@
         /* ── SHIMMER ── */
         @keyframes shimmer { 0% { background-position: -200% center; } 100% { background-position: 200% center; } }
         .text-shimmer {
-            background: linear-gradient(110deg, #FFCD05 25%, #1890D7 40%, #FFCD05 55%);
+            background: linear-gradient(110deg, #FFCD05 25%, #0EA5E9 40%, #FFCD05 55%);
             background-size: 200% auto;
             -webkit-background-clip: text; background-clip: text;
             -webkit-text-fill-color: transparent;
@@ -127,7 +127,7 @@
             background: linear-gradient(135deg, #0d1220 0%, #141b2e 55%, #1a2337 100%);
         }
         .grad-accent {
-            background: linear-gradient(135deg, #FFCD05 0%, #FFCD05 50%, #FFCD05 100%);
+            background: linear-gradient(135deg, #FFCD05 0%, #F59E0B 50%, #F97316 100%);
         }
         .grad-cta {
             background: linear-gradient(135deg, #901C1E 0%, #7b1618 100%);
@@ -220,7 +220,7 @@
     {{-- NAV --}}
     <nav x-data="{ scrolled: false, open: false }" x-init="window.addEventListener('scroll', () => scrolled = window.scrollY > 40)"
           class="fixed top-0 left-0 right-0 z-50 transition-all duration-500 h-20"
-          :class="scrolled ? 'bg-white backdrop-blur-xl border-b border-gray-200 shadow-lg shadow-[#1890D7]/5' : 'bg-transparent'">
+          :class="scrolled ? 'bg-white backdrop-blur-xl border-b border-gray-200 shadow-lg shadow-[#0EA5E9]/5' : 'bg-transparent'">
         <div class="max-w-7xl mx-auto px-5 h-full flex items-center justify-between gap-4">
             <a href="/" class="flex items-center gap-3 shrink-0 group">
                 <div class="flex items-center gap-2.5">
@@ -235,7 +235,6 @@
             </a>
             <nav class="hidden lg:flex items-center gap-1">
                 <a href="{{ route('counties.index') }}" class="px-3.5 py-2 text-sm font-semibold rounded-lg transition-all {{ request()->routeIs('counties.*') ? 'bg-[#901C1E] text-white' : 'text-[#901C1E] hover:text-[#FFCD05] hover:bg-gray-100' }}">Counties</a>
-                <a href="{{ route('national.index') }}" class="px-3.5 py-2 text-sm font-semibold rounded-lg transition-all {{ request()->routeIs('national.*') ? 'bg-[#901C1E] text-white' : 'text-[#901C1E] hover:text-[#FFCD05] hover:bg-gray-100' }}">National Gov</a>
                 <a href="{{ route('marketplace.index') }}" class="px-3.5 py-2 text-sm font-semibold rounded-lg transition-all {{ request()->routeIs('marketplace.*') ? 'bg-[#901C1E] text-white' : 'text-[#901C1E] hover:text-[#FFCD05] hover:bg-gray-100' }}">Marketplace</a>
                 <a href="{{ route('exhibitions.index') }}" class="px-3.5 py-2 text-sm font-semibold rounded-lg transition-all {{ request()->routeIs('exhibitions.*') ? 'bg-[#901C1E] text-white' : 'text-[#901C1E] hover:text-[#FFCD05] hover:bg-gray-100' }}">Exhibitions</a>
                 <a href="{{ route('venues.index') }}" class="px-3.5 py-2 text-sm font-semibold rounded-lg transition-all {{ request()->routeIs('venues.*') ? 'bg-[#901C1E] text-white' : 'text-[#901C1E] hover:text-[#FFCD05] hover:bg-gray-100' }}">Venues</a>
@@ -258,7 +257,7 @@
                     <button type="submit" class="inline-flex items-center gap-2 font-bold tracking-wide transition-all duration-200 px-3 text-xs h-9 rounded-xl border border-gray-200 text-gray-500 hover:bg-gray-100">Logout</button>
                 </form>
                 @else
-                <a href="{{ route('login') }}" class="inline-flex items-center gap-2 font-bold tracking-wide transition-all duration-200 px-4 text-xs h-9 rounded-xl bg-[#FFCD05] text-[#07090F] font-bold hover:bg-[#FFCD05]">Sign In</a>
+                <a href="{{ route('login') }}" class="inline-flex items-center gap-2 font-bold tracking-wide transition-all duration-200 px-4 text-xs h-9 rounded-xl bg-[#FFCD05] text-[#07090F] font-bold hover:bg-[#e6b904]">Sign In</a>
                 @endauth
                 <button @click="open = !open" class="lg:hidden text-[#5A6480] hover:text-[#901C1E] p-2" aria-label="Menu">
                     <svg class="w-5 h-5" x-show="!open" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16"/></svg>
@@ -268,7 +267,6 @@
         </div>
         <div x-show="open" x-cloak x-transition class="lg:hidden absolute top-full left-0 right-0 bg-white border-b border-gray-100 p-4 flex flex-col gap-1">
             <a href="{{ route('counties.index') }}" class="text-left px-4 py-3 text-sm font-semibold text-gray-600 hover:text-gray-900 hover:bg-gray-100 rounded-lg">Counties</a>
-            <a href="{{ route('national.index') }}" class="text-left px-4 py-3 text-sm font-semibold text-gray-600 hover:text-gray-900 hover:bg-gray-100 rounded-lg">National Gov</a>
             <a href="{{ route('exhibitions.index') }}" class="text-left px-4 py-3 text-sm font-semibold text-gray-600 hover:text-gray-900 hover:bg-gray-100 rounded-lg">Exhibitions</a>
             <a href="{{ route('venues.index') }}" class="text-left px-4 py-3 text-sm font-semibold text-gray-600 hover:text-gray-900 hover:bg-gray-100 rounded-lg">Venues</a>
             <a href="{{ route('travel.index') }}" class="text-left px-4 py-3 text-sm font-semibold text-gray-600 hover:text-gray-900 hover:bg-gray-100 rounded-lg">Live Events</a>
@@ -288,7 +286,7 @@
     </main>
 
     {{-- FOOTER --}}
-    <footer class="bg-[#004d40] mt-20">
+    <footer class="bg-[#0B1E57] mt-20">
         <div class="max-w-7xl mx-auto px-5 py-14 grid grid-cols-1 md:grid-cols-4 gap-10">
             <div>
                 <div class="flex items-center gap-2.5 mb-3">
@@ -316,7 +314,6 @@
                 <h4 class="font-bold text-white/50 text-xs uppercase tracking-[0.15em] mb-4">Platform</h4>
                 <ul class="space-y-2.5">
                     <li><a href="{{ route('counties.index') }}" class="text-white/50 hover:text-kicc-gold text-sm transition-colors">Counties</a></li>
-                    <li><a href="{{ route('national.index') }}" class="text-white/50 hover:text-kicc-gold text-sm transition-colors">National Government</a></li>
                     <li><a href="{{ route('marketplace.index') }}" class="text-white/50 hover:text-kicc-gold text-sm transition-colors">Marketplace</a></li>
                     <li><a href="{{ route('exhibitions.index') }}" class="text-white/50 hover:text-kicc-gold text-sm transition-colors">Exhibitions</a></li>
                     <li><a href="{{ route('venues.index') }}" class="text-white/50 hover:text-kicc-gold text-sm transition-colors">Venues</a></li>

@@ -30,18 +30,19 @@ class CountyController extends Controller
         $cultureCount = $county->cultureSites()->count();
 
         $sectorData = [
-            'Tourism' => ['count' => $tourismCount, 'icon' => '🏖️', 'route' => 'tourism', 'desc' => 'Attractions, natural wonders and visitor experiences.'],
-            'Hospitality' => ['count' => $hotelsCount, 'icon' => '🏨', 'route' => 'hotels', 'desc' => 'Hotels, lodges, camps and places to stay.'],
-            'Agriculture' => ['count' => $farmsCount, 'icon' => '🌾', 'route' => 'farms', 'desc' => 'Farms, cooperatives and agricultural production.'],
-            'Trade & Products' => ['count' => $productsCount, 'icon' => '🛍️', 'route' => 'products', 'desc' => 'Local products, manufacturers and trade.'],
-            'Education' => ['count' => $institutionsCount, 'icon' => '🎓', 'route' => 'institutions', 'desc' => 'Schools, colleges, universities and training.'],
-            'Transport' => ['count' => $transportCount, 'icon' => '🚢', 'route' => 'transport', 'desc' => 'Roads, transport and logistics services.'],
-            'Healthcare' => ['count' => $healthCount, 'icon' => '🏥', 'route' => 'health', 'desc' => 'Hospitals, clinics and health facilities.'],
-            'Culture' => ['count' => $cultureCount, 'icon' => '🎭', 'route' => 'culture', 'desc' => 'Heritage, cultural sites and community traditions.'],
+            'Tourism' => ['count' => $tourismCount, 'icon' => '🏖️', 'route' => 'tourism'],
+            'Hospitality' => ['count' => $hotelsCount, 'icon' => '🏨', 'route' => 'hotels'],
+            'Agriculture' => ['count' => $farmsCount, 'icon' => '🌾', 'route' => 'farms'],
+            'Commerce & End Products' => ['count' => $productsCount, 'icon' => '🛒', 'route' => 'products'],
+            'Education' => ['count' => $institutionsCount, 'icon' => '🎓', 'route' => 'institutions'],
+            'Transport' => ['count' => $transportCount, 'icon' => '🚢', 'route' => 'transport'],
+            'Healthcare' => ['count' => $healthCount, 'icon' => '🏥', 'route' => 'health'],
+            'Culture' => ['count' => $cultureCount, 'icon' => '🎭', 'route' => 'culture'],
         ];
 
-        $featuredAttractions = $county->tourismAttractions()->where('is_published', true)->take(4)->get();
-        $featuredHotels = $county->hotels()->where('is_published', true)->take(4)->get();
+        $featuredAttractions = $county->tourismAttractions()->where('is_published', true)->orderBy('name')->take(12)->get();
+        $featuredHotels = $county->hotels()->where('is_published', true)->orderByDesc('star_rating')->take(8)->get();
+        $countyProducts = $county->products()->where('is_published', true)->whereNotNull('price')->orderByDesc('price')->take(8)->get();
         $exhibitions = $county->exhibitions()->where('status', 'published')->orderBy('start_date', 'desc')->take(3)->get();
         $linkedSectors = $county->sectors()->orderBy('name')->get();
 
@@ -49,34 +50,36 @@ class CountyController extends Controller
 
         return view('counties.show', compact(
             'county', 'sectors', 'sectorData',
-            'featuredAttractions', 'featuredHotels',
+            'featuredAttractions', 'featuredHotels', 'countyProducts',
             'exhibitions', 'linkedSectors', 'countyMedia'
         ));
     }
 
     public function sector(County $county, string $sector)
     {
-        // The 8 public sector routes map to the county entity tables — NOT to
-        // linked sector slugs (those are scraped department names and vary per county).
-        $map = [
-            'tourism'      => ['title' => 'Tourism & Attractions',  'icon' => '🏖️', 'relation' => 'tourismAttractions'],
-            'hotels'       => ['title' => 'Hospitality & Hotels',   'icon' => '🏨', 'relation' => 'hotels'],
-            'farms'        => ['title' => 'Agriculture & Farms',    'icon' => '🌾', 'relation' => 'farms'],
-            'products'     => ['title' => 'Trade & Products',       'icon' => '🛍️', 'relation' => 'products'],
-            'institutions' => ['title' => 'Education & Institutions','icon' => '🎓', 'relation' => 'institutions'],
-            'transport'    => ['title' => 'Transport & Logistics',  'icon' => '🚢', 'relation' => 'transport'],
-            'health'       => ['title' => 'Healthcare',             'icon' => '🏥', 'relation' => 'healthFacilities'],
-            'culture'      => ['title' => 'Culture & Heritage',     'icon' => '🎭', 'relation' => 'cultureSites'],
-        ];
+        $sectorModel = $county->sectors()->where('slug', $sector)->first();
+        if (!$sectorModel) abort(404, "Sector not found for {$county->name}");
 
-        $def = $map[$sector] ?? abort(404, "Unknown sector '$sector'");
-        $items = $county->{$def['relation']}()
+        $items = SectorEntity::where('county_id', $county->id)
+            ->where('sector_id', $sectorModel->id)
             ->where('is_published', true)
             ->orderBy('name')
             ->paginate(12);
 
-        $sectorInfo = $def + ['desc' => "{$def['title']} in {$county->name} County."];
+        $info = [
+            'tourism' => ['title' => 'Tourism & Attractions', 'icon' => '🏖️', 'desc' => 'Discover attractions and cultural sites.'],
+            'hotels' => ['title' => 'Hospitality & Hotels', 'icon' => '🏨', 'desc' => 'Hotels and accommodation.'],
+            'products' => ['title' => 'Commerce & End Products', 'icon' => '🛒', 'desc' => 'Bookable county end products and marketplace goods.'],
+            'institutions' => ['title' => 'Education & Institutions', 'icon' => '🎓', 'desc' => 'Schools and training centers.'],
+            'farms' => ['title' => 'Agriculture & Farms', 'icon' => '🌾', 'desc' => 'Farms and agribusiness.'],
+            'transport' => ['title' => 'Transport & Logistics', 'icon' => '🚢', 'desc' => 'Transport hubs and logistics.'],
+            'health' => ['title' => 'Healthcare', 'icon' => '🏥', 'desc' => 'Hospitals and clinics.'],
+            'culture' => ['title' => 'Culture & Heritage', 'icon' => '🎭', 'desc' => 'Cultural sites and traditions.'],
+            'agriculture' => ['title' => 'Agriculture', 'icon' => '🌱', 'desc' => 'Agriculture and farming.'],
+        ];
 
-        return view('counties.sector', compact('county', 'items', 'sector', 'sectorInfo'));
+        $sectorInfo = $info[$sector] ?? ['title' => $sectorModel->name, 'icon' => '📋', 'desc' => "{$sectorModel->name} in {$county->name} County."];
+
+        return view('counties.sector', compact('county', 'items', 'sector', 'sectorInfo', 'sectorModel'));
     }
 }

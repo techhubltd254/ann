@@ -3,7 +3,7 @@
 @section('title', 'KICC Overall Admin — Platform Control')
 
 @section('content')
-@php $accent = '#FFCD05'; @endphp
+@php $accent = '#F59E0B'; @endphp
 <div class="flex min-h-screen bg-[#F9FAFB]">
     {{-- Sidebar --}}
     <div class="w-56 bg-white border-r border-gray-200 flex flex-col shrink-0 min-h-screen">
@@ -72,31 +72,31 @@
                 <h3 class="font-bold text-gray-900 mb-6">All Platform Portals — enter any tier</h3>
                 <div class="grid md:grid-cols-2 lg:grid-cols-3 gap-6">
                     {{-- KICC Admin --}}
-                    <a href="{{ route('kicc.admin') }}" class="group bg-white rounded-2xl border-2 border-gray-200 hover:border-[#FFCD05] p-6 text-center transition-all hover:shadow-xl card-hover">
-                        <div class="w-14 h-14 bg-[#FFCD05]/10 rounded-2xl flex items-center justify-center mx-auto mb-4 group-hover:bg-[#FFCD05]/20 transition-colors">
-                            <svg class="w-7 h-7 text-[#FFCD05]" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m5.618-4.016A11.955 11.955 0 0112 2.944a11.955 11.955 0 01-8.618 3.04A12.02 12.02 0 003 9c0 5.591 3.824 10.29 9 11.622 5.176-1.332 9-6.03 9-11.622 0-1.042-.133-2.052-.382-3.016z"/></svg>
+                    <a href="{{ route('kicc.admin') }}" class="group bg-white rounded-2xl border-2 border-gray-200 hover:border-[#F59E0B] p-6 text-center transition-all hover:shadow-xl card-hover">
+                        <div class="w-14 h-14 bg-[#F59E0B]/10 rounded-2xl flex items-center justify-center mx-auto mb-4 group-hover:bg-[#F59E0B]/20 transition-colors">
+                            <svg class="w-7 h-7 text-[#F59E0B]" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m5.618-4.016A11.955 11.955 0 0112 2.944a11.955 11.955 0 01-8.618 3.04A12.02 12.02 0 003 9c0 5.591 3.824 10.29 9 11.622 5.176-1.332 9-6.03 9-11.622 0-1.042-.133-2.052-.382-3.016z"/></svg>
                         </div>
                         <h2 class="font-black text-gray-900 text-lg mb-2" data-split>KICC Overall Admin</h2>
                         <p class="text-gray-500 text-sm leading-relaxed">Full platform control — all tiers, counties, orders, escrow, users.</p>
-                        <div class="mt-4 text-[#FFCD05] text-xs font-bold uppercase tracking-widest">CURRENT</div>
+                        <div class="mt-4 text-[#F59E0B] text-xs font-bold uppercase tracking-widest">CURRENT</div>
                     </a>
                     {{-- National --}}
-                    <a href="{{ route('national.admin') }}" class="group bg-white rounded-2xl border-2 border-gray-200 hover:border-[#1890D7] p-6 text-center transition-all hover:shadow-xl card-hover">
-                        <div class="w-14 h-14 bg-[#1890D7]/10 rounded-2xl flex items-center justify-center mx-auto mb-4 group-hover:bg-[#1890D7]/20 transition-colors">
-                            <svg class="w-7 h-7 text-[#1890D7]" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 21V5a2 2 0 00-2-2H7a2 2 0 00-2 2v16m14 0h2m-2 0h-5m-9 0H3m2 0h5M9 7h1m-1 4h1m4-4h1m-1 4h1m-5 10v-5a1 1 0 011-1h2a1 1 0 011 1v5m-4 0h4"/></svg>
+                    <a href="{{ route('national.admin') }}" class="group bg-white rounded-2xl border-2 border-gray-200 hover:border-[#0EA5E9] p-6 text-center transition-all hover:shadow-xl card-hover">
+                        <div class="w-14 h-14 bg-[#0EA5E9]/10 rounded-2xl flex items-center justify-center mx-auto mb-4 group-hover:bg-[#0EA5E9]/20 transition-colors">
+                            <svg class="w-7 h-7 text-[#0EA5E9]" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 21V5a2 2 0 00-2-2H7a2 2 0 00-2 2v16m14 0h2m-2 0h-5m-9 0H3m2 0h5M9 7h1m-1 4h1m4-4h1m-1 4h1m-5 10v-5a1 1 0 011-1h2a1 1 0 011 1v5m-4 0h4"/></svg>
                         </div>
                         <h2 class="font-black text-gray-900 text-lg mb-2" data-split>National Government</h2>
                         <p class="text-gray-500 text-sm">Ministries &amp; agencies exhibitor portal.</p>
-                        <div class="mt-4 text-[#1890D7] text-xs font-bold uppercase tracking-widest">ENTER &nearr;</div>
+                        <div class="mt-4 text-[#0EA5E9] text-xs font-bold uppercase tracking-widest">ENTER &nearr;</div>
                     </a>
                     {{-- County (all 47) --}}
-                    <a href="{{ route('counties.index') }}" class="group bg-white rounded-2xl border-2 border-gray-200 hover:border-[#11820B] p-6 text-center transition-all hover:shadow-xl card-hover">
-                        <div class="w-14 h-14 bg-[#11820B]/10 rounded-2xl flex items-center justify-center mx-auto mb-4 group-hover:bg-[#11820B]/20 transition-colors">
-                            <svg class="w-7 h-7 text-[#11820B]" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z"/><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 11a3 3 0 11-6 0 3 3 0 016 0z"/></svg>
+                    <a href="{{ route('counties.index') }}" class="group bg-white rounded-2xl border-2 border-gray-200 hover:border-[#0B1E57] p-6 text-center transition-all hover:shadow-xl card-hover">
+                        <div class="w-14 h-14 bg-[#0B1E57]/10 rounded-2xl flex items-center justify-center mx-auto mb-4 group-hover:bg-[#0B1E57]/20 transition-colors">
+                            <svg class="w-7 h-7 text-[#0B1E57]" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z"/><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 11a3 3 0 11-6 0 3 3 0 016 0z"/></svg>
                         </div>
                         <h2 class="font-black text-gray-900 text-lg mb-2" data-split>County Portal (47)</h2>
                         <p class="text-gray-500 text-sm">Each county has its own admin — content, images, prices.</p>
-                        <div class="mt-4 text-[#11820B] text-xs font-bold uppercase tracking-widest">BROWSE COUNTIES &nearr;</div>
+                        <div class="mt-4 text-[#0B1E57] text-xs font-bold uppercase tracking-widest">BROWSE COUNTIES &nearr;</div>
                     </a>
                     {{-- Exhibitor --}}
                     <a href="{{ route('exhibitor.admin') }}" class="group bg-white rounded-2xl border-2 border-gray-200 hover:border-[#38BDF8] p-6 text-center transition-all hover:shadow-xl card-hover">
@@ -108,13 +108,13 @@
                         <div class="mt-4 text-[#38BDF8] text-xs font-bold uppercase tracking-widest">ENTER &nearr;</div>
                     </a>
                     {{-- Provider --}}
-                    <a href="{{ route('provider.admin') }}" class="group bg-white rounded-2xl border-2 border-gray-200 hover:border-[#1890D7] p-6 text-center transition-all hover:shadow-xl card-hover">
-                        <div class="w-14 h-14 bg-[#1890D7]/10 rounded-2xl flex items-center justify-center mx-auto mb-4 group-hover:bg-[#1890D7]/20 transition-colors">
-                            <svg class="w-7 h-7 text-[#1890D7]" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 19l9 2-9-18-9 18 9-2zm0 0v-8"/></svg>
+                    <a href="{{ route('provider.admin') }}" class="group bg-white rounded-2xl border-2 border-gray-200 hover:border-[#0EA5E9] p-6 text-center transition-all hover:shadow-xl card-hover">
+                        <div class="w-14 h-14 bg-[#0EA5E9]/10 rounded-2xl flex items-center justify-center mx-auto mb-4 group-hover:bg-[#0EA5E9]/20 transition-colors">
+                            <svg class="w-7 h-7 text-[#0EA5E9]" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 19l9 2-9-18-9 18 9-2zm0 0v-8"/></svg>
                         </div>
                         <h2 class="font-black text-gray-900 text-lg mb-2" data-split>Travel Providers</h2>
                         <p class="text-gray-500 text-sm">Airlines, hotels &amp; cab companies manage services.</p>
-                        <div class="mt-4 text-[#1890D7] text-xs font-bold uppercase tracking-widest">ENTER &nearr;</div>
+                        <div class="mt-4 text-[#0EA5E9] text-xs font-bold uppercase tracking-widest">ENTER &nearr;</div>
                     </a>
                 </div>
             </div>
@@ -150,7 +150,7 @@
                 <h3 class="font-bold text-gray-900 mb-5">Private Exhibitors ({{ $exhibitors->count() }})</h3>
                 @foreach($exhibitors as $e)
                 <div class="flex items-center gap-4 py-3 border-b border-gray-100 last:border-0">
-                    <div class="w-10 h-10 rounded-full bg-[#11820B] flex items-center justify-center text-gray-900 font-black text-xs shrink-0">{{ strtoupper(substr($e->name, 0, 2)) }}</div>
+                    <div class="w-10 h-10 rounded-full bg-[#2D6A4F] flex items-center justify-center text-gray-900 font-black text-xs shrink-0">{{ strtoupper(substr($e->name, 0, 2)) }}</div>
                     <div class="flex-1 min-w-0">
                         <div class="font-semibold text-gray-900 text-sm">{{ $e->name }}</div>
                         <div class="text-xs text-gray-400">{{ $e->email }} &middot; {{ $e->county?->name }} County &middot; {{ $e->product_count }} products</div>
@@ -167,7 +167,7 @@
                 @foreach($ministries as $m)
                 <div class="bg-white border border-gray-200 rounded-2xl p-6">
                     <div class="flex items-start justify-between mb-3">
-                        <div class="w-10 h-10 rounded-xl flex items-center justify-center text-gray-900 font-black text-xs" style="background: {{ $m->color ?: '#1890D7' }}">{{ $m->code }}</div>
+                        <div class="w-10 h-10 rounded-xl flex items-center justify-center text-gray-900 font-black text-xs" style="background: {{ $m->color ?: '#0EA5E9' }}">{{ $m->code }}</div>
                         <a href="{{ route('national.site', $m->slug) }}" class="text-[10px] font-bold px-2.5 py-1 rounded-full border border-gray-200 text-gray-500 hover:text-gray-900">WEBSITE &nearr;</a>
                     </div>
                     <div class="font-bold text-gray-900 mb-1">{{ $m->name }}</div>
@@ -184,7 +184,7 @@
                     <h3 class="font-bold text-gray-900 mb-5">Certified Providers ({{ $providers->count() }})</h3>
                     @foreach($providers as $p)
                     <div class="flex items-center gap-4 py-3 border-b border-gray-100 last:border-0">
-                        <div class="w-10 h-10 rounded-full bg-[#1890D7] flex items-center justify-center text-gray-900 font-black text-xs shrink-0">{{ strtoupper(substr($p->name, 0, 2)) }}</div>
+                        <div class="w-10 h-10 rounded-full bg-[#0EA5E9] flex items-center justify-center text-gray-900 font-black text-xs shrink-0">{{ strtoupper(substr($p->name, 0, 2)) }}</div>
                         <div class="flex-1 min-w-0">
                             <div class="font-semibold text-gray-900 text-sm">{{ $p->name }}</div>
                             <div class="text-xs text-gray-400">{{ $p->email }} · {{ ($p->metadata['provider_type'] ?? 'provider') }}</div>
