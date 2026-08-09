@@ -5,8 +5,8 @@
 @section('content')
 <div class="pt-28 pb-16">
     <div class="max-w-xl mx-auto px-5 text-center">
-        <div class="w-16 h-16 rounded-full bg-[#0B1E57]/10 flex items-center justify-center mx-auto mb-5">
-            <svg class="w-8 h-8 text-[#0B1E57]" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M5 13l4 4L19 7"/></svg>
+        <div class="w-16 h-16 rounded-full bg-[#046bd2]/10 flex items-center justify-center mx-auto mb-5">
+            <svg class="w-8 h-8 text-[#046bd2]" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M5 13l4 4L19 7"/></svg>
         </div>
         <h1 class="text-2xl font-black text-gray-900">Booking request received</h1>
         <p class="text-gray-500 mt-2">The seller will contact you on <span class="font-semibold text-gray-900">{{ $booking->customer_phone }}</span> to confirm payment and delivery.</p>
@@ -19,7 +19,7 @@
             <div class="space-y-2 text-sm">
                 <div class="flex justify-between"><span class="text-gray-400">Product</span><span class="font-semibold text-gray-900">{{ $product->name }}</span></div>
                 <div class="flex justify-between"><span class="text-gray-400">Quantity</span><span class="font-semibold text-gray-900">{{ $booking->quantity }} {{ $product->unit }}</span></div>
-                <div class="flex justify-between"><span class="text-gray-400">Total</span><span class="font-black text-[#0B1E57]">KES {{ number_format($booking->total) }}</span></div>
+                <div class="flex justify-between"><span class="text-gray-400">Total</span><span class="font-black text-[#046bd2]">KES {{ number_format($booking->total) }}</span></div>
             </div>
         </div>
 

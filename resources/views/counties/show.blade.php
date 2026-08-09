@@ -11,7 +11,7 @@ $iconMap = [
     'hotel' => '🏨', 'resort' => '🏝️', 'guest house' => '🏠', 'conference' => '🏢',
     'restaurant' => '🍽️', 'default' => '🏖️'
 ];
-$kiccBlue = '#0B1E57';
+$kiccBlue = '#046bd2';
 @endphp
 <div class="pt-20">
     {{-- HERO --}}
@@ -88,10 +88,10 @@ $kiccBlue = '#0B1E57';
                 <a href="{{ route('marketplace.index', ['county' => $county->slug]) }}" class="px-4 py-2 rounded-xl bg-[#901C1E] text-white text-xs font-bold hover:bg-[#7b1618] transition-all">View Products</a>
                 @auth
                     @if(auth()->user()->hasAnyRole(['county_admin','kicc_admin']) && (auth()->user()->county_id == $county->id || auth()->user()->hasRole('kicc_admin')))
-                    <a href="{{ route('county.admin.pro', $county->slug) }}" class="px-4 py-2 rounded-xl bg-[#0B1E57] text-white text-xs font-bold hover:bg-[#0D2A7A] transition-all">County Admin</a>
+                    <a href="{{ route('county.admin.pro', $county->slug) }}" class="px-4 py-2 rounded-xl bg-[#046bd2] text-white text-xs font-bold hover:bg-[#045cb4] transition-all">County Admin</a>
                     @endif
                 @else
-                <a href="{{ route('login') }}" class="px-4 py-2 rounded-xl border border-[#0B1E57]/40 text-[#0B1E57] text-xs font-bold hover:bg-[#0B1E57]/10 transition-all">County Admin Login</a>
+                <a href="{{ route('login') }}" class="px-4 py-2 rounded-xl border border-[#046bd2]/40 text-[#046bd2] text-xs font-bold hover:bg-[#046bd2]/10 transition-all">County Admin Login</a>
                 @endauth
             </div>
         </div>
@@ -121,18 +121,18 @@ $kiccBlue = '#0B1E57';
         @if(($linkedSectors ?? collect())->isNotEmpty())
         <div class="mb-14">
             <div class="flex items-center gap-3 mb-6">
-                <span class="h-px w-8 bg-[#0B1E57]"></span>
-                <span class="text-[#0B1E57] text-xs font-bold tracking-[0.2em] uppercase">Government Departments</span>
+                <span class="h-px w-8 bg-[#046bd2]"></span>
+                <span class="text-[#046bd2] text-xs font-bold tracking-[0.2em] uppercase">Government Departments</span>
                 <span class="h-px flex-1 bg-gray-200"></span>
             </div>
             <div class="flex flex-wrap gap-2">
                 @foreach($linkedSectors as $ls)
-                <a href="{{ route('county.admin.pro', [$county->slug, 'tab' => 'sectors']) }}" class="px-3.5 py-2 rounded-full text-xs font-bold bg-gray-100 text-gray-700 border border-gray-200 hover:bg-[#0B1E57]/10 hover:text-[#0B1E57] hover:border-[#0B1E57]/40 transition-all">
+                <a href="{{ route('county.admin.pro', [$county->slug, 'tab' => 'sectors']) }}" class="px-3.5 py-2 rounded-full text-xs font-bold bg-gray-100 text-gray-700 border border-gray-200 hover:bg-[#046bd2]/10 hover:text-[#046bd2] hover:border-[#046bd2]/40 transition-all">
                     {{ $ls->name }}
                 </a>
                 @endforeach
             </div>
-            <p class="text-gray-400 text-xs mt-3">Sourced from official county websites. <a href="{{ route('county.admin.pro', [$county->slug, 'tab' => 'sectors']) }}" class="text-[#0B1E57] hover:underline">Manage in County Admin</a>.</p>
+            <p class="text-gray-400 text-xs mt-3">Sourced from official county websites. <a href="{{ route('county.admin.pro', [$county->slug, 'tab' => 'sectors']) }}" class="text-[#046bd2] hover:underline">Manage in County Admin</a>.</p>
         </div>
         @endif
 
@@ -162,7 +162,7 @@ $kiccBlue = '#0B1E57';
                     <div class="p-4">
                         <div class="flex items-center gap-1.5 mb-1">
                             <span class="text-xs">{{ $aIcon }}</span>
-                            <span class="text-[10px] font-bold text-[#0B1E57] uppercase tracking-widest">{{ $a->category }}</span>
+                            <span class="text-[10px] font-bold text-[#046bd2] uppercase tracking-widest">{{ $a->category }}</span>
                         </div>
                         <div class="font-bold text-gray-900 text-sm">{{ $a->name }}</div>
                         @if($a->entry_fee)<div class="text-kicc-gold text-xs mt-1 font-bold">KES {{ number_format($a->entry_fee) }}</div>@endif
@@ -200,7 +200,7 @@ $kiccBlue = '#0B1E57';
                     <div class="p-4">
                         <div class="font-bold text-gray-900 text-sm">{{ $h->name }}</div>
                         <div class="flex items-center gap-2 mt-1">
-                            <span class="text-[10px] font-bold text-[#0B1E57] uppercase tracking-wider">{{ $h->category }}</span>
+                            <span class="text-[10px] font-bold text-[#046bd2] uppercase tracking-wider">{{ $h->category }}</span>
                             <span class="text-amber-400 text-xs">{{ $stars }}</span>
                         </div>
                     </div>
@@ -230,10 +230,10 @@ $kiccBlue = '#0B1E57';
                         </div>
                     </div>
                     <div class="p-4 flex-1 flex flex-col">
-                        <span class="text-[10px] font-bold text-[#0B1E57] uppercase tracking-widest">{{ $p->category }}</span>
+                        <span class="text-[10px] font-bold text-[#046bd2] uppercase tracking-widest">{{ $p->category }}</span>
                         <div class="font-bold text-gray-900 text-sm mt-1">{{ $p->name }}</div>
                         <div class="mt-auto pt-3 flex items-center justify-between">
-                            <span class="font-black text-[#0B1E57] text-sm">KES {{ number_format($p->price) }}</span>
+                            <span class="font-black text-[#046bd2] text-sm">KES {{ number_format($p->price) }}</span>
                             <span class="text-gray-400 text-xs">/ {{ $p->unit }}</span>
                         </div>
                         <a href="{{ route('county.product.booking', [$county->slug, $p->id]) }}" class="mt-3 block text-center py-2 rounded-xl bg-[#901C1E] text-white text-xs font-bold hover:bg-[#7b1618] transition-all">
@@ -244,7 +244,7 @@ $kiccBlue = '#0B1E57';
                 @endforeach
             </div>
             <div class="mt-5 text-center">
-                <a href="{{ route('marketplace.index', ['county' => $county->slug]) }}" class="inline-flex items-center gap-2 text-sm font-bold text-[#0B1E57] hover:text-[#901C1E] transition-colors">
+                <a href="{{ route('marketplace.index', ['county' => $county->slug]) }}" class="inline-flex items-center gap-2 text-sm font-bold text-[#046bd2] hover:text-[#901C1E] transition-colors">
                     Browse full {{ $county->name }} marketplace
                     <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 8l4 4m0 0l-4 4m4-4H3"/></svg>
                 </a>

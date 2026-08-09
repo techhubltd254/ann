@@ -6,7 +6,7 @@
 @section('content')
 {{-- HERO — exactly from Figma --}}
 <section class="relative min-h-screen flex items-center overflow-hidden section-transition" data-section="hero">
-    <div x-data="{ current: 1, imgs: ['{{ media('kicc/tower-night.jpg') }}', '{{ media('kicc/exterior-1.jpg') }}', '{{ media('kicc/tsavo-hall.jpg') }}'] }" x-init="setInterval(() => current = current === imgs.length - 1 ? 0 : current + 1, 5000)" class="absolute inset-0 w-full h-full" data-depth="0.4">
+    <div x-data="{ current: 1, imgs: ['{{ media('kicc/about-tower.jpg') }}', '{{ media('kicc/about-hall.jpg') }}', '{{ media('kicc/about-sign.jpg') }}', '{{ media('kicc/ANP_3925.jpg') }}', '{{ media('kicc/DSC_8892.jpg') }}'] }" x-init="setInterval(() => current = current === imgs.length - 1 ? 0 : current + 1, 5000)" class="absolute inset-0 w-full h-full" data-depth="0.4">
         <template x-for="(img, i) in imgs" :key="i">
             <img :src="img" :class="{ 'opacity-100': current === i, 'opacity-0': current !== i } absolute inset-0 w-full h-full object-cover transition-opacity duration-1000" alt="KICC">
         </template>
@@ -93,7 +93,7 @@
         @if(($sectors ?? collect())->isNotEmpty())
         <div class="flex flex-wrap gap-2 mb-10" data-reveal>
             @foreach($sectors as $s)
-            <a href="{{ route('counties.index') }}" class="px-3.5 py-1.5 rounded-full text-xs font-bold bg-[#0B1E57]/10 text-[#0B1E57] border border-[#0B1E57]/25 hover:bg-[#0B1E57]/20 transition-all">{{ $s->name }}</a>
+            <a href="{{ route('counties.index') }}" class="px-3.5 py-1.5 rounded-full text-xs font-bold bg-[#046bd2]/10 text-[#046bd2] border border-[#046bd2]/25 hover:bg-[#046bd2]/20 transition-all">{{ $s->name }}</a>
             @endforeach
         </div>
         @endif
@@ -262,6 +262,66 @@
             @endforeach
             @endforelse
         </div>
+    </div>
+</section>
+
+{{-- KICC SERVICES & AMENITIES — extracted from kicc.co.ke --}}
+<section class="max-w-7xl mx-auto px-5 py-20 section-transition" data-section="services">
+    <div data-reveal>
+        <div class="flex flex-col md:flex-row md:items-end justify-between mb-10 gap-4">
+            <div>
+                <div class="flex items-center gap-3 mb-3">
+                    <div class="h-px w-8 bg-[#FFCD05]"></div>
+                    <span class="text-[#FFCD05] text-xs font-bold tracking-[0.2em] uppercase">Services &amp; Amenities</span>
+                </div>
+                <h2 class="text-3xl md:text-4xl font-black text-gray-900 leading-[1.1]" data-split>Everything Your Event Needs<br><span class="text-[#FFCD05]">Under One Roof</span></h2>
+                <p class="text-gray-400 mt-3 text-base max-w-xl leading-relaxed">The same services listed on kicc.co.ke — bookable with any venue on this platform.</p>
+            </div>
+            <a href="{{ route('venues.index') }}" class="inline-flex items-center justify-center gap-2 font-bold tracking-wide transition-all duration-200 px-4 text-xs h-9 rounded-xl bg-gray-100 text-gray-900 hover:bg-gray-100 border border-gray-200 shrink-0 card-hover">
+                Book a venue
+                <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 8l4 4m0 0l-4 4m4-4H3"/></svg>
+            </a>
+        </div>
+    </div>
+    @php
+        $kiccServices = [
+            ['name' => 'Audio Visual Equipment', 'img' => 'kicc/services/Audio Visual Equipment.jpg', 'desc' => 'PA systems, screens, staging & live-streaming gear.'],
+            ['name' => 'Catering Services', 'img' => 'kicc/services/Catering Services.jpg', 'desc' => 'In-house catering — coffee breaks to state banquets.'],
+            ['name' => 'Event Planning & Coordination', 'img' => 'kicc/services/Event Planning.jpg', 'desc' => 'Dedicated coordinators from booking to closing.'],
+            ['name' => 'Technical Support', 'img' => 'kicc/services/Technical Support.jpg', 'desc' => 'On-site technicians for the full duration of your event.'],
+            ['name' => 'Wi-Fi & Internet Access', 'img' => 'kicc/services/WiFi.jpg', 'desc' => 'High-density venue Wi-Fi for thousands of delegates.'],
+            ['name' => 'Security Services & Fire', 'img' => 'kicc/services/Security.jpg', 'desc' => '24/7 security, screening and fire safety compliance.'],
+            ['name' => 'Parking Facilities', 'img' => 'kicc/Courtyard-1.jpg', 'desc' => 'Secure on-site parking for guests and exhibitors.'],
+            ['name' => 'Accessibility', 'img' => 'kicc/about-hall.jpg', 'desc' => 'Step-free access, lifts and accessible facilities throughout.'],
+            ['name' => 'Tourist Information', 'img' => 'kicc/about-sign.jpg', 'desc' => 'Visitor desk with city, safari and travel guidance.'],
+        ];
+    @endphp
+    <div class="grid grid-cols-2 lg:grid-cols-3 gap-4">
+        @foreach($kiccServices as $i => $s)
+        <a href="{{ route('venues.index') }}" class="group bg-white rounded-2xl overflow-hidden border border-gray-100 hover:border-[#FFCD05]/40 transition-all card-hover" data-tilt="5" data-reveal data-reveal-delay="{{ ($i % 3) * 80 }}">
+            <div class="h-36 overflow-hidden bg-gray-50 relative">
+                <img src="{{ media($s['img']) }}" alt="{{ $s['name'] }}" class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500" loading="lazy" decoding="async" onerror="this.style.display='none'">
+            </div>
+            <div class="p-4">
+                <div class="font-black text-gray-900 text-sm leading-snug">{{ $s['name'] }}</div>
+                <p class="text-gray-400 text-xs mt-1 leading-relaxed">{{ $s['desc'] }}</p>
+                <span class="mt-3 inline-flex items-center gap-1 text-[#046bd2] text-xs font-bold group-hover:gap-2 transition-all">
+                    Book with a venue
+                    <svg class="w-3 h-3" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 8l4 4m0 0l-4 4m4-4H3"/></svg>
+                </span>
+            </div>
+        </a>
+        @endforeach
+    </div>
+
+    {{-- M-I-C-E strip (from kicc.co.ke) --}}
+    <div class="mt-10 grid grid-cols-2 md:grid-cols-4 gap-4" data-reveal>
+        @foreach([['Meetings','Boardrooms to ballrooms for 10–2,000 delegates.'],['Incentives','Reward programs with safari add-ons.'],['Conferences','Full-service international conference hosting.'],['Exhibitions','10,000 m² of pillar-free exhibition space.']] as $j => $mice)
+        <div class="rounded-2xl border border-[#046bd2]/20 bg-[#046bd2]/5 p-5 text-center card-hover" data-reveal data-reveal-delay="{{ $j * 80 }}">
+            <div class="font-black text-[#046bd2] text-base">{{ $mice[0] }}</div>
+            <p class="text-gray-500 text-xs mt-1">{{ $mice[1] }}</p>
+        </div>
+        @endforeach
     </div>
 </section>
 

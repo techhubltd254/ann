@@ -286,7 +286,7 @@
     </main>
 
     {{-- FOOTER --}}
-    <footer class="bg-[#0B1E57] mt-20">
+    <footer class="bg-[#046bd2] mt-20">
         <div class="max-w-7xl mx-auto px-5 py-14 grid grid-cols-1 md:grid-cols-4 gap-10">
             <div>
                 <div class="flex items-center gap-2.5 mb-3">

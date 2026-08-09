@@ -68,7 +68,7 @@
         </div>
 
         {{-- RIGHT: Sign Up as Exhibitor --}}
-        <div class="bg-gradient-to-br from-[#0EA5E9] to-[#0B1E57] rounded-2xl p-6 md:p-8 flex flex-col justify-between">
+        <div class="bg-gradient-to-br from-[#0EA5E9] to-[#046bd2] rounded-2xl p-6 md:p-8 flex flex-col justify-between">
             <div>
                 <div class="flex items-center gap-2 mb-4">
                     <span class="bg-white/20 text-white text-[10px] font-black uppercase tracking-widest px-2.5 py-1 rounded-full">New</span>
@@ -99,7 +99,7 @@
                 </ul>
             </div>
             <div class="mt-6 space-y-2">
-                <a href="{{ route('register') }}" class="block w-full text-center py-3.5 rounded-xl bg-white text-[#0B1E57] font-black text-sm hover:bg-white/90 transition-all active:scale-[0.98]">
+                <a href="{{ route('register') }}" class="block w-full text-center py-3.5 rounded-xl bg-white text-[#046bd2] font-black text-sm hover:bg-white/90 transition-all active:scale-[0.98]">
                     Create Your Exhibitor Account →
                 </a>
                 <p class="text-white/50 text-[11px] text-center">Takes 2 minutes. 3 quick setup questions to build your website.</p>

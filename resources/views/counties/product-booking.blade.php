@@ -17,11 +17,11 @@
             </div>
             @endif
             <div class="p-6">
-                <span class="text-[10px] font-bold text-[#0B1E57] uppercase tracking-widest">{{ $county->name }} · {{ $product->category }}</span>
+                <span class="text-[10px] font-bold text-[#046bd2] uppercase tracking-widest">{{ $county->name }} · {{ $product->category }}</span>
                 <h1 class="text-xl font-black text-gray-900 mt-1">{{ $product->name }}</h1>
                 <p class="text-gray-500 text-sm mt-2">{{ $product->description }}</p>
                 <div class="mt-4 flex items-baseline gap-2">
-                    <span class="text-2xl font-black text-[#0B1E57]">KES {{ number_format($product->price) }}</span>
+                    <span class="text-2xl font-black text-[#046bd2]">KES {{ number_format($product->price) }}</span>
                     <span class="text-gray-400 text-sm">/ {{ $product->unit }}</span>
                 </div>
             </div>
@@ -33,35 +33,35 @@
             <div class="space-y-4">
                 <div>
                     <label class="block text-xs font-bold text-gray-500 uppercase tracking-wider mb-1">Full name *</label>
-                    <input type="text" name="customer_name" required class="w-full h-11 px-4 rounded-xl bg-[#F9FAFB] border border-gray-200 text-sm outline-none focus:ring-2 focus:ring-[#0B1E57]/40" placeholder="John Kamau">
+                    <input type="text" name="customer_name" required class="w-full h-11 px-4 rounded-xl bg-[#F9FAFB] border border-gray-200 text-sm outline-none focus:ring-2 focus:ring-[#046bd2]/40" placeholder="John Kamau">
                 </div>
                 <div>
                     <label class="block text-xs font-bold text-gray-500 uppercase tracking-wider mb-1">Email *</label>
-                    <input type="email" name="customer_email" required class="w-full h-11 px-4 rounded-xl bg-[#F9FAFB] border border-gray-200 text-sm outline-none focus:ring-2 focus:ring-[#0B1E57]/40" placeholder="john@example.com">
+                    <input type="email" name="customer_email" required class="w-full h-11 px-4 rounded-xl bg-[#F9FAFB] border border-gray-200 text-sm outline-none focus:ring-2 focus:ring-[#046bd2]/40" placeholder="john@example.com">
                 </div>
                 <div>
                     <label class="block text-xs font-bold text-gray-500 uppercase tracking-wider mb-1">Phone (M-Pesa) *</label>
-                    <input type="tel" name="customer_phone" required class="w-full h-11 px-4 rounded-xl bg-[#F9FAFB] border border-gray-200 text-sm outline-none focus:ring-2 focus:ring-[#0B1E57]/40" placeholder="+254 712 345 678">
+                    <input type="tel" name="customer_phone" required class="w-full h-11 px-4 rounded-xl bg-[#F9FAFB] border border-gray-200 text-sm outline-none focus:ring-2 focus:ring-[#046bd2]/40" placeholder="+254 712 345 678">
                 </div>
                 <div>
                     <label class="block text-xs font-bold text-gray-500 uppercase tracking-wider mb-1">Quantity *</label>
                     <div class="flex items-center gap-3">
                         <button type="button" @click="qty = Math.max(1, qty - 1)" class="w-10 h-10 rounded-xl border border-gray-200 hover:bg-gray-50 font-bold text-gray-600">−</button>
-                        <input type="number" name="quantity" x-model="qty" min="1" max="100" required class="w-20 h-10 px-3 rounded-xl bg-[#F9FAFB] border border-gray-200 text-center text-sm outline-none focus:ring-2 focus:ring-[#0B1E57]/40">
+                        <input type="number" name="quantity" x-model="qty" min="1" max="100" required class="w-20 h-10 px-3 rounded-xl bg-[#F9FAFB] border border-gray-200 text-center text-sm outline-none focus:ring-2 focus:ring-[#046bd2]/40">
                         <button type="button" @click="qty = Math.min(100, qty + 1)" class="w-10 h-10 rounded-xl border border-gray-200 hover:bg-gray-50 font-bold text-gray-600">+</button>
                         <span class="text-sm text-gray-500">× KES {{ number_format($product->price) }}</span>
                     </div>
                 </div>
                 <div>
                     <label class="block text-xs font-bold text-gray-500 uppercase tracking-wider mb-1">Notes</label>
-                    <textarea name="notes" rows="3" class="w-full px-4 py-3 rounded-xl bg-[#F9FAFB] border border-gray-200 text-sm outline-none focus:ring-2 focus:ring-[#0B1E57]/40" placeholder="Delivery instructions, preferred pickup time…"></textarea>
+                    <textarea name="notes" rows="3" class="w-full px-4 py-3 rounded-xl bg-[#F9FAFB] border border-gray-200 text-sm outline-none focus:ring-2 focus:ring-[#046bd2]/40" placeholder="Delivery instructions, preferred pickup time…"></textarea>
                 </div>
             </div>
 
             <div class="mt-6 pt-6 border-t border-gray-100 flex items-center justify-between">
                 <div>
                     <div class="text-xs text-gray-400">Total due</div>
-                    <div class="text-xl font-black text-[#0B1E57]" x-text="'KES ' + (qty * price).toLocaleString()">KES {{ number_format($product->price) }}</div>
+                    <div class="text-xl font-black text-[#046bd2]" x-text="'KES ' + (qty * price).toLocaleString()">KES {{ number_format($product->price) }}</div>
                 </div>
                 <button type="submit" class="h-12 px-6 rounded-xl bg-[#901C1E] text-white text-sm font-black hover:bg-[#7b1618] transition-all active:scale-[0.98]">Place Booking</button>
             </div>

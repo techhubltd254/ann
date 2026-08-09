@@ -6,7 +6,7 @@
 @section('content')
 <div class="pt-20">
     {{-- Weather-aware hero: "someone in cold UK must see a Kenya summer" --}}
-    <div class="relative overflow-hidden bg-gradient-to-r from-[#0EA5E9] to-[#0B1E57]">
+    <div class="relative overflow-hidden bg-gradient-to-r from-[#0EA5E9] to-[#046bd2]">
         <div class="absolute inset-0 opacity-15"><img src="{{ media('counties/mombasa/hero.jpeg') }}" class="w-full h-full object-cover" alt=""></div>
         <div class="relative max-w-7xl mx-auto px-5 py-14">
             <div class="flex items-center gap-3 mb-3">
@@ -44,7 +44,7 @@
                 </div>
                 <div class="p-5">
                     <div class="font-black text-gray-900 text-lg">{{ $d->city }}</div>
-                    <div class="text-xs text-gray-400 mb-4">{{ $d->name }} · flights from <span class="font-bold text-[#0B1E57]">KES {{ number_format($d->from_price) }}</span></div>
+                    <div class="text-xs text-gray-400 mb-4">{{ $d->name }} · flights from <span class="font-bold text-[#046bd2]">KES {{ number_format($d->from_price) }}</span></div>
                     <div class="flex gap-2">
                         <input type="date" x-model="date" min="{{ now()->toDateString() }}" class="flex-1 h-10 px-3 rounded-xl bg-[#F9FAFB] border border-gray-200 text-sm outline-none">
                         <a :href="'{{ route('travel.flights') }}?to={{ $d->iata_code }}&date=' + date" class="h-10 px-4 inline-flex items-center rounded-xl bg-[#901C1E] text-gray-900 text-xs font-black hover:bg-[#7b1618] transition-all">See Flights</a>
@@ -61,12 +61,12 @@
         </div>
         <div class="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-6 gap-4 mb-16">
             @forelse($attractions->take(6) as $a)
-            <div class="bg-white rounded-2xl overflow-hidden border border-gray-200 hover:border-[#0B1E57]/40 transition-all group card-hover">
+            <div class="bg-white rounded-2xl overflow-hidden border border-gray-200 hover:border-[#046bd2]/40 transition-all group card-hover">
                 <div class="h-32 bg-[#F9FAFB] flex items-center justify-center overflow-hidden">
                     <span class="text-4xl text-gray-300">{{ $a->name[0] }}</span>
                 </div>
                 <div class="p-4">
-                    <span class="text-[10px] font-bold text-[#0B1E57] uppercase tracking-widest">{{ $a->type }}</span>
+                    <span class="text-[10px] font-bold text-[#046bd2] uppercase tracking-widest">{{ $a->type }}</span>
                     <h3 class="font-bold text-gray-900 text-sm mt-1 leading-snug">{{ $a->name }}</h3>
                     <p class="text-gray-400 text-xs mt-1">{{ $a->city }}</p>
                 </div>

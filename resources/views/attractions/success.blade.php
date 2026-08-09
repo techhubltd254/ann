@@ -5,8 +5,8 @@
 @section('content')
 <div class="pt-20 min-h-screen flex items-center justify-center px-5 py-12">
     <div class="w-full max-w-lg text-center" data-reveal>
-        <div class="w-20 h-20 rounded-full bg-[#0B1E57]/15 border-2 border-[#0B1E57] flex items-center justify-center mx-auto mb-6">
-            <svg class="w-10 h-10 text-[#0B1E57]" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M5 13l4 4L19 7"/></svg>
+        <div class="w-20 h-20 rounded-full bg-[#046bd2]/15 border-2 border-[#046bd2] flex items-center justify-center mx-auto mb-6">
+            <svg class="w-10 h-10 text-[#046bd2]" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M5 13l4 4L19 7"/></svg>
         </div>
         <h1 class="text-3xl font-black text-gray-900 mb-2" data-split>Booking Confirmed!</h1>
         <p class="text-gray-400 text-sm mb-8">Your trip is reserved. Payment confirmation follows shortly via M-Pesa.</p>
@@ -27,7 +27,7 @@
             </div>
             <div class="flex justify-between items-center pt-4 mt-4 border-t border-gray-100">
                 <span class="text-gray-900 font-bold">Total</span>
-                <span class="text-[#0B1E57] font-black text-xl">KES {{ number_format($total) }}</span>
+                <span class="text-[#046bd2] font-black text-xl">KES {{ number_format($total) }}</span>
             </div>
         </div>
 
