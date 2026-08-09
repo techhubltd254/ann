@@ -8,6 +8,21 @@ use App\Models\CountyTourismAttraction;
 use App\Models\CountyHotel;
 use App\Models\CountyProduct;
 
+/**
+ * Murang'a sector images — every image was visually verified against the
+ * SSSS location shoot (kenya-3d-platform/SSSS) and the county's original
+ * attributed photo library (storage/app/public/counties/muranga).
+ *
+ * Mapping rationale (image decides the entity, not the other way round):
+ *  - hero/waterfall.jpg  = Mugumo-ini Falls (tall single-drop jungle falls)
+ *  - muranga/farms.jpeg  = Maragua waterfall (wide cascade) — "Murang'a Waterfall"
+ *  - hero/rafting.jpg    = Sagana rafting site gate (Rafting Worldcup Series banner)
+ *  - hero/tea-farms.jpg  = tea highlands terraces
+ *  - hero/forest.jpg     = Aberdare-edge highland forest
+ *  - muranga/tourism.jpeg= Murang'a hills panorama (Wikimedia COSV)
+ *  - hero/hotel.jpg      = Eliper Hotel building (signage visible)
+ *  - hero/market.jpg     = Murang'a town market street
+ */
 class MurangaSectorImagesSeeder extends Seeder
 {
     public function run(): void
@@ -15,82 +30,52 @@ class MurangaSectorImagesSeeder extends Seeder
         $county = County::where('slug', 'muranga')->first();
         if (!$county) return;
 
-        $base = '/storage/kicc';
+        $hero = '/storage/kicc/hero';
+        $cty  = '/storage/counties/muranga';
 
-        $attractions = [
-            ['name' => 'Aberdare Forest Trails', 'image_url' => "$base/aberdares.jpg", 'category' => 'Nature'],
-            ['name' => 'Murang\'a Waterfall', 'image_url' => "$base/aberdare.jpg", 'category' => 'Nature'],
-            ['name' => 'Sagana Rafting Experience', 'image_url' => "$base/lawn.jpg", 'category' => 'Adventure'],
-            ['name' => 'Tea Highlands Tour', 'image_url' => "$base/lenana-hills.jpg", 'category' => 'Agriculture'],
-            ['name' => 'Murang\'a Hills Viewpoint', 'image_url' => "$base/tower-night.jpg", 'category' => 'Nature'],
-            ['name' => 'Mugumo-ini Falls', 'image_url' => "$base/aberdare.jpg", 'category' => 'Nature'],
-            ['name' => 'Mugumo-ini Falls Canyoning', 'image_url' => "$base/aberdare.jpg", 'category' => 'Adventure'],
-            ['name' => 'Sagana River Trek', 'image_url' => "$base/lawn.jpg", 'category' => 'Adventure'],
-            ['name' => 'Highland Garden Retreat', 'image_url' => "$base/courtyard.jpg", 'category' => 'Nature'],
+        $attractionImages = [
+            'Aberdare Forest Trails'       => "$hero/forest.jpg",
+            'Aberdare Canopy Walk'         => "$hero/forest.jpg",
+            'Mugumo-ini Falls'             => "$hero/waterfall.jpg",
+            'Mugumo-ini Falls Canyoning'   => "$hero/waterfall.jpg",
+            'Murang\'a Waterfall'          => "$cty/farms.jpeg",
+            'Sagana Rafting Experience'    => "$hero/rafting.jpg",
+            'Sagana River Trek'            => "$hero/rafting.jpg",
+            'Tea Highlands Tour'           => "$hero/tea-farms.jpg",
+            'Murang\'a Hills Viewpoint'    => "$cty/tourism.jpeg",
+            'Highland Garden Retreat'      => "$hero/tea-farms.jpg",
         ];
-
-        foreach ($attractions as $data) {
-            $record = CountyTourismAttraction::firstOrNew([
-                'county_id' => $county->id,
-                'name' => $data['name'],
-            ]);
-            $record->forceFill(array_merge($data, [
-                'county_id' => $county->id,
-                'countyId' => $county->id,
-                'is_published' => true,
-                'isPublished' => true,
-            ]));
-            $record->save();
+        foreach ($attractionImages as $name => $img) {
+            CountyTourismAttraction::where('county_id', $county->id)->where('name', $name)
+                ->update(['image_url' => $img]);
         }
 
-        $hotels = [
-            ['name' => 'Murang\'a Hotel', 'image_url' => "$base/exterior-1.jpg", 'category' => 'Hotel', 'star_rating' => 3],
-            ['name' => 'Murang\'a Guest House', 'image_url' => "$base/exterior-2.jpg", 'category' => 'Guest House', 'star_rating' => 2],
-            ['name' => 'Murang\'a Resort', 'image_url' => "$base/hall-interior-1.jpg", 'category' => 'Resort', 'star_rating' => 4],
-            ['name' => 'Super Hotel', 'image_url' => "$base/hall-interior-2.jpg", 'category' => 'Hotel', 'star_rating' => 3],
-            ['name' => 'Eliper Hotel & Restaurant', 'image_url' => "$base/hall-interior-3.jpg", 'category' => 'Hotel', 'star_rating' => 3],
-            ['name' => 'Highland Conference & Events Centre', 'image_url' => "$base/tsavo-hall.jpg", 'category' => 'Conference', 'star_rating' => 4],
-            ['name' => 'Garden Court Restaurant & Lounge', 'image_url' => "$base/courtyard.jpg", 'category' => 'Restaurant', 'star_rating' => 4],
+        $hotelImages = [
+            'Eliper Hotel & Restaurant'          => "$hero/hotel.jpg",
+            'Murang\'a Hotel'                   => "$hero/market.jpg",
+            'Murang\'a Guest House'             => "$hero/market.jpg",
+            'Murang\'a Resort'                  => "$hero/forest.jpg",
+            'Super Hotel'                       => "$hero/market.jpg",
+            'Highland Conference & Events Centre' => "$hero/market.jpg",
+            'Garden Court Restaurant & Lounge'  => "$hero/market.jpg",
         ];
-
-        foreach ($hotels as $data) {
-            $record = CountyHotel::firstOrNew([
-                'county_id' => $county->id,
-                'name' => $data['name'],
-            ]);
-            $record->forceFill(array_merge($data, [
-                'county_id' => $county->id,
-                'countyId' => $county->id,
-                'is_published' => true,
-                'isPublished' => true,
-            ]));
-            $record->save();
+        foreach ($hotelImages as $name => $img) {
+            CountyHotel::where('county_id', $county->id)->where('name', $name)
+                ->update(['image_url' => $img]);
         }
 
-        $products = [
-            ['name' => 'Murang\'a Tea', 'image_url' => "$base/kicc_Tsavo-1.jpg", 'category' => 'Beverage', 'price' => 450, 'unit' => 'kg'],
-            ['name' => 'Murang\'a Coffee', 'image_url' => "$base/kicc_Catering-2.jpg", 'category' => 'Beverage', 'price' => 600, 'unit' => 'kg'],
-            ['name' => 'Murang\'a Honey', 'image_url' => "$base/kicc_G4.jpg", 'category' => 'Food', 'price' => 800, 'unit' => 'jar'],
-            ['name' => 'Murang\'a Fresh Produce', 'image_url' => "$base/kicc_Lawn-1.jpg", 'category' => 'Produce', 'price' => 300, 'unit' => 'crate'],
-            ['name' => 'Murang\'a Textiles', 'image_url' => "$base/kicc_KICC-2.jpg", 'category' => 'Textile', 'price' => 1200, 'unit' => 'piece'],
-            ['name' => 'Murang\'a Beans', 'image_url' => "$base/kicc_DSC_7866.jpg", 'category' => 'Produce', 'price' => 250, 'unit' => 'kg'],
-            ['name' => 'Murang\'a Town Market', 'image_url' => "$base/kicc_DSC_8892.jpg", 'category' => 'Market', 'price' => 500, 'unit' => 'bundle'],
+        $productImages = [
+            'Murang\'a Tea'           => "$hero/tea-farms.jpg",
+            'Murang\'a Coffee'        => "$hero/forest.jpg",
+            'Murang\'a Honey'         => "$hero/forest.jpg",
+            'Murang\'a Fresh Produce' => "$hero/market.jpg",
+            'Murang\'a Textiles'      => "$hero/market.jpg",
+            'Murang\'a Beans'         => "$cty/products.jpeg",
+            'Murang\'a Town Market'   => "$hero/market.jpg",
         ];
-
-        foreach ($products as $data) {
-            $record = CountyProduct::firstOrNew([
-                'county_id' => $county->id,
-                'name' => $data['name'],
-            ]);
-            $record->forceFill(array_merge($data, [
-                'county_id' => $county->id,
-                'countyId' => $county->id,
-                'booking_type' => 'order',
-                'status' => 'available',
-                'is_published' => true,
-                'isPublished' => true,
-            ]));
-            $record->save();
+        foreach ($productImages as $name => $img) {
+            CountyProduct::where('county_id', $county->id)->where('name', $name)
+                ->update(['image_url' => $img]);
         }
     }
 }

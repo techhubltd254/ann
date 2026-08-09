@@ -27,6 +27,7 @@ $kiccBlue = '#046bd2';
         <video autoplay muted loop playsinline
                poster="{{ $heroPoster }}"
                class="w-full h-full object-cover absolute inset-0"
+               data-depth="0.35" data-parallax-scroll
                onloadeddata="this.style.opacity='1'"
                onerror="this.style.display='none';this.nextElementSibling.style.display='block'"
                style="opacity:0;transition:opacity 0.8s">
@@ -150,7 +151,7 @@ $kiccBlue = '#046bd2';
                     $aKey = strtolower($a->category ?? 'default');
                     $aIcon = $iconMap[$aKey] ?? $iconMap['default'];
                 @endphp
-                <a href="{{ route('attractions.show', $a->id) }}" class="bg-white border border-gray-200 rounded-2xl overflow-hidden hover:border-kicc-gold/40 transition-all group card-hover">
+                <a href="{{ route('attractions.show', $a->id) }}" class="bg-white border border-gray-200 rounded-2xl overflow-hidden hover:border-kicc-gold/40 transition-all group card-hover fx-sweep" data-tilt="7">
                     <div class="h-36 bg-gray-100 flex items-center justify-center overflow-hidden relative">
                         @if($a->image_url)
                         <img src="{{ $a->image_url }}" alt="{{ $a->name }}" class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500" onerror="this.style.display='none'">
@@ -188,7 +189,7 @@ $kiccBlue = '#046bd2';
                     $hIcon = $iconMap[$hKey] ?? $iconMap['hotel'];
                     $stars = $h->star_rating ? str_repeat('★', $h->star_rating) . str_repeat('☆', 5 - $h->star_rating) : '—';
                 @endphp
-                <div class="bg-white border border-gray-200 rounded-2xl overflow-hidden card-hover">
+                <div class="bg-white border border-gray-200 rounded-2xl overflow-hidden card-hover fx-sweep" data-tilt="7">
                     <div class="h-36 bg-gray-100 flex items-center justify-center overflow-hidden relative">
                         @if($h->image_url)
                         <img src="{{ $h->image_url }}" alt="{{ $h->name }}" class="w-full h-full object-cover" onerror="this.style.display='none'">
@@ -220,7 +221,7 @@ $kiccBlue = '#046bd2';
             </div>
             <div class="grid grid-cols-2 md:grid-cols-4 gap-4">
                 @foreach($countyProducts as $p)
-                <div class="bg-white border border-gray-200 rounded-2xl overflow-hidden card-hover hover:border-kicc-gold/40 transition-all flex flex-col">
+                <div class="bg-white border border-gray-200 rounded-2xl overflow-hidden card-hover fx-sweep hover:border-kicc-gold/40 transition-all flex flex-col" data-tilt="7">
                     <div class="h-36 bg-gray-100 flex items-center justify-center overflow-hidden relative">
                         @if($p->image_url)
                         <img src="{{ $p->image_url }}" alt="{{ $p->name }}" class="w-full h-full object-cover" onerror="this.style.display='none'">

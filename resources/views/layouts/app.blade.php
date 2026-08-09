@@ -204,6 +204,26 @@
             0% { background-position: 200% 0; }
             100% { background-position: -200% 0; }
         }
+
+        /* ── FX3D: cinematic Ken Burns zoom-pan on all card media ── */
+        .fx-kenburns { animation: fx-kenburns 16s ease-in-out infinite alternate; will-change: transform; transform-origin: center; }
+        @keyframes fx-kenburns {
+            0%   { transform: scale(1.0) translate3d(0,0,0); }
+            50%  { transform: scale(1.07) translate3d(-1.2%,-1.0%,0); }
+            100% { transform: scale(1.11) translate3d(1.2%,1.0%,0); }
+        }
+        /* 3D tilt glare layer */
+        [data-tilt] { transform-style: preserve-3d; will-change: transform; }
+        [data-tilt] .tilt-glare { opacity: 0; transition: opacity .35s ease; pointer-events: none; mix-blend-mode: screen; }
+        /* Light-sweep VFX */
+        .fx-sweep { position: relative; overflow: hidden; }
+        .fx-sweep::after {
+            content: ''; position: absolute; inset: -40%; pointer-events: none;
+            background: linear-gradient(115deg, transparent 42%, rgba(255,255,255,0.16) 50%, transparent 58%);
+            transform: translateX(-120%);
+            animation: fx-sweep 7s cubic-bezier(.22,1,.36,1) infinite;
+        }
+        @keyframes fx-sweep { 0%,62% { transform: translateX(-120%);} 100% { transform: translateX(120%);} }
     </style>
     @stack('styles')
     <script type="importmap">
@@ -350,13 +370,7 @@
     </footer>
     @stack('scripts')
     <script defer src="https://cdn.jsdelivr.net/npm/alpinejs@3.x.x/dist/cdn.min.js"></script>
-    {{-- Cinematic intro (homepage only) --}}
-    @if(request()->is('/'))
-    <script src="{{ asset('js/cinematic-intro.js') }}"></script>
-    @endif
-    {{-- Core motion system --}}
-    <script src="{{ asset('js/animations.js') }}"></script>
-    {{-- Immersive interaction engine --}}
-    <script src="{{ asset('js/immersive.js') }}"></script>
+    {{-- FX3D: 3D parallax + tilt + VFX engine (self-contained) --}}
+    <script src="{{ asset('js/fx3d.js') }}" defer></script>
 </body>
 </html>
