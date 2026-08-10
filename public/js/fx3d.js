@@ -111,7 +111,33 @@
     });
   }
 
-  function boot() { initReveal(); initTilt(); initParallax(); initVfx(); }
+  /* ── 5. 3D WIGGLE MEDIA (photo-burst depth videos) ──────────────
+     <div data-wiggle="/path/wiggle.mp4"> wrapping an <img> — on hover
+     the real 3D burst video fades in and plays. */
+  function initWiggle() {
+    if (reduceMotion) return;
+    document.querySelectorAll('[data-wiggle]').forEach(function (box) {
+      var vid = null;
+      box.addEventListener('pointerenter', function () {
+        if (!vid) {
+          vid = document.createElement('video');
+          vid.muted = true; vid.loop = true; vid.playsInline = true;
+          vid.src = box.getAttribute('data-wiggle');
+          vid.style.cssText = 'position:absolute;inset:0;width:100%;height:100%;object-fit:cover;opacity:0;transition:opacity .45s ease';
+          box.appendChild(vid);
+        }
+        vid.play().catch(function () {});
+        requestAnimationFrame(function () { vid.style.opacity = '1'; });
+      });
+      box.addEventListener('pointerleave', function () {
+        if (!vid) return;
+        vid.style.opacity = '0';
+        setTimeout(function () { vid.pause(); }, 450);
+      });
+    });
+  }
+
+  function boot() { initReveal(); initTilt(); initParallax(); initVfx(); initWiggle(); }
   if (document.readyState === 'loading') document.addEventListener('DOMContentLoaded', boot);
   else boot();
 })();

@@ -38,6 +38,7 @@ $kiccBlue = '#046bd2';
             <source src="{{ $heroMp4 }}" type="video/mp4">
             @endif
             @if(!$heroVideo)
+            <source src="{{ media('counties/' . $county->slug . '/sectors-tour.mp4') }}" type="video/mp4">
             <source src="{{ media('counties/' . $county->slug . '/showcase.mp4') }}" type="video/mp4">
             <source src="{{ $fallbackVideo }}" type="video/mp4">
             @endif
@@ -46,6 +47,7 @@ $kiccBlue = '#046bd2';
              class="w-full h-full object-cover absolute inset-0" style="display:none" loading="lazy"
              onerror="this.onerror=null;this.src='{{ asset('storage/kicc/hero-1.jpg') }}'">
         <div class="absolute inset-0 bg-gradient-to-t from-[#07090F] via-[#07090F]/50 to-transparent"></div>
+        <canvas id="county-3d-terrain" class="absolute inset-0 w-full h-full pointer-events-none" style="mix-blend-mode:screen;opacity:0.5"></canvas>
         <div class="absolute bottom-0 left-0 right-0 max-w-7xl mx-auto px-5 pb-10 md:pb-16">
             <a href="{{ route('counties.index') }}" class="inline-flex items-center gap-1.5 text-white/60 hover:text-white text-sm mb-3 transition-colors">
                 <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 19l-7-7 7-7"/></svg>
@@ -107,12 +109,18 @@ $kiccBlue = '#046bd2';
             <div class="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 gap-4">
                 @foreach($sectorData as $name => $s)
                 <a href="{{ route('counties.sector', [$county->slug, $s['route']]) }}"
-                   class="group bg-white border border-gray-200 hover:border-kicc-gold/40 rounded-2xl p-5 text-center transition-all block card-hover" data-tilt="6" data-reveal data-reveal-delay="{{ $loop->index * 80 }}">
-                    <div class="w-12 h-12 rounded-xl mx-auto mb-3 flex items-center justify-center text-2xl bg-gray-100 group-hover:bg-[#FFCD05]/20 transition-colors">
-                        {{ $s['icon'] }}
+                   class="group bg-white border border-gray-200 hover:border-kicc-gold/40 rounded-2xl overflow-hidden transition-all block card-hover fx-sweep" data-tilt="6" data-reveal data-reveal-delay="{{ $loop->index * 80 }}">
+                    <div class="h-28 relative overflow-hidden bg-gray-100">
+                        <img src="{{ media('counties/' . $county->slug . '/' . $s['route'] . '.jpeg') }}" alt="{{ $name }}"
+                             class="w-full h-full object-cover group-hover:scale-110 transition-transform duration-700" loading="lazy"
+                             onerror="this.onerror=null;this.src='{{ media('counties/' . $county->slug . '/' . $s['route'] . '.jpg') }}'">
+                        <div class="absolute inset-0 bg-gradient-to-t from-black/55 via-transparent to-transparent"></div>
+                        <div class="absolute bottom-2 left-2 w-8 h-8 rounded-lg flex items-center justify-center text-lg bg-white/90 shadow">{{ $s['icon'] }}</div>
                     </div>
-                    <div class="font-bold text-gray-900 text-sm leading-snug">{{ $name }}</div>
-                    <div class="text-gray-400 text-xs mt-1">{{ $s['count'] }} {{ Str::plural('entity', $s['count']) }}</div>
+                    <div class="p-4 text-center">
+                        <div class="font-bold text-gray-900 text-sm leading-snug">{{ $name }}</div>
+                        <div class="text-gray-400 text-xs mt-1">{{ $s['count'] }} {{ Str::plural('entity', $s['count']) }}</div>
+                    </div>
                 </a>
                 @endforeach
             </div>
@@ -150,11 +158,19 @@ $kiccBlue = '#046bd2';
                 @php
                     $aKey = strtolower($a->category ?? 'default');
                     $aIcon = $iconMap[$aKey] ?? $iconMap['default'];
+                    $wiggleMap = [
+                        'Tea Highlands Tour' => 'library/tea-farms/_3d/burst-00/wiggle.mp4',
+                        'Mugumo-ini Falls Canyoning' => 'library/adventure-rappelling/_3d/burst-00/wiggle.mp4',
+                    ];
+                    $wiggle = isset($wiggleMap[$a->name]) ? media('counties/' . $county->slug . '/' . $wiggleMap[$a->name]) : null;
                 @endphp
                 <a href="{{ route('attractions.show', $a->id) }}" class="bg-white border border-gray-200 rounded-2xl overflow-hidden hover:border-kicc-gold/40 transition-all group card-hover fx-sweep" data-tilt="7">
-                    <div class="h-36 bg-gray-100 flex items-center justify-center overflow-hidden relative">
+                    <div class="h-36 bg-gray-100 flex items-center justify-center overflow-hidden relative" @if($wiggle) data-wiggle="{{ $wiggle }}" @endif>
                         @if($a->image_url)
                         <img src="{{ $a->image_url }}" alt="{{ $a->name }}" class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500" onerror="this.style.display='none'">
+                        @endif
+                        @if($wiggle)
+                        <span class="absolute top-2 right-2 z-10 px-2 py-0.5 rounded-full bg-black/60 text-white text-[9px] font-black uppercase tracking-wider">3D</span>
                         @endif
                         <div class="absolute inset-0 flex items-center justify-center {{ $a->image_url ? 'opacity-0 group-hover:opacity-100 transition-opacity bg-black/30' : '' }}">
                             <span class="text-4xl {{ $a->image_url ? 'text-white drop-shadow-lg' : 'text-gray-300' }} group-hover:scale-110 transition-transform">{{ $aIcon }}</span>
@@ -279,3 +295,58 @@ $kiccBlue = '#046bd2';
     </div>
 </div>
 @endsection
+
+@push('scripts')
+{{-- Three.js 3D particle terrain — Murang'a highlands wireframe under the hero --}}
+<script type="module">
+import * as THREE from 'three';
+(function () {
+    const canvas = document.getElementById('county-3d-terrain');
+    if (!canvas) return;
+    const renderer = new THREE.WebGLRenderer({ canvas, alpha: true, antialias: true });
+    const scene = new THREE.Scene();
+    const camera = new THREE.PerspectiveCamera(55, 2, 0.1, 100);
+    camera.position.set(0, 2.1, 4.2);
+    camera.lookAt(0, 0.4, 0);
+
+    const W = 90, H = 90, SEP = 0.16;
+    const geo = new THREE.PlaneGeometry(W * SEP, H * SEP, W - 1, H - 1);
+    geo.rotateX(-Math.PI / 2);
+    const pos = geo.attributes.position;
+    const base = new Float32Array(pos.count);
+    for (let i = 0; i < pos.count; i++) {
+        const x = pos.getX(i), z = pos.getZ(i);
+        base[i] = Math.sin(x * 0.9) * Math.cos(z * 0.7) * 0.35
+                + Math.sin(x * 0.35 + z * 0.5) * 0.55
+                + Math.cos(x * 1.7 + z * 1.3) * 0.12;
+    }
+    const mat = new THREE.PointsMaterial({ color: 0x046bd2, size: 0.035, transparent: true, opacity: 0.85 });
+    const pts = new THREE.Points(geo, mat);
+    scene.add(pts);
+    const wire = new THREE.LineSegments(new THREE.WireframeGeometry(geo),
+        new THREE.LineBasicMaterial({ color: 0xFFCD05, transparent: true, opacity: 0.06 }));
+    scene.add(wire);
+
+    function resize() {
+        const w = canvas.clientWidth, h = canvas.clientHeight;
+        if (canvas.width !== w || canvas.height !== h) {
+            renderer.setSize(w, h, false);
+            camera.aspect = w / h; camera.updateProjectionMatrix();
+        }
+    }
+    let t = 0;
+    (function loop() {
+        requestAnimationFrame(loop);
+        resize();
+        t += 0.008;
+        for (let i = 0; i < pos.count; i++) {
+            const x = pos.getX(i), z = pos.getZ(i);
+            pos.setY(i, base[i] + Math.sin(x * 1.4 + t) * Math.cos(z * 1.1 + t * 0.8) * 0.08);
+        }
+        pos.needsUpdate = true;
+        pts.rotation.y = wire.rotation.y = Math.sin(t * 0.25) * 0.12;
+        renderer.render(scene, camera);
+    })();
+})();
+</script>
+@endpush
