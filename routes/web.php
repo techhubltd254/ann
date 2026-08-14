@@ -151,6 +151,9 @@ Route::get('/export/apply/{slug}', [\App\Http\Controllers\Web\TradeExportControl
 Route::post('/export/enquiry', [\App\Http\Controllers\Web\TradeExportController::class, 'storeEnquiry'])->name('trade.enquiry.store');
 Route::get('/export/success/{reference}', [\App\Http\Controllers\Web\TradeExportController::class, 'enquirySuccess'])->name('trade.enquiry.success');
 
+// Search
+Route::get('/search', [\App\Http\Controllers\Web\SearchController::class, 'index'])->name('search.index');
+
 // Trade admin (authenticated)
 Route::middleware('auth')->group(function () {
     Route::get('/kicc-admin/trade/enquiries', [\App\Http\Controllers\Web\TradeAdminController::class, 'enquiries'])->name('trade.admin.enquiries');
