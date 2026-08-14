@@ -29,6 +29,7 @@ class TradeExportController extends Controller
 
         $appliedCategory = $data['product_category'] ?? '';
         $appliedDestination = $data['destination'] ?? '';
+        $appliedBloc = $data['trading_bloc_id'] ?? null;
 
         $query = TradeAgreement::with('bloc')->active();
         if ($appliedCategory) {
@@ -38,8 +39,8 @@ class TradeExportController extends Controller
                   ->orWhere('title', 'like', "%{$appliedCategory}%");
             });
         }
-        if ($data['trading_bloc_id']) {
-            $query->where('trading_bloc_id', $data['trading_bloc_id']);
+        if ($appliedBloc) {
+            $query->where('trading_bloc_id', $appliedBloc);
         } elseif ($appliedDestination) {
             $query->where(function ($q) use ($appliedDestination) {
                 $q->where('partner_country', 'like', "%{$appliedDestination}%")
@@ -49,8 +50,7 @@ class TradeExportController extends Controller
         $matches = $query->latest()->get();
         $blocs = TradingBloc::where('is_active', true)->orderBy('name')->get();
 
-        return view('trade-agreements.eligibility-results', compact('matches', 'appliedCategory', 'appliedDestination', 'blocs'));
-    }
+        return view('trade-agreements.eligibility-results', compact('matches', 'appliedCategory', 'appliedDestination', 'blocs'));    }
 
     public function applyForm($slug)
     {
