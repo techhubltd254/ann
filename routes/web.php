@@ -215,6 +215,18 @@ Route::middleware('auth')->group(function () {
 Route::get('/safety/alerts', [\App\Http\Controllers\Web\SafetyController::class, 'alerts'])->name('safety.alerts');
 Route::get('/safety/report', [\App\Http\Controllers\Web\SafetyController::class, 'reportForm'])->name('safety.report');
 Route::post('/safety/report', [\App\Http\Controllers\Web\SafetyController::class, 'submitReport'])->name('safety.report.submit');
+
+// KPIs & Monitoring
+Route::get('/kpi', [\App\Http\Controllers\Web\KpiController::class, 'dashboard'])->name('kpi.dashboard');
+
+// Multi-Currency
+Route::get('/currency', [\App\Http\Controllers\Web\MultiCurrencyController::class, 'settings'])->name('currency.settings');
+Route::post('/api/currency/convert', [\App\Http\Controllers\Web\MultiCurrencyController::class, 'convert'])->name('api.currency.convert');
+
+// Training & Documentation
+Route::get('/training', [\App\Http\Controllers\Web\TrainingDocController::class, 'index'])->name('training.index');
+Route::get('/training/admin-manual', [\App\Http\Controllers\Web\TrainingDocController::class, 'admin'])->name('training.admin');
+Route::get('/training/api-docs', [\App\Http\Controllers\Web\TrainingDocController::class, 'api'])->name('training.api');
 Route::middleware('auth')->group(function () {
     Route::get('/kicc-admin/trade/enquiries', [\App\Http\Controllers\Web\TradeAdminController::class, 'enquiries'])->name('trade.admin.enquiries');
     Route::post('/kicc-admin/trade/enquiries/{enquiry}', [\App\Http\Controllers\Web\TradeAdminController::class, 'updateStatus'])->name('trade.admin.enquiry.status');
