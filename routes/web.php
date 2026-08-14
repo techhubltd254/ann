@@ -68,6 +68,12 @@ Route::middleware('auth')->group(function () {
     Route::post('/kicc-admin/escrow/{id}/release', [\App\Http\Controllers\Web\KiccAdminController::class, 'releaseEscrow'])->name('kicc.admin.escrow.release');
     // National Government Exhibitor Portal
     Route::get('/national-admin', [\App\Http\Controllers\Web\NationalPortalController::class, 'index'])->name('national.admin');
+Route::post('/national-admin/ministries', [\App\Http\Controllers\Web\NationalPortalController::class, 'storeMinistry'])->name('national.admin.ministry.store');
+Route::post('/national-admin/ministries/{ministry}', [\App\Http\Controllers\Web\NationalPortalController::class, 'updateMinistry'])->name('national.admin.ministry.update');
+Route::get('/national-admin/ministries/{ministry}/delete', [\App\Http\Controllers\Web\NationalPortalController::class, 'deleteMinistry'])->name('national.admin.ministry.delete');
+Route::post('/national-admin/agencies', [\App\Http\Controllers\Web\NationalPortalController::class, 'storeAgency'])->name('national.admin.agency.store');
+Route::post('/national-admin/agencies/{agency}', [\App\Http\Controllers\Web\NationalPortalController::class, 'updateAgency'])->name('national.admin.agency.update');
+Route::get('/national-admin/agencies/{agency}/delete', [\App\Http\Controllers\Web\NationalPortalController::class, 'deleteAgency'])->name('national.admin.agency.delete');
     // County Exhibitor Portal (county = a website by itself)
     Route::get('/county-admin', [\App\Http\Controllers\Web\CountyPortalController::class, 'index'])->name('county.admin');
 
@@ -243,6 +249,23 @@ Route::get('/kicc/video-gallery', [\App\Http\Controllers\Web\KiccWebsiteControll
 Route::get('/kicc/policy-documents', [\App\Http\Controllers\Web\KiccWebsiteController::class, 'policyDocuments'])->name('kicc.policy-documents');
 Route::get('/kicc/opportunities', [\App\Http\Controllers\Web\KiccWebsiteController::class, 'opportunities'])->name('kicc.opportunities');
 Route::get('/kicc/faq', [\App\Http\Controllers\Web\KiccWebsiteController::class, 'faq'])->name('kicc.faq');
+
+// CMS Admin
+Route::middleware('auth')->prefix('kicc-admin/cms')->name('cms.admin.')->group(function () {
+    Route::get('/', [\App\Http\Controllers\Web\CmsController::class, 'adminIndex'])->name('index');
+    Route::post('/pages/{page}', [\App\Http\Controllers\Web\CmsController::class, 'updatePage'])->name('page.update');
+    Route::post('/pages', [\App\Http\Controllers\Web\CmsController::class, 'storePage'])->name('page.store');
+    Route::post('/team', [\App\Http\Controllers\Web\CmsController::class, 'storeTeamMember'])->name('team.store');
+    Route::post('/team/{member}', [\App\Http\Controllers\Web\CmsController::class, 'updateTeamMember'])->name('team.update');
+    Route::get('/team/{member}/delete', [\App\Http\Controllers\Web\CmsController::class, 'deleteTeamMember'])->name('team.delete');
+    Route::post('/timeline', [\App\Http\Controllers\Web\CmsController::class, 'storeTimelineEvent'])->name('timeline.store');
+    Route::get('/timeline/{event}/delete', [\App\Http\Controllers\Web\CmsController::class, 'deleteTimelineEvent'])->name('timeline.delete');
+    Route::post('/faq', [\App\Http\Controllers\Web\CmsController::class, 'storeFaq'])->name('faq.store');
+    Route::post('/faq/{faq}', [\App\Http\Controllers\Web\CmsController::class, 'updateFaq'])->name('faq.update');
+    Route::get('/faq/{faq}/delete', [\App\Http\Controllers\Web\CmsController::class, 'deleteFaq'])->name('faq.delete');
+    Route::post('/video', [\App\Http\Controllers\Web\CmsController::class, 'storeVideo'])->name('video.store');
+    Route::get('/video/{video}/delete', [\App\Http\Controllers\Web\CmsController::class, 'deleteVideo'])->name('video.delete');
+});
 
 // KPIs & Monitoring
 Route::get('/kpi', [\App\Http\Controllers\Web\KpiController::class, 'dashboard'])->name('kpi.dashboard');

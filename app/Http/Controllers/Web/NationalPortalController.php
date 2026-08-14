@@ -13,6 +13,7 @@ use App\Models\Sector;
 use App\Models\User;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Str;
 
 /**
  * National Government Exhibitor Portal.
@@ -61,5 +62,87 @@ class NationalPortalController extends Controller
             'ministries' => $ministries, 'agencies' => $agencies,
             'user' => Auth::user(),
         ]);
+    }
+
+    // ─── MINISTRY CRUD ───
+    public function storeMinistry(Request $request)
+    {
+        $this->authorizeNational();
+        $data = $request->validate([
+            'name' => 'required|string|max:255',
+            'code' => 'nullable|string|max:20',
+            'color' => 'nullable|string|max:20',
+            'description' => 'nullable|string|max:2000',
+            'website' => 'nullable|url|max:500',
+            'contact_email' => 'nullable|email|max:255',
+            'contact_phone' => 'nullable|string|max:20',
+        ]);
+        $data['slug'] = Str::slug($data['name']);
+        Ministry::create($data);
+        return back()->with('success', "Ministry {$data['name']} created.");
+    }
+
+    public function updateMinistry(Request $request, Ministry $ministry)
+    {
+        $this->authorizeNational();
+        $data = $request->validate([
+            'name' => 'required|string|max:255',
+            'code' => 'nullable|string|max:20',
+            'color' => 'nullable|string|max:20',
+            'description' => 'nullable|string|max:2000',
+            'website' => 'nullable|url|max:500',
+            'contact_email' => 'nullable|email|max:255',
+            'contact_phone' => 'nullable|string|max:20',
+            'is_active' => 'nullable|boolean',
+        ]);
+        $ministry->update($data);
+        return back()->with('success', "Ministry {$ministry->name} updated.");
+    }
+
+    public function deleteMinistry(Ministry $ministry)
+    {
+        $this->authorizeNational();
+        $ministry->delete();
+        return back()->with('success', 'Ministry removed.');
+    }
+
+    // ─── AGENCY CRUD ───
+    public function storeAgency(Request $request)
+    {
+        $this->authorizeNational();
+        $data = $request->validate([
+            'ministry_id' => 'required|exists:ministries,id',
+            'name' => 'required|string|max:255',
+            'code' => 'nullable|string|max:20',
+            'description' => 'nullable|string|max:2000',
+            'website' => 'nullable|url|max:500',
+            'contact_email' => 'nullable|email|max:255',
+        ]);
+        $data['slug'] = Str::slug($data['name']);
+        Agency::create($data);
+        return back()->with('success', "Agency {$data['name']} created.");
+    }
+
+    public function updateAgency(Request $request, Agency $agency)
+    {
+        $this->authorizeNational();
+        $data = $request->validate([
+            'ministry_id' => 'required|exists:ministries,id',
+            'name' => 'required|string|max:255',
+            'code' => 'nullable|string|max:20',
+            'description' => 'nullable|string|max:2000',
+            'website' => 'nullable|url|max:500',
+            'contact_email' => 'nullable|email|max:255',
+            'is_active' => 'nullable|boolean',
+        ]);
+        $agency->update($data);
+        return back()->with('success', "Agency {$agency->name} updated.");
+    }
+
+    public function deleteAgency(Agency $agency)
+    {
+        $this->authorizeNational();
+        $agency->delete();
+        return back()->with('success', 'Agency removed.');
     }
 }
