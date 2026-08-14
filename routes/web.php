@@ -184,6 +184,9 @@ Route::get('/tourism/guides', [\App\Http\Controllers\Web\TourismEntityController
 Route::get('/tourism/car-rentals', [\App\Http\Controllers\Web\TourismEntityController::class, 'rentals'])->name('tourism.rentals');
 Route::get('/tourism/restaurants', [\App\Http\Controllers\Web\TourismEntityController::class, 'restaurants'])->name('tourism.restaurants');
 Route::get('/tourism/event-organizers', [\App\Http\Controllers\Web\TourismEntityController::class, 'organizers'])->name('tourism.organizers');
+
+// Tourism Intelligence Dashboard
+Route::get('/intelligence', [\App\Http\Controllers\Web\IntelligenceController::class, 'dashboard'])->name('intelligence.dashboard');
 Route::middleware('auth')->group(function () {
     Route::get('/kicc-admin/trade/enquiries', [\App\Http\Controllers\Web\TradeAdminController::class, 'enquiries'])->name('trade.admin.enquiries');
     Route::post('/kicc-admin/trade/enquiries/{enquiry}', [\App\Http\Controllers\Web\TradeAdminController::class, 'updateStatus'])->name('trade.admin.enquiry.status');
