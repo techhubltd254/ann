@@ -153,8 +153,8 @@ Route::get('/export/success/{reference}', [\App\Http\Controllers\Web\TradeExport
 
 // Trade admin (authenticated)
 Route::middleware('auth')->group(function () {
-    Route::get('/admin/trade/enquiries', [\App\Http\Controllers\Web\TradeAdminController::class, 'enquiries'])->name('trade.admin.enquiries');
-    Route::post('/admin/trade/enquiries/{enquiry}', [\App\Http\Controllers\Web\TradeAdminController::class, 'updateStatus'])->name('trade.admin.enquiry.status');
+    Route::get('/kicc-admin/trade/enquiries', [\App\Http\Controllers\Web\TradeAdminController::class, 'enquiries'])->name('trade.admin.enquiries');
+    Route::post('/kicc-admin/trade/enquiries/{enquiry}', [\App\Http\Controllers\Web\TradeAdminController::class, 'updateStatus'])->name('trade.admin.enquiry.status');
 });
 
 Route::get('/venues', [ExhibitionController::class, 'venues'])->name('venues.index');
