@@ -197,6 +197,24 @@ Route::get('/api/recommendations', [\App\Http\Controllers\Web\AIController::clas
 Route::get('/api/forecast', [\App\Http\Controllers\Web\AIController::class, 'forecast'])->name('api.forecast');
 Route::post('/api/fraud-check', [\App\Http\Controllers\Web\AIController::class, 'fraudCheck'])->name('api.fraud.check');
 Route::post('/api/image-search', [\App\Http\Controllers\Web\AIController::class, 'imageSearch'])->name('api.image.search');
+
+// Integrations
+Route::get('/integrations', [\App\Http\Controllers\Web\IntegrationController::class, 'settings'])->name('integrations.settings');
+Route::get('/counties/{county}/map', [\App\Http\Controllers\Web\IntegrationController::class, 'map'])->name('counties.map');
+Route::get('/counties/{county}/weather', [\App\Http\Controllers\Web\IntegrationController::class, 'weather'])->name('counties.weather');
+
+// LMS / Capacity Building
+Route::get('/lms', [\App\Http\Controllers\Web\CourseController::class, 'index'])->name('lms.index');
+Route::get('/lms/{course}', [\App\Http\Controllers\Web\CourseController::class, 'show'])->name('lms.show');
+Route::post('/lms/{course}/enroll', [\App\Http\Controllers\Web\CourseController::class, 'enroll'])->name('lms.enroll');
+Route::middleware('auth')->group(function () {
+    Route::get('/my-courses', [\App\Http\Controllers\Web\CourseController::class, 'myCourses'])->name('lms.my-courses');
+});
+
+// Safety & Security
+Route::get('/safety/alerts', [\App\Http\Controllers\Web\SafetyController::class, 'alerts'])->name('safety.alerts');
+Route::get('/safety/report', [\App\Http\Controllers\Web\SafetyController::class, 'reportForm'])->name('safety.report');
+Route::post('/safety/report', [\App\Http\Controllers\Web\SafetyController::class, 'submitReport'])->name('safety.report.submit');
 Route::middleware('auth')->group(function () {
     Route::get('/kicc-admin/trade/enquiries', [\App\Http\Controllers\Web\TradeAdminController::class, 'enquiries'])->name('trade.admin.enquiries');
     Route::post('/kicc-admin/trade/enquiries/{enquiry}', [\App\Http\Controllers\Web\TradeAdminController::class, 'updateStatus'])->name('trade.admin.enquiry.status');
