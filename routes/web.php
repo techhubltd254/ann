@@ -178,6 +178,15 @@ Route::middleware('auth')->group(function () {
     Route::post('/kicc-admin/reviews/{review}/reject', [\App\Http\Controllers\Web\ReviewAdminController::class, 'reject'])->name('review.admin.reject');
 });
 
+// MFA (Multi-Factor Authentication)
+Route::middleware('auth')->group(function () {
+    Route::get('/mfa/setup', [\App\Http\Controllers\Web\MfaController::class, 'showSetup'])->name('mfa.setup');
+    Route::post('/mfa/setup', [\App\Http\Controllers\Web\MfaController::class, 'confirmSetup'])->name('mfa.setup.confirm');
+    Route::post('/mfa/disable', [\App\Http\Controllers\Web\MfaController::class, 'disable'])->name('mfa.disable');
+});
+Route::get('/mfa/challenge', [\App\Http\Controllers\Web\MfaController::class, 'showChallenge'])->name('mfa.challenge');
+Route::post('/mfa/challenge', [\App\Http\Controllers\Web\MfaController::class, 'verifyChallenge'])->name('mfa.challenge.verify');
+
 Route::get('/venues', [ExhibitionController::class, 'venues'])->name('venues.index');
 Route::get('/venues/{venue}', [VenueController::class, 'show'])->name('venues.show');
 Route::post('/venues/{venue}/inquire', [VenueController::class, 'inquire'])->name('venues.inquire');
