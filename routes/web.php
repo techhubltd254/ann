@@ -163,6 +163,14 @@ Route::middleware('auth')->group(function () {
     Route::get('/api/messages/unread', [\App\Http\Controllers\Web\MessagingController::class, 'unreadCount'])->name('api.messages.unread');
 });
 
+// Notifications
+Route::middleware('auth')->group(function () {
+    Route::get('/notifications', [\App\Http\Controllers\Web\NotificationController::class, 'index'])->name('notifications.index');
+    Route::post('/notifications/{notification}/read', [\App\Http\Controllers\Web\NotificationController::class, 'markRead'])->name('notifications.read');
+    Route::post('/notifications/read-all', [\App\Http\Controllers\Web\NotificationController::class, 'markAllRead'])->name('notifications.read-all');
+    Route::get('/api/notifications/unread', [\App\Http\Controllers\Web\NotificationController::class, 'unreadCount'])->name('api.notifications.unread');
+});
+
 // Trade admin (authenticated)
 Route::middleware('auth')->group(function () {
     Route::get('/kicc-admin/trade/enquiries', [\App\Http\Controllers\Web\TradeAdminController::class, 'enquiries'])->name('trade.admin.enquiries');
