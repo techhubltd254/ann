@@ -59,6 +59,7 @@ class CountyAdminController extends Controller
         $ads = Advertisement::where('placement', 'like', "%{$county->slug}%")->latest()->get();
         $sectors = Sector::where('is_active', true)->orderBy('name')->get();
         $linkedSectors = DB::table('county_sector')->where('county_id', $county->id)->pluck('sector_id');
+        $tileSectors = DB::table('county_sector')->where('county_id', $county->id)->where('display_on_tile', 'yes')->pluck('sector_id')->toArray();
         $allSectors = Sector::orderBy('name')->get();
         $sectorEntities = SectorEntity::where('county_id', $county->id)->limit(100)->get();
 
@@ -97,7 +98,7 @@ class CountyAdminController extends Controller
         return view('dashboards.county-admin', compact(
             'county', 'tab', 'navItems', 'stats', 'products', 'attractions',
             'hotels', 'sectorImages', 'plans', 'marketplaceProducts', 'ads',
-            'sectors', 'linkedSectors', 'allSectors', 'sectorEntities'
+            'sectors', 'linkedSectors', 'tileSectors', 'allSectors', 'sectorEntities'
         ) + ['video4dMap' => $this->video4dMap($county)]);
     }
 
@@ -151,6 +152,24 @@ class CountyAdminController extends Controller
             $county->sectors()->detach($data['sector_id']);
         }
         return back()->with('success', 'Sector ' . ($data['action'] === 'attach' ? 'added' : 'removed') . '.');
+    }
+
+    /** Toggle a sector's display_on_tile flag for the Economic Sectors grid. */
+    public function toggleTileSector(Request $request, string $slug)
+    {
+        $county = $this->authorizeCounty($slug);
+        $data = $request->validate([
+            'sector_id' => 'required|exists:sectors,id',
+            'display_on_tile' => 'required|in:yes,no',
+        ]);
+        DB::table('county_sector')
+            ->where('county_id', $county->id)
+            ->where('sector_id', $data['sector_id'])
+            ->update([
+                'display_on_tile' => $data['display_on_tile'],
+                'displayOnTile' => $data['display_on_tile'],
+            ]);
+        return back()->with('success', 'Tile display ' . ($data['display_on_tile'] === 'yes' ? 'enabled' : 'disabled') . '.');
     }
 
     /* ─── SECTOR ENTITY CRUD ─── */

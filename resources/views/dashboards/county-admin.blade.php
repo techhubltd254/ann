@@ -156,19 +156,33 @@
                     <p class="text-xs text-gray-400 mb-5">Toggle sectors on/off for this county.</p>
                     <div class="space-y-2 max-h-96 overflow-y-auto">
                         @foreach($allSectors as $s)
-                        <form method="POST" action="{{ route('county.admin.sector', $county->slug) }}" class="flex items-center justify-between py-2 border-b border-gray-50 last:border-0">
-                            @csrf
-                            <input type="hidden" name="sector_id" value="{{ $s->id }}">
+                        <div class="flex items-center justify-between py-2 border-b border-gray-50 last:border-0">
                             @if($linkedSectors->contains($s->id))
                             <span class="flex items-center gap-2"><span class="w-2 h-2 rounded-full bg-emerald-500"></span><span class="font-semibold text-gray-900 text-sm">{{ $s->name }}</span></span>
-                            <input type="hidden" name="action" value="detach">
-                            <button class="text-xs font-bold px-3 py-1.5 rounded-lg bg-red-50 text-red-600 hover:bg-red-100">Remove</button>
+                            <div class="flex items-center gap-2">
+                                <form method="POST" action="{{ route('county.admin.sector.tile', $county->slug) }}" class="inline">
+                                    @csrf
+                                    <input type="hidden" name="sector_id" value="{{ $s->id }}">
+                                    <input type="hidden" name="display_on_tile" value="{{ in_array($s->id, $tileSectors) ? 'no' : 'yes' }}">
+                                    <button class="text-[10px] font-bold px-2 py-1 rounded-lg whitespace-nowrap {{ in_array($s->id, $tileSectors) ? 'bg-[#046bd2]/10 text-[#046bd2]' : 'bg-gray-100 text-gray-500' }}">{{ in_array($s->id, $tileSectors) ? 'Tile: On' : 'Tile: Off' }}</button>
+                                </form>
+                                <form method="POST" action="{{ route('county.admin.sector', $county->slug) }}" class="inline">
+                                    @csrf
+                                    <input type="hidden" name="sector_id" value="{{ $s->id }}">
+                                    <input type="hidden" name="action" value="detach">
+                                    <button class="text-xs font-bold px-3 py-1.5 rounded-lg bg-red-50 text-red-600 hover:bg-red-100">Remove</button>
+                                </form>
+                            </div>
                             @else
                             <span class="flex items-center gap-2"><span class="w-2 h-2 rounded-full bg-gray-300"></span><span class="text-gray-500 text-sm">{{ $s->name }}</span></span>
-                            <input type="hidden" name="action" value="attach">
-                            <button class="text-xs font-bold px-3 py-1.5 rounded-lg bg-gray-100 text-gray-600 hover:bg-gray-200">Add</button>
+                            <form method="POST" action="{{ route('county.admin.sector', $county->slug) }}" class="inline">
+                                @csrf
+                                <input type="hidden" name="sector_id" value="{{ $s->id }}">
+                                <input type="hidden" name="action" value="attach">
+                                <button class="text-xs font-bold px-3 py-1.5 rounded-lg bg-gray-100 text-gray-600 hover:bg-gray-200">Add</button>
+                            </form>
                             @endif
-                        </form>
+                        </div>
                         @endforeach
                     </div>
                 </div>
