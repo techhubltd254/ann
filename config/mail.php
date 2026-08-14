@@ -75,6 +75,11 @@ return [
             'channel' => env('MAIL_LOG_CHANNEL'),
         ],
 
+        'sendgrid' => [
+            'transport' => 'sendgrid',
+            'key' => env('SENDGRID_API_KEY'),
+        ],
+
         'array' => [
             'transport' => 'array',
         ],

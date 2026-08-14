@@ -2,10 +2,14 @@
 
 namespace App\Providers;
 
+use App\Services\SendgridApiTransport;
+use GuzzleHttp\Client;
 use Illuminate\Cache\RateLimiting\Limit;
 use Illuminate\Support\Facades\Blade;
+use Illuminate\Support\Facades\Mail;
 use Illuminate\Support\Facades\RateLimiter;
 use Illuminate\Support\ServiceProvider;
+use Symfony\Component\Mailer\Transport\Dsn;
 
 class AppServiceProvider extends ServiceProvider
 {
@@ -28,5 +32,12 @@ class AppServiceProvider extends ServiceProvider
         RateLimiter::for('api', function () {
             return Limit::perMinute(60)->by(optional(request()->user())->id ?: request()->ip());
         });
+
+        // SendGrid API mailer (uses HTTP API, not SMTP — works on port 443)
+        if (env('SENDGRID_API_KEY')) {
+            Mail::extend('sendgrid', function (array $config) {
+                return new \App\Services\SendgridApiTransport($config['key']);
+            });
+        }
     }
 }
