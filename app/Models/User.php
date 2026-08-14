@@ -28,6 +28,7 @@ use Spatie\Permission\Traits\HasRoles;
     'kra_pin',
     'business_reg',
     'phone_verified_at',
+    'email_verified_at',
     'mfa_enabled',
     'mfa_secret',
     'status',
