@@ -30,15 +30,7 @@ class KiccWebsiteController extends Controller
         return view('kicc-website.news.show', compact('article', 'related'));
     }
 
-    // ─── ABOUT US ───
-    public function about() { return view('kicc-website.about'); }
-    public function mission() { return view('kicc-website.mission'); }
-    public function board() { return view('kicc-website.board'); }
-    public function management() { return view('kicc-website.management'); }
-    public function history() { return view('kicc-website.history'); }
-    public function orgStructure() { return view('kicc-website.org-structure'); }
-
-    // ─── EVENT BOOKING ───
+    // ─── ABOUT US (delegated to CmsController) ───
     public function eventBookingForm()
     {
         $venues = Venue::orderBy('name')->get();
@@ -111,16 +103,24 @@ class KiccWebsiteController extends Controller
         return back()->with('success', 'Subscribed! Check your inbox.');
     }
 
-    // ─── STATIC PAGES ───
-    public function pricing() { return view('kicc-website.pricing'); }
-    public function sustainability() { return view('kicc-website.sustainability'); }
-    public function visitorFacilities() { return view('kicc-website.visitor-facilities'); }
-    public function transport() { return view('kicc-website.transport'); }
-    public function placesToStay() { return view('kicc-website.places-to-stay'); }
-    public function helipad() { return view('kicc-website.helipad'); }
+    // ─── STATIC PAGES (now DB-driven from CmsController) ───
+    public function about() { return app(\App\Http\Controllers\Web\CmsController::class)->about(); }
+    public function mission() { return app(\App\Http\Controllers\Web\CmsController::class)->mission(); }
+    public function board() { return app(\App\Http\Controllers\Web\CmsController::class)->board(); }
+    public function management() { return app(\App\Http\Controllers\Web\CmsController::class)->management(); }
+    public function history() { return app(\App\Http\Controllers\Web\CmsController::class)->history(); }
+    public function pricing() { return app(\App\Http\Controllers\Web\CmsController::class)->pricing(); }
+    public function faq() { return app(\App\Http\Controllers\Web\CmsController::class)->faq(); }
+    public function videoGallery() { return app(\App\Http\Controllers\Web\CmsController::class)->videoGallery(); }
+    public function services() { return app(\App\Http\Controllers\Web\CmsController::class)->services(); }
+    public function sustainability() { $page = \App\Models\Page::where('slug','sustainability')->firstOrNew([]); return view('kicc-website.sustainability', compact('page')); }
+    public function visitorFacilities() { $page = \App\Models\Page::where('slug','visitor-facilities')->firstOrNew([]); return view('kicc-website.visitor-facilities', compact('page')); }
+    public function transport() { $page = \App\Models\Page::where('slug','transport')->firstOrNew([]); return view('kicc-website.transport', compact('page')); }
+    public function helipad() { $page = \App\Models\Page::where('slug','helipad')->firstOrNew([]); return view('kicc-website.helipad', compact('page')); }
+    public function placesToStay() { $page = \App\Models\Page::where('slug','places-to-stay')->firstOrNew([]); return view('kicc-website.places-to-stay', compact('page')); }
+    public function opportunities() { $page = \App\Models\Page::where('slug','opportunities')->firstOrNew([]); return view('kicc-website.opportunities', compact('page')); }
+    public function policyDocuments() { $page = \App\Models\Page::where('slug','policy-documents')->firstOrNew([]); return view('kicc-website.policy-documents', compact('page')); }
     public function virtualTour() { return view('kicc-website.virtual-tour'); }
-    public function videoGallery() { return view('kicc-website.video-gallery'); }
-    public function policyDocuments() { return view('kicc-website.policy-documents'); }
-    public function opportunities() { return view('kicc-website.opportunities'); }
-    public function faq() { return view('kicc-website.faq'); }
+    public function orgStructure() { return view('kicc-website.org-structure'); }
+
 }
