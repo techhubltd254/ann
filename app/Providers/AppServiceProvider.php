@@ -34,7 +34,8 @@ class AppServiceProvider extends ServiceProvider
         });
 
         // SendGrid API mailer (uses HTTP API, not SMTP — works on port 443)
-        if (env('SENDGRID_API_KEY')) {
+        // Uses config() not env() because config is cached in production
+        if (config('mail.mailers.sendgrid.key')) {
             Mail::extend('sendgrid', function (array $config) {
                 return new \App\Services\SendgridApiTransport($config['key']);
             });
