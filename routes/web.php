@@ -154,6 +154,15 @@ Route::get('/export/success/{reference}', [\App\Http\Controllers\Web\TradeExport
 // Search
 Route::get('/search', [\App\Http\Controllers\Web\SearchController::class, 'index'])->name('search.index');
 
+// Messaging
+Route::middleware('auth')->group(function () {
+    Route::get('/messages', [\App\Http\Controllers\Web\MessagingController::class, 'inbox'])->name('messaging.inbox');
+    Route::get('/messages/{conversation}', [\App\Http\Controllers\Web\MessagingController::class, 'show'])->name('messaging.show');
+    Route::post('/messages/start', [\App\Http\Controllers\Web\MessagingController::class, 'start'])->name('messaging.start');
+    Route::post('/messages/{conversation}/send', [\App\Http\Controllers\Web\MessagingController::class, 'send'])->name('messaging.send');
+    Route::get('/api/messages/unread', [\App\Http\Controllers\Web\MessagingController::class, 'unreadCount'])->name('api.messages.unread');
+});
+
 // Trade admin (authenticated)
 Route::middleware('auth')->group(function () {
     Route::get('/kicc-admin/trade/enquiries', [\App\Http\Controllers\Web\TradeAdminController::class, 'enquiries'])->name('trade.admin.enquiries');
