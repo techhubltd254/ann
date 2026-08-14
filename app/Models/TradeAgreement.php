@@ -33,7 +33,7 @@ class TradeAgreement extends Model
     }
 
     public function bloc() { return $this->belongsTo(TradingBloc::class, 'trading_bloc_id'); }
-    public function categories() { return $this->belongsToMany(ProductCategory::class, 'trade_agreement_product_category'); }
+    public function categories() { return $this->belongsToMany(ProductCategory::class, 'trade_agreement_product_category', 'trade_agreement_id', 'category_id'); }
     public function scopeActive($q) { return $q->where('is_active', true); }
     public function scopeFeatured($q) { return $q->where('is_featured', true); }
 }
