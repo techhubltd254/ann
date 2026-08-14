@@ -43,7 +43,7 @@
         <a href="{{ route('venues.show', $v->slug) }}" class="bg-white rounded-2xl border border-gray-200 overflow-hidden hover:border-kicc-gold/40 transition-all group card-hover block" data-tilt="6" data-reveal data-reveal-delay="{{ ($i % 3) * 80 }}">
             <div class="tilt-glare"></div>
             <div class="h-40 bg-[#F9FAFB] flex items-center justify-center overflow-hidden relative">
-                @php $img = media("kicc/{$v->slug}.jpg"); @endphp
+                @php $img = $v->cover_image ? media($v->cover_image) : media("kicc/{$v->slug}.jpg"); @endphp
                 <img src="{{ $img }}" alt="{{ $v->name }}" loading="lazy" decoding="async" class="w-full h-full object-cover opacity-70 group-hover:opacity-100 group-hover:scale-105 transition-all duration-500"
                      onerror="this.style.display='none'">
                 <span class="absolute text-gray-900/15 text-6xl font-black">{{ $v->name[0] }}</span>

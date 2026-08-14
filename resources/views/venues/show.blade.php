@@ -16,7 +16,7 @@
     <div class="grid lg:grid-cols-3 gap-8">
         <div class="lg:col-span-2">
             <div class="rounded-2xl overflow-hidden h-80 bg-[#F9FAFB]">
-                @php $img = media("kicc/{$venue->slug}.jpg"); @endphp
+                @php $img = $venue->cover_image ? media($venue->cover_image) : media("kicc/{$venue->slug}.jpg"); @endphp
                 <img src="{{ $img }}" alt="{{ $venue->name }}" class="w-full h-full object-cover"
                      onerror="this.style.display='none';this.parentElement.innerHTML='<div class=\'w-full h-full flex items-center justify-center text-6xl font-black text-gray-900/20\'>{{ $venue->name[0] }}</div>'">
             </div>

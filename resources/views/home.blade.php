@@ -6,7 +6,7 @@
 @section('content')
 {{-- HERO — exactly from Figma --}}
 <section class="relative min-h-screen flex items-center overflow-hidden section-transition" data-section="hero">
-    <div x-data="{ current: 1, imgs: ['{{ media('kicc/about-tower.jpg') }}', '{{ media('kicc/about-hall.jpg') }}', '{{ media('kicc/about-sign.jpg') }}', '{{ media('kicc/ANP_3925.jpg') }}', '{{ media('kicc/DSC_8892.jpg') }}'] }" x-init="setInterval(() => current = current === imgs.length - 1 ? 0 : current + 1, 5000)" class="absolute inset-0 w-full h-full" data-depth="0.4">
+    <div x-data="{ current: 1, imgs: ['{{ media('kicc/venues/mainfront.jpg') }}', '{{ media('kicc/venues/stiched.jpg') }}', '{{ media('kicc/venues/kicc-main-gate.jpg') }}', '{{ media('kicc/venues/comesa-frontside.jpg') }}', '{{ media('kicc/venues/aberdare-entrance.jpg') }}'] }" x-init="setInterval(() => current = current === imgs.length - 1 ? 0 : current + 1, 5000)" class="absolute inset-0 w-full h-full" data-depth="0.4">
         <template x-for="(img, i) in imgs" :key="i">
             <img :src="img" :class="{ 'opacity-100': current === i, 'opacity-0': current !== i } absolute inset-0 w-full h-full object-cover transition-opacity duration-1000" alt="KICC">
         </template>
