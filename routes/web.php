@@ -187,6 +187,16 @@ Route::get('/tourism/event-organizers', [\App\Http\Controllers\Web\TourismEntity
 
 // Tourism Intelligence Dashboard
 Route::get('/intelligence', [\App\Http\Controllers\Web\IntelligenceController::class, 'dashboard'])->name('intelligence.dashboard');
+
+// AI Features
+Route::get('/ai/chat', [\App\Http\Controllers\Web\AIController::class, 'chatPage'])->name('ai.chat');
+Route::post('/ai/chat', [\App\Http\Controllers\Web\AIController::class, 'chat'])->name('ai.chat.api');
+Route::get('/ai/itinerary', [\App\Http\Controllers\Web\AIController::class, 'itineraryPage'])->name('ai.itinerary');
+Route::post('/ai/itinerary', [\App\Http\Controllers\Web\AIController::class, 'itinerary'])->name('ai.itinerary.api');
+Route::get('/api/recommendations', [\App\Http\Controllers\Web\AIController::class, 'recommendations'])->name('api.recommendations');
+Route::get('/api/forecast', [\App\Http\Controllers\Web\AIController::class, 'forecast'])->name('api.forecast');
+Route::post('/api/fraud-check', [\App\Http\Controllers\Web\AIController::class, 'fraudCheck'])->name('api.fraud.check');
+Route::post('/api/image-search', [\App\Http\Controllers\Web\AIController::class, 'imageSearch'])->name('api.image.search');
 Route::middleware('auth')->group(function () {
     Route::get('/kicc-admin/trade/enquiries', [\App\Http\Controllers\Web\TradeAdminController::class, 'enquiries'])->name('trade.admin.enquiries');
     Route::post('/kicc-admin/trade/enquiries/{enquiry}', [\App\Http\Controllers\Web\TradeAdminController::class, 'updateStatus'])->name('trade.admin.enquiry.status');
