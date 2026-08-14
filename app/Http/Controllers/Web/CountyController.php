@@ -43,6 +43,17 @@ class CountyController extends Controller
         $featuredAttractions = $county->tourismAttractions()->where('is_published', true)->orderBy('name')->take(12)->get();
         $featuredHotels = $county->hotels()->where('is_published', true)->orderByDesc('star_rating')->take(8)->get();
         $countyProducts = $county->products()->where('is_published', true)->whereNotNull('price')->orderByDesc('price')->take(8)->get();
+
+        // Attach uploaded 4D immersive videos (slot '4d_video') to each entity
+        foreach ($featuredAttractions as $a) {
+            $a->media4d = MediaAsset::resolveSlot(\App\Models\CountyTourismAttraction::class, $a->id, '4d_video');
+        }
+        foreach ($featuredHotels as $h) {
+            $h->media4d = MediaAsset::resolveSlot(\App\Models\CountyHotel::class, $h->id, '4d_video');
+        }
+        foreach ($countyProducts as $p) {
+            $p->media4d = MediaAsset::resolveSlot(\App\Models\CountyProduct::class, $p->id, '4d_video');
+        }
         $exhibitions = $county->exhibitions()->where('status', 'published')->orderBy('start_date', 'desc')->take(3)->get();
         $linkedSectors = $county->sectors()->orderBy('name')->get();
 

@@ -268,9 +268,55 @@
             </div>
             @endif
 
+            {{-- ═══════ 4D VIDEOS ═══════ --}}
+            @if($tab === 'videos4d')
+            <div class="bg-white border border-gray-200 rounded-2xl p-6">
+                <h3 class="font-bold text-gray-900 mb-2">4D Immersive Videos</h3>
+                <p class="text-xs text-gray-400 mb-6">Upload the finished 4D render (Gaussian Splat / immersive video) for each entity. It plays on the county page instead of a still image. Max 500 MB — MP4 or WebM.</p>
+
+                @foreach([['attraction', 'Attractions', $attractions], ['hotel', 'Places to Stay', $hotels], ['product', 'Commerce Products', $products]] as [$type, $label, $items])
+                <h4 class="text-xs font-black text-[#046bd2] uppercase tracking-widest mt-6 mb-3">{{ $label }}</h4>
+                <div class="grid sm:grid-cols-2 lg:grid-cols-3 gap-4 mb-4">
+                    @foreach($items as $entity)
+                    @php $asset = $video4dMap["{$type}-{$entity->id}"] ?? null; @endphp
+                    <div class="border border-gray-200 rounded-xl overflow-hidden {{ $asset ? 'ring-2 ring-[#046bd2]/40' : '' }}">
+                        <div class="h-28 bg-gray-900 relative flex items-center justify-center overflow-hidden">
+                            @if($asset)
+                            <video src="{{ $asset->url() }}" class="w-full h-full object-cover" muted loop playsinline autoplay></video>
+                            <span class="absolute top-1.5 left-1.5 px-1.5 py-0.5 rounded bg-[#046bd2] text-white text-[9px] font-black">4D LIVE</span>
+                            @else
+                            <span class="text-gray-500 text-xs">No 4D video yet</span>
+                            @endif
+                        </div>
+                        <div class="p-3">
+                            <div class="text-sm font-bold text-gray-900 truncate">{{ $entity->name }}</div>
+                            <div class="flex gap-1.5 mt-2">
+                                <form method="POST" action="{{ route('county.admin.4d.upload', $county->slug) }}" enctype="multipart/form-data" class="flex-1">
+                                    @csrf
+                                    <input type="hidden" name="entity_type" value="{{ $type }}">
+                                    <input type="hidden" name="entity_id" value="{{ $entity->id }}">
+                                    <label class="flex items-center justify-center h-8 rounded-lg bg-[#046bd2] text-white text-[10px] font-bold cursor-pointer hover:bg-[#045cb4] transition-all">
+                                        <input type="file" name="video" accept="video/mp4,video/webm,video/quicktime" class="sr-only" onchange="this.form.submit()">
+                                        {{ $asset ? 'Replace 4D' : 'Upload 4D' }}
+                                    </label>
+                                </form>
+                                @if($asset)
+                                <form method="POST" action="{{ route('county.admin.4d.delete', [$county->slug, $type, $entity->id]) }}" onsubmit="return confirm('Remove this 4D video?')">
+                                    @csrf
+                                    <button class="h-8 px-3 rounded-lg border border-red-200 text-red-500 text-[10px] font-bold hover:bg-red-50">Delete</button>
+                                </form>
+                                @endif
+                            </div>
+                        </div>
+                    </div>
+                    @endforeach
+                </div>
+                @endforeach
+            </div>
+            @endif
+
             {{-- ═══════ PRICES ═══════ --}}
-            @if($tab === 'prices')
-            <div class="grid lg:grid-cols-2 gap-6">
+            @if($tab === 'prices')<div class="grid lg:grid-cols-2 gap-6">
                 <div class="bg-white border border-gray-200 rounded-2xl p-6">
                     <h3 class="font-bold text-gray-900 mb-5">County Products — Prices</h3>
                     <div class="overflow-x-auto">

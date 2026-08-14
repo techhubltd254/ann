@@ -80,6 +80,18 @@ return [
             'hero_image' => 'Hero image',
             'gallery' => 'Gallery item',
         ],
+        \App\Models\CountyTourismAttraction::class => [
+            '4d_video' => '4D immersive video',
+            'gallery' => 'Gallery item',
+        ],
+        \App\Models\CountyHotel::class => [
+            '4d_video' => '4D immersive video',
+            'gallery' => 'Gallery item',
+        ],
+        \App\Models\CountyProduct::class => [
+            '4d_video' => '4D immersive video',
+            'gallery' => 'Gallery item',
+        ],
         \App\Models\Product::class => [
             'featured_video' => 'Featured video',
             'gallery' => 'Gallery item',

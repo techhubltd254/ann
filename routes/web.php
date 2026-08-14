@@ -76,6 +76,8 @@ Route::middleware('auth')->group(function () {
     Route::post('/county-admin/{slug}/pro/content', [\App\Http\Controllers\Web\CountyAdminController::class, 'updateContent'])->name('county.admin.content');
     Route::post('/county-admin/{slug}/pro/image', [\App\Http\Controllers\Web\CountyAdminController::class, 'uploadImage'])->name('county.admin.image.upload');
     Route::post('/county-admin/{slug}/pro/image/{sector}/delete', [\App\Http\Controllers\Web\CountyAdminController::class, 'deleteImage'])->name('county.admin.image.delete');
+    Route::post('/county-admin/{slug}/pro/4d-video', [\App\Http\Controllers\Web\CountyAdminController::class, 'upload4dVideo'])->name('county.admin.4d.upload');
+    Route::post('/county-admin/{slug}/pro/4d-video/{entityType}/{entityId}/delete', [\App\Http\Controllers\Web\CountyAdminController::class, 'delete4dVideo'])->name('county.admin.4d.delete');
     Route::post('/county-admin/{slug}/pro/price', [\App\Http\Controllers\Web\CountyAdminController::class, 'updatePrice'])->name('county.admin.price');
     Route::post('/county-admin/{slug}/pro/ads', [\App\Http\Controllers\Web\CountyAdminController::class, 'createAd'])->name('county.admin.ads');
     Route::post('/county-admin/{slug}/pro/package', [\App\Http\Controllers\Web\CountyAdminController::class, 'purchasePackage'])->name('county.admin.package');

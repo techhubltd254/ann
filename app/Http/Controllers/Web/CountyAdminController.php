@@ -85,6 +85,7 @@ class CountyAdminController extends Controller
             ['label' => 'Details', 'tab' => 'details', 'icon' => 'M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z'],
             ['label' => 'Content', 'tab' => 'content', 'icon' => 'M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z'],
             ['label' => 'Images', 'tab' => 'images', 'icon' => 'M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z'],
+            ['label' => '4D Videos', 'tab' => 'videos4d', 'icon' => 'M15 10l4.553-2.276A1 1 0 0121 8.618v6.764a1 1 0 01-1.447.894L15 14M5 18h8a2 2 0 002-2V8a2 2 0 00-2-2H5a2 2 0 00-2 2v8a2 2 0 002 2z'],
             ['label' => 'Sectors', 'tab' => 'sectors', 'icon' => 'M19 21V5a2 2 0 00-2-2H7a2 2 0 00-2 2v16m14 0h2m-2 0h-5m-9 0H3m2 0h5M9 7h1m-1 4h1m4-4h1m-1 4h1m-5 10v-5a1 1 0 011-1h2a1 1 0 011 1v5m-4 0h4'],
             ['label' => 'Prices', 'tab' => 'prices', 'icon' => 'M12 8c-1.657 0-3 .895-3 2s1.343 2 3 2 3 .895 3 2-1.343 2-3 2m0-8c1.11 0 2.08.402 2.599 1M12 8V7m0 1v8m0 0v1m0-1c-1.11 0-2.08-.402-2.599-1'],
             ['label' => 'Marketplace', 'tab' => 'marketplace', 'icon' => 'M16 11V7a4 4 0 00-8 0v4M5 9h14l1 12H4L5 9z'],
@@ -97,7 +98,7 @@ class CountyAdminController extends Controller
             'county', 'tab', 'navItems', 'stats', 'products', 'attractions',
             'hotels', 'sectorImages', 'plans', 'marketplaceProducts', 'ads',
             'sectors', 'linkedSectors', 'allSectors', 'sectorEntities'
-        ));
+        ) + ['video4dMap' => $this->video4dMap($county)]);
     }
 
     /* ─── CONTENT ─── */
@@ -231,6 +232,92 @@ class CountyAdminController extends Controller
         $altPath = storage_path("app/public/counties/{$slug}/{$sector}.jpg");
         if (file_exists($altPath)) @unlink($altPath);
         return back()->with('success', "{$sector} image removed. Fallback will show.");
+    }
+
+    /* ─── 4D VIDEOS ─── */
+
+    /**
+     * Upload a finished 4D immersive video for one entity (attraction, hotel, product).
+     * The 4D render is produced elsewhere (Gaussian Splat session); this attaches it
+     * to the entity's '4d_video' slot so the county page plays it instead of a still.
+     */
+    public function upload4dVideo(Request $request, string $slug)
+    {
+        $county = $this->authorizeCounty($slug);
+        $data = $request->validate([
+            'entity_type' => 'required|in:attraction,hotel,product',
+            'entity_id' => 'required|integer',
+            'video' => 'required|file|mimes:mp4,webm,mov|max:512000', // 500 MB
+        ]);
+
+        $model = match ($data['entity_type']) {
+            'attraction' => CountyTourismAttraction::class,
+            'hotel' => CountyHotel::class,
+            'product' => CountyProduct::class,
+        };
+        $entity = $model::where('county_id', $county->id)->findOrFail($data['entity_id']);
+
+        $file = $request->file('video');
+        $path = $file->storeAs(
+            "counties/{$slug}/4d",
+            "{$data['entity_type']}-{$entity->id}.{$file->extension()}",
+            'public'
+        );
+
+        // Replace any existing 4d_video asset for this entity
+        \App\Models\MediaAsset::forSlot($model, $entity->id, '4d_video')->delete();
+        \App\Models\MediaAsset::create([
+            'uuid' => (string) Str::uuid(),
+            'owner_id' => $entity->id,
+            'owner_type' => $model,
+            'slot' => '4d_video',
+            'disk' => 'public',
+            'path' => $path,
+            'original_name' => $file->getClientOriginalName(),
+            'mime' => $file->getMimeType(),
+            'kind' => 'video',
+            'size_bytes' => $file->getSize(),
+            'status' => 'ready',
+        ]);
+
+        \App\Services\N8nService::fire('county_4d_uploaded', [
+            'county' => $slug, 'entity_type' => $data['entity_type'], 'entity_id' => $entity->id,
+        ]);
+
+        return back()->with('success', "4D video attached to {$entity->name}. It now plays on the county page.");
+    }
+
+    public function delete4dVideo(string $slug, string $entityType, int $entityId)
+    {
+        $county = $this->authorizeCounty($slug);
+        $model = match ($entityType) {
+            'attraction' => CountyTourismAttraction::class,
+            'hotel' => CountyHotel::class,
+            'product' => CountyProduct::class,
+            default => abort(422, 'Unknown entity type'),
+        };
+        \App\Models\MediaAsset::forSlot($model, $entityId, '4d_video')->delete();
+        return back()->with('success', '4D video removed. The still image shows again.');
+    }
+
+    /** Existing 4D video asset per entity, keyed "type-id" for the admin view. */
+    protected function video4dMap(County $county): array
+    {
+        $map = [];
+        foreach ([
+            'attraction' => CountyTourismAttraction::class,
+            'hotel' => CountyHotel::class,
+            'product' => CountyProduct::class,
+        ] as $type => $model) {
+            $assets = \App\Models\MediaAsset::where('owner_type', $model)
+                ->where('slot', '4d_video')
+                ->whereIn('owner_id', $model::where('county_id', $county->id)->pluck('id'))
+                ->get();
+            foreach ($assets as $a) {
+                $map["{$type}-{$a->owner_id}"] = $a;
+            }
+        }
+        return $map;
     }
 
     /* ─── PRICES ─── */

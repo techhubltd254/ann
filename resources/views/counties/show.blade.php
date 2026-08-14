@@ -158,11 +158,18 @@ $kiccBlue = '#046bd2';
                 @php
                     $aKey = strtolower($a->category ?? 'default');
                     $aIcon = $iconMap[$aKey] ?? $iconMap['default'];
+                    // 4D video from media slot (uploaded by county admin) takes priority;
+                    // fall back to pipeline-generated wiggle bursts
                     $wiggleMap = [
                         'Tea Highlands Tour' => 'library/tea-farms/_3d/burst-00/wiggle.mp4',
                         'Mugumo-ini Falls Canyoning' => 'library/adventure-rappelling/_3d/burst-00/wiggle.mp4',
                     ];
-                    $wiggle = isset($wiggleMap[$a->name]) ? media('counties/' . $county->slug . '/' . $wiggleMap[$a->name]) : null;
+                    $wiggle = null;
+                    if (isset($a->media4d) && $a->media4d) {
+                        $wiggle = $a->media4d->url();
+                    } elseif (isset($wiggleMap[$a->name])) {
+                        $wiggle = media('counties/' . $county->slug . '/' . $wiggleMap[$a->name]);
+                    }
                 @endphp
                 <a href="{{ route('attractions.show', $a->id) }}" class="bg-white border border-gray-200 rounded-2xl overflow-hidden hover:border-kicc-gold/40 transition-all group card-hover fx-sweep" data-tilt="7">
                     <div class="h-36 bg-gray-100 flex items-center justify-center overflow-hidden relative" @if($wiggle) data-wiggle="{{ $wiggle }}" @endif>
@@ -206,9 +213,12 @@ $kiccBlue = '#046bd2';
                     $stars = $h->star_rating ? str_repeat('★', $h->star_rating) . str_repeat('☆', 5 - $h->star_rating) : '—';
                 @endphp
                 <div class="bg-white border border-gray-200 rounded-2xl overflow-hidden card-hover fx-sweep" data-tilt="7">
-                    <div class="h-36 bg-gray-100 flex items-center justify-center overflow-hidden relative">
+                    <div class="h-36 bg-gray-100 flex items-center justify-center overflow-hidden relative" @if($h->media4d ?? null) data-wiggle="{{ $h->media4d->url() }}" @endif>
                         @if($h->image_url)
                         <img src="{{ $h->image_url }}" alt="{{ $h->name }}" class="w-full h-full object-cover" onerror="this.style.display='none'">
+                        @endif
+                        @if($h->media4d ?? null)
+                        <span class="absolute top-2 right-2 z-10 px-2 py-0.5 rounded-full bg-black/60 text-white text-[9px] font-black uppercase tracking-wider">4D</span>
                         @endif
                         <div class="absolute inset-0 flex items-center justify-center {{ $h->image_url ? 'opacity-0' : '' }}">
                             <span class="text-4xl text-gray-300">{{ $hIcon }}</span>
@@ -238,9 +248,12 @@ $kiccBlue = '#046bd2';
             <div class="grid grid-cols-2 md:grid-cols-4 gap-4">
                 @foreach($countyProducts as $p)
                 <div class="bg-white border border-gray-200 rounded-2xl overflow-hidden card-hover fx-sweep hover:border-kicc-gold/40 transition-all flex flex-col" data-tilt="7">
-                    <div class="h-36 bg-gray-100 flex items-center justify-center overflow-hidden relative">
+                    <div class="h-36 bg-gray-100 flex items-center justify-center overflow-hidden relative" @if($p->media4d ?? null) data-wiggle="{{ $p->media4d->url() }}" @endif>
                         @if($p->image_url)
                         <img src="{{ $p->image_url }}" alt="{{ $p->name }}" class="w-full h-full object-cover" onerror="this.style.display='none'">
+                        @endif
+                        @if($p->media4d ?? null)
+                        <span class="absolute top-2 right-2 z-10 px-2 py-0.5 rounded-full bg-black/60 text-white text-[9px] font-black uppercase tracking-wider">4D</span>
                         @endif
                         <div class="absolute inset-0 flex items-center justify-center {{ $p->image_url ? 'opacity-0' : '' }}">
                             <span class="text-4xl text-gray-300">🛍️</span>
