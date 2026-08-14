@@ -144,6 +144,19 @@ Route::get('/trade-agreements/{slug}', [\App\Http\Controllers\Web\TradeAgreement
 Route::get('/trading-blocs', [\App\Http\Controllers\Web\TradeAgreementController::class, 'blocs'])->name('trade.blocs.index');
 Route::get('/trading-blocs/{slug}', [\App\Http\Controllers\Web\TradeAgreementController::class, 'blocShow'])->name('trade.blocs.show');
 
+// Trade Export functionality (real functional flow)
+Route::get('/export/eligibility', [\App\Http\Controllers\Web\TradeExportController::class, 'eligibility'])->name('trade.eligibility');
+Route::post('/export/eligibility', [\App\Http\Controllers\Web\TradeExportController::class, 'checkEligibility'])->name('trade.eligibility.check');
+Route::get('/export/apply/{slug}', [\App\Http\Controllers\Web\TradeExportController::class, 'applyForm'])->name('trade.export.apply');
+Route::post('/export/enquiry', [\App\Http\Controllers\Web\TradeExportController::class, 'storeEnquiry'])->name('trade.enquiry.store');
+Route::get('/export/success/{reference}', [\App\Http\Controllers\Web\TradeExportController::class, 'enquirySuccess'])->name('trade.enquiry.success');
+
+// Trade admin (authenticated)
+Route::middleware('auth')->group(function () {
+    Route::get('/admin/trade/enquiries', [\App\Http\Controllers\Web\TradeAdminController::class, 'enquiries'])->name('trade.admin.enquiries');
+    Route::post('/admin/trade/enquiries/{enquiry}', [\App\Http\Controllers\Web\TradeAdminController::class, 'updateStatus'])->name('trade.admin.enquiry.status');
+});
+
 Route::get('/venues', [ExhibitionController::class, 'venues'])->name('venues.index');
 Route::get('/venues/{venue}', [VenueController::class, 'show'])->name('venues.show');
 Route::post('/venues/{venue}/inquire', [VenueController::class, 'inquire'])->name('venues.inquire');

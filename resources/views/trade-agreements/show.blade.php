@@ -43,6 +43,7 @@
                 @if($agreement->document_pdf)
                 <a href="{{ $agreement->document_pdf }}" target="_blank" class="mt-5 block text-center py-2.5 rounded-xl bg-[#046bd2] text-white text-sm font-bold hover:bg-[#045cb4] transition-all">Download PDF</a>
                 @endif
+                <a href="{{ route('trade.export.apply', $agreement->slug) }}" class="mt-5 block text-center py-2.5 rounded-xl bg-[#046bd2] text-white text-sm font-bold hover:bg-[#045cb4] transition-all">Apply to Export Under This Agreement</a>
                 @if($agreement->bloc)
                 <a href="{{ route('trade.blocs.show', $agreement->bloc->slug) }}" class="mt-2 block text-center py-2 rounded-xl border border-gray-200 text-gray-600 text-sm font-bold hover:bg-gray-50 transition-all">View {{ $agreement->bloc->name }}</a>
                 @endif
