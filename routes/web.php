@@ -171,6 +171,14 @@ Route::middleware('auth')->group(function () {
     Route::get('/api/notifications/unread', [\App\Http\Controllers\Web\NotificationController::class, 'unreadCount'])->name('api.notifications.unread');
 });
 
+// Coupons
+Route::post('/cart/coupon', [\App\Http\Controllers\Web\CouponController::class, 'apply'])->name('coupon.apply');
+Route::post('/cart/coupon/remove', [\App\Http\Controllers\Web\CouponController::class, 'remove'])->name('coupon.remove');
+Route::middleware('auth')->group(function () {
+    Route::get('/kicc-admin/coupons', [\App\Http\Controllers\Web\CouponController::class, 'adminIndex'])->name('coupon.admin.index');
+    Route::post('/kicc-admin/coupons', [\App\Http\Controllers\Web\CouponController::class, 'adminStore'])->name('coupon.admin.store');
+});
+
 // Trade admin (authenticated)
 Route::middleware('auth')->group(function () {
     Route::get('/kicc-admin/trade/enquiries', [\App\Http\Controllers\Web\TradeAdminController::class, 'enquiries'])->name('trade.admin.enquiries');
