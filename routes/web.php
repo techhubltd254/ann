@@ -178,6 +178,16 @@ Route::middleware('auth')->group(function () {
     Route::post('/kicc-admin/reviews/{review}/reject', [\App\Http\Controllers\Web\ReviewAdminController::class, 'reject'])->name('review.admin.reject');
 });
 
+// Commission & Licensing Admin
+Route::middleware('auth')->group(function () {
+    Route::get('/kicc-admin/commissions', function () {
+        $commissions = \App\Models\CommissionLog::with('agent', 'order')->latest()->paginate(25);
+        $totalPending = \App\Models\CommissionLog::where('status', 'pending')->sum('commission_amount');
+        $totalSettled = \App\Models\CommissionLog::where('status', 'settled')->sum('commission_amount');
+        return view('commissions.admin-index', compact('commissions', 'totalPending', 'totalSettled'));
+    })->name('commission.admin.index');
+});
+
 // MFA (Multi-Factor Authentication)
 Route::middleware('auth')->group(function () {
     Route::get('/mfa/setup', [\App\Http\Controllers\Web\MfaController::class, 'showSetup'])->name('mfa.setup');

@@ -119,6 +119,24 @@ class CheckoutController extends Controller
                     ],
                     'current_step' => 1,
                 ]);
+
+                // Record marketplace commission for this seller's items
+                foreach ($items as $item) {
+                    $agent = \App\Models\Agent::where('user_id', $sellerId)->first();
+                    if ($agent && $agent->commission_rate > 0) {
+                        $commissionAmount = ($item->total ?? $item->unit_price * $item->quantity) * ($agent->commission_rate / 100);
+                        \App\Models\CommissionLog::create([
+                            'agent_id' => $agent->id,
+                            'order_id' => $order->id,
+                            'order_item_id' => $item->id,
+                            'item_total' => $item->total ?? $item->unit_price * $item->quantity,
+                            'commission_rate' => $agent->commission_rate,
+                            'commission_amount' => round($commissionAmount, 2),
+                            'commission_type' => 'marketplace',
+                            'status' => 'pending',
+                        ]);
+                    }
+                }
             }
 
             return $order;
