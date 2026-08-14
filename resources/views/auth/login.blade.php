@@ -52,6 +52,16 @@
                 </a>
             </div>
 
+            {{-- Email code sign-in --}}
+            <form method="POST" action="{{ route('login.send-code') }}" class="mt-3">
+                @csrf
+                <input type="hidden" name="login" id="code-login-field">
+                <button type="submit" onclick="document.getElementById('code-login-field').value = document.querySelector('input[name=login]').value"
+                        class="w-full inline-flex items-center justify-center gap-2 font-bold tracking-wide transition-all duration-200 px-8 text-sm h-12 rounded-xl border border-[#046bd2]/30 text-[#046bd2] hover:bg-[#046bd2]/5">
+                    Email me a sign-in code instead
+                </button>
+            </form>
+
             <div class="mt-6 pt-5 border-t border-gray-100 text-center">
                 <p class="text-xs text-gray-400 mb-2">Staff accounts are routed by role automatically</p>
                 <button @click="staff = !staff" class="text-gray-400 hover:text-gray-500 text-xs transition-colors">

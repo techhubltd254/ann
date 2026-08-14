@@ -1,7 +1,7 @@
 @extends('layouts.app')
 
 @section('title', 'Verify Login')
-@section('description', 'Enter the verification code sent to your phone.')
+@section('description', 'Enter the verification code sent to your email.')
 
 @section('content')
 <div class="min-h-[60vh] flex items-center justify-center py-12 px-4">
@@ -12,7 +12,7 @@
             @endif
 
             <h1 class="text-2xl font-black text-gray-900 text-center mb-2" data-split>Verify Login</h1>
-            <p class="text-center text-[#5A6480] text-sm mb-6">Enter the code sent to <strong class="text-kicc-gold">{{ $phone }}</strong></p>
+            <p class="text-center text-[#5A6480] text-sm mb-6">Enter the code sent to <strong class="text-kicc-gold">{{ $email }}</strong></p>
 
             <form method="POST" action="{{ route('login.code.verify') }}">
                 @csrf

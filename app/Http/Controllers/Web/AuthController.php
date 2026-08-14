@@ -21,42 +21,45 @@ class AuthController extends Controller
     public function sendCode(Request $request)
     {
         $data = $request->validate([
-            'phone' => 'required|string|max:20|regex:/^\+?[0-9]{9,15}$/',
+            'email' => 'required|email|max:255',
         ]);
 
-        $phone = $data['phone'];
+        $email = strtolower(trim($data['email']));
 
-        $key = 'send-code:' . $phone;
+        $key = 'send-code:' . $email;
         if (RateLimiter::tooManyAttempts($key, 3)) {
-            return back()->withErrors(['phone' => 'Too many attempts. Try again in ' . RateLimiter::availableIn($key) . ' seconds.']);
+            return back()->withErrors(['email' => 'Too many attempts. Try again in ' . RateLimiter::availableIn($key) . ' seconds.']);
         }
         RateLimiter::hit($key, 60);
 
         $code = str_pad(random_int(0, 999999), 6, '0', STR_PAD_LEFT);
 
-        PhoneVerificationCode::where('phone', $phone)->where('used_at', null)->update(['used_at' => now()]);
+        PhoneVerificationCode::where('phone', $email)->where('used_at', null)->update(['used_at' => now()]);
 
         PhoneVerificationCode::create([
-            'phone' => $phone,
+            'phone' => $email,
             'code' => Hash::make($code),
             'purpose' => 'registration',
             'expires_at' => now()->addMinutes(10),
         ]);
 
-        $sms = app(SMSService::class);
-        $sms->sendVerificationCode($phone, $code);
+        try {
+            \Illuminate\Support\Facades\Mail::to($email)->send(new \App\Mail\VerificationCodeMail($code, 'registration'));
+        } catch (\Throwable $e) {
+            \Illuminate\Support\Facades\Log::error("Verification email to {$email} failed: " . $e->getMessage());
+        }
 
-        session(['reg_phone' => $phone]);
+        session(['reg_email' => $email]);
 
-        return redirect()->route('register.verify')->with('message', 'Code sent to ' . $phone);
+        return redirect()->route('register.verify')->with('message', 'Code sent to ' . $email);
     }
 
     public function showVerify()
     {
-        if (!session('reg_phone')) {
+        if (!session('reg_email')) {
             return redirect()->route('register');
         }
-        return view('auth.verify', ['phone' => session('reg_phone')]);
+        return view('auth.verify', ['email' => session('reg_email')]);
     }
 
     public function verifyCode(Request $request)
@@ -65,18 +68,18 @@ class AuthController extends Controller
             'code' => 'required|string|size:6',
         ]);
 
-        $phone = session('reg_phone');
-        if (!$phone) {
-            return redirect()->route('register')->withErrors(['phone' => 'Session expired.']);
+        $email = session('reg_email');
+        if (!$email) {
+            return redirect()->route('register')->withErrors(['email' => 'Session expired.']);
         }
 
-        $key = 'verify-code:' . $phone;
+        $key = 'verify-code:' . $email;
         if (RateLimiter::tooManyAttempts($key, 5)) {
             return back()->withErrors(['code' => 'Too many attempts. Try again later.']);
         }
         RateLimiter::hit($key, 120);
 
-        $record = PhoneVerificationCode::where('phone', $phone)
+        $record = PhoneVerificationCode::where('phone', $email)
             ->where('purpose', 'registration')
             ->where('used_at', null)
             ->where('expires_at', '>', now())
@@ -94,43 +97,43 @@ class AuthController extends Controller
 
     public function showDetails()
     {
-        $phone = session('reg_phone');
-        if (!$phone) {
+        $email = session('reg_email');
+        if (!$email) {
             return redirect()->route('register');
         }
 
-        if (User::where('phone', $phone)->exists()) {
-            $user = User::where('phone', $phone)->first();
-            $user->update(['phone_verified_at' => now()]);
+        if (User::where('email', $email)->exists()) {
+            $user = User::where('email', $email)->first();
+            $user->update(['email_verified_at' => now()]);
             Auth::login($user);
-            session()->forget('reg_phone');
+            session()->forget('reg_email');
             return redirect()->route('dashboard.index');
         }
 
-        return view('auth.details', ['phone' => $phone]);
+        return view('auth.details', ['email' => $email]);
     }
 
     public function completeRegistration(Request $request)
     {
-        $phone = session('reg_phone');
-        if (!$phone) {
+        $email = session('reg_email');
+        if (!$email) {
             return redirect()->route('register');
         }
 
         $data = $request->validate([
             'name' => 'required|string|max:255',
-            'email' => 'required|email|unique:users,email',
+            'phone' => 'nullable|string|max:20|regex:/^\+?[0-9]{9,15}$/',
             'account_type' => 'required|string|in:individual,exhibitor,sme,school',
             'password' => 'required|string|min:8|confirmed',
         ]);
 
         $user = User::create([
             'name' => $data['name'],
-            'email' => $data['email'],
-            'phone' => $phone,
+            'email' => $email,
+            'phone' => $data['phone'] ?? null,
             'account_type' => $data['account_type'],
             'password' => Hash::make($data['password']),
-            'phone_verified_at' => now(),
+            'email_verified_at' => now(),
             'status' => 'active',
         ]);
 
@@ -139,7 +142,7 @@ class AuthController extends Controller
         ]);
 
         Auth::login($user);
-        session()->forget('reg_phone');
+        session()->forget('reg_email');
 
         // Exhibitors go straight to their setup wizard — their personalized
         // website is built from the answers.
@@ -228,14 +231,16 @@ class AuthController extends Controller
             'login' => 'required|string',
         ]);
 
-        $field = filter_var($data['login'], FILTER_VALIDATE_EMAIL) ? 'email' : 'phone';
-        $user = User::where($field, $data['login'])->first();
+        $user = User::where('email', strtolower(trim($data['login'])))->first()
+            ?? User::where('phone', $data['login'])->first();
 
-        if (!$user || !$user->phone) {
-            return back()->withErrors(['login' => 'No account found with a linked phone.']);
+        if (!$user || !$user->email) {
+            return back()->withErrors(['login' => 'No account found with that email.']);
         }
 
-        $key = 'login-code:' . $user->phone;
+        $email = strtolower(trim($user->email));
+
+        $key = 'login-code:' . $email;
         if (RateLimiter::tooManyAttempts($key, 3)) {
             return back()->withErrors(['login' => 'Too many attempts. Try again later.']);
         }
@@ -243,46 +248,50 @@ class AuthController extends Controller
 
         $code = str_pad(random_int(0, 999999), 6, '0', STR_PAD_LEFT);
 
-        PhoneVerificationCode::where('phone', $user->phone)->where('used_at', null)->update(['used_at' => now()]);
+        PhoneVerificationCode::where('phone', $email)->where('used_at', null)->update(['used_at' => now()]);
 
         PhoneVerificationCode::create([
-            'phone' => $user->phone,
+            'phone' => $email,
             'code' => Hash::make($code),
             'purpose' => 'login',
-            'expires_at' => now()->addMinutes(5),
+            'expires_at' => now()->addMinutes(10),
         ]);
 
-        \Illuminate\Support\Facades\Log::info("Login code for {$user->phone}: {$code}");
+        try {
+            \Illuminate\Support\Facades\Mail::to($email)->send(new \App\Mail\VerificationCodeMail($code, 'login'));
+        } catch (\Throwable $e) {
+            \Illuminate\Support\Facades\Log::error("Login code email to {$email} failed: " . $e->getMessage());
+        }
 
-        session(['login_code_phone' => $user->phone]);
+        session(['login_code_email' => $email]);
 
-        return redirect()->route('login.code')->with('message', 'Code sent to your phone.');
+        return redirect()->route('login.code')->with('message', 'Code sent to your email.');
     }
 
     public function showLoginCode()
     {
-        if (!session('login_code_phone')) {
+        if (!session('login_code_email')) {
             return redirect()->route('login');
         }
-        return view('auth.login-code', ['phone' => session('login_code_phone')]);
+        return view('auth.login-code', ['email' => session('login_code_email')]);
     }
 
     public function verifyLoginCode(Request $request)
     {
         $data = $request->validate(['code' => 'required|string|size:6']);
 
-        $phone = session('login_code_phone');
-        if (!$phone) {
+        $email = session('login_code_email');
+        if (!$email) {
             return redirect()->route('login');
         }
 
-        $key = 'verify-login:' . $phone;
+        $key = 'verify-login:' . $email;
         if (RateLimiter::tooManyAttempts($key, 5)) {
             return back()->withErrors(['code' => 'Too many attempts.']);
         }
         RateLimiter::hit($key, 120);
 
-        $record = PhoneVerificationCode::where('phone', $phone)
+        $record = PhoneVerificationCode::where('phone', $email)
             ->where('purpose', 'login')
             ->where('used_at', null)
             ->where('expires_at', '>', now())
@@ -295,10 +304,10 @@ class AuthController extends Controller
 
         $record->update(['used_at' => now()]);
 
-        $user = User::where('phone', $phone)->first();
+        $user = User::where('email', $email)->first();
         if ($user) {
             Auth::login($user);
-            session()->forget('login_code_phone');
+            session()->forget('login_code_email');
             $request->session()->regenerate();
             return redirect()->intended(route('dashboard.index'));
         }

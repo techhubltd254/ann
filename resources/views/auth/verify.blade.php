@@ -1,7 +1,7 @@
 @extends('layouts.app')
 
-@section('title', 'Verify Phone')
-@section('description', 'Enter the verification code sent to your phone.')
+@section('title', 'Verify Email')
+@section('description', 'Enter the verification code sent to your email.')
 
 @section('content')
 <div class="min-h-[60vh] flex items-center justify-center py-12 px-4">
@@ -11,8 +11,8 @@
             <div class="bg-emerald-500/15 border border-emerald-500/25 text-emerald-400 px-4 py-3 rounded-xl mb-4 text-sm">{{ session('message') }}</div>
             @endif
 
-            <h1 class="text-2xl font-black text-gray-900 text-center mb-2" data-split>Verify Your Phone</h1>
-            <p class="text-center text-[#5A6480] text-sm mb-6">Enter the 6-digit code sent to <strong class="text-kicc-gold">{{ $phone }}</strong></p>
+            <h1 class="text-2xl font-black text-gray-900 text-center mb-2" data-split>Verify Your Email</h1>
+            <p class="text-center text-[#5A6480] text-sm mb-6">Enter the 6-digit code sent to <strong class="text-kicc-gold">{{ $email }}</strong></p>
 
             <form method="POST" action="{{ route('register.verify') }}">
                 @csrf

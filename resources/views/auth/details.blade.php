@@ -8,7 +8,7 @@
     <div class="max-w-md w-full" data-reveal>
         <div class="bg-white rounded-2xl p-8 border border-gray-200 card-hover">
             <h1 class="text-2xl font-black text-gray-900 text-center mb-2" data-split>Complete Your Account</h1>
-            <p class="text-center text-[#5A6480] text-sm mb-6">Phone <strong class="text-kicc-gold">{{ $phone }}</strong> verified. Set up your profile.</p>
+            <p class="text-center text-[#5A6480] text-sm mb-6">Email <strong class="text-kicc-gold">{{ $email }}</strong> verified. Set up your profile.</p>
 
             <form method="POST" action="{{ route('register.complete') }}" class="space-y-4" x-data="{ loading: false }" @submit="loading = true">
                 @csrf
@@ -18,9 +18,9 @@
                     @error('name')<p class="text-[#e86f71] text-xs mt-1.5">{{ $message }}</p>@enderror
                 </div>
                 <div>
-                    <label class="block text-sm font-bold text-gray-900 mb-2">Email <span class="text-[#901C1E]">*</span></label>
-                    <input type="email" name="email" value="{{ old('email') }}" class="w-full h-11 px-4 rounded-xl bg-[#F9FAFB] border border-gray-200 text-gray-900 placeholder:text-[#5A6480] outline-none focus:ring-2 focus:ring-kicc-gold/60 transition-all" required>
-                    @error('email')<p class="text-[#e86f71] text-xs mt-1.5">{{ $message }}</p>@enderror
+                    <label class="block text-sm font-bold text-gray-900 mb-2">Phone <span class="text-gray-400 font-normal">(optional — for M-Pesa receipts)</span></label>
+                    <input type="tel" name="phone" value="{{ old('phone') }}" placeholder="+254 7XX XXX XXX" class="w-full h-11 px-4 rounded-xl bg-[#F9FAFB] border border-gray-200 text-gray-900 placeholder:text-[#5A6480] outline-none focus:ring-2 focus:ring-kicc-gold/60 transition-all">
+                    @error('phone')<p class="text-[#e86f71] text-xs mt-1.5">{{ $message }}</p>@enderror
                 </div>
                 <div>
                     <label class="block text-sm font-bold text-gray-900 mb-2">Account Type <span class="text-[#901C1E]">*</span></label>

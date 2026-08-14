@@ -10,27 +10,22 @@
             <p class="text-gray-400 text-sm mt-2">Join Kenya's premier exhibition platform</p>
         </div>
         <div class="bg-white border border-gray-100 rounded-2xl p-6 md:p-7">
-            <form method="POST" action="{{ route('register.complete') }}">
+            @if($errors->any())
+            <div class="bg-red-50 border border-red-200 text-red-600 rounded-xl px-4 py-3 mb-4 text-sm">{{ $errors->first() }}</div>
+            @endif
+            @if(session('message'))
+            <div class="bg-emerald-50 border border-emerald-200 text-emerald-600 rounded-xl px-4 py-3 mb-4 text-sm">{{ session('message') }}</div>
+            @endif
+            <form method="POST" action="{{ route('register.send-code') }}">
                 @csrf
                 <div class="space-y-4">
                     <div>
-                        <label class="block text-[10px] font-bold text-gray-400 uppercase tracking-wider mb-1.5">Full name</label>
-                        <input type="text" name="name" required class="w-full bg-gray-50 border border-gray-200 focus:border-kicc-gold/60 rounded-xl px-4 py-2.5 text-sm text-gray-900 placeholder:text-gray-400 outline-none transition-colors">
-                    </div>
-                    <div>
-                        <label class="block text-[10px] font-bold text-gray-400 uppercase tracking-wider mb-1.5">Phone number</label>
-                        <input type="tel" name="phone" required class="w-full bg-gray-50 border border-gray-200 focus:border-kicc-gold/60 rounded-xl px-4 py-2.5 text-sm text-gray-900 placeholder:text-gray-400 outline-none transition-colors">
-                    </div>
-                    <div>
-                        <label class="block text-[10px] font-bold text-gray-400 uppercase tracking-wider mb-1.5">Email (optional)</label>
-                        <input type="email" name="email" class="w-full bg-gray-50 border border-gray-200 focus:border-kicc-gold/60 rounded-xl px-4 py-2.5 text-sm text-gray-900 placeholder:text-gray-400 outline-none transition-colors">
-                    </div>
-                    <div>
-                        <label class="block text-[10px] font-bold text-gray-400 uppercase tracking-wider mb-1.5">Password</label>
-                        <input type="password" name="password" required class="w-full bg-gray-50 border border-gray-200 focus:border-kicc-gold/60 rounded-xl px-4 py-2.5 text-sm text-gray-900 placeholder:text-gray-400 outline-none transition-colors">
+                        <label class="block text-[10px] font-bold text-gray-400 uppercase tracking-wider mb-1.5">Email address</label>
+                        <input type="email" name="email" value="{{ old('email') }}" required placeholder="you@example.com" class="w-full bg-gray-50 border border-gray-200 focus:border-kicc-gold/60 rounded-xl px-4 py-2.5 text-sm text-gray-900 placeholder:text-gray-400 outline-none transition-colors">
+                        <p class="text-[11px] text-gray-400 mt-1.5">We'll email you a 6-digit verification code.</p>
                     </div>
                 </div>
-                <button type="submit" data-magnetic class="w-full inline-flex items-center justify-center gap-2 font-bold tracking-wide transition-all duration-200 mt-6 px-8 text-base h-14 rounded-xl bg-[#901C1E] text-white hover:bg-[#7b1618] active:scale-[0.97]">Create Account</button>
+                <button type="submit" data-magnetic class="w-full inline-flex items-center justify-center gap-2 font-bold tracking-wide transition-all duration-200 mt-6 px-8 text-base h-14 rounded-xl bg-[#901C1E] text-white hover:bg-[#7b1618] active:scale-[0.97]">Send Verification Code</button>
             </form>
 
             {{-- Google Sign-In --}}
