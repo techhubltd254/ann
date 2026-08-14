@@ -157,6 +157,18 @@ Route::middleware('auth')->group(function () {
     Route::post('/kicc-admin/trade/enquiries/{enquiry}', [\App\Http\Controllers\Web\TradeAdminController::class, 'updateStatus'])->name('trade.admin.enquiry.status');
 });
 
+// Agent / Tour Operator Onboarding
+Route::get('/agents/register', [\App\Http\Controllers\Web\AgentOnboardingController::class, 'register'])->name('agent.register');
+Route::post('/agents/register', [\App\Http\Controllers\Web\AgentOnboardingController::class, 'store'])->name('agent.store');
+Route::get('/agents/success/{agent}', [\App\Http\Controllers\Web\AgentOnboardingController::class, 'success'])->name('agent.onboarding.success');
+Route::middleware('auth')->group(function () {
+    Route::get('/kicc-admin/agents', [\App\Http\Controllers\Web\AgentAdminController::class, 'index'])->name('agent.admin.index');
+    Route::get('/kicc-admin/agents/{agent}', [\App\Http\Controllers\Web\AgentAdminController::class, 'show'])->name('agent.admin.show');
+    Route::post('/kicc-admin/agents/{agent}/approve', [\App\Http\Controllers\Web\AgentAdminController::class, 'approve'])->name('agent.admin.approve');
+    Route::post('/kicc-admin/agents/{agent}/reject', [\App\Http\Controllers\Web\AgentAdminController::class, 'reject'])->name('agent.admin.reject');
+    Route::post('/kicc-admin/agents/documents/{document}/verify', [\App\Http\Controllers\Web\AgentAdminController::class, 'verifyDocument'])->name('agent.admin.document.verify');
+});
+
 Route::get('/venues', [ExhibitionController::class, 'venues'])->name('venues.index');
 Route::get('/venues/{venue}', [VenueController::class, 'show'])->name('venues.show');
 Route::post('/venues/{venue}/inquire', [VenueController::class, 'inquire'])->name('venues.inquire');
