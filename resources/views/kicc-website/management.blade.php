@@ -1,0 +1,3 @@
+@extends('layouts.app')
+@section('title', 'KICC Management')
+@section('content')<div class="pt-20 max-w-4xl mx-auto px-5 py-10 prose prose-sm max-w-none"><h1>KICC Management</h1><p>The KICC management team is responsible for the day-to-day operations of the centre, ensuring world-class service delivery across all venues and services.</p><p>For management inquiries, contact us at info@kicc.co.ke or call (+254) 20 3261000.</p></div>@endsection

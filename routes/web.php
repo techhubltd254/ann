@@ -216,6 +216,34 @@ Route::get('/safety/alerts', [\App\Http\Controllers\Web\SafetyController::class,
 Route::get('/safety/report', [\App\Http\Controllers\Web\SafetyController::class, 'reportForm'])->name('safety.report');
 Route::post('/safety/report', [\App\Http\Controllers\Web\SafetyController::class, 'submitReport'])->name('safety.report.submit');
 
+// KICC Website (kicc.co.ke functionality)
+Route::get('/kicc/news', [\App\Http\Controllers\Web\KiccWebsiteController::class, 'newsIndex'])->name('kicc.news');
+Route::get('/kicc/news/{slug}', [\App\Http\Controllers\Web\KiccWebsiteController::class, 'newsShow'])->name('kicc.news.show');
+Route::get('/kicc/about', [\App\Http\Controllers\Web\KiccWebsiteController::class, 'about'])->name('kicc.about');
+Route::get('/kicc/mission', [\App\Http\Controllers\Web\KiccWebsiteController::class, 'mission'])->name('kicc.mission');
+Route::get('/kicc/board', [\App\Http\Controllers\Web\KiccWebsiteController::class, 'board'])->name('kicc.board');
+Route::get('/kicc/management', [\App\Http\Controllers\Web\KiccWebsiteController::class, 'management'])->name('kicc.management');
+Route::get('/kicc/history', [\App\Http\Controllers\Web\KiccWebsiteController::class, 'history'])->name('kicc.history');
+Route::get('/kicc/org-structure', [\App\Http\Controllers\Web\KiccWebsiteController::class, 'orgStructure'])->name('kicc.org-structure');
+Route::get('/kicc/event-booking', [\App\Http\Controllers\Web\KiccWebsiteController::class, 'eventBookingForm'])->name('kicc.event-booking');
+Route::post('/kicc/event-booking', [\App\Http\Controllers\Web\KiccWebsiteController::class, 'eventBookingStore'])->name('kicc.event-booking.store');
+Route::get('/kicc/event-booking/success/{reference}', [\App\Http\Controllers\Web\KiccWebsiteController::class, 'eventBookingSuccess'])->name('kicc.event-booking.success');
+Route::get('/kicc/jobs', [\App\Http\Controllers\Web\KiccWebsiteController::class, 'jobs'])->name('kicc.jobs');
+Route::get('/kicc/jobs/{job}', [\App\Http\Controllers\Web\KiccWebsiteController::class, 'jobsShow'])->name('kicc.jobs.show');
+Route::post('/kicc/jobs/{job}/apply', [\App\Http\Controllers\Web\KiccWebsiteController::class, 'jobsApply'])->name('kicc.jobs.apply');
+Route::post('/kicc/newsletter', [\App\Http\Controllers\Web\KiccWebsiteController::class, 'newsletterSubscribe'])->name('kicc.newsletter');
+Route::get('/kicc/pricing', [\App\Http\Controllers\Web\KiccWebsiteController::class, 'pricing'])->name('kicc.pricing');
+Route::get('/kicc/sustainability', [\App\Http\Controllers\Web\KiccWebsiteController::class, 'sustainability'])->name('kicc.sustainability');
+Route::get('/kicc/visitor-facilities', [\App\Http\Controllers\Web\KiccWebsiteController::class, 'visitorFacilities'])->name('kicc.visitor-facilities');
+Route::get('/kicc/transport', [\App\Http\Controllers\Web\KiccWebsiteController::class, 'transport'])->name('kicc.transport');
+Route::get('/kicc/places-to-stay', [\App\Http\Controllers\Web\KiccWebsiteController::class, 'placesToStay'])->name('kicc.places-to-stay');
+Route::get('/kicc/helipad', [\App\Http\Controllers\Web\KiccWebsiteController::class, 'helipad'])->name('kicc.helipad');
+Route::get('/kicc/virtual-tour', [\App\Http\Controllers\Web\KiccWebsiteController::class, 'virtualTour'])->name('kicc.virtual-tour');
+Route::get('/kicc/video-gallery', [\App\Http\Controllers\Web\KiccWebsiteController::class, 'videoGallery'])->name('kicc.video-gallery');
+Route::get('/kicc/policy-documents', [\App\Http\Controllers\Web\KiccWebsiteController::class, 'policyDocuments'])->name('kicc.policy-documents');
+Route::get('/kicc/opportunities', [\App\Http\Controllers\Web\KiccWebsiteController::class, 'opportunities'])->name('kicc.opportunities');
+Route::get('/kicc/faq', [\App\Http\Controllers\Web\KiccWebsiteController::class, 'faq'])->name('kicc.faq');
+
 // KPIs & Monitoring
 Route::get('/kpi', [\App\Http\Controllers\Web\KpiController::class, 'dashboard'])->name('kpi.dashboard');
 

@@ -1,0 +1,3 @@
+@extends('layouts.app')
+@section('title', 'KICC Board')
+@section('content')<div class="pt-20 max-w-4xl mx-auto px-5 py-10 prose prose-sm max-w-none"><h1>KICC Board</h1><p>The KICC Board provides strategic leadership and oversight. The board is chaired by <strong>CPA Samuel Waweru Mwangi</strong>, a seasoned finance professional with extensive experience in accounting, financial management and operations.</p><p>Board members bring expertise from across tourism, finance, law, and public administration.</p></div>@endsection
