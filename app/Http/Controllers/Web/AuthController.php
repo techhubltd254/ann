@@ -135,6 +135,7 @@ class AuthController extends Controller
             'account_type' => $data['account_type'],
             'password' => Hash::make($data['password']),
             'email_verified_at' => now(),
+            'active' => true,
             'status' => 'active',
         ]);
 
