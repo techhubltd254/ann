@@ -58,7 +58,7 @@ class MarketplaceController extends Controller
 
         // Trade agreements covering this product's category
         $tradeAgreements = \App\Models\TradeAgreement::with('bloc')->active()
-            ->whereHas('categories', fn ($q) => $q->where('categories.id', $product->category_id))
+            ->whereHas('categories', fn ($q) => $q->where('product_categories.id', $product->category_id))
             ->orWhere(fn ($q) => $q->whereNull('trading_bloc_id')->where('agreement_type', 'bilateral'))
             ->latest()
             ->take(3)
