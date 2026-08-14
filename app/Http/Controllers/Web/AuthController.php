@@ -136,6 +136,7 @@ class AuthController extends Controller
             'password' => Hash::make($data['password']),
             'email_verified_at' => now(),
             'active' => true,
+            'mfaEnabled' => false,
             'status' => 'active',
         ]);
 

@@ -30,6 +30,7 @@ use Spatie\Permission\Traits\HasRoles;
     'phone_verified_at',
     'email_verified_at',
     'active',
+    'mfaEnabled',
     'mfa_enabled',
     'mfa_secret',
     'status',
