@@ -82,4 +82,28 @@
     <div class="max-w-7xl mx-auto px-5 pb-12">
         @include("components.packages-strip")
     </div>
+
+    {{-- Trade agreements relevant to exporters --}}
+    @if(isset($tradeAgreements) && $tradeAgreements->isNotEmpty())
+    <div class="max-w-7xl mx-auto px-5 pb-16">
+        <div class="bg-gradient-to-r from-[#046bd2]/5 to-[#045cb4]/5 border border-[#046bd2]/20 rounded-2xl p-6">
+            <div class="flex flex-wrap items-center justify-between gap-3 mb-5">
+                <div>
+                    <div class="text-[#046bd2] text-xs font-black uppercase tracking-widest mb-1">Trade Agreements for Exporters</div>
+                    <h3 class="font-black text-gray-900 text-lg">Sell beyond Kenya's borders</h3>
+                </div>
+                <a href="{{ route('trade.agreements.index') }}" class="text-sm font-bold text-[#046bd2] hover:underline">All agreements →</a>
+            </div>
+            <div class="grid sm:grid-cols-3 gap-4">
+                @foreach($tradeAgreements as $a)
+                <a href="{{ route('trade.agreements.show', $a->slug) }}" class="bg-white border border-gray-200 rounded-xl p-4 hover:border-[#046bd2]/40 transition-all card-hover">
+                    <span class="text-[10px] font-bold text-[#046bd2]">{{ $a->bloc?->name ?? $a->agreement_type }}</span>
+                    <h4 class="font-bold text-gray-900 text-sm mt-1 leading-snug">{{ $a->title }}</h4>
+                    <p class="text-gray-400 text-xs mt-1 line-clamp-2">{{ $a->summary }}</p>
+                </a>
+                @endforeach
+            </div>
+        </div>
+    </div>
+    @endif
 @endSection

@@ -261,6 +261,7 @@
                 <a href="{{ route('travel.index') }}" class="px-3.5 py-2 text-sm font-semibold rounded-lg transition-all {{ request()->routeIs('travel.*') ? 'bg-[#901C1E] text-white' : 'text-[#901C1E] hover:text-[#FFCD05] hover:bg-gray-100' }}">Live Events</a>
                 <a href="{{ route('screens.directory') }}" class="px-3.5 py-2 text-sm font-semibold rounded-lg transition-all {{ request()->routeIs('screens.*') ? 'bg-[#901C1E] text-white' : 'text-[#901C1E] hover:text-[#FFCD05] hover:bg-gray-100' }}">Screens</a>
                 <a href="{{ route('packages.index') }}" class="px-3.5 py-2 text-sm font-semibold rounded-lg transition-all {{ request()->routeIs('packages.*') ? 'bg-[#901C1E] text-white' : 'text-[#901C1E] hover:text-[#FFCD05] hover:bg-gray-100' }}">Packages</a>
+                <a href="{{ route('trade.agreements.index') }}" class="px-3.5 py-2 text-sm font-semibold rounded-lg transition-all {{ request()->routeIs('trade.*') ? 'bg-[#901C1E] text-white' : 'text-[#901C1E] hover:text-[#FFCD05] hover:bg-gray-100' }}">Trade</a>
             </nav>
             <div class="flex items-center gap-2">
                 <a href="{{ route('cart.index') }}" class="relative p-2 text-[#5A6480] hover:text-[#901C1E] transition-colors" aria-label="Cart">
@@ -337,6 +338,7 @@
                     <li><a href="{{ route('marketplace.index') }}" class="text-white/50 hover:text-kicc-gold text-sm transition-colors">Marketplace</a></li>
                     <li><a href="{{ route('exhibitions.index') }}" class="text-white/50 hover:text-kicc-gold text-sm transition-colors">Exhibitions</a></li>
                     <li><a href="{{ route('venues.index') }}" class="text-white/50 hover:text-kicc-gold text-sm transition-colors">Venues</a></li>
+                    <li><a href="{{ route('trade.agreements.index') }}" class="text-white/50 hover:text-kicc-gold text-sm transition-colors">Trade Agreements</a></li>
                 </ul>
             </div>
             <div>

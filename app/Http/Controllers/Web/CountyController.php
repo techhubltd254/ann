@@ -72,10 +72,15 @@ class CountyController extends Controller
 
         $countyMedia = MediaAsset::resolveSlot(County::class, $county->id, 'hero_video');
 
+        // Trade agreements + blocs for export opportunities section
+        $countyTradeAgreements = \App\Models\TradeAgreement::with('bloc')->featured()->active()->latest()->take(3)->get();
+        $countyTradeBlocs = \App\Models\TradingBloc::where('is_active', true)->orderBy('name')->take(4)->get();
+
         return view('counties.show', compact(
             'county', 'sectors', 'sectorData',
             'featuredAttractions', 'featuredHotels', 'countyProducts',
-            'exhibitions', 'linkedSectors', 'countyMedia'
+            'exhibitions', 'linkedSectors', 'countyMedia',
+            'countyTradeAgreements', 'countyTradeBlocs'
         ));
     }
 

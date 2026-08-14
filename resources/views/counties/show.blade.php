@@ -301,6 +301,42 @@ $kiccBlue = '#046bd2';
         </div>
         @endif
 
+        {{-- Export opportunities from trade agreements --}}
+        @if(($countyTradeAgreements ?? collect())->isNotEmpty() || ($countyTradeBlocs ?? collect())->isNotEmpty())
+        <div class="mb-14">
+            <div class="flex items-center gap-3 mb-6">
+                <span class="h-px w-8 bg-[#046bd2]"></span>
+                <span class="text-[#046bd2] text-xs font-bold tracking-[0.2em] uppercase">Export Opportunities</span>
+                <span class="h-px flex-1 bg-gray-200"></span>
+            </div>
+            <div class="bg-gradient-to-r from-[#046bd2]/5 to-[#045cb4]/5 border border-[#046bd2]/20 rounded-2xl p-6">
+                @if(($countyTradeAgreements ?? collect())->isNotEmpty())
+                <div class="flex flex-wrap items-center justify-between gap-3 mb-4">
+                    <h3 class="font-bold text-gray-900 text-sm">Take {{ $county->name }} products to the world</h3>
+                    <a href="{{ route('trade.agreements.index') }}" class="text-xs font-bold text-[#046bd2] hover:underline">All agreements →</a>
+                </div>
+                <div class="grid sm:grid-cols-3 gap-4">
+                    @foreach($countyTradeAgreements as $a)
+                    <a href="{{ route('trade.agreements.show', $a->slug) }}" class="bg-white border border-gray-200 rounded-xl p-4 hover:border-[#046bd2]/40 transition-all card-hover">
+                        <span class="text-[10px] font-bold text-[#046bd2]">{{ $a->bloc?->name ?? $a->agreement_type }}</span>
+                        <h4 class="font-bold text-gray-900 text-sm mt-1 leading-snug">{{ $a->title }}</h4>
+                        <p class="text-gray-400 text-xs mt-1 line-clamp-2">{{ $a->summary }}</p>
+                    </a>
+                    @endforeach
+                </div>
+                @endif
+                @if(($countyTradeBlocs ?? collect())->isNotEmpty())
+                <div class="flex flex-wrap gap-2 mt-5 pt-5 border-t border-[#046bd2]/10">
+                    <span class="text-xs text-gray-400 self-center mr-1">Member of:</span>
+                    @foreach($countyTradeBlocs as $b)
+                    <a href="{{ route('trade.blocs.show', $b->slug) }}" class="px-3 py-1 rounded-full text-[10px] font-bold bg-white border border-gray-200 text-gray-600 hover:border-[#046bd2]/40 hover:text-[#046bd2] transition-all">{{ $b->name }}</a>
+                    @endforeach
+                </div>
+                @endif
+            </div>
+        </div>
+        @endif
+
         {{-- Packages strip --}}
         <div class="pb-12">
             @include('components.packages-strip')

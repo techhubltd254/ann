@@ -325,7 +325,51 @@
     </div>
 </section>
 
-{{-- SCREENS CTA — Figma exact --}}
+{{-- TRADE AGREEMENTS — from trade.go.ke --}}
+<section class="bg-white border-y border-gray-100 py-20 section-transition" data-section="trade">
+    <div class="max-w-7xl mx-auto px-5">
+        <div data-reveal>
+            <div class="flex flex-col md:flex-row md:items-end justify-between mb-10 gap-4">
+                <div>
+                    <div class="flex items-center gap-3 mb-3">
+                        <div class="h-px w-8 bg-[#FFCD05]"></div>
+                        <span class="text-[#FFCD05] text-xs font-bold tracking-[0.2em] uppercase">Trade Agreements</span>
+                    </div>
+                    <h2 class="text-3xl md:text-4xl font-black text-gray-900 leading-[1.1]" data-split>Kenya's <span class="text-[#FFCD05]">Trade Agreements</span></h2>
+                    <p class="text-gray-400 mt-3 text-base max-w-xl leading-relaxed">Bilateral, regional and multilateral agreements that open markets for Kenyan exporters — EAC, AfCFTA, COMESA, WTO and more.</p>
+                </div>
+                <a href="{{ route('trade.agreements.index') }}" class="inline-flex items-center justify-center gap-2 font-bold tracking-wide transition-all duration-200 px-4 text-xs h-9 rounded-xl bg-gray-100 text-gray-900 hover:bg-gray-100 border border-gray-200 shrink-0 card-hover">
+                    View all agreements
+                    <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 8l4 4m0 0l-4 4m4-4H3"/></svg>
+                </a>
+            </div>
+        </div>
+        @php
+            $homeAgreements = \App\Models\TradeAgreement::with('bloc')->featured()->active()->latest()->take(3)->get();
+        @endphp
+        <div class="grid grid-cols-1 md:grid-cols-3 gap-5">
+            @foreach($homeAgreements as $a)
+            <a href="{{ route('trade.agreements.show', $a->slug) }}" class="group bg-white rounded-2xl border border-gray-200 p-6 hover:border-[#FFCD05]/40 transition-all card-hover" data-tilt="5" data-reveal data-reveal-delay="{{ $loop->index * 80 }}">
+                <span class="px-2.5 py-0.5 rounded-full text-[10px] font-bold bg-[#046bd2]/10 text-[#046bd2]">{{ $a->bloc?->name ?? $a->agreement_type }}</span>
+                <h3 class="font-black text-gray-900 text-base mt-3 leading-snug group-hover:text-[#046bd2] transition-colors">{{ $a->title }}</h3>
+                <p class="text-gray-500 text-sm mt-2 line-clamp-2">{{ $a->summary }}</p>
+                <div class="flex items-center gap-3 mt-4 text-xs text-gray-400">
+                    @if($a->effective_date)<span>Effective {{ $a->effective_date->format('M Y') }}</span>@endif
+                    <span class="uppercase tracking-wider">{{ $a->agreement_type }}</span>
+                </div>
+            </a>
+            @endforeach
+        </div>
+        <div class="mt-8 text-center" data-reveal>
+            <a href="{{ route('trade.blocs.index') }}" class="inline-flex items-center gap-2 text-sm font-bold text-[#046bd2] hover:text-[#045cb4] transition-colors">
+                Explore Kenya's trading blocs
+                <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 8l4 4m0 0l-4 4m4-4H3"/></svg>
+            </a>
+        </div>
+    </div>
+</section>
+
+{{-- SCREENS CTA --}}
 <section class="max-w-7xl mx-auto px-5 py-20 section-transition" data-section="screens">
     <div class="relative overflow-hidden rounded-3xl border border-gray-200 bg-gradient-to-br from-[#0D1220] to-[#07090F]" data-reveal="zoom">
         <img src="{{ media('kicc/gallery/kicc_DSC_6125.jpg') }}" alt="" class="absolute inset-0 w-full h-full object-cover opacity-20">

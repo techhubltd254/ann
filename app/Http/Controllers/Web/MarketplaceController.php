@@ -27,6 +27,9 @@ class MarketplaceController extends Controller
                 ->orWhere('short_description', 'like', "%{$search}%"));
         }
 
+        // Trade agreements relevant to this filter (by category or all featured)
+        $tradeAgreements = \App\Models\TradeAgreement::with('bloc')->featured()->active()->latest()->take(3)->get();
+
         return view('marketplace.index', [
             'products' => $query->paginate(24)->withQueryString(),
             'categories' => ProductCategory::active()->withCount(['products' => fn ($q) => $q->active()])->get(),
@@ -34,6 +37,7 @@ class MarketplaceController extends Controller
             'activeCategory' => $cat ?? null,
             'activeCounty' => $county ?? null,
             'q' => $search ?? '',
+            'tradeAgreements' => $tradeAgreements,
         ]);
     }
 
@@ -52,6 +56,14 @@ class MarketplaceController extends Controller
             ->limit(4)
             ->get();
 
-        return view('marketplace.show', compact('product', 'related'));
+        // Trade agreements covering this product's category
+        $tradeAgreements = \App\Models\TradeAgreement::with('bloc')->active()
+            ->whereHas('categories', fn ($q) => $q->where('categories.id', $product->category_id))
+            ->orWhere(fn ($q) => $q->whereNull('trading_bloc_id')->where('agreement_type', 'bilateral'))
+            ->latest()
+            ->take(3)
+            ->get();
+
+        return view('marketplace.show', compact('product', 'related', 'tradeAgreements'));
     }
 }

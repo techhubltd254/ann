@@ -97,5 +97,22 @@
         </div>
     </div>
     @endif
+
+    @if(isset($tradeAgreements) && $tradeAgreements->isNotEmpty())
+    <div class="mt-20">
+        <h2 class="text-2xl font-black text-gray-900 mb-2" data-split>Export This Product</h2>
+        <p class="text-gray-500 text-sm mb-6">Trade agreements that open foreign markets for this product category.</p>
+        <div class="grid sm:grid-cols-3 gap-4">
+            @foreach($tradeAgreements as $a)
+            <a href="{{ route('trade.agreements.show', $a->slug) }}" class="bg-white border border-gray-200 rounded-2xl p-5 hover:border-[#046bd2]/40 transition-all card-hover">
+                <span class="px-2.5 py-0.5 rounded-full text-[10px] font-bold bg-[#046bd2]/10 text-[#046bd2]">{{ $a->bloc?->name ?? $a->agreement_type }}</span>
+                <h3 class="font-bold text-gray-900 text-sm mt-2 leading-snug">{{ $a->title }}</h3>
+                <p class="text-gray-400 text-xs mt-1 line-clamp-2">{{ $a->summary }}</p>
+                <span class="mt-3 inline-flex items-center gap-1 text-[#046bd2] text-xs font-bold">Learn more →</span>
+            </a>
+            @endforeach
+        </div>
+    </div>
+    @endif
 </div>
 @endSection

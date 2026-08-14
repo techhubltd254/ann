@@ -138,6 +138,12 @@ Route::get('/operations', [OperationsController::class, 'index'])->name('operati
 Route::get('/exhibitions', [ExhibitionController::class, 'index'])->name('exhibitions.index');
 Route::get('/exhibitions/{slug}', [ExhibitionController::class, 'show'])->name('exhibitions.show');
 
+// Trade Agreements & Trading Blocs
+Route::get('/trade-agreements', [\App\Http\Controllers\Web\TradeAgreementController::class, 'index'])->name('trade.agreements.index');
+Route::get('/trade-agreements/{slug}', [\App\Http\Controllers\Web\TradeAgreementController::class, 'show'])->name('trade.agreements.show');
+Route::get('/trading-blocs', [\App\Http\Controllers\Web\TradeAgreementController::class, 'blocs'])->name('trade.blocs.index');
+Route::get('/trading-blocs/{slug}', [\App\Http\Controllers\Web\TradeAgreementController::class, 'blocShow'])->name('trade.blocs.show');
+
 Route::get('/venues', [ExhibitionController::class, 'venues'])->name('venues.index');
 Route::get('/venues/{venue}', [VenueController::class, 'show'])->name('venues.show');
 Route::post('/venues/{venue}/inquire', [VenueController::class, 'inquire'])->name('venues.inquire');
