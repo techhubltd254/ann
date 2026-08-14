@@ -169,6 +169,15 @@ Route::middleware('auth')->group(function () {
     Route::post('/kicc-admin/agents/documents/{document}/verify', [\App\Http\Controllers\Web\AgentAdminController::class, 'verifyDocument'])->name('agent.admin.document.verify');
 });
 
+// Reviews & Ratings
+Route::post('/reviews', [\App\Http\Controllers\Web\ReviewController::class, 'store'])->name('review.store');
+Route::post('/reviews/{review}/respond', [\App\Http\Controllers\Web\ReviewController::class, 'updateVendorResponse'])->name('review.respond');
+Route::middleware('auth')->group(function () {
+    Route::get('/kicc-admin/reviews', [\App\Http\Controllers\Web\ReviewAdminController::class, 'index'])->name('review.admin.index');
+    Route::post('/kicc-admin/reviews/{review}/approve', [\App\Http\Controllers\Web\ReviewAdminController::class, 'approve'])->name('review.admin.approve');
+    Route::post('/kicc-admin/reviews/{review}/reject', [\App\Http\Controllers\Web\ReviewAdminController::class, 'reject'])->name('review.admin.reject');
+});
+
 Route::get('/venues', [ExhibitionController::class, 'venues'])->name('venues.index');
 Route::get('/venues/{venue}', [VenueController::class, 'show'])->name('venues.show');
 Route::post('/venues/{venue}/inquire', [VenueController::class, 'inquire'])->name('venues.inquire');
