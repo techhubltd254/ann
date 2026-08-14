@@ -29,6 +29,7 @@ use Spatie\Permission\Traits\HasRoles;
     'business_reg',
     'phone_verified_at',
     'email_verified_at',
+    'active',
     'mfa_enabled',
     'mfa_secret',
     'status',
