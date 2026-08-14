@@ -179,7 +179,11 @@ Route::middleware('auth')->group(function () {
     Route::post('/kicc-admin/coupons', [\App\Http\Controllers\Web\CouponController::class, 'adminStore'])->name('coupon.admin.store');
 });
 
-// Trade admin (authenticated)
+// Tourism entities (guides, rentals, restaurants, event organizers)
+Route::get('/tourism/guides', [\App\Http\Controllers\Web\TourismEntityController::class, 'guides'])->name('tourism.guides');
+Route::get('/tourism/car-rentals', [\App\Http\Controllers\Web\TourismEntityController::class, 'rentals'])->name('tourism.rentals');
+Route::get('/tourism/restaurants', [\App\Http\Controllers\Web\TourismEntityController::class, 'restaurants'])->name('tourism.restaurants');
+Route::get('/tourism/event-organizers', [\App\Http\Controllers\Web\TourismEntityController::class, 'organizers'])->name('tourism.organizers');
 Route::middleware('auth')->group(function () {
     Route::get('/kicc-admin/trade/enquiries', [\App\Http\Controllers\Web\TradeAdminController::class, 'enquiries'])->name('trade.admin.enquiries');
     Route::post('/kicc-admin/trade/enquiries/{enquiry}', [\App\Http\Controllers\Web\TradeAdminController::class, 'updateStatus'])->name('trade.admin.enquiry.status');
