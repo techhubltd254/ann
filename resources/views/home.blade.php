@@ -304,7 +304,7 @@
             </div>
         </div>
         @php
-            $homeAgreements = \App\Models\TradeAgreement::with('bloc')->featured()->active()->latest()->take(3)->get();
+            $homeAgreements = $tradeAgreementsHome;
         @endphp
         <div class="grid grid-cols-1 md:grid-cols-3 gap-5">
             @foreach($homeAgreements as $a)

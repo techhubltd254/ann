@@ -24,6 +24,8 @@ class MessagingController extends Controller
 
     public function show(Conversation $conversation)
     {
+        abort_if($conversation->user_id !== auth()->id() && $conversation->vendor_id !== auth()->id(), 403);
+
         $messages = $conversation->messages()->with('user')->latest()->paginate(50);
         Message::where('conversation_id', $conversation->id)
             ->where('user_id', '!=', Auth::id())
@@ -59,6 +61,8 @@ class MessagingController extends Controller
 
     public function send(Request $request, Conversation $conversation)
     {
+        abort_if($conversation->user_id !== auth()->id() && $conversation->vendor_id !== auth()->id(), 403);
+
         $data = $request->validate(['body' => 'required|string|max:2000']);
         $message = $conversation->messages()->create([
             'user_id' => Auth::id(),

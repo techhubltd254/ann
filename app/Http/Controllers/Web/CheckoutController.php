@@ -9,6 +9,7 @@ use App\Models\Marketplace\ShoppingCart;
 use App\Services\PaymentService;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Str;
 
 class CheckoutController extends Controller
@@ -188,5 +189,43 @@ class CheckoutController extends Controller
             } catch (\Throwable $e) {}
         }
         return view('checkout.success', compact('order'));
+    }
+
+    public function mpesaCallback(Request $r)
+    {
+        $payload = $r->all();
+        Log::info('M-Pesa callback received', ['payload' => $payload]);
+
+        $phone = $payload['phone'] ?? $payload['Body']['stkCallback']['CallbackMetadata']['Item'][0]['Value'] ?? null;
+        $amount = $payload['amount'] ?? $payload['Body']['stkCallback']['CallbackMetadata']['Item'][1]['Value'] ?? null;
+        $transactionCode = $payload['TransID'] ?? $payload['Body']['stkCallback']['CallbackMetadata']['Item'][3]['Value'] ?? null;
+
+        $order = Order::where('payment_method', 'mpesa')
+            ->where('payment_status', 'pending')
+            ->where('grand_total', $amount)
+            ->latest()
+            ->first();
+
+        if (!$order) {
+            Log::warning('M-Pesa callback: order not found', ['phone' => $phone, 'amount' => $amount]);
+            return response()->json(['ResultCode' => 1, 'ResultDesc' => 'Order not found']);
+        }
+
+        $order->update([
+            'payment_status' => 'paid',
+            'paid_at' => now(),
+        ]);
+
+        \App\Models\Ecommerce\OrderStatusHistory::create([
+            'order_id' => $order->id,
+            'status_from' => 'pending',
+            'status_to' => 'paid',
+            'notes' => 'Payment confirmed via M-Pesa callback. Transaction: ' . ($transactionCode ?? 'N/A'),
+            'changed_by_user_id' => null,
+        ]);
+
+        Log::info('M-Pesa callback: order paid', ['order_id' => $order->id, 'transaction' => $transactionCode]);
+
+        return response()->json(['ResultCode' => 0, 'ResultDesc' => 'Success']);
     }
 }

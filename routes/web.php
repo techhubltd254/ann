@@ -91,6 +91,7 @@ Route::delete('/cart/{item}', [CartController::class, 'destroy'])->name('cart.de
 Route::get('/checkout', [CheckoutController::class, 'index'])->name('checkout.index');
 Route::post('/checkout', [CheckoutController::class, 'store'])->name('checkout.store')->middleware('throttle:30,1');
 Route::get('/checkout/success/{orderNumber}', [CheckoutController::class, 'success'])->name('checkout.success');
+Route::post('/api/mpesa/callback', [CheckoutController::class, 'mpesaCallback'])->name('mpesa.callback');
 
 // County subscriptions
 Route::get('/county/{slug}/subscriptions', [CountySubscriptionController::class, 'index'])->name('county.subscriptions');

@@ -46,6 +46,9 @@ class CountyAdminController extends Controller
 
     public function dashboard(string $slug, Request $request)
     {
+        $user = Auth::user();
+        $county = County::where('slug', $slug)->firstOrFail();
+        abort_if(!$user->is_admin && $user->county_id !== $county->id, 403);
         $county = $this->authorizeCounty($slug);
         $tab = $request->get('tab', 'overview');
 
@@ -105,6 +108,9 @@ class CountyAdminController extends Controller
     /* ─── CONTENT ─── */
     public function updateContent(Request $request, string $slug)
     {
+        $user = Auth::user();
+        $county = County::where('slug', $slug)->firstOrFail();
+        abort_if(!$user->is_admin && $user->county_id !== $county->id, 403);
         $county = $this->authorizeCounty($slug);
         $data = $request->validate([
             'tagline' => 'nullable|string|max:255',
@@ -118,6 +124,9 @@ class CountyAdminController extends Controller
     /* ─── FULL COUNTY DETAILS ─── */
     public function updateDetails(Request $request, string $slug)
     {
+        $user = Auth::user();
+        $county = County::where('slug', $slug)->firstOrFail();
+        abort_if(!$user->is_admin && $user->county_id !== $county->id, 403);
         $county = $this->authorizeCounty($slug);
         $data = $request->validate([
             'tagline' => 'nullable|string|max:255',
@@ -141,6 +150,9 @@ class CountyAdminController extends Controller
     /* ─── SECTOR MANAGEMENT ─── */
     public function toggleSector(Request $request, string $slug)
     {
+        $user = Auth::user();
+        $county = County::where('slug', $slug)->firstOrFail();
+        abort_if(!$user->is_admin && $user->county_id !== $county->id, 403);
         $county = $this->authorizeCounty($slug);
         $data = $request->validate([
             'sector_id' => 'required|exists:sectors,id',
@@ -157,6 +169,9 @@ class CountyAdminController extends Controller
     /** Toggle a sector's display_on_tile flag for the Economic Sectors grid. */
     public function toggleTileSector(Request $request, string $slug)
     {
+        $user = Auth::user();
+        $county = County::where('slug', $slug)->firstOrFail();
+        abort_if(!$user->is_admin && $user->county_id !== $county->id, 403);
         $county = $this->authorizeCounty($slug);
         $data = $request->validate([
             'sector_id' => 'required|exists:sectors,id',
@@ -175,6 +190,9 @@ class CountyAdminController extends Controller
     /* ─── SECTOR ENTITY CRUD ─── */
     public function addEntity(Request $request, string $slug)
     {
+        $user = Auth::user();
+        $county = County::where('slug', $slug)->firstOrFail();
+        abort_if(!$user->is_admin && $user->county_id !== $county->id, 403);
         $county = $this->authorizeCounty($slug);
         $data = $request->validate([
             'sector_id' => 'required|exists:sectors,id',
@@ -197,6 +215,9 @@ class CountyAdminController extends Controller
 
     public function deleteEntity(string $slug, int $entityId)
     {
+        $user = Auth::user();
+        $county = County::where('slug', $slug)->firstOrFail();
+        abort_if(!$user->is_admin && $user->county_id !== $county->id, 403);
         $county = $this->authorizeCounty($slug);
         $entity = SectorEntity::where('county_id', $county->id)->findOrFail($entityId);
         $entity->delete();
@@ -222,6 +243,9 @@ class CountyAdminController extends Controller
 
     public function uploadImage(Request $request, string $slug)
     {
+        $user = Auth::user();
+        $county = County::where('slug', $slug)->firstOrFail();
+        abort_if(!$user->is_admin && $user->county_id !== $county->id, 403);
         $county = $this->authorizeCounty($slug);
         $data = $request->validate([
             'sector' => 'required|in:hero,tourism,products,education,culture,hotels,farms,transport,health',
@@ -245,6 +269,9 @@ class CountyAdminController extends Controller
 
     public function deleteImage(string $slug, string $sector)
     {
+        $user = Auth::user();
+        $county = County::where('slug', $slug)->firstOrFail();
+        abort_if(!$user->is_admin && $user->county_id !== $county->id, 403);
         $county = $this->authorizeCounty($slug);
         $path = storage_path("app/public/counties/{$slug}/{$sector}.jpeg");
         if (file_exists($path)) @unlink($path);
@@ -262,6 +289,9 @@ class CountyAdminController extends Controller
      */
     public function upload4dVideo(Request $request, string $slug)
     {
+        $user = Auth::user();
+        $county = County::where('slug', $slug)->firstOrFail();
+        abort_if(!$user->is_admin && $user->county_id !== $county->id, 403);
         $county = $this->authorizeCounty($slug);
         $data = $request->validate([
             'entity_type' => 'required|in:attraction,hotel,product',
@@ -308,6 +338,9 @@ class CountyAdminController extends Controller
 
     public function delete4dVideo(string $slug, string $entityType, int $entityId)
     {
+        $user = Auth::user();
+        $county = County::where('slug', $slug)->firstOrFail();
+        abort_if(!$user->is_admin && $user->county_id !== $county->id, 403);
         $county = $this->authorizeCounty($slug);
         $model = match ($entityType) {
             'attraction' => CountyTourismAttraction::class,
@@ -342,6 +375,9 @@ class CountyAdminController extends Controller
     /* ─── PRICES ─── */
     public function updatePrice(Request $request, string $slug)
     {
+        $user = Auth::user();
+        $county = County::where('slug', $slug)->firstOrFail();
+        abort_if(!$user->is_admin && $user->county_id !== $county->id, 403);
         $county = $this->authorizeCounty($slug);
         $data = $request->validate([
             'table' => 'required|in:county_products,county_tourism_attractions',
@@ -357,6 +393,9 @@ class CountyAdminController extends Controller
     /* ─── ADVERTISING ─── */
     public function createAd(Request $request, string $slug)
     {
+        $user = Auth::user();
+        $county = County::where('slug', $slug)->firstOrFail();
+        abort_if(!$user->is_admin && $user->county_id !== $county->id, 403);
         $county = $this->authorizeCounty($slug);
         $data = $request->validate([
             'name' => 'required|string|max:255',
@@ -399,22 +438,39 @@ class CountyAdminController extends Controller
     /* ─── PACKAGES ─── */
     public function purchasePackage(Request $request, string $slug, PaymentService $payments)
     {
+        $user = Auth::user();
+        $county = County::where('slug', $slug)->firstOrFail();
+        abort_if(!$user->is_admin && $user->county_id !== $county->id, 403);
         $county = $this->authorizeCounty($slug);
         $data = $request->validate([
             'plan_slug' => 'required|exists:subscription_plans,slug',
         ]);
         $plan = SubscriptionPlan::where('slug', $data['plan_slug'])->first();
+        $planPrice = $plan->price;
         $user = Auth::user();
-        $intent = $payments->charge($county, $plan->price, [
+        $intent = $payments->charge($county, $planPrice, [
             'description' => "{$county->name} County — {$plan->name} plan",
             'phone' => $user->phone ?? '',
         ]);
-        return back()->with('success', "{$plan->name} plan purchased (KES {$plan->price}). Payment confirmed.");
+
+        \App\Models\Subscription\CountySubscriber::create([
+            'county_id' => $county->id,
+            'plan_name' => $data['plan_name'] ?? 'Basic',
+            'amount_paid' => $planPrice,
+            'status' => 'active',
+            'started_at' => now(),
+            'expires_at' => now()->addMonth(),
+        ]);
+
+        return back()->with('success', "{$plan->name} plan purchased (KES {$planPrice}). Payment confirmed.");
     }
 
     /* ─── REPORTS ─── */
     public function downloadReport(string $slug, string $type)
     {
+        $user = Auth::user();
+        $county = County::where('slug', $slug)->firstOrFail();
+        abort_if(!$user->is_admin && $user->county_id !== $county->id, 403);
         $county = $this->authorizeCounty($slug);
         $rows = match ($type) {
             'products' => CountyProduct::where('county_id', $county->id)->get()->toArray(),

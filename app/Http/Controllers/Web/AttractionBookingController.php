@@ -19,12 +19,15 @@ use Illuminate\Support\Str;
 class AttractionBookingController extends Controller
 {
     /** Optional add-ons suggested with every attraction booking (KES). */
-    public const ADDONS = [
-        'transport'  => ['label' => 'Private return transfer', 'desc' => 'Pick-up & drop-off from your town', 'price' => 3500, 'per_guest' => false],
-        'flight'     => ['label' => 'Domestic flight', 'desc' => 'Nairobi → nearest county airstrip', 'price' => 8500, 'per_guest' => true],
-        'helicopter' => ['label' => 'Helicopter scenic transfer', 'desc' => 'Nairobi → coast with aerial views', 'price' => 45000, 'per_guest' => true],
-        'restaurant' => ['label' => 'Lunch at partner restaurant', 'desc' => 'Reserved table near the attraction', 'price' => 2000, 'per_guest' => true],
-    ];
+    public static function addons(): array
+    {
+        return [
+            'transport'  => ['label' => 'Private return transfer', 'desc' => 'Pick-up & drop-off from your town', 'price' => config('pricing.addon_transport'), 'per_guest' => false],
+            'flight'     => ['label' => 'Domestic flight', 'desc' => 'Nairobi → nearest county airstrip', 'price' => config('pricing.addon_flight'), 'per_guest' => true],
+            'helicopter' => ['label' => 'Helicopter scenic transfer', 'desc' => 'Nairobi → coast with aerial views', 'price' => config('pricing.addon_helicopter'), 'per_guest' => true],
+            'restaurant' => ['label' => 'Lunch at partner restaurant', 'desc' => 'Reserved table near the attraction', 'price' => config('pricing.addon_restaurant'), 'per_guest' => true],
+        ];
+    }
 
     public function show(int $id)
     {
@@ -42,7 +45,7 @@ class AttractionBookingController extends Controller
             'attraction' => $attraction,
             'recommended' => $recommended,
             'entryFee' => $entryFee,
-            'addons' => self::ADDONS,
+            'addons' => self::addons(),
         ]);
     }
 
@@ -57,7 +60,7 @@ class AttractionBookingController extends Controller
             'visit_date' => 'required|date|after_or_equal:today',
             'ticket_count' => 'required|integer|min:1|max:50',
             'addons' => 'nullable|array',
-            'addons.*' => 'in:' . implode(',', array_keys(self::ADDONS)),
+            'addons.*' => 'in:' . implode(',', array_keys(self::addons())),
         ]);
 
         $entryFee = ($attraction->entry_fee && $attraction->entry_fee > 0) ? $attraction->entry_fee : 500;
@@ -66,7 +69,7 @@ class AttractionBookingController extends Controller
         $total = $entryFee * $guests;
         $chosenAddons = [];
         foreach (($data['addons'] ?? []) as $key) {
-            $a = self::ADDONS[$key];
+            $a = self::addons()[$key];
             $cost = $a['per_guest'] ? $a['price'] * $guests : $a['price'];
             $chosenAddons[] = ['key' => $key, 'label' => $a['label'], 'cost' => $cost];
             $total += $cost;

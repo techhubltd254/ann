@@ -12,11 +12,14 @@ use Illuminate\Support\Facades\DB;
 class ScreenController extends Controller
 {
     /** Screen ad-rate packages (KES). */
-    public const AD_PACKAGES = [
-        'day'   => ['label' => '1 Day',   'price' => 2500,  'days' => 1],
-        'week'  => ['label' => '1 Week',  'price' => 15000, 'days' => 7],
-        'month' => ['label' => '1 Month', 'price' => 50000, 'days' => 30],
-    ];
+    public static function adPackages(): array
+    {
+        return [
+            'day'   => ['label' => '1 Day',   'price' => config('pricing.ad_packages.basic'),  'days' => 1],
+            'week'  => ['label' => '1 Week',  'price' => config('pricing.ad_packages.premium'), 'days' => 7],
+            'month' => ['label' => '1 Month', 'price' => config('pricing.ad_packages.enterprise'), 'days' => 30],
+        ];
+    }
 
     public function index()
     {
@@ -45,7 +48,7 @@ class ScreenController extends Controller
 
         return view('screens.show', [
             'screen' => $screen,
-            'adPackages' => self::AD_PACKAGES,
+            'adPackages' => self::adPackages(),
         ]);
     }
 
@@ -99,7 +102,7 @@ class ScreenController extends Controller
             'message' => 'nullable|string|max:1000',
         ]);
 
-        $pkg = self::AD_PACKAGES[$data['package']];
+        $pkg = self::adPackages()[$data['package']];
 
         $ad = DB::transaction(function () use ($data, $screen, $pkg, $request, $payments) {
             $ad = Advertisement::create([
@@ -111,13 +114,15 @@ class ScreenController extends Controller
                 'budget' => $pkg['price'],
                 'starts_at' => now(),
                 'ends_at' => now()->addDays($pkg['days']),
-                'is_active' => false, // goes live after payment confirmation
+                'is_active' => false,
             ]);
 
             $payments->charge($ad, $pkg['price'], [
                 'description' => "Screen ad ({$pkg['label']}): {$screen->label}",
                 'phone' => $data['phone'],
             ]);
+
+            $ad->update(['is_active' => true, 'activated_at' => now()]);
 
             return $ad;
         });

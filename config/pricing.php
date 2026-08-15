@@ -1,0 +1,1 @@
+<?php return ['addon_transport' => 3500, 'addon_flight' => 8500, 'addon_helicopter' => 45000, 'addon_restaurant' => 2000, 'ad_packages' => ['basic'=>2500,'premium'=>15000,'enterprise'=>50000], 'county_plans' => ['basic'=>10000,'premium'=>50000,'enterprise'=>200000,'enterprise_plus'=>500000]];

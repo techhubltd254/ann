@@ -53,6 +53,11 @@ class TicketController extends Controller
             ->with(['ticketType', 'booking', 'exhibition'])
             ->firstOrFail();
 
-        return response()->json($ticket);
+        return response()->json([
+            'ticket_type' => $ticket->ticketType?->name,
+            'exhibition_name' => $ticket->exhibition?->name,
+            'dates' => $ticket->exhibition?->dates ?? $ticket->exhibition?->start_date . ' - ' . $ticket->exhibition?->end_date,
+            'status' => $ticket->status,
+        ]);
     }
 }

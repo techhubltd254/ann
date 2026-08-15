@@ -8,7 +8,7 @@ use App\Models\Ecommerce\AuctionBid;
 use Illuminate\Http\Request;
 class AuctionController extends Controller {
     public function index() {
-        $active = Auction::where('status','active')->with('product.images','seller')->latest('ends_at')->paginate(20);
+        $active = Auction::scopeActive()->with('product.images','seller')->latest('ends_at')->paginate(20);
         return view('ecommerce.auctions.index', compact('active'));
     }
     public function show($id) {
@@ -17,6 +17,9 @@ class AuctionController extends Controller {
     }
     public function bid(Request $r, $id) {
         $auction = Auction::findOrFail($id);
+        if ($auction->ends_at < now()) {
+            return back()->with('error', 'Auction has ended');
+        }
         abort_if($auction->status !== 'active', 400, 'Auction not active');
         abort_if($auction->seller_id === auth()->id(), 400, 'Cannot bid on own auction');
         $data = $r->validate(['amount'=>'required|numeric|min:'.($auction->current_bid + $auction->increment)]);

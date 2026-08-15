@@ -3,6 +3,7 @@
 namespace App\Http\Controllers\Api;
 
 use App\Http\Controllers\Controller;
+use App\Models\Marketplace\Order;
 use App\Services\Payments\StripePaymentDriver;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
@@ -59,6 +60,29 @@ class StripeWebhookController extends Controller
                 'gateway_response' => json_encode(['event_id' => $eventId, 'pi' => $piId, 'status' => $status]),
                 'created_at' => now(),
             ]);
+
+            if ($type === 'payment_intent.succeeded') {
+                $pi = DB::table('payment_intents')->where('provider_ref', $piId)->first();
+                if ($pi && $pi->reference_type === 'order') {
+                    $order = Order::find($pi->reference_id);
+                    if ($order) {
+                        $order->update(['payment_status' => 'paid', 'paid_at' => now()]);
+                        \App\Models\Ecommerce\OrderStatusHistory::create([
+                            'order_id' => $order->id,
+                            'status_from' => 'pending',
+                            'status_to' => 'paid',
+                            'notes' => 'Payment confirmed via Stripe webhook',
+                            'changed_by_user_id' => null,
+                        ]);
+                        try {
+                            $gcController = app(\App\Http\Controllers\Web\GiftCardController::class);
+                            $gcController->activateByOrder($order);
+                        } catch (\Throwable $e) {
+                            Log::warning('Stripe webhook: gift card activation failed', ['order' => $order->id, 'error' => $e->getMessage()]);
+                        }
+                    }
+                }
+            }
         }
 
         return response()->json(['status' => 'ok', 'type' => $type]);

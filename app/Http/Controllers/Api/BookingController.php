@@ -27,6 +27,8 @@ class BookingController extends Controller
 
     public function show(Booking $booking)
     {
+        if ($booking->user_id !== auth()->id()) { abort(403); }
+
         $booking->load(['exhibition', 'bookingBooths.booth', 'tickets.ticketType']);
         return response()->json($booking);
     }
@@ -179,6 +181,8 @@ class BookingController extends Controller
 
     public function cancel(Booking $booking)
     {
+        if ($booking->user_id !== auth()->id()) { abort(403); }
+
         if (!in_array($booking->status, ['pending', 'confirmed'])) {
             return response()->json(['message' => 'Booking cannot be cancelled'], 422);
         }

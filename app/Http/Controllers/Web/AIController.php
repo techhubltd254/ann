@@ -129,8 +129,9 @@ class AIController extends Controller
         $data = $request->validate([
             'order_id' => 'nullable|integer',
             'amount' => 'nullable|numeric',
-            'user_id' => 'nullable|integer',
         ]);
+
+        $userId = auth()->id();
 
         $flags = [];
 
@@ -140,8 +141,8 @@ class AIController extends Controller
         }
 
         // Rule 2: Multiple orders same user
-        if ($data['user_id']) {
-            $recentCount = \App\Models\Marketplace\Order::where('user_id', $data['user_id'])
+        if ($userId) {
+            $recentCount = \App\Models\Marketplace\Order::where('user_id', $userId)
                 ->where('created_at', '>=', now()->subDay())->count();
             if ($recentCount > 5) {
                 $flags[] = "Unusual activity: {$recentCount} orders in 24h";

@@ -19,6 +19,8 @@ class IntelligenceController extends Controller
 {
     public function dashboard(Request $request)
     {
+        abort_if(!auth()->check() || !auth()->user()->is_admin, 403);
+
         $period = $request->get('period', 'month');
         $dateFrom = match($period) {
             'week' => now()->subWeek(),

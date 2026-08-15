@@ -7,6 +7,7 @@ use App\Models\Marketplace\CartItem;
 use App\Models\Marketplace\ProductVariant;
 use App\Models\Marketplace\ShoppingCart;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
 
 class CartController extends Controller
 {
@@ -64,6 +65,9 @@ class CartController extends Controller
 
     public function update(Request $request, CartItem $item)
     {
+        $cart = $item->cart;
+        abort_if($cart->user_id !== auth()->id() && $cart->session_id !== session()->getId(), 403);
+
         $data = $request->validate(['quantity' => 'required|integer|min:0|max:99']);
         if ($data['quantity'] === 0) {
             $item->delete();
@@ -75,6 +79,9 @@ class CartController extends Controller
 
     public function destroy(CartItem $item)
     {
+        $cart = $item->cart;
+        abort_if($cart->user_id !== auth()->id() && $cart->session_id !== session()->getId(), 403);
+
         $item->delete();
         return back()->with('success', 'Item removed.');
     }

@@ -3,10 +3,12 @@
 namespace App\Models;
 
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\SoftDeletes;
 use Illuminate\Support\Str;
 
 class Exhibition extends Model
 {
+    use SoftDeletes;
     protected $fillable = [
         'name', 'slug', 'description', 'tagline', 'county_id', 'venue_id',
         'start_date', 'end_date', 'open_time', 'close_time',

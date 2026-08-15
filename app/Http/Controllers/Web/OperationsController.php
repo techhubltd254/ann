@@ -14,6 +14,8 @@ class OperationsController extends Controller
 {
     public function index(AutomationTreeService $tree)
     {
+        abort_if(!auth()->check() || !auth()->user()->is_admin, 403);
+
         try {
             $campaigns = Campaign::where('is_active', true)->get();
         } catch (\Throwable $e) {

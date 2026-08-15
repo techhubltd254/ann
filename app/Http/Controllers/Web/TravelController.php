@@ -118,7 +118,12 @@ class TravelController extends Controller
                 'total' => $flightTotal, 'currency' => 'KES', 'status' => 'confirmed',
                 'pnr_code' => strtoupper(Str::random(6)), 'booked_at' => now(),
             ]);
-            DB::table('flight_inventory')->where('id', $inventory->id)->decrement('available_seats', $data['passengers']);
+            try {
+                DB::table('flight_inventory')->where('id', $inventory->id)->decrement('available_seats', $data['passengers']);
+            } catch (\Throwable $e) {
+                DB::table('flight_inventory')->where('id', $inventory->id)->increment('available_seats', $data['passengers']);
+                throw $e;
+            }
             $bookings[] = ['type' => 'Flight', 'ref' => $flightBooking->booking_reference, 'total' => $flightTotal];
             $total += $flightTotal;
 
@@ -163,10 +168,17 @@ class TravelController extends Controller
         });
 
         // Unified payment — intent references the flight booking (anchor of the package)
-        $payments->charge($flightBooking, $total, [
-            'description' => "Travel package {$groupRef}",
-            'phone' => $data['phone'],
-        ]);
+        try {
+            $payments->charge($flightBooking, $total, [
+                'description' => "Travel package {$groupRef}",
+                'phone' => $data['phone'],
+            ]);
+        } catch (\Throwable $e) {
+            if ($flightBooking) {
+                DB::table('flight_inventory')->where('id', $inventory->id)->increment('available_seats', $data['passengers']);
+            }
+            throw $e;
+        }
 
         \App\Services\N8nService::fire('booking_created', [
             'type' => 'travel_package', 'reference' => $groupRef, 'total' => $total,
@@ -179,6 +191,9 @@ class TravelController extends Controller
     /** Receipt — every component with references and totals. */
     public function receipt(string $groupRef)
     {
+        $booking = \App\Models\Travel\FlightBooking::where('booking_reference', $groupRef . '-FL')->firstOrFail();
+        abort_if($booking->user_id !== auth()->id() && !auth()->user()?->is_admin, 403);
+
         $flight = DB::table('flight_bookings')->where('booking_reference', $groupRef . '-FL')->first();
         abort_unless($flight, 404);
         $hotel = DB::table('hotel_bookings')->where('booking_reference', $groupRef . '-HT')->first();
