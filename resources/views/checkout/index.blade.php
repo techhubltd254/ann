@@ -49,14 +49,28 @@
             </div>
 
             <div class="mt-6 pt-5 border-t border-gray-100">
-                <div class="flex items-center gap-3 bg-emerald-500/10 border border-emerald-500/20 rounded-xl px-4 py-3 text-sm text-emerald-400">
-                    <svg class="w-5 h-5 shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 18h.01M8 21h8a2 2 0 002-2V5a2 2 0 00-2-2H8a2 2 0 00-2 2v14a2 2 0 002 2z"/></svg>
-                    <span><strong>M-Pesa on delivery.</strong> You'll receive an STK push on the phone number above.</span>
+                <label class="block text-[10px] font-bold text-gray-400 uppercase tracking-wider mb-3">Payment Method</label>
+                <div class="space-y-2">
+                    <label class="flex items-center gap-3 bg-white border border-gray-200 rounded-xl px-4 py-3 cursor-pointer hover:border-[#046bd2]/30 transition-colors">
+                        <input type="radio" name="payment_method" value="mpesa" checked class="accent-[#046bd2]">
+                        <div><div class="font-bold text-sm text-gray-900">M-Pesa</div><div class="text-xs text-gray-400">Lipa Na M-Pesa — STK push to your phone</div></div>
+                    </label>
+                    <label class="flex items-center gap-3 bg-white border border-gray-200 rounded-xl px-4 py-3 cursor-pointer hover:border-[#046bd2]/30 transition-colors">
+                        <input type="radio" name="payment_method" value="cod" class="accent-[#046bd2]">
+                        <div><div class="font-bold text-sm text-gray-900">Cash on Delivery</div><div class="text-xs text-gray-400">Pay when you receive your order</div></div>
+                    </label>
                 </div>
             </div>
 
+            @if(session('gift_card_code'))
+            <div class="mt-4 bg-green-50 border border-green-200 rounded-xl px-4 py-3 flex items-center justify-between">
+                <span class="text-sm text-green-700">🎁 Gift card {{ session('gift_card_code') }} — KES {{ number_format(session('gift_card_balance')) }}</span>
+                <a href="{{ route('gift-cards.remove') }}" class="text-xs text-red-500 font-bold">Remove</a>
+            </div>
+            @endif
+
             <button type="submit" data-magnetic
-                    class="w-full inline-flex items-center justify-center gap-2 font-bold tracking-wide transition-all duration-200 mt-6 px-8 text-base h-14 rounded-xl bg-[#901C1E] text-gray-900 hover:bg-[#7b1618] active:scale-[0.97]">Place Order</button>
+                    class="w-full inline-flex items-center justify-center gap-2 font-bold tracking-wide transition-all duration-200 mt-6 px-8 text-base h-14 rounded-xl bg-[#901C1E] text-white hover:bg-[#7b1618] active:scale-[0.97]">Place Order</button>
         </form>
 
         <div class="lg:col-span-2 space-y-5">

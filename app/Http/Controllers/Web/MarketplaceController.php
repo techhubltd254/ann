@@ -6,6 +6,10 @@ use App\Http\Controllers\Controller;
 use App\Models\County;
 use App\Models\Marketplace\Product;
 use App\Models\Marketplace\ProductCategory;
+use App\Models\Ecommerce\RecentlyViewed;
+use App\Models\Ecommerce\ProductQuestion;
+use App\Models\Ecommerce\FlashSale;
+use App\Models\TradeAgreement;
 use Illuminate\Http\Request;
 
 class MarketplaceController extends Controller
@@ -27,8 +31,11 @@ class MarketplaceController extends Controller
                 ->orWhere('short_description', 'like', "%{$search}%"));
         }
 
-        // Trade agreements relevant to this filter (by category or all featured)
-        $tradeAgreements = \App\Models\TradeAgreement::with('bloc')->featured()->active()->latest()->take(3)->get();
+        $tradeAgreements = TradeAgreement::with('bloc')->featured()->active()->latest()->take(3)->get();
+
+        // Active flash sale for badge display
+        $activeFlashSale = FlashSale::where('is_active', true)
+            ->where('starts_at', '<=', now())->where('ends_at', '>=', now())->first();
 
         return view('marketplace.index', [
             'products' => $query->paginate(24)->withQueryString(),
@@ -38,6 +45,7 @@ class MarketplaceController extends Controller
             'activeCounty' => $county ?? null,
             'q' => $search ?? '',
             'tradeAgreements' => $tradeAgreements,
+            'activeFlashSale' => $activeFlashSale,
         ]);
     }
 
@@ -48,6 +56,17 @@ class MarketplaceController extends Controller
             ->where('slug', $slug)
             ->firstOrFail();
 
+        // Track recently viewed
+        try {
+            RecentlyViewed::create([
+                'user_id' => auth()->id(),
+                'session_id' => session()->getId(),
+                'viewable_type' => Product::class,
+                'viewable_id' => $product->id,
+                'viewed_at' => now(),
+            ]);
+        } catch (\Throwable $e) {}
+
         $related = Product::with(['variants', 'county'])
             ->active()
             ->where('id', '!=', $product->id)
@@ -56,14 +75,33 @@ class MarketplaceController extends Controller
             ->limit(4)
             ->get();
 
-        // Trade agreements covering this product's category
-        $tradeAgreements = \App\Models\TradeAgreement::with('bloc')->active()
+        $tradeAgreements = TradeAgreement::with('bloc')->active()
             ->whereHas('categories', fn ($q) => $q->where('product_categories.id', $product->category_id))
             ->orWhere(fn ($q) => $q->whereNull('trading_bloc_id')->where('agreement_type', 'bilateral'))
-            ->latest()
-            ->take(3)
-            ->get();
+            ->latest()->take(3)->get();
 
-        return view('marketplace.show', compact('product', 'related', 'tradeAgreements'));
+        $questions = ProductQuestion::where('product_id', $product->id)
+            ->whereNotNull('answer')->with('user')->latest()->get();
+
+        // Check if product is in an active flash sale
+        $flashSaleProduct = null;
+        $activeSale = FlashSale::where('is_active', true)
+            ->where('starts_at', '<=', now())->where('ends_at', '>=', now())
+            ->whereHas('products', fn($q) => $q->where('product_id', $product->id))
+            ->first();
+        if ($activeSale) {
+            $flashSaleProduct = $activeSale->products()->where('product_id', $product->id)->first();
+        }
+
+        return view('marketplace.show', compact('product', 'related', 'tradeAgreements', 'questions', 'flashSaleProduct'));
+    }
+
+    public function compare(Request $request)
+    {
+        $ids = $request->get('ids', []);
+        if (!is_array($ids)) $ids = explode(',', $ids);
+        $products = Product::with(['variants', 'images', 'county', 'category'])
+            ->whereIn('id', array_slice($ids, 0, 4))->active()->get();
+        return view('marketplace.compare', compact('products'));
     }
 }

@@ -33,8 +33,20 @@
                     @if($product->category)
                     <span class="px-2.5 py-0.5 rounded-full text-[11px] font-semibold tracking-wide border bg-sky-100 text-[#5A6480] border-gray-200">{{ $product->category->name }}</span>
                     @endif
+                    @if(isset($flashSaleProduct))
+                    <span class="px-2.5 py-0.5 rounded-full text-[11px] font-semibold tracking-wide bg-red-100 text-red-600 border border-red-200">⚡ -{{ $flashSaleProduct->pivot->flashSale->discount_percent ?? 0 }}% Flash</span>
+                    @endif
                 </div>
                 <h1 class="text-3xl font-black text-gray-900" data-split>{{ $product->name }}</h1>
+                <div class="flex items-center gap-3 mt-2">
+                    @auth
+                    <button data-wishlist-btn data-type="{{ get_class($product) }}" data-id="{{ $product->id }}" class="text-gray-300 hover:text-red-500 transition-colors text-lg" title="Add to wishlist">♡</button>
+                    @endauth
+                    <label class="flex items-center gap-1 text-xs text-gray-400 cursor-pointer">
+                        <input type="checkbox" class="compare-checkbox accent-[#046bd2]" value="{{ $product->id }}" onchange="updateCompare(this)">
+                        Compare
+                    </label>
+                </div>
                 @if($product->short_description)
                 <p class="text-[#5A6480] leading-relaxed text-sm mt-4">{{ $product->short_description }}</p>
                 @endif
@@ -114,5 +126,41 @@
         </div>
     </div>
     @endif
+
+    {{-- Q&A Section --}}
+    <div class="mt-20 max-w-3xl">
+        <h2 class="text-2xl font-black text-gray-900 mb-6" data-split>Questions & Answers</h2>
+        @auth
+        <form method="POST" action="{{ route('product-questions.ask', $product->id) }}" class="flex gap-3 mb-6">
+            @csrf
+            <input type="text" name="question" placeholder="Ask a question about this product..." class="flex-1 border border-gray-200 rounded-xl px-4 py-2.5 text-sm" required>
+            <button type="submit" class="bg-[#046bd2] text-white font-bold px-5 py-2.5 rounded-xl text-sm">Ask</button>
+        </form>
+        @else
+        <p class="text-gray-400 text-sm mb-6"><a href="{{ route('login') }}" class="text-[#046bd2] font-bold">Sign in</a> to ask a question.</p>
+        @endauth
+        <div class="space-y-4">
+            @forelse($questions as $q)
+            <div class="bg-white border border-gray-200 rounded-2xl p-4">
+                <div class="flex items-start justify-between"><div class="text-sm font-semibold text-gray-900">{{ $q->user->name ?? 'Anonymous' }}</div><div class="text-xs text-gray-400">{{ $q->created_at->diffForHumans() }}</div></div>
+                <p class="text-sm text-gray-600 mt-1">{{ $q->question }}</p>
+                <div class="mt-2 pl-4 border-l-2 border-[#046bd2]/30"><p class="text-sm text-gray-500">Answer: {{ $q->answer }}</p></div>
+            </div>
+            @empty
+            <p class="text-gray-400 text-sm">No questions yet.</p>
+            @endforelse
+        </div>
+    </div>
 </div>
+
+<script>
+function updateCompare(cb) {
+    let checked = Array.from(document.querySelectorAll('.compare-checkbox:checked')).map(c => c.value);
+    if (checked.length >= 2) {
+        window.location.href = '{{ route('marketplace.compare') }}?ids=' + checked.join(',');
+    }
+}
+// Track recently viewed
+fetch('{{ route('recently-viewed.track') }}', {method:'POST',headers:{'X-CSRF-TOKEN':'{{ csrf_token() }}','Content-Type':'application/json'},body:JSON.stringify({viewable_type:'{{ str_replace('\\','\\\\',get_class($product)) }}',viewable_id:{{ $product->id }}})});
+</script>
 @endSection

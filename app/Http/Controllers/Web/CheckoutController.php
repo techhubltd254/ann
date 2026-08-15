@@ -54,17 +54,32 @@ class CheckoutController extends Controller
             'town' => 'required|string|max:60',
             'address' => 'required|string|max:255',
             'notes' => 'nullable|string|max:500',
+            'payment_method' => 'required|in:mpesa,cod',
         ]);
 
         $order = DB::transaction(function () use ($cart, $data, $request) {
             $subtotal = $cart->subtotal;
+            $discount = 0;
+            // Apply gift card
+            if ($code = session('gift_card_code')) {
+                $card = \App\Models\Ecommerce\GiftCard::where('code', $code)->active()->first();
+                if ($card) {
+                    $discount = min($card->balance, $subtotal);
+                    $card->decrement('balance', $discount);
+                    if ($card->balance <= 0) { $card->update(['is_active' => false]); }
+                    session()->forget(['gift_card_code','gift_card_balance']);
+                }
+            }
+            $grandTotal = max(0, $subtotal - $discount);
             $order = Order::create([
                 'user_id' => $request->user()?->id,
                 'cart_id' => $cart->id,
                 'subtotal' => $subtotal,
+                'discount_total' => $discount,
                 'shipping_total' => 0,
                 'tax_total' => 0,
-                'grand_total' => $subtotal,
+                'grand_total' => $grandTotal,
+                'payment_method' => $data['payment_method'],
                 'notes' => $data['notes'] ?? null,
                 'ip_address' => $request->ip(),
                 'user_agent' => substr((string) $request->userAgent(), 0, 255),
@@ -88,11 +103,13 @@ class CheckoutController extends Controller
             $cart->items()->delete();
             $cart->delete();
 
-            // Create a unified payment intent via the active gateway (M-Pesa when key is set)
-            $this->payments->charge($order, $order->grand_total, [
-                'description' => "Order {$order->order_number}",
-                'phone' => $data['phone'],
-            ]);
+            // Payment (skip for COD)
+            if ($data['payment_method'] !== 'cod') {
+                $this->payments->charge($order, $order->grand_total, [
+                    'description' => "Order {$order->order_number}",
+                    'phone' => $data['phone'],
+                ]);
+            }
 
             // Trade escrow: hold funds per seller until buyer confirms delivery
             $order->load('items.variant.product');
@@ -141,6 +158,15 @@ class CheckoutController extends Controller
 
             return $order;
         });
+
+        // Record order status history
+        \App\Models\Ecommerce\OrderStatusHistory::create([
+            'order_id' => $order->id,
+            'status_from' => null,
+            'status_to' => 'pending',
+            'notes' => 'Order placed via ' . ($data['payment_method'] ?? 'mpesa'),
+            'changed_by_user_id' => $request->user()?->id,
+        ]);
 
         \App\Services\N8nService::fire('order_created', [
             'order_number' => $order->order_number, 'total' => $order->grand_total,

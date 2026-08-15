@@ -18,6 +18,16 @@ use App\Http\Controllers\Web\TravelController;
 use App\Http\Controllers\Web\VenueController;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\Web\SocialAuthController;
+use App\Http\Controllers\Web\WishlistController;
+use App\Http\Controllers\Web\OrderTrackingController;
+use App\Http\Controllers\Web\ProductQAController;
+use App\Http\Controllers\Web\RecentlyViewedController;
+use App\Http\Controllers\Web\AuctionController;
+use App\Http\Controllers\Web\RfqController;
+use App\Http\Controllers\Web\FlashSaleController;
+use App\Http\Controllers\Web\GiftCardController;
+use App\Http\Controllers\Web\SellerAnalyticsController;
+use App\Http\Controllers\Web\LiveChatController;
 use App\Http\Controllers\Web\Room3dController;
 
 Route::get('/', HomeController::class)->name('home');
@@ -32,6 +42,47 @@ Route::get('/counties/{county}/products/{product}/book/success/{reference}', [\A
 // Marketplace
 Route::get('/marketplace', [MarketplaceController::class, 'index'])->name('marketplace.index');
 Route::get('/marketplace/{slug}', [MarketplaceController::class, 'show'])->name('marketplace.show');
+Route::get('/marketplace/compare', [MarketplaceController::class, 'compare'])->name('marketplace.compare');
+
+// Ecommerce features
+Route::post('/wishlist/toggle', [WishlistController::class, 'toggle'])->name('wishlist.toggle')->middleware('auth');
+Route::get('/wishlist', [WishlistController::class, 'index'])->name('wishlist.index')->middleware('auth');
+Route::get('/wishlist/count', [WishlistController::class, 'count'])->name('wishlist.count')->middleware('auth');
+
+Route::get('/orders', [OrderTrackingController::class, 'myOrders'])->name('orders.index')->middleware('auth');
+Route::get('/orders/{orderNumber}', [OrderTrackingController::class, 'show'])->name('orders.track')->middleware('auth');
+Route::post('/orders/{orderNumber}/return', [OrderTrackingController::class, 'requestReturn'])->name('orders.return')->middleware('auth');
+
+Route::post('/products/{product}/questions', [ProductQAController::class, 'ask'])->name('product-questions.ask')->middleware('auth');
+Route::post('/questions/{id}/answer', [ProductQAController::class, 'answer'])->name('product-questions.answer')->middleware('auth');
+
+Route::post('/recently-viewed/track', [RecentlyViewedController::class, 'track'])->name('recently-viewed.track');
+Route::get('/recently-viewed', [RecentlyViewedController::class, 'get'])->name('recently-viewed.get');
+
+Route::get('/flash-sales', [FlashSaleController::class, 'index'])->name('flash-sales.index');
+
+Route::get('/gift-cards', [GiftCardController::class, 'index'])->name('gift-cards.index');
+Route::post('/gift-cards/purchase', [GiftCardController::class, 'purchase'])->name('gift-cards.purchase')->middleware('auth');
+Route::post('/gift-cards/apply', [GiftCardController::class, 'apply'])->name('gift-cards.apply');
+Route::get('/gift-cards/remove', [GiftCardController::class, 'remove'])->name('gift-cards.remove');
+
+Route::get('/auctions', [AuctionController::class, 'index'])->name('auctions.index');
+Route::get('/auctions/create', [AuctionController::class, 'create'])->name('auctions.create')->middleware('auth');
+Route::post('/auctions', [AuctionController::class, 'store'])->name('auctions.store')->middleware('auth');
+Route::get('/auctions/{id}', [AuctionController::class, 'show'])->name('auctions.show');
+Route::post('/auctions/{id}/bid', [AuctionController::class, 'bid'])->name('auctions.bid')->middleware('auth');
+
+Route::get('/rfq', [RfqController::class, 'index'])->name('rfq.index')->middleware('auth');
+Route::get('/rfq/create', [RfqController::class, 'create'])->name('rfq.create')->middleware('auth');
+Route::post('/rfq', [RfqController::class, 'store'])->name('rfq.store')->middleware('auth');
+Route::get('/rfq/marketplace', [RfqController::class, 'sellerIndex'])->name('rfq.seller')->middleware('auth');
+Route::post('/rfq/{rfqId}/quote', [RfqController::class, 'quote'])->name('rfq.quote')->middleware('auth');
+
+Route::get('/seller/analytics', [SellerAnalyticsController::class, 'dashboard'])->name('seller.analytics')->middleware('auth');
+
+Route::get('/live-chat/{vendorId}', [LiveChatController::class, 'widget'])->name('live-chat.widget')->middleware('auth');
+Route::post('/live-chat/{vendorId}/send', [LiveChatController::class, 'send'])->name('live-chat.send')->middleware('auth');
+Route::get('/live-chat/{vendorId}/poll', [LiveChatController::class, 'poll'])->name('live-chat.poll')->middleware('auth');
 Route::get('/cart', [CartController::class, 'index'])->name('cart.index');
 Route::post('/cart/add', [CartController::class, 'add'])->name('cart.add');
 Route::patch('/cart/{item}', [CartController::class, 'update'])->name('cart.update');
@@ -183,6 +234,9 @@ Route::post('/cart/coupon/remove', [\App\Http\Controllers\Web\CouponController::
 Route::middleware('auth')->group(function () {
     Route::get('/kicc-admin/coupons', [\App\Http\Controllers\Web\CouponController::class, 'adminIndex'])->name('coupon.admin.index');
     Route::post('/kicc-admin/coupons', [\App\Http\Controllers\Web\CouponController::class, 'adminStore'])->name('coupon.admin.store');
+    Route::get('/kicc-admin/flash-sales', [FlashSaleController::class, 'admin'])->name('kicc-admin.flash-sales');
+    Route::post('/kicc-admin/flash-sales', [FlashSaleController::class, 'store'])->name('kicc-admin.flash-sales.store');
+    Route::post('/kicc-admin/flash-sales/{id}/products', [FlashSaleController::class, 'addProduct'])->name('kicc-admin.flash-sales.add-product');
 });
 
 // Tourism entities (guides, rentals, restaurants, event organizers)

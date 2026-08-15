@@ -23,6 +23,8 @@ class Order extends Model
         'fulfilled_at' => 'datetime', 'cancelled_at' => 'datetime',
     ];
 
+    public function statusHistory() { return $this->hasMany(\App\Models\Ecommerce\OrderStatusHistory::class); }
+
     protected static function booted(): void
     {
         static::creating(function (Order $order) {
