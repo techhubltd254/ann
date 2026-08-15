@@ -34,6 +34,15 @@ platform/storage/logs/
 *.ts
 *.glb
 
+# gaussian splatting captures & outputs
+captures/incoming/
+datasets/
+*.ply
+*.spz
+*.sog
+*.ksplat
+*.splat
+
 # os / editor
 .DS_Store
 .idea/
@@ -49,3 +58,14 @@ infra/ota/*.pem
 node_modules/
 vendor/
 *.log
+kenya-3d-platform
+kicc-app
+kicc building
+KICC Digital Economy Platform
+global exhibition invoices
+kicc-images
+deploy-package
+captures
+data
+pipeline_jobs.json
+scripts
