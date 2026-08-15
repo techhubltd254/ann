@@ -1,4 +1,8 @@
-<?php namespace App\Http\Controllers\Web;
+<?php
+
+namespace App\Http\Controllers\Web;
+
+use App\Http\Controllers\Controller;
 use App\Models\Ecommerce\Rfq;
 use App\Models\Ecommerce\RfqQuote;
 use Illuminate\Http\Request;

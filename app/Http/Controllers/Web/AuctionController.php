@@ -1,4 +1,8 @@
-<?php namespace App\Http\Controllers\Web;
+<?php
+
+namespace App\Http\Controllers\Web;
+
+use App\Http\Controllers\Controller;
 use App\Models\Ecommerce\Auction;
 use App\Models\Ecommerce\AuctionBid;
 use Illuminate\Http\Request;

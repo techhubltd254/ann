@@ -1,4 +1,8 @@
-<?php namespace App\Http\Controllers\Web;
+<?php
+
+namespace App\Http\Controllers\Web;
+
+use App\Http\Controllers\Controller;
 use App\Models\Ecommerce\RecentlyViewed;
 use Illuminate\Http\Request;
 class RecentlyViewedController extends Controller {

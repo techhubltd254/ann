@@ -40,9 +40,9 @@ Route::post('/counties/{county}/products/{product}/book', [\App\Http\Controllers
 Route::get('/counties/{county}/products/{product}/book/success/{reference}', [\App\Http\Controllers\Web\CountyProductBookingController::class, 'success'])->name('county.product.booking.success');
 
 // Marketplace
+Route::get('/marketplace/compare', [MarketplaceController::class, 'compare'])->name('marketplace.compare');
 Route::get('/marketplace', [MarketplaceController::class, 'index'])->name('marketplace.index');
 Route::get('/marketplace/{slug}', [MarketplaceController::class, 'show'])->name('marketplace.show');
-Route::get('/marketplace/compare', [MarketplaceController::class, 'compare'])->name('marketplace.compare');
 
 // Ecommerce features
 Route::post('/wishlist/toggle', [WishlistController::class, 'toggle'])->name('wishlist.toggle')->middleware('auth');

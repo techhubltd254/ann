@@ -1,4 +1,8 @@
-<?php namespace App\Http\Controllers\Web;
+<?php
+
+namespace App\Http\Controllers\Web;
+
+use App\Http\Controllers\Controller;
 use App\Models\Marketplace\Order;
 use App\Models\Marketplace\Product;
 use Illuminate\Http\Request;

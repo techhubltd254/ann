@@ -1,4 +1,8 @@
-<?php namespace App\Http\Controllers\Web;
+<?php
+
+namespace App\Http\Controllers\Web;
+
+use App\Http\Controllers\Controller;
 use App\Models\Ecommerce\ProductQuestion;
 use Illuminate\Http\Request;
 class ProductQAController extends Controller {

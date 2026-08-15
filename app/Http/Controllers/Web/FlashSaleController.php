@@ -1,4 +1,8 @@
-<?php namespace App\Http\Controllers\Web;
+<?php
+
+namespace App\Http\Controllers\Web;
+
+use App\Http\Controllers\Controller;
 use App\Models\Ecommerce\FlashSale;
 use App\Models\Ecommerce\FlashSaleProduct;
 use Illuminate\Http\Request;
