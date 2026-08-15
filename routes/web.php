@@ -223,6 +223,7 @@ Route::get('/safety/report', [\App\Http\Controllers\Web\SafetyController::class,
 Route::post('/safety/report', [\App\Http\Controllers\Web\SafetyController::class, 'submitReport'])->name('safety.report.submit');
 
 // KICC Website (kicc.co.ke functionality)
+Route::get('/national-government', [\App\Http\Controllers\Web\NationalGovernmentController::class, 'index'])->name('national-government.index');
 Route::get('/kicc/news', [\App\Http\Controllers\Web\KiccWebsiteController::class, 'newsIndex'])->name('kicc.news');
 Route::get('/kicc/news/{slug}', [\App\Http\Controllers\Web\KiccWebsiteController::class, 'newsShow'])->name('kicc.news.show');
 Route::get('/kicc/about', [\App\Http\Controllers\Web\KiccWebsiteController::class, 'about'])->name('kicc.about');

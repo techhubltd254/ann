@@ -255,7 +255,7 @@
             </a>
             <nav class="hidden lg:flex items-center gap-1">
                 <a href="/" class="px-3.5 py-2 text-sm font-semibold rounded-lg transition-all {{ request()->is('/') ? 'bg-[#901C1E] text-white' : 'text-[#901C1E] hover:text-[#FFCD05] hover:bg-gray-100' }}">Home</a>
-                <a href="{{ route('national.admin.v2.index') }}" class="px-3.5 py-2 text-sm font-semibold rounded-lg transition-all {{ request()->is('kicc-admin/national*') ? 'bg-[#901C1E] text-white' : 'text-[#901C1E] hover:text-[#FFCD05] hover:bg-gray-100' }}">National Government</a>
+                <a href="{{ route('national-government.index') }}" class="px-3.5 py-2 text-sm font-semibold rounded-lg transition-all {{ request()->routeIs('national-government*') ? 'bg-[#901C1E] text-white' : 'text-[#901C1E] hover:text-[#FFCD05] hover:bg-gray-100' }}">National Government</a>
                 <a href="{{ route('counties.index') }}" class="px-3.5 py-2 text-sm font-semibold rounded-lg transition-all {{ request()->routeIs('counties.*') ? 'bg-[#901C1E] text-white' : 'text-[#901C1E] hover:text-[#FFCD05] hover:bg-gray-100' }}">Counties</a>
                 <a href="{{ route('search.index') }}" class="px-3 py-2 text-sm font-semibold rounded-lg transition-all text-[#901C1E] hover:text-[#FFCD05] hover:bg-gray-100">🔍</a>
                 <a href="{{ route('marketplace.index') }}" class="px-3.5 py-2 text-sm font-semibold rounded-lg transition-all {{ request()->routeIs('marketplace.*') ? 'bg-[#901C1E] text-white' : 'text-[#901C1E] hover:text-[#FFCD05] hover:bg-gray-100' }}">Marketplace</a>
@@ -302,7 +302,7 @@
             </div>
         </div>
         <div x-show="open" x-cloak x-transition class="lg:hidden absolute top-full left-0 right-0 bg-white border-b border-gray-100 p-4 flex flex-col gap-1">
-            <a href="{{ route('national.admin.v2.index') }}" class="text-left px-4 py-3 text-sm font-semibold text-gray-600 hover:text-gray-900 hover:bg-gray-100 rounded-lg">National Government</a>
+            <a href="{{ route('national-government.index') }}" class="text-left px-4 py-3 text-sm font-semibold text-gray-600 hover:text-gray-900 hover:bg-gray-100 rounded-lg">National Government</a>
             <a href="{{ route('counties.index') }}" class="text-left px-4 py-3 text-sm font-semibold text-gray-600 hover:text-gray-900 hover:bg-gray-100 rounded-lg">Counties</a>
             <a href="{{ route('exhibitions.index') }}" class="text-left px-4 py-3 text-sm font-semibold text-gray-600 hover:text-gray-900 hover:bg-gray-100 rounded-lg">Exhibitions</a>
             <a href="{{ route('venues.index') }}" class="text-left px-4 py-3 text-sm font-semibold text-gray-600 hover:text-gray-900 hover:bg-gray-100 rounded-lg">Venues</a>
@@ -350,7 +350,7 @@
             <div>
                 <h4 class="font-bold text-white/50 text-xs uppercase tracking-[0.15em] mb-4">Platform</h4>
                 <ul class="space-y-2.5">
-                    <li><a href="{{ route('national.admin.v2.index') }}" class="text-white/50 hover:text-kicc-gold text-sm transition-colors">National Government</a></li>
+                    <li><a href="{{ route('national-government.index') }}" class="text-white/50 hover:text-kicc-gold text-sm transition-colors">National Government</a></li>
                     <li><a href="{{ route('counties.index') }}" class="text-white/50 hover:text-kicc-gold text-sm transition-colors">Counties</a></li>
                     <li><a href="{{ route('marketplace.index') }}" class="text-white/50 hover:text-kicc-gold text-sm transition-colors">Marketplace</a></li>
                     <li><a href="{{ route('exhibitions.index') }}" class="text-white/50 hover:text-kicc-gold text-sm transition-colors">Exhibitions</a></li>
