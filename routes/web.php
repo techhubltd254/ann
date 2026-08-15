@@ -267,6 +267,16 @@ Route::middleware('auth')->prefix('kicc-admin/cms')->name('cms.admin.')->group(f
     Route::get('/video/{video}/delete', [\App\Http\Controllers\Web\CmsController::class, 'deleteVideo'])->name('video.delete');
 });
 
+// National Government Admin (like counties)
+Route::middleware('auth')->prefix('kicc-admin/national')->name('national.admin.v2.')->group(function () {
+    Route::get('/', [\App\Http\Controllers\Web\NationalAdminController::class, 'index'])->name('index');
+    Route::post('/ministries', [\App\Http\Controllers\Web\NationalAdminController::class, 'storeMinistry'])->name('ministry.store');
+    Route::post('/ministries/{ministry}', [\App\Http\Controllers\Web\NationalAdminController::class, 'updateMinistry'])->name('ministry.update');
+    Route::get('/ministries/{ministry}/delete', [\App\Http\Controllers\Web\NationalAdminController::class, 'deleteMinistry'])->name('ministry.delete');
+    Route::post('/agencies', [\App\Http\Controllers\Web\NationalAdminController::class, 'storeAgency'])->name('agency.store');
+    Route::get('/agencies/{agency}/delete', [\App\Http\Controllers\Web\NationalAdminController::class, 'deleteAgency'])->name('agency.delete');
+});
+
 // KPIs & Monitoring
 Route::get('/kpi', [\App\Http\Controllers\Web\KpiController::class, 'dashboard'])->name('kpi.dashboard');
 
