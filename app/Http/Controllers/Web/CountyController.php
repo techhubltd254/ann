@@ -109,6 +109,28 @@ class CountyController extends Controller
 
         $sectorInfo = $info[$sector] ?? ['title' => $sectorModel->name, 'icon' => '📋', 'desc' => "{$sectorModel->name} in {$county->name} County."];
 
-        return view('counties.sector', compact('county', 'items', 'sector', 'sectorInfo', 'sectorModel'));
+        // 4D video mapping for Muranga sectors
+        $fourDVideo = null;
+        if ($county->slug === 'muranga') {
+            $fourDMap = [
+                'tourism' => 'falls_orbit.mp4',
+                'hotels' => null,
+                'products' => null,
+                'institutions' => 'university_drone_orbit.mp4',
+                'farms' => null,
+                'transport' => null,
+                'health' => 'hospital_orig_cinematic.mp4',
+                'culture' => 'mukurwe_s1_walk.mp4',
+                'agriculture' => null,
+                'education' => 'school_orig_cinematic.mp4',
+                'education-4' => 'school_orig_cinematic.mp4',
+            ];
+            $videoFile = $fourDMap[$sector] ?? null;
+            if ($videoFile && \Illuminate\Support\Facades\Storage::disk('public')->exists('kicc/4d/' . $videoFile)) {
+                $fourDVideo = \Illuminate\Support\Facades\Storage::disk('public')->url('kicc/4d/' . $videoFile);
+            }
+        }
+
+        return view('counties.sector', compact('county', 'items', 'sector', 'sectorInfo', 'sectorModel', 'fourDVideo'));
     }
 }

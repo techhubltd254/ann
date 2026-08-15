@@ -30,7 +30,7 @@ $kiccBlue = '#046bd2';
                data-depth="0.35" data-parallax-scroll
                onloadeddata="this.style.opacity='1'"
                onerror="this.style.display='none';this.nextElementSibling.style.display='block'"
-               style="opacity:0;transition:opacity 0.8s">
+               style="opacity:1">
             @if($heroWebm)
             <source src="{{ $heroWebm }}" type="video/webm">
             @endif
@@ -38,6 +38,10 @@ $kiccBlue = '#046bd2';
             <source src="{{ $heroMp4 }}" type="video/mp4">
             @endif
             @if(!$heroVideo)
+            @if($county->slug === 'muranga')
+            <source src="{{ media('kicc/4d/rafting_cinematic.mp4') }}" type="video/mp4">
+            <source src="{{ media('kicc/4d/falls_orbit.mp4') }}" type="video/mp4">
+            @endif
             <source src="{{ media('counties/' . $county->slug . '/sectors-tour.mp4') }}" type="video/mp4">
             <source src="{{ media('counties/' . $county->slug . '/showcase.mp4') }}" type="video/mp4">
             <source src="{{ $fallbackVideo }}" type="video/mp4">
@@ -145,42 +149,7 @@ $kiccBlue = '#046bd2';
         </div>
         @endif
 
-        {{-- 4D Immersive Experience --}}
-@if($county->slug === 'muranga')
-<div class="mb-14">
-    <div class="flex items-center gap-3 mb-6">
-        <span class="h-px w-8 bg-[#046bd2]"></span>
-        <span class="text-[#046bd2] text-xs font-bold tracking-[0.2em] uppercase">4D Immersive</span>
-        <span class="h-px flex-1 bg-gray-200"></span>
-        <a href="{{ route('4d.experience') }}" class="text-xs font-bold text-[#046bd2] hover:underline">View All →</a>
-    </div>
-    <div class="grid grid-cols-2 md:grid-cols-4 gap-3">
-        @php
-        $fourD = [
-            ['title' => 'Sagana Rafting', 'video' => 'rafting_cinematic.mp4', 'sector' => 'tourism'],
-            ['title' => 'Mugumo-ini Falls', 'video' => 'falls_orbit.mp4', 'sector' => 'tourism'],
-            ['title' => 'Mukurwe wa Nyagathanga', 'video' => 'mukurwe_s1_walk.mp4', 'sector' => 'culture'],
-            ['title' => 'Muranga University', 'video' => 'university_drone_orbit.mp4', 'sector' => 'education'],
-        ];
-        @endphp
-        @foreach($fourD as $d)
-        <div class="bg-white border border-gray-200 rounded-2xl overflow-hidden group card-hover">
-            <div class="aspect-video bg-gray-900 relative">
-                <video class="w-full h-full object-cover" muted loop playsinline
-                    @mouseenter="this.play()" @mouseleave="this.pause();this.currentTime=0">
-                    <source src="{{ media('kicc/4d/' . $d['video']) }}" type="video/mp4">
-                </video>
-                <div class="absolute inset-0 bg-gradient-to-t from-black/40 to-transparent"></div>
-                <div class="absolute bottom-2 left-2 text-white text-xs font-bold">{{ $d['title'] }}</div>
-                <div class="absolute top-2 right-2 px-1.5 py-0.5 rounded bg-black/50 text-white text-[9px] font-bold">4D</div>
-            </div>
-        </div>
-        @endforeach
-    </div>
-</div>
-@endif
-
-{{-- ATTRACTIONS --}}
+        {{-- ATTRACTIONS --}}
         @if(($featuredAttractions ?? collect())->isNotEmpty())
         <div class="mb-14">
             <div class="flex items-center gap-3 mb-6">

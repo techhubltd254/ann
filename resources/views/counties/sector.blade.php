@@ -5,6 +5,22 @@
 
 @section('content')
 <div class="pt-20">
+    @if($fourDVideo)
+    <div class="relative h-[40vh] md:h-[50vh] overflow-hidden bg-black">
+        <video autoplay muted loop playsinline class="w-full h-full object-cover">
+            <source src="{{ $fourDVideo }}" type="video/mp4">
+        </video>
+        <div class="absolute inset-0 bg-gradient-to-t from-black/60 to-transparent"></div>
+        <div class="absolute bottom-0 left-0 right-0 max-w-7xl mx-auto px-5 pb-8">
+            <a href="{{ route('counties.show', $county->slug) }}" class="inline-flex items-center gap-1.5 text-white/60 hover:text-white text-sm mb-3 transition-colors">
+                <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 19l-7-7 7-7"/></svg>
+                {{ $county->name }} County
+            </a>
+            <h1 class="text-3xl md:text-5xl font-black text-white" data-split>{{ $sectorInfo['title'] }}</h1>
+            <p class="text-white/70 text-sm mt-2">{{ $sectorInfo['desc'] }}</p>
+        </div>
+    </div>
+    @else
     <div class="bg-white border-b border-gray-200 py-12">
         <div class="max-w-7xl mx-auto px-5">
             <a href="{{ route('counties.show', $county->slug) }}" class="inline-flex items-center gap-1.5 text-[#5A6480] hover:text-gray-900 text-sm mb-4 transition-colors">
@@ -23,6 +39,7 @@
             <p class="text-[#5A6480] text-sm mt-4 max-w-xl">{{ $sectorInfo['desc'] }}</p>
         </div>
     </div>
+    @endif
     <div class="max-w-7xl mx-auto px-5 py-10">
         @if($items->count() > 0)
         <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-5">
