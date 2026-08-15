@@ -21,7 +21,11 @@ class AdController extends Controller
     public function click(int $creative)
     {
         $to = AdService::click($creative);
-        $target = request()->query('to') ?: $to;
-        return redirect()->away($target ?: '/');
+        // Restrict redirect to same-host URLs only
+        $target = request()->query('to');
+        if ($target && !str_starts_with($target, '/') && !str_starts_with($target, request()->getSchemeAndHttpHost())) {
+            $target = null;
+        }
+        return redirect($target ?: $to ?: '/');
     }
 }

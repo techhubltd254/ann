@@ -26,6 +26,9 @@ return Application::configure(basePath: dirname(__DIR__))
             \App\Http\Middleware\AgenticSEO::class,
             'throttle:api',
         ]);
+        $middleware->alias([
+            'admin' => \App\Http\Middleware\AdminMiddleware::class,
+        ]);
     })
     ->withExceptions(function (Exceptions $exceptions): void {
         $exceptions->shouldRenderJsonWhen(

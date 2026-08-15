@@ -180,6 +180,13 @@ class CheckoutController extends Controller
     public function success(string $orderNumber)
     {
         $order = Order::with('items', 'paymentIntents')->where('order_number', $orderNumber)->firstOrFail();
+        // Activate gift cards if this was a gift card purchase
+        if (str_contains($order->notes ?? '', 'Gift card purchase')) {
+            try {
+                $gc = new GiftCardController(app(\App\Services\PaymentService::class));
+                $gc->activateByOrder($order);
+            } catch (\Throwable $e) {}
+        }
         return view('checkout.success', compact('order'));
     }
 }

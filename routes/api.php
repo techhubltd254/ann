@@ -126,10 +126,12 @@ Route::middleware('auth:sanctum')->group(function () {
 });
 
 // MCP Protocol endpoints
-Route::get('/mcp', [McpController::class, 'discovery']);
-Route::get('/mcp/resources', [McpController::class, 'listResources']);
-Route::get('/mcp/resources/{type}', [McpController::class, 'readResource']);
-Route::post('/mcp/tools/{name}', [McpController::class, 'executeTool']);
+Route::middleware('auth:sanctum')->group(function () {
+    Route::get('/mcp', [McpController::class, 'discovery']);
+    Route::get('/mcp/resources', [McpController::class, 'listResources']);
+    Route::get('/mcp/resources/{type}', [McpController::class, 'readResource']);
+    Route::post('/mcp/tools/{name}', [McpController::class, 'executeTool']);
+});
 
 // Engine → platform media publish webhook (HMAC-SHA256 + nonce + idempotent).
 // Signed by the Kotlin admin engine when a transcode job finishes; warms the

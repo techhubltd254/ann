@@ -108,23 +108,23 @@ Route::middleware('auth')->group(function () {
     Route::get('/admin/county', [AdminPortalController::class, 'county'])->name('admin.county');
     // Dashboards (legacy)
     Route::get('/dashboard/county', [DashboardV2Controller::class, 'county'])->name('dashboard.county');
-    Route::get('/dashboard/admin', [AdminDashboardController::class, 'index'])->name('dashboard.admin');
-    Route::post('/dashboard/admin/delete-product/{id}', [AdminDashboardController::class, 'deleteProduct'])->name('admin.delete-product');
-    Route::post('/dashboard/admin/delete-user/{id}', [AdminDashboardController::class, 'deleteUser'])->name('admin.delete-user');
-    Route::post('/dashboard/admin/delete-order/{id}', [AdminDashboardController::class, 'deleteOrder'])->name('admin.delete-order');
+    Route::get('/dashboard/admin', [AdminDashboardController::class, 'index'])->name('dashboard.admin')->middleware('admin:kicc');
+    Route::post('/dashboard/admin/delete-product/{id}', [AdminDashboardController::class, 'deleteProduct'])->name('admin.delete-product')->middleware('admin:kicc');
+    Route::post('/dashboard/admin/delete-user/{id}', [AdminDashboardController::class, 'deleteUser'])->name('admin.delete-user')->middleware('admin:kicc');
+    Route::post('/dashboard/admin/delete-order/{id}', [AdminDashboardController::class, 'deleteOrder'])->name('admin.delete-order')->middleware('admin:kicc');
 
     // ═══ FOUR-TIER EXHIBITOR PORTALS ═══
     // KICC Overall Admin — control everything
-    Route::get('/kicc-admin', [\App\Http\Controllers\Web\KiccAdminController::class, 'index'])->name('kicc.admin');
-    Route::post('/kicc-admin/escrow/{id}/release', [\App\Http\Controllers\Web\KiccAdminController::class, 'releaseEscrow'])->name('kicc.admin.escrow.release');
+    Route::get('/kicc-admin', [\App\Http\Controllers\Web\KiccAdminController::class, 'index'])->name('kicc.admin')->middleware('admin:kicc');
+    Route::post('/kicc-admin/escrow/{id}/release', [\App\Http\Controllers\Web\KiccAdminController::class, 'releaseEscrow'])->name('kicc.admin.escrow.release')->middleware('admin:kicc');
     // National Government Exhibitor Portal
-    Route::get('/national-admin', [\App\Http\Controllers\Web\NationalPortalController::class, 'index'])->name('national.admin');
-Route::post('/national-admin/ministries', [\App\Http\Controllers\Web\NationalPortalController::class, 'storeMinistry'])->name('national.admin.ministry.store');
-Route::post('/national-admin/ministries/{ministry}', [\App\Http\Controllers\Web\NationalPortalController::class, 'updateMinistry'])->name('national.admin.ministry.update');
-Route::get('/national-admin/ministries/{ministry}/delete', [\App\Http\Controllers\Web\NationalPortalController::class, 'deleteMinistry'])->name('national.admin.ministry.delete');
-Route::post('/national-admin/agencies', [\App\Http\Controllers\Web\NationalPortalController::class, 'storeAgency'])->name('national.admin.agency.store');
-Route::post('/national-admin/agencies/{agency}', [\App\Http\Controllers\Web\NationalPortalController::class, 'updateAgency'])->name('national.admin.agency.update');
-Route::get('/national-admin/agencies/{agency}/delete', [\App\Http\Controllers\Web\NationalPortalController::class, 'deleteAgency'])->name('national.admin.agency.delete');
+    Route::get('/national-admin', [\App\Http\Controllers\Web\NationalPortalController::class, 'index'])->name('national.admin')->middleware('admin:national');
+Route::post('/national-admin/ministries', [\App\Http\Controllers\Web\NationalPortalController::class, 'storeMinistry'])->name('national.admin.ministry.store')->middleware('admin:national');
+Route::post('/national-admin/ministries/{ministry}', [\App\Http\Controllers\Web\NationalPortalController::class, 'updateMinistry'])->name('national.admin.ministry.update')->middleware('admin:national');
+Route::get('/national-admin/ministries/{ministry}/delete', [\App\Http\Controllers\Web\NationalPortalController::class, 'deleteMinistry'])->name('national.admin.ministry.delete')->middleware('admin:national');
+Route::post('/national-admin/agencies', [\App\Http\Controllers\Web\NationalPortalController::class, 'storeAgency'])->name('national.admin.agency.store')->middleware('admin:national');
+Route::post('/national-admin/agencies/{agency}', [\App\Http\Controllers\Web\NationalPortalController::class, 'updateAgency'])->name('national.admin.agency.update')->middleware('admin:national');
+Route::get('/national-admin/agencies/{agency}/delete', [\App\Http\Controllers\Web\NationalPortalController::class, 'deleteAgency'])->name('national.admin.agency.delete')->middleware('admin:national');
     // County Exhibitor Portal (county = a website by itself)
     Route::get('/county-admin', [\App\Http\Controllers\Web\CountyPortalController::class, 'index'])->name('county.admin');
 
@@ -232,11 +232,11 @@ Route::middleware('auth')->group(function () {
 Route::post('/cart/coupon', [\App\Http\Controllers\Web\CouponController::class, 'apply'])->name('coupon.apply');
 Route::post('/cart/coupon/remove', [\App\Http\Controllers\Web\CouponController::class, 'remove'])->name('coupon.remove');
 Route::middleware('auth')->group(function () {
-    Route::get('/kicc-admin/coupons', [\App\Http\Controllers\Web\CouponController::class, 'adminIndex'])->name('coupon.admin.index');
-    Route::post('/kicc-admin/coupons', [\App\Http\Controllers\Web\CouponController::class, 'adminStore'])->name('coupon.admin.store');
-    Route::get('/kicc-admin/flash-sales', [FlashSaleController::class, 'admin'])->name('kicc-admin.flash-sales');
-    Route::post('/kicc-admin/flash-sales', [FlashSaleController::class, 'store'])->name('kicc-admin.flash-sales.store');
-    Route::post('/kicc-admin/flash-sales/{id}/products', [FlashSaleController::class, 'addProduct'])->name('kicc-admin.flash-sales.add-product');
+    Route::get('/kicc-admin/coupons', [\App\Http\Controllers\Web\CouponController::class, 'adminIndex'])->name('coupon.admin.index')->middleware('admin:kicc');
+    Route::post('/kicc-admin/coupons', [\App\Http\Controllers\Web\CouponController::class, 'adminStore'])->name('coupon.admin.store')->middleware('admin:kicc');
+    Route::get('/kicc-admin/flash-sales', [FlashSaleController::class, 'admin'])->name('kicc-admin.flash-sales')->middleware('admin:kicc');
+    Route::post('/kicc-admin/flash-sales', [FlashSaleController::class, 'store'])->name('kicc-admin.flash-sales.store')->middleware('admin:kicc');
+    Route::post('/kicc-admin/flash-sales/{id}/products', [FlashSaleController::class, 'addProduct'])->name('kicc-admin.flash-sales.add-product')->middleware('admin:kicc');
 });
 
 // Tourism entities (guides, rentals, restaurants, event organizers)
@@ -311,7 +311,7 @@ Route::get('/kicc/leadership', [\App\Http\Controllers\Web\KiccWebsiteController:
 Route::get('/kicc/our-departments', [\App\Http\Controllers\Web\KiccWebsiteController::class, 'ourDepartments'])->name('kicc.our-departments');
 
 // CMS Admin
-Route::middleware('auth')->prefix('kicc-admin/cms')->name('cms.admin.')->group(function () {
+Route::middleware(['auth', 'admin:kicc'])->prefix('kicc-admin/cms')->name('cms.admin.')->group(function () {
     Route::get('/', [\App\Http\Controllers\Web\CmsController::class, 'adminIndex'])->name('index');
     Route::post('/pages/{page}', [\App\Http\Controllers\Web\CmsController::class, 'updatePage'])->name('page.update');
     Route::post('/pages', [\App\Http\Controllers\Web\CmsController::class, 'storePage'])->name('page.store');
@@ -328,7 +328,7 @@ Route::middleware('auth')->prefix('kicc-admin/cms')->name('cms.admin.')->group(f
 });
 
 // National Government Admin (like counties)
-Route::middleware('auth')->prefix('kicc-admin/national')->name('national.admin.v2.')->group(function () {
+Route::middleware(['auth', 'admin:national'])->prefix('kicc-admin/national')->name('national.admin.v2.')->group(function () {
     Route::get('/', [\App\Http\Controllers\Web\NationalAdminController::class, 'index'])->name('index');
     Route::post('/ministries', [\App\Http\Controllers\Web\NationalAdminController::class, 'storeMinistry'])->name('ministry.store');
     Route::post('/ministries/{ministry}', [\App\Http\Controllers\Web\NationalAdminController::class, 'updateMinistry'])->name('ministry.update');
@@ -349,8 +349,8 @@ Route::get('/training', [\App\Http\Controllers\Web\TrainingDocController::class,
 Route::get('/training/admin-manual', [\App\Http\Controllers\Web\TrainingDocController::class, 'admin'])->name('training.admin');
 Route::get('/training/api-docs', [\App\Http\Controllers\Web\TrainingDocController::class, 'api'])->name('training.api');
 Route::middleware('auth')->group(function () {
-    Route::get('/kicc-admin/trade/enquiries', [\App\Http\Controllers\Web\TradeAdminController::class, 'enquiries'])->name('trade.admin.enquiries');
-    Route::post('/kicc-admin/trade/enquiries/{enquiry}', [\App\Http\Controllers\Web\TradeAdminController::class, 'updateStatus'])->name('trade.admin.enquiry.status');
+    Route::get('/kicc-admin/trade/enquiries', [\App\Http\Controllers\Web\TradeAdminController::class, 'enquiries'])->name('trade.admin.enquiries')->middleware('admin:kicc');
+    Route::post('/kicc-admin/trade/enquiries/{enquiry}', [\App\Http\Controllers\Web\TradeAdminController::class, 'updateStatus'])->name('trade.admin.enquiry.status')->middleware('admin:kicc');
 });
 
 // Agent / Tour Operator Onboarding
@@ -358,24 +358,24 @@ Route::get('/agents/register', [\App\Http\Controllers\Web\AgentOnboardingControl
 Route::post('/agents/register', [\App\Http\Controllers\Web\AgentOnboardingController::class, 'store'])->name('agent.store');
 Route::get('/agents/success/{agent}', [\App\Http\Controllers\Web\AgentOnboardingController::class, 'success'])->name('agent.onboarding.success');
 Route::middleware('auth')->group(function () {
-    Route::get('/kicc-admin/agents', [\App\Http\Controllers\Web\AgentAdminController::class, 'index'])->name('agent.admin.index');
-    Route::get('/kicc-admin/agents/{agent}', [\App\Http\Controllers\Web\AgentAdminController::class, 'show'])->name('agent.admin.show');
-    Route::post('/kicc-admin/agents/{agent}/approve', [\App\Http\Controllers\Web\AgentAdminController::class, 'approve'])->name('agent.admin.approve');
-    Route::post('/kicc-admin/agents/{agent}/reject', [\App\Http\Controllers\Web\AgentAdminController::class, 'reject'])->name('agent.admin.reject');
-    Route::post('/kicc-admin/agents/documents/{document}/verify', [\App\Http\Controllers\Web\AgentAdminController::class, 'verifyDocument'])->name('agent.admin.document.verify');
+    Route::get('/kicc-admin/agents', [\App\Http\Controllers\Web\AgentAdminController::class, 'index'])->name('agent.admin.index')->middleware('admin:kicc');
+    Route::get('/kicc-admin/agents/{agent}', [\App\Http\Controllers\Web\AgentAdminController::class, 'show'])->name('agent.admin.show')->middleware('admin:kicc');
+    Route::post('/kicc-admin/agents/{agent}/approve', [\App\Http\Controllers\Web\AgentAdminController::class, 'approve'])->name('agent.admin.approve')->middleware('admin:kicc');
+    Route::post('/kicc-admin/agents/{agent}/reject', [\App\Http\Controllers\Web\AgentAdminController::class, 'reject'])->name('agent.admin.reject')->middleware('admin:kicc');
+    Route::post('/kicc-admin/agents/documents/{document}/verify', [\App\Http\Controllers\Web\AgentAdminController::class, 'verifyDocument'])->name('agent.admin.document.verify')->middleware('admin:kicc');
 });
 
 // Reviews & Ratings
 Route::post('/reviews', [\App\Http\Controllers\Web\ReviewController::class, 'store'])->name('review.store');
 Route::post('/reviews/{review}/respond', [\App\Http\Controllers\Web\ReviewController::class, 'updateVendorResponse'])->name('review.respond');
 Route::middleware('auth')->group(function () {
-    Route::get('/kicc-admin/reviews', [\App\Http\Controllers\Web\ReviewAdminController::class, 'index'])->name('review.admin.index');
-    Route::post('/kicc-admin/reviews/{review}/approve', [\App\Http\Controllers\Web\ReviewAdminController::class, 'approve'])->name('review.admin.approve');
-    Route::post('/kicc-admin/reviews/{review}/reject', [\App\Http\Controllers\Web\ReviewAdminController::class, 'reject'])->name('review.admin.reject');
+    Route::get('/kicc-admin/reviews', [\App\Http\Controllers\Web\ReviewAdminController::class, 'index'])->name('review.admin.index')->middleware('admin:kicc');
+    Route::post('/kicc-admin/reviews/{review}/approve', [\App\Http\Controllers\Web\ReviewAdminController::class, 'approve'])->name('review.admin.approve')->middleware('admin:kicc');
+    Route::post('/kicc-admin/reviews/{review}/reject', [\App\Http\Controllers\Web\ReviewAdminController::class, 'reject'])->name('review.admin.reject')->middleware('admin:kicc');
 });
 
 // Commission & Licensing Admin
-Route::middleware('auth')->group(function () {
+Route::middleware(['auth', 'admin:kicc'])->group(function () {
     Route::get('/kicc-admin/commissions', function () {
         $commissions = \App\Models\CommissionLog::with('agent', 'order')->latest()->paginate(25);
         $totalPending = \App\Models\CommissionLog::where('status', 'pending')->sum('commission_amount');

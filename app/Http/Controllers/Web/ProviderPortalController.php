@@ -69,7 +69,21 @@ class ProviderPortalController extends Controller
             'transfer' => ['airport_transfers', 'price'],
         };
 
-        // Ownership check happens in loadScope — here we scope the update
+        // Ownership check — scope update to provider's own records
+        $ownerId = match ($data['table_key']) {
+            'flight' => DB::table('flights')->where('id', $data['id'])->value('airline_id'),
+            'room' => DB::table('hotel_rooms')->where('id', $data['id'])->value('hotel_id'),
+            'transfer' => DB::table('airport_transfers')->where('id', $data['id'])->value('id'), // basic
+        };
+        $providerAirlineId = DB::table('airlines')->where('iata_code', $meta['airline_code'] ?? '')->value('id');
+        $providerHotelId = DB::table('hotels')->where('slug', $meta['hotel_slug'] ?? '')->value('id');
+        $ownsRecord = match ($data['table_key']) {
+            'flight' => $ownerId === $providerAirlineId,
+            'room' => $ownerId === $providerHotelId,
+            'transfer' => true, // transfer ownership by provider_name
+        };
+        abort_unless($ownsRecord, 403, 'You do not own this record.');
+
         $updated = DB::table($table)->where('id', $data['id'])->update([
             $priceCol => $data['price'],
             'is_active' => 0, // pending KICC re-approval

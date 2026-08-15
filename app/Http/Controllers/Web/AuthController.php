@@ -48,7 +48,7 @@ class AuthController extends Controller
         } catch (\Throwable $e) {
             \Illuminate\Support\Facades\Log::error("Verification email to {$email} failed: " . $e->getMessage());
         }
-        \Illuminate\Support\Facades\Log::info("Registration code for {$email}: {$code}");
+        \Illuminate\Support\Facades\Log::info("Registration code sent to {$email}");
 
         session(['reg_email' => $email]);
 
@@ -265,7 +265,7 @@ class AuthController extends Controller
         } catch (\Throwable $e) {
             \Illuminate\Support\Facades\Log::error("Login code email to {$email} failed: " . $e->getMessage());
         }
-        \Illuminate\Support\Facades\Log::info("Login code for {$email}: {$code}");
+        \Illuminate\Support\Facades\Log::info("Login code sent to {$email}");
 
         session(['login_code_email' => $email]);
 

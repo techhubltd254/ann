@@ -41,7 +41,7 @@ class IntegrationController extends Controller
     {
         $integrations = [
             ['name' => 'GIS Maps (Leaflet)', 'status' => 'active', 'config' => 'Mapbox/OpenStreetMap tiles'],
-            ['name' => 'OpenWeather API', 'status' => env('OPENWEATHER_API_KEY') ? 'active' : 'inactive', 'config' => 'API key: ' . (env('OPENWEATHER_API_KEY') ? substr(env('OPENWEATHER_API_KEY'), 0, 8) . '...' : 'Not set')],
+            ['name' => 'OpenWeather API', 'status' => env('OPENWEATHER_API_KEY') ? 'active' : 'inactive', 'config' => 'Configured'],
             ['name' => 'Hotel PMS (Mews/Cloudbeds)', 'status' => 'pending', 'config' => 'Awaiting provider credentials'],
             ['name' => 'GDS / Airline (Amadeus)', 'status' => 'pending', 'config' => 'Awaiting API credentials'],
             ['name' => 'National ID (Huduma Namba)', 'status' => 'pending', 'config' => 'Awaiting government API'],
