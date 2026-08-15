@@ -74,48 +74,7 @@
     </div>
 </section>
 
-{{-- NATIONAL GOVERNMENT — ministries, sectors & agencies --}}
-<section class="border-y border-gray-100 py-20 bg-white to-[#07090F] section-transition" data-section="national">
-    <div class="max-w-7xl mx-auto px-5">
-        <div class="flex items-end justify-between mb-10" data-reveal>
-            <div>
-                <div class="flex items-center gap-3 mb-3">
-                    <img src="{{ media('kicc/kicc-logo.png') }}" alt="KICC" class="h-7 w-auto">
-                    <span class="text-[#FFCD05] text-xs font-bold tracking-[0.25em] uppercase">National Pavilion</span>
-                </div>
-                <h2 class="text-3xl md:text-4xl font-black text-gray-900 leading-[1.1]" data-split>National Government<br><span class="text-[#FFCD05]">Sectors &amp; Agencies</span></h2>
-                <p class="text-gray-400 mt-3 text-base max-w-xl leading-relaxed">The Government of Kenya exhibits here too — every ministry with its agencies and the economic sectors they drive.</p>
-            </div>
-            <a href="{{ route('national.admin') }}" class="hidden md:inline-flex items-center justify-center gap-2 font-bold tracking-wide transition-all duration-200 px-4 text-xs h-9 rounded-xl bg-gray-100 text-gray-900 hover:bg-gray-100 border border-gray-200 shrink-0 card-hover">National portal</a>
-        </div>
-
-        {{-- Sector chips --}}
-        @if(($sectors ?? collect())->isNotEmpty())
-        <div class="flex flex-wrap gap-2 mb-10" data-reveal>
-            @foreach($sectors as $s)
-            <a href="{{ route('counties.index') }}" class="px-3.5 py-1.5 rounded-full text-xs font-bold bg-[#046bd2]/10 text-[#046bd2] border border-[#046bd2]/25 hover:bg-[#046bd2]/20 transition-all">{{ $s->name }}</a>
-            @endforeach
-        </div>
-        @endif
-
-        <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-5 gap-4">
-            @foreach(($ministries ?? collect())->take(10) as $i => $m)
-            <a href="{{ route('national.site', $m->slug) }}" class="group bg-gray-50 rounded-2xl p-5 border border-gray-100 hover:border-[#FFCD05]/40 transition-all card-hover" data-reveal data-reveal-delay="{{ ($i % 5) * 60 }}">
-                <div class="w-10 h-10 rounded-xl flex items-center justify-center text-gray-900 font-black text-[10px] mb-4" style="background: {{ $m->color ?: '#0EA5E9' }}">{{ $m->code }}</div>
-                <div class="font-bold text-gray-900 text-sm leading-snug mb-2 group-hover:text-[#FFCD05] transition-colors">{{ $m->name }}</div>
-                <div class="text-gray-400 text-[10px] font-bold uppercase tracking-widest">{{ $m->agencies->count() }} {{ Str::plural('agency', $m->agencies->count()) }}</div>
-                @if($m->agencies->isNotEmpty())
-                <div class="mt-3 pt-3 border-t border-gray-100 space-y-1">
-                    @foreach($m->agencies->take(2) as $a)
-                    <div class="text-[11px] text-gray-400 truncate">· {{ $a->name }}</div>
-                    @endforeach
-                </div>
-                @endif
-            </a>
-            @endforeach
-        </div>
-    </div>
-</section>
+{{-- NATIONAL GOVERNMENT — now a top-nav item (not on homepage) --}}
 
 {{-- MARKETPLACE — Figma exact --}}
 <section class="border-y border-gray-100 py-20 bg-white section-transition" data-section="marketplace">
