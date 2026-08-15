@@ -3,6 +3,9 @@
 namespace App\Http\Controllers\Web;
 
 use App\Http\Controllers\Controller;
+use App\Models\Lms\Course;
+use Illuminate\Support\Facades\Auth;
+use App\Models\Lms\CourseEnrollment;
 
 class CourseController extends Controller
 {

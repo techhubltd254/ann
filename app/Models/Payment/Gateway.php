@@ -6,7 +6,7 @@ use Illuminate\Database\Eloquent\Model;
 
 class Gateway extends Model
 {
-    protected $guarded = [];
+    protected $guarded = ["id","created_at","updated_at"];
     protected $table = 'payment_gateways';
     protected $casts = [
         'is_active' => 'boolean', 'config' => 'json',

@@ -6,7 +6,7 @@ use Illuminate\Database\Eloquent\Model;
 
 class SettlementBatch extends Model
 {
-    protected $guarded = [];
+    protected $guarded = ["id","created_at","updated_at"];
     protected $casts = [
         'total_amount' => 'float', 'fee_amount' => 'float', 'net_amount' => 'float',
         'total_transactions' => 'integer', 'settled_at' => 'datetime',

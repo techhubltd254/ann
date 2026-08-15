@@ -10,7 +10,7 @@ use Illuminate\Http\Request;
 
 class CartController extends Controller
 {
-    protected function currentCart(Request $request): ShoppingCart
+    public function currentCart(Request $request): ShoppingCart
     {
         $userId = $request->user()?->id;
         $sessionId = $request->session()->getId();

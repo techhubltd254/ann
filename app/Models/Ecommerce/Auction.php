@@ -9,9 +9,3 @@ class Auction extends Model {
     public function winner() { return $this->belongsTo(User::class, 'winner_id'); }
     public function bids() { return $this->hasMany(AuctionBid::class); }
 }
-class AuctionBid extends Model {
-    protected $table = 'auction_bids';
-    protected $fillable = ['auction_id','user_id','amount','is_auto'];
-    public function auction() { return $this->belongsTo(Auction::class); }
-    public function user() { return $this->belongsTo(User::class); }
-}

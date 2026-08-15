@@ -23,10 +23,10 @@
     {{-- OVERVIEW --}}
     <div x-show="tab === 'overview'" x-cloak>
         @php
-            $totalMinistries = \App\Models\Ministry::count();
-            $totalAgencies = \App\Models\Agency::count();
-            $totalSectors = \App\Models\Sector::count();
-            $totalCounties = \App\Models\County::count();
+            $totalMinistries = $ministries->count();
+            $totalAgencies = $agencies->count();
+            $totalSectors = $sectors->count();
+            $totalCounties = $counties->count();
         @endphp
         <div class="grid grid-cols-2 md:grid-cols-4 gap-4 mb-8">
             @foreach([['label'=>'Ministries','val'=>$totalMinistries],['label'=>'Agencies','val'=>$totalAgencies],['label'=>'Sectors','val'=>$totalSectors],['label'=>'Counties','val'=>$totalCounties]] as $s)
@@ -59,7 +59,7 @@
                 <input x-model="q" @focus="showDropdown = true" @input="showDropdown = true" placeholder="Search ministries…" class="w-full pl-10 pr-4 h-12 rounded-xl bg-white border border-gray-200 text-gray-900 text-sm outline-none focus:ring-2 focus:ring-[#FFCD05]/50 focus:border-[#FFCD05] placeholder:text-[#5A6480]/60 transition-all">
             </div>
             <div x-show="showDropdown && q.length > 0" x-cloak class="absolute z-20 mt-1 w-full bg-white border border-gray-200 rounded-xl shadow-xl max-h-72 overflow-y-auto">
-                @foreach(\App\Models\Ministry::with('agencies')->get() as $ministry)
+                @foreach($ministries as $ministry)
                 <a href="/admin/ministries/{{ $ministry->id }}/edit"
                    x-show="q === '' || '{{ strtolower($ministry->name) }}'.includes(q.toLowerCase())"
                    @click="showDropdown = false"
@@ -71,7 +71,7 @@
             </div>
         </div>
         <div class="grid md:grid-cols-2 lg:grid-cols-3 gap-4">
-            @foreach(\App\Models\Ministry::with('agencies')->get() as $ministry)
+            @foreach($ministries as $ministry)
             <div x-show="q === '' || '{{ strtolower($ministry->name) }}'.includes(q.toLowerCase())" class="bg-white rounded-2xl border border-gray-200 p-6 hover:shadow-lg transition-shadow">
                 <div class="flex items-start justify-between mb-3">
                     <div class="w-12 h-12 rounded-xl flex items-center justify-center text-gray-900 font-black text-lg" style="background: {{ $ministry->color }}">{{ $ministry->code[0] }}</div>
@@ -110,7 +110,7 @@
                 <input x-model="q" @focus="showDropdown = true" @input="showDropdown = true" placeholder="Search agencies…" class="w-full pl-10 pr-4 h-12 rounded-xl bg-white border border-gray-200 text-gray-900 text-sm outline-none focus:ring-2 focus:ring-[#FFCD05]/50 focus:border-[#FFCD05] placeholder:text-[#5A6480]/60 transition-all">
             </div>
             <div x-show="showDropdown && q.length > 0" x-cloak class="absolute z-20 mt-1 w-full bg-white border border-gray-200 rounded-xl shadow-xl max-h-72 overflow-y-auto">
-                @foreach(\App\Models\Agency::with('ministry')->get() as $agency)
+                @foreach($agencies as $agency)
                 <a href="/admin/agencies/{{ $agency->id }}/edit"
                    x-show="q === '' || '{{ strtolower($agency->name) }}'.includes(q.toLowerCase()) || '{{ strtolower($agency->ministry->name ?? '') }}'.includes(q.toLowerCase())"
                    @click="showDropdown = false"
@@ -132,7 +132,7 @@
                     </tr>
                 </thead>
                 <tbody class="divide-y divide-gray-100">
-                    @foreach(\App\Models\Agency::with('ministry')->get() as $agency)
+                    @foreach($agencies as $agency)
                     <tr x-show="q === '' || '{{ strtolower($agency->name) }}'.includes(q.toLowerCase()) || '{{ strtolower($agency->ministry->name ?? '') }}'.includes(q.toLowerCase())" class="hover:bg-[#F9FAFB] transition-colors">
                         <td class="px-5 py-3 font-semibold text-gray-900">{{ $agency->name }}</td>
                         <td class="px-5 py-3 text-[#5A6480]">{{ $agency->ministry?->name }}</td>
@@ -158,7 +158,7 @@
                 <input x-model="q" @focus="showDropdown = true" @input="showDropdown = true" placeholder="Search sectors…" class="w-full pl-10 pr-4 h-12 rounded-xl bg-white border border-gray-200 text-gray-900 text-sm outline-none focus:ring-2 focus:ring-[#FFCD05]/50 focus:border-[#FFCD05] placeholder:text-[#5A6480]/60 transition-all">
             </div>
             <div x-show="showDropdown && q.length > 0" x-cloak class="absolute z-20 mt-1 w-full bg-white border border-gray-200 rounded-xl shadow-xl max-h-72 overflow-y-auto">
-                @foreach(\App\Models\Sector::withCount('counties')->orderBy('name')->get() as $sector)
+                @foreach($sectors as $sector)
                 <a href="/admin/sectors/{{ $sector->id }}/edit"
                    x-show="q === '' || '{{ strtolower($sector->name) }}'.includes(q.toLowerCase())"
                    @click="showDropdown = false"
@@ -170,7 +170,7 @@
             </div>
         </div>
         <div class="grid md:grid-cols-2 lg:grid-cols-4 gap-4">
-            @foreach(\App\Models\Sector::withCount('counties')->orderBy('name')->get() as $sector)
+            @foreach($sectors as $sector)
             <div x-show="q === '' || '{{ strtolower($sector->name) }}'.includes(q.toLowerCase())" class="bg-white rounded-2xl border border-gray-200 p-5 hover:shadow-lg transition-shadow">
                 <div class="text-2xl mb-3">{{ $sector->icon ?? '📊' }}</div>
                 <h3 class="font-black text-gray-900 text-sm">{{ $sector->name }}</h3>

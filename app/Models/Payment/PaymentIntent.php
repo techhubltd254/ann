@@ -7,7 +7,7 @@ use Illuminate\Database\Eloquent\Model;
 
 class PaymentIntent extends Model
 {
-    protected $guarded = [];
+    protected $guarded = ["id","created_at","updated_at"];
     protected $casts = [
         'amount' => 'float', 'confirmed_at' => 'datetime',
         'failed_at' => 'datetime', 'metadata' => 'array',

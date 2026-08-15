@@ -9,7 +9,7 @@ class WalletTransaction extends Model
 {
     protected $table = 'county_wallet_transactions';
     public $timestamps = false;
-    protected $guarded = [];
+    protected $guarded = ["id","created_at","updated_at"];
     protected $casts = ['amount' => 'float', 'running_balance' => 'float'];
 
     public function county() { return $this->belongsTo(County::class); }

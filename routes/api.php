@@ -20,8 +20,8 @@ use Illuminate\Support\Facades\Route;
 // defining it here breaks once routes are cached (this file is never reloaded).
 
 // Auth
-Route::post('/auth/register', [AuthController::class, 'register']);
-Route::post('/auth/login', [AuthController::class, 'login']);
+Route::post('/auth/register', [AuthController::class, 'register'])->middleware('throttle:20,1');
+Route::post('/auth/login', [AuthController::class, 'login'])->middleware('throttle:20,1');
 
 // Public county routes
 Route::get('/counties', [CountyController::class, 'index']);

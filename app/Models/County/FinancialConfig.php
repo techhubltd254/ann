@@ -8,7 +8,7 @@ use Illuminate\Database\Eloquent\Model;
 class FinancialConfig extends Model
 {
     protected $table = 'county_financial_config';
-    protected $guarded = [];
+    protected $guarded = ["id","created_at","updated_at"];
     protected $casts = [
         'revenue_share_pct' => 'float', 'subscription_discount' => 'float',
         'wallet_balance' => 'float', 'lifetime_earnings' => 'float',

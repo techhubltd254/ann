@@ -28,6 +28,7 @@ use App\Http\Controllers\Web\FlashSaleController;
 use App\Http\Controllers\Web\GiftCardController;
 use App\Http\Controllers\Web\SellerAnalyticsController;
 use App\Http\Controllers\Web\LiveChatController;
+use App\Http\Controllers\Web\LivestreamController;
 use App\Http\Controllers\Web\Room3dController;
 
 Route::get('/', HomeController::class)->name('home');
@@ -56,14 +57,14 @@ Route::post('/orders/{orderNumber}/return', [OrderTrackingController::class, 're
 Route::post('/products/{product}/questions', [ProductQAController::class, 'ask'])->name('product-questions.ask')->middleware('auth');
 Route::post('/questions/{id}/answer', [ProductQAController::class, 'answer'])->name('product-questions.answer')->middleware('auth');
 
-Route::post('/recently-viewed/track', [RecentlyViewedController::class, 'track'])->name('recently-viewed.track');
+Route::post('/recently-viewed/track', [RecentlyViewedController::class, 'track'])->name('recently-viewed.track')->middleware('throttle:30,1');
 Route::get('/recently-viewed', [RecentlyViewedController::class, 'get'])->name('recently-viewed.get');
 
 Route::get('/flash-sales', [FlashSaleController::class, 'index'])->name('flash-sales.index');
 
 Route::get('/gift-cards', [GiftCardController::class, 'index'])->name('gift-cards.index');
 Route::post('/gift-cards/purchase', [GiftCardController::class, 'purchase'])->name('gift-cards.purchase')->middleware('auth');
-Route::post('/gift-cards/apply', [GiftCardController::class, 'apply'])->name('gift-cards.apply');
+Route::post('/gift-cards/apply', [GiftCardController::class, 'apply'])->name('gift-cards.apply')->middleware('throttle:30,1');
 Route::get('/gift-cards/remove', [GiftCardController::class, 'remove'])->name('gift-cards.remove');
 
 Route::get('/auctions', [AuctionController::class, 'index'])->name('auctions.index');
@@ -88,7 +89,7 @@ Route::post('/cart/add', [CartController::class, 'add'])->name('cart.add');
 Route::patch('/cart/{item}', [CartController::class, 'update'])->name('cart.update');
 Route::delete('/cart/{item}', [CartController::class, 'destroy'])->name('cart.destroy');
 Route::get('/checkout', [CheckoutController::class, 'index'])->name('checkout.index');
-Route::post('/checkout', [CheckoutController::class, 'store'])->name('checkout.store');
+Route::post('/checkout', [CheckoutController::class, 'store'])->name('checkout.store')->middleware('throttle:30,1');
 Route::get('/checkout/success/{orderNumber}', [CheckoutController::class, 'success'])->name('checkout.success');
 
 // County subscriptions
@@ -250,7 +251,7 @@ Route::get('/intelligence', [\App\Http\Controllers\Web\IntelligenceController::c
 
 // AI Features
 Route::get('/ai/chat', [\App\Http\Controllers\Web\AIController::class, 'chatPage'])->name('ai.chat');
-Route::post('/ai/chat', [\App\Http\Controllers\Web\AIController::class, 'chat'])->name('ai.chat.api');
+Route::post('/ai/chat', [\App\Http\Controllers\Web\AIController::class, 'chat'])->name('ai.chat.api')->middleware('throttle:30,1');
 Route::get('/ai/itinerary', [\App\Http\Controllers\Web\AIController::class, 'itineraryPage'])->name('ai.itinerary');
 Route::post('/ai/itinerary', [\App\Http\Controllers\Web\AIController::class, 'itinerary'])->name('ai.itinerary.api');
 Route::get('/api/recommendations', [\App\Http\Controllers\Web\AIController::class, 'recommendations'])->name('api.recommendations');
@@ -443,6 +444,10 @@ Route::middleware('auth')->group(function () {
 // Google OAuth
 Route::get('/auth/google', [SocialAuthController::class, 'redirectToGoogle'])->name('auth.google');
 Route::get('/auth/google/callback', [SocialAuthController::class, 'handleGoogleCallback']);
+
+// Livestreams
+Route::get('/livestreams', [LivestreamController::class, 'index'])->name('livestreams.index');
+Route::get('/livestreams/{slug}', [LivestreamController::class, 'show'])->name('livestreams.show');
 
 // [ADMIN] One-time image optimization trigger
 Route::post('/__admin/optimize-images', function () {

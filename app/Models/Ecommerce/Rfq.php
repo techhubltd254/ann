@@ -7,9 +7,3 @@ class Rfq extends Model {
     public function buyer() { return $this->belongsTo(User::class, 'buyer_id'); }
     public function quotes() { return $this->hasMany(RfqQuote::class); }
 }
-class RfqQuote extends Model {
-    protected $table = 'rfq_quotes';
-    protected $fillable = ['rfq_id','seller_id','price','notes','status'];
-    public function rfq() { return $this->belongsTo(Rfq::class); }
-    public function seller() { return $this->belongsTo(User::class, 'seller_id'); }
-}

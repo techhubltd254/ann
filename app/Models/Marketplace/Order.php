@@ -13,7 +13,7 @@ class Order extends Model
 {
     use SoftDeletes;
 
-    protected $guarded = [];
+    protected $guarded = ["id","created_at","updated_at"];
 
     protected $casts = [
         'subtotal' => 'float', 'discount_total' => 'float', 'tax_total' => 'float',

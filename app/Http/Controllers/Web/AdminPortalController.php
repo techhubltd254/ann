@@ -3,6 +3,10 @@
 namespace App\Http\Controllers\Web;
 
 use App\Http\Controllers\Controller;
+use App\Models\Ministry;
+use App\Models\Agency;
+use App\Models\Sector;
+use App\Models\County;
 use Illuminate\Support\Facades\Auth;
 
 class AdminPortalController extends Controller
@@ -47,7 +51,11 @@ class AdminPortalController extends Controller
         if (!Auth::user()?->hasAnyRole(['national_admin', 'kicc_admin'])) {
             abort(403, 'National Government admin access required.');
         }
-        return view('admin.national');
+        $ministries = Ministry::with('agencies')->get();
+        $agencies = Agency::with('ministry')->get();
+        $sectors = Sector::withCount('counties')->orderBy('name')->get();
+        $counties = County::all();
+        return view('admin.national', compact('ministries', 'agencies', 'sectors', 'counties'));
     }
 
     public function county()

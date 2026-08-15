@@ -3,7 +3,7 @@
 @section('content')
 <div class="pt-20 max-w-2xl mx-auto px-5 py-10"><h1 class="text-2xl font-black text-gray-900 mb-6">New Request for Quotation</h1>
 <p class="text-gray-400 text-sm mb-6">Describe what you need and sellers will respond with competitive quotes.</p>
-<form method="POST" class="bg-white border border-gray-200 rounded-2xl p-6 space-y-4">
+<form method="POST" action="{{ route('rfq.store') }}" class="bg-white border border-gray-200 rounded-2xl p-6 space-y-4">
 @csrf
 <div><label class="text-xs font-bold text-gray-600">Product Name</label><input type="text" name="product_name" class="w-full border border-gray-200 rounded-xl px-4 py-2.5 text-sm" required></div>
 <div class="grid grid-cols-2 gap-4"><div><label class="text-xs font-bold text-gray-600">Quantity</label><input type="number" name="quantity" min="1" class="w-full border border-gray-200 rounded-xl px-4 py-2.5 text-sm" required></div>

@@ -258,7 +258,7 @@
                 <a href="{{ route('national-government.index') }}" class="px-3.5 py-2 text-sm font-semibold rounded-lg transition-all {{ request()->routeIs('national-government*') ? 'bg-[#901C1E] text-white' : 'text-[#901C1E] hover:text-[#FFCD05] hover:bg-gray-100' }}">National Government</a>
                 <a href="{{ route('counties.index') }}" class="px-3.5 py-2 text-sm font-semibold rounded-lg transition-all {{ request()->routeIs('counties.*') ? 'bg-[#901C1E] text-white' : 'text-[#901C1E] hover:text-[#FFCD05] hover:bg-gray-100' }}">Counties</a>
                 <a href="{{ route('search.index') }}" class="px-3 py-2 text-sm font-semibold rounded-lg transition-all text-[#901C1E] hover:text-[#FFCD05] hover:bg-gray-100">🔍</a>
-                <a href="#" class="px-3.5 py-2 text-sm font-semibold rounded-lg transition-all text-[#901C1E] hover:text-[#FFCD05] hover:bg-gray-100 group relative" x-data="{ open: false }" @mouseenter="open = true" @mouseleave="open = false">
+<a href="{{ route('marketplace.index') }}" class="px-3.5 py-2 text-sm font-semibold rounded-lg transition-all text-[#901C1E] hover:text-[#FFCD05] hover:bg-gray-100 group relative" x-data="{ open: false }" @mouseenter="open = true" @mouseleave="open = false">
                     Marketplace
                     <div x-show="open" x-cloak class="absolute top-full left-0 mt-1 bg-white border border-gray-200 rounded-xl shadow-lg p-2 min-w-[180px] z-50">
                         <a href="{{ route('marketplace.index') }}" class="block px-4 py-2 text-sm font-semibold text-gray-600 hover:text-[#901C1E] hover:bg-gray-50 rounded-lg">All Products</a>
@@ -279,7 +279,7 @@
                 <a href="{{ route('travel.index') }}" class="px-3.5 py-2 text-sm font-semibold rounded-lg transition-all {{ request()->routeIs('travel.*') ? 'bg-[#901C1E] text-white' : 'text-[#901C1E] hover:text-[#FFCD05] hover:bg-gray-100' }}">Live Events</a>
                 <a href="{{ route('screens.directory') }}" class="px-3.5 py-2 text-sm font-semibold rounded-lg transition-all {{ request()->routeIs('screens.*') ? 'bg-[#901C1E] text-white' : 'text-[#901C1E] hover:text-[#FFCD05] hover:bg-gray-100' }}">Screens</a>
                 <a href="{{ route('packages.index') }}" class="px-3.5 py-2 text-sm font-semibold rounded-lg transition-all {{ request()->routeIs('packages.*') ? 'bg-[#901C1E] text-white' : 'text-[#901C1E] hover:text-[#FFCD05] hover:bg-gray-100' }}">Packages</a>
-<a href="#" class="px-3.5 py-2 text-sm font-semibold rounded-lg transition-all text-[#901C1E] hover:text-[#FFCD05] hover:bg-gray-100 group relative" x-data="{ open: false }" @mouseenter="open = true" @mouseleave="open = false">
+<a href="{{ route('tourism.guides') }}" class="px-3.5 py-2 text-sm font-semibold rounded-lg transition-all text-[#901C1E] hover:text-[#FFCD05] hover:bg-gray-100 group relative" x-data="{ open: false }" @mouseenter="open = true" @mouseleave="open = false">
     Tourism
     <div x-show="open" x-cloak class="absolute top-full left-0 mt-1 bg-white border border-gray-200 rounded-xl shadow-lg p-2 min-w-[180px] z-50">
         <a href="{{ route('tourism.guides') }}" class="block px-4 py-2 text-sm font-semibold text-gray-600 hover:text-[#901C1E] hover:bg-gray-50 rounded-lg">Tour Guides</a>
@@ -334,6 +334,13 @@
             <a href="{{ route('auctions.index') }}" class="text-left px-4 py-3 text-sm font-semibold text-gray-600 hover:text-gray-900 hover:bg-gray-100 rounded-lg">🔨 Auctions</a>
             <a href="{{ route('gift-cards.index') }}" class="text-left px-4 py-3 text-sm font-semibold text-gray-600 hover:text-gray-900 hover:bg-gray-100 rounded-lg">🎁 Gift Cards</a>
             <a href="{{ route('rfq.create') }}" class="text-left px-4 py-3 text-sm font-semibold text-gray-600 hover:text-gray-900 hover:bg-gray-100 rounded-lg">📋 New RFQ</a>
+            <a href="{{ route('search.index') }}" class="text-left px-4 py-3 text-sm font-semibold text-gray-600 hover:text-gray-900 hover:bg-gray-100 rounded-lg">🔍 Search</a>
+            <a href="{{ route('tourism.guides') }}" class="text-left px-4 py-3 text-sm font-semibold text-gray-600 hover:text-gray-900 hover:bg-gray-100 rounded-lg">Tour Guides</a>
+            <a href="{{ route('tourism.rentals') }}" class="text-left px-4 py-3 text-sm font-semibold text-gray-600 hover:text-gray-900 hover:bg-gray-100 rounded-lg">Car Rentals</a>
+            <a href="{{ route('tourism.restaurants') }}" class="text-left px-4 py-3 text-sm font-semibold text-gray-600 hover:text-gray-900 hover:bg-gray-100 rounded-lg">Restaurants</a>
+            <a href="{{ route('tourism.organizers') }}" class="text-left px-4 py-3 text-sm font-semibold text-gray-600 hover:text-gray-900 hover:bg-gray-100 rounded-lg">Event Organizers</a>
+            <a href="{{ route('trade.agreements.index') }}" class="text-left px-4 py-3 text-sm font-semibold text-gray-600 hover:text-gray-900 hover:bg-gray-100 rounded-lg">Trade</a>
+            <a href="{{ route('packages.index') }}" class="text-left px-4 py-3 text-sm font-semibold text-gray-600 hover:text-gray-900 hover:bg-gray-100 rounded-lg">Packages</a>
             @auth
             <a href="{{ route('dashboard.index') }}" class="text-left px-4 py-3 text-sm font-semibold text-kicc-gold hover:bg-gray-100 rounded-lg">Dashboard</a>
             <a href="{{ route('admin.portal') }}" class="text-left px-4 py-3 text-sm font-semibold text-gray-600 hover:text-gray-900 hover:bg-gray-100 rounded-lg">Admin</a>
