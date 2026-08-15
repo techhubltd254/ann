@@ -250,6 +250,11 @@ Route::get('/kicc/video-gallery', [\App\Http\Controllers\Web\KiccWebsiteControll
 Route::get('/kicc/policy-documents', [\App\Http\Controllers\Web\KiccWebsiteController::class, 'policyDocuments'])->name('kicc.policy-documents');
 Route::get('/kicc/opportunities', [\App\Http\Controllers\Web\KiccWebsiteController::class, 'opportunities'])->name('kicc.opportunities');
 Route::get('/kicc/faq', [\App\Http\Controllers\Web\KiccWebsiteController::class, 'faq'])->name('kicc.faq');
+Route::get('/kicc/annual-reports', [\App\Http\Controllers\Web\KiccWebsiteController::class, 'annualReports'])->name('kicc.annual-reports');
+Route::get('/kicc/publications', [\App\Http\Controllers\Web\KiccWebsiteController::class, 'publications'])->name('kicc.publications');
+Route::get('/kicc/service-charter', [\App\Http\Controllers\Web\KiccWebsiteController::class, 'serviceCharter'])->name('kicc.service-charter');
+Route::get('/kicc/leadership', [\App\Http\Controllers\Web\KiccWebsiteController::class, 'leadership'])->name('kicc.leadership');
+Route::get('/kicc/our-departments', [\App\Http\Controllers\Web\KiccWebsiteController::class, 'ourDepartments'])->name('kicc.our-departments');
 
 // CMS Admin
 Route::middleware('auth')->prefix('kicc-admin/cms')->name('cms.admin.')->group(function () {

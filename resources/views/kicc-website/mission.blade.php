@@ -1,3 +1,8 @@
 @extends('layouts.app')
 @section('title', 'Mission, Vision & Mandate')
-@section('content')<div class="pt-20 max-w-4xl mx-auto px-5 py-10 prose prose-sm max-w-none"><h1>Mission, Vision & Mandate</h1><h2>Vision</h2><p>To be Africa's leading convention centre and a world-class destination for meetings, incentives, conferences and exhibitions.</p><h2>Mission</h2><p>To provide exceptional conference and event experiences that exceed expectations, contribute to Kenya's tourism growth, and position KICC as Africa's premier meeting venue.</p><h2>Mandate</h2><ul><li>Promote and position Kenya as a preferred MICE destination</li><li>Provide world-class conference and exhibition facilities</li><li>Generate revenue through venue hire and related services</li><li>Support Kenya's tourism and economic development goals</li></ul></div>@endsection
+@section('content')
+<div class="pt-20 max-w-4xl mx-auto px-5 py-10 prose prose-sm max-w-none">
+    <h1>Mission, Vision & Mandate</h1>
+    <div>{!! $page->content ?? '<p>Content coming soon.</p>' !!}</div>
+</div>
+@endsection

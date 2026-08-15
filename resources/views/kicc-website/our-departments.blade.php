@@ -1,0 +1,3 @@
+@extends('layouts.app')
+@section('title', 'Our Departments — KICC')
+@section('content')<div class="pt-20 max-w-4xl mx-auto px-5 py-10 prose prose-sm max-w-none"><h1>Our Departments</h1><div>{!! $page->content ?? '<p>KICC is organized into several departments working together to deliver world-class service.</p><ul><li>Sales & Marketing</li><li>Events & Operations</li><li>Finance & Administration</li><li>Technical Services</li><li>Catering & Hospitality</li><li>Security & Safety</li><li>Human Resources</li><li>Engineering & Maintenance</li></ul>' !!}</div></div>@endsection

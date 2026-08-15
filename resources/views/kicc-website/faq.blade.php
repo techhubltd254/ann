@@ -1,9 +1,20 @@
 @extends('layouts.app')
-@section('title', 'Faq — KICC')
+@section('title', 'FAQ — KICC')
 @section('content')
-<div class="pt-20 max-w-4xl mx-auto px-5 py-10">
-    <h1 class="text-2xl font-black text-gray-900 mb-2">Faq</h1>
-    <p class="text-gray-500 text-sm mb-6">Content coming soon. For inquiries, contact us at info@kicc.co.ke or call (+254) 20 3261000.</p>
-    <a href="{{ route('kicc.event-booking') }}" class="inline-block h-11 px-6 rounded-xl bg-[#046bd2] text-white text-sm font-bold hover:bg-[#045cb4] transition-all">Book an Event</a>
+<div class="pt-20 max-w-3xl mx-auto px-5 py-10">
+    <h1 class="text-2xl font-black text-gray-900 mb-2">Frequently Asked Questions</h1>
+    @if($faqs->isEmpty())
+    <p class="text-gray-400">No FAQs yet.</p>
+    @else
+    <div class="space-y-3">@foreach($faqs as $f)
+        <div class="bg-white border border-gray-200 rounded-2xl" x-data="{ open: false }">
+            <button @click="open = !open" class="w-full flex items-center justify-between p-5 text-left">
+                <span class="font-bold text-gray-900 text-sm">{{ $f->question }}</span>
+                <svg class="w-4 h-4 shrink-0 transition-transform" :class="open ? 'rotate-180' : ''" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"/></svg>
+            </button>
+            <div x-show="open" x-collapse class="px-5 pb-5 text-sm text-gray-600 leading-relaxed">{{ $f->answer }}</div>
+        </div>
+    @endforeach</div>
+    @endif
 </div>
 @endsection

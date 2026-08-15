@@ -244,15 +244,15 @@
     </div>
     @php
         $kiccServices = [
-            ['name' => 'Audio Visual Equipment', 'img' => 'kicc/services/Audio Visual Equipment.jpg', 'desc' => 'PA systems, screens, staging & live-streaming gear.'],
-            ['name' => 'Catering Services', 'img' => 'kicc/services/Catering Services.jpg', 'desc' => 'In-house catering — coffee breaks to state banquets.'],
-            ['name' => 'Event Planning & Coordination', 'img' => 'kicc/services/Event Planning.jpg', 'desc' => 'Dedicated coordinators from booking to closing.'],
-            ['name' => 'Technical Support', 'img' => 'kicc/services/Technical Support.jpg', 'desc' => 'On-site technicians for the full duration of your event.'],
-            ['name' => 'Wi-Fi & Internet Access', 'img' => 'kicc/services/WiFi.jpg', 'desc' => 'High-density venue Wi-Fi for thousands of delegates.'],
-            ['name' => 'Security Services & Fire', 'img' => 'kicc/services/Security.jpg', 'desc' => '24/7 security, screening and fire safety compliance.'],
-            ['name' => 'Parking Facilities', 'img' => 'kicc/Courtyard-1.jpg', 'desc' => 'Secure on-site parking for guests and exhibitors.'],
-            ['name' => 'Accessibility', 'img' => 'kicc/about-hall.jpg', 'desc' => 'Step-free access, lifts and accessible facilities throughout.'],
-            ['name' => 'Tourist Information', 'img' => 'kicc/about-sign.jpg', 'desc' => 'Visitor desk with city, safari and travel guidance.'],
+            ['name' => 'Audio Visual Equipment', 'img' => 'kicc/venues/inside-tsavo-5.jpg', 'desc' => 'PA systems, screens, staging & live-streaming gear.'],
+            ['name' => 'Catering Services', 'img' => 'kicc/venues/about-hall.jpg', 'desc' => 'In-house catering — coffee breaks to state banquets.'],
+            ['name' => 'Event Planning & Coordination', 'img' => 'kicc/venues/mainfront.jpg', 'desc' => 'Dedicated coordinators from booking to closing.'],
+            ['name' => 'Technical Support', 'img' => 'kicc/venues/tsavo-barricade.jpg', 'desc' => 'On-site technicians for the full duration of your event.'],
+            ['name' => 'Wi-Fi & Internet Access', 'img' => 'kicc/venues/Lounge-1.jpg', 'desc' => 'High-density venue Wi-Fi for thousands of delegates.'],
+            ['name' => 'Security Services & Fire', 'img' => 'kicc/venues/kicc-main-gate.jpg', 'desc' => '24/7 security, screening and fire safety compliance.'],
+            ['name' => 'Parking Facilities', 'img' => 'kicc/venues/Courtyard-1.jpg', 'desc' => 'Secure on-site parking for guests and exhibitors.'],
+            ['name' => 'Accessibility', 'img' => 'kicc/venues/afterentrance.jpg', 'desc' => 'Step-free access, lifts and accessible facilities throughout.'],
+            ['name' => 'Tourist Information', 'img' => 'kicc/venues/about-sign.jpg', 'desc' => 'Visitor desk with city, safari and travel guidance.'],
         ];
     @endphp
     <div class="grid grid-cols-2 lg:grid-cols-3 gap-4">

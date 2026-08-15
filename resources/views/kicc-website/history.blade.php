@@ -1,3 +1,17 @@
 @extends('layouts.app')
 @section('title', 'KICC History')
-@section('content')<div class="pt-20 max-w-4xl mx-auto px-5 py-10 prose prose-sm max-w-none"><h1>KICC History</h1><p>KICC marked its 50th anniversary in September 2023. The magnificent masterpiece has been and still remains the country's icon and symbol since its inception in 1973. The Centre forms part of Kenya's history and a companion that defines and shapes the country's future.</p><div class="grid sm:grid-cols-2 gap-4 mt-6">@foreach([['1973','KICC Inception','Inception of KICC'],['1985','KICC Expansion','Expansion of KICC'],['2007','Prestigious Award','Best Convention Center in Africa'],['2021','International Event','Hosted major international events']] as $e)<div class="bg-white border border-gray-200 rounded-2xl p-4"><div class="text-xs font-bold text-[#046bd2]">{{ $e[0] }}</div><div class="font-bold text-gray-900">{{ $e[1] }}</div><div class="text-xs text-gray-500">{{ $e[2] }}</div></div>@endforeach</div></div>@endsection
+@section('content')
+<div class="pt-20 max-w-4xl mx-auto px-5 py-10">
+    <div class="prose prose-sm max-w-none mb-8">{!! $page->content ?? '' !!}</div>
+    <div class="grid sm:grid-cols-2 gap-4">
+        @forelse($events as $e)
+        <div class="bg-white border border-gray-200 rounded-2xl p-4">
+            <div class="text-xs font-bold text-[#046bd2]">{{ $e->year }}</div>
+            <div class="font-bold text-gray-900">{{ $e->title }}</div>
+            @if($e->description)<div class="text-xs text-gray-500 mt-1">{{ $e->description }}</div>@endif
+        </div>
+        @empty <p class="text-gray-400 col-span-2">No timeline events yet.</p>
+        @endforelse
+    </div>
+</div>
+@endsection

@@ -123,4 +123,11 @@ class KiccWebsiteController extends Controller
     public function virtualTour() { return view('kicc-website.virtual-tour'); }
     public function orgStructure() { return view('kicc-website.org-structure'); }
 
+    // ─── NEW KICC PAGES ───
+    public function annualReports() { $page = \App\Models\Page::where('slug','annual-reports')->firstOrNew([]); return view('kicc-website.annual-reports', compact('page')); }
+    public function publications() { $page = \App\Models\Page::where('slug','publications')->firstOrNew([]); return view('kicc-website.publications', compact('page')); }
+    public function serviceCharter() { $page = \App\Models\Page::where('slug','service-charter')->firstOrNew([]); return view('kicc-website.service-charter', compact('page')); }
+    public function leadership() { $members = \App\Models\TeamMember::where('is_active',true)->orderBy('sort_order')->get(); return view('kicc-website.leadership', compact('members')); }
+    public function ourDepartments() { $page = \App\Models\Page::where('slug','our-departments')->firstOrNew([]); return view('kicc-website.our-departments', compact('page')); }
+
 }
