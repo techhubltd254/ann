@@ -172,10 +172,8 @@ $kiccBlue = '#046bd2';
                             <source src="{{ $vUrl }}" type="video/mp4">
                         </video>
                         @endif
-                        <div class="bg-gradient-to-br {{ $grad }} w-full h-full flex items-center justify-center absolute inset-0 @if($vUrl) opacity-70 group-hover:opacity-0 transition-opacity duration-500 @endif">
-                            <span class="text-4xl opacity-30 group-hover:scale-125 transition-transform duration-500">{{ $icon }}</span>
-                        </div>
-                        <div class="absolute inset-0 bg-gradient-to-t from-black/40 to-transparent pointer-events-none"></div>
+                        <div class="absolute inset-0 bg-gradient-to-t from-black/50 to-transparent pointer-events-none"></div>
+                        <div class="absolute bottom-2 left-2 w-8 h-8 rounded-lg flex items-center justify-center text-lg bg-white/90 shadow">{{ $icon }}</div>
                     </div>
                     <div class="p-3 bg-white border border-gray-200 border-t-0 rounded-b-2xl text-center">
                         <div class="font-bold text-gray-900 text-xs leading-snug">{{ $ls->name }}</div>
