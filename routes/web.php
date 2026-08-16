@@ -17,9 +17,13 @@ use App\Http\Controllers\Web\FlashSaleController;
 use App\Http\Controllers\Web\MfaController;
 use App\Http\Controllers\Web\DashboardV2Controller;
 use App\Http\Controllers\Web\AuthController;
+use App\Http\Controllers\Web\AdminLoginController;
 
 // ─── PUBLIC ADMIN AUTH ROUTES ───
-Route::get('/login', [AuthController::class, 'showLoginForm'])->name('login');
+Route::get('/portal-login', [AdminLoginController::class, 'showLoginForm'])->name('login');
+Route::get('/login', function() {
+    return redirect()->route('login');
+});
 Route::post('/login', [AuthController::class, 'login']);
 Route::post('/logout', [AuthController::class, 'logout'])->name('logout');
 Route::get('/login-code', [AuthController::class, 'showLoginCodeForm'])->name('login.code');
