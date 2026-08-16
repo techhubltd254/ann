@@ -96,33 +96,6 @@ $kiccBlue = '#046bd2';
             </div>
         </div>
 
-        {{-- ECONOMIC SECTORS --}}
-        <div class="mb-14">
-            <div class="flex items-center gap-3 mb-6">
-                <span class="h-px w-8 bg-kicc-gold"></span>
-                <span class="text-kicc-gold text-xs font-bold tracking-[0.2em] uppercase">Economic Sectors</span>
-                <span class="h-px flex-1 bg-gray-200"></span>
-            </div>
-            <div class="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 gap-4">
-                @foreach($sectorData as $name => $s)
-                <a href="{{ route('counties.sector', [$county->slug, $s['route']]) }}"
-                   class="group bg-white border border-gray-200 hover:border-kicc-gold/40 rounded-2xl overflow-hidden transition-all block card-hover fx-sweep" data-tilt="6" data-reveal data-reveal-delay="{{ $loop->index * 80 }}">
-                    <div class="h-28 relative overflow-hidden bg-gray-100">
-                        <img src="{{ media('counties/' . $county->slug . '/' . $s['route'] . '.jpeg') }}" alt="{{ $name }}"
-                             class="w-full h-full object-cover group-hover:scale-110 transition-transform duration-700" loading="lazy"
-                             onerror="this.onerror=null;this.src='{{ media('counties/' . $county->slug . '/' . $s['route'] . '.jpg') }}'">
-                        <div class="absolute inset-0 bg-gradient-to-t from-black/55 via-transparent to-transparent"></div>
-                        <div class="absolute bottom-2 left-2 w-8 h-8 rounded-lg flex items-center justify-center text-lg bg-white/90 shadow">{{ $s['icon'] }}</div>
-                    </div>
-                    <div class="p-4 text-center">
-                        <div class="font-bold text-gray-900 text-sm leading-snug">{{ $name }}</div>
-                        <div class="text-gray-400 text-xs mt-1">{{ $s['count'] }} {{ Str::plural('entity', $s['count']) }}</div>
-                    </div>
-                </a>
-                @endforeach
-            </div>
-        </div>
-
         {{-- GOVERNMENT DEPARTMENTS TILES --}}
         @if(($linkedSectors ?? collect())->isNotEmpty())
         <div class="mb-14">
@@ -173,9 +146,35 @@ $kiccBlue = '#046bd2';
                 <a href="{{ route('counties.sector', [$county->slug, $ls->slug]) }}"
                    class="group rounded-2xl overflow-hidden transition-all card-hover block"
                    data-reveal data-reveal-delay="{{ $loop->index * 60 }}">
-                    <div class="h-28 bg-gradient-to-br {{ $grad }} relative flex items-center justify-center">
-                        <span class="text-4xl opacity-30 group-hover:scale-125 transition-transform duration-500">{{ $icon }}</span>
-                        <div class="absolute inset-0 bg-gradient-to-t from-black/30 to-transparent"></div>
+                    <div class="h-28 relative overflow-hidden bg-gray-900">
+                        @php
+                        $govVideos = [
+                            'Tourism' => 'tourism.mp4', 'Hospitality' => 'hotels.mp4',
+                            'Agriculture' => 'farms.mp4', 'Commerce & End Products' => 'products.mp4',
+                            'Education' => 'education.mp4', 'Culture' => 'culture.mp4',
+                            'Healthcare' => 'health.mp4', 'Transport' => 'transport.mp4',
+                            'Education and Technical Training' => 'education.mp4',
+                            'Empowering Farmers and Traders' => 'farms.mp4',
+                            'Quality Healthcare for All' => 'health.mp4',
+                            'Health and Sanitation' => 'health.mp4',
+                            'Infrastructure, Roads, Housing and Transport' => 'transport.mp4',
+                            'Environment, Natural Resources, Water and Irrigation' => 'tourism.mp4',
+                            'Finance and Economic Planning' => 'tourism.mp4',
+                            'Lands, Planning and Urban Development' => 'tourism.mp4',
+                        ];
+                        $vFile = $govVideos[$ls->name] ?? null;
+                        $vUrl = $vFile && Storage::disk('public')->exists('kicc/4d/clips/' . $vFile) ? Storage::disk('public')->url('kicc/4d/clips/' . $vFile) : null;
+                        @endphp
+                        @if($vUrl)
+                        <video class="w-full h-full object-cover opacity-0 group-hover:opacity-100 transition-opacity duration-300 absolute inset-0" muted loop playsinline
+                            @mouseenter="this.play()" @mouseleave="this.pause();this.currentTime=0">
+                            <source src="{{ $vUrl }}" type="video/mp4">
+                        </video>
+                        @endif
+                        <div class="bg-gradient-to-br {{ $grad }} w-full h-full flex items-center justify-center @if($vUrl) group-hover:opacity-0 transition-opacity duration-300 @endif">
+                            <span class="text-4xl opacity-30 group-hover:scale-125 transition-transform duration-500">{{ $icon }}</span>
+                        </div>
+                        <div class="absolute inset-0 bg-gradient-to-t from-black/40 to-transparent pointer-events-none"></div>
                     </div>
                     <div class="p-3 bg-white border border-gray-200 border-t-0 rounded-b-2xl text-center">
                         <div class="font-bold text-gray-900 text-xs leading-snug">{{ $ls->name }}</div>
