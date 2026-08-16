@@ -85,8 +85,6 @@ Route::get('/live-chat/{vendorId}', [LiveChatController::class, 'widget'])->name
 Route::post('/live-chat/{vendorId}/send', [LiveChatController::class, 'send'])->name('live-chat.send')->middleware('auth');
 Route::get('/live-chat/{vendorId}/poll', [LiveChatController::class, 'poll'])->name('live-chat.poll')->middleware('auth');
 
-// 4D Experience
-Route::get('/4d-experience', function () { return view('ecommerce.4d-experience'); })->name('4d.experience');
 Route::get('/cart', [CartController::class, 'index'])->name('cart.index');
 Route::post('/cart/add', [CartController::class, 'add'])->name('cart.add');
 Route::patch('/cart/{item}', [CartController::class, 'update'])->name('cart.update');
