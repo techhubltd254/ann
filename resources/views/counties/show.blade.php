@@ -93,13 +93,6 @@ $kiccBlue = '#046bd2';
             </div>
             <div class="flex gap-2">
                 <a href="{{ route('marketplace.index', ['county' => $county->slug]) }}" class="px-4 py-2 rounded-xl bg-[#901C1E] text-white text-xs font-bold hover:bg-[#7b1618] transition-all">View Products</a>
-                @auth
-                    @if(auth()->user()->hasAnyRole(['county_admin','kicc_admin']) && (auth()->user()->county_id == $county->id || auth()->user()->hasRole('kicc_admin')))
-                    <a href="{{ route('county.admin.pro', $county->slug) }}" class="px-4 py-2 rounded-xl bg-[#046bd2] text-white text-xs font-bold hover:bg-[#045cb4] transition-all">County Admin</a>
-                    @endif
-                @else
-                <a href="{{ route('login') }}" class="px-4 py-2 rounded-xl border border-[#046bd2]/40 text-[#046bd2] text-xs font-bold hover:bg-[#046bd2]/10 transition-all">County Admin Login</a>
-                @endauth
             </div>
         </div>
 
