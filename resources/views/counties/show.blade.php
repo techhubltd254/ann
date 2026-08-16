@@ -161,7 +161,7 @@ $kiccBlue = '#046bd2';
                             'Infrastructure, Roads, Housing and Transport' => 'infrastructure',
                         ];
                         $vFile = $govVideos[$ls->name] ?? null;
-                        $vHls = $vFile && Storage::disk('public')->exists('kicc/4d/hls/' . $vFile . '/master.m3u8') ? Storage::disk('public')->url('kicc/4d/hls/' . $vFile . '/master.m3u8') : null;
+                        $vHls = $vFile ? media('kicc/4d/hls/' . $vFile . '/master.m3u8') : null;
                         @endphp
                         @if($vHls)
                         <video class="w-full h-full object-cover absolute inset-0" id="hls-{{ $loop->index }}" autoplay muted loop playsinline preload="auto"></video>
