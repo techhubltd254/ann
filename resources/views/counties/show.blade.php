@@ -123,7 +123,7 @@ $kiccBlue = '#046bd2';
             </div>
         </div>
 
-        {{-- GOVERNMENT DEPARTMENTS --}}
+        {{-- GOVERNMENT DEPARTMENTS TILES --}}
         @if(($linkedSectors ?? collect())->isNotEmpty())
         <div class="mb-14">
             <div class="flex items-center gap-3 mb-6">
@@ -131,10 +131,55 @@ $kiccBlue = '#046bd2';
                 <span class="text-[#046bd2] text-xs font-bold tracking-[0.2em] uppercase">Government Departments</span>
                 <span class="h-px flex-1 bg-gray-200"></span>
             </div>
-            <div class="flex flex-wrap gap-2">
+            @php
+            $govIcons = [
+                'Agriculture' => '🌾', 'Commerce & End Products' => '🛒', 'Culture' => '🎭',
+                'Education' => '📚', 'Education and Technical Training' => '🎓',
+                'Empowering Farmers and Traders' => '👨‍🌾',
+                'Environment, Natural Resources, Water and Irrigation' => '🌍',
+                'Finance and Economic Planning' => '💰', 'Health and Sanitation' => '🩺',
+                'Healthcare' => '🏥', 'Hospitality' => '🏨',
+                'Infrastructure, Roads, Housing and Transport' => '🏗️',
+                'Lands, Planning and Urban Development' => '🏛️',
+                'Quality Healthcare for All' => '❤️',
+                'Tourism' => '🏖️', 'Transport' => '🚢',
+            ];
+            $govGradients = [
+                'Agriculture' => 'from-emerald-500 to-green-600',
+                'Commerce' => 'from-amber-500 to-orange-600',
+                'Culture' => 'from-violet-500 to-purple-600',
+                'Education' => 'from-blue-500 to-indigo-600',
+                'Empowering' => 'from-teal-500 to-emerald-600',
+                'Environment' => 'from-green-500 to-teal-600',
+                'Finance' => 'from-yellow-500 to-amber-600',
+                'Health' => 'from-red-500 to-rose-600',
+                'Hospitality' => 'from-pink-500 to-rose-600',
+                'Infrastructure' => 'from-slate-500 to-gray-600',
+                'Lands' => 'from-stone-500 to-brown-600',
+                'Quality' => 'from-rose-500 to-red-600',
+                'Tourism' => 'from-sky-500 to-cyan-600',
+                'Transport' => 'from-cyan-500 to-blue-600',
+            ];
+            @endphp
+            <div class="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 gap-4">
                 @foreach($linkedSectors as $ls)
-                <a href="{{ route('counties.sector', [$county->slug, $ls->slug]) }}" class="px-3.5 py-2 rounded-full text-xs font-bold bg-gray-100 text-gray-700 border border-gray-200 hover:bg-[#046bd2]/10 hover:text-[#046bd2] hover:border-[#046bd2]/40 transition-all">
-                    {{ $ls->name }}
+                @php
+                $icon = $govIcons[$ls->name] ?? '📋';
+                $grad = 'from-[#046bd2] to-[#045cb4]';
+                foreach ($govGradients as $key => $g) {
+                    if (str_contains($ls->name, explode(' ', $key)[0])) { $grad = $g; break; }
+                }
+                @endphp
+                <a href="{{ route('counties.sector', [$county->slug, $ls->slug]) }}"
+                   class="group rounded-2xl overflow-hidden transition-all card-hover block"
+                   data-reveal data-reveal-delay="{{ $loop->index * 60 }}">
+                    <div class="h-28 bg-gradient-to-br {{ $grad }} relative flex items-center justify-center">
+                        <span class="text-4xl opacity-30 group-hover:scale-125 transition-transform duration-500">{{ $icon }}</span>
+                        <div class="absolute inset-0 bg-gradient-to-t from-black/30 to-transparent"></div>
+                    </div>
+                    <div class="p-3 bg-white border border-gray-200 border-t-0 rounded-b-2xl text-center">
+                        <div class="font-bold text-gray-900 text-xs leading-snug">{{ $ls->name }}</div>
+                    </div>
                 </a>
                 @endforeach
             </div>
