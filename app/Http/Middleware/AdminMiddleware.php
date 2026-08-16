@@ -5,12 +5,14 @@ class AdminMiddleware {
     public function handle(Request $request, Closure $next, string $level = 'kicc') {
         $user = $request->user();
         if (!$user) return redirect()->route('login');
+
+        $type = $user->account_type ?? '';
         $ok = match ($level) {
-            'kicc' => $user->is_admin || $user->email === 'admin@kicc.go.ke',
-            'county' => $user->is_admin || $user->county_admin || $user->county_id,
-            'national' => $user->is_admin || $user->ministry_admin,
-            'any' => $user->is_admin || $user->county_admin || $user->ministry_admin || $user->exhibitor || $user->provider,
-            default => $user->is_admin,
+            'kicc' => $type === 'superadmin' || $user->email === 'admin@kicc.go.ke',
+            'county' => $type === 'superadmin' || $type === 'county' || $user->county_id,
+            'national' => $type === 'superadmin' || $type === 'admin' || $type === 'ministry',
+            'any' => in_array($type, ['superadmin','admin','ministry','county','exhibitor','provider']),
+            default => $type === 'superadmin',
         };
         if (!$ok) abort(403, 'Unauthorized.');
         return $next($request);
