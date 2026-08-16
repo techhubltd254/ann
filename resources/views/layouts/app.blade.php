@@ -6,6 +6,7 @@
     <title>@yield('title', 'KICC') - Global Exhibition Platform</title>
     <meta name="description" content="Africa's Premier Meeting Venue. A national icon since 1973.">
     <script src="https://cdn.tailwindcss.com"></script>
+<script src="https://cdn.jsdelivr.net/npm/hls.js@latest"></script>
     <script src="{{ asset('js/theme.js') }}"></script>
     <link rel="stylesheet" href="{{ asset('css/colors.css') }}">
     <link rel="preconnect" href="https://fonts.googleapis.com">

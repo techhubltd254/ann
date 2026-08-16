@@ -149,28 +149,25 @@ $kiccBlue = '#046bd2';
                     <div class="h-28 relative overflow-hidden bg-gray-900">
                         @php
                         $govVideos = [
-                            'Tourism' => 'tourism.mp4',
-                            'Hospitality' => 'hospitality.mp4',
-                            'Agriculture' => 'agriculture.mp4',
-                            'Commerce & End Products' => 'commerce.mp4',
-                            'Education' => 'education.mp4',
-                            'Culture' => 'culture.mp4',
-                            'Healthcare' => 'health.mp4',
-                            'Transport' => 'transport.mp4',
-                            'Education and Technical Training' => 'edu_technical.mp4',
-                            'Empowering Farmers and Traders' => 'empowering.mp4',
-                            'Environment, Natural Resources, Water and Irrigation' => 'environment.mp4',
-                            'Finance and Economic Planning' => 'finance.mp4',
-                            'Health and Sanitation' => 'health.mp4',
-                            'Infrastructure, Roads, Housing and Transport' => 'infrastructure.mp4',
+                            'Tourism' => 'tourism', 'Hospitality' => 'hospitality',
+                            'Agriculture' => 'agriculture', 'Commerce & End Products' => 'commerce',
+                            'Education' => 'education', 'Culture' => 'culture',
+                            'Healthcare' => 'health', 'Transport' => 'transport',
+                            'Education and Technical Training' => 'edu_technical',
+                            'Empowering Farmers and Traders' => 'empowering',
+                            'Environment, Natural Resources, Water and Irrigation' => 'environment',
+                            'Finance and Economic Planning' => 'finance',
+                            'Health and Sanitation' => 'health',
+                            'Infrastructure, Roads, Housing and Transport' => 'infrastructure',
                         ];
                         $vFile = $govVideos[$ls->name] ?? null;
-                        $vUrl = $vFile && Storage::disk('public')->exists('kicc/4d/clips/' . $vFile) ? Storage::disk('public')->url('kicc/4d/clips/' . $vFile) : null;
+                        $vHls = $vFile && Storage::disk('public')->exists('kicc/4d/hls/' . $vFile . '/master.m3u8') ? Storage::disk('public')->url('kicc/4d/hls/' . $vFile . '/master.m3u8') : null;
                         @endphp
-                        @if($vUrl)
-                        <video class="w-full h-full object-cover absolute inset-0" autoplay muted loop playsinline>
-                            <source src="{{ $vUrl }}" type="video/mp4">
-                        </video>
+                        @if($vHls)
+                        <video class="w-full h-full object-cover absolute inset-0" id="hls-{{ $loop->index }}" autoplay muted loop playsinline preload="auto"></video>
+                        <script>
+                        (function(){var v=document.getElementById('hls-{{ $loop->index }}');var s='{{ $vHls }}';if(typeof Hls!=='undefined'&&Hls.isSupported()){var h=new Hls({enableWorker:true,maxBufferLength:10,maxMaxBufferLength:20,backBufferLength:5,lowLatencyMode:true});h.loadSource(s);h.attachMedia(v);h.on(Hls.Events.MANIFEST_PARSED,function(){v.play().catch(function(){})});}else if(v.canPlayType('application/vnd.apple.mpegurl')){v.src=s;v.addEventListener('loadedmetadata',function(){v.play()});}v.addEventListener('ended',function(){v.currentTime=0;v.play()});})();
+                        </script>
                         @endif
                         <div class="absolute inset-0 bg-gradient-to-t from-black/50 to-transparent pointer-events-none"></div>
                         <div class="absolute bottom-2 left-2 w-8 h-8 rounded-lg flex items-center justify-center text-lg bg-white/90 shadow">{{ $icon }}</div>
