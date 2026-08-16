@@ -149,18 +149,20 @@ $kiccBlue = '#046bd2';
                     <div class="h-28 relative overflow-hidden bg-gray-900">
                         @php
                         $govVideos = [
-                            'Tourism' => 'tourism.mp4', 'Hospitality' => 'hotels.mp4',
-                            'Agriculture' => 'farms.mp4', 'Commerce & End Products' => 'products.mp4',
-                            'Education' => 'education.mp4', 'Culture' => 'culture.mp4',
-                            'Healthcare' => 'health.mp4', 'Transport' => 'transport.mp4',
-                            'Education and Technical Training' => 'education.mp4',
-                            'Empowering Farmers and Traders' => 'farms.mp4',
-                            'Quality Healthcare for All' => 'health.mp4',
+                            'Tourism' => 'tourism.mp4',
+                            'Hospitality' => 'hospitality.mp4',
+                            'Agriculture' => 'agriculture.mp4',
+                            'Commerce & End Products' => 'commerce.mp4',
+                            'Education' => 'education.mp4',
+                            'Culture' => 'culture.mp4',
+                            'Healthcare' => 'health.mp4',
+                            'Transport' => 'transport.mp4',
+                            'Education and Technical Training' => 'edu_technical.mp4',
+                            'Empowering Farmers and Traders' => 'empowering.mp4',
+                            'Environment, Natural Resources, Water and Irrigation' => 'environment.mp4',
+                            'Finance and Economic Planning' => 'finance.mp4',
                             'Health and Sanitation' => 'health.mp4',
-                            'Infrastructure, Roads, Housing and Transport' => 'transport.mp4',
-                            'Environment, Natural Resources, Water and Irrigation' => 'tourism.mp4',
-                            'Finance and Economic Planning' => 'tourism.mp4',
-                            'Lands, Planning and Urban Development' => 'tourism.mp4',
+                            'Infrastructure, Roads, Housing and Transport' => 'infrastructure.mp4',
                         ];
                         $vFile = $govVideos[$ls->name] ?? null;
                         $vUrl = $vFile && Storage::disk('public')->exists('kicc/4d/clips/' . $vFile) ? Storage::disk('public')->url('kicc/4d/clips/' . $vFile) : null;
@@ -171,7 +173,7 @@ $kiccBlue = '#046bd2';
                             <source src="{{ $vUrl }}" type="video/mp4">
                         </video>
                         @endif
-                        <div class="bg-gradient-to-br {{ $grad }} w-full h-full flex items-center justify-center @if($vUrl) group-hover:opacity-0 transition-opacity duration-300 @endif">
+                        <div class="bg-gradient-to-br {{ $grad }} w-full h-full flex items-center justify-center @if($vUrl) group-hover:opacity-0 @endif">
                             <span class="text-4xl opacity-30 group-hover:scale-125 transition-transform duration-500">{{ $icon }}</span>
                         </div>
                         <div class="absolute inset-0 bg-gradient-to-t from-black/40 to-transparent pointer-events-none"></div>

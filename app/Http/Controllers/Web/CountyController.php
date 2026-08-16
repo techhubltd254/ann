@@ -68,7 +68,13 @@ class CountyController extends Controller
             $p->media4d = MediaAsset::resolveSlot(\App\Models\CountyProduct::class, $p->id, '4d_video');
         }
         $exhibitions = $county->exhibitions()->where('status', 'published')->orderBy('start_date', 'desc')->take(3)->get();
-        $linkedSectors = $county->sectors()->orderBy('name')->get()->unique('name')->values();
+        $linkedSectors = $county->sectors()->orderBy('name')->get()->unique('name')->values()->reject(function($s) {
+            return in_array($s->slug, [
+                'lands-planning-and-urban-development',
+                'quality-healthcare-for-all',
+                'health-and-sanitation',
+            ]);
+        })->values();
 
         $countyMedia = MediaAsset::resolveSlot(County::class, $county->id, 'hero_video');
 
