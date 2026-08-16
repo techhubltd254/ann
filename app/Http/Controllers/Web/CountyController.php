@@ -113,17 +113,17 @@ class CountyController extends Controller
         $fourDVideo = null;
         if ($county->slug === 'muranga') {
             $fourDMap = [
-                'tourism' => 'falls_orbit.mp4',
+                'tourism' => 'clips/drone_aerial.mp4',
                 'hotels' => null,
                 'products' => null,
-                'institutions' => 'university_drone_orbit.mp4',
+                'institutions' => 'clips/drone_wide.mp4',
                 'farms' => null,
                 'transport' => null,
-                'health' => 'hospital_orig_cinematic.mp4',
-                'culture' => 'mukurwe_s1_walk.mp4',
+                'health' => null,
+                'culture' => 'clips/mukurwe_culture.mp4',
                 'agriculture' => null,
-                'education' => 'school_orig_cinematic.mp4',
-                'education-4' => 'school_orig_cinematic.mp4',
+                'education' => 'clips/drone_wide.mp4',
+                'education-4' => 'clips/drone_wide.mp4',
             ];
             $videoFile = $fourDMap[$sector] ?? null;
             if ($videoFile && \Illuminate\Support\Facades\Storage::disk('public')->exists('kicc/4d/' . $videoFile)) {

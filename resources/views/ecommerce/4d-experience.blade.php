@@ -14,14 +14,12 @@
     <div class="grid md:grid-cols-2 lg:grid-cols-3 gap-5">
         @php
         $videos = [
-            ['title' => 'Sagana Rafting', 'subtitle' => 'Havila Rafting — Sagana River', 'file' => 'rafting_cinematic.mp4', 'sector' => 'tourism'],
-            ['title' => 'Mugumo-ini Falls', 'subtitle' => 'Twin Falls — Swinging Bridge', 'file' => 'falls_orbit.mp4', 'sector' => 'tourism'],
-            ['title' => 'Mukurwe wa Nyagathanga', 'subtitle' => 'Kikuyu Origin Site', 'file' => 'mukurwe_s1_walk.mp4', 'sector' => 'culture'],
-            ['title' => 'Muranga University', 'subtitle' => 'University Drone Panorama', 'file' => 'university_drone_orbit.mp4', 'sector' => 'education'],
-            ['title' => 'Muranga Gorges', 'subtitle' => 'Gorges & Canyon', 'file' => 'gorges_drone_orbit.mp4', 'sector' => 'tourism'],
-            ['title' => 'Muranga Hospital', 'subtitle' => 'County Referral Hospital', 'file' => 'hospital_orig_cinematic.mp4', 'sector' => 'health'],
-            ['title' => 'Falls Walkthrough', 'subtitle' => 'Mugumo-ini Falls Walk', 'file' => 'falls_walk.mp4', 'sector' => 'tourism'],
-            ['title' => 'Mukurwe Panorama', 'subtitle' => 'Nyagathanga Wide View', 'file' => 'mukurwe_s2_walk.mp4', 'sector' => 'culture'],
+            ['title' => 'Drone Aerials', 'subtitle' => 'Murang\'a from above — drone footage', 'file' => 'clips/drone_aerial.mp4', 'sector' => 'tourism'],
+            ['title' => 'Mukurwe wa Nyagathanga', 'subtitle' => 'Kikuyu origin site — cultural heritage', 'file' => 'clips/mukurwe_culture.mp4', 'sector' => 'culture'],
+            ['title' => 'Gorges Canyon', 'subtitle' => 'Murang\'a gorges — natural beauty', 'file' => 'clips/gorges_canyon.mp4', 'sector' => 'tourism'],
+            ['title' => 'Scenic Panorama', 'subtitle' => 'Wide view of Murang\'a landscape', 'file' => 'clips/scenic_wide.mp4', 'sector' => 'tourism'],
+            ['title' => 'Drone Wide Shot', 'subtitle' => 'Aerial panoramic view', 'file' => 'clips/drone_wide.mp4', 'sector' => 'tourism'],
+            ['title' => 'Gorges Wide', 'subtitle' => 'Canyon wide angle', 'file' => 'clips/gorges_wide.mp4', 'sector' => 'tourism'],
         ];
         @endphp
 

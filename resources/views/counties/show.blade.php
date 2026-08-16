@@ -39,8 +39,8 @@ $kiccBlue = '#046bd2';
             @endif
             @if(!$heroVideo)
             @if($county->slug === 'muranga')
-            <source src="{{ media('kicc/4d/rafting_cinematic.mp4') }}" type="video/mp4">
-            <source src="{{ media('kicc/4d/falls_orbit.mp4') }}" type="video/mp4">
+            <source src="{{ media('kicc/4d/clips/drone_aerial.mp4') }}" type="video/mp4">
+            <source src="{{ media('kicc/4d/clips/scenic_wide.mp4') }}" type="video/mp4">
             @endif
             <source src="{{ media('counties/' . $county->slug . '/sectors-tour.mp4') }}" type="video/mp4">
             <source src="{{ media('counties/' . $county->slug . '/showcase.mp4') }}" type="video/mp4">
