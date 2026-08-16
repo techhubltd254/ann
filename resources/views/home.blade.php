@@ -6,13 +6,17 @@
 @section('content')
 {{-- HERO — exactly from Figma --}}
 <section class="relative min-h-screen flex items-center overflow-hidden section-transition" data-section="hero">
-    <div x-data="{ current: 1, imgs: ['{{ media('kicc/venues/mainfront.jpg') }}', '{{ media('kicc/venues/stiched.jpg') }}', '{{ media('kicc/venues/kicc-main-gate.jpg') }}', '{{ media('kicc/venues/comesa-frontside.jpg') }}', '{{ media('kicc/venues/aberdare-entrance.jpg') }}'] }" x-init="setInterval(() => current = current === imgs.length - 1 ? 0 : current + 1, 5000)" class="absolute inset-0 w-full h-full" data-depth="0.4">
-        <template x-for="(img, i) in imgs" :key="i">
-            <img :src="img" :class="{ 'opacity-100': current === i, 'opacity-0': current !== i } absolute inset-0 w-full h-full object-cover transition-opacity duration-1000" alt="KICC">
-        </template>
-    </div>
-    <div class="absolute inset-0 bg-gradient-to-r from-[#07090F] via-[#07090F]/80 to-transparent"></div>
-    <div class="absolute inset-0 bg-gradient-to-t from-[#07090F] via-transparent to-transparent"></div>
+    <div class="absolute inset-0 w-full h-full overflow-hidden">
+        <video autoplay muted loop playsinline class="w-full h-full object-cover" id="kicc-hero-video" preload="auto">
+            <source src="{{ media('kicc/4d/hls/kicc_hero/master.m3u8') }}" type="application/vnd.apple.mpegurl">
+            <source src="{{ media('kicc/4d/kicc_hero.mp4') }}" type="video/mp4">
+        </video>
+        <script src="https://cdn.jsdelivr.net/npm/hls.js@latest"></script>
+        <script>
+        (function(){var v=document.getElementById('kicc-hero-video');var s=v.querySelector('source[type*="mpegurl"]').src;if(typeof Hls!=='undefined'&&Hls.isSupported()){var h=new Hls({enableWorker:true,maxBufferLength:30,maxMaxBufferLength:60,backBufferLength:10,lowLatencyMode:true});h.loadSource(s);h.attachMedia(v);h.on(Hls.Events.MANIFEST_PARSED,function(){v.play().catch(function(){})});}else if(v.canPlayType('application/vnd.apple.mpegurl')){v.src=s;v.addEventListener('loadedmetadata',function(){v.play()});}}());
+        </script>
+        <div class="absolute inset-0 bg-gradient-to-r from-[#07090F] via-[#07090F]/80 to-transparent"></div>
+        <div class="absolute inset-0 bg-gradient-to-t from-[#07090F] via-transparent to-transparent"></div>
     <div class="relative max-w-7xl mx-auto px-5 pt-28 pb-20 w-full grid md:grid-cols-2 gap-10 items-center">
         <div>
             <div class="flex items-center gap-3 mb-6 hero-entrance">
