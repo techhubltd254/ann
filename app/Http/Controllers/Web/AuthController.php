@@ -170,6 +170,7 @@ class AuthController extends Controller
             'login' => 'required|string',
             'password' => 'required|string',
             'admin_type' => 'nullable|string|in:kicc,national,county',
+            'county_id' => 'nullable|integer|exists:counties,id',
         ]);
 
         $key = 'login:' . $request->ip();
@@ -194,6 +195,9 @@ class AuthController extends Controller
                 return redirect()->route('admin.national');
             }
             if ($adminType === 'county' && $user->hasRole('county_admin')) {
+                $countyId = $request->input('county_id') ?: $user->county_id;
+                $county = \App\Models\County::find($countyId);
+                if ($county) return redirect()->route('county.admin.pro', $county->slug);
                 return redirect()->route('dashboard.county');
             }
             // Fallback: redirect by user's actual role / account type
