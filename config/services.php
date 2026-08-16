@@ -98,4 +98,10 @@ return [
         'api_token' => env('CLOUDFLARE_API_TOKEN'),
     ],
 
+    'n8n' => [
+        'base_url' => env('N8N_BASE_URL', ''),
+        'webhook_secret' => env('N8N_WEBHOOK_SECRET', ''),
+        'api_key' => env('N8N_API_KEY', ''),
+    ],
+
 ];

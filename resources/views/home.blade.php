@@ -346,3 +346,32 @@
     </div>
 </section>
 @endsection
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+    const counters = document.querySelectorAll('[data-count]');
+    const observer = new IntersectionObserver((entries) => {
+        entries.forEach(entry => {
+            if (entry.isIntersecting) {
+                const el = entry.target;
+                const target = parseInt(el.dataset.count);
+                const duration = parseInt(el.dataset.countDuration) || 1000;
+                const delay = parseInt(el.dataset.countDelay) || 0;
+                let start = null;
+                setTimeout(() => {
+                    const step = (timestamp) => {
+                        if (!start) start = timestamp;
+                        const progress = Math.min((timestamp - start) / duration, 1);
+                        el.textContent = Math.floor(progress * target);
+                        if (progress < 1) requestAnimationFrame(step);
+                        else el.textContent = target;
+                    };
+                    requestAnimationFrame(step);
+                }, delay);
+                observer.unobserve(el);
+            }
+        });
+    }, { threshold: 0.5 });
+    counters.forEach(c => observer.observe(c));
+});
+</script>
+

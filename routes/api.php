@@ -139,7 +139,8 @@ Route::middleware('auth:sanctum')->group(function () {
 Route::post('/media/publish', [\App\Http\Controllers\Api\MediaPublishController::class, 'handle'])
     ->middleware('throttle:60,1');
 
-// OTA update manifest for installed admin apps (mother / county / exhibitor servers).
-// Public by design — integrity comes from the ed25519 signature, not secrecy.
+// n8n automation incoming webhook — n8n calls this to trigger platform actions
+Route::post('/webhooks/n8n', [\App\Http\Controllers\Api\N8nWebhookController::class, 'handle'])
+    ->middleware('throttle:60,1');
 Route::get('/updates/manifest', [\App\Http\Controllers\Api\UpdateManifestController::class, 'show'])
     ->middleware('throttle:300,1');

@@ -174,6 +174,22 @@ class CheckoutController extends Controller
             'items' => $order->items->count(), 'phone' => $data['phone'],
         ]);
 
+        // Fire fulfillment and invoice signals for n8n to process
+        \App\Services\N8nService::fire('fulfillment_initiated', [
+            'order_number' => $order->order_number,
+            'payment_method' => $data['payment_method'],
+            'shipping_address' => "{$data['address']}, {$data['town']}, {$data['county']}",
+            'items' => $order->items->map(fn($i) => [
+                'product' => $i->product_name, 'variant' => $i->variant_name,
+                'qty' => $i->quantity, 'price' => $i->unit_price,
+            ])->toArray(),
+        ]);
+        \App\Services\N8nService::fire('invoice_generated', [
+            'order_number' => $order->order_number,
+            'customer_email' => $data['email'] ?? $request->user()?->email,
+            'total' => $order->grand_total,
+        ]);
+
         return redirect()->route('checkout.success', $order->order_number)
             ->with('customer', $data);
     }

@@ -7,25 +7,41 @@ use Illuminate\Support\Facades\Log;
 
 /**
  * N8nService — fires n8n automation webhooks for every platform event.
+ * Also verifies incoming webhooks from n8n.
  *
- * Configure per-event webhook URLs in .env:
- *   N8N_BASE_URL=https://n8n.example.com   (optional base)
- *   N8N_WEBHOOK_ORDER_CREATED=/webhook/order-created
- *   N8N_WEBHOOK_BOOKING_CREATED=/webhook/booking-created
- *   N8N_WEBHOOK_USER_REGISTERED=/webhook/user-registered
- *   N8N_WEBHOOK_VENUE_INQUIRY=/webhook/venue-inquiry
- *   N8N_WEBHOOK_SCREEN_AD_BOOKED=/webhook/screen-ad-booked
+ * Configure in .env:
+ *   N8N_BASE_URL=https://annitalolen.app.n8n.cloud
+ *   N8N_WEBHOOK_SECRET=your-shared-secret
+ *   N8N_API_KEY=your-n8n-api-key
+ *   N8N_WEBHOOK_ORDER_CREATED=/webhook/kicc-order-created
+ *   N8N_WEBHOOK_BOOKING_CREATED=/webhook/kicc-booking-created
+ *   ... (one per event)
  *
- * Non-blocking by design: failures are logged, never thrown —
- * automation must never break the user-facing flow.
+ * Non-blocking by design: failures are logged, never thrown.
  */
 class N8nService
 {
+    /** All events that can fire webhooks — also the 13 previously missing ones */
+    public static array $events = [
+        'order_created', 'booking_created', 'user_registered', 'venue_inquiry',
+        'screen_ad_booked', 'exhibitor_onboarded', 'county_image_updated',
+        'county_ad_created', 'provider_price_changed', 'provider_service_added',
+        'provider_service_approved', 'agent_approved', 'agent_rejected',
+        'abandoned_cart', 'cold_market_detected', 'agent_onboarded',
+        'county_4d_uploaded', 'newsletter_subscribed', 'event_booking_created',
+        'message_sent', 'review_approved', 'notification_created',
+        'export_enquiry_created', 'export_enquiry_status_changed',
+        'invoice_generated', '4d_pipeline_triggered', 'fulfillment_initiated',
+    ];
+
     /** Fire an n8n webhook for the given event with its payload. */
     public static function fire(string $event, array $payload = []): void
     {
         try {
-            $base = rtrim((string) env('N8N_BASE_URL', ''), '/');
+            $base = rtrim((string) config('services.n8n.base_url', ''), '/');
+            if (!$base) {
+                $base = rtrim((string) env('N8N_BASE_URL', ''), '/');
+            }
             $path = env('N8N_WEBHOOK_' . strtoupper($event));
 
             if (!$path) {
@@ -38,7 +54,13 @@ class N8nService
                 return;
             }
 
-            Http::timeout(5)->post($url, [
+            $headers = ['Content-Type' => 'application/json'];
+            $apiKey = config('services.n8n.api_key') ?: env('N8N_API_KEY');
+            if ($apiKey) {
+                $headers['X-N8N-API-KEY'] = $apiKey;
+            }
+
+            Http::timeout(5)->withHeaders($headers)->post($url, [
                 'event' => $event,
                 'platform' => 'kicc',
                 'fired_at' => now()->toIso8601String(),
@@ -48,5 +70,14 @@ class N8nService
         } catch (\Throwable $e) {
             Log::warning("n8n: webhook [{$event}] failed: " . $e->getMessage());
         }
+    }
+
+    /** Verify an incoming n8n webhook signature */
+    public static function verifySignature(string $payload, string $signature): bool
+    {
+        $secret = config('services.n8n.webhook_secret') ?: env('N8N_WEBHOOK_SECRET');
+        if (!$secret) return true; // no secret = trust all
+        $expected = hash_hmac('sha256', $payload, $secret);
+        return hash_equals($expected, $signature);
     }
 }
