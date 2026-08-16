@@ -1,0 +1,35 @@
+{
+    "name": "kicc/platform-admin",
+    "type": "project",
+    "require": {
+        "php": "^8.3",
+        "laravel/framework": "^13.8",
+        "laravel/sanctum": "^4.0",
+        "laravel/tinker": "^3.0",
+        "filament/filament": "^5.7",
+        "spatie/laravel-permission": "^8.3",
+        "league/flysystem-aws-s3-v3": "^3.35",
+        "blade-ui-kit/blade-icons": "^1.7",
+        "guzzlehttp/guzzle": "^7.9"
+    },
+    "autoload": {
+        "psr-4": {
+            "App\\": "app/",
+            "Database\\Factories\\": "database/factories/",
+            "Database\\Seeders\\": "database/seeders/"
+        }
+    },
+    "extra": {
+        "laravel": {
+            "dont-discover": []
+        }
+    },
+    "scripts": {
+        "post-autoload-dump": [
+            "Illuminate\\Foundation\\ComposerScripts::postAutoloadDump",
+            "@php artisan package:discover --ansi"
+        ]
+    },
+    "minimum-stability": "stable",
+    "prefer-stable": true
+}

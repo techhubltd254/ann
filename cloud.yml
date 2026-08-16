@@ -1,0 +1,18 @@
+id: kicc-admin
+region: eu-central-1
+database: false
+
+build:
+  - mkdir -p bootstrap/cache storage/framework/cache/data storage/framework/sessions storage/framework/views storage/logs
+  - composer install --no-dev --no-interaction --prefer-dist --optimize-autoloader
+
+deploy:
+  - php artisan storage:link --force || true
+  - php artisan migrate --force 2>&1 || echo "migrate exit: $?"
+  - php artisan db:seed --class=RolePermissionSeeder --force 2>&1 || echo "seed exit: $?"
+
+environments:
+  production:
+    domain: admin.kicc.go.ke
+  preview:
+    domain: '{default}'
