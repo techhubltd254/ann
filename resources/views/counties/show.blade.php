@@ -140,12 +140,11 @@ $kiccBlue = '#046bd2';
             </div>
             <div class="flex flex-wrap gap-2">
                 @foreach($linkedSectors as $ls)
-                <a href="{{ route('county.admin.pro', [$county->slug, 'tab' => 'sectors']) }}" class="px-3.5 py-2 rounded-full text-xs font-bold bg-gray-100 text-gray-700 border border-gray-200 hover:bg-[#046bd2]/10 hover:text-[#046bd2] hover:border-[#046bd2]/40 transition-all">
+                <a href="{{ route('counties.sector', [$county->slug, $ls->slug]) }}" class="px-3.5 py-2 rounded-full text-xs font-bold bg-gray-100 text-gray-700 border border-gray-200 hover:bg-[#046bd2]/10 hover:text-[#046bd2] hover:border-[#046bd2]/40 transition-all">
                     {{ $ls->name }}
                 </a>
                 @endforeach
             </div>
-            <p class="text-gray-400 text-xs mt-3">Sourced from official county websites. <a href="{{ route('county.admin.pro', [$county->slug, 'tab' => 'sectors']) }}" class="text-[#046bd2] hover:underline">Manage in County Admin</a>.</p>
         </div>
         @endif
 
