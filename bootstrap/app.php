@@ -21,6 +21,7 @@ return Application::configure(basePath: dirname(__DIR__))
         $middleware->append(\App\Http\Middleware\OptimizeUploadedImages::class);
         $middleware->web(append: [
             \App\Http\Middleware\HandleInertiaRequests::class,
+            \App\Http\Middleware\RedirectAdminsToAdmin::class,
         ]);
         $middleware->api(prepend: [
             \App\Http\Middleware\AgenticSEO::class,
@@ -28,6 +29,7 @@ return Application::configure(basePath: dirname(__DIR__))
         ]);
         $middleware->alias([
             'admin' => \App\Http\Middleware\AdminMiddleware::class,
+            'redirect.admins' => \App\Http\Middleware\RedirectAdminsToAdmin::class,
         ]);
     })
     ->withExceptions(function (Exceptions $exceptions): void {
