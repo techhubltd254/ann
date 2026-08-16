@@ -168,12 +168,11 @@ $kiccBlue = '#046bd2';
                         $vUrl = $vFile && Storage::disk('public')->exists('kicc/4d/clips/' . $vFile) ? Storage::disk('public')->url('kicc/4d/clips/' . $vFile) : null;
                         @endphp
                         @if($vUrl)
-                        <video class="w-full h-full object-cover opacity-0 group-hover:opacity-100 transition-opacity duration-300 absolute inset-0" muted loop playsinline
-                            @mouseenter="this.play()" @mouseleave="this.pause();this.currentTime=0">
+                        <video class="w-full h-full object-cover absolute inset-0" autoplay muted loop playsinline>
                             <source src="{{ $vUrl }}" type="video/mp4">
                         </video>
                         @endif
-                        <div class="bg-gradient-to-br {{ $grad }} w-full h-full flex items-center justify-center @if($vUrl) group-hover:opacity-0 @endif">
+                        <div class="bg-gradient-to-br {{ $grad }} w-full h-full flex items-center justify-center absolute inset-0 @if($vUrl) opacity-70 group-hover:opacity-0 transition-opacity duration-500 @endif">
                             <span class="text-4xl opacity-30 group-hover:scale-125 transition-transform duration-500">{{ $icon }}</span>
                         </div>
                         <div class="absolute inset-0 bg-gradient-to-t from-black/40 to-transparent pointer-events-none"></div>
