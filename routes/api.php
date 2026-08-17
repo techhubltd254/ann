@@ -22,6 +22,7 @@ use Illuminate\Support\Facades\Route;
 // Auth
 Route::post('/auth/register', [AuthController::class, 'register'])->middleware('throttle:20,1');
 Route::post('/auth/login', [AuthController::class, 'login'])->middleware('throttle:20,1');
+Route::post('/auth/token', [\App\Http\Controllers\Api\AuthController::class, 'token']);
 
 // Public county routes
 Route::get('/counties', [CountyController::class, 'index']);
@@ -147,7 +148,11 @@ Route::get('/updates/manifest', [\App\Http\Controllers\Api\UpdateManifestControl
 
 // ── Escrow API ──
 Route::middleware('auth:sanctum')->prefix('escrow')->group(function () {
+    Route::post('/', [\App\Http\Controllers\Api\EscrowController::class, 'store']);
+    Route::post('/{id}/hold', [\App\Http\Controllers\Api\EscrowController::class, 'hold']);
     Route::post('/{id}/seller-confirm', [\App\Http\Controllers\Api\EscrowController::class, 'sellerConfirm']);
+    Route::post('/{id}/ship', [\App\Http\Controllers\Api\EscrowController::class, 'ship']);
+    Route::post('/{id}/delivered', [\App\Http\Controllers\Api\EscrowController::class, 'delivered']);
     Route::post('/{id}/buyer-confirm', [\App\Http\Controllers\Api\EscrowController::class, 'buyerConfirm']);
     Route::post('/{id}/dispute', [\App\Http\Controllers\Api\EscrowController::class, 'raiseDispute']);
     Route::get('/{id}/tracking', [\App\Http\Controllers\Api\EscrowController::class, 'tracking']);

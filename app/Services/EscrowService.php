@@ -49,6 +49,7 @@ class EscrowService
 
     public function holdFunds(EscrowTransaction $escrow): EscrowTransaction
     {
+        abort_if($escrow->status !== 'pending', 422, 'Escrow not in pending state');
         $escrow->update(['status' => 'held', 'current_step' => 1]);
         $this->markStep($escrow, 'funds_held');
         Log::info('escrow: funds held', ['escrow_id' => $escrow->id, 'amount' => $escrow->amount]);
@@ -57,6 +58,7 @@ class EscrowService
 
     public function confirmBySeller(EscrowTransaction $escrow): EscrowTransaction
     {
+        abort_if($escrow->status !== 'held', 422, 'Escrow not in held state');
         $escrow->update(['seller_confirmed_at' => now(), 'current_step' => 2]);
         $this->markStep($escrow, 'seller_confirmed');
         Log::info('escrow: seller confirmed', ['escrow_id' => $escrow->id]);
@@ -65,6 +67,7 @@ class EscrowService
 
     public function createShipment(EscrowTransaction $escrow, string $courierName, string $trackingNumber, string $origin, string $destination): CourierShipment
     {
+        abort_if($escrow->seller_confirmed_at === null, 422, 'Seller has not confirmed the order');
         $shipment = CourierShipment::create([
             'escrow_transaction_id' => $escrow->id,
             'tracking_number' => $trackingNumber,
@@ -91,12 +94,13 @@ class EscrowService
 
     public function markDelivered(EscrowTransaction $escrow, string $location): EscrowTransaction
     {
+        abort_if($escrow->courierShipment === null, 422, 'No shipment created for this escrow');
         // Mark delivery confirmed
         $escrow->update(['delivery_confirmed_at' => now(), 'current_step' => 4]);
         $this->markStep($escrow, 'delivered');
 
         // Update courier tracking
-        $shipment = $escrow->courierShipment ?? CourierShipment::where('escrow_transaction_id', $escrow->id)->first();
+        $shipment = $escrow->courierShipment;
         if ($shipment) {
             $shipment->update(['delivered_at' => now(), 'status' => 'delivered']);
             $shipment->trackingEvents()->create([
@@ -111,6 +115,7 @@ class EscrowService
 
     public function confirmByBuyer(EscrowTransaction $escrow): EscrowTransaction
     {
+        abort_if(!in_array($escrow->status, ['held', 'disputed']), 422, 'Escrow not in held state');
         $escrow->update(['buyer_confirmed_at' => now(), 'current_step' => 5]);
         $this->markStep($escrow, 'buyer_confirmed');
         Log::info('escrow: buyer confirmed delivery', ['escrow_id' => $escrow->id]);
@@ -119,6 +124,7 @@ class EscrowService
 
     public function releaseFunds(EscrowTransaction $escrow): EscrowTransaction
     {
+        abort_if($escrow->buyer_confirmed_at === null && $escrow->delivery_confirmed_at === null, 422, 'Delivery not confirmed by buyer');
         $escrow->update([
             'status' => 'released',
             'released_at' => now(),
@@ -126,6 +132,19 @@ class EscrowService
         ]);
         $this->markStep($escrow, 'released');
         Log::info('escrow: funds released to seller', ['escrow_id' => $escrow->id, 'amount' => $escrow->amount, 'seller_id' => $escrow->seller_id]);
+        return $escrow->fresh();
+    }
+
+    public function refundBuyer(EscrowTransaction $escrow): EscrowTransaction
+    {
+        abort_if($escrow->status !== 'disputed', 422, 'Escrow not in disputed state');
+        $escrow->update([
+            'status' => 'refunded',
+            'released_at' => now(),
+            'current_step' => 6,
+        ]);
+        $this->markStep($escrow, 'released');
+        Log::info('escrow: funds refunded to buyer', ['escrow_id' => $escrow->id, 'amount' => $escrow->amount, 'buyer_id' => $escrow->buyer_id]);
         return $escrow->fresh();
     }
 
@@ -154,7 +173,7 @@ class EscrowService
 
         $escrow = $dispute->escrowTransaction;
         if ($winner === 'buyer') {
-            $this->releaseFunds($escrow);
+            $this->refundBuyer($escrow);
         } elseif ($winner === 'seller') {
             $this->releaseFunds($escrow);
         }

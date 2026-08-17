@@ -26,6 +26,17 @@ use Spatie\Permission\Traits\HasRoles;
     'ministry_id',
     'status',
     'metadata',
+    'kra_pin',
+    'id_number',
+    'verification_tier',
+    'verification_status',
+    'verification_document_path',
+    'verification_rejection_reason',
+    'verified_at',
+    'verified_by',
+    'trust_score',
+    'trust_grade',
+    'visibility_score',
 ])]
 #[Hidden(['password', 'remember_token', 'mfa_secret'])]
 class User extends Authenticatable implements FilamentUser
