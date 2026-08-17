@@ -40,6 +40,7 @@ class CachePublicResponse
             $response = new Response($cached['content'] ?? '', $cached['status'] ?? 200);
             $response->headers->set('Content-Type', $cached['content_type'] ?? 'text/html; charset=UTF-8');
             $response->headers->set('X-Cache', 'HIT');
+            $this->publicHeaders($response);
 
             return $response;
         }
@@ -54,12 +55,33 @@ class CachePublicResponse
                     'content_type' => $response->headers->get('Content-Type') ?? 'text/html; charset=UTF-8',
                 ], $ttl);
                 $response->headers->set('X-Cache', 'MISS');
+                $this->publicHeaders($response);
             } catch (\Throwable $e) {
                 Log::warning('response_cache_store_failed: ' . $e->getMessage());
             }
         }
 
         return $response;
+    }
+
+    /**
+     * Mark the response cacheable at the CDN/edge layer. The explicit
+     * Cache-Control lets Cloudflare hold public GET responses at the edge
+     * and keeps the origin (and its session/Redis/DB work) completely out
+     * of the guest request path. s-maxage mirrors the Redis TTL so the
+     * edge and origin expire together; max-age lets browsers reuse it.
+     */
+    protected function publicHeaders(Response $response): void
+    {
+        $ttl = (int) config('response_cache.ttl', 60);
+
+        $response->headers->set('Cache-Control', sprintf(
+            'public, max-age=%d, s-maxage=%d',
+            $ttl,
+            $ttl
+        ));
+        $response->headers->remove('Set-Cookie');
+        $response->headers->remove('XSRF-TOKEN');
     }
 
     protected function cacheable(Response $response): bool
