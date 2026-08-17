@@ -13,7 +13,7 @@ if (!function_exists('media')) {
 if (!function_exists('media_url')) {
     function media_url(): string
     {
-        return rtrim(env('MEDIA_CDN_URL', url('storage')), '/');
+        return rtrim(config('media.cdn_url', url('storage')), '/');
     }
 }
 
@@ -22,7 +22,7 @@ if (!function_exists('img_url')) {
     {
         if (!$path) return '';
 
-        $storage = rtrim(env('MEDIA_CDN_URL', url('storage')), '/');
+        $storage = rtrim(config('media.cdn_url', url('storage')), '/');
 
         if ($format === 'webp') {
             $webpPath = preg_replace('/\.(jpg|jpeg|png)$/i', '.webp', $path);
@@ -38,7 +38,7 @@ if (!function_exists('img')) {
     {
         if (!$path) return '';
 
-        $storage = rtrim(env('MEDIA_CDN_URL', url('storage')), '/');
+        $storage = rtrim(config('media.cdn_url', url('storage')), '/');
         $fallback = "$storage/$path";
 
         $webpPath = preg_replace('/\.(jpg|jpeg|png)$/i', '.webp', $path);
@@ -64,7 +64,7 @@ if (!function_exists('img_srcset')) {
         $dir = dirname($path);
         $name = pathinfo($path, PATHINFO_FILENAME);
         $ext = pathinfo($path, PATHINFO_EXTENSION);
-        $storage = rtrim(env('MEDIA_CDN_URL', url('storage')), '/');
+        $storage = rtrim(config('media.cdn_url', url('storage')), '/');
 
         $srcset = [];
         foreach ($sizes as $w) {
