@@ -101,8 +101,14 @@ class CountyController extends Controller
             ->orderBy('name')
             ->paginate(12);
 
+        // Load bookable services (marketplace products) for this county
+        $services = \App\Models\Marketplace\Product::where('county_id', $county->id)
+            ->where('status', 'active')
+            ->with('variants')
+            ->get();
+
         $info = [
-            'tourism' => ['title' => 'Tourism & Attractions', 'icon' => '🏖️', 'desc' => 'Discover attractions and cultural sites.'],
+            'tourism' => ['title' => 'Tourism & Attractions', 'icon' => '🏖️', 'desc' => 'Discover attractions, tours, and cultural sites.'],
             'hotels' => ['title' => 'Hospitality & Hotels', 'icon' => '🏨', 'desc' => 'Hotels and accommodation.'],
             'products' => ['title' => 'Commerce & End Products', 'icon' => '🛒', 'desc' => 'Bookable county end products and marketplace goods.'],
             'institutions' => ['title' => 'Education & Institutions', 'icon' => '🎓', 'desc' => 'Schools and training centers.'],
@@ -137,6 +143,6 @@ class CountyController extends Controller
             }
         }
 
-        return view('counties.sector', compact('county', 'items', 'sector', 'sectorInfo', 'sectorModel', 'fourDVideo'));
+        return view('counties.sector', compact('county', 'items', 'services', 'sector', 'sectorInfo', 'sectorModel', 'fourDVideo'));
     }
 }

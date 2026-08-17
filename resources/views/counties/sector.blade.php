@@ -79,11 +79,60 @@
             {{ $items->links() }}
         </div>
         @else
-        <div class="text-center py-16 text-[#5A6480]">
-            <span class="text-4xl block mb-3">📂</span>
-            <p class="text-sm">No entities registered in this sector yet.</p>
-        </div>
-        @endif
+<div class="text-center py-16 text-[#5A6480]">
+        <span class="text-4xl block mb-3">📂</span>
+        <p class="text-sm">No entities registered in this sector yet.</p>
     </div>
+    @endif
+
+    @if($services->count() > 0)
+    <div class="mt-16 pt-10 border-t border-gray-200">
+        <div class="flex items-center justify-between mb-8">
+            <div>
+                <h2 class="text-2xl font-black text-gray-900">Bookable Services</h2>
+                <p class="text-[#5A6480] text-sm mt-1">Add services to your cart and checkout securely.</p>
+            </div>
+            <a href="{{ route('cart.index') }}" class="text-sm font-bold text-kicc-gold hover:text-[#FFCD05] transition-colors">
+                View Cart →
+            </a>
+        </div>
+        <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-5">
+            @foreach($services as $product)
+            <div class="bg-white rounded-2xl overflow-hidden border border-gray-200 hover:border-[#FFCD05]/40 hover:shadow-md transition-all">
+                <div class="h-36 bg-gradient-to-br from-[#F9FAFB] to-gray-100 flex items-center justify-center">
+                    <img src="https://placehold.co/400x300/1a1a2e/FFCD05?text=Service" alt="" class="w-full h-full object-cover" loading="lazy">
+                </div>
+                <div class="p-4">
+                    <h3 class="font-bold text-gray-900 text-sm leading-snug">{{ $product->name }}</h3>
+                    <p class="text-gray-500 text-xs leading-relaxed mt-1.5 line-clamp-2">{{ $product->short_description ?? $product->description }}</p>
+                    <div class="mt-3 space-y-1.5">
+                        @foreach($product->variants->where('is_active', true) as $variant)
+                        <form method="POST" action="{{ route('cart.add') }}" class="flex items-center justify-between gap-2 p-2 rounded-lg hover:bg-gray-50 transition-colors">
+                            @csrf
+                            <input type="hidden" name="variant_id" value="{{ $variant->id }}">
+                            <div class="flex-1 min-w-0">
+                                <div class="text-xs text-gray-700 truncate">{{ $variant->name }}</div>
+                                <div class="text-xs font-bold text-kicc-gold">KES {{ number_format($variant->price) }}</div>
+                            </div>
+                            <div class="flex items-center gap-1.5">
+                                <select name="quantity" class="text-xs border border-gray-200 rounded-lg px-1.5 py-1 w-14 bg-white">
+                                    @for($q = 1; $q <= min(10, $variant->stock ?? 10); $q++)
+                                    <option value="{{ $q }}">{{ $q }}</option>
+                                    @endfor
+                                </select>
+                                <button type="submit" class="text-[10px] font-bold px-2.5 py-1.5 rounded-lg bg-[#901C1E] text-white hover:bg-[#7b1618] transition-colors whitespace-nowrap">
+                                    Add to Cart
+                                </button>
+                            </div>
+                        </form>
+                        @endforeach
+                    </div>
+                </div>
+            </div>
+            @endforeach
+        </div>
+    </div>
+    @endif
+</div>
 </div>
 @endsection
