@@ -25,11 +25,11 @@ Route::post('/auth/login', [AuthController::class, 'login'])->middleware('thrott
 Route::post('/auth/token', [\App\Http\Controllers\Api\AuthController::class, 'token']);
 
 // Public county routes
-Route::get('/counties', [CountyController::class, 'index']);
-Route::get('/counties/{slug}', [CountyController::class, 'show']);
-Route::get('/counties/{slug}/sectors', [CountyController::class, 'sectors']);
-Route::get('/counties/{slug}/weather', [CountyController::class, 'weather']);
-Route::get('/national-hub', [CountyController::class, 'nationalHub']);
+Route::get('/counties', [CountyController::class, 'index'])->middleware(\App\Http\Middleware\CachePublicResponse::class);
+Route::get('/counties/{slug}', [CountyController::class, 'show'])->middleware(\App\Http\Middleware\CachePublicResponse::class);
+Route::get('/counties/{slug}/sectors', [CountyController::class, 'sectors'])->middleware(\App\Http\Middleware\CachePublicResponse::class);
+Route::get('/counties/{slug}/weather', [CountyController::class, 'weather'])->middleware(\App\Http\Middleware\CachePublicResponse::class);
+Route::get('/national-hub', [CountyController::class, 'nationalHub'])->middleware(\App\Http\Middleware\CachePublicResponse::class);
 Route::post('/match-destination', [CountyController::class, 'matchDestination']);
 
 // Semantic vector search (embeddings via OpenRouter; cosine-ranked)
@@ -48,20 +48,21 @@ Route::post('/webhooks/courier', [\App\Http\Controllers\Api\CourierWebhookContro
     ->withoutMiddleware(\Illuminate\Foundation\Http\Middleware\ValidateCsrfToken::class);
 
 // Public exhibition & venue routes
-Route::get('/exhibitions', [ExhibitionController::class, 'index']);
-Route::get('/exhibitions/{slug}', [ExhibitionController::class, 'show']);
-Route::get('/venues', [VenueController::class, 'index']);
-Route::get('/venues/{slug}', [VenueController::class, 'show']);
+Route::get('/exhibitions', [ExhibitionController::class, 'index'])->middleware(\App\Http\Middleware\CachePublicResponse::class);
+Route::get('/exhibitions/{slug}', [ExhibitionController::class, 'show'])->middleware(\App\Http\Middleware\CachePublicResponse::class);
+Route::get('/venues', [VenueController::class, 'index'])->middleware(\App\Http\Middleware\CachePublicResponse::class);
+Route::get('/venues/{slug}', [VenueController::class, 'show'])->middleware(\App\Http\Middleware\CachePublicResponse::class);
 
 // Public booth listing
-Route::get('/booths', [BoothController::class, 'index']);
-Route::get('/booths/{booth}', [BoothController::class, 'show']);
+Route::get('/booths', [BoothController::class, 'index'])->middleware(\App\Http\Middleware\CachePublicResponse::class);
+Route::get('/booths/{booth}', [BoothController::class, 'show'])->middleware(\App\Http\Middleware\CachePublicResponse::class);
 
 // Public ticket lookup
-Route::get('/tickets/lookup/{ticketCode}', [TicketController::class, 'lookup']);
+Route::get('/tickets/lookup/{ticketCode}', [TicketController::class, 'lookup'])->middleware(\App\Http\Middleware\CachePublicResponse::class);
 
 // Public read-only county sector data (mobile/web browsing without auth)
-Route::get('/county-sector/{county}/data', [\App\Http\Controllers\Api\CountySectorController::class, 'getCountyData']);
+Route::get('/county-sector/{county}/data', [\App\Http\Controllers\Api\CountySectorController::class, 'getCountyData'])
+    ->middleware(\App\Http\Middleware\CachePublicResponse::class);
 
 Route::middleware('auth:sanctum')->group(function () {
     Route::post('/auth/logout', [AuthController::class, 'logout']);
