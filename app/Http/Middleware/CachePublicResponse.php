@@ -37,7 +37,7 @@ class CachePublicResponse
 
         $cached = Cache::get($key);
         if ($cached !== null) {
-            $response = Response::create($cached['content'] ?? '', $cached['status'] ?? 200);
+            $response = new Response($cached['content'] ?? '', $cached['status'] ?? 200);
             $response->headers->set('Content-Type', $cached['content_type'] ?? 'text/html; charset=UTF-8');
             $response->headers->set('X-Cache', 'HIT');
 
