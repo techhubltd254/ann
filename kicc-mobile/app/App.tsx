@@ -5,6 +5,7 @@ import { NavigationContainer } from '@react-navigation/native';
 import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
 import { createNativeStackNavigator } from '@react-navigation/native-stack';
 import { AuthProvider } from './src/lib/auth';
+import { CartProvider } from './src/lib/cart';
 
 // Screens (stubs — to be built out)
 import HomeScreen from './src/screens/HomeScreen';
@@ -33,14 +34,16 @@ export default function App() {
   return (
     <SafeAreaProvider>
       <AuthProvider>
-        <NavigationContainer>
-          <Stack.Navigator>
-            <Stack.Screen name="Main" component={MainTabs} options={{ headerShown: false }} />
-            <Stack.Screen name="Counties" component={CountyListScreen} />
-            <Stack.Screen name="Sector" component={SectorScreen} />
-            <Stack.Screen name="Product" component={ProductScreen} />
-          </Stack.Navigator>
-        </NavigationContainer>
+        <CartProvider>
+          <NavigationContainer>
+            <Stack.Navigator>
+              <Stack.Screen name="Main" component={MainTabs} options={{ headerShown: false }} />
+              <Stack.Screen name="Counties" component={CountyListScreen} options={{ title: 'County' }} />
+              <Stack.Screen name="Sector" component={SectorScreen} options={{ title: 'Sector' }} />
+              <Stack.Screen name="Product" component={ProductScreen} options={{ title: 'Product' }} />
+            </Stack.Navigator>
+          </NavigationContainer>
+        </CartProvider>
         <StatusBar style="auto" />
       </AuthProvider>
     </SafeAreaProvider>

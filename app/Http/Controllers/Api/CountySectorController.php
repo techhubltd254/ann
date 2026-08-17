@@ -22,7 +22,7 @@ class CountySectorController extends Controller
 {
     public function __construct()
     {
-        $this->middleware('auth:sanctum');
+        $this->middleware('auth:sanctum')->except(['getCountyData']);
     }
 
     public function uploadMedia(Request $request, County $county, string $sector, string $entityId = null)

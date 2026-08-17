@@ -60,6 +60,9 @@ Route::get('/booths/{booth}', [BoothController::class, 'show']);
 // Public ticket lookup
 Route::get('/tickets/lookup/{ticketCode}', [TicketController::class, 'lookup']);
 
+// Public read-only county sector data (mobile/web browsing without auth)
+Route::get('/county-sector/{county}/data', [\App\Http\Controllers\Api\CountySectorController::class, 'getCountyData']);
+
 Route::middleware('auth:sanctum')->group(function () {
     Route::post('/auth/logout', [AuthController::class, 'logout']);
     Route::get('/auth/me', [AuthController::class, 'me']);
@@ -120,8 +123,7 @@ Route::middleware('auth:sanctum')->group(function () {
     Route::put('/ticket-types/{ticketType}', [TicketTypeController::class, 'update']);
     Route::delete('/ticket-types/{ticketType}', [TicketTypeController::class, 'destroy']);
 
-    // County sector data management
-    Route::get('/county-sector/{county}/data', [CountySectorController::class, 'getCountyData']);
+    // County sector data management (auth'd write ops only)
     Route::get('/county-sector/{county}/export', [CountySectorController::class, 'exportCountyJson']);
     Route::post('/county-sector/{county}/media/{sector}/{entityId?}', [CountySectorController::class, 'uploadMedia']);
 });

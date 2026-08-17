@@ -26,17 +26,17 @@ export function AuthProvider({ children }: { children: ReactNode }) {
   }, []);
 
   const login = async (email: string, password: string) => {
-    const res = await fetch('https://kicctest.org/api/login', {
+    const res = await fetch('https://kicctest.org/api/auth/token', {
       method: 'POST', headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({ email, password }),
     });
     const data = await res.json();
-    if (data.token) {
+    if (res.ok && data.token) {
       await SecureStore.setItemAsync('token', data.token);
       setToken(data.token);
       setUser(data.user);
     } else {
-      throw new Error(data.message || 'Login failed');
+      throw new Error(data.message || data.errors?.email?.[0] || 'Login failed');
     }
   };
 
