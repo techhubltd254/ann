@@ -19,7 +19,7 @@ import 'services/api_service.dart';
 Future<void> main() async {
   await SentryFlutter.init(
     (options) {
-      options.dsn = "https://your-dsn@o0.ingest.sentry.io/0";
+      options.dsn = "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";
     },
     appRunner: () {
       runApp(
