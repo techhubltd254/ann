@@ -49,6 +49,29 @@ A single 2-vCPU origin cannot serve 10K concurrent *live SSR*. Paths to reach it
    connection-limit pressure.
 4. **Static/SSG homepage + API-driven SPA** for the public web (the Expo app already uses the API).
 
+## Edge caching + stateless guest path (2026-08-17, deployed)
+Follow-up that moved the cached surface **onto the Cloudflare edge**, not just origin Redis:
+
+- **Stateless public routes.** Home + counties index/show now strip the entire session/cookie/CSRF
+  middleware group (`StartSession`, `PreventRequestForgery`, `EncryptCookies`, …) via `withoutMiddleware`.
+  These pages have no forms and no session reads, so guests never touch the session store or Redis
+  session write. Measured on the 8-CPU dev laptop: **`StartSession` with the DB session driver cost
+  ~2.7 s/req at TiDB latency**; with sessions removed (or `SESSION_DRIVER=redis`) cached pages serve in
+  **~30 ms**.
+- **`Cache-Control: public, max-age/s-maxage = RESPONSE_CACHE_TTL`** added by `CachePublicResponse` on
+  both HIT and MISS, plus Set-Cookie stripped → **Cloudflare edge now returns `cf-cache-status: HIT`** for
+  home and county pages. Repeat guests are absorbed by the CDN; the origin is only hit on TTL expiry.
+- **Fixed cookie-domain bug:** `APP_URL=http://localhost:8000` + `SESSION_DOMAIN=localhost` in production
+  `.env` were emitting `domain=localhost` cookies. Corrected to `https://kicctest.org` / `.kicctest.org`.
+- **API note:** `/api/*` responses carry `Cache-Control: public, s-maxage=60` and origin HIT, but stay
+  `DYNAMIC` at the edge because Cloudflare only caches HTML by default. Adding a **Cache Everything /
+  Cache Rule for `/api/*`** would absorb API reads at the edge too (needs DNS:Edit access).
+- **10K-VU k6 reruns produced 50-88% "failures" — all test artifacts, not app failures:** Cloudflare's
+  per-IP rate-limit rule (`x-ratelimit-limit: 300`) throttles a single-egress k6 flood (10K users from one
+  IP), and R2 CDN image fetches `dial: i/o timeout` when the laptop's single internet link is saturated.
+  Real-world 100M users arrive via many IPs through the CDN. App endpoints themselves return 200
+  consistently (`/`, `/counties`, `/api/counties`, sector pages, CDN images).
+
 ## Repro
 ```bash
 k6 run infra/k6-load.js --stage "20s:100,40s:500,20s:0"
