@@ -102,8 +102,8 @@ class County extends Model
 
     public function profileImageUrl(): string
     {
-        if ($this->profile_image && Storage::disk('public')->exists('counties/' . $this->profile_image)) {
-            return Storage::disk('public')->url('counties/' . $this->profile_image);
+        if ($this->profile_image) {
+            return rtrim(config('media.cdn_url', url('storage')), '/') . '/' . $this->profile_image;
         }
         return '';
     }
