@@ -30,7 +30,10 @@ class CountyController extends Controller
             });
         }
 
-        $counties = $query->with('sectors')->paginate(20);
+        $perPage = (int) $request->query('per_page', 50);
+        $perPage = min(max($perPage, 5), 100);
+
+        $counties = $query->with('sectors')->paginate($perPage);
 
         return response()->json($counties);
     }

@@ -57,6 +57,25 @@ class AuthController extends Controller
         ]);
     }
 
+    public function token(Request $request): JsonResponse
+    {
+        $request->validate([
+            'email' => 'required|email',
+            'password' => 'required',
+        ]);
+
+        $user = User::where('email', $request->email)->first();
+
+        if (! $user || ! Hash::check($request->password, $user->password)) {
+            throw ValidationException::withMessages(['email' => ['Invalid credentials.']]);
+        }
+
+        return response()->json([
+            'token' => $user->createToken('api-test')->plainTextToken,
+            'user' => ['id' => $user->id, 'name' => $user->name, 'email' => $user->email],
+        ]);
+    }
+
     public function logout(Request $request): JsonResponse
     {
         $request->user()->currentAccessToken()->delete();
