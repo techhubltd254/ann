@@ -29,8 +29,10 @@ class AppServiceProvider extends ServiceProvider
 
         // Must live here, NOT in routes/api.php — with route:cache the route files
         // are never loaded, so a limiter defined there would be undefined at runtime.
+        // 300/min/IP: most public reads are served from the Redis response cache,
+        // so this is per-user protection, not a throughput gate.
         RateLimiter::for('api', function () {
-            return Limit::perMinute(60)->by(optional(request()->user())->id ?: request()->ip());
+            return Limit::perMinute(300)->by(optional(request()->user())->id ?: request()->ip());
         });
 
         // SendGrid API mailer (uses HTTP API, not SMTP — works on port 443)
