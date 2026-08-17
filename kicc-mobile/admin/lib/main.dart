@@ -1,3 +1,4 @@
+import "package:sentry_flutter/sentry_flutter.dart";
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'screens/login_screen.dart';
@@ -14,14 +15,21 @@ import 'screens/venues_screen.dart';
 import 'screens/counties_screen.dart';
 import 'services/admin_api_service.dart';
 
-void main() {
-  runApp(
-    MultiProvider(
-      providers: [
-        ChangeNotifierProvider(create: (_) => AdminApiService()),
-      ],
-      child: const KiccAdminApp(),
-    ),
+Future<void> main() async {
+  await SentryFlutter.init(
+    (options) {
+      options.dsn = "https://your-dsn@o0.ingest.sentry.io/0";
+    },
+    appRunner: () {
+      runApp(
+        MultiProvider(
+          providers: [
+            ChangeNotifierProvider(create: (_) => AdminApiService()),
+          ],
+          child: const KiccAdminApp(),
+        ),
+      );
+    },
   );
 }
 
