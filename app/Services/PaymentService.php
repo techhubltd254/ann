@@ -54,6 +54,9 @@ class PaymentService
             'mpesa'  => app(MpesaService::class),
             'stripe' => app(\App\Services\Payments\StripePaymentDriver::class),
             'airtel' => app(\App\Services\Payments\AirtelMoneyDriver::class),
+            'tkash'  => app(\App\Services\Payments\TKashDriver::class),
+            'bank_eft' => app(\App\Services\Payments\BankEftDriver::class),
+            'crypto' => app(\App\Services\Payments\CryptoDriver::class),
             default  => new ManualPaymentDriver(),
         };
     }

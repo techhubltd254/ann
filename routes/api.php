@@ -144,3 +144,19 @@ Route::post('/webhooks/n8n', [\App\Http\Controllers\Api\N8nWebhookController::cl
     ->middleware('throttle:60,1');
 Route::get('/updates/manifest', [\App\Http\Controllers\Api\UpdateManifestController::class, 'show'])
     ->middleware('throttle:300,1');
+
+// ── Escrow API ──
+Route::middleware('auth:sanctum')->prefix('escrow')->group(function () {
+    Route::post('/{id}/seller-confirm', [\App\Http\Controllers\Api\EscrowController::class, 'sellerConfirm']);
+    Route::post('/{id}/buyer-confirm', [\App\Http\Controllers\Api\EscrowController::class, 'buyerConfirm']);
+    Route::post('/{id}/dispute', [\App\Http\Controllers\Api\EscrowController::class, 'raiseDispute']);
+    Route::get('/{id}/tracking', [\App\Http\Controllers\Api\EscrowController::class, 'tracking']);
+    Route::post('/{id}/release', [\App\Http\Controllers\Api\EscrowController::class, 'releaseFunds']);
+});
+
+// ── Verification routes ──
+Route::middleware('auth:sanctum')->prefix('verification')->group(function () {
+    Route::post('/kra-pin', [\App\Http\Controllers\Api\VerificationController::class, 'submitKraPin']);
+    Route::post('/national-id', [\App\Http\Controllers\Api\VerificationController::class, 'submitNationalId']);
+    Route::get('/status', [\App\Http\Controllers\Api\VerificationController::class, 'status']);
+});

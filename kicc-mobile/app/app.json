@@ -1,0 +1,20 @@
+{
+  "expo": {
+    "name": "KICC Tourism",
+    "slug": "kicc-public",
+    "version": "1.0.0",
+    "orientation": "portrait",
+    "icon": "./assets/icon.png",
+    "userInterfaceStyle": "light",
+    "splash": { "backgroundColor": "#046BD2" },
+    "ios": { "supportsTablet": true, "bundleIdentifier": "ke.kicc.public" },
+    "android": {
+      "package": "ke.kicc.public",
+      "adaptiveIcon": { "backgroundColor": "#046BD2" }
+    },
+    "plugins": [
+      "expo-secure-store",
+      "expo-camera"
+    ]
+  }
+}
