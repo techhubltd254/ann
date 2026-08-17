@@ -68,10 +68,10 @@ class CachePublicResponse
             return false;
         }
 
-        if ($response->headers->has('Set-Cookie')) {
-            $response->headers->remove('Set-Cookie');
-        }
-
+        // Responses that must deliver a session cookie (e.g. the first
+        // request that boots a session) are safe to cache — we store only
+        // the content/status/type, never cookies, and the live response
+        // keeps its own Set-Cookie so the visitor still gets a session.
         return true;
     }
 }
