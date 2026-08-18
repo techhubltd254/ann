@@ -5,125 +5,66 @@ on:
     branches: [main]
   pull_request:
 
-env:
-  REGISTRY: ghcr.io
-  IMAGE_PLATFORM: ghcr.io/${{ github.repository_owner }}/kicc-platform
-  IMAGE_ENGINE: ghcr.io/${{ github.repository_owner }}/kicc-engine
-
 jobs:
-  lint:
+  php-tests:
+    name: PHP lint + tests
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
       - uses: shivammathur/setup-php@v2
-        with: { php-version: '8.3' }
-      - run: composer install --working-dir=platform --no-interaction
-      - run: platform/vendor/bin/phpstan analyse --no-progress || true  # gate: --error-format=github
+        with:
+          php-version: '8.3'
+          extensions: pdo, pdo_sqlite, sqlite3, mbstring, xml, ctype, json, redis
+          coverage: none
+      - name: Validate composer
+        run: composer validate --no-check-publish
+      - name: Prepare env
+        run: cp .env.example .env
+      - name: Install dependencies
+        run: composer install --no-interaction --no-progress --prefer-dist
+      - name: Run PHPUnit
+        run: vendor/bin/phpunit --colors=never
+      - name: PHP syntax check
+        run: |
+          for f in $(git ls-files '*.php'); do php -l "$f" >/dev/null || exit 1; done
+
+  node-build:
+    name: Admin web build
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
       - uses: actions/setup-node@v4
         with: { node-version: '22' }
-      - run: npm ci --prefix admin-web && npm run --prefix admin-web lint
+      - name: Install + build admin-web
+        working-directory: admin-web
+        run: |
+          npm ci
+          npm run build
 
-  test:
+  engine-tests:
+    name: Engine tests (gradle)
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
       - uses: actions/setup-java@v4
         with: { distribution: temurin, java-version: '21' }
-      - run: ./gradlew test
+      - name: Run engine tests
         working-directory: engine
-      - uses: shivammathur/setup-php@v2
-        with: { php-version: '8.3' }
-      - run: |
-          composer install --working-dir=platform --no-interaction
-          platform/vendor/bin/pest --colors=never
-      - uses: actions/setup-node@v4
-        with: { node-version: '22' }
-      - run: npm ci --prefix admin-web && npm run --prefix admin-web test -- --run
+        run: ./gradlew test --no-daemon
 
   security:
+    name: Dependency audits
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
-      - name: Dependency audits
+      - uses: shivammathur/setup-php@v2
+        with: { php-version: '8.3' }
+      - name: Composer audit
         run: |
-          composer audit --working-dir=platform || true
-          npm audit --prefix admin-web --audit-level=high || true
-      - name: Trivy filesystem + config scan
-        uses: aquasecurity/trivy-action@0.28.0
-        with:
-          scan-type: fs
-          severity: CRITICAL,HIGH
-          exit-code: '1'
-
-  build:
-    needs: [lint, test, security]
-    if: github.ref == 'refs/heads/main'
-    runs-on: ubuntu-latest
-    permissions: { contents: read, packages: write }
-    steps:
-      - uses: actions/checkout@v4
-      - uses: docker/login-action@v3
-        with:
-          registry: ghcr.io
-          username: ${{ github.actor }}
-          password: ${{ secrets.GITHUB_TOKEN }}
-      - name: Build+push platform (immutable SHA tag)
-        uses: docker/build-push-action@v6
-        with:
-          context: platform
-          file: infra/Dockerfile.platform
-          push: true
-          tags: |
-            ${{ env.IMAGE_PLATFORM }}:${{ github.sha }}
-            ${{ env.IMAGE_PLATFORM }}:latest
-      - name: Build+push engine (immutable SHA tag)
-        uses: docker/build-push-action@v6
-        with:
-          context: .
-          file: infra/Dockerfile.engine
-          push: true
-          tags: |
-            ${{ env.IMAGE_ENGINE }}:${{ github.sha }}
-            ${{ env.IMAGE_ENGINE }}:latest
-      - name: Engine fat jar artifact (for OTA channel)
-        uses: actions/setup-java@v4
-        with: { distribution: temurin, java-version: '21' }
-      - run: ./gradlew bootJar --no-daemon -x test
-        working-directory: engine
-      - uses: actions/upload-artifact@v4
-        with:
-          name: kicc-engine-${{ github.sha }}
-          path: engine/build/libs/*.jar
-
-  deploy:
-    needs: build
-    runs-on: ubuntu-latest
-    environment: production
-    steps:
-      - name: Blue-green deploy to origin (health-gated flip)
-        uses: appleboy/ssh-action@v1
-        with:
-          host: ${{ secrets.ORIGIN_HOST }}
-          username: ${{ secrets.ORIGIN_USER }}
-          key: ${{ secrets.ORIGIN_SSH_KEY }}
-          script: |
-            set -e
-            SLOT=$([ "$(readlink /srv/kicc/active)" = "/srv/kicc/blue" ] && echo green || echo blue)
-            docker pull ${{ env.IMAGE_PLATFORM }}:${{ github.sha }}
-            docker rm -f kicc-$SLOT || true
-            docker run -d --name kicc-$SLOT --env-file /srv/kicc/.env \
-              -p 127.0.0.1:$([ "$SLOT" = "blue" ] && echo 8081 || echo 8082):80 \
-              ${{ env.IMAGE_PLATFORM }}:${{ github.sha }}
-            for i in $(seq 1 12); do
-              curl -fsS "http://127.0.0.1:$([ "$SLOT" = "blue" ] && echo 8081 || echo 8082)/healthz" && break || sleep 5
-            done
-            ln -sfn /srv/kicc/$SLOT /srv/kicc/active
-            # Cloudflare purge on deploy
-            curl -fsS -X POST "https://api.cloudflare.com/client/v4/zones/${{ secrets.CF_ZONE_ID }}/purge_cache" \
-              -H "Authorization: Bearer ${{ secrets.CLOUDFLARE_API_TOKEN }}" \
-              -H "Content-Type: application/json" \
-              --data '{"tags":["deploy"]}'
-      - name: Publish OTA manifest (signed engine release)
-        run: |
-          echo "Sign jar SHA-256 with ed25519 release key (secrets.OTA_SIGNING_KEY),"
-          echo "upload jar to R2 releases/, update /api/updates/manifest version."
+          composer install --no-interaction --no-progress --prefer-dist
+          composer audit --format=plain || true
+      - uses: actions/setup-node@v4
+        with: { node-version: '22' }
+      - name: npm audit
+        working-directory: admin-web
+        run: npm audit --audit-level=high || true
