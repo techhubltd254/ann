@@ -351,8 +351,6 @@
         </div>
     </div>
 </section>
-{{-- 3D page-opening reveal — Three.js book animation that fades into the hero video --}}
-<script type="module" src="{{ asset('js/page-open-3d.js') }}"></script>
 @endsection
 
 <script>
