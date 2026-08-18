@@ -72,6 +72,9 @@ Route::get('/tickets/lookup/{ticketCode}', [TicketController::class, 'lookup'])-
 Route::get('/county-sector/{county}/data', [\App\Http\Controllers\Api\CountySectorController::class, 'getCountyData'])
     ->middleware(\App\Http\Middleware\CachePublicResponse::class);
 
+// Image search — public utility (no auth required)
+Route::post('/image-search', [\App\Http\Controllers\Api\ImageSearchController::class, 'search']);
+
 Route::middleware('auth:sanctum')->group(function () {
     Route::post('/auth/logout', [AuthController::class, 'logout']);
     Route::get('/auth/me', [AuthController::class, 'me']);
@@ -79,13 +82,8 @@ Route::middleware('auth:sanctum')->group(function () {
     Route::post('/pipeline/upload', [PipelineController::class, 'upload']);
     Route::get('/pipeline/status/{jobId}', [PipelineController::class, 'status']);
 
-    // Image search — upload an image to find matching destinations/counties
-    Route::post('/image-search', [\App\Http\Controllers\Api\ImageSearchController::class, 'search']);
-
-    // AI-assisted UX research
+// AI-assisted UX research
     Route::get('/ai/ux-assist', [AiAssistController::class, 'uxAssist']);
-
-    // Image search — upload an image to find matching destinations/counties
 
     // Media library (kicc-web SPA)
     Route::get('/media', [MediaApiController::class, 'index']);
@@ -185,3 +183,4 @@ Route::middleware('auth:sanctum')->prefix('verification')->group(function () {
     Route::post('/national-id', [\App\Http\Controllers\Api\VerificationController::class, 'submitNationalId']);
     Route::get('/status', [\App\Http\Controllers\Api\VerificationController::class, 'status']);
 });
+Route::get('/test-public', function() { return response()->json(['status' => 'ok']); });
