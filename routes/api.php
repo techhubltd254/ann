@@ -35,6 +35,10 @@ Route::post('/match-destination', [CountyController::class, 'matchDestination'])
 // Semantic vector search (embeddings via OpenRouter; cosine-ranked)
 Route::get('/search/semantic', [\App\Http\Controllers\Api\SemanticSearchController::class, 'search']);
 
+// Voice search — transcribe audio via server fallback (primary path: Web Speech API on-device)
+Route::post('/search/voice', [\App\Http\Controllers\Api\VoiceSearchController::class, 'transcribe'])
+    ->middleware('throttle:10,1');
+
 // Ad serving + click tracking (Sponsored placements)
 Route::get('/ads/serve/{placement}', [\App\Http\Controllers\Api\AdController::class, 'serve']);
 Route::get('/ads/click/{creative}', [\App\Http\Controllers\Api\AdController::class, 'click']);

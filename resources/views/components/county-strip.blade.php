@@ -6,8 +6,9 @@
     <div class="flex flex-col sm:flex-row gap-3 mb-6">
         <div class="relative flex-1 max-w-sm">
             <svg class="absolute left-3.5 top-1/2 -translate-y-1/2 text-[#5A6480]" xmlns="http://www.w3.org/2000/svg" width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="8"/><path d="m21 21-4.35-4.35"/></svg>
-            <input x-model="q" placeholder="Search county name…"
-                class="w-full pl-10 pr-4 h-11 rounded-xl bg-white border border-gray-200 text-gray-900 text-sm outline-none focus:ring-1 focus:ring-[#FFCD05] placeholder:text-[#5A6480]/50 transition-all">
+<input x-model="q" placeholder="Search county name…"
+    class="w-full pl-10 pr-12 h-11 rounded-xl bg-white border border-gray-200 text-gray-900 text-sm outline-none focus:ring-1 focus:ring-[#FFCD05] placeholder:text-[#5A6480]/50 transition-all"
+    data-voice-search>
         </div>
         <div class="flex gap-1.5 overflow-x-auto pb-1 flex-wrap sm:flex-nowrap">
             @foreach($regions as $r)

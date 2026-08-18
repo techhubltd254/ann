@@ -423,6 +423,7 @@
     @stack('scripts')
     <script defer src="https://cdn.jsdelivr.net/npm/alpinejs@3.x.x/dist/cdn.min.js"></script>
     {{-- FX3D: 3D parallax + tilt + VFX engine (self-contained) --}}
+    <script src="{{ asset('js/voice-search.js') }}" defer></script>
     <script src="{{ asset('js/fx3d.js') }}" defer></script>
 </body>
 </html>
