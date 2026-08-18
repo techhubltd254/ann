@@ -154,7 +154,11 @@ Route::middleware('auth:sanctum')->group(function () {
 Route::post('/media/publish', [\App\Http\Controllers\Api\MediaPublishController::class, 'handle'])
     ->middleware('throttle:60,1');
 
-// n8n automation incoming webhook — n8n calls this to trigger platform actions
+// Unity Mobile App OTA update manifest
+Route::get('/unity/manifest', [\App\Http\Controllers\Api\UnityManifestController::class, 'show'])
+    ->middleware('throttle:300,1');
+Route::post('/unity/manifest', [\App\Http\Controllers\Api\UnityManifestController::class, 'store'])
+    ->middleware('auth:sanctum');
 Route::post('/webhooks/n8n', [\App\Http\Controllers\Api\N8nWebhookController::class, 'handle'])
     ->middleware('throttle:60,1');
 Route::get('/updates/manifest', [\App\Http\Controllers\Api\UpdateManifestController::class, 'show'])
