@@ -33,7 +33,8 @@ storage/framework/*
 *.mp4
 *.webm
 *.m3u8
-*.ts
+storage/app/public/**/*.ts
+public/**/*.ts
 *.glb
 
 # gaussian splatting captures & outputs
@@ -73,3 +74,4 @@ pipeline_jobs.json
 scripts
 .grafana-admin-password.txt
 .phpunit.cache
+storage/oauth-*.key
