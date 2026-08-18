@@ -537,7 +537,7 @@ CREATE TABLE IF NOT EXISTS product_questions (
     created_at DATETIME,
     updated_at DATETIME
 );
-CREATE INDEX IF NOT EXISTS_idx_pq_product ON product_questions(product_id);
+CREATE INDEX IF NOT EXISTS idx_pq_product ON product_questions(product_id);
 
 -- ── 30. Price History ──
 CREATE TABLE IF NOT EXISTS price_history (

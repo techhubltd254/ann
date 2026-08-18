@@ -13,11 +13,19 @@ return new class extends Migration
 {
     public function up(): void
     {
+        if (DB::getDriverName() !== 'mysql') {
+            return;
+        }
+
         DB::statement('ALTER TABLE phone_verification_codes MODIFY code varchar(255) NOT NULL');
     }
 
     public function down(): void
     {
+        if (DB::getDriverName() !== 'mysql') {
+            return;
+        }
+
         DB::statement('ALTER TABLE phone_verification_codes MODIFY code varchar(6) NOT NULL');
     }
 };

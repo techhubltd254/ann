@@ -20,8 +20,6 @@ return new class extends Migration
             $table->text('vendor_response')->nullable();
             $table->timestamp('responded_at')->nullable();
             $table->timestamps();
-
-            $table->index(['reviewable_type', 'reviewable_id']);
         });
     }
 
