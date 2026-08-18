@@ -16,7 +16,15 @@ return Application::configure(basePath: dirname(__DIR__))
         // Origin is only reachable through the Cloudflare edge worker — trust the
         // proxy headers it sets (X-Forwarded-Host/Proto) so generated URLs use
         // the public https://kicctest.org host, not the internal origin host.
-        $middleware->trustProxies(at: '*');
+        // The firewall (UFW) only permits 80/443 from Cloudflare's published
+        // ranges, so we restrict trusted proxies to those same CIDRs rather
+        // than trusting any source (defense in depth).
+        $middleware->trustProxies(at: [
+            '173.245.48.0/20', '103.21.244.0/22', '103.22.200.0/22', '103.31.4.0/22',
+            '141.101.64.0/18', '108.162.192.0/18', '190.93.240.0/20', '188.114.96.0/20',
+            '197.234.240.0/22', '198.41.128.0/17', '162.158.0.0/15', '104.16.0.0/13',
+            '104.24.0.0/14', '172.64.0.0/13', '131.0.72.0/22',
+        ]);
         $middleware->append(\App\Http\Middleware\SecurityHeaders::class);
         $middleware->append(\App\Http\Middleware\OptimizeUploadedImages::class);
         $middleware->web(append: [
