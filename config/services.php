@@ -46,6 +46,14 @@ return [
         'ussd_callback_token' => env('AFRICASTALKING_USSD_CALLBACK_TOKEN'),
     ],
 
+    // Elasticsearch — keyword search fallback + log analytics
+    'elasticsearch' => [
+        'host' => env('ELASTICSEARCH_HOST', ''),
+        'username' => env('ELASTICSEARCH_USERNAME', ''),
+        'password' => env('ELASTICSEARCH_PASSWORD', ''),
+        'ssl_verify' => env('ELASTICSEARCH_SSL_VERIFY', false),
+    ],
+
     'openrouter' => [
         'key' => env('OPENROUTER_API_KEY'),
         'base_uri' => env('OPENROUTER_BASE_URI', 'https://openrouter.ai/api/v1'),
