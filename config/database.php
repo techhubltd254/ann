@@ -94,6 +94,28 @@ return [
             'prefix_indexes' => true,
         ],
 
+        // ── Read replica / reporting sink (see docs/ops/replication-plan.md) ──
+        // Populated by a TiDB Cloud Changefeed. Used only for read-only,
+        // non-critical reporting queries via DB::connection('reporting').
+        // Inactive until REPORTING_DB_HOST is set.
+        'reporting' => [
+            'driver' => 'mysql',
+            'host' => env('REPORTING_DB_HOST'),
+            'port' => env('REPORTING_DB_PORT', '4000'),
+            'database' => env('REPORTING_DB_DATABASE', 'kicc_reporting'),
+            'username' => env('REPORTING_DB_USERNAME'),
+            'password' => env('REPORTING_DB_PASSWORD'),
+            'charset' => 'utf8mb4',
+            'collation' => 'utf8mb4_unicode_ci',
+            'prefix' => '',
+            'prefix_indexes' => true,
+            'strict' => true,
+            'engine' => null,
+            'options' => extension_loaded('pdo_mysql') ? array_filter([
+                Mysql::ATTR_SSL_CA => env('MYSQL_ATTR_SSL_CA', '/etc/ssl/certs/ca-certificates.crt'),
+            ], fn($v) => $v !== null && $v !== '') : [],
+        ],
+
         // ── Database Shards (horizontal scaling for 100K+ concurrent) ──
         'shard_0' => [
             'driver' => 'mysql',
