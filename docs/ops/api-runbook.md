@@ -71,6 +71,15 @@ Client ──► Cloudflare edge (kicctest-gateway worker)
 
 `pulse:check` runs as a **separate daemon** (`kicc-pulse.service`), never via the scheduler (it is a long-lived loop).
 
+## Security hardening (2026-08-18)
+
+- **APP_KEY rotated** on prod/local (the old key was committed in `.env.example`). Never put a real key in `.env.example` — the committed value is a dev-only placeholder; regenerate per env with `php artisan key:generate`.
+- **`/opt/kicc-laravel/.env`** is `kicc:www-data` `640` (PHP-FPM runs as www-data; backup script runs as kicc). Keep it 640 — a tighter 600 breaks FPM.
+- **USSD callback token**: `AFRICASTALKING_USSD_CALLBACK_TOKEN` is now set on prod. Requests without the `token` form field return 401. Rotate it by editing `/opt/kicc-laravel/.env` then `php artisan config:clear && systemctl restart php8.4-fpm`.
+- **Trusted proxies** are restricted to Cloudflare published CIDRs in `bootstrap/app.php` (the UFW firewall also limits 80/443 to those ranges). If Cloudflare publishes new ranges, update both.
+- **Content-Security-Policy** is set in `app/Http/Middleware/SecurityHeaders.php`. It is intentionally permissive (Tailwind CDN `cdn.tailwindcss.com`, hls.js `cdn.jsdelivr.net`, Google Fonts). When Tailwind/hls.js are bundled, tighten to `default-src 'self'`.
+- Sessions use `SESSION_SECURE_COOKIE=true` on prod.
+
 ## Incident response
 
 1. **Check health**: `curl -sI https://kicctest.org/` (expect 200), `curl -s -o /dev/null -w '%{http_code}' https://kicctest.org/api/counties`.
