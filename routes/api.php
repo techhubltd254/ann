@@ -82,6 +82,9 @@ Route::middleware('auth:sanctum')->group(function () {
     // AI-assisted UX research
     Route::get('/ai/ux-assist', [AiAssistController::class, 'uxAssist']);
 
+    // Image search — upload an image to find matching destinations/counties
+    Route::post('/image-search', [\App\Http\Controllers\Web\AIController::class, 'imageSearch']);
+
     // Media library (kicc-web SPA)
     Route::get('/media', [MediaApiController::class, 'index']);
     Route::post('/media', [MediaApiController::class, 'store']);
