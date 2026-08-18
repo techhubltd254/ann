@@ -7,7 +7,9 @@
 {{-- HERO — exactly from Figma --}}
 <section class="relative min-h-screen flex items-center overflow-hidden section-transition" data-section="hero">
     <div class="absolute inset-0 w-full h-full overflow-hidden">
-        <video autoplay muted loop playsinline class="w-full h-full object-cover" id="kicc-hero-video" preload="auto">
+        <video autoplay muted loop playsinline class="w-full h-full object-cover" id="kicc-hero-video" preload="auto" poster="{{ $heroPoster ?? media('kicc/4d/kicc_hero_poster.jpg') }}" style="opacity:0">
+            @if($heroWebm)<source src="{{ $heroWebm }}" type="video/webm">@endif
+            @if($heroVideo)<source src="{{ $heroVideo }}" type="video/mp4">@endif
             <source src="{{ media('kicc/4d/hls/kicc_hero/master.m3u8') }}" type="application/vnd.apple.mpegurl">
             <source src="{{ media('kicc/4d/kicc_hero.mp4') }}" type="video/mp4">
         </video>
@@ -349,6 +351,8 @@
         </div>
     </div>
 </section>
+{{-- 3D page-opening reveal — Three.js book animation that fades into the hero video --}}
+<script src="{{ asset('js/page-open-3d.js') }}" defer></script>
 @endsection
 <script>
 document.addEventListener('DOMContentLoaded', function() {

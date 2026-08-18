@@ -104,6 +104,16 @@ return [
             'cover_video' => 'Cover video',
             'cover_image' => 'Cover image',
         ],
+
+        // Landing page hero — managed via MediaAsset pipeline, not hardcoded.
+        // Landing page hero — managed via MediaAsset pipeline, not hardcoded.
+        // Uses a string key (not a model FQCN) since the landing page is a
+        // singleton without a DB table. The HomeController resolves it via
+        // MediaAsset::forSlot('landing_page', 1, 'hero_video').
+        'landing_page' => [
+            'hero_video' => 'Hero video',
+            'hero_image' => 'Hero image',
+        ],
     ],
 
     /*
