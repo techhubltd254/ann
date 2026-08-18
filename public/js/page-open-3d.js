@@ -1,131 +1,97 @@
 (async function () {
   'use strict'
 
-  const video = document.getElementById('kicc-hero-video')
-  if (!video) return
-
-  // Try to load Three.js dynamically. If unavailable, do nothing.
-  let THREE
+  // Three.js overlay on top of the video — no video element manipulation
+  var THREE
   try {
-    THREE = await import('three')
-    THREE = THREE.default || THREE
-  } catch {
-    return // Three.js failed to load — no 3D effect, normal page
+    THREE = (await import('three')).default || await import('three')
+  } catch (e) {
+    return
   }
 
-  video.pause()
-  video.currentTime = 0
-
-  const container = document.createElement('div')
+  var container = document.createElement('div')
   container.id = 'kicc-page-open-3d'
-  Object.assign(container.style, {
-    position: 'fixed', inset: '0', zIndex: '9999',
-    pointerEvents: 'none', background: '#07090F',
-  })
+  container.style.cssText = 'position:fixed;inset:0;z-index:9999;pointer-events:none'
   document.body.appendChild(container)
 
-  const scene = new THREE.Scene()
-  const camera = new THREE.PerspectiveCamera(45, window.innerWidth / window.innerHeight, 0.1, 100)
+  var scene = new THREE.Scene()
+  var camera = new THREE.PerspectiveCamera(45, window.innerWidth / window.innerHeight, 0.1, 100)
   camera.position.set(0, 0, 6)
 
-  const renderer = new THREE.WebGLRenderer({ alpha: true, antialias: true })
+  var renderer = new THREE.WebGLRenderer({ alpha: true, antialias: true })
   renderer.setSize(window.innerWidth, window.innerHeight)
   renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2))
   container.appendChild(renderer.domElement)
-  renderer.domElement.style.position = 'absolute'
-  renderer.domElement.style.inset = '0'
+  renderer.domElement.style.cssText = 'position:absolute;inset:0'
 
-  // Video plane — behind the pages
-  const videoTex = new THREE.VideoTexture(video)
-  videoTex.minFilter = THREE.LinearFilter
-  videoTex.magFilter = THREE.LinearFilter
-  videoTex.format = THREE.RGBAFormat
+  // Dark background that fades out — reveals the video underneath
+  var bgMat = new THREE.MeshBasicMaterial({ color: 0x07090F, transparent: true, opacity: 1, side: THREE.DoubleSide })
+  var bgMesh = new THREE.Mesh(new THREE.PlaneGeometry(10, 10), bgMat)
+  bgMesh.position.z = -2
+  scene.add(bgMesh)
 
-  const videoGeo = new THREE.PlaneGeometry(3.2, 1.8)
-  const videoMat = new THREE.MeshBasicMaterial({
-    map: videoTex,
-    side: THREE.DoubleSide,
-    transparent: true,
-    opacity: 0,
+  // Two page planes — book opening effect
+  var pageMat = new THREE.MeshStandardMaterial({
+    color: 0x1a1a2e, metalness: 0.3, roughness: 0.6, side: THREE.DoubleSide, transparent: true, opacity: 1
   })
-  const videoMesh = new THREE.Mesh(videoGeo, videoMat)
-  videoMesh.position.z = -0.5
-  scene.add(videoMesh)
-
-  // Two page planes — form a book opening
-  const pageMat = new THREE.MeshStandardMaterial({
-    color: 0x1a1a2e,
-    metalness: 0.3,
-    roughness: 0.6,
-    side: THREE.DoubleSide,
-    transparent: true,
-    opacity: 1,
+  var pageEdge = new THREE.MeshStandardMaterial({
+    color: 0x901C1E, metalness: 0.2, roughness: 0.8, side: THREE.DoubleSide
   })
-  const pageEdge = new THREE.MeshStandardMaterial({
-    color: 0x901C1E,
-    metalness: 0.2,
-    roughness: 0.8,
-    side: THREE.DoubleSide,
-  })
-
-  const pageGeo = new THREE.BoxGeometry(1.5, 2.2, 0.03)
-  const leftPage = new THREE.Mesh(pageGeo, [pageMat, pageEdge, pageMat, pageMat, pageMat, pageMat])
+  var pageGeo = new THREE.BoxGeometry(1.5, 2.2, 0.03)
+  var leftPage = new THREE.Mesh(pageGeo, [pageMat, pageEdge, pageMat, pageMat, pageMat, pageMat])
   leftPage.position.set(-0.75, 0, 0)
-  const rightPage = new THREE.Mesh(pageGeo.clone(), [pageMat, pageEdge, pageMat, pageMat, pageMat, pageMat])
+  var rightPage = new THREE.Mesh(pageGeo.clone(), [pageMat, pageEdge, pageMat, pageMat, pageMat, pageMat])
   rightPage.position.set(0.75, 0, 0)
 
-  const book = new THREE.Group()
+  var book = new THREE.Group()
   book.add(leftPage, rightPage)
   scene.add(book)
 
   // Lighting
   scene.add(new THREE.AmbientLight(0x404060, 1))
-  const directional = new THREE.DirectionalLight(0xffcd05, 0.5)
-  directional.position.set(2, 3, 4)
-  scene.add(directional)
+  var light = new THREE.DirectionalLight(0xffcd05, 0.5)
+  light.position.set(2, 3, 4)
+  scene.add(light)
 
-  // Particles around the opening
-  const pCount = 300
-  const pGeo = new THREE.BufferGeometry()
-  const pos = new Float32Array(pCount * 3)
-  for (let i = 0; i < pCount * 3; i++) pos[i] = (Math.random() - 0.5) * 8
+  // Particles
+  var pCount = 300
+  var pGeo = new THREE.BufferGeometry()
+  var pos = new Float32Array(pCount * 3)
+  for (var i = 0; i < pCount * 3; i++) pos[i] = (Math.random() - 0.5) * 8
   pGeo.setAttribute('position', new THREE.BufferAttribute(pos, 3))
-  const pMat = new THREE.PointsMaterial({
-    color: 0xffcd05, size: 0.02, transparent: true,
-    opacity: 0.6, blending: THREE.AdditiveBlending,
+  var pMat = new THREE.PointsMaterial({
+    color: 0xffcd05, size: 0.02, transparent: true, opacity: 0.6, blending: THREE.AdditiveBlending
   })
-  const particles = new THREE.Points(pGeo, pMat)
+  var particles = new THREE.Points(pGeo, pMat)
   particles.position.z = -0.3
   scene.add(particles)
 
   // Animation
-  const clock = new THREE.Clock()
-  let progress = 0
-  let holdTimer = 0
-
-  video.play()
+  var clock = new THREE.Clock()
+  var progress = 0
+  var holdTimer = 0
 
   function animate() {
     requestAnimationFrame(animate)
-    const dt = clock.getDelta()
+    var dt = clock.getDelta()
     progress = Math.min(progress + dt / 2.5, 1)
-    const ease = 1 - Math.pow(1 - progress, 3)
+    var ease = 1 - Math.pow(1 - progress, 3)
 
     leftPage.rotation.y = -ease * Math.PI * 0.45
     rightPage.rotation.y = ease * Math.PI * 0.45
     book.position.z = ease * 0.3
-    videoMat.opacity = Math.min(1, Math.max(0, (progress - 0.3) * 2))
-    pageMat.opacity = Math.max(0, 1 - (progress - 0.5) * 3)
+    pageMat.opacity = Math.max(0, 1 - (progress - 0.3) * 3)
     pMat.opacity = Math.max(0, 0.6 * (1 - progress * 0.8))
     particles.rotation.y += dt * 0.2
     camera.position.y = Math.sin(progress * Math.PI) * 0.3
+    bgMat.opacity = Math.max(0, 1 - progress * 1.2)
 
     renderer.render(scene, camera)
 
     if (progress >= 1) {
       holdTimer += dt
       if (holdTimer >= 0.5) {
-        const fade = Math.min(1, (holdTimer - 0.5) / 0.8)
+        var fade = Math.min(1, (holdTimer - 0.5) / 0.8)
         container.style.opacity = Math.max(0, 1 - fade)
         if (container.style.opacity === '0') {
           document.body.removeChild(container)
