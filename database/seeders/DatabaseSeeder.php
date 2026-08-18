@@ -17,6 +17,7 @@ class DatabaseSeeder extends Seeder
             ScreenSeeder::class,
             MarketplaceSeeder::class,
             TradeSeeder::class,
+            SponsorSeeder::class,
         ]);
     }
 }
