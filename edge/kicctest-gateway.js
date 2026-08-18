@@ -13,7 +13,7 @@
 const JSON_CT = { "content-type": "application/json" };
 // Bump on every deploy that changes origin output — instantly invalidates all
 // edge page-cache entries (they key on this version).
-const CACHE_VERSION = "v3";
+const CACHE_VERSION = "v4";
 
 export default {
   async fetch(request, env, ctx) {
@@ -84,6 +84,25 @@ async function handle(request, env, ctx) {
       const upstream = url.pathname.startsWith("/api/engine/")
         ? env.ENGINE_HOST
         : env.ORIGIN_HOST;
+
+      // Public read-only API GETs are edge-cacheable. These mirror the origin's
+      // CachePublicResponse surface; caching them here absorbs repeat guest reads
+      // (Expo app + marketing) entirely at the edge. Never cache auth/mutations.
+      if (request.method === "GET" && !url.pathname.startsWith("/api/auth/") && isCacheableApi(url.pathname)) {
+        const apiKey = new Request(`${url.origin}${url.pathname}${url.search}::${CACHE_VERSION}`);
+        const apiCached = await caches.default.match(apiKey);
+        if (apiCached) return apiCached;
+
+        const res = await proxy(request, upstream, url, { cache: false, scheme: env.ORIGIN_SCHEME ?? "http" });
+        if (res.ok && !(res.headers.getSetCookie?.().length)) {
+          const tagged = new Response(res.body, res);
+          tagged.headers.set("Cache-Control", "public, s-maxage=60, stale-while-revalidate=300");
+          ctx.waitUntil(caches.default.put(apiKey, tagged.clone()));
+          return tagged;
+        }
+        return withCookies(res, url.host);
+      }
+
       return withCookies(await proxy(request, upstream, url, { cache: false, scheme: env.ORIGIN_SCHEME ?? "http" }), url.host);
     }
 
@@ -169,6 +188,26 @@ async function proxy(request, host, url, { cache, scheme = "http" }) {
     redirect: "manual",
   };
   return fetch(target, init);
+}
+
+/**
+ * Public read-only API endpoints that are safe to edge-cache. Must mirror the
+ * origin's CachePublicResponse surface (routes/api.php). Anything stateful
+ * (auth, engine, media mutations, bookings, payments) is excluded.
+ */
+const CACHEABLE_API_PREFIXES = [
+  "/api/counties",
+  "/api/counties/",
+  "/api/national-hub",
+  "/api/exhibitions",
+  "/api/venues",
+  "/api/booths",
+  "/api/tickets/lookup/",
+  "/api/county-sector/",
+];
+
+function isCacheableApi(path) {
+  return CACHEABLE_API_PREFIXES.some((p) => path.startsWith(p));
 }
 
 function isExpired(jwt) {
