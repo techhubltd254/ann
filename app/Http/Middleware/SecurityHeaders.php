@@ -20,12 +20,12 @@ class SecurityHeaders
 
         // Content-Security-Policy. Kept permissive on purpose: Blade views load
         // Tailwind from cdn.tailwindcss.com (requires inline styles + unsafe-eval
-        // in dev) and Google Fonts; the admin SPA bundles via Vite ('self').
-        // Tighten later once Tailwind is bundled and no CDN scripts remain.
+        // in dev), hls.js from cdn.jsdelivr.net, and Google Fonts; the admin SPA
+        // bundles via Vite ('self'). Tighten later once CDN scripts are bundled.
         $response->headers->set(
             'Content-Security-Policy',
             "default-src 'self'; "
-            . "script-src 'self' 'unsafe-inline' https://cdn.tailwindcss.com https://cdnjs.cloudflare.com; "
+            . "script-src 'self' 'unsafe-inline' https://cdn.tailwindcss.com https://cdnjs.cloudflare.com https://cdn.jsdelivr.net; "
             . "style-src 'self' 'unsafe-inline' https://fonts.googleapis.com https://cdn.tailwindcss.com; "
             . "font-src 'self' data: https://fonts.gstatic.com; "
             . "img-src 'self' data: blob: https:; "
