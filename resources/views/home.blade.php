@@ -351,8 +351,6 @@
         </div>
     </div>
 </section>
-{{-- 3D page-opening overlay — Three.js book animation on top of the video (does not touch video element) --}}
-<script type="module" src="{{ asset('js/page-open-3d.js') }}"></script>
 @endsection
 
 <script>
