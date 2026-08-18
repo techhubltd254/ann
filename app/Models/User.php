@@ -7,6 +7,7 @@ use Filament\Models\Contracts\FilamentUser;
 use Filament\Panel;
 use Illuminate\Database\Eloquent\Attributes\Fillable;
 use Illuminate\Database\Eloquent\Attributes\Hidden;
+use Illuminate\Database\Eloquent\Concerns\HasUuids;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\BelongsToMany;
@@ -43,7 +44,17 @@ class User extends Authenticatable implements FilamentUser
 {
     use HasRoles;
     /** @use HasFactory<UserFactory> */
-    use HasApiTokens, HasFactory, Notifiable;
+    use HasApiTokens, HasFactory, HasUuids, Notifiable;
+
+    /**
+     * Auto-generate a public UUID on create (used by API responses).
+     * The int `id` remains the route-model key — changing it globally would
+     * break Filament/engine bindings that rely on integer ids.
+     */
+    public function uniqueIds(): array
+    {
+        return ['uuid'];
+    }
 
     public const TYPE_INDIVIDUAL = 'individual';
     public const TYPE_SME = 'sme';
