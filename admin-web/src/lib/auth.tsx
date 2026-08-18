@@ -46,7 +46,14 @@ export function AuthProvider({ children }: { children: ReactNode }) {
   const value: AuthState = {
     me,
     user: me
-      ? { id: (me as any).id ?? 0, email: me.email, fullName: me.fullName, tier: me.tier, countySlug: me.countySlug, boothId: me.boothId }
+      ? {
+          id: me.id ?? 0,
+          email: me.email ?? '',
+          fullName: (me as any).fullName ?? me.name ?? '',
+          tier: (me as any).tier ?? me.account_type ?? '',
+          countySlug: (me as any).countySlug ?? me.county_slug ?? null,
+          boothId: (me as any).boothId ?? me.booth_id ?? null,
+        }
       : null,
     loading,
     login,
