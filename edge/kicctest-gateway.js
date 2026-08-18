@@ -13,7 +13,11 @@
 const JSON_CT = { "content-type": "application/json" };
 // Bump on every deploy that changes origin output — instantly invalidates all
 // edge page-cache entries (they key on this version).
-const CACHE_VERSION = "v4";
+const CACHE_VERSION = "v5";
+
+// Purge must cover the live cache version (and the previous one, in case a
+// deploy is mid-flight) — not a stale hardcoded list.
+const CACHE_VERSIONS = [CACHE_VERSION, ...["v4", "v3", "v2"].filter((v) => v !== CACHE_VERSION)];
 
 export default {
   async fetch(request, env, ctx) {
@@ -45,7 +49,7 @@ async function handle(request, env, ctx) {
       // Bust page-cache entries for explicit paths (geo variants × recent versions).
       for (const p of paths) {
         for (const geo of ["ke", "row"]) {
-          for (const v of ["v3", "v2"]) {
+          for (const v of CACHE_VERSIONS) {
             if (budget <= 0) break;
             await caches.default.delete(new Request(`${url.origin}${p}::${geo}::${v}`));
             budget--;
