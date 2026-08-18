@@ -1,0 +1,19 @@
+[Unit]
+Description=KICC Laravel Horizon (queue worker)
+After=network.target
+After=redis-server.service
+
+[Service]
+Type=simple
+User=kicc
+Group=www-data
+WorkingDirectory=/opt/kicc-laravel
+ExecStart=/usr/bin/php /opt/kicc-laravel/artisan horizon
+ExecReload=/bin/kill -USR1 $MAINPID
+Restart=on-failure
+RestartSec=5
+StandardOutput=append:/var/log/kicc-horizon.log
+StandardError=append:/var/log/kicc-horizon.log
+
+[Install]
+WantedBy=multi-user.target
