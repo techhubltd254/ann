@@ -79,11 +79,13 @@ Route::middleware('auth:sanctum')->group(function () {
     Route::post('/pipeline/upload', [PipelineController::class, 'upload']);
     Route::get('/pipeline/status/{jobId}', [PipelineController::class, 'status']);
 
+    // Image search — upload an image to find matching destinations/counties
+    Route::post('/image-search', [\App\Http\Controllers\Api\ImageSearchController::class, 'search']);
+
     // AI-assisted UX research
     Route::get('/ai/ux-assist', [AiAssistController::class, 'uxAssist']);
 
     // Image search — upload an image to find matching destinations/counties
-    Route::post('/image-search', [\App\Http\Controllers\Web\AIController::class, 'imageSearch']);
 
     // Media library (kicc-web SPA)
     Route::get('/media', [MediaApiController::class, 'index']);

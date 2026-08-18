@@ -32,6 +32,7 @@ export default {
 
 async function handle(request, env, ctx) {
     const url = new URL(request.url);
+    if (url.protocol === "http:") { return Response.redirect("https://" + url.host + url.pathname + url.search, 301); }
 
     // ---- HMAC-guarded cache purge (called by engine/media publish webhook) ----
     if (url.pathname === "/edge/purge" && request.method === "POST") {
