@@ -15,7 +15,7 @@
         <script>
         (function(){var v=document.getElementById('kicc-hero-video');var s=v.querySelector('source[type*="mpegurl"]').src;if(typeof Hls!=='undefined'&&Hls.isSupported()){var h=new Hls({enableWorker:true,maxBufferLength:30,maxMaxBufferLength:60,backBufferLength:10,lowLatencyMode:true});h.loadSource(s);h.attachMedia(v);h.on(Hls.Events.MANIFEST_PARSED,function(){v.play().catch(function(){})});}else if(v.canPlayType('application/vnd.apple.mpegurl')){v.src=s;v.addEventListener('loadedmetadata',function(){v.play()});}}());
         </script>
-        <div class="absolute inset-0 bg-gradient-to-r from-[#07090F] via-[#07090F]/80 to-transparent"></div>
+        <div class="absolute inset-0 bg-gradient-to-r from-[#07090F]/40 via-[#07090F]/20 to-transparent"></div>
         <div class="absolute inset-0 bg-gradient-to-t from-[#07090F] via-transparent to-transparent"></div>
     <div class="relative max-w-7xl mx-auto px-5 pt-28 pb-20 w-full grid md:grid-cols-2 gap-10 items-center">
         <div>
