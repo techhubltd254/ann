@@ -21,8 +21,10 @@ __pycache__/
 
 # runtime data
 data/backups/
-platform/storage/app/public/*
-platform/storage/logs/
+storage/app/public/*
+storage/logs/
+storage/framework/*
+!storage/framework/.gitignore
 *.mv.db
 *.lock.db
 *.trace.db
