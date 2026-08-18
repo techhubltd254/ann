@@ -54,6 +54,46 @@ return [
         'ssl_verify' => env('ELASTICSEARCH_SSL_VERIFY', false),
     ],
 
+    // Government API integrations (configured via .env when MoUs are signed)
+    'government' => [
+        'kra' => [
+            'url' => env('KRA_API_URL', 'https://api.kra.go.ke/v1'),
+            'key' => env('KRA_API_KEY'),
+        ],
+        'huduma' => [
+            'url' => env('HUDUMA_API_URL', 'https://api.huduma.go.ke/v1'),
+            'key' => env('HUDUMA_API_KEY'),
+        ],
+        'ntsa' => [
+            'url' => env('NTSA_API_URL', ''),
+            'key' => env('NTSA_API_KEY'),
+        ],
+        'kws' => [
+            'url' => env('KWS_API_URL', ''),
+            'key' => env('KWS_API_KEY'),
+        ],
+        'education' => [
+            'url' => env('EDUCATION_API_URL', ''),
+            'key' => env('EDUCATION_API_KEY'),
+        ],
+        'tourism' => [
+            'url' => env('TOURISM_API_URL', ''),
+            'key' => env('TOURISM_API_KEY'),
+        ],
+        'agriculture' => [
+            'url' => env('AGRICULTURE_API_URL', ''),
+            'key' => env('AGRICULTURE_API_KEY'),
+        ],
+        'health' => [
+            'url' => env('HEALTH_API_URL', ''),
+            'key' => env('HEALTH_API_KEY'),
+        ],
+        'museums' => [
+            'url' => env('MUSEUMS_API_URL', ''),
+            'key' => env('MUSEUMS_API_KEY'),
+        ],
+    ],
+
     'openrouter' => [
         'key' => env('OPENROUTER_API_KEY'),
         'base_uri' => env('OPENROUTER_BASE_URI', 'https://openrouter.ai/api/v1'),
