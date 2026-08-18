@@ -42,6 +42,8 @@ return [
         'username' => env('AFRICASTALKING_USERNAME'),
         'key' => env('AFRICASTALKING_API_KEY'),
         'from' => env('AFRICASTALKING_FROM'),
+        'ussd_code' => env('AFRICASTALKING_USSD_CODE'),
+        'ussd_callback_token' => env('AFRICASTALKING_USSD_CALLBACK_TOKEN'),
     ],
 
     'openrouter' => [

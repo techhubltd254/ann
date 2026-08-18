@@ -47,6 +47,10 @@ Route::post('/webhooks/stripe', [\App\Http\Controllers\Api\StripeWebhookControll
 Route::post('/webhooks/courier', [\App\Http\Controllers\Api\CourierWebhookController::class, 'handle'])
     ->withoutMiddleware(\Illuminate\Foundation\Http\Middleware\ValidateCsrfToken::class);
 
+// Africa's Talking USSD callback (token-protected; plain-text CON/END response)
+Route::post('/ussd/callback', [\App\Http\Controllers\Api\UssdController::class, 'handle'])
+    ->withoutMiddleware(\Illuminate\Foundation\Http\Middleware\ValidateCsrfToken::class);
+
 // Public exhibition & venue routes
 Route::get('/exhibitions', [ExhibitionController::class, 'index'])->middleware(\App\Http\Middleware\CachePublicResponse::class);
 Route::get('/exhibitions/{slug}', [ExhibitionController::class, 'show'])->middleware(\App\Http\Middleware\CachePublicResponse::class);
