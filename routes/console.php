@@ -37,5 +37,8 @@ Schedule::command('dba:index-audit')->weeklyOn(0, '05:00');
 Schedule::exec('/opt/kicc-laravel/scripts/backup-db.sh hourly')->hourlyAt(30);
 Schedule::exec('/opt/kicc-laravel/scripts/backup-db.sh daily')->dailyAt('02:45');
 
+// Automated DB restore test — verifies the latest backup is restorable (Sundays 06:30).
+Schedule::exec('/opt/kicc-laravel/scripts/restore-test.sh')->weeklyOn(0, '06:30');
+
 // Elasticsearch index rebuild (runs silently when ES is unavailable).
 Schedule::command('search:index-es')->weeklyOn(0, '06:00');
