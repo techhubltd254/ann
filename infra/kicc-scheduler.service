@@ -1,0 +1,14 @@
+[Unit]
+Description=KICC Laravel Scheduler (schedule:work)
+After=network.target php8.4-fpm.service
+
+[Service]
+User=kicc
+Group=kicc
+WorkingDirectory=/opt/kicc-laravel
+ExecStart=/usr/bin/php /opt/kicc-laravel/artisan schedule:work
+Restart=always
+RestartSec=5
+
+[Install]
+WantedBy=multi-user.target
