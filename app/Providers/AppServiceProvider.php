@@ -3,13 +3,14 @@
 namespace App\Providers;
 
 use App\Services\SendgridApiTransport;
-use GuzzleHttp\Client;
+use App\View\Components\DashboardsShell;
 use Illuminate\Cache\RateLimiting\Limit;
 use Illuminate\Support\Facades\Blade;
+use Illuminate\Support\Facades\Gate;
 use Illuminate\Support\Facades\Mail;
 use Illuminate\Support\Facades\RateLimiter;
+use Illuminate\Support\Facades\URL;
 use Illuminate\Support\ServiceProvider;
-use Symfony\Component\Mailer\Transport\Dsn;
 
 class AppServiceProvider extends ServiceProvider
 {
@@ -20,11 +21,17 @@ class AppServiceProvider extends ServiceProvider
 
     public function boot(): void
     {
-        Blade::component('dashboards-shell', \App\View\Components\DashboardsShell::class);
+        Blade::component('dashboards-shell', DashboardsShell::class);
+
+        // Laravel Pulse dashboard — only the KICC superadmin may view it.
+        Gate::define('viewPulse', function ($user) {
+            return ($user->account_type ?? '') === 'superadmin'
+                || $user->email === 'admin@kicc.go.ke';
+        });
 
         // Behind the Cloudflare edge: always generate https URLs (origin speaks HTTP).
         if ($this->app->environment('production')) {
-            \Illuminate\Support\Facades\URL::forceScheme('https');
+            URL::forceScheme('https');
         }
 
         // Must live here, NOT in routes/api.php — with route:cache the route files
@@ -39,7 +46,7 @@ class AppServiceProvider extends ServiceProvider
         // Uses config() not env() because config is cached in production
         if (config('mail.mailers.sendgrid.key')) {
             Mail::extend('sendgrid', function (array $config) {
-                return new \App\Services\SendgridApiTransport($config['key']);
+                return new SendgridApiTransport($config['key']);
             });
         }
     }

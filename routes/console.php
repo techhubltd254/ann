@@ -32,3 +32,6 @@ Schedule::command('analytics:trends')->dailyAt('04:30');
 
 // DBA cadence: weekly index/health audit (Sundays 05:00).
 Schedule::command('dba:index-audit')->weeklyOn(0, '05:00');
+
+// Laravel Pulse recorder — flush buffered entries to storage every minute.
+Schedule::command('pulse:check')->everyMinute();
