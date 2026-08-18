@@ -10,8 +10,6 @@ use Tests\TestCase;
 
 class VoiceSearchTest extends TestCase
 {
-    use RefreshDatabase;
-
     protected function setUp(): void
     {
         parent::setUp();
