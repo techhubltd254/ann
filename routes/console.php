@@ -33,9 +33,6 @@ Schedule::command('analytics:trends')->dailyAt('04:30');
 // DBA cadence: weekly index/health audit (Sundays 05:00).
 Schedule::command('dba:index-audit')->weeklyOn(0, '05:00');
 
-// Laravel Pulse recorder — flush buffered entries to storage every minute.
-Schedule::command('pulse:check')->everyMinute();
-
 // Off-host DB backups -> Cloudflare R2 (mydumper dump, 48-hourly / 14-daily / 12-monthly retention).
 Schedule::exec('/opt/kicc-laravel/scripts/backup-db.sh hourly')->hourlyAt(30);
 Schedule::exec('/opt/kicc-laravel/scripts/backup-db.sh daily')->dailyAt('02:45');

@@ -1,0 +1,15 @@
+[Unit]
+Description=KICC Laravel Pulse daemon (pulse:check)
+After=network.target redis-server.service php8.4-fpm.service
+
+[Service]
+User=kicc
+Group=kicc
+WorkingDirectory=/opt/kicc-laravel
+ExecStart=/usr/bin/php /opt/kicc-laravel/artisan pulse:check
+ExecReload=/usr/bin/php /opt/kicc-laravel/artisan pulse:restart
+Restart=always
+RestartSec=3
+
+[Install]
+WantedBy=multi-user.target
