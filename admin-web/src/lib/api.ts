@@ -22,6 +22,7 @@ export interface MeResponse {
   phone: string | null
   county_id: number | null
   ministry_id: number | null
+  privileges?: string[]
   [key: string]: unknown
 }
 
@@ -114,6 +115,9 @@ export const api = {
   },
   delete<T = void>(path: string): Promise<T> {
     return fetchApi<T>('DELETE', path)
+  },
+  postForm<T>(path: string, formData: FormData): Promise<T> {
+    return fetchApi<T>('POST', path, formData)
   },
 }
 
