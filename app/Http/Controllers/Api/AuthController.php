@@ -3,6 +3,8 @@
 namespace App\Http\Controllers\Api;
 
 use App\Http\Controllers\Controller;
+use App\Http\Requests\Api\LoginRequest;
+use App\Http\Requests\Api\RegisterRequest;
 use App\Models\User;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
@@ -11,17 +13,9 @@ use Illuminate\Validation\ValidationException;
 
 class AuthController extends Controller
 {
-    public function register(Request $request): JsonResponse
+    public function register(RegisterRequest $request): JsonResponse
     {
-        $validated = $request->validate([
-            'name' => 'required|string|max:255',
-            'email' => 'required|string|email|max:255|unique:users',
-            'password' => 'required|string|min:8',
-            'account_type' => 'nullable|string|in:' . implode(',', User::$accountTypes),
-            'phone' => 'nullable|string|max:20',
-            'county_id' => 'nullable|integer|exists:counties,id',
-        ]);
-
+        $validated = $request->validated();
         $validated['password'] = Hash::make($validated['password']);
 
         $user = User::create($validated);
@@ -34,12 +28,9 @@ class AuthController extends Controller
         ], 201);
     }
 
-    public function login(Request $request): JsonResponse
+    public function login(LoginRequest $request): JsonResponse
     {
-        $request->validate([
-            'email' => 'required|string|email',
-            'password' => 'required|string',
-        ]);
+        $validated = $request->validated();
 
         $user = User::where('email', $request->email)->first();
 
