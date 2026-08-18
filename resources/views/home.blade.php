@@ -354,6 +354,7 @@
 {{-- 3D page-opening reveal — Three.js book animation that fades into the hero video --}}
 <script src="{{ asset('js/page-open-3d.js') }}" defer></script>
 @endsection
+
 <script>
 document.addEventListener('DOMContentLoaded', function() {
     const counters = document.querySelectorAll('[data-count]');
