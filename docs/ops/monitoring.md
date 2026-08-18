@@ -25,6 +25,8 @@ ssh -L 3000:127.0.0.1:3000 root@167.172.62.234
 | redis_exporter | 9121 | `redis_exporter` |
 | nginx-prometheus-exporter | 9113 | `nginx-exporter` |
 | php-fpm exporter (Lusitaniae) | 9253 | `phpfpm-exporter` |
+| Laravel scheduler | — | `kicc-scheduler` (`artisan schedule:work`) |
+| Laravel Pulse daemon | — | `kicc-pulse` (`artisan pulse:check`) |
 
 Memory footprint: ~100 MB total.
 
@@ -55,3 +57,9 @@ Alerts evaluate in Prometheus; Grafana routes them to email via `kicc-email` con
 - nginx `stub_status` is exposed only on `127.0.0.1:9099` (not on public vhosts).
 - Grafana uses Gmail SMTP (`noreply@kicctest.org` from-address), app password from `.env` `MAIL_PASSWORD`.
 - The Cloudflare API token has no DNS:Edit, so no public `monitor.*` subdomain was created; SSH tunnel is the access path.
+- `pulse:check` is a **long-running daemon** (loops forever). It runs as systemd unit `kicc-pulse`, NOT via the scheduler. Restart it on deploy with `systemctl restart kicc-pulse` (or `php artisan pulse:restart` for graceful).
+- Only ONE scheduler may run `schedule:work`: keep `/etc/cron.d/kicc` disabled and rely on `kicc-scheduler.service`.
+
+## Incident log
+
+- 2026-08-18: Scheduler storm on prod. `pulse:check` was wrongly scheduled via `schedule:run` every minute; being a daemon it never exited, stacking schedule:run processes until OOM (exit 137) and leaving a stale `laravel:pulse:check` cache lock that blocked subsequent runs. Load hit 53 on 2 vCPU. Fixed by running pulse:check as its own systemd daemon (`kicc-pulse`), removing it from `routes/console.php`, killing stuck processes, and clearing the stale Redis lock.
