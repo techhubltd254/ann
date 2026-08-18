@@ -1,0 +1,886 @@
+openapi: 3.0.3
+info:
+  title: KICC National Exhibition Platform API
+  version: 1.0.0
+  description: |
+    Public API for the KICC National Exhibition Platform — kicctest.org.
+    Base URL: https://kicctest.org (API routes are prefixed with `/api`).
+    Auth: Bearer token (Sanctum) returned by `POST /api/auth/register` and `POST /api/auth/login`.
+    Most public GET endpoints are edge-cached at Cloudflare (Cache-Public-Response middleware).
+servers:
+  - url: https://kicctest.org/api
+    description: Production (Cloudflare-managed)
+security:
+  - bearerAuth: []
+paths:
+  /auth/register:
+    post:
+      summary: Register a new user
+      security: []
+      tags: [Auth]
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required: [name, email, password]
+              properties:
+                name: { type: string, maxLength: 255 }
+                email: { type: string, format: email }
+                password: { type: string, minLength: 8 }
+                account_type: { type: string, enum: [individual, business, gov, exhibitor] }
+                phone: { type: string, maxLength: 20 }
+                county_id: { type: integer }
+      responses:
+        '201':
+          description: User created
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  user: { $ref: '#/components/schemas/User' }
+                  token: { type: string, description: Sanctum plain-text token }
+        '422':
+          description: Validation error
+          $ref: '#/components/responses/ValidationError'
+  /auth/login:
+    post:
+      summary: Log in and receive a bearer token
+      security: []
+      tags: [Auth]
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required: [email, password]
+              properties:
+                email: { type: string, format: email }
+                password: { type: string }
+      responses:
+        '200':
+          description: Authenticated
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  user: { $ref: '#/components/schemas/User' }
+                  token: { type: string }
+        '401':
+          description: Invalid credentials
+  /auth/me:
+    get:
+      summary: Get the authenticated user
+      tags: [Auth]
+      responses:
+        '200':
+          description: Current user
+          content:
+            application/json:
+              schema: { $ref: '#/components/schemas/User' }
+  /auth/logout:
+    post:
+      summary: Revoke the current token
+      tags: [Auth]
+      responses:
+        '200':
+          description: Revoked
+  /counties:
+    get:
+      summary: List active counties
+      security: []
+      tags: [Counties]
+      parameters:
+        - { name: sector, in: query, schema: { type: string }, description: Filter by sector name }
+        - { name: zone, in: query, schema: { type: string }, description: Filter by economic zone }
+        - { name: search, in: query, schema: { type: string }, description: Full-text-ish search on name/description/tagline }
+      responses:
+        '200':
+          description: Array of counties
+          content:
+            application/json:
+              schema:
+                type: array
+                items: { $ref: '#/components/schemas/County' }
+  /counties/{slug}:
+    get:
+      summary: Get a county with sectors and seasonal calendars
+      security: []
+      tags: [Counties]
+      parameters:
+        - { name: slug, in: path, required: true, schema: { type: string } }
+      responses:
+        '200':
+          description: County detail
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  county: { $ref: '#/components/schemas/County' }
+                  current_month: { type: object, nullable: true }
+        '404':
+          description: Not found
+  /counties/{slug}/sectors:
+    get:
+      summary: Sectors belonging to a county
+      security: []
+      tags: [Counties]
+      parameters:
+        - { name: slug, in: path, required: true, schema: { type: string } }
+      responses:
+        '200':
+          description: Array of sectors
+  /counties/{slug}/weather:
+    get:
+      summary: Weather for a county
+      security: []
+      tags: [Counties]
+      parameters:
+        - { name: slug, in: path, required: true, schema: { type: string } }
+      responses:
+        '200':
+          description: Weather data
+  /match-destination:
+    post:
+      summary: Match a destination by free-text query (agentic)
+      security: []
+      tags: [AI]
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required: [query]
+              properties:
+                query: { type: string, example: "beach holiday coast" }
+      responses:
+        '200':
+          description: Best-matching destination
+  /exhibitions:
+    get:
+      summary: List exhibitions
+      security: []
+      tags: [Exhibitions]
+      responses:
+        '200':
+          description: Array of exhibitions
+  /exhibitions/{slug}:
+    get:
+      summary: Exhibition detail
+      security: []
+      tags: [Exhibitions]
+      parameters:
+        - { name: slug, in: path, required: true, schema: { type: string } }
+      responses:
+        '200':
+          description: Exhibition
+        '404':
+          description: Not found
+  /venues:
+    get:
+      summary: List venues
+      security: []
+      tags: [Venues]
+      responses:
+        '200':
+          description: Array of venues
+  /venues/{slug}:
+    get:
+      summary: Venue detail
+      security: []
+      tags: [Venues]
+      parameters:
+        - { name: slug, in: path, required: true, schema: { type: string } }
+      responses:
+        '200':
+          description: Venue
+        '404':
+          description: Not found
+  /bookings:
+    get:
+      summary: List the authenticated user's bookings
+      tags: [Bookings]
+      responses:
+        '200':
+          description: Array of bookings
+  /bookings/ticket:
+    post:
+      summary: Create a ticket booking
+      tags: [Bookings]
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required: [exhibition_id, ticket_type_id, quantity]
+              properties:
+                exhibition_id: { type: integer }
+                ticket_type_id: { type: integer }
+                quantity: { type: integer, minimum: 1 }
+      responses:
+        '201':
+          description: Booking created
+  /bookings/booth:
+    post:
+      summary: Create a booth booking
+      tags: [Bookings]
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required: [exhibition_id, booth_id]
+              properties:
+                exhibition_id: { type: integer }
+                booth_id: { type: integer }
+      responses:
+        '201':
+          description: Booking created
+  /bookings/{booking}:
+    get:
+      summary: Booking detail
+      tags: [Bookings]
+      parameters:
+        - { name: booking, in: path, required: true, schema: { type: integer } }
+      responses:
+        '200':
+          description: Booking
+        '404':
+          description: Not found
+  /bookings/{booking}/cancel:
+    post:
+      summary: Cancel a booking
+      tags: [Bookings]
+      parameters:
+        - { name: booking, in: path, required: true, schema: { type: integer } }
+      responses:
+        '200':
+          description: Cancelled
+  /tickets:
+    get:
+      summary: List the authenticated user's tickets
+      tags: [Tickets]
+      responses:
+        '200':
+          description: Array of tickets
+  /tickets/lookup/{ticketCode}:
+    get:
+      summary: Look up a ticket by its code
+      security: []
+      tags: [Tickets]
+      parameters:
+        - { name: ticketCode, in: path, required: true, schema: { type: string } }
+      responses:
+        '200':
+          description: Ticket
+        '404':
+          description: Not found
+  /tickets/{ticketCode}/check-in:
+    post:
+      summary: Check a ticket holder in
+      security: []
+      tags: [Tickets]
+      parameters:
+        - { name: ticketCode, in: path, required: true, schema: { type: string } }
+      responses:
+        '200':
+          description: Checked in
+  /ticket-types:
+    get:
+      summary: List ticket types
+      security: []
+      tags: [Tickets]
+      responses:
+        '200':
+          description: Array of ticket types
+  /booths:
+    get:
+      summary: List booths (filter by exhibition via ?exhibition_id=)
+      security: []
+      tags: [Booths]
+      parameters:
+        - { name: exhibition_id, in: query, schema: { type: integer } }
+      responses:
+        '200':
+          description: Array of booths
+  /media:
+    get:
+      summary: List media assets
+      security: []
+      tags: [Media]
+      parameters:
+        - { name: type, in: query, schema: { type: string } }
+        - { name: status, in: query, schema: { type: string } }
+      responses:
+        '200':
+          description: Array of assets
+    post:
+      summary: Upload a media asset
+      tags: [Media]
+      requestBody:
+        required: true
+        content:
+          multipart/form-data:
+            schema:
+              type: object
+              properties:
+                file: { type: string, format: binary }
+                type: { type: string, enum: [image, video, audio, document] }
+                caption: { type: string }
+      responses:
+        '201':
+          description: Asset created
+  /media/{asset}:
+    get:
+      summary: Media asset detail
+      security: []
+      tags: [Media]
+      parameters:
+        - { name: asset, in: path, required: true, schema: { type: integer } }
+      responses:
+        '200':
+          description: Asset
+    delete:
+      summary: Delete a media asset
+      tags: [Media]
+      parameters:
+        - { name: asset, in: path, required: true, schema: { type: integer } }
+      responses:
+        '204':
+          description: Deleted
+  /media/jobs/{job}/status:
+    get:
+      summary: Status of a media pipeline job
+      security: []
+      tags: [Media]
+      parameters:
+        - { name: job, in: path, required: true, schema: { type: integer } }
+      responses:
+        '200':
+          description: Job status
+  /search/semantic:
+    get:
+      summary: Semantic content search
+      security: []
+      tags: [Search]
+      parameters:
+        - { name: q, in: query, required: true, schema: { type: string } }
+        - { name: limit, in: query, schema: { type: integer, default: 10 } }
+      responses:
+        '200':
+          description: Search results
+  /recommendations:
+    get:
+      summary: Travel recommendations (AI)
+      security: []
+      tags: [AI]
+      responses:
+        '200':
+          description: Recommendations
+  /forecast:
+    get:
+      summary: Demand/tourist forecast (AI)
+      security: []
+      tags: [AI]
+      parameters:
+        - { name: county, in: query, schema: { type: string } }
+        - { name: months, in: query, schema: { type: integer } }
+      responses:
+        '200':
+          description: Forecast data
+  /fraud-check:
+    post:
+      summary: Risk-scoring fraud check (AI)
+      security: []
+      tags: [AI]
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                email: { type: string }
+                phone: { type: string }
+                amount: { type: number }
+                metadata: { type: object }
+      responses:
+        '200':
+          description: Risk score
+  /image-search:
+    post:
+      summary: Search by image (multipart upload)
+      security: []
+      tags: [AI]
+      requestBody:
+        required: true
+        content:
+          multipart/form-data:
+            schema:
+              type: object
+              properties:
+                image: { type: string, format: binary }
+      responses:
+        '200':
+          description: Matched destinations/venues
+  /escrow:
+    post:
+      summary: Open an escrow transaction
+      tags: [Escrow]
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required: [order_id]
+              properties:
+                order_id: { type: integer }
+      responses:
+        '201':
+          description: Escrow created
+  /escrow/{id}/tracking:
+    get:
+      summary: Escrow tracking events
+      security: []
+      tags: [Escrow]
+      parameters:
+        - { name: id, in: path, required: true, schema: { type: integer } }
+      responses:
+        '200':
+          description: Tracking events
+  /escrow/{id}/release:
+    post:
+      summary: Release escrow funds (buyer confirmation flow)
+      tags: [Escrow]
+      parameters:
+        - { name: id, in: path, required: true, schema: { type: integer } }
+      responses:
+        '200':
+          description: Released
+  /escrow/{id}/dispute:
+    post:
+      summary: Raise a dispute on an escrow
+      tags: [Escrow]
+      parameters:
+        - { name: id, in: path, required: true, schema: { type: integer } }
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                reason: { type: string }
+      responses:
+        '200':
+          description: Dispute opened
+  /disputes:
+    post:
+      summary: Open a dispute case
+      tags: [Disputes]
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required: [order_id, reason]
+              properties:
+                order_id: { type: integer }
+                reason: { type: string }
+      responses:
+        '201':
+          description: Dispute created
+  /currency/convert:
+    post:
+      summary: Convert an amount between currencies
+      security: []
+      tags: [Commerce]
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required: [amount, from, to]
+              properties:
+                amount: { type: number }
+                from: { type: string, example: KES }
+                to: { type: string, example: USD }
+      responses:
+        '200':
+          description: Converted amount
+  /ussd/callback:
+    post:
+      summary: Africa's Talking USSD callback (token-protected)
+      security: []
+      tags: [USSD]
+      description: |
+        AT POSTs form data and expects a plain-text reply starting with
+        `CON ` (continue session) or `END ` (terminate). Include the shared
+        callback token as a form field `token` when configured.
+      requestBody:
+        required: true
+        content:
+          application/x-www-form-urlencoded:
+            schema:
+              type: object
+              required: [sessionId, serviceCode, phoneNumber, text]
+              properties:
+                sessionId: { type: string }
+                serviceCode: { type: string }
+                phoneNumber: { type: string, example: "254712345678" }
+                text: { type: string, description: Accumulated dialled input joined by '*' }
+                token: { type: string, description: Callback token if AFRICASTALKING_USSD_CALLBACK_TOKEN is set }
+      responses:
+        '200':
+          description: USSD menu reply
+          content:
+            text/plain:
+              schema: { type: string, example: "CON 1. Next exhibition\n2. My bookings" }
+        '401':
+          description: Invalid callback token
+  /mpesa/callback:
+    post:
+      summary: M-Pesa STK Push / C2B callback (Daraja)
+      security: []
+      tags: [Payments]
+      description: Safaricom Daraja pushes payment notifications here. Signature/source not externally authenticated — do not expose beyond Cloudflare, and validate order idempotency.
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                Body:
+                  type: object
+                  properties:
+                    stkCallback:
+                      type: object
+                      properties:
+                        MerchantRequestID: { type: string }
+                        CheckoutRequestID: { type: string }
+                        ResultCode: { type: integer }
+                        CallbackMetadata:
+                          type: object
+                          properties:
+                            Item:
+                              type: array
+                              items:
+                                type: object
+                                properties:
+                                  Name: { type: string }
+                                  Value: { type: [string, number, null] }
+      responses:
+        '200':
+          description: Acknowledged
+  /webhooks/stripe:
+    post:
+      summary: Stripe webhook (signature-verified via Stripe-Signature)
+      security: []
+      tags: [Webhooks]
+      description: Verifies the `Stripe-Signature` header against `services.stripe.webhook_secret`. Replay-safe and idempotent on event id.
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                id: { type: string, example: evt_xxx }
+                type: { type: string, example: payment_intent.succeeded }
+                data:
+                  type: object
+                  properties:
+                    object:
+                      type: object
+                      properties:
+                        id: { type: string }
+      responses:
+        '200':
+          description: Processed
+        '401':
+          description: Invalid signature
+  /webhooks/courier:
+    post:
+      summary: Courier tracking webhook (HMAC, replay-safe)
+      security: []
+      tags: [Webhooks]
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+      responses:
+        '200':
+          description: Acknowledged
+  /webhooks/n8n:
+    post:
+      summary: n8n automation webhook
+      security: []
+      tags: [Webhooks]
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+      responses:
+        '200':
+          description: Acknowledged
+  /mcp:
+    get:
+      summary: MCP discovery (Model Context Protocol server)
+      security: []
+      tags: [MCP]
+      responses:
+        '200':
+          description: MCP capabilities
+  /mcp/resources:
+    get:
+      summary: List MCP resources
+      security: []
+      tags: [MCP]
+      responses:
+        '200':
+          description: Resource list
+  /mcp/resources/{type}:
+    get:
+      summary: Read an MCP resource
+      security: []
+      tags: [MCP]
+      parameters:
+        - { name: type, in: path, required: true, schema: { type: string } }
+      responses:
+        '200':
+          description: Resource content
+  /mcp/tools/{name}:
+    post:
+      summary: Execute an MCP tool
+      security: []
+      tags: [MCP]
+      parameters:
+        - { name: name, in: path, required: true, schema: { type: string } }
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+      responses:
+        '200':
+          description: Tool result
+  /verification/kra-pin:
+    post:
+      summary: Submit KRA PIN for verification
+      security: []
+      tags: [Verification]
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required: [kra_pin]
+              properties:
+                kra_pin: { type: string }
+      responses:
+        '200':
+          description: Verification queued/submitted
+  /verification/national-id:
+    post:
+      summary: Submit National ID for verification (Huduma Namba)
+      security: []
+      tags: [Verification]
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required: [national_id]
+              properties:
+                national_id: { type: string }
+      responses:
+        '200':
+          description: Verification queued/submitted
+  /verification/status:
+    get:
+      summary: Verification status of the authenticated user
+      security: []
+      tags: [Verification]
+      responses:
+        '200':
+          description: Status
+  /updates/manifest:
+    get:
+      summary: Mobile app update manifest
+      security: []
+      tags: [App]
+      responses:
+        '200':
+          description: Version manifest
+  /agentic/status:
+    get:
+      summary: Agentic loop status
+      security: []
+      tags: [Agentic]
+      responses:
+        '200':
+          description: Status
+  /agentic/trigger:
+    post:
+      summary: Trigger the agentic loop
+      security: []
+      tags: [Agentic]
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                task: { type: string }
+      responses:
+        '200':
+          description: Triggered
+  /ai/ux-assist:
+    get:
+      summary: AI UX assistance data
+      security: []
+      tags: [AI]
+      responses:
+        '200':
+          description: Assist data
+components:
+  securitySchemes:
+    bearerAuth:
+      type: http
+      scheme: bearer
+      bearerFormat: Sanctum
+  responses:
+    ValidationError:
+      description: Validation error
+      content:
+        application/json:
+          schema:
+            type: object
+            properties:
+              message: { type: string }
+              errors: { type: object, additionalProperties: { type: array, items: { type: string } } }
+    Unauthorized:
+      description: Missing or invalid bearer token
+      content:
+        application/json:
+          schema:
+            type: object
+            properties:
+              message: { type: string }
+  schemas:
+    User:
+      type: object
+      properties:
+        id: { type: integer }
+        name: { type: string }
+        email: { type: string, format: email }
+        phone: { type: string, nullable: true }
+        account_type: { type: string }
+        county_id: { type: integer, nullable: true }
+        status: { type: string }
+        email_verified_at: { type: string, format: date-time, nullable: true }
+        created_at: { type: string, format: date-time }
+        updated_at: { type: string, format: date-time }
+    County:
+      type: object
+      properties:
+        id: { type: integer }
+        name: { type: string }
+        capital: { type: string }
+        code: { type: string }
+        former_province: { type: string }
+        economic_zone: { type: string }
+        region: { type: string, nullable: true }
+        population_2024: { type: integer }
+        area_km2: { type: number }
+        latitude: { type: number }
+        longitude: { type: number }
+        primary_sectors: { type: array, items: { type: string } }
+        icon_emoji: { type: string }
+        profile_image: { type: string }
+        tagline: { type: string }
+        description: { type: string }
+        tourism_highlights: { type: array, items: { type: string } }
+        slug: { type: string }
+        is_active: { type: boolean }
+        weather_tags: { type: array, items: { type: string } }
+        created_at: { type: string, format: date-time }
+        updated_at: { type: string, format: date-time }
+    Exhibition:
+      type: object
+      properties:
+        id: { type: integer }
+        name: { type: string }
+        slug: { type: string }
+        description: { type: string }
+        tagline: { type: string, nullable: true }
+        county_id: { type: integer, nullable: true }
+        venue_id: { type: integer, nullable: true }
+        start_date: { type: string, format: date }
+        end_date: { type: string, format: date }
+        open_time: { type: string, nullable: true }
+        close_time: { type: string, nullable: true }
+        status: { type: string, enum: [draft, published, archived] }
+        is_featured: { type: boolean }
+        organizer_info: { type: string, nullable: true }
+        meta: { type: object }
+    Ticket:
+      type: object
+      properties:
+        id: { type: integer }
+        ticket_code: { type: string }
+        booking_id: { type: integer }
+        ticket_type_id: { type: integer }
+        user_id: { type: integer }
+        price: { type: number }
+        status: { type: string }
+        holder_name: { type: string, nullable: true }
+        holder_email: { type: string, nullable: true }
+        checked_in_at: { type: string, format: date-time, nullable: true }
+    Booking:
+      type: object
+      properties:
+        id: { type: integer }
+        booking_reference: { type: string }
+        user_id: { type: integer }
+        exhibition_id: { type: integer, nullable: true }
+        booking_type: { type: string }
+        subtotal: { type: number }
+        tax: { type: number }
+        total: { type: number }
+        currency: { type: string }
+        status: { type: string }
+        paid_at: { type: string, format: date-time, nullable: true }
+        cancelled_at: { type: string, format: date-time, nullable: true }
+        created_at: { type: string, format: date-time }
+    Venue:
+      type: object
+      properties:
+        id: { type: integer }
+        name: { type: string }
+        slug: { type: string }
+        address: { type: string }
+        city: { type: string }
+        county_id: { type: integer, nullable: true }
+        capacity: { type: integer, nullable: true }
+        description: { type: string, nullable: true }
+        is_active: { type: boolean }
