@@ -69,3 +69,4 @@ captures
 data
 pipeline_jobs.json
 scripts
+.grafana-admin-password.txt
