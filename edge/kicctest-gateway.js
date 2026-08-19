@@ -123,24 +123,10 @@ async function handle(request, env, ctx) {
       return new Response(obj.body, { headers });
     }
 
-    // ---- Admin SPA (React, separate from Laravel) — served from R2 /admin/ ----
-    if (url.pathname.startsWith("/app-admin/") || url.pathname === "/app-admin") {
-      const key = url.pathname === "/app-admin" ? "admin/index.html" : "admin/" + url.pathname.slice(12);
-      const obj = await env.MEDIA_BUCKET.get(key);
-      if (obj) {
-        const headers = new Headers();
-        obj.writeHttpMetadata(headers);
-        headers.set("Cache-Control", "public, s-maxage=3600, stale-while-revalidate=86400");
-        return new Response(obj.body, { headers });
-      }
-      // SPA fallback: serve index.html for client-side routing
-      const fallback = await env.MEDIA_BUCKET.get("admin/index.html");
-      if (fallback) {
-        const headers = new Headers();
-        fallback.writeHttpMetadata(headers);
-        headers.set("Cache-Control", "no-cache");
-        return new Response(fallback.body, { headers });
-      }
+    // ---- Admin SPA (React, separate from Laravel) — proxy to R2 CDN ----
+    if (url.pathname.startsWith("/app-admin")) {
+      const r2Path = url.pathname.replace("/app-admin", "/admin");
+      return Response.redirect(`https://kicc-r2-media.techhubltd254.workers.dev/storage${r2Path}`, 302);
     }
 
     // ---- Geo-routing: KE users → HTML page cache; intl → same but no personalisation ----
