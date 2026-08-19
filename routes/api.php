@@ -184,3 +184,4 @@ Route::middleware('auth:sanctum')->prefix('verification')->group(function () {
     Route::get('/status', [\App\Http\Controllers\Api\VerificationController::class, 'status']);
 });
 Route::get('/test-public', function() { return response()->json(['status' => 'ok']); });
+Route::get('/openapi', [\App\Http\Controllers\Api\OpenApiController::class, 'spec']);
