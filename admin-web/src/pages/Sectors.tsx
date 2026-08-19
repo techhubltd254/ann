@@ -28,7 +28,7 @@ export default function Sectors() {
   const [linkSectorId, setLinkSectorId] = useState<string>('')
   const [links, setLinks] = useState<Link[]>([])
 
-  const canManage = me?.privileges.includes('SECTOR_MANAGE')
+  const canManage = me?.privileges?.includes('SECTOR_MANAGE')
 
   const load = async () => {
     setLoading(true)

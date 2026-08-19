@@ -22,6 +22,9 @@ export interface MeResponse {
   phone: string | null
   county_id: number | null
   ministry_id: number | null
+  tier?: string
+  countySlug?: string
+  boothId?: number | null
   privileges?: string[]
   [key: string]: unknown
 }

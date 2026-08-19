@@ -49,7 +49,7 @@ export default function Counties() {
   const [msg, setMsg] = useState('')
   const [confirm, setConfirm] = useState<{ title: string; message: string; run: () => void } | null>(null)
 
-  const canCreate = me?.privileges.includes('COUNTY_MANAGE')
+  const canCreate = me?.privileges?.includes('COUNTY_MANAGE')
 
   const load = async () => {
     setLoading(true)

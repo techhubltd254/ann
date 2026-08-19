@@ -44,7 +44,7 @@ export default function Delegations() {
   const [msg, setMsg] = useState('')
   const [confirm, setConfirm] = useState<{ title: string; message: string; run: () => void } | null>(null)
 
-  const hasDelegate = me?.privileges.includes('DELEGATE')
+  const hasDelegate = me?.privileges?.includes('DELEGATE')
 
   const load = async () => {
     setLoading(true)

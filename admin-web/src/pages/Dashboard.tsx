@@ -15,7 +15,7 @@ export default function DashboardPage() {
     api.get('/analytics').then(setAnalytics).catch(() => {})
     api.get<any[]>('/payments/settlements').then(setSettlements).catch(() => {})
     api.get<any[]>('/complaints').then(setComplaints).catch(() => {})
-    if (me.privileges.includes('USERS_MANAGE')) api.get<any[]>('/admin/users').then(setUsers).catch(() => {})
+    if (me.privileges?.includes('USERS_MANAGE')) api.get<any[]>('/admin/users').then(setUsers).catch(() => {})
   }, [me])
 
   const navigateTo = (path: string) => { window.location.href = path }

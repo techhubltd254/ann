@@ -34,7 +34,7 @@ export default function AdminAudit() {
   const [error, setError] = useState('')
   const [users, setUsers] = useState<{ id: number; email: string }[]>([])
 
-  const hasDelegate = me?.privileges.includes('DELEGATE')
+  const hasDelegate = me?.privileges?.includes('DELEGATE')
 
   const load = async (userList = users) => {
     setBusy(true)

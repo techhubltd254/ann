@@ -3,15 +3,15 @@ import { useT } from '../lib/i18n'
 import { useNavigate, Link, useLocation, Navigate } from 'react-router-dom'
 import type { ReactNode } from 'react'
 
-function hasAnyPrivilege(privileges: string[]): boolean {
-  return privileges.some(p => ['USERS_MANAGE', 'PAYMENTS_MANAGE', 'CONTENT_MANAGE', 'COUNTY_MANAGE', 'SECTOR_MANAGE', 'DELEGATE', 'ANALYTICS_VIEW', 'MARKETPLACE_MANAGE', 'BOOKINGS_MANAGE'].includes(p))
+function hasAnyPrivilege(privileges: string[] | undefined): boolean {
+  return (privileges ?? []).some(p => ['USERS_MANAGE', 'PAYMENTS_MANAGE', 'CONTENT_MANAGE', 'COUNTY_MANAGE', 'SECTOR_MANAGE', 'DELEGATE', 'ANALYTICS_VIEW', 'MARKETPLACE_MANAGE', 'BOOKINGS_MANAGE'].includes(p))
 }
 
 export function RequirePrivilege({ privilege, children }: { privilege: string; children: ReactNode }) {
   const { me, loading } = useAuth()
   if (loading) return <div className="flex min-h-screen items-center justify-center bg-kicc-dark text-white/40 font-sans">Loading…</div>
   if (!me) return <Navigate to="/login" replace />
-  if (!me.privileges.includes(privilege)) return <Navigate to="/" replace />
+  if (!me.privileges?.includes(privilege)) return <Navigate to="/" replace />
   return <>{children}</>
 }
 
@@ -68,38 +68,38 @@ export function AdminLayout({ children }: { children: ReactNode }) {
           <NavItem href="/admin/dashboard" label={t('dashboard')} active={loc.pathname === '/admin/dashboard'} icon="📊" />
 
           <SectionTitle label="People" />
-          {me.privileges.includes('USERS_MANAGE') && (
+          {me.privileges?.includes('USERS_MANAGE') && (
             <NavItem href="/admin/users" label={t('users')} active={loc.pathname === '/admin/users'} icon="👥" />
           )}
-          {me.privileges.includes('USERS_MANAGE') && (
+          {me.privileges?.includes('USERS_MANAGE') && (
             <NavItem href="/admin/review" label={t('onboarding')} active={loc.pathname === '/admin/review'} icon="📋" />
           )}
-          {me.privileges.includes('DELEGATE') && (
+          {me.privileges?.includes('DELEGATE') && (
             <NavItem href="/admin/delegations" label={t('delegations')} active={loc.pathname === '/admin/delegations'} icon="🔑" />
           )}
 
           <SectionTitle label="Commerce" />
-          {me.privileges.includes('BOOKINGS_MANAGE') && (
+          {me.privileges?.includes('BOOKINGS_MANAGE') && (
             <NavItem href="/admin/bookings" label={t('bookings')} active={loc.pathname === '/admin/bookings'} icon="🎪" />
           )}
-          {me.privileges.includes('PAYMENTS_MANAGE') && (
+          {me.privileges?.includes('PAYMENTS_MANAGE') && (
             <NavItem href="/admin/payments" label={t('payments')} active={loc.pathname === '/admin/payments'} icon="💳" />
           )}
-          {me.privileges.includes('PAYMENTS_MANAGE') && (
+          {me.privileges?.includes('PAYMENTS_MANAGE') && (
             <NavItem href="/admin/settlements" label={t('settlements')} active={loc.pathname === '/admin/settlements'} icon="💰" />
           )}
-          {me.privileges.includes('MARKETPLACE_MANAGE') && (
+          {me.privileges?.includes('MARKETPLACE_MANAGE') && (
             <NavItem href="/admin/orders" label={t('orders')} active={loc.pathname === '/admin/orders'} icon="📦" />
           )}
 
           <SectionTitle label="Content" />
-          {(me.tier === 'KICC' || me.tier === 'NATIONAL') && me.privileges.includes('CONTENT_MANAGE') && (
+          {(me.tier === 'KICC' || me.tier === 'NATIONAL') && me.privileges?.includes('CONTENT_MANAGE') && (
             <NavItem href="/admin/national" label="National Gov" active={loc.pathname === '/admin/national'} icon="🇰🇪" />
           )}
-          {me.privileges.includes('CONTENT_MANAGE') && (
+          {me.privileges?.includes('CONTENT_MANAGE') && (
             <NavItem href="/admin/counties" label={t('counties')} active={loc.pathname === '/admin/counties'} icon="🗺️" />
           )}
-          {me.privileges.includes('CONTENT_MANAGE') && (
+          {me.privileges?.includes('CONTENT_MANAGE') && (
             <NavItem href="/admin/sectors" label={t('sectors')} active={loc.pathname === '/admin/sectors'} icon="🏭" />
           )}
           {me.countySlug && (
@@ -117,13 +117,13 @@ export function AdminLayout({ children }: { children: ReactNode }) {
           )}
 
           <SectionTitle label="Operations" />
-          {me.privileges.includes('USERS_MANAGE') && (
+          {me.privileges?.includes('USERS_MANAGE') && (
             <NavItem href="/admin/complaints" label={t('complaints')} active={loc.pathname === '/admin/complaints'} icon="🎫" />
           )}
-          {me.privileges.includes('DELEGATE') && (
+          {me.privileges?.includes('DELEGATE') && (
             <NavItem href="/admin/audit" label={t('audit_log')} active={loc.pathname === '/admin/audit'} icon="🔍" />
           )}
-          {me.privileges.includes('ANALYTICS_VIEW') && (
+          {me.privileges?.includes('ANALYTICS_VIEW') && (
             <NavItem href="/admin/analytics" label={t('analytics')} active={loc.pathname === '/admin/analytics'} icon="📈" />
           )}
         </nav>
