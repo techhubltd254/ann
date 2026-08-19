@@ -17,6 +17,9 @@
         body { background-color: #F9FAFB; color: #111827; scroll-behavior: smooth; }
         .scrollbar-hide { scrollbar-width: none; -ms-overflow-style: none; }
         .scrollbar-hide::-webkit-scrollbar { display: none; }
+        .kicc-nav-par { position: relative; }
+        .kicc-nav-dd { position: absolute; top: 100%; left: 0; margin-top: 0.25rem; background: white; border: 1px solid #e5e7eb; border-radius: 0.75rem; box-shadow: 0 10px 15px -3px rgba(0,0,0,0.1); padding: 0.5rem; min-width: 180px; z-index: 50; display: none !important; }
+        .kicc-nav-par:hover .kicc-nav-dd { display: block !important; }
         [x-cloak] { display: none !important; }
 
         /* ── SCROLL REVEAL ── */
@@ -257,9 +260,9 @@
                 <a href="{{ route('national-government.index') }}" class="px-3.5 py-2 text-sm font-semibold rounded-lg transition-all {{ request()->routeIs('national-government*') ? 'bg-[#901C1E] text-white' : 'text-[#901C1E] hover:text-[#FFCD05] hover:bg-gray-100' }}">National Government</a>
                 <a href="{{ route('counties.index') }}" class="px-3.5 py-2 text-sm font-semibold rounded-lg transition-all {{ request()->routeIs('counties.*') ? 'bg-[#901C1E] text-white' : 'text-[#901C1E] hover:text-[#FFCD05] hover:bg-gray-100' }}">Counties</a>
                 <a href="{{ route('search.index') }}" class="px-3 py-2 text-sm font-semibold rounded-lg transition-all text-[#901C1E] hover:text-[#FFCD05] hover:bg-gray-100">🔍</a>
-<a href="{{ route('marketplace.index') }}" class="px-3.5 py-2 text-sm font-semibold rounded-lg transition-all text-[#901C1E] hover:text-[#FFCD05] hover:bg-gray-100 group relative">
+<a href="{{ route('marketplace.index') }}" class="px-3.5 py-2 text-sm font-semibold rounded-lg transition-all text-[#901C1E] hover:text-[#FFCD05] hover:bg-gray-100 kicc-nav-par">
     Marketplace
-    <div class="absolute top-full left-0 mt-1 bg-white border border-gray-200 rounded-xl shadow-lg p-2 min-w-[180px] z-50 invisible opacity-0 group-hover:visible group-hover:opacity-100 transition-all duration-200 pointer-events-none group-hover:pointer-events-auto">
+    <div class="kicc-nav-dd">
         <a href="{{ route('marketplace.index') }}" class="block px-4 py-2 text-sm font-semibold text-gray-600 hover:text-[#901C1E] hover:bg-gray-50 rounded-lg">All Products</a>
         <a href="{{ route('flash-sales.index') }}" class="block px-4 py-2 text-sm font-semibold text-gray-600 hover:text-[#901C1E] hover:bg-gray-50 rounded-lg">⚡ Flash Sales</a>
         <a href="{{ route('auctions.index') }}" class="block px-4 py-2 text-sm font-semibold text-gray-600 hover:text-[#901C1E] hover:bg-gray-50 rounded-lg">🔨 Auctions</a>
@@ -278,9 +281,9 @@
                 <a href="{{ route('travel.index') }}" class="px-3.5 py-2 text-sm font-semibold rounded-lg transition-all {{ request()->routeIs('travel.*') ? 'bg-[#901C1E] text-white' : 'text-[#901C1E] hover:text-[#FFCD05] hover:bg-gray-100' }}">Live Events</a>
                 <a href="{{ route('screens.directory') }}" class="px-3.5 py-2 text-sm font-semibold rounded-lg transition-all {{ request()->routeIs('screens.*') ? 'bg-[#901C1E] text-white' : 'text-[#901C1E] hover:text-[#FFCD05] hover:bg-gray-100' }}">Screens</a>
                 <a href="{{ route('packages.index') }}" class="px-3.5 py-2 text-sm font-semibold rounded-lg transition-all {{ request()->routeIs('packages.*') ? 'bg-[#901C1E] text-white' : 'text-[#901C1E] hover:text-[#FFCD05] hover:bg-gray-100' }}">Packages</a>
-<a href="{{ route('tourism.guides') }}" class="px-3.5 py-2 text-sm font-semibold rounded-lg transition-all text-[#901C1E] hover:text-[#FFCD05] hover:bg-gray-100 group relative">
+<a href="{{ route('tourism.guides') }}" class="px-3.5 py-2 text-sm font-semibold rounded-lg transition-all text-[#901C1E] hover:text-[#FFCD05] hover:bg-gray-100 kicc-nav-par">
     Tourism
-    <div class="absolute top-full left-0 mt-1 bg-white border border-gray-200 rounded-xl shadow-lg p-2 min-w-[180px] z-50 invisible opacity-0 group-hover:visible group-hover:opacity-100 transition-all duration-200 pointer-events-none group-hover:pointer-events-auto">
+    <div class="kicc-nav-dd">
         <a href="{{ route('tourism.guides') }}" class="block px-4 py-2 text-sm font-semibold text-gray-600 hover:text-[#901C1E] hover:bg-gray-50 rounded-lg">Tour Guides</a>
         <a href="{{ route('tourism.rentals') }}" class="block px-4 py-2 text-sm font-semibold text-gray-600 hover:text-[#901C1E] hover:bg-gray-50 rounded-lg">Car Rentals</a>
         <a href="{{ route('tourism.restaurants') }}" class="block px-4 py-2 text-sm font-semibold text-gray-600 hover:text-[#901C1E] hover:bg-gray-50 rounded-lg">Restaurants</a>
