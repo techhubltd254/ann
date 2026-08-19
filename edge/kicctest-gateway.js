@@ -125,7 +125,8 @@ async function handle(request, env, ctx) {
 
     // ---- Admin SPA (React, separate from Laravel) — proxy to R2 CDN ----
     if (url.pathname.startsWith("/app-admin")) {
-      const r2Path = url.pathname.replace("/app-admin", "/admin");
+      let r2Path = url.pathname.replace("/app-admin", "/admin");
+      if (r2Path === "/admin" || r2Path === "/admin/") r2Path = "/admin/index.html";
       return Response.redirect(`https://kicc-r2-media.techhubltd254.workers.dev/storage${r2Path}`, 302);
     }
 
