@@ -144,6 +144,7 @@ Route::middleware('auth')->group(function () {
     // KICC Overall Admin — control everything
     Route::get('/kicc-admin', [\App\Http\Controllers\Web\KiccAdminController::class, 'index'])->name('kicc.admin')->middleware('admin:kicc');
     Route::post('/kicc-admin/escrow/{id}/release', [\App\Http\Controllers\Web\KiccAdminController::class, 'releaseEscrow'])->name('kicc.admin.escrow.release')->middleware('admin:kicc');
+    Route::post('/kicc-admin/artisan', [AppHttpControllersWebKiccAdminController::class, 'runCommand'])->name('kicc.admin.artisan')->middleware('admin:kicc');
     // National Government Exhibitor Portal
     Route::get('/national-admin', [\App\Http\Controllers\Web\NationalPortalController::class, 'index'])->name('national.admin')->middleware('admin:national');
 Route::post('/national-admin/ministries', [\App\Http\Controllers\Web\NationalPortalController::class, 'storeMinistry'])->name('national.admin.ministry.store')->middleware('admin:national');
@@ -283,7 +284,6 @@ Route::post('/ai/itinerary', [\App\Http\Controllers\Web\AIController::class, 'it
 Route::get('/api/recommendations', [\App\Http\Controllers\Web\AIController::class, 'recommendations'])->name('api.recommendations');
 Route::get('/api/forecast', [\App\Http\Controllers\Web\AIController::class, 'forecast'])->name('api.forecast');
 Route::post('/api/fraud-check', [\App\Http\Controllers\Web\AIController::class, 'fraudCheck'])->name('api.fraud.check');
-Route::post('/api/image-search', [\App\Http\Controllers\Web\AIController::class, 'imageSearch'])->name('api.image.search');
 
 // Integrations
 Route::get('/integrations', [\App\Http\Controllers\Web\IntegrationController::class, 'settings'])->name('integrations.settings');

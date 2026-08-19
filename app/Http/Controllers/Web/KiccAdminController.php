@@ -12,6 +12,7 @@ use App\Models\Ministry;
 use App\Models\Payment\PaymentIntent;
 use App\Models\User;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Artisan;
 use Illuminate\Support\Facades\Auth;
 use Inertia\Inertia;
 
@@ -129,5 +130,40 @@ class KiccAdminController extends Controller
 
         \App\Services\N8nService::fire('provider_service_approved', ['table' => $table, 'id' => $id]);
         return redirect()->route('kicc.admin', ['tab' => 'providers'])->with('success', 'Service certified and now live.');
+    }
+
+    /** Run an Artisan command from the admin panel (superadmin only). */
+    public function runCommand(Request $request)
+    {
+        $this->authorizeKicc();
+
+        $validated = $request->validate([
+            'command' => 'required|string|max:500',
+        ]);
+
+        $allowed = [
+            'cache:clear', 'config:clear', 'route:clear', 'view:clear',
+            'optimize:clear', 'optimize', 'migrate', 'migrate:fresh',
+            'queue:restart', 'schedule:run', 'horizon:snapshot',
+            'dba:index-audit', 'search:index-es',
+            'analytics:trends', 'recommendations:build',
+            'embeddings:build', 'vendors:score',
+        ];
+
+        $cmd = $validated['command'];
+        // Only allow safe commands
+        $baseCmd = explode(' ', $cmd)[0];
+        if (! in_array($baseCmd, $allowed)) {
+            return back()->withErrors(['command' => "Command '$baseCmd' is not in the allowed list."]);
+        }
+
+        $exitCode = Artisan::call($cmd);
+        $output = Artisan::output();
+
+        return back()->with('artisan_result', [
+            'command' => $cmd,
+            'exit_code' => $exitCode,
+            'output' => $output,
+        ]);
     }
 }
