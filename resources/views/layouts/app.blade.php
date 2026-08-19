@@ -325,11 +325,10 @@
             <a href="{{ route('orders.index') }}" class="text-left px-4 py-3 text-sm font-semibold text-gray-600 hover:text-gray-900 hover:bg-gray-100 rounded-lg">📦 My Orders</a>
             <a href="{{ route('rfq.index') }}" class="text-left px-4 py-3 text-sm font-semibold text-gray-600 hover:text-gray-900 hover:bg-gray-100 rounded-lg">📋 My RFQs</a>
             <a href="{{ route('seller.analytics') }}" class="text-left px-4 py-3 text-sm font-semibold text-gray-600 hover:text-gray-900 hover:bg-gray-100 rounded-lg">📊 Seller Analytics</a>
-            @endauth
-            <a href="{{ route('flash-sales.index') }}" class="text-left px-4 py-3 text-sm font-semibold text-gray-600 hover:text-gray-900 hover:bg-gray-100 rounded-lg">⚡ Flash Sales</a>
             @else
             <a href="{{ route('login') }}" class="text-left px-4 py-3 text-sm font-semibold text-[#5A6480] hover:text-[#901C1E] hover:bg-sky-50 rounded-lg">Sign In</a>
             @endauth
+            <a href="{{ route('flash-sales.index') }}" class="text-left px-4 py-3 text-sm font-semibold text-gray-600 hover:text-gray-900 hover:bg-gray-100 rounded-lg">⚡ Flash Sales</a>
         </div>
     </nav>
 
