@@ -44,6 +44,26 @@ return [
             'cost' => 'api',
         ],
 
+        'kling' => [
+            'class' => \App\Services\Pipeline\Engines\KlingEngine::class,
+            'type' => 'api',
+            'enabled' => env('PIPELINE_KLING_ENABLED', false),
+            'pipeline' => ['cinematic_video'],
+            'label' => 'Kling AI — Cinematic Video Generation',
+            'description' => 'Multi-shot storytelling, camera motion controls, lip-sync. Best for dynamic cinematic scenes.',
+            'cost' => 'api',
+        ],
+
+        'wan' => [
+            'class' => \App\Services\Pipeline\Engines\WanEngine::class,
+            'type' => 'api',
+            'enabled' => env('PIPELINE_WAN_ENABLED', false),
+            'pipeline' => ['cinematic_video'],
+            'label' => 'Wan Video (Alibaba) — Open-Weight Video Generation',
+            'description' => 'High prompt fidelity, multi-language, self-hostable. Best for enterprise pipelines.',
+            'cost' => 'api',
+        ],
+
         'tripo3d' => [
             'class' => \App\Services\Pipeline\Engines\Tripo3dEngine::class,
             'type' => 'api',
@@ -159,6 +179,14 @@ return [
             'api_key' => env('HAILUO_API_KEY'),
             'group_id' => env('HAILUO_GROUP_ID'),
             'webhook_url' => env('HAILUO_WEBHOOK_URL'),
+        ],
+        'kling' => [
+            'base_url' => env('KLING_BASE_URL', 'https://api.klingai.com/v1'),
+            'api_key' => env('KLING_API_KEY'),
+        ],
+        'wan' => [
+            'base_url' => env('WAN_BASE_URL', 'https://api.wan.video/v1'),
+            'api_key' => env('WAN_API_KEY'),
         ],
         'tripo3d' => [
             'base_url' => env('TRIPO3D_BASE_URL', 'https://api.tripo3d.ai/v2'),
