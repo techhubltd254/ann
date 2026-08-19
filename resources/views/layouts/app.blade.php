@@ -300,12 +300,6 @@
                 <a href="{{ route('notifications.index') }}" class="relative p-2 text-[#5A6480] hover:text-[#901C1E] transition-colors" aria-label="Notifications">
                     <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 17h5l-1.405-1.405A2.032 2.032 0 0118 14.158V11a6.002 6.002 0 00-4-5.659V5a2 2 0 10-4 0v.341C7.67 6.165 6 8.388 6 11v3.159c0 .538-.214 1.055-.595 1.436L4 17h5m6 0v1a3 3 0 11-6 0v-1m6 0H9"/></svg>
                 </a>
-                <a href="{{ route('dashboard.index') }}" class="inline-flex items-center gap-2 font-bold tracking-wide transition-all duration-200 px-4 text-xs h-9 rounded-xl bg-[#901C1E] text-gray-900 hover:bg-[#7a181a]">
-                    Dashboard
-                </a>
-                <a href="{{ route('admin.portal') }}" class="hidden sm:inline-flex items-center gap-2 font-bold tracking-wide transition-all duration-200 px-4 text-xs h-9 rounded-xl border border-gray-200 text-gray-600 hover:bg-gray-100" title="Admin">
-                    Admin
-                </a>
                 <form method="POST" action="{{ route('logout') }}" class="inline">@csrf
                     <button type="submit" class="inline-flex items-center gap-2 font-bold tracking-wide transition-all duration-200 px-3 text-xs h-9 rounded-xl border border-gray-200 text-gray-500 hover:bg-gray-100">Logout</button>
                 </form>
@@ -333,19 +327,6 @@
             <a href="{{ route('seller.analytics') }}" class="text-left px-4 py-3 text-sm font-semibold text-gray-600 hover:text-gray-900 hover:bg-gray-100 rounded-lg">📊 Seller Analytics</a>
             @endauth
             <a href="{{ route('flash-sales.index') }}" class="text-left px-4 py-3 text-sm font-semibold text-gray-600 hover:text-gray-900 hover:bg-gray-100 rounded-lg">⚡ Flash Sales</a>
-            <a href="{{ route('auctions.index') }}" class="text-left px-4 py-3 text-sm font-semibold text-gray-600 hover:text-gray-900 hover:bg-gray-100 rounded-lg">🔨 Auctions</a>
-            <a href="{{ route('gift-cards.index') }}" class="text-left px-4 py-3 text-sm font-semibold text-gray-600 hover:text-gray-900 hover:bg-gray-100 rounded-lg">🎁 Gift Cards</a>
-            <a href="{{ route('rfq.create') }}" class="text-left px-4 py-3 text-sm font-semibold text-gray-600 hover:text-gray-900 hover:bg-gray-100 rounded-lg">📋 New RFQ</a>
-            <a href="{{ route('search.index') }}" class="text-left px-4 py-3 text-sm font-semibold text-gray-600 hover:text-gray-900 hover:bg-gray-100 rounded-lg">🔍 Search</a>
-            <a href="{{ route('tourism.guides') }}" class="text-left px-4 py-3 text-sm font-semibold text-gray-600 hover:text-gray-900 hover:bg-gray-100 rounded-lg">Tour Guides</a>
-            <a href="{{ route('tourism.rentals') }}" class="text-left px-4 py-3 text-sm font-semibold text-gray-600 hover:text-gray-900 hover:bg-gray-100 rounded-lg">Car Rentals</a>
-            <a href="{{ route('tourism.restaurants') }}" class="text-left px-4 py-3 text-sm font-semibold text-gray-600 hover:text-gray-900 hover:bg-gray-100 rounded-lg">Restaurants</a>
-            <a href="{{ route('tourism.organizers') }}" class="text-left px-4 py-3 text-sm font-semibold text-gray-600 hover:text-gray-900 hover:bg-gray-100 rounded-lg">Event Organizers</a>
-            <a href="{{ route('trade.agreements.index') }}" class="text-left px-4 py-3 text-sm font-semibold text-gray-600 hover:text-gray-900 hover:bg-gray-100 rounded-lg">Trade</a>
-            <a href="{{ route('packages.index') }}" class="text-left px-4 py-3 text-sm font-semibold text-gray-600 hover:text-gray-900 hover:bg-gray-100 rounded-lg">Packages</a>
-            @auth
-            <a href="{{ route('dashboard.index') }}" class="text-left px-4 py-3 text-sm font-semibold text-kicc-gold hover:bg-gray-100 rounded-lg">Dashboard</a>
-            <a href="{{ route('admin.portal') }}" class="text-left px-4 py-3 text-sm font-semibold text-gray-600 hover:text-gray-900 hover:bg-gray-100 rounded-lg">Admin</a>
             @else
             <a href="{{ route('login') }}" class="text-left px-4 py-3 text-sm font-semibold text-[#5A6480] hover:text-[#901C1E] hover:bg-sky-50 rounded-lg">Sign In</a>
             @endauth
@@ -390,15 +371,6 @@
                     <li><a href="{{ route('exhibitions.index') }}" class="text-white/50 hover:text-kicc-gold text-sm transition-colors">Exhibitions</a></li>
                     <li><a href="{{ route('venues.index') }}" class="text-white/50 hover:text-kicc-gold text-sm transition-colors">Venues</a></li>
                     <li><a href="{{ route('trade.agreements.index') }}" class="text-white/50 hover:text-kicc-gold text-sm transition-colors">Trade Agreements</a></li>
-                </ul>
-            </div>
-            <div>
-                <h4 class="font-bold text-white/50 text-xs uppercase tracking-[0.15em] mb-4">Dashboards</h4>
-                <ul class="space-y-2.5">
-                    <li><a href="{{ route('dashboard.index') }}" class="text-white/50 hover:text-kicc-gold text-sm transition-colors">My Dashboard</a></li>
-                    <li><a href="{{ route('dashboard.exhibitions') }}" class="text-white/50 hover:text-kicc-gold text-sm transition-colors">My Exhibitions</a></li>
-                    <li><a href="{{ route('dashboard.bookings') }}" class="text-white/50 hover:text-kicc-gold text-sm transition-colors">My Bookings</a></li>
-                    <li><a href="{{ route('admin.portal') }}" class="text-white/50 hover:text-kicc-gold text-sm transition-colors">Admin Portal</a></li>
                 </ul>
             </div>
             <div>
