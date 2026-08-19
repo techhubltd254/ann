@@ -14,7 +14,6 @@ use App\Models\User;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Artisan;
 use Illuminate\Support\Facades\Auth;
-use Inertia\Inertia;
 
 /**
  * KICC Overall Admin Portal — the platform owner's god-mode.
@@ -94,17 +93,11 @@ class KiccAdminController extends Controller
             ['label' => 'Users', 'tab' => 'users', 'icon' => 'M12 4.354a4 4 0 110 5.292M15 21H3v-1a6 6 0 0112 0v1zm0 0h6v-1a6 6 0 00-9-5.197'],
         ];
 
-        return Inertia::render('app/dashboards', [
-            'stats' => $stats,
-            'counties' => $counties,
-            'exhibitors' => $exhibitors,
-            'ministries' => $ministries,
-            'orders' => $orders,
-            'escrows' => $escrows,
-            'users' => $users,
-            'providers' => $providers,
-            'pendingServices' => $pendingServices,
-        ]);
+        return view('kicc-mother-admin', compact(
+            'stats', 'counties', 'exhibitors', 'ministries',
+            'orders', 'escrows', 'users', 'providers',
+            'pendingServices', 'navItems', 'tab',
+        ));
     }
 
     /** KICC releases escrow funds to a seller after delivery confirmation. */
