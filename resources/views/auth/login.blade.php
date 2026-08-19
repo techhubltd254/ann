@@ -2,7 +2,7 @@
 
 @section('title', 'Sign In — KICC Platform')
 @section('content')
-<div class="min-h-screen flex items-center justify-center px-5 pt-20 py-12" x-data="{ staff: false }">
+<div class="min-h-screen flex items-center justify-center px-5 pt-20 py-12">
     <div class="w-full max-w-4xl grid md:grid-cols-2 gap-6" data-reveal>
 
         {{-- LEFT: Sign In --}}
@@ -17,7 +17,7 @@
             <div class="bg-red-50 border border-red-200 text-red-600 rounded-xl px-4 py-3 mb-4 text-sm">{{ $errors->first() }}</div>
             @endif
 
-            <form method="POST" action="{{ route('login') }}" x-data="{ loading: false }" @submit="loading = true">
+            <form method="POST" action="{{ route('login') }}" id="login-form">
                 @csrf
                 <div class="space-y-4">
                     <div>
@@ -31,10 +31,10 @@
                                class="w-full bg-[#F9FAFB] border border-gray-200 focus:border-[#F59E0B]/60 rounded-xl px-4 py-2.5 text-sm text-gray-900 placeholder:text-[#5A6480]/50 outline-none transition-colors">
                     </div>
                 </div>
-                <button type="submit" :disabled="loading"
+                <button type="submit" id="login-submit-btn"
                         class="w-full inline-flex items-center justify-center gap-2 font-bold tracking-wide transition-all duration-200 mt-6 px-8 text-base h-14 rounded-xl bg-[#901C1E] text-white hover:bg-[#7b1618] disabled:opacity-60" data-magnetic>
-                    <svg x-show="loading" class="w-5 h-5 animate-spin" fill="none" viewBox="0 0 24 24"><circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"/><path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8v4a4 4 0 00-4 4H4z"/></svg>
-                    <span x-text="loading ? 'Signing you in…' : 'Sign In'"></span>
+                    <svg id="login-spinner" class="w-5 h-5 animate-spin" style="display:none" fill="none" viewBox="0 0 24 24"><circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"/><path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8v4a4 4 0 00-4 4H4z"/></svg>
+                    <span id="login-btn-text">Sign In</span>
                 </button>
             </form>
 
@@ -64,10 +64,10 @@
 
             <div class="mt-6 pt-5 border-t border-gray-100 text-center">
                 <p class="text-xs text-gray-400 mb-2">Staff accounts are routed by role automatically</p>
-                <button @click="staff = !staff" class="text-gray-400 hover:text-gray-500 text-xs transition-colors">
-                    <span x-text="staff ? '▾ Hide staff roles' : '▸ Staff roles (KICC / National / County)'"></span>
+                <button id="staff-toggle-btn" class="text-gray-400 hover:text-gray-500 text-xs transition-colors">
+                    <span id="staff-toggle-text">▸ Staff roles (KICC / National / County)</span>
                 </button>
-                <div x-show="staff" x-cloak x-transition class="mt-3">
+                <div id="staff-roles" class="mt-3" style="display:none">
                     <div class="grid grid-cols-3 gap-2 text-center text-[11px] font-bold">
                         <div class="border border-[#901C1E]/30 rounded-xl py-2 text-[#e86f71]">KICC Admin</div>
                         <div class="border border-[#7C3AED]/30 rounded-xl py-2 text-[#a78bfa]">National</div>
@@ -117,4 +117,36 @@
         </div>
     </div>
 </div>
+
+<script>
+(function() {
+    // Login form loading spinner
+    var form = document.getElementById('login-form');
+    if (form) {
+        form.addEventListener('submit', function() {
+            var btn = document.getElementById('login-submit-btn');
+            var spinner = document.getElementById('login-spinner');
+            var text = document.getElementById('login-btn-text');
+            if (btn && spinner && text) {
+                btn.disabled = true;
+                spinner.style.display = '';
+                text.textContent = 'Signing you in…';
+            }
+        });
+    }
+
+    // Staff roles toggle
+    var toggleBtn = document.getElementById('staff-toggle-btn');
+    var staffRoles = document.getElementById('staff-roles');
+    var toggleText = document.getElementById('staff-toggle-text');
+    if (toggleBtn && staffRoles && toggleText) {
+        var staffVisible = false;
+        toggleBtn.addEventListener('click', function() {
+            staffVisible = !staffVisible;
+            staffRoles.style.display = staffVisible ? '' : 'none';
+            toggleText.textContent = staffVisible ? '▾ Hide staff roles' : '▸ Staff roles (KICC / National / County)';
+        });
+    }
+})();
+</script>
 @endsection

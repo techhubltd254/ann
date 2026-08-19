@@ -240,9 +240,8 @@
 </head>
 <body class="antialiased text-gray-900 bg-[#F9FAFB]">
     {{-- NAV --}}
-    <nav x-data="{ scrolled: false, open: false }" x-init="window.addEventListener('scroll', () => scrolled = window.scrollY > 40)"
-          class="fixed top-0 left-0 right-0 z-50 transition-all duration-500 h-20"
-          :class="scrolled ? 'bg-white backdrop-blur-xl border-b border-gray-200 shadow-lg shadow-[#0EA5E9]/5' : 'bg-transparent'">
+    <nav id="kicc-nav"
+          class="fixed top-0 left-0 right-0 z-50 transition-all duration-500 h-20 bg-transparent">
         <div class="max-w-7xl mx-auto px-5 h-full flex items-center justify-between gap-4">
             <a href="/" class="flex items-center gap-3 shrink-0 group">
                 <div class="flex items-center gap-2.5">
@@ -306,13 +305,14 @@
                 @else
                 <a href="{{ route('login') }}" class="inline-flex items-center gap-2 font-bold tracking-wide transition-all duration-200 px-4 text-xs h-9 rounded-xl bg-[#FFCD05] text-[#07090F] font-bold hover:bg-[#e6b904]">Sign In</a>
                 @endauth
-                <button @click="open = !open" class="lg:hidden text-[#5A6480] hover:text-[#901C1E] p-2" aria-label="Menu">
-                    <svg class="w-5 h-5" x-show="!open" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16"/></svg>
-                    <svg class="w-5 h-5" x-show="open" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"/></svg>
+                <button id="kicc-mobile-menu-btn" class="lg:hidden text-[#5A6480] hover:text-[#901C1E] p-2" aria-label="Menu">
+                    <svg id="kicc-mobile-icon-open" class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16"/></svg>
+                    <svg id="kicc-mobile-icon-close" class="w-5 h-5" style="display:none" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"/></svg>
                 </button>
             </div>
         </div>
-        <div x-show="open" x-cloak x-transition class="lg:hidden absolute top-full left-0 right-0 bg-white border-b border-gray-100 p-4 flex flex-col gap-1">
+        <div id="kicc-mobile-menu" class="lg:hidden" style="display:none">
+            <div class="absolute top-full left-0 right-0 bg-white border-b border-gray-100 p-4 flex flex-col gap-1">
             <a href="{{ route('national-government.index') }}" class="text-left px-4 py-3 text-sm font-semibold text-gray-600 hover:text-gray-900 hover:bg-gray-100 rounded-lg">National Government</a>
             <a href="{{ route('counties.index') }}" class="text-left px-4 py-3 text-sm font-semibold text-gray-600 hover:text-gray-900 hover:bg-gray-100 rounded-lg">Counties</a>
             <a href="{{ route('exhibitions.index') }}" class="text-left px-4 py-3 text-sm font-semibold text-gray-600 hover:text-gray-900 hover:bg-gray-100 rounded-lg">Exhibitions</a>
@@ -329,6 +329,7 @@
             <a href="{{ route('login') }}" class="text-left px-4 py-3 text-sm font-semibold text-[#5A6480] hover:text-[#901C1E] hover:bg-sky-50 rounded-lg">Sign In</a>
             @endauth
             <a href="{{ route('flash-sales.index') }}" class="text-left px-4 py-3 text-sm font-semibold text-gray-600 hover:text-gray-900 hover:bg-gray-100 rounded-lg">⚡ Flash Sales</a>
+            </div>
         </div>
     </nav>
 
@@ -397,5 +398,35 @@
     {{-- FX3D: 3D parallax + tilt + VFX engine (self-contained) --}}
     <script src="{{ asset('js/voice-search.js') }}" defer></script>
     <script src="{{ asset('js/fx3d.js') }}" defer></script>
+<script>
+(function() {
+    var nav = document.getElementById('kicc-nav');
+    var menuBtn = document.getElementById('kicc-mobile-menu-btn');
+    var mobileMenu = document.getElementById('kicc-mobile-menu');
+    var iconOpen = document.getElementById('kicc-mobile-icon-open');
+    var iconClose = document.getElementById('kicc-mobile-icon-close');
+
+    // Scroll effect
+    if (nav) {
+        window.addEventListener('scroll', function() {
+            if (window.scrollY > 40) {
+                nav.classList.add('bg-white', 'backdrop-blur-xl', 'border-b', 'border-gray-200', 'shadow-lg');
+            } else {
+                nav.classList.remove('bg-white', 'backdrop-blur-xl', 'border-b', 'border-gray-200', 'shadow-lg');
+            }
+        });
+    }
+
+    // Mobile menu toggle
+    if (menuBtn && mobileMenu) {
+        menuBtn.addEventListener('click', function() {
+            var isOpen = mobileMenu.style.display !== 'none';
+            mobileMenu.style.display = isOpen ? 'none' : 'block';
+            if (iconOpen) iconOpen.style.display = isOpen ? '' : 'none';
+            if (iconClose) iconClose.style.display = isOpen ? 'none' : '';
+        });
+    }
+})();
+</script>
 </body>
 </html>

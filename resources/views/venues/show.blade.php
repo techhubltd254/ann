@@ -56,19 +56,19 @@
                     </div>
                 </div>
 
-                <div class="mt-6 space-y-3" x-data="{ open: false }">
-                    <button @click="open = true" class="w-full inline-flex items-center justify-center gap-2 font-bold tracking-wide transition-all duration-200 px-8 text-base h-14 rounded-xl bg-[#901C1E] text-gray-900 hover:bg-[#7b1618] active:scale-[0.97]" data-magnetic>Request Booking</button>
+                <div class="mt-6 space-y-3" id="kicc-booking-modal">
+                    <button onclick="document.getElementById('kicc-booking-overlay').style.display='flex'; document.body.style.overflow='hidden';" class="w-full inline-flex items-center justify-center gap-2 font-bold tracking-wide transition-all duration-200 px-8 text-base h-14 rounded-xl bg-[#901C1E] text-gray-900 hover:bg-[#7b1618] active:scale-[0.97]" data-magnetic>Request Booking</button>
                     <a href="{{ route('packages.index') }}" class="w-full inline-flex items-center justify-center gap-2 font-bold tracking-wide transition-all duration-200 px-4 text-xs h-11 rounded-xl border border-[#901C1E]/30 text-[#901C1E] hover:bg-[#901C1E]/5" data-magnetic>See Exhibitor Packages</a>
 
                     {{-- Booking inquiry modal --}}
-                    <div x-show="open" x-cloak x-transition.opacity class="fixed inset-0 z-[100] flex items-center justify-center p-5" style="background: rgba(0,0,0,0.7); backdrop-filter: blur(4px);">
-                        <div @click.away="open = false" class="bg-white border border-gray-300/12 rounded-2xl p-6 w-full max-w-md shadow-2xl" x-transition.scale>
+                    <div id="kicc-booking-overlay" class="fixed inset-0 z-[100] items-center justify-center p-5" style="display:none; background: rgba(0,0,0,0.7); backdrop-filter: blur(4px);">
+                        <div class="bg-white border border-gray-300/12 rounded-2xl p-6 w-full max-w-md shadow-2xl" style="max-height:90vh; overflow-y:auto">
                             <div class="flex items-start justify-between mb-4">
                                 <div>
                                     <h3 class="font-black text-gray-900 text-lg">Request Booking</h3>
                                     <p class="text-[#5A6480] text-xs mt-1">{{ $venue->name }} · {{ ucfirst($venue->venue_type ?? '') }}</p>
                                 </div>
-                                <button @click="open = false" class="text-[#5A6480] hover:text-gray-900 p-1">
+                                <button onclick="document.getElementById('kicc-booking-overlay').style.display='none'; document.body.style.overflow='';" class="text-[#5A6480] hover:text-gray-900 p-1">
                                     <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"/></svg>
                                 </button>
                             </div>
