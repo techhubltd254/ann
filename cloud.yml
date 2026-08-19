@@ -6,7 +6,7 @@ database: false
 # Production runs on the droplet; this pipeline is the staging/preview twin.
 build:
   - mkdir -p bootstrap/cache storage/framework/cache/data storage/framework/sessions storage/framework/views storage/logs
-  - composer install --no-dev --no-interaction --prefer-dist --optimize-autoloader
+  - composer install --no-dev --no-interaction --optimize-autoloader
   - php artisan config:clear || true
   - php artisan config:cache || true
 
