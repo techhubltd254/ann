@@ -6,9 +6,11 @@ use Pdo\Mysql;
 return [
 
     /*
-    | Default: TiDB Cloud (production). Local dev overrides to sqlite via .env
+    | Default: TiDB (production app data). The 'mysql' connection is reserved
+    | for the host platform (Laravel Cloud) internal use. All app queries
+    | (counties, products, users, etc.) go through the 'tidb' connection.
     */
-    'default' => env('DB_CONNECTION', 'mysql'),
+    'default' => env('DB_CONNECTION', 'tidb'),
 
     'connections' => [
 
@@ -35,6 +37,30 @@ return [
             'unix_socket' => env('DB_SOCKET', ''),
             'charset' => env('DB_CHARSET', 'utf8mb4'),
             'collation' => env('DB_COLLATION', 'utf8mb4_unicode_ci'),
+            'prefix' => '',
+            'prefix_indexes' => true,
+            'strict' => true,
+            'engine' => null,
+            'options' => extension_loaded('pdo_mysql') ? array_filter([
+                Mysql::ATTR_SSL_CA => env('MYSQL_ATTR_SSL_CA', '/etc/ssl/certs/ca-certificates.crt'),
+                Mysql::ATTR_SSL_VERIFY_SERVER_CERT => env('DB_SSL_VERIFY', false),
+            ], fn($v) => $v !== null && $v !== '') : [],
+        ],
+
+        /*
+        | TiDB Cloud — production app data (counties, products, users, etc.).
+        | This connection is separate from the host platform's MySQL so that
+        | Laravel Cloud's injected DB_* vars don't conflict with our TiDB.
+        */
+        'tidb' => [
+            'driver' => 'mysql',
+            'host' => env('TIDB_HOST', 'gateway01.eu-central-1.prod.aws.tidbcloud.com'),
+            'port' => env('TIDB_PORT', '4000'),
+            'database' => env('TIDB_DATABASE', 'kicc'),
+            'username' => env('TIDB_USERNAME', '28dbcDfwh5hEbSc.root'),
+            'password' => env('TIDB_PASSWORD', 'D8trCZaYhqZWo5Vq'),
+            'charset' => 'utf8mb4',
+            'collation' => 'utf8mb4_unicode_ci',
             'prefix' => '',
             'prefix_indexes' => true,
             'strict' => true,
