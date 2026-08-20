@@ -157,6 +157,7 @@ Route::post('/national-admin/agencies/{agency}', [\App\Http\Controllers\Web\Nati
 Route::get('/national-admin/agencies/{agency}/delete', [\App\Http\Controllers\Web\NationalPortalController::class, 'deleteAgency'])->name('national.admin.agency.delete')->middleware('admin:national');
     // County Exhibitor Portal (county = a website by itself)
     Route::get('/county-admin', [\App\Http\Controllers\Web\CountyPortalController::class, 'index'])->name('county.admin');
+    Route::get('/county-admin/exhibitor', [\App\Http\Controllers\Web\CountyPortalController::class, 'exhibitor'])->name('county.admin.exhibitor');
 
     // Professional County Admin (full content/image/price/ad/package control)
     Route::get('/county-admin/{slug}/pro', [\App\Http\Controllers\Web\CountyAdminController::class, 'dashboard'])->name('county.admin.pro');
