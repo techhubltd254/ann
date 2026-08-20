@@ -5,25 +5,27 @@
 
 @section('content')
 {{-- HERO — fullscreen video background --}}
-<section class="relative min-h-screen flex items-center overflow-hidden">
+<section class="relative min-h-screen flex items-center overflow-hidden" id="hero-section">
     @php
         $heroAsset = \App\Models\MediaAsset::resolveSlot('landing_page', 1, 'hero_video');
         $heroMp4 = $heroAsset?->mp4Url();
         $heroPoster = $heroAsset?->posterUrl() ?? media('kicc/venues/kicc-main-gate.jpg');
     @endphp
-    <video autoplay muted loop playsinline preload="auto" controls
-           poster="{{ $heroPoster ?? media('kicc/venues/kicc-main-gate.jpg') }}"
-           class="absolute inset-0 w-full h-full object-cover"
-           style="cursor:pointer"
-           onerror="this.style.display='none';document.getElementById('hero-fallback').style.display='block'"
-           id="home-hero-video">
-        <source src="{{ $heroMp4 }}" type="video/mp4">
-    </video>
+    <div class="absolute inset-0 w-full h-full" id="hero-video-container">
+        <video autoplay muted loop playsinline preload="auto" controls
+               poster="{{ $heroPoster ?? media('kicc/venues/kicc-main-gate.jpg') }}"
+               class="w-full h-full object-cover"
+               style="cursor:pointer;min-height:100vh"
+               onerror="this.style.display='none';document.getElementById('hero-fallback').style.display='block'"
+               id="home-hero-video">
+            <source src="{{ $heroMp4 }}" type="video/mp4">
+        </video>
+    </div>
     <div id="hero-fallback" class="absolute inset-0 w-full h-full" style="display:none">
         <img src="{{ media('kicc/tower-night.jpg') }}" class="w-full h-full object-cover" alt="KICC">
     </div>
-    <div class="absolute inset-0 bg-gradient-to-r from-[#07090F] via-[#07090F]/70 to-transparent"></div>
-    <div class="absolute inset-0 bg-gradient-to-t from-[#07090F] via-transparent to-transparent"></div>
+    <div class="absolute inset-0 bg-gradient-to-r from-[#07090F] via-[#07090F]/70 to-transparent pointer-events-none"></div>
+    <div class="absolute inset-0 bg-gradient-to-t from-[#07090F] via-transparent to-transparent pointer-events-none"></div>
     <div class="relative max-w-7xl mx-auto px-5 pt-28 pb-20 w-full grid md:grid-cols-2 gap-10 items-center">
         <div>
             <h1 class="text-5xl sm:text-7xl md:text-8xl font-black text-white leading-[0.95] tracking-tight">

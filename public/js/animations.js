@@ -103,10 +103,28 @@ document.addEventListener('DOMContentLoaded', function () {
         var playPromise = video.play();
         if (playPromise !== undefined) {
             playPromise.catch(function () {
-                // Autoplay blocked — show controls and try on interaction
                 video.controls = true;
+                // Add a visible play button overlay
+                var container = video.parentElement || video.closest('[id$="-container"]') || video.parentNode;
+                if (container && !container.querySelector('.hero-play-button')) {
+                    var btn = document.createElement('button');
+                    btn.className = 'hero-play-button';
+                    btn.innerHTML = '<svg viewBox="0 0 24 24" width="64" height="64" fill="white"><circle cx="12" cy="12" r="11" fill="rgba(0,0,0,0.6)" stroke="white" stroke-width="1.5"/><polygon points="10,7 18,12 10,17" fill="white"/></svg>';
+                    btn.style.cssText = 'position:absolute;top:50%;left:50%;transform:translate(-50%,-50%);z-index:20;background:none;border:none;cursor:pointer;opacity:0.8;transition:opacity 0.3s';
+                    btn.onmouseenter = function() { btn.style.opacity = '1'; };
+                    btn.onmouseleave = function() { btn.style.opacity = '0.8'; };
+                    btn.onclick = function(e) {
+                        e.stopPropagation();
+                        video.play();
+                        btn.remove();
+                    };
+                    container.style.position = 'relative';
+                    container.appendChild(btn);
+                }
                 function tryPlay() {
                     video.play();
+                    var btn2 = container && container.querySelector('.hero-play-button');
+                    if (btn2) btn2.remove();
                     document.removeEventListener('click', tryPlay);
                     document.removeEventListener('touchstart', tryPlay);
                     document.removeEventListener('scroll', tryPlay);
@@ -114,6 +132,10 @@ document.addEventListener('DOMContentLoaded', function () {
                 document.addEventListener('click', tryPlay, { once: true });
                 document.addEventListener('touchstart', tryPlay, { once: true });
                 document.addEventListener('scroll', tryPlay, { once: true });
+                // Also try playing on first scroll (user is engaging)
+                window.addEventListener('scroll', function() {
+                    video.play();
+                }, { once: true });
             });
         }
     }

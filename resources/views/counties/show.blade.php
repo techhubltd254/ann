@@ -27,9 +27,8 @@ $kiccBlue = '#0B1E57';
         <video autoplay muted loop playsinline controls
                poster="{{ $heroPoster }}"
                class="w-full h-full object-cover absolute inset-0"
-               onloadeddata="this.style.opacity='1'"
                onerror="this.style.display='none';this.nextElementSibling.style.display='block'"
-               style="opacity:0;transition:opacity 0.8s;cursor:pointer"
+               style="cursor:pointer"
                id="county-hero-video">
             @if($heroWebm)
             <source src="{{ $heroWebm }}" type="video/webm">
