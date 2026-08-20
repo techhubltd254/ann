@@ -358,7 +358,7 @@
                     <h2 class="font-bold text-gray-900 text-sm mb-3">Current Hero Video</h2>
                     @if($heroAsset)
                     <div class="aspect-video bg-gray-900 rounded-xl overflow-hidden mb-3">
-                        <video autoplay muted loop playsinline preload="auto" class="w-full h-full object-cover" poster="{{ $heroAsset->posterUrl() }}">
+                        <video autoplay muted loop playsinline controls preload="auto" class="w-full h-full object-cover" poster="{{ $heroAsset->posterUrl() }}">
                             <source src="{{ $heroAsset->bestVideoUrl() }}" type="video/mp4">
                         </video>
                     </div>
