@@ -389,7 +389,7 @@
                 {{-- Upload New Video --}}
                 <div class="bg-white rounded-2xl border border-gray-200 p-5">
                     <h2 class="font-bold text-gray-900 text-sm mb-3">Upload New Video</h2>
-                    <p class="text-xs text-gray-400 mb-4">Accepted formats: MP4, WebM, MOV. Max 100 MB. The video will replace the current hero video immediately.</p>
+                    <p class="text-xs text-gray-400 mb-4">Accepted formats: MP4, WebM, MOV. Max 1 GB per upload.</p>
                     <form method="POST" action="{{ route('kicc.admin.hero.upload') }}" enctype="multipart/form-data" class="space-y-4">
                         @csrf
                         <div class="border-2 border-dashed border-gray-200 rounded-xl p-6 text-center hover:border-[#901C1E]/40 transition-colors cursor-pointer" onclick="document.getElementById('hero-video-input').click()">

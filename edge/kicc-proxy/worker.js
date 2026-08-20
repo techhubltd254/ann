@@ -3,6 +3,19 @@ export default {
     const url = new URL(request.url);
     const path = url.pathname;
 
+    // Handle CORS preflight
+    if (request.method === 'OPTIONS') {
+      return new Response(null, {
+        headers: {
+          'Access-Control-Allow-Origin': '*',
+          'Access-Control-Allow-Methods': 'GET, HEAD, OPTIONS',
+          'Access-Control-Allow-Headers': 'Range, Accept, Content-Type, Origin',
+          'Access-Control-Expose-Headers': 'Content-Type, Content-Length, Content-Range, Accept-Ranges',
+          'Access-Control-Max-Age': '86400',
+        },
+      })
+    }
+
     if (path.startsWith('/storage/')) {
       const key = path.replace('/storage/', '');
       const object = await env.MEDIA.get(key);
@@ -11,6 +24,8 @@ export default {
       object.writeHttpMetadata(headers);
       headers.set('cache-control', 'public, max-age=31536000, immutable');
       headers.set('accept-ranges', 'bytes');
+      headers.set('Access-Control-Allow-Origin', '*');
+      headers.set('Access-Control-Expose-Headers', 'Content-Type, Content-Length, Content-Range, Accept-Ranges');
       const range = request.headers.get('range');
       if (range) {
         const m = range.match(/bytes=(\d+)-(\d*)/);

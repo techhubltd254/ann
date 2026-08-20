@@ -16,6 +16,7 @@ use App\Services\MediaLibraryService;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Artisan;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Process;
 
 /**
  * KICC Overall Admin Portal — the platform owner's god-mode.
@@ -170,26 +171,60 @@ class KiccAdminController extends Controller
         $this->authorizeKicc();
 
         $request->validate([
-            'video' => ['required', 'file', 'mimes:mp4,webm,mov,avi', 'max:102400'],
+            'video' => ['required', 'file', 'mimes:mp4,webm,mov,avi', 'max:1024000'],
         ]);
 
         MediaAsset::forSlot('landing_page', 1, 'hero_video')->delete();
 
-        $asset = $library->store($request->file('video'), [
-            'owner_type' => 'landing_page',
+        $file = $request->file('video');
+        $uuid = (string) \Illuminate\Support\Str::uuid();
+        $ext = strtolower($file->getClientOriginalExtension() ?: 'mp4');
+        $path = "kicc/4d/{$uuid}.{$ext}";
+
+        // Upload to R2 directly
+        $uploaded = \Illuminate\Support\Facades\Storage::disk('r2')->put($path, fopen($file->getRealPath(), 'r'), ['visibility' => 'public']);
+        if (!$uploaded) {
+            return back()->withErrors(['video' => 'Failed to upload the file to storage. Check R2 configuration.']);
+        }
+
+        // Detect video dimensions via ffprobe (fallback to null)
+        $width = null;
+        $height = null;
+        try {
+            $ffprobe = \Illuminate\Support\Facades\Process::run("ffprobe -v error -select_streams v:0 -show_entries stream=width,height -of csv=p=0 " . escapeshellarg($file->getRealPath()));
+            if ($ffprobe->successful()) {
+                $parts = explode(',', trim($ffprobe->output()));
+                $width = (int) ($parts[0] ?? 0) ?: null;
+                $height = (int) ($parts[1] ?? 0) ?: null;
+            }
+        } catch (\Throwable) {
+            // ignore
+        }
+
+        $asset = MediaAsset::create([
+            'uuid' => $uuid,
             'owner_id' => 1,
+            'owner_type' => 'landing_page',
             'slot' => 'hero_video',
+            'disk' => 'r2',
+            'path' => $path,
+            'original_name' => $file->getClientOriginalName(),
+            'mime' => $file->getClientMimeType(),
+            'kind' => 'video',
+            'size_bytes' => $file->getSize(),
+            'width' => $width,
+            'height' => $height,
+            'status' => 'ready',
             'alt_text' => 'KICC Landing Page Hero Video',
         ]);
 
-        $asset->forceFill(['status' => 'ready'])->save();
         $asset->derivatives()->create([
             'kind' => 'video_mp4',
-            'path' => $asset->path,
+            'path' => $path,
             'mime' => $asset->mime,
             'size_bytes' => $asset->size_bytes,
-            'width' => $asset->width,
-            'height' => $asset->height,
+            'width' => $width,
+            'height' => $height,
             'variant' => '1080p',
         ]);
 

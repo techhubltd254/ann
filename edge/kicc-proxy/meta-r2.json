@@ -1,0 +1,7 @@
+{
+  "main_module": "worker-r2.js",
+  "compatibility_date": "2025-01-01",
+  "bindings": [
+    {"type": "r2_bucket", "name": "KICC_MEDIA", "bucket_name": "kicc-media"}
+  ]
+}

@@ -13,11 +13,11 @@
 const JSON_CT = { "content-type": "application/json" };
 // Bump on every deploy that changes origin output — instantly invalidates all
 // edge page-cache entries (they key on this version).
-const CACHE_VERSION = "v7";
+const CACHE_VERSION = "v8";
 
 // Purge must cover the live cache version (and the previous one, in case a
 // deploy is mid-flight) — not a stale hardcoded list.
-const CACHE_VERSIONS = [CACHE_VERSION, ...["v6", "v5", "v4", "v3", "v2"].filter((v) => v !== CACHE_VERSION)];
+const CACHE_VERSIONS = [CACHE_VERSION, ...["v7", "v6", "v5", "v4", "v3", "v2"].filter((v) => v !== CACHE_VERSION)];
 
 export default {
   async fetch(request, env, ctx) {
