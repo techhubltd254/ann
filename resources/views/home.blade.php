@@ -7,15 +7,11 @@
 {{-- HERO — exactly from Figma --}}
 <section class="relative min-h-screen flex items-center overflow-hidden section-transition" data-section="hero">
     <div class="absolute inset-0 w-full h-full overflow-hidden">
-        <video autoplay muted loop playsinline class="w-full h-full object-cover" id="kicc-hero-video" preload="auto" poster="{{ $heroPoster ?? media('kicc/4d/kicc_hero_poster.jpg') }}">
-            @if($heroWebm)<source src="{{ $heroWebm }}" type="video/webm">@endif
-            @if($heroVideo)<source src="{{ $heroVideo }}" type="video/mp4">@endif
-            <source src="{{ media('kicc/4d/hls/kicc_hero/master.m3u8') }}" type="application/vnd.apple.mpegurl">
-            <source src="{{ media('kicc/4d/kicc_hero.mp4') }}" type="video/mp4">
+        <video autoplay muted loop playsinline class="w-full h-full object-cover bg-[#07090F]" id="kicc-hero-video" preload="metadata" poster="{{ $heroPoster ?? media('kicc/4d/kicc_hero_poster.jpg') }}">
+            <source src="{{ $heroVideo ?? media('kicc/4d/kicc_hero.mp4') }}" type="video/mp4">
         </video>
-        <script src="https://cdn.jsdelivr.net/npm/hls.js@latest"></script>
         <script>
-        (function(){var v=document.getElementById('kicc-hero-video');var s=v.querySelector('source[type*="mpegurl"]').src;if(typeof Hls!=='undefined'&&Hls.isSupported()){var h=new Hls({enableWorker:true,maxBufferLength:30,maxMaxBufferLength:60,backBufferLength:10,lowLatencyMode:true});h.loadSource(s);h.attachMedia(v);h.on(Hls.Events.MANIFEST_PARSED,function(){v.play().catch(function(){})});}else if(v.canPlayType('application/vnd.apple.mpegurl')){v.src=s;v.addEventListener('loadedmetadata',function(){v.play()});}}());
+        (function(){var v=document.getElementById('kicc-hero-video');v.addEventListener('canplay',function(){v.play().catch(function(){})});})();
         </script>
         <div class="absolute inset-0 bg-gradient-to-r from-[#07090F]/40 via-[#07090F]/20 to-transparent"></div>
         <div class="absolute inset-0 bg-gradient-to-t from-[#07090F] via-transparent to-transparent"></div>
