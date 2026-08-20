@@ -24,8 +24,8 @@
     <div id="hero-fallback" class="absolute inset-0 w-full h-full" style="display:none">
         <img src="{{ media('kicc/tower-night.jpg') }}" class="w-full h-full object-cover" alt="KICC">
     </div>
-    <div class="absolute inset-0 bg-gradient-to-r from-[#07090F] via-[#07090F]/70 to-transparent pointer-events-none"></div>
-    <div class="absolute inset-0 bg-gradient-to-t from-[#07090F] via-transparent to-transparent pointer-events-none"></div>
+    <div class="absolute inset-0 bg-gradient-to-r from-black/40 via-black/10 to-transparent pointer-events-none"></div>
+    <div class="absolute inset-0 bg-gradient-to-t from-black/20 via-transparent to-transparent pointer-events-none"></div>
     <div class="relative max-w-7xl mx-auto px-5 pt-28 pb-20 w-full grid md:grid-cols-2 gap-10 items-center">
         <div>
             <h1 class="text-5xl sm:text-7xl md:text-8xl font-black text-white leading-[0.95] tracking-tight">
