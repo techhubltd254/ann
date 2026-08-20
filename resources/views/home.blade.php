@@ -9,10 +9,10 @@
     @php
         $heroAsset = \App\Models\MediaAsset::resolveSlot('landing_page', 1, 'hero_video');
         $heroMp4 = $heroAsset?->mp4Url();
-        $heroPoster = $heroAsset?->posterUrl() ?? media('kicc/tower-night.jpg');
+        $heroPoster = $heroAsset?->posterUrl() ?? media('kicc/venues/kicc-main-gate.jpg');
     @endphp
-    <video autoplay muted loop playsinline
-           poster="{{ $heroPoster }}"
+    <video autoplay muted loop playsinline preload="auto"
+           poster="{{ $heroPoster ?? media('kicc/venues/kicc-main-gate.jpg') }}"
            class="absolute inset-0 w-full h-full object-cover"
            onerror="this.style.display='none';document.getElementById('hero-fallback').style.display='block'">
         <source src="{{ $heroMp4 }}" type="video/mp4">
