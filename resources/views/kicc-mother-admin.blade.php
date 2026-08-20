@@ -347,6 +347,74 @@
                 </table>
             </div>
         </div>
+
+        {{-- HERO MEDIA TAB --}}
+        @elseif($tab === 'hero_media')
+        <div class="p-6">
+            <h1 class="text-xl font-black text-gray-900 mb-6">Landing Page Hero Media</h1>
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                {{-- Current Hero Video --}}
+                <div class="bg-white rounded-2xl border border-gray-200 p-5">
+                    <h2 class="font-bold text-gray-900 text-sm mb-3">Current Hero Video</h2>
+                    @if($heroAsset)
+                    <div class="aspect-video bg-gray-900 rounded-xl overflow-hidden mb-3">
+                        <video autoplay muted loop playsinline preload="auto" class="w-full h-full object-cover" poster="{{ $heroAsset->posterUrl() }}">
+                            <source src="{{ $heroAsset->bestVideoUrl() }}" type="video/mp4">
+                        </video>
+                    </div>
+                    <div class="text-xs text-gray-500 space-y-1">
+                        <div><strong>Status:</strong> <span class="text-green-600 font-semibold">Active (MediaAsset #{{ $heroAsset->id }})</span></div>
+                        <div><strong>Path:</strong> <code class="text-[10px] bg-gray-100 px-1.5 py-0.5 rounded">{{ $heroAsset->path }}</code></div>
+                        <div><strong>Size:</strong> {{ number_format($heroAsset->size_bytes / 1024 / 1024, 1) }} MB</div>
+                        <div><strong>Dimensions:</strong> {{ $heroAsset->width }}x{{ $heroAsset->height }}</div>
+                        @if($heroAsset->derivatives->count())
+                        <div><strong>Derivatives:</strong> {{ $heroAsset->derivatives->pluck('kind')->join(', ') }}</div>
+                        @endif
+                    </div>
+                    <form method="POST" action="{{ route('kicc.admin.hero.delete') }}" class="mt-4" onsubmit="return confirm('Remove the active hero video? The homepage will fall back to the default video.')">
+                        @csrf
+                        <button type="submit" class="h-10 px-5 rounded-xl bg-red-50 text-red-600 font-bold text-xs hover:bg-red-100 transition-all border border-red-200">Delete Hero Video</button>
+                    </form>
+                    @else
+                    <div class="aspect-video bg-gray-100 rounded-xl flex items-center justify-center mb-3">
+                        <div class="text-center text-gray-400">
+                            <svg class="w-12 h-12 mx-auto mb-2" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M15 10l4.553-2.276A1 1 0 0121 8.618v6.764a1 1 0 01-1.447.894L15 14M5 18h8a2 2 0 002-2V8a2 2 0 00-2-2H5a2 2 0 00-2 2v8a2 2 0 002 2z"/></svg>
+                            <div class="text-sm font-semibold">No hero video set</div>
+                            <div class="text-xs mt-1">Homepage uses default fallback video</div>
+                        </div>
+                    </div>
+                    @endif
+                </div>
+
+                {{-- Upload New Video --}}
+                <div class="bg-white rounded-2xl border border-gray-200 p-5">
+                    <h2 class="font-bold text-gray-900 text-sm mb-3">Upload New Video</h2>
+                    <p class="text-xs text-gray-400 mb-4">Accepted formats: MP4, WebM, MOV. Max 100 MB. The video will replace the current hero video immediately.</p>
+                    <form method="POST" action="{{ route('kicc.admin.hero.upload') }}" enctype="multipart/form-data" class="space-y-4">
+                        @csrf
+                        <div class="border-2 border-dashed border-gray-200 rounded-xl p-6 text-center hover:border-[#901C1E]/40 transition-colors cursor-pointer" onclick="document.getElementById('hero-video-input').click()">
+                            <svg class="w-10 h-10 mx-auto text-gray-300 mb-2" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M7 16a4 4 0 01-.88-7.903A5 5 0 1115.9 6L16 6a5 5 0 011 9.9M15 13l-3-3m0 0l-3 3m3-3v12"/></svg>
+                            <div class="text-sm text-gray-500 font-medium">Click to select video file</div>
+                            <div class="text-xs text-gray-400 mt-1" id="hero-file-name"></div>
+                            <input type="file" name="video" id="hero-video-input" accept="video/mp4,video/webm,video/quicktime" class="hidden" onchange="document.getElementById('hero-file-name').textContent=this.files[0].name">
+                        </div>
+                        <button type="submit" class="w-full h-12 rounded-xl bg-[#901C1E] text-white font-bold text-sm hover:bg-[#7b1618] transition-all active:scale-[0.98]">Upload & Set as Hero</button>
+                    </form>
+                </div>
+            </div>
+
+            {{-- Help Section --}}
+            <div class="mt-6 bg-blue-50 border border-blue-200 rounded-2xl p-5">
+                <h3 class="font-bold text-gray-900 text-sm mb-2">How it works</h3>
+                <ul class="text-xs text-gray-600 space-y-1 list-disc list-inside">
+                    <li>The landing page hero video is managed through this panel using the MediaAsset pipeline system</li>
+                    <li>Same system used by county portals for their hero videos (Muranga county works this way)</li>
+                    <li>Upload a video file and it becomes the homepage hero immediately</li>
+                    <li>Delete to revert to the default fallback video</li>
+                    <li>For best results: 1280x720 or 1920x1080, H.264 encoded MP4, under 30 MB</li>
+                </ul>
+            </div>
+        </div>
         @endif
     </div>
 </div>

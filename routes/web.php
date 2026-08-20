@@ -145,6 +145,8 @@ Route::middleware('auth')->group(function () {
     Route::get('/kicc-admin', [\App\Http\Controllers\Web\KiccAdminController::class, 'index'])->name('kicc.admin')->middleware('admin:kicc');
     Route::post('/kicc-admin/escrow/{id}/release', [\App\Http\Controllers\Web\KiccAdminController::class, 'releaseEscrow'])->name('kicc.admin.escrow.release')->middleware('admin:kicc');
     Route::post('/kicc-admin/artisan', [\App\Http\Controllers\Web\KiccAdminController::class, 'runCommand'])->name('kicc.admin.artisan')->middleware('admin:kicc');
+    Route::post('/kicc-admin/hero/upload', [\App\Http\Controllers\Web\KiccAdminController::class, 'uploadHeroVideo'])->name('kicc.admin.hero.upload')->middleware('admin:kicc');
+    Route::post('/kicc-admin/hero/delete', [\App\Http\Controllers\Web\KiccAdminController::class, 'deleteHeroVideo'])->name('kicc.admin.hero.delete')->middleware('admin:kicc');
     // National Government Exhibitor Portal
     Route::get('/national-admin', [\App\Http\Controllers\Web\NationalPortalController::class, 'index'])->name('national.admin')->middleware('admin:national');
 Route::post('/national-admin/ministries', [\App\Http\Controllers\Web\NationalPortalController::class, 'storeMinistry'])->name('national.admin.ministry.store')->middleware('admin:national');

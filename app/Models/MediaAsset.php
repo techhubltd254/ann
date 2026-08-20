@@ -12,7 +12,21 @@ class MediaAsset extends Model
     protected $fillable = [
         'uuid', 'owner_id', 'owner_type', 'slot', 'disk', 'path', 'original_name',
         'mime', 'kind', 'size_bytes', 'width', 'height', 'status', 'alt_text', 'metadata',
+        'contentType', 'createdAt', 'originalName', 'sizeBytes', 'storageKey',
+        'thumbKey', 'uploadedByUserId',
     ];
+
+    protected static function booted(): void
+    {
+        static::creating(function (self $asset) {
+            $asset->contentType ??= $asset->mime;
+            $asset->createdAt ??= (string) now();
+            $asset->originalName ??= $asset->original_name;
+            $asset->sizeBytes ??= $asset->size_bytes;
+            $asset->storageKey ??= $asset->path;
+            $asset->uploadedByUserId ??= 0;
+        });
+    }
 
     protected function casts(): array
     {

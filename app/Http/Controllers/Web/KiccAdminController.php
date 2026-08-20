@@ -8,9 +8,11 @@ use App\Models\County;
 use App\Models\EscrowTransaction;
 use App\Models\Marketplace\Order;
 use App\Models\Marketplace\Product;
+use App\Models\MediaAsset;
 use App\Models\Ministry;
 use App\Models\Payment\PaymentIntent;
 use App\Models\User;
+use App\Services\MediaLibraryService;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Artisan;
 use Illuminate\Support\Facades\Auth;
@@ -72,6 +74,8 @@ class KiccAdminController extends Controller
         $escrows = EscrowTransaction::with('buyer', 'seller')->latest()->take(50)->get();
         $users = User::with('roles')->latest()->take(50)->get();
 
+        $heroAsset = MediaAsset::resolveSlot('landing_page', 1, 'hero_video');
+
         // Provider certification queue (pending services across travel providers)
         $providers = User::where('account_type', 'provider')->get();
         $pendingServices = collect()
@@ -91,12 +95,13 @@ class KiccAdminController extends Controller
             ['label' => 'Providers', 'tab' => 'providers', 'icon' => 'M9 12l2 2 4-4m5.618-4.016A11.955 11.955 0 0112 2.944a11.955 11.955 0 01-8.618 3.04A12.02 12.02 0 003 9c0 5.591 3.824 10.29 9 11.622 5.176-1.332 9-6.03 9-11.622 0-1.042-.133-2.052-.382-3.016z'],
             ['label' => 'Escrow', 'tab' => 'escrow', 'icon' => 'M12 8c-1.657 0-3 .895-3 2s1.343 2 3 2 3 .895 3 2-1.343 2-3 2m0-8c1.11 0 2.08.402 2.599 1M12 8V7m0 1v8m0 0v1m0-1c-1.11 0-2.08-.402-2.599-1'],
             ['label' => 'Users', 'tab' => 'users', 'icon' => 'M12 4.354a4 4 0 110 5.292M15 21H3v-1a6 6 0 0112 0v1zm0 0h6v-1a6 6 0 00-9-5.197'],
+            ['label' => 'Hero Media', 'tab' => 'hero_media', 'icon' => 'M15 10l4.553-2.276A1 1 0 0121 8.618v6.764a1 1 0 01-1.447.894L15 14M5 18h8a2 2 0 002-2V8a2 2 0 00-2-2H5a2 2 0 00-2 2v8a2 2 0 002 2z'],
         ];
 
         return view('kicc-mother-admin', compact(
             'stats', 'counties', 'exhibitors', 'ministries',
             'orders', 'escrows', 'users', 'providers',
-            'pendingServices', 'navItems', 'tab',
+            'pendingServices', 'navItems', 'tab', 'heroAsset',
         ));
     }
 
@@ -158,5 +163,45 @@ class KiccAdminController extends Controller
             'exit_code' => $exitCode,
             'output' => $output,
         ]);
+    }
+
+    public function uploadHeroVideo(Request $request, MediaLibraryService $library)
+    {
+        $this->authorizeKicc();
+
+        $request->validate([
+            'video' => ['required', 'file', 'mimes:mp4,webm,mov,avi', 'max:102400'],
+        ]);
+
+        MediaAsset::forSlot('landing_page', 1, 'hero_video')->delete();
+
+        $asset = $library->store($request->file('video'), [
+            'owner_type' => 'landing_page',
+            'owner_id' => 1,
+            'slot' => 'hero_video',
+            'alt_text' => 'KICC Landing Page Hero Video',
+        ]);
+
+        $asset->forceFill(['status' => 'ready'])->save();
+        $asset->derivatives()->create([
+            'kind' => 'video_mp4',
+            'path' => $asset->path,
+            'mime' => $asset->mime,
+            'size_bytes' => $asset->size_bytes,
+            'width' => $asset->width,
+            'height' => $asset->height,
+            'variant' => '1080p',
+        ]);
+
+        return redirect()->route('kicc.admin', ['tab' => 'hero_media'])->with('success', 'Hero video uploaded and set as active.');
+    }
+
+    public function deleteHeroVideo()
+    {
+        $this->authorizeKicc();
+
+        MediaAsset::forSlot('landing_page', 1, 'hero_video')->delete();
+
+        return redirect()->route('kicc.admin', ['tab' => 'hero_media'])->with('success', 'Hero video removed. Homepage will use fallback video.');
     }
 }
