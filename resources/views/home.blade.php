@@ -5,14 +5,11 @@
 
 @section('content')
 {{-- HERO — exactly from Figma --}}
-<section class="relative min-h-screen flex items-center overflow-hidden section-transition" data-section="hero">
-    <div class="absolute inset-0 w-full h-full overflow-hidden">
-        <video autoplay muted loop playsinline class="w-full h-full object-cover bg-[#07090F]" id="kicc-hero-video" preload="metadata" poster="{{ $heroPoster ?? media('kicc/4d/kicc_hero_poster.jpg') }}">
+<section class="relative min-h-screen flex items-center overflow-hidden section-transition bg-[#07090F]" data-section="hero">
+    <div class="absolute inset-0 w-full h-full overflow-hidden bg-[#07090F]">
+        <video autoplay muted loop playsinline class="w-full h-full object-cover bg-[#07090F]" id="kicc-hero-video" preload="auto" poster="{{ $heroPoster ?? media('kicc/4d/kicc_hero_poster.jpg') }}">
             <source src="{{ $heroVideo ?? media('kicc/4d/kicc_hero.mp4') }}" type="video/mp4">
         </video>
-        <script>
-        (function(){var v=document.getElementById('kicc-hero-video');v.addEventListener('canplay',function(){v.play().catch(function(){})});})();
-        </script>
         <div class="absolute inset-0 bg-gradient-to-r from-[#07090F]/40 via-[#07090F]/20 to-transparent"></div>
         <div class="absolute inset-0 bg-gradient-to-t from-[#07090F] via-transparent to-transparent"></div>
     <div class="relative max-w-7xl mx-auto px-5 pt-28 pb-20 w-full grid md:grid-cols-2 gap-10 items-center">
