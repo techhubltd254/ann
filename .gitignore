@@ -51,7 +51,14 @@ datasets/
 .idea/
 .vscode/
 
-# heavy artifacts & secrets (never commit)
+# kicc-video binaries (R2 delivers these, not git)
+kicc-video/segments/*.mp4
+kicc-video/segments/*.jpg
+kicc-video/images/*.jpg
+kicc-video/images/*.png
+kicc-video/final/*.mp4
+kicc-video/preview/*.jpg
+kicc-video/preview/*.png
 dist/
 .tools/
 data/holographic/
