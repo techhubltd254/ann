@@ -153,6 +153,12 @@ async function handle(request, env, ctx) {
       ctx.waitUntil(caches.default.put(cacheKey, tagged.clone()));
       return tagged;
     }
+    // Never cache /counties at the CDN level (dynamic filtering)
+    if (url.pathname === "/counties" || url.pathname === "/counties/") {
+      const fresh = new Response(res.body, res);
+      fresh.headers.set("Cache-Control", "no-cache, no-store, must-revalidate");
+      return fresh;
+    }
     return withCookies(res, url.host);
 }
 
@@ -188,6 +194,10 @@ async function proxy(request, host, url, { cache, scheme = "http" }) {
   headers.set("X-Forwarded-Host", url.host);
   headers.set("X-Forwarded-Proto", "https");
   headers.set("X-Forwarded-For", request.headers.get("CF-Connecting-IP") ?? "");
+  // Never cache /counties at the origin (dynamic JS filtering)
+  if (url.pathname === "/counties" || url.pathname === "/counties/") {
+    headers.set("Cache-Control", "no-cache, no-store, must-revalidate");
+  }
   const init = {
     method: request.method,
     headers,
