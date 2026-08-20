@@ -11,10 +11,12 @@
         $heroMp4 = $heroAsset?->mp4Url();
         $heroPoster = $heroAsset?->posterUrl() ?? media('kicc/venues/kicc-main-gate.jpg');
     @endphp
-    <video autoplay muted loop playsinline preload="auto"
+    <video autoplay muted loop playsinline preload="auto" controls
            poster="{{ $heroPoster ?? media('kicc/venues/kicc-main-gate.jpg') }}"
            class="absolute inset-0 w-full h-full object-cover"
-           onerror="this.style.display='none';document.getElementById('hero-fallback').style.display='block'">
+           style="cursor:pointer"
+           onerror="this.style.display='none';document.getElementById('hero-fallback').style.display='block'"
+           id="home-hero-video">
         <source src="{{ $heroMp4 }}" type="video/mp4">
     </video>
     <div id="hero-fallback" class="absolute inset-0 w-full h-full" style="display:none">

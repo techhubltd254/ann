@@ -97,17 +97,27 @@ document.addEventListener('DOMContentLoaded', function () {
         splitObserver.observe(el);
     });
 
-    // ── Video play fix (ensure autoplay works) ──
-    var heroVideo = document.querySelector('video');
-    if (heroVideo) {
-        var playPromise = heroVideo.play();
+    // ── Video play fix (ensure autoplay works everywhere - YouTube/Netflix style) ──
+    function ensureVideoPlays(video) {
+        if (!video) return;
+        var playPromise = video.play();
         if (playPromise !== undefined) {
             playPromise.catch(function () {
-                // Autoplay blocked — try again on user interaction
-                document.addEventListener('click', function () {
-                    heroVideo.play();
-                }, { once: true });
+                // Autoplay blocked — show controls and try on interaction
+                video.controls = true;
+                function tryPlay() {
+                    video.play();
+                    document.removeEventListener('click', tryPlay);
+                    document.removeEventListener('touchstart', tryPlay);
+                    document.removeEventListener('scroll', tryPlay);
+                }
+                document.addEventListener('click', tryPlay, { once: true });
+                document.addEventListener('touchstart', tryPlay, { once: true });
+                document.addEventListener('scroll', tryPlay, { once: true });
             });
         }
     }
+
+    var heroVideos = document.querySelectorAll('video[id$="hero-video"], video[autoplay]');
+    heroVideos.forEach(ensureVideoPlays);
 });

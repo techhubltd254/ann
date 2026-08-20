@@ -24,12 +24,13 @@ $kiccBlue = '#0B1E57';
             $heroPosterImg = $countyMedia?->thumbnailUrl() ?? media('counties/' . $county->slug . '/hero.jpeg');
             $fallbackVideo = file_exists(public_path('videos/' . $county->slug . '.mp4')) ? asset('videos/' . $county->slug . '.mp4') : asset('videos/mombasa.mp4');
         @endphp
-        <video autoplay muted loop playsinline
+        <video autoplay muted loop playsinline controls
                poster="{{ $heroPoster }}"
                class="w-full h-full object-cover absolute inset-0"
                onloadeddata="this.style.opacity='1'"
                onerror="this.style.display='none';this.nextElementSibling.style.display='block'"
-               style="opacity:0;transition:opacity 0.8s">
+               style="opacity:0;transition:opacity 0.8s;cursor:pointer"
+               id="county-hero-video">
             @if($heroWebm)
             <source src="{{ $heroWebm }}" type="video/webm">
             @endif
