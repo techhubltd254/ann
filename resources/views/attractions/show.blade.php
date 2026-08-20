@@ -26,7 +26,7 @@
             </a>
             <h1 class="text-4xl font-black text-gray-900" data-split>{{ $attraction->name }}</h1>
             <div class="flex flex-wrap items-center gap-3 mt-2">
-                <span class="text-[#046bd2] text-xs font-bold uppercase tracking-widest">{{ $attraction->category ?? 'Attraction' }}</span>
+                <span class="text-[#0B1E57] text-xs font-bold uppercase tracking-widest">{{ $attraction->category ?? 'Attraction' }}</span>
                 @if($attraction->location)<span class="text-gray-500 text-sm">📍 {{ $attraction->location }}</span>@endif
                 @if($attraction->opening_hours)<span class="text-gray-500 text-sm">🕐 {{ $attraction->opening_hours }}</span>@endif
             </div>
@@ -51,8 +51,8 @@
             <h3 class="text-gray-900 font-black mt-10 mb-4">Complete your day in {{ $attraction->county->name }}</h3>
             <div class="grid sm:grid-cols-3 gap-4">
                 @foreach($recommended as $r)
-                <a href="{{ route('attractions.show', $r->id) }}" class="bg-gray-50 border border-gray-200 rounded-2xl p-4 hover:border-[#046bd2]/40 transition-all group">
-                    <div class="font-bold text-gray-900 text-sm group-hover:text-[#046bd2] transition-colors">{{ $r->name }}</div>
+                <a href="{{ route('attractions.show', $r->id) }}" class="bg-gray-50 border border-gray-200 rounded-2xl p-4 hover:border-[#0B1E57]/40 transition-all group">
+                    <div class="font-bold text-gray-900 text-sm group-hover:text-[#0B1E57] transition-colors">{{ $r->name }}</div>
                     <div class="text-gray-400 text-xs mt-1">Also bookable · from KES {{ number_format(($r->entry_fee ?: 500)) }}</div>
                 </a>
                 @endforeach
@@ -67,7 +67,7 @@
                     <div class="text-2xl font-black text-gray-900">KES {{ number_format($entryFee) }}</div>
                     <div class="text-xs text-gray-400">per guest entry</div>
                 </div>
-                <div class="text-[10px] font-bold uppercase tracking-widest text-[#046bd2] mb-5">Instant booking · escrow protected</div>
+                <div class="text-[10px] font-bold uppercase tracking-widest text-[#0B1E57] mb-5">Instant booking · escrow protected</div>
 
                 @if($errors->any())
                 <div class="bg-red-50 border border-red-200 text-red-600 rounded-xl px-4 py-2.5 mb-4 text-xs">{{ $errors->first() }}</div>
@@ -75,9 +75,9 @@
 
                 <form method="POST" action="{{ route('attractions.book', $attraction->id) }}" class="space-y-3">
                     @csrf
-                    <input type="text" name="name" required placeholder="Your full name *" class="w-full h-11 px-4 rounded-xl bg-[#F9FAFB] border border-gray-200 text-sm outline-none focus:ring-2 focus:ring-[#046bd2]/60">
-                    <input type="email" name="email" required placeholder="Email *" class="w-full h-11 px-4 rounded-xl bg-[#F9FAFB] border border-gray-200 text-sm outline-none focus:ring-2 focus:ring-[#046bd2]/60">
-                    <input type="tel" name="phone" required placeholder="Phone (M-Pesa) *" class="w-full h-11 px-4 rounded-xl bg-[#F9FAFB] border border-gray-200 text-sm outline-none focus:ring-2 focus:ring-[#046bd2]/60">
+                    <input type="text" name="name" required placeholder="Your full name *" class="w-full h-11 px-4 rounded-xl bg-[#F9FAFB] border border-gray-200 text-sm outline-none focus:ring-2 focus:ring-[#0B1E57]/60">
+                    <input type="email" name="email" required placeholder="Email *" class="w-full h-11 px-4 rounded-xl bg-[#F9FAFB] border border-gray-200 text-sm outline-none focus:ring-2 focus:ring-[#0B1E57]/60">
+                    <input type="tel" name="phone" required placeholder="Phone (M-Pesa) *" class="w-full h-11 px-4 rounded-xl bg-[#F9FAFB] border border-gray-200 text-sm outline-none focus:ring-2 focus:ring-[#0B1E57]/60">
                     <div class="grid grid-cols-2 gap-2">
                         <div>
                             <label class="text-[10px] font-bold text-gray-400 uppercase">Visit date</label>
@@ -94,8 +94,8 @@
                         <div class="text-[10px] font-bold text-gray-400 uppercase tracking-wider mb-2">Suggested for this trip — optional</div>
                         <div class="space-y-2">
                             @foreach($addons as $key => $a)
-                            <label class="flex items-start gap-3 border border-gray-200 rounded-xl p-3 cursor-pointer hover:border-[#046bd2]/40 transition-all">
-                                <input type="checkbox" name="addons[]" value="{{ $key }}" x-model="addons.{{ $key }}" class="mt-1 accent-[#046bd2]">
+                            <label class="flex items-start gap-3 border border-gray-200 rounded-xl p-3 cursor-pointer hover:border-[#0B1E57]/40 transition-all">
+                                <input type="checkbox" name="addons[]" value="{{ $key }}" x-model="addons.{{ $key }}" class="mt-1 accent-[#0B1E57]">
                                 <span class="flex-1">
                                     <span class="block text-xs font-bold text-gray-900">{{ $a['label'] }}</span>
                                     <span class="block text-[10px] text-gray-400">{{ $a['desc'] }}</span>
@@ -110,7 +110,7 @@
                         <span class="text-sm font-bold text-gray-500">Total</span>
                         <span class="text-xl font-black text-gray-900">KES <span x-text="total()"></span></span>
                     </div>
-                    <button type="submit" class="w-full h-12 rounded-xl bg-[#046bd2] text-white font-black text-sm hover:bg-[#045cb4] transition-all active:scale-[0.98]">
+                    <button type="submit" class="w-full h-12 rounded-xl bg-[#0B1E57] text-white font-black text-sm hover:bg-[#0D2A7A] transition-all active:scale-[0.98]">
                         Book &amp; Pay
                     </button>
                     <p class="text-gray-400 text-[10px] text-center">M-Pesa · Card · Escrow protected until your visit</p>

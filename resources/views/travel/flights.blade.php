@@ -7,7 +7,7 @@
     inv: null, invPrice: 0, room: null, roomPrice: 0, nights: 2, transfer: null, transferPrice: 0, passengers: 1,
     total() { return (this.invPrice * this.passengers) + (this.roomPrice * this.nights) + this.transferPrice; }
 }">
-    <div class="bg-gradient-to-r from-[#0EA5E9] to-[#046bd2] py-10">
+    <div class="bg-gradient-to-r from-[#0EA5E9] to-[#0B1E57] py-10">
         <div class="max-w-6xl mx-auto px-5">
             <a href="{{ route('travel.index') }}" class="text-gray-600 hover:text-gray-900 text-sm mb-2 inline-block">← All destinations</a>
             <h1 class="text-3xl font-black text-gray-900" data-split>{{ $origin->city }} → {{ $destination->city }}</h1>
@@ -35,7 +35,7 @@
             @forelse($flights as $f)
             <button type="button" @click="inv = {{ $f->inventory_id }}; invPrice = {{ $f->price }}"
                     class="w-full bg-white border-2 rounded-2xl p-5 text-left transition-all"
-                    :class="inv === {{ $f->inventory_id }} ? 'border-[#046bd2] shadow-lg shadow-[#046bd2]/10' : 'border-gray-200 hover:border-gray-300'">
+                    :class="inv === {{ $f->inventory_id }} ? 'border-[#0B1E57] shadow-lg shadow-[#0B1E57]/10' : 'border-gray-200 hover:border-gray-300'">
                 <div class="flex flex-wrap items-center justify-between gap-4">
                     <div class="flex items-center gap-4">
                         <div class="w-11 h-11 rounded-xl bg-[#0EA5E9]/10 flex items-center justify-center font-black text-[#0EA5E9] text-xs">{{ $f->iata_code }}</div>
@@ -68,7 +68,7 @@
                     @foreach($h->rooms as $r)
                     <button type="button" @click="room = {{ $r->id }}; roomPrice = {{ $r->price_per_night }}"
                             class="bg-white border-2 rounded-2xl p-4 text-left transition-all"
-                            :class="room === {{ $r->id }} ? 'border-[#046bd2]' : 'border-gray-200 hover:border-gray-300'">
+                            :class="room === {{ $r->id }} ? 'border-[#0B1E57]' : 'border-gray-200 hover:border-gray-300'">
                         <div class="text-[10px] font-bold text-[#F59E0B] uppercase">{{ $h->star_rating }}★ {{ $h->name }}</div>
                         <div class="font-bold text-gray-900 text-sm mt-1">{{ $r->name }}</div>
                         <div class="text-xs text-gray-400">Sleeps {{ $r->max_guests }}</div>
@@ -89,7 +89,7 @@
                 @foreach($transfers as $t)
                 <button type="button" @click="transfer = {{ $t->id }}; transferPrice = {{ $t->price }}"
                         class="bg-white border-2 rounded-2xl p-4 text-left transition-all"
-                        :class="transfer === {{ $t->id }} ? 'border-[#046bd2]' : 'border-gray-200 hover:border-gray-300'">
+                        :class="transfer === {{ $t->id }} ? 'border-[#0B1E57]' : 'border-gray-200 hover:border-gray-300'">
                     <div class="text-2xl mb-2">{{ $t->vehicle_type === 'helicopter' ? '🚁' : ($t->vehicle_type === 'van' ? '🚐' : '🚗') }}</div>
                     <div class="font-bold text-gray-900 text-sm capitalize">{{ $t->vehicle_type }}</div>
                     <div class="text-xs text-gray-400">{{ $t->provider_name }} · seats {{ $t->capacity }}</div>

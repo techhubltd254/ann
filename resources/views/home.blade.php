@@ -5,13 +5,14 @@
 
 @section('content')
 {{-- HERO — exactly from Figma --}}
-<section class="relative min-h-screen flex items-center overflow-hidden section-transition bg-[#07090F]" data-section="hero">
-    <div class="absolute inset-0 w-full h-full overflow-hidden bg-[#07090F]">
-        <video autoplay muted loop playsinline class="w-full h-full object-cover bg-[#07090F]" id="kicc-hero-video" preload="metadata" poster="{{ $heroPoster ?? media('kicc/4d/kicc_hero_poster.jpg') }}">
-            <source src="{{ $heroVideo ?? media('kicc/4d/kicc_hero.mp4') }}" type="video/mp4">
-        </video>
-        <div class="absolute inset-0 bg-gradient-to-r from-[#07090F]/40 via-[#07090F]/20 to-transparent"></div>
-        <div class="absolute inset-0 bg-gradient-to-t from-[#07090F] via-transparent to-transparent"></div>
+<section class="relative min-h-screen flex items-center overflow-hidden section-transition" data-section="hero">
+    <div x-data="{ current: 1, imgs: ['{{ media('kicc/tower-night.jpg') }}', '{{ media('kicc/exterior-1.jpg') }}', '{{ media('kicc/tsavo-hall.jpg') }}'] }" x-init="setInterval(() => current = current === imgs.length - 1 ? 0 : current + 1, 5000)" class="absolute inset-0 w-full h-full" data-depth="0.4">
+        <template x-for="(img, i) in imgs" :key="i">
+            <img :src="img" :class="{ 'opacity-100': current === i, 'opacity-0': current !== i } absolute inset-0 w-full h-full object-cover transition-opacity duration-1000" alt="KICC">
+        </template>
+    </div>
+    <div class="absolute inset-0 bg-gradient-to-r from-[#07090F] via-[#07090F]/80 to-transparent"></div>
+    <div class="absolute inset-0 bg-gradient-to-t from-[#07090F] via-transparent to-transparent"></div>
     <div class="relative max-w-7xl mx-auto px-5 pt-28 pb-20 w-full grid md:grid-cols-2 gap-10 items-center">
         <div>
             <div class="flex items-center gap-3 mb-6 hero-entrance">
@@ -73,7 +74,48 @@
     </div>
 </section>
 
-{{-- NATIONAL GOVERNMENT — now a top-nav item (not on homepage) --}}
+{{-- NATIONAL GOVERNMENT — ministries, sectors & agencies --}}
+<section class="border-y border-gray-100 py-20 bg-white to-[#07090F] section-transition" data-section="national">
+    <div class="max-w-7xl mx-auto px-5">
+        <div class="flex items-end justify-between mb-10" data-reveal>
+            <div>
+                <div class="flex items-center gap-3 mb-3">
+                    <img src="{{ media('kicc/kicc-logo.png') }}" alt="KICC" class="h-7 w-auto">
+                    <span class="text-[#FFCD05] text-xs font-bold tracking-[0.25em] uppercase">National Pavilion</span>
+                </div>
+                <h2 class="text-3xl md:text-4xl font-black text-gray-900 leading-[1.1]" data-split>National Government<br><span class="text-[#FFCD05]">Sectors &amp; Agencies</span></h2>
+                <p class="text-gray-400 mt-3 text-base max-w-xl leading-relaxed">The Government of Kenya exhibits here too — every ministry with its agencies and the economic sectors they drive.</p>
+            </div>
+            <a href="{{ route('national.admin') }}" class="hidden md:inline-flex items-center justify-center gap-2 font-bold tracking-wide transition-all duration-200 px-4 text-xs h-9 rounded-xl bg-gray-100 text-gray-900 hover:bg-gray-100 border border-gray-200 shrink-0 card-hover">National portal</a>
+        </div>
+
+        {{-- Sector chips --}}
+        @if(($sectors ?? collect())->isNotEmpty())
+        <div class="flex flex-wrap gap-2 mb-10" data-reveal>
+            @foreach($sectors as $s)
+            <a href="{{ route('counties.index') }}" class="px-3.5 py-1.5 rounded-full text-xs font-bold bg-[#0B1E57]/10 text-[#0B1E57] border border-[#0B1E57]/25 hover:bg-[#0B1E57]/20 transition-all">{{ $s->name }}</a>
+            @endforeach
+        </div>
+        @endif
+
+        <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-5 gap-4">
+            @foreach(($ministries ?? collect())->take(10) as $i => $m)
+            <a href="{{ route('national.site', $m->slug) }}" class="group bg-gray-50 rounded-2xl p-5 border border-gray-100 hover:border-[#FFCD05]/40 transition-all card-hover" data-reveal data-reveal-delay="{{ ($i % 5) * 60 }}">
+                <div class="w-10 h-10 rounded-xl flex items-center justify-center text-gray-900 font-black text-[10px] mb-4" style="background: {{ $m->color ?: '#0EA5E9' }}">{{ $m->code }}</div>
+                <div class="font-bold text-gray-900 text-sm leading-snug mb-2 group-hover:text-[#FFCD05] transition-colors">{{ $m->name }}</div>
+                <div class="text-gray-400 text-[10px] font-bold uppercase tracking-widest">{{ $m->agencies->count() }} {{ Str::plural('agency', $m->agencies->count()) }}</div>
+                @if($m->agencies->isNotEmpty())
+                <div class="mt-3 pt-3 border-t border-gray-100 space-y-1">
+                    @foreach($m->agencies->take(2) as $a)
+                    <div class="text-[11px] text-gray-400 truncate">· {{ $a->name }}</div>
+                    @endforeach
+                </div>
+                @endif
+            </a>
+            @endforeach
+        </div>
+    </div>
+</section>
 
 {{-- MARKETPLACE — Figma exact --}}
 <section class="border-y border-gray-100 py-20 bg-white section-transition" data-section="marketplace">
@@ -223,111 +265,7 @@
     </div>
 </section>
 
-{{-- KICC SERVICES & AMENITIES — extracted from kicc.co.ke --}}
-<section class="max-w-7xl mx-auto px-5 py-20 section-transition" data-section="services">
-    <div data-reveal>
-        <div class="flex flex-col md:flex-row md:items-end justify-between mb-10 gap-4">
-            <div>
-                <div class="flex items-center gap-3 mb-3">
-                    <div class="h-px w-8 bg-[#FFCD05]"></div>
-                    <span class="text-[#FFCD05] text-xs font-bold tracking-[0.2em] uppercase">Services &amp; Amenities</span>
-                </div>
-                <h2 class="text-3xl md:text-4xl font-black text-gray-900 leading-[1.1]" data-split>Everything Your Event Needs<br><span class="text-[#FFCD05]">Under One Roof</span></h2>
-                <p class="text-gray-400 mt-3 text-base max-w-xl leading-relaxed">The same services listed on kicc.co.ke — bookable with any venue on this platform.</p>
-            </div>
-            <a href="{{ route('venues.index') }}" class="inline-flex items-center justify-center gap-2 font-bold tracking-wide transition-all duration-200 px-4 text-xs h-9 rounded-xl bg-gray-100 text-gray-900 hover:bg-gray-100 border border-gray-200 shrink-0 card-hover">
-                Book a venue
-                <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 8l4 4m0 0l-4 4m4-4H3"/></svg>
-            </a>
-        </div>
-    </div>
-    @php
-        $kiccServices = [
-            ['name' => 'Audio Visual Equipment', 'img' => 'kicc/venues/inside-tsavo-5.jpg', 'desc' => 'PA systems, screens, staging & live-streaming gear.'],
-            ['name' => 'Catering Services', 'img' => 'kicc/venues/about-hall.jpg', 'desc' => 'In-house catering — coffee breaks to state banquets.'],
-            ['name' => 'Event Planning & Coordination', 'img' => 'kicc/venues/mainfront.jpg', 'desc' => 'Dedicated coordinators from booking to closing.'],
-            ['name' => 'Technical Support', 'img' => 'kicc/venues/tsavo-barricade.jpg', 'desc' => 'On-site technicians for the full duration of your event.'],
-            ['name' => 'Wi-Fi & Internet Access', 'img' => 'kicc/venues/Lounge-1.jpg', 'desc' => 'High-density venue Wi-Fi for thousands of delegates.'],
-            ['name' => 'Security Services & Fire', 'img' => 'kicc/venues/kicc-main-gate.jpg', 'desc' => '24/7 security, screening and fire safety compliance.'],
-            ['name' => 'Parking Facilities', 'img' => 'kicc/venues/Courtyard-1.jpg', 'desc' => 'Secure on-site parking for guests and exhibitors.'],
-            ['name' => 'Accessibility', 'img' => 'kicc/venues/afterentrance.jpg', 'desc' => 'Step-free access, lifts and accessible facilities throughout.'],
-            ['name' => 'Tourist Information', 'img' => 'kicc/venues/about-sign.jpg', 'desc' => 'Visitor desk with city, safari and travel guidance.'],
-        ];
-    @endphp
-    <div class="grid grid-cols-2 lg:grid-cols-3 gap-4">
-        @foreach($kiccServices as $i => $s)
-        <a href="{{ route('venues.index') }}" class="group bg-white rounded-2xl overflow-hidden border border-gray-100 hover:border-[#FFCD05]/40 transition-all card-hover" data-tilt="5" data-reveal data-reveal-delay="{{ ($i % 3) * 80 }}">
-            <div class="h-36 overflow-hidden bg-gray-50 relative">
-                <img src="{{ media($s['img']) }}" alt="{{ $s['name'] }}" class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500" loading="lazy" decoding="async" onerror="this.style.display='none'">
-            </div>
-            <div class="p-4">
-                <div class="font-black text-gray-900 text-sm leading-snug">{{ $s['name'] }}</div>
-                <p class="text-gray-400 text-xs mt-1 leading-relaxed">{{ $s['desc'] }}</p>
-                <span class="mt-3 inline-flex items-center gap-1 text-[#046bd2] text-xs font-bold group-hover:gap-2 transition-all">
-                    Book with a venue
-                    <svg class="w-3 h-3" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 8l4 4m0 0l-4 4m4-4H3"/></svg>
-                </span>
-            </div>
-        </a>
-        @endforeach
-    </div>
-
-    {{-- M-I-C-E strip (from kicc.co.ke) --}}
-    <div class="mt-10 grid grid-cols-2 md:grid-cols-4 gap-4" data-reveal>
-        @foreach([['Meetings','Boardrooms to ballrooms for 10–2,000 delegates.'],['Incentives','Reward programs with safari add-ons.'],['Conferences','Full-service international conference hosting.'],['Exhibitions','10,000 m² of pillar-free exhibition space.']] as $j => $mice)
-        <div class="rounded-2xl border border-[#046bd2]/20 bg-[#046bd2]/5 p-5 text-center card-hover" data-reveal data-reveal-delay="{{ $j * 80 }}">
-            <div class="font-black text-[#046bd2] text-base">{{ $mice[0] }}</div>
-            <p class="text-gray-500 text-xs mt-1">{{ $mice[1] }}</p>
-        </div>
-        @endforeach
-    </div>
-</section>
-
-{{-- TRADE AGREEMENTS — from trade.go.ke --}}
-<section class="bg-white border-y border-gray-100 py-20 section-transition" data-section="trade">
-    <div class="max-w-7xl mx-auto px-5">
-        <div data-reveal>
-            <div class="flex flex-col md:flex-row md:items-end justify-between mb-10 gap-4">
-                <div>
-                    <div class="flex items-center gap-3 mb-3">
-                        <div class="h-px w-8 bg-[#FFCD05]"></div>
-                        <span class="text-[#FFCD05] text-xs font-bold tracking-[0.2em] uppercase">Trade Agreements</span>
-                    </div>
-                    <h2 class="text-3xl md:text-4xl font-black text-gray-900 leading-[1.1]" data-split>Kenya's <span class="text-[#FFCD05]">Trade Agreements</span></h2>
-                    <p class="text-gray-400 mt-3 text-base max-w-xl leading-relaxed">Bilateral, regional and multilateral agreements that open markets for Kenyan exporters — EAC, AfCFTA, COMESA, WTO and more.</p>
-                </div>
-                <a href="{{ route('trade.agreements.index') }}" class="inline-flex items-center justify-center gap-2 font-bold tracking-wide transition-all duration-200 px-4 text-xs h-9 rounded-xl bg-gray-100 text-gray-900 hover:bg-gray-100 border border-gray-200 shrink-0 card-hover">
-                    View all agreements
-                    <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 8l4 4m0 0l-4 4m4-4H3"/></svg>
-                </a>
-            </div>
-        </div>
-        @php
-            $homeAgreements = $tradeAgreementsHome;
-        @endphp
-        <div class="grid grid-cols-1 md:grid-cols-3 gap-5">
-            @foreach($homeAgreements as $a)
-            <a href="{{ route('trade.agreements.show', $a->slug) }}" class="group bg-white rounded-2xl border border-gray-200 p-6 hover:border-[#FFCD05]/40 transition-all card-hover" data-tilt="5" data-reveal data-reveal-delay="{{ $loop->index * 80 }}">
-                <span class="px-2.5 py-0.5 rounded-full text-[10px] font-bold bg-[#046bd2]/10 text-[#046bd2]">{{ $a->bloc?->name ?? $a->agreement_type }}</span>
-                <h3 class="font-black text-gray-900 text-base mt-3 leading-snug group-hover:text-[#046bd2] transition-colors">{{ $a->title }}</h3>
-                <p class="text-gray-500 text-sm mt-2 line-clamp-2">{{ $a->summary }}</p>
-                <div class="flex items-center gap-3 mt-4 text-xs text-gray-400">
-                    @if($a->effective_date)<span>Effective {{ $a->effective_date->format('M Y') }}</span>@endif
-                    <span class="uppercase tracking-wider">{{ $a->agreement_type }}</span>
-                </div>
-            </a>
-            @endforeach
-        </div>
-        <div class="mt-8 text-center" data-reveal>
-            <a href="{{ route('trade.blocs.index') }}" class="inline-flex items-center gap-2 text-sm font-bold text-[#046bd2] hover:text-[#045cb4] transition-colors">
-                Explore Kenya's trading blocs
-                <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 8l4 4m0 0l-4 4m4-4H3"/></svg>
-            </a>
-        </div>
-    </div>
-</section>
-
-{{-- SCREENS CTA --}}
+{{-- SCREENS CTA — Figma exact --}}
 <section class="max-w-7xl mx-auto px-5 py-20 section-transition" data-section="screens">
     <div class="relative overflow-hidden rounded-3xl border border-gray-200 bg-gradient-to-br from-[#0D1220] to-[#07090F]" data-reveal="zoom">
         <img src="{{ media('kicc/gallery/kicc_DSC_6125.jpg') }}" alt="" class="absolute inset-0 w-full h-full object-cover opacity-20">
@@ -345,33 +283,3 @@
     </div>
 </section>
 @endsection
-
-<script>
-document.addEventListener('DOMContentLoaded', function() {
-    const counters = document.querySelectorAll('[data-count]');
-    const observer = new IntersectionObserver((entries) => {
-        entries.forEach(entry => {
-            if (entry.isIntersecting) {
-                const el = entry.target;
-                const target = parseInt(el.dataset.count);
-                const duration = parseInt(el.dataset.countDuration) || 1000;
-                const delay = parseInt(el.dataset.countDelay) || 0;
-                let start = null;
-                setTimeout(() => {
-                    const step = (timestamp) => {
-                        if (!start) start = timestamp;
-                        const progress = Math.min((timestamp - start) / duration, 1);
-                        el.textContent = Math.floor(progress * target);
-                        if (progress < 1) requestAnimationFrame(step);
-                        else el.textContent = target;
-                    };
-                    requestAnimationFrame(step);
-                }, delay);
-                observer.unobserve(el);
-            }
-        });
-    }, { threshold: 0.5 });
-    counters.forEach(c => observer.observe(c));
-});
-</script>
-

@@ -9,17 +9,14 @@
     <script src="{{ asset('js/theme.js') }}"></script>
     <link rel="stylesheet" href="{{ asset('css/colors.css') }}">
     <link rel="preconnect" href="https://fonts.googleapis.com">
-    <link rel="preconnect" href="https://kicc-r2-media.techhubltd254.workers.dev">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@200;300;400;500;600;700;800;900&display=swap" rel="stylesheet">
     <style>
         * { font-family: 'Inter', system-ui, sans-serif; }
         body { background-color: #F9FAFB; color: #111827; scroll-behavior: smooth; }
+        #kicc-3d-bg { position: fixed; top: 0; left: 0; width: 100vw; height: 100vh; z-index: 0; pointer-events: none; }
         .scrollbar-hide { scrollbar-width: none; -ms-overflow-style: none; }
         .scrollbar-hide::-webkit-scrollbar { display: none; }
-        .kicc-nav-par { position: relative; }
-        .kicc-nav-dd { position: absolute; top: 100%; left: 0; margin-top: 0.25rem; background: white; border: 1px solid #e5e7eb; border-radius: 0.75rem; box-shadow: 0 10px 15px -3px rgba(0,0,0,0.1); padding: 0.5rem; min-width: 180px; z-index: 50; display: none !important; }
-        .kicc-nav-par:hover .kicc-nav-dd { display: block !important; }
         [x-cloak] { display: none !important; }
 
         /* ── SCROLL REVEAL ── */
@@ -207,26 +204,6 @@
             0% { background-position: 200% 0; }
             100% { background-position: -200% 0; }
         }
-
-        /* ── FX3D: cinematic Ken Burns zoom-pan on all card media ── */
-        .fx-kenburns { animation: fx-kenburns 16s ease-in-out infinite alternate; will-change: transform; transform-origin: center; }
-        @keyframes fx-kenburns {
-            0%   { transform: scale(1.0) translate3d(0,0,0); }
-            50%  { transform: scale(1.07) translate3d(-1.2%,-1.0%,0); }
-            100% { transform: scale(1.11) translate3d(1.2%,1.0%,0); }
-        }
-        /* 3D tilt glare layer */
-        [data-tilt] { transform-style: preserve-3d; will-change: transform; }
-        [data-tilt] .tilt-glare { opacity: 0; transition: opacity .35s ease; pointer-events: none; mix-blend-mode: screen; }
-        /* Light-sweep VFX */
-        .fx-sweep { position: relative; overflow: hidden; }
-        .fx-sweep::after {
-            content: ''; position: absolute; inset: -40%; pointer-events: none;
-            background: linear-gradient(115deg, transparent 42%, rgba(255,255,255,0.16) 50%, transparent 58%);
-            transform: translateX(-120%);
-            animation: fx-sweep 7s cubic-bezier(.22,1,.36,1) infinite;
-        }
-        @keyframes fx-sweep { 0%,62% { transform: translateX(-120%);} 100% { transform: translateX(120%);} }
     </style>
     @stack('styles')
     <script type="importmap">
@@ -239,9 +216,11 @@
     </script>
 </head>
 <body class="antialiased text-gray-900 bg-[#F9FAFB]">
+    <div id="kicc-3d-bg"></div>
     {{-- NAV --}}
-    <nav id="kicc-nav"
-          class="fixed top-0 left-0 right-0 z-50 transition-all duration-500 h-20 bg-transparent">
+    <nav x-data="{ scrolled: false, open: false }" x-init="window.addEventListener('scroll', () => scrolled = window.scrollY > 40)"
+          class="fixed top-0 left-0 right-0 z-50 transition-all duration-500 h-20"
+          :class="scrolled ? 'bg-white backdrop-blur-xl border-b border-gray-200 shadow-lg shadow-[#0EA5E9]/5' : 'bg-transparent'">
         <div class="max-w-7xl mx-auto px-5 h-full flex items-center justify-between gap-4">
             <a href="/" class="flex items-center gap-3 shrink-0 group">
                 <div class="flex items-center gap-2.5">
@@ -255,49 +234,24 @@
                 </div>
             </a>
             <nav class="hidden lg:flex items-center gap-1">
-                <a href="/" class="px-3.5 py-2 text-sm font-semibold rounded-lg transition-all {{ request()->is('/') ? 'bg-[#901C1E] text-white' : 'text-[#901C1E] hover:text-[#FFCD05] hover:bg-gray-100' }}">Home</a>
-                <a href="{{ route('national-government.index') }}" class="px-3.5 py-2 text-sm font-semibold rounded-lg transition-all {{ request()->routeIs('national-government*') ? 'bg-[#901C1E] text-white' : 'text-[#901C1E] hover:text-[#FFCD05] hover:bg-gray-100' }}">National Government</a>
                 <a href="{{ route('counties.index') }}" class="px-3.5 py-2 text-sm font-semibold rounded-lg transition-all {{ request()->routeIs('counties.*') ? 'bg-[#901C1E] text-white' : 'text-[#901C1E] hover:text-[#FFCD05] hover:bg-gray-100' }}">Counties</a>
-                <a href="{{ route('search.index') }}" class="px-3 py-2 text-sm font-semibold rounded-lg transition-all text-[#901C1E] hover:text-[#FFCD05] hover:bg-gray-100">🔍</a>
-<a href="{{ route('marketplace.index') }}" class="px-3.5 py-2 text-sm font-semibold rounded-lg transition-all text-[#901C1E] hover:text-[#FFCD05] hover:bg-gray-100 kicc-nav-par">
-    Marketplace
-    <div class="kicc-nav-dd">
-        <a href="{{ route('marketplace.index') }}" class="block px-4 py-2 text-sm font-semibold text-gray-600 hover:text-[#901C1E] hover:bg-gray-50 rounded-lg">All Products</a>
-        <a href="{{ route('flash-sales.index') }}" class="block px-4 py-2 text-sm font-semibold text-gray-600 hover:text-[#901C1E] hover:bg-gray-50 rounded-lg">⚡ Flash Sales</a>
-        <a href="{{ route('auctions.index') }}" class="block px-4 py-2 text-sm font-semibold text-gray-600 hover:text-[#901C1E] hover:bg-gray-50 rounded-lg">🔨 Auctions</a>
-        <a href="{{ route('gift-cards.index') }}" class="block px-4 py-2 text-sm font-semibold text-gray-600 hover:text-[#901C1E] hover:bg-gray-50 rounded-lg">🎁 Gift Cards</a>
-        @auth
-        <hr class="my-1 border-gray-100">
-        <a href="{{ route('wishlist.index') }}" class="block px-4 py-2 text-sm font-semibold text-gray-600 hover:text-[#901C1E] hover:bg-gray-50 rounded-lg">♡ Wishlist</a>
-        <a href="{{ route('orders.index') }}" class="block px-4 py-2 text-sm font-semibold text-gray-600 hover:text-[#901C1E] hover:bg-gray-50 rounded-lg">📦 My Orders</a>
-        <a href="{{ route('rfq.index') }}" class="block px-4 py-2 text-sm font-semibold text-gray-600 hover:text-[#901C1E] hover:bg-gray-50 rounded-lg">📋 My RFQs</a>
-        <a href="{{ route('seller.analytics') }}" class="block px-4 py-2 text-sm font-semibold text-gray-600 hover:text-[#901C1E] hover:bg-gray-50 rounded-lg">📊 Seller Analytics</a>
-        @endauth
-    </div>
-</a>
+                <a href="{{ route('marketplace.index') }}" class="px-3.5 py-2 text-sm font-semibold rounded-lg transition-all {{ request()->routeIs('marketplace.*') ? 'bg-[#901C1E] text-white' : 'text-[#901C1E] hover:text-[#FFCD05] hover:bg-gray-100' }}">Marketplace</a>
                 <a href="{{ route('exhibitions.index') }}" class="px-3.5 py-2 text-sm font-semibold rounded-lg transition-all {{ request()->routeIs('exhibitions.*') ? 'bg-[#901C1E] text-white' : 'text-[#901C1E] hover:text-[#FFCD05] hover:bg-gray-100' }}">Exhibitions</a>
                 <a href="{{ route('venues.index') }}" class="px-3.5 py-2 text-sm font-semibold rounded-lg transition-all {{ request()->routeIs('venues.*') ? 'bg-[#901C1E] text-white' : 'text-[#901C1E] hover:text-[#FFCD05] hover:bg-gray-100' }}">Venues</a>
                 <a href="{{ route('travel.index') }}" class="px-3.5 py-2 text-sm font-semibold rounded-lg transition-all {{ request()->routeIs('travel.*') ? 'bg-[#901C1E] text-white' : 'text-[#901C1E] hover:text-[#FFCD05] hover:bg-gray-100' }}">Live Events</a>
                 <a href="{{ route('screens.directory') }}" class="px-3.5 py-2 text-sm font-semibold rounded-lg transition-all {{ request()->routeIs('screens.*') ? 'bg-[#901C1E] text-white' : 'text-[#901C1E] hover:text-[#FFCD05] hover:bg-gray-100' }}">Screens</a>
                 <a href="{{ route('packages.index') }}" class="px-3.5 py-2 text-sm font-semibold rounded-lg transition-all {{ request()->routeIs('packages.*') ? 'bg-[#901C1E] text-white' : 'text-[#901C1E] hover:text-[#FFCD05] hover:bg-gray-100' }}">Packages</a>
-<a href="{{ route('tourism.guides') }}" class="px-3.5 py-2 text-sm font-semibold rounded-lg transition-all text-[#901C1E] hover:text-[#FFCD05] hover:bg-gray-100 kicc-nav-par">
-    Tourism
-    <div class="kicc-nav-dd">
-        <a href="{{ route('tourism.guides') }}" class="block px-4 py-2 text-sm font-semibold text-gray-600 hover:text-[#901C1E] hover:bg-gray-50 rounded-lg">Tour Guides</a>
-        <a href="{{ route('tourism.rentals') }}" class="block px-4 py-2 text-sm font-semibold text-gray-600 hover:text-[#901C1E] hover:bg-gray-50 rounded-lg">Car Rentals</a>
-        <a href="{{ route('tourism.restaurants') }}" class="block px-4 py-2 text-sm font-semibold text-gray-600 hover:text-[#901C1E] hover:bg-gray-50 rounded-lg">Restaurants</a>
-        <a href="{{ route('tourism.organizers') }}" class="block px-4 py-2 text-sm font-semibold text-gray-600 hover:text-[#901C1E] hover:bg-gray-50 rounded-lg">Event Organizers</a>
-    </div>
-</a>
-                <a href="{{ route('trade.agreements.index') }}" class="px-3.5 py-2 text-sm font-semibold rounded-lg transition-all {{ request()->routeIs('trade.*') ? 'bg-[#901C1E] text-white' : 'text-[#901C1E] hover:text-[#FFCD05] hover:bg-gray-100' }}">Trade</a>
             </nav>
             <div class="flex items-center gap-2">
                 <a href="{{ route('cart.index') }}" class="relative p-2 text-[#5A6480] hover:text-[#901C1E] transition-colors" aria-label="Cart">
                     <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 3h2l.4 2M7 13h10l4-8H5.4M7 13L5.4 5M7 13l-2.293 2.293c-.63.63-.184 1.707.707 1.707H17m0 0a2 2 0 100 4 2 2 0 000-4zm-8 2a2 2 0 11-4 0 2 2 0 014 0z"/></svg>
                 </a>
                 @auth
-                <a href="{{ route('notifications.index') }}" class="relative p-2 text-[#5A6480] hover:text-[#901C1E] transition-colors" aria-label="Notifications">
-                    <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 17h5l-1.405-1.405A2.032 2.032 0 0118 14.158V11a6.002 6.002 0 00-4-5.659V5a2 2 0 10-4 0v.341C7.67 6.165 6 8.388 6 11v3.159c0 .538-.214 1.055-.595 1.436L4 17h5m6 0v1a3 3 0 11-6 0v-1m6 0H9"/></svg>
+                <a href="{{ route('dashboard.index') }}" class="inline-flex items-center gap-2 font-bold tracking-wide transition-all duration-200 px-4 text-xs h-9 rounded-xl bg-[#901C1E] text-gray-900 hover:bg-[#7a181a]">
+                    Dashboard
+                </a>
+                <a href="{{ route('admin.portal') }}" class="hidden sm:inline-flex items-center gap-2 font-bold tracking-wide transition-all duration-200 px-4 text-xs h-9 rounded-xl border border-gray-200 text-gray-600 hover:bg-gray-100" title="Admin">
+                    Admin
                 </a>
                 <form method="POST" action="{{ route('logout') }}" class="inline">@csrf
                     <button type="submit" class="inline-flex items-center gap-2 font-bold tracking-wide transition-all duration-200 px-3 text-xs h-9 rounded-xl border border-gray-200 text-gray-500 hover:bg-gray-100">Logout</button>
@@ -305,15 +259,13 @@
                 @else
                 <a href="{{ route('login') }}" class="inline-flex items-center gap-2 font-bold tracking-wide transition-all duration-200 px-4 text-xs h-9 rounded-xl bg-[#FFCD05] text-[#07090F] font-bold hover:bg-[#e6b904]">Sign In</a>
                 @endauth
-                <button id="kicc-mobile-menu-btn" class="lg:hidden text-[#5A6480] hover:text-[#901C1E] p-2" aria-label="Menu">
-                    <svg id="kicc-mobile-icon-open" class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16"/></svg>
-                    <svg id="kicc-mobile-icon-close" class="w-5 h-5" style="display:none" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"/></svg>
+                <button @click="open = !open" class="lg:hidden text-[#5A6480] hover:text-[#901C1E] p-2" aria-label="Menu">
+                    <svg class="w-5 h-5" x-show="!open" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16"/></svg>
+                    <svg class="w-5 h-5" x-show="open" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"/></svg>
                 </button>
             </div>
         </div>
-        <div id="kicc-mobile-menu" class="lg:hidden" style="display:none">
-            <div class="absolute top-full left-0 right-0 bg-white border-b border-gray-100 p-4 flex flex-col gap-1">
-            <a href="{{ route('national-government.index') }}" class="text-left px-4 py-3 text-sm font-semibold text-gray-600 hover:text-gray-900 hover:bg-gray-100 rounded-lg">National Government</a>
+        <div x-show="open" x-cloak x-transition class="lg:hidden absolute top-full left-0 right-0 bg-white border-b border-gray-100 p-4 flex flex-col gap-1">
             <a href="{{ route('counties.index') }}" class="text-left px-4 py-3 text-sm font-semibold text-gray-600 hover:text-gray-900 hover:bg-gray-100 rounded-lg">Counties</a>
             <a href="{{ route('exhibitions.index') }}" class="text-left px-4 py-3 text-sm font-semibold text-gray-600 hover:text-gray-900 hover:bg-gray-100 rounded-lg">Exhibitions</a>
             <a href="{{ route('venues.index') }}" class="text-left px-4 py-3 text-sm font-semibold text-gray-600 hover:text-gray-900 hover:bg-gray-100 rounded-lg">Venues</a>
@@ -321,15 +273,11 @@
             <a href="{{ route('screens.directory') }}" class="text-left px-4 py-3 text-sm font-semibold text-gray-600 hover:text-gray-900 hover:bg-gray-100 rounded-lg">Screens</a>
             <a href="{{ route('marketplace.index') }}" class="text-left px-4 py-3 text-sm font-semibold text-gray-600 hover:text-gray-900 hover:bg-gray-100 rounded-lg">Marketplace</a>
             @auth
-            <a href="{{ route('wishlist.index') }}" class="text-left px-4 py-3 text-sm font-semibold text-gray-600 hover:text-gray-900 hover:bg-gray-100 rounded-lg">♡ Wishlist</a>
-            <a href="{{ route('orders.index') }}" class="text-left px-4 py-3 text-sm font-semibold text-gray-600 hover:text-gray-900 hover:bg-gray-100 rounded-lg">📦 My Orders</a>
-            <a href="{{ route('rfq.index') }}" class="text-left px-4 py-3 text-sm font-semibold text-gray-600 hover:text-gray-900 hover:bg-gray-100 rounded-lg">📋 My RFQs</a>
-            <a href="{{ route('seller.analytics') }}" class="text-left px-4 py-3 text-sm font-semibold text-gray-600 hover:text-gray-900 hover:bg-gray-100 rounded-lg">📊 Seller Analytics</a>
+            <a href="{{ route('dashboard.index') }}" class="text-left px-4 py-3 text-sm font-semibold text-kicc-gold hover:bg-gray-100 rounded-lg">Dashboard</a>
+            <a href="{{ route('admin.portal') }}" class="text-left px-4 py-3 text-sm font-semibold text-gray-600 hover:text-gray-900 hover:bg-gray-100 rounded-lg">Admin</a>
             @else
             <a href="{{ route('login') }}" class="text-left px-4 py-3 text-sm font-semibold text-[#5A6480] hover:text-[#901C1E] hover:bg-sky-50 rounded-lg">Sign In</a>
             @endauth
-            <a href="{{ route('flash-sales.index') }}" class="text-left px-4 py-3 text-sm font-semibold text-gray-600 hover:text-gray-900 hover:bg-gray-100 rounded-lg">⚡ Flash Sales</a>
-            </div>
         </div>
     </nav>
 
@@ -338,7 +286,7 @@
     </main>
 
     {{-- FOOTER --}}
-    <footer class="bg-[#046bd2] mt-20">
+    <footer class="bg-[#0B1E57] mt-20">
         <div class="max-w-7xl mx-auto px-5 py-14 grid grid-cols-1 md:grid-cols-4 gap-10">
             <div>
                 <div class="flex items-center gap-2.5 mb-3">
@@ -365,12 +313,19 @@
             <div>
                 <h4 class="font-bold text-white/50 text-xs uppercase tracking-[0.15em] mb-4">Platform</h4>
                 <ul class="space-y-2.5">
-                    <li><a href="{{ route('national-government.index') }}" class="text-white/50 hover:text-kicc-gold text-sm transition-colors">National Government</a></li>
                     <li><a href="{{ route('counties.index') }}" class="text-white/50 hover:text-kicc-gold text-sm transition-colors">Counties</a></li>
                     <li><a href="{{ route('marketplace.index') }}" class="text-white/50 hover:text-kicc-gold text-sm transition-colors">Marketplace</a></li>
                     <li><a href="{{ route('exhibitions.index') }}" class="text-white/50 hover:text-kicc-gold text-sm transition-colors">Exhibitions</a></li>
                     <li><a href="{{ route('venues.index') }}" class="text-white/50 hover:text-kicc-gold text-sm transition-colors">Venues</a></li>
-                    <li><a href="{{ route('trade.agreements.index') }}" class="text-white/50 hover:text-kicc-gold text-sm transition-colors">Trade Agreements</a></li>
+                </ul>
+            </div>
+            <div>
+                <h4 class="font-bold text-white/50 text-xs uppercase tracking-[0.15em] mb-4">Dashboards</h4>
+                <ul class="space-y-2.5">
+                    <li><a href="{{ route('dashboard.index') }}" class="text-white/50 hover:text-kicc-gold text-sm transition-colors">My Dashboard</a></li>
+                    <li><a href="{{ route('dashboard.exhibitions') }}" class="text-white/50 hover:text-kicc-gold text-sm transition-colors">My Exhibitions</a></li>
+                    <li><a href="{{ route('dashboard.bookings') }}" class="text-white/50 hover:text-kicc-gold text-sm transition-colors">My Bookings</a></li>
+                    <li><a href="{{ route('admin.portal') }}" class="text-white/50 hover:text-kicc-gold text-sm transition-colors">Admin Portal</a></li>
                 </ul>
             </div>
             <div>
@@ -395,38 +350,13 @@
     </footer>
     @stack('scripts')
     <script defer src="https://cdn.jsdelivr.net/npm/alpinejs@3.x.x/dist/cdn.min.js"></script>
-    {{-- FX3D: 3D parallax + tilt + VFX engine (self-contained) --}}
-    <script src="{{ asset('js/voice-search.js') }}" defer></script>
-    <script src="{{ asset('js/fx3d.js') }}" defer></script>
-<script>
-(function() {
-    var nav = document.getElementById('kicc-nav');
-    var menuBtn = document.getElementById('kicc-mobile-menu-btn');
-    var mobileMenu = document.getElementById('kicc-mobile-menu');
-    var iconOpen = document.getElementById('kicc-mobile-icon-open');
-    var iconClose = document.getElementById('kicc-mobile-icon-close');
-
-    // Scroll effect
-    if (nav) {
-        window.addEventListener('scroll', function() {
-            if (window.scrollY > 40) {
-                nav.classList.add('bg-white', 'backdrop-blur-xl', 'border-b', 'border-gray-200', 'shadow-lg');
-            } else {
-                nav.classList.remove('bg-white', 'backdrop-blur-xl', 'border-b', 'border-gray-200', 'shadow-lg');
-            }
-        });
-    }
-
-    // Mobile menu toggle
-    if (menuBtn && mobileMenu) {
-        menuBtn.addEventListener('click', function() {
-            var isOpen = mobileMenu.style.display !== 'none';
-            mobileMenu.style.display = isOpen ? 'none' : 'block';
-            if (iconOpen) iconOpen.style.display = isOpen ? '' : 'none';
-            if (iconClose) iconClose.style.display = isOpen ? 'none' : '';
-        });
-    }
-})();
-</script>
+    {{-- Cinematic intro (homepage only) --}}
+    @if(request()->is('/'))
+    <script src="{{ asset('js/cinematic-intro.js') }}"></script>
+    @endif
+    {{-- Core motion system --}}
+    <script src="{{ asset('js/animations.js') }}"></script>
+    {{-- Immersive interaction engine --}}
+    <script src="{{ asset('js/immersive.js') }}"></script>
 </body>
 </html>

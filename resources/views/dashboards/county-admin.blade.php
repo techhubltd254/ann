@@ -3,7 +3,7 @@
 @section('title', $county->name . ' County — Professional Admin')
 
 @section('content')
-@php $accent = '#046bd2'; @endphp
+@php $accent = '#0B1E57'; @endphp
 <div class="flex min-h-screen bg-[#F3F4F6]">
     {{-- Sidebar --}}
     <div class="w-60 bg-white border-r border-gray-200 flex flex-col shrink-0 min-h-screen">
@@ -67,10 +67,10 @@
             <div class="grid lg:grid-cols-2 gap-6 mb-8">
                 <div class="bg-white border border-gray-200 rounded-2xl p-6"><h3 class="font-bold text-gray-900 mb-4">Quick Actions</h3>
                     <div class="grid grid-cols-2 gap-3">
-                        <a href="{{ route('county.admin.pro', [$county->slug, 'tab' => 'content']) }}" class="border border-gray-200 rounded-xl p-4 text-sm font-semibold text-gray-700 hover:border-[#046bd2]/40 hover:text-[#046bd2] transition-all text-center">✏️ Edit Content</a>
-                        <a href="{{ route('county.admin.pro', [$county->slug, 'tab' => 'images']) }}" class="border border-gray-200 rounded-xl p-4 text-sm font-semibold text-gray-700 hover:border-[#046bd2]/40 hover:text-[#046bd2] transition-all text-center">🖼️ Manage Images</a>
-                        <a href="{{ route('county.admin.pro', [$county->slug, 'tab' => 'prices']) }}" class="border border-gray-200 rounded-xl p-4 text-sm font-semibold text-gray-700 hover:border-[#046bd2]/40 hover:text-[#046bd2] transition-all text-center">💰 Set Prices</a>
-                        <a href="{{ route('county.admin.pro', [$county->slug, 'tab' => 'ads']) }}" class="border border-gray-200 rounded-xl p-4 text-sm font-semibold text-gray-700 hover:border-[#046bd2]/40 hover:text-[#046bd2] transition-all text-center">📢 Advertise</a>
+                        <a href="{{ route('county.admin.pro', [$county->slug, 'tab' => 'content']) }}" class="border border-gray-200 rounded-xl p-4 text-sm font-semibold text-gray-700 hover:border-[#0B1E57]/40 hover:text-[#0B1E57] transition-all text-center">✏️ Edit Content</a>
+                        <a href="{{ route('county.admin.pro', [$county->slug, 'tab' => 'images']) }}" class="border border-gray-200 rounded-xl p-4 text-sm font-semibold text-gray-700 hover:border-[#0B1E57]/40 hover:text-[#0B1E57] transition-all text-center">🖼️ Manage Images</a>
+                        <a href="{{ route('county.admin.pro', [$county->slug, 'tab' => 'prices']) }}" class="border border-gray-200 rounded-xl p-4 text-sm font-semibold text-gray-700 hover:border-[#0B1E57]/40 hover:text-[#0B1E57] transition-all text-center">💰 Set Prices</a>
+                        <a href="{{ route('county.admin.pro', [$county->slug, 'tab' => 'ads']) }}" class="border border-gray-200 rounded-xl p-4 text-sm font-semibold text-gray-700 hover:border-[#0B1E57]/40 hover:text-[#0B1E57] transition-all text-center">📢 Advertise</a>
                     </div>
                 </div>
                 <div class="bg-white border border-gray-200 rounded-2xl p-6"><h3 class="font-bold text-gray-900 mb-4">Current Package</h3>
@@ -142,7 +142,7 @@
                             <label class="block text-sm font-semibold text-gray-700 mb-1">Description</label>
                             <textarea name="description" rows="4" class="w-full px-4 py-3 rounded-xl border border-gray-200 text-sm">{{ $county->description }}</textarea>
                         </div>
-                        <button class="h-12 px-8 rounded-xl text-white font-bold text-sm" style="background: #046bd2">Save All Details</button>
+                        <button class="h-12 px-8 rounded-xl text-white font-bold text-sm" style="background: #0B1E57">Save All Details</button>
                     </form>
                 </div>
             </div>
@@ -156,33 +156,19 @@
                     <p class="text-xs text-gray-400 mb-5">Toggle sectors on/off for this county.</p>
                     <div class="space-y-2 max-h-96 overflow-y-auto">
                         @foreach($allSectors as $s)
-                        <div class="flex items-center justify-between py-2 border-b border-gray-50 last:border-0">
+                        <form method="POST" action="{{ route('county.admin.sector', $county->slug) }}" class="flex items-center justify-between py-2 border-b border-gray-50 last:border-0">
+                            @csrf
+                            <input type="hidden" name="sector_id" value="{{ $s->id }}">
                             @if($linkedSectors->contains($s->id))
                             <span class="flex items-center gap-2"><span class="w-2 h-2 rounded-full bg-emerald-500"></span><span class="font-semibold text-gray-900 text-sm">{{ $s->name }}</span></span>
-                            <div class="flex items-center gap-2">
-                                <form method="POST" action="{{ route('county.admin.sector.tile', $county->slug) }}" class="inline">
-                                    @csrf
-                                    <input type="hidden" name="sector_id" value="{{ $s->id }}">
-                                    <input type="hidden" name="display_on_tile" value="{{ in_array($s->id, $tileSectors) ? 'no' : 'yes' }}">
-                                    <button class="text-[10px] font-bold px-2 py-1 rounded-lg whitespace-nowrap {{ in_array($s->id, $tileSectors) ? 'bg-[#046bd2]/10 text-[#046bd2]' : 'bg-gray-100 text-gray-500' }}">{{ in_array($s->id, $tileSectors) ? 'Tile: On' : 'Tile: Off' }}</button>
-                                </form>
-                                <form method="POST" action="{{ route('county.admin.sector', $county->slug) }}" class="inline">
-                                    @csrf
-                                    <input type="hidden" name="sector_id" value="{{ $s->id }}">
-                                    <input type="hidden" name="action" value="detach">
-                                    <button class="text-xs font-bold px-3 py-1.5 rounded-lg bg-red-50 text-red-600 hover:bg-red-100">Remove</button>
-                                </form>
-                            </div>
+                            <input type="hidden" name="action" value="detach">
+                            <button class="text-xs font-bold px-3 py-1.5 rounded-lg bg-red-50 text-red-600 hover:bg-red-100">Remove</button>
                             @else
                             <span class="flex items-center gap-2"><span class="w-2 h-2 rounded-full bg-gray-300"></span><span class="text-gray-500 text-sm">{{ $s->name }}</span></span>
-                            <form method="POST" action="{{ route('county.admin.sector', $county->slug) }}" class="inline">
-                                @csrf
-                                <input type="hidden" name="sector_id" value="{{ $s->id }}">
-                                <input type="hidden" name="action" value="attach">
-                                <button class="text-xs font-bold px-3 py-1.5 rounded-lg bg-gray-100 text-gray-600 hover:bg-gray-200">Add</button>
-                            </form>
+                            <input type="hidden" name="action" value="attach">
+                            <button class="text-xs font-bold px-3 py-1.5 rounded-lg bg-gray-100 text-gray-600 hover:bg-gray-200">Add</button>
                             @endif
-                        </div>
+                        </form>
                         @endforeach
                     </div>
                 </div>
@@ -201,7 +187,7 @@
                         <input name="name" required placeholder="Entity name *" class="w-full h-11 px-4 rounded-xl border border-gray-200 text-sm">
                         <input name="entity_type" required placeholder="Type (e.g. hotel, school, farm)" class="w-full h-11 px-4 rounded-xl border border-gray-200 text-sm">
                         <textarea name="description" rows="2" placeholder="Description" class="w-full px-4 py-3 rounded-xl border border-gray-200 text-sm"></textarea>
-                        <button class="w-full h-12 rounded-xl text-white font-bold text-sm" style="background: #046bd2">Add Entity</button>
+                        <button class="w-full h-12 rounded-xl text-white font-bold text-sm" style="background: #0B1E57">Add Entity</button>
                     </form>
                     <h4 class="font-bold text-gray-900 mt-6 mb-3">Existing Entities ({{ $sectorEntities->count() }})</h4>
                     <div class="space-y-2 max-h-80 overflow-y-auto">
@@ -263,7 +249,7 @@
                                 <form method="POST" action="{{ route('county.admin.image.upload', $county->slug) }}" enctype="multipart/form-data" class="flex-1">
                                     @csrf
                                     <input type="hidden" name="sector" value="{{ $sector }}">
-                                    <label class="flex items-center justify-center h-8 rounded-lg border border-gray-200 text-[10px] font-bold text-gray-500 cursor-pointer hover:border-[#046bd2]/40 transition-all">
+                                    <label class="flex items-center justify-center h-8 rounded-lg border border-gray-200 text-[10px] font-bold text-gray-500 cursor-pointer hover:border-[#0B1E57]/40 transition-all">
                                         <input type="file" name="image" accept="image/*" class="sr-only" onchange="this.form.submit()">
                                         Upload
                                     </label>
@@ -282,55 +268,9 @@
             </div>
             @endif
 
-            {{-- ═══════ 4D VIDEOS ═══════ --}}
-            @if($tab === 'videos4d')
-            <div class="bg-white border border-gray-200 rounded-2xl p-6">
-                <h3 class="font-bold text-gray-900 mb-2">4D Immersive Videos</h3>
-                <p class="text-xs text-gray-400 mb-6">Upload the finished 4D render (Gaussian Splat / immersive video) for each entity. It plays on the county page instead of a still image. Max 500 MB — MP4 or WebM.</p>
-
-                @foreach([['attraction', 'Attractions', $attractions], ['hotel', 'Places to Stay', $hotels], ['product', 'Commerce Products', $products]] as [$type, $label, $items])
-                <h4 class="text-xs font-black text-[#046bd2] uppercase tracking-widest mt-6 mb-3">{{ $label }}</h4>
-                <div class="grid sm:grid-cols-2 lg:grid-cols-3 gap-4 mb-4">
-                    @foreach($items as $entity)
-                    @php $asset = $video4dMap["{$type}-{$entity->id}"] ?? null; @endphp
-                    <div class="border border-gray-200 rounded-xl overflow-hidden {{ $asset ? 'ring-2 ring-[#046bd2]/40' : '' }}">
-                        <div class="h-28 bg-gray-900 relative flex items-center justify-center overflow-hidden">
-                            @if($asset)
-                            <video src="{{ $asset->url() }}" class="w-full h-full object-cover" muted loop playsinline autoplay></video>
-                            <span class="absolute top-1.5 left-1.5 px-1.5 py-0.5 rounded bg-[#046bd2] text-white text-[9px] font-black">4D LIVE</span>
-                            @else
-                            <span class="text-gray-500 text-xs">No 4D video yet</span>
-                            @endif
-                        </div>
-                        <div class="p-3">
-                            <div class="text-sm font-bold text-gray-900 truncate">{{ $entity->name }}</div>
-                            <div class="flex gap-1.5 mt-2">
-                                <form method="POST" action="{{ route('county.admin.4d.upload', $county->slug) }}" enctype="multipart/form-data" class="flex-1">
-                                    @csrf
-                                    <input type="hidden" name="entity_type" value="{{ $type }}">
-                                    <input type="hidden" name="entity_id" value="{{ $entity->id }}">
-                                    <label class="flex items-center justify-center h-8 rounded-lg bg-[#046bd2] text-white text-[10px] font-bold cursor-pointer hover:bg-[#045cb4] transition-all">
-                                        <input type="file" name="video" accept="video/mp4,video/webm,video/quicktime" class="sr-only" onchange="this.form.submit()">
-                                        {{ $asset ? 'Replace 4D' : 'Upload 4D' }}
-                                    </label>
-                                </form>
-                                @if($asset)
-                                <form method="POST" action="{{ route('county.admin.4d.delete', [$county->slug, $type, $entity->id]) }}" onsubmit="return confirm('Remove this 4D video?')">
-                                    @csrf
-                                    <button class="h-8 px-3 rounded-lg border border-red-200 text-red-500 text-[10px] font-bold hover:bg-red-50">Delete</button>
-                                </form>
-                                @endif
-                            </div>
-                        </div>
-                    </div>
-                    @endforeach
-                </div>
-                @endforeach
-            </div>
-            @endif
-
             {{-- ═══════ PRICES ═══════ --}}
-            @if($tab === 'prices')<div class="grid lg:grid-cols-2 gap-6">
+            @if($tab === 'prices')
+            <div class="grid lg:grid-cols-2 gap-6">
                 <div class="bg-white border border-gray-200 rounded-2xl p-6">
                     <h3 class="font-bold text-gray-900 mb-5">County Products — Prices</h3>
                     <div class="overflow-x-auto">
@@ -454,9 +394,9 @@
             @if($tab === 'packages')
             <div class="grid sm:grid-cols-2 lg:grid-cols-4 gap-4">
                 @foreach($plans as $p)
-                <div class="bg-white border-2 border-gray-200 rounded-2xl p-6 flex flex-col {{ $p->slug === 'county-premium' ? 'border-[#046bd2] shadow-lg' : '' }}">
+                <div class="bg-white border-2 border-gray-200 rounded-2xl p-6 flex flex-col {{ $p->slug === 'county-premium' ? 'border-[#0B1E57] shadow-lg' : '' }}">
                     @if($p->slug === 'county-premium')
-                    <span class="text-[10px] font-black uppercase tracking-widest text-[#046bd2] mb-1">Recommended</span>
+                    <span class="text-[10px] font-black uppercase tracking-widest text-[#0B1E57] mb-1">Recommended</span>
                     @endif
                     <div class="font-black text-gray-900 text-lg">{{ $p->name }}</div>
                     <div class="text-3xl font-black text-gray-900 mt-2">KES {{ number_format($p->price) }}<span class="text-sm font-medium text-gray-400">/mo</span></div>
@@ -484,7 +424,7 @@
                     <p class="text-xs text-gray-400 mb-4">CSV reports of your county data — open in Excel, Sheets, or any analytics tool.</p>
                     <div class="space-y-2">
                         @foreach([['products', 'Products Report'], ['attractions', 'Tourism Attractions Report'], ['hotels', 'Hotels Report']] as $r)
-                        <a href="{{ route('county.admin.report', [$county->slug, $r[0]]) }}" class="flex items-center justify-between bg-gray-50 border border-gray-200 rounded-xl px-4 py-3 hover:border-[#046bd2]/40 transition-all">
+                        <a href="{{ route('county.admin.report', [$county->slug, $r[0]]) }}" class="flex items-center justify-between bg-gray-50 border border-gray-200 rounded-xl px-4 py-3 hover:border-[#0B1E57]/40 transition-all">
                             <div class="flex items-center gap-3">
                                 <svg class="w-5 h-5 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 17v-2m3 2v-4m3 4v-6m2 10H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"/></svg>
                                 <div class="font-semibold text-gray-900 text-sm">{{ $r[1] }}</div>

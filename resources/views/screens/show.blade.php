@@ -80,7 +80,7 @@
         @endif
 
         {{-- ═══ ADVERTISE ON THIS SCREEN ═══ --}}
-        <div class="mt-8 bg-gradient-to-r from-[#0EA5E9]/20 to-[#046bd2]/20 border border-[#0EA5E9]/30 rounded-2xl p-6" x-data="{ adOpen: false, pkg: 'week' }">
+        <div class="mt-8 bg-gradient-to-r from-[#0EA5E9]/20 to-[#0B1E57]/20 border border-[#0EA5E9]/30 rounded-2xl p-6" x-data="{ adOpen: false, pkg: 'week' }">
             @if(session('success'))
             <div class="bg-emerald-500/15 border border-emerald-500/25 text-emerald-400 rounded-xl px-5 py-3 mb-5 text-sm">{{ session('success') }}</div>
             @endif

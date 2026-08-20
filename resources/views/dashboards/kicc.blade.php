@@ -90,13 +90,13 @@
                         <div class="mt-4 text-[#0EA5E9] text-xs font-bold uppercase tracking-widest">ENTER &nearr;</div>
                     </a>
                     {{-- County (all 47) --}}
-                    <a href="{{ route('counties.index') }}" class="group bg-white rounded-2xl border-2 border-gray-200 hover:border-[#046bd2] p-6 text-center transition-all hover:shadow-xl card-hover">
-                        <div class="w-14 h-14 bg-[#046bd2]/10 rounded-2xl flex items-center justify-center mx-auto mb-4 group-hover:bg-[#046bd2]/20 transition-colors">
-                            <svg class="w-7 h-7 text-[#046bd2]" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z"/><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 11a3 3 0 11-6 0 3 3 0 016 0z"/></svg>
+                    <a href="{{ route('counties.index') }}" class="group bg-white rounded-2xl border-2 border-gray-200 hover:border-[#0B1E57] p-6 text-center transition-all hover:shadow-xl card-hover">
+                        <div class="w-14 h-14 bg-[#0B1E57]/10 rounded-2xl flex items-center justify-center mx-auto mb-4 group-hover:bg-[#0B1E57]/20 transition-colors">
+                            <svg class="w-7 h-7 text-[#0B1E57]" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z"/><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 11a3 3 0 11-6 0 3 3 0 016 0z"/></svg>
                         </div>
                         <h2 class="font-black text-gray-900 text-lg mb-2" data-split>County Portal (47)</h2>
                         <p class="text-gray-500 text-sm">Each county has its own admin — content, images, prices.</p>
-                        <div class="mt-4 text-[#046bd2] text-xs font-bold uppercase tracking-widest">BROWSE COUNTIES &nearr;</div>
+                        <div class="mt-4 text-[#0B1E57] text-xs font-bold uppercase tracking-widest">BROWSE COUNTIES &nearr;</div>
                     </a>
                     {{-- Exhibitor --}}
                     <a href="{{ route('exhibitor.admin') }}" class="group bg-white rounded-2xl border-2 border-gray-200 hover:border-[#38BDF8] p-6 text-center transition-all hover:shadow-xl card-hover">
