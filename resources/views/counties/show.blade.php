@@ -105,13 +105,25 @@ $kiccBlue = '#0B1E57';
             </div>
             <div class="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 gap-4">
                 @foreach($sectorData as $name => $s)
+                @php
+                    $sectorVideo = $sectorVideos[$s['sector_slug']] ?? null;
+                @endphp
                 <a href="{{ route('counties.sector', [$county->slug, $s['route']]) }}"
-                   class="group bg-white border border-gray-200 hover:border-kicc-gold/40 rounded-2xl p-5 text-center transition-all block card-hover" data-tilt="6" data-reveal data-reveal-delay="{{ $loop->index * 80 }}">
-                    <div class="w-12 h-12 rounded-xl mx-auto mb-3 flex items-center justify-center text-2xl bg-gray-100 group-hover:bg-[#FFCD05]/20 transition-colors">
-                        {{ $s['icon'] }}
+                   class="group relative bg-white border border-gray-200 hover:border-kicc-gold/40 rounded-2xl p-5 text-center transition-all block card-hover overflow-hidden" data-tilt="6" data-reveal data-reveal-delay="{{ $loop->index * 80 }}">
+                    @if($sectorVideo)
+                    <video autoplay muted loop playsinline class="absolute inset-0 w-full h-full object-cover opacity-0 group-hover:opacity-20 transition-opacity duration-700"
+                           onmouseover="this.play()" onmouseout="this.pause()"
+                           onloadeddata="this.style.opacity='0.15'">
+                        <source src="{{ $sectorVideo }}" type="video/mp4">
+                    </video>
+                    @endif
+                    <div class="relative z-10">
+                        <div class="w-12 h-12 rounded-xl mx-auto mb-3 flex items-center justify-center text-2xl bg-gray-100 group-hover:bg-[#FFCD05]/20 transition-colors">
+                            {{ $s['icon'] }}
+                        </div>
+                        <div class="font-bold text-gray-900 text-sm leading-snug">{{ $name }}</div>
+                        <div class="text-gray-400 text-xs mt-1">{{ $s['count'] }} {{ Str::plural('entity', $s['count']) }}</div>
                     </div>
-                    <div class="font-bold text-gray-900 text-sm leading-snug">{{ $name }}</div>
-                    <div class="text-gray-400 text-xs mt-1">{{ $s['count'] }} {{ Str::plural('entity', $s['count']) }}</div>
                 </a>
                 @endforeach
             </div>

@@ -30,14 +30,14 @@ class CountyController extends Controller
         $cultureCount = $county->cultureSites()->count();
 
         $sectorData = [
-            'Tourism' => ['count' => $tourismCount, 'icon' => '🏖️', 'route' => 'tourism'],
-            'Hospitality' => ['count' => $hotelsCount, 'icon' => '🏨', 'route' => 'hotels'],
-            'Agriculture' => ['count' => $farmsCount, 'icon' => '🌾', 'route' => 'farms'],
-            'Commerce & End Products' => ['count' => $productsCount, 'icon' => '🛒', 'route' => 'products'],
-            'Education' => ['count' => $institutionsCount, 'icon' => '🎓', 'route' => 'institutions'],
-            'Transport' => ['count' => $transportCount, 'icon' => '🚢', 'route' => 'transport'],
-            'Healthcare' => ['count' => $healthCount, 'icon' => '🏥', 'route' => 'health'],
-            'Culture' => ['count' => $cultureCount, 'icon' => '🎭', 'route' => 'culture'],
+            'Tourism' => ['count' => $tourismCount, 'icon' => '🏖️', 'route' => 'tourism', 'sector_slug' => 'tourism'],
+            'Hospitality' => ['count' => $hotelsCount, 'icon' => '🏨', 'route' => 'hotels', 'sector_slug' => 'hospitality'],
+            'Agriculture' => ['count' => $farmsCount, 'icon' => '🌾', 'route' => 'farms', 'sector_slug' => 'agriculture'],
+            'Commerce & End Products' => ['count' => $productsCount, 'icon' => '🛒', 'route' => 'products', 'sector_slug' => 'commerce'],
+            'Education' => ['count' => $institutionsCount, 'icon' => '🎓', 'route' => 'institutions', 'sector_slug' => 'education'],
+            'Transport' => ['count' => $transportCount, 'icon' => '🚢', 'route' => 'transport', 'sector_slug' => 'transport'],
+            'Healthcare' => ['count' => $healthCount, 'icon' => '🏥', 'route' => 'health', 'sector_slug' => 'healthcare'],
+            'Culture' => ['count' => $cultureCount, 'icon' => '🎭', 'route' => 'culture', 'sector_slug' => 'culture'],
         ];
 
         $featuredAttractions = $county->tourismAttractions()->where('is_published', true)->orderBy('name')->take(12)->get();
@@ -48,10 +48,17 @@ class CountyController extends Controller
 
         $countyMedia = MediaAsset::resolveSlot(County::class, $county->id, 'hero_video');
 
+        // Resolve sector video clips for tile background playback
+        $sectorVideos = [];
+        foreach ($sectorData as $name => $s) {
+            $asset = MediaAsset::resolveSlot(County::class, $county->id, 'sector_video_' . $s['sector_slug']);
+            $sectorVideos[$s['sector_slug']] = $asset?->mp4Url();
+        }
+
         return view('counties.show', compact(
             'county', 'sectors', 'sectorData',
             'featuredAttractions', 'featuredHotels', 'countyProducts',
-            'exhibitions', 'linkedSectors', 'countyMedia'
+            'exhibitions', 'linkedSectors', 'countyMedia', 'sectorVideos'
         ));
     }
 
