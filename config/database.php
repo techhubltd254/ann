@@ -41,7 +41,7 @@ return [
             'engine' => null,
             'options' => extension_loaded('pdo_mysql') ? array_filter([
                 Mysql::ATTR_SSL_CA => env('MYSQL_ATTR_SSL_CA', '/etc/ssl/certs/ca-certificates.crt'),
-                Mysql::ATTR_SSL_VERIFY_SERVER_CERT => env('DB_SSL_VERIFY', true),
+                Mysql::ATTR_SSL_VERIFY_SERVER_CERT => env('DB_SSL_VERIFY', false),
             ], fn($v) => $v !== null && $v !== '') : [],
         ],
 
