@@ -8,4 +8,11 @@ class CountyHealthFacility extends Model
 {
     protected $fillable = ['county_id', 'name', 'type', 'level', 'description', 'location', 'phone', 'email', 'services', 'is_published'];
     public function county() { return $this->belongsTo(County::class); }
+
+    protected static function booted(): void
+    {
+        static::creating(function (self $m) {
+            $m->countyId ??= $m->county_id;
+        });
+    }
 }

@@ -9,4 +9,11 @@ class CountyProduct extends Model
     protected $fillable = ['county_id', 'user_id', 'name', 'description', 'category', 'image_url', 'price', 'unit', 'booking_type', 'status', 'is_published'];
     public function county() { return $this->belongsTo(County::class); }
     public function user() { return $this->belongsTo(User::class); }
+
+    protected static function booted(): void
+    {
+        static::creating(function (self $m) {
+            $m->countyId ??= $m->county_id;
+        });
+    }
 }
