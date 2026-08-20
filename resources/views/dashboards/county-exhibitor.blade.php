@@ -16,7 +16,7 @@
         </div>
         <div class="flex-1 py-3 overflow-y-auto">
             @foreach($navItems as $item)
-            <a href="{{ route('county.admin', ['tab' => $item['tab']]) }}"
+            <a href="{{ route('county.admin.exhibitor', ['tab' => $item['tab']]) }}"
                class="w-full flex items-center gap-3 px-4 py-2.5 text-sm font-semibold transition-all {{ $tab === $item['tab'] ? 'text-gray-900 border-r-2' : 'text-gray-500 hover:bg-gray-100 hover:text-gray-800' }}"
                style="{{ $tab === $item['tab'] ? 'background: '.$accent.'33; border-color: '.$accent : '' }}">
                 <svg class="w-4 h-4 shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="{{ $item['icon'] }}"/></svg>

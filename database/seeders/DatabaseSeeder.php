@@ -19,5 +19,7 @@ class DatabaseSeeder extends Seeder
             TradeSeeder::class,
             SponsorSeeder::class,
         ]);
+
+        $this->call(MurangaAccurateDataSeeder::class);
     }
 }

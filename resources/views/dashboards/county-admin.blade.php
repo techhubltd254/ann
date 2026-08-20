@@ -41,7 +41,7 @@
                 <div class="font-black text-gray-900 text-xl">{{ $county->name }} <span class="text-sm text-gray-400 font-medium">Admin</span></div>
                 <div class="text-[10px] font-bold uppercase tracking-widest" style="color: {{ $accent }}">Full Control · Analytics · Content · Images · Prices</div>
             </div>
-            <a href="{{ route('exhibitor.admin') }}" class="px-3 py-1.5 text-xs font-bold rounded-lg text-white" style="background: {{ $accent }}">View County Page &nearr;</a>
+            <a href="{{ route('counties.show', $county->slug) }}" class="px-3 py-1.5 text-xs font-bold rounded-lg text-white" style="background: {{ $accent }}">View County Page &nearr;</a>
         </div>
         <div class="flex-1 overflow-y-auto p-6">
 
@@ -441,6 +441,49 @@
                         <div class="flex justify-between border-b border-gray-50 pb-2"><span>Total attractions</span><span class="font-bold text-gray-900">{{ $stats['attractions'] }}</span></div>
                         <div class="flex justify-between"><span>Total orders placed</span><span class="font-bold text-gray-900">{{ $stats['orders'] }}</span></div>
                     </div>
+                </div>
+            </div>
+            @endif
+
+            {{-- ═══════ 4D VIDEOS ═══════ --}}
+            @if($tab === 'videos4d')
+            <div class="max-w-2xl">
+                <div class="bg-white border border-gray-200 rounded-2xl p-6 mb-4">
+                    <h3 class="font-bold text-gray-900 mb-2">4D Immersive Videos</h3>
+                    <p class="text-xs text-gray-400 mb-4">Upload 4D walkthrough videos for each sector. These play automatically on the county's public page instead of static images. Max 100 MB per video.</p>
+                    @foreach($video4dMap as $sectorSlug => $info)
+                    <div class="bg-gray-50 border border-gray-200 rounded-xl p-4 mb-3">
+                        <div class="flex items-center justify-between mb-3">
+                            <div class="flex items-center gap-2">
+                                <span class="text-lg">{{ $info['icon'] }}</span>
+                                <span class="font-bold text-gray-900 text-sm">{{ $info['name'] }}</span>
+                            </div>
+                            @if($info['video'])
+                            <form method="POST" action="{{ route('county.admin.4d.delete', [$county->slug, $info['entityType'], $info['entityId']]) }}" onsubmit="return confirm('Delete this 4D video?')">
+                                @csrf
+                                <button class="text-xs text-red-500 hover:text-red-700 font-semibold">Delete</button>
+                            </form>
+                            @endif
+                        </div>
+                        @if($info['video'])
+                        <video class="w-full rounded-lg mb-2" controls preload="metadata" style="max-height: 240px">
+                            <source src="{{ media($info['video']) }}" type="video/mp4">
+                        </video>
+                        <div class="text-[10px] text-gray-400">Active video — plays on the {{ $info['name'] }} page</div>
+                        @else
+                        <div class="text-sm text-gray-400 italic mb-3">No video uploaded — sector page shows static image.</div>
+                        @endif
+                        <form method="POST" action="{{ route('county.admin.4d.upload', $county->slug) }}" enctype="multipart/form-data" class="mt-3 border-t border-gray-200 pt-3">
+                            @csrf
+                            <input type="hidden" name="entity_type" value="{{ $info['entityType'] }}">
+                            <input type="hidden" name="entity_id" value="{{ $info['entityId'] }}">
+                            <div class="flex items-center gap-3">
+                                <input type="file" name="video" accept="video/mp4,video/webm" class="text-xs text-gray-500 w-full file:mr-3 file:py-1.5 file:px-4 file:rounded-lg file:border-0 file:text-xs file:font-bold file:bg-[#0B1E57] file:text-white hover:file:bg-[#09163f]">
+                                <button type="submit" class="shrink-0 px-4 py-1.5 text-xs font-bold rounded-lg text-white" style="background: {{ $accent }}">Upload</button>
+                            </div>
+                        </form>
+                    </div>
+                    @endforeach
                 </div>
             </div>
             @endif
