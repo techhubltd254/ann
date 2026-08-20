@@ -50,15 +50,17 @@ class CountyController extends Controller
 
         // Resolve sector video clips for tile background playback
         $sectorVideos = [];
+        $sectorWebmVideos = [];
         foreach ($sectorData as $name => $s) {
             $asset = MediaAsset::resolveSlot(County::class, $county->id, 'sector_video_' . $s['sector_slug']);
             $sectorVideos[$s['sector_slug']] = $asset?->mp4Url();
+            $sectorWebmVideos[$s['sector_slug']] = $asset?->webmUrl();
         }
 
         return view('counties.show', compact(
             'county', 'sectors', 'sectorData',
             'featuredAttractions', 'featuredHotels', 'countyProducts',
-            'exhibitions', 'linkedSectors', 'countyMedia', 'sectorVideos'
+            'exhibitions', 'linkedSectors', 'countyMedia', 'sectorVideos', 'sectorWebmVideos'
         ));
     }
 

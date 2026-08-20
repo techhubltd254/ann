@@ -18,6 +18,9 @@
                style="cursor:pointer;min-height:100vh"
                onerror="this.style.display='none';document.getElementById('hero-fallback').style.display='block'"
                id="home-hero-video">
+            @if($heroAsset?->webmUrl())
+            <source src="{{ $heroAsset->webmUrl() }}" type="video/webm">
+            @endif
             <source src="{{ $heroMp4 }}" type="video/mp4">
         </video>
     </div>

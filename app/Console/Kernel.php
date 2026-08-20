@@ -16,6 +16,7 @@ class Kernel extends ConsoleKernel
         $schedule->command('ota:release --auto')->dailyAt('02:00');
         $schedule->command('agentic:loop --background')->everyFiveMinutes();
         $schedule->command('queue:restart')->hourly();
+        $schedule->command('media:transcode-webm')->hourly();
     }
 
     protected function commands(): void

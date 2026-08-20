@@ -40,6 +40,10 @@ $kiccBlue = '#0B1E57';
             <source src="{{ $fallbackVideo }}" type="video/mp4">
             <source src="{{ media('counties/' . $county->slug . '/showcase.mp4') }}" type="video/mp4">
             @endif
+            <p class="absolute inset-0 flex items-center justify-center text-white/50 text-sm bg-black/50">
+                Your browser does not support the video format. 
+                <a href="{{ $heroMp4 }}" class="text-kicc-gold underline ml-1" download>Download video</a>
+            </p>
         </video>
         <img src="{{ $heroPosterImg }}" alt="{{ $county->name }}"
              class="w-full h-full object-cover absolute inset-0" style="display:none" loading="lazy"
@@ -111,9 +115,12 @@ $kiccBlue = '#0B1E57';
                 <a href="{{ route('counties.sector', [$county->slug, $s['route']]) }}"
                    class="group relative bg-white border border-gray-200 hover:border-kicc-gold/40 rounded-2xl p-5 text-center transition-all block card-hover overflow-hidden" data-tilt="6" data-reveal data-reveal-delay="{{ $loop->index * 80 }}">
                     @if($sectorVideo)
-                    <video autoplay muted loop playsinline class="absolute inset-0 w-full h-full object-cover opacity-0 group-hover:opacity-20 transition-opacity duration-700"
-                           onmouseover="this.play()" onmouseout="this.pause()"
+                    @php $sectorWebm = $sectorWebmVideos[$s['sector_slug']] ?? null; @endphp
+                    <video autoplay muted loop playsinline class="absolute inset-0 w-full h-full object-cover opacity-10"
                            onloadeddata="this.style.opacity='0.15'">
+                        @if($sectorWebm)
+                        <source src="{{ $sectorWebm }}" type="video/webm">
+                        @endif
                         <source src="{{ $sectorVideo }}" type="video/mp4">
                     </video>
                     @endif

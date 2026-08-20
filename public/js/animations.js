@@ -140,6 +140,6 @@ document.addEventListener('DOMContentLoaded', function () {
         }
     }
 
-    var heroVideos = document.querySelectorAll('video[id$="hero-video"], video[autoplay]');
+    var heroVideos = document.querySelectorAll('video[id$="hero-video"]');
     heroVideos.forEach(ensureVideoPlays);
 });
