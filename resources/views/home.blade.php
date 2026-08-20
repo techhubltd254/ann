@@ -4,56 +4,58 @@
 @section('description', 'Africa\'s Premier Meeting Venue. A national icon since 1973.')
 
 @section('content')
-{{-- HERO — exactly from Figma --}}
-<section class="relative min-h-screen flex items-center overflow-hidden section-transition" data-section="hero">
-    <div x-data="{ current: 1, imgs: ['{{ media('kicc/tower-night.jpg') }}', '{{ media('kicc/exterior-1.jpg') }}', '{{ media('kicc/tsavo-hall.jpg') }}'] }" x-init="setInterval(() => current = current === imgs.length - 1 ? 0 : current + 1, 5000)" class="absolute inset-0 w-full h-full" data-depth="0.4">
-        <template x-for="(img, i) in imgs" :key="i">
-            <img :src="img" :class="{ 'opacity-100': current === i, 'opacity-0': current !== i } absolute inset-0 w-full h-full object-cover transition-opacity duration-1000" alt="KICC">
-        </template>
+{{-- HERO — fullscreen video background --}}
+<section class="relative min-h-screen flex items-center overflow-hidden">
+    @php
+        $heroAsset = \App\Models\MediaAsset::resolveSlot('landing_page', 1, 'hero_video');
+        $heroMp4 = $heroAsset?->mp4Url();
+        $heroPoster = $heroAsset?->posterUrl() ?? media('kicc/tower-night.jpg');
+    @endphp
+    <video autoplay muted loop playsinline
+           poster="{{ $heroPoster }}"
+           class="absolute inset-0 w-full h-full object-cover"
+           onerror="this.style.display='none';document.getElementById('hero-fallback').style.display='block'">
+        <source src="{{ $heroMp4 }}" type="video/mp4">
+    </video>
+    <div id="hero-fallback" class="absolute inset-0 w-full h-full" style="display:none">
+        <img src="{{ media('kicc/tower-night.jpg') }}" class="w-full h-full object-cover" alt="KICC">
     </div>
-    <div class="absolute inset-0 bg-gradient-to-r from-[#07090F] via-[#07090F]/80 to-transparent"></div>
+    <div class="absolute inset-0 bg-gradient-to-r from-[#07090F] via-[#07090F]/70 to-transparent"></div>
     <div class="absolute inset-0 bg-gradient-to-t from-[#07090F] via-transparent to-transparent"></div>
     <div class="relative max-w-7xl mx-auto px-5 pt-28 pb-20 w-full grid md:grid-cols-2 gap-10 items-center">
         <div>
-            <div class="flex items-center gap-3 mb-6 hero-entrance">
-                <div class="h-px w-10 bg-[#FFCD05]"></div>
-                <span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-[11px] font-semibold tracking-wide border bg-[#FFCD05]/15 text-[#FFCD05] border-[#FFCD05]/30">
-                    Africa's Premier Meeting Venue — Global Exhibition Platform
-                </span>
-            </div>
-            <h1 class="text-4xl sm:text-5xl md:text-7xl font-black text-white leading-[1.0] tracking-tight" data-split>
-                Kenya's Digital Economy Gateway
+            <h1 class="text-5xl sm:text-7xl md:text-8xl font-black text-white leading-[0.95] tracking-tight">
+                Global<br>
+                <span class="text-[#FFCD05]">Exhibition</span>
             </h1>
-            <p class="text-white/70 text-base sm:text-lg leading-relaxed mt-6 max-w-md hero-entrance">
+            <p class="text-white/70 text-base sm:text-lg leading-relaxed mt-4 max-w-md">
                 From 47 county markets to world-class exhibition halls — KICC connects Kenya's entire economy on one platform.
             </p>
-            <div class="mt-8 flex flex-wrap gap-3 hero-entrance">
+            <div class="mt-8 flex flex-wrap gap-3">
                 <a href="{{ route('counties.index') }}"
-                   class="inline-flex items-center justify-center gap-2 font-bold tracking-wide transition-all duration-200 px-6 sm:px-8 text-sm sm:text-base h-12 sm:h-14 rounded-xl bg-[#901C1E] text-white hover:bg-[#7b1618] active:scale-[0.97]" data-magnetic>
+                   class="inline-flex items-center gap-2 font-bold px-6 sm:px-8 text-sm h-12 sm:h-14 rounded-xl bg-[#901C1E] text-white hover:bg-[#7b1618]">
                     Explore Counties
                     <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 8l4 4m0 0l-4 4m4-4H3"/></svg>
                 </a>
                 <a href="{{ route('exhibitions.index') }}"
-                   class="inline-flex items-center justify-center gap-2 font-bold tracking-wide transition-all duration-200 px-8 text-base h-14 rounded-xl border border-[#FFCD05]/40 text-[#FFCD05] hover:bg-[#FFCD05]/10" data-magnetic>
-                    <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z"/></svg>
+                   class="inline-flex items-center gap-2 font-bold px-8 text-sm h-14 rounded-xl border border-[#FFCD05]/40 text-[#FFCD05] hover:bg-[#FFCD05]/10">
                     Book Exhibition
                 </a>
             </div>
         </div>
-        <div class="grid grid-cols-2 gap-4" data-reveal="zoom" data-reveal-delay="350">
+        <div class="grid grid-cols-2 gap-4">
             @php $stats = [['value'=>52,'suffix'=>'+','label'=>'Years of Excellence'],['value'=>47,'suffix'=>'','label'=>'Kenya Counties'],['value'=>18,'suffix'=>'','label'=>'Digital Screens'],['value'=>200,'suffix'=>'+','label'=>'Events per Year']]; @endphp
             @foreach($stats as $i => $s)
-            <div class="bg-gray-50 backdrop-blur-sm border border-gray-200 rounded-2xl p-6 card-hover hover:border-[#FFCD05]/40 transition-colors" data-tilt="10">
-                <div class="tilt-glare"></div>
+            <div class="bg-white/10 backdrop-blur-sm border border-white/10 rounded-2xl p-6 card-hover">
                 <div class="text-4xl font-black text-[#FFCD05]">
                     <span data-count="{{ $s['value'] }}" data-count-duration="{{ 1400 + $i * 250 }}" data-count-delay="{{ $i * 200 }}">0</span><span class="text-2xl">{{ $s['suffix'] }}</span>
                 </div>
-                <div class="text-gray-400 text-xs font-medium mt-2 leading-snug">{{ $s['label'] }}</div>
+                <div class="text-white/60 text-xs font-medium mt-2 leading-snug">{{ $s['label'] }}</div>
             </div>
             @endforeach
         </div>
     </div>
-    <div class="absolute bottom-8 left-1/2 -translate-x-1/2 flex flex-col items-center gap-2 text-white/50" data-float data-float-amplitude="4">
+    <div class="absolute bottom-8 left-1/2 -translate-x-1/2 flex flex-col items-center gap-2 text-white/50">
         <div class="text-[10px] tracking-[0.2em] uppercase font-semibold">Scroll</div>
         <svg class="w-4 h-4 animate-bounce" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 14l-7 7m0 0l-7-7m7 7V3"/></svg>
     </div>
@@ -74,7 +76,7 @@
     </div>
 </section>
 
-{{-- NATIONAL GOVERNMENT — ministries, sectors & agencies --}}
+{{-- NATIONAL GOVERNMENT --}}
 <section class="border-y border-gray-100 py-20 bg-white to-[#07090F] section-transition" data-section="national">
     <div class="max-w-7xl mx-auto px-5">
         <div class="flex items-end justify-between mb-10" data-reveal>
@@ -89,7 +91,6 @@
             <a href="{{ route('national.admin') }}" class="hidden md:inline-flex items-center justify-center gap-2 font-bold tracking-wide transition-all duration-200 px-4 text-xs h-9 rounded-xl bg-gray-100 text-gray-900 hover:bg-gray-100 border border-gray-200 shrink-0 card-hover">National portal</a>
         </div>
 
-        {{-- Sector chips --}}
         @if(($sectors ?? collect())->isNotEmpty())
         <div class="flex flex-wrap gap-2 mb-10" data-reveal>
             @foreach($sectors as $s)
@@ -117,7 +118,7 @@
     </div>
 </section>
 
-{{-- MARKETPLACE — Figma exact --}}
+{{-- MARKETPLACE --}}
 <section class="border-y border-gray-100 py-20 bg-white section-transition" data-section="marketplace">
     <div class="max-w-7xl mx-auto px-5">
         <div data-reveal>
@@ -159,7 +160,7 @@
     </div>
 </section>
 
-{{-- EXHIBITIONS — Figma exact --}}
+{{-- EXHIBITIONS --}}
 <section class="max-w-7xl mx-auto px-5 py-20 section-transition" data-section="exhibitions">
     <div data-reveal>
         <div class="flex items-center gap-3 mb-3">
@@ -213,7 +214,7 @@
     @endif
 </section>
 
-{{-- VENUES — Figma exact --}}
+{{-- VENUES --}}
 <section class="bg-white border-y border-gray-100 py-20 section-transition" data-section="venues">
     <div class="max-w-7xl mx-auto px-5">
         <div data-reveal>
@@ -265,7 +266,7 @@
     </div>
 </section>
 
-{{-- SCREENS CTA — Figma exact --}}
+{{-- SCREENS CTA --}}
 <section class="max-w-7xl mx-auto px-5 py-20 section-transition" data-section="screens">
     <div class="relative overflow-hidden rounded-3xl border border-gray-200 bg-gradient-to-br from-[#0D1220] to-[#07090F]" data-reveal="zoom">
         <img src="{{ media('kicc/gallery/kicc_DSC_6125.jpg') }}" alt="" class="absolute inset-0 w-full h-full object-cover opacity-20">

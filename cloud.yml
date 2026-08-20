@@ -4,15 +4,34 @@ database: false
 
 # Laravel Cloud build for the `main` branch (Laravel app at repo root).
 # Production runs on the droplet; this pipeline is the staging/preview twin.
+#
+# ── WARNING ──
+# Laravel Cloud injects DB_CONNECTION=mysql with its own internal MySQL host
+# into BOTH build AND deploy runners, even when database: false is set.
+# This breaks every deploy.
+#
+# The fix: NEVER run config:cache during the build step (it bakes in
+# the injected mysql connection). Instead cache config ONLY during
+# deploy, AFTER storage:link, so deploy-time env vars are used.
+#
+# If this deploy still fails, you MUST set these env vars in the
+# Laravel Cloud dashboard (Settings → Environment Variables):
+#   DB_CONNECTION = tidb
+#   TIDB_HOST     = gateway01.eu-central-1.prod.aws.tidbcloud.com
+#   TIDB_PORT     = 4000
+#   TIDB_DATABASE = kicc
+#   TIDB_USERNAME = 28dbcDfwh5hEbSc.root
+#   TIDB_PASSWORD = D8trCZaYhqZWo5Vq
 build:
   - mkdir -p bootstrap/cache storage/framework/cache/data storage/framework/sessions storage/framework/views storage/logs
   - composer install --no-dev --no-interaction --optimize-autoloader --prefer-source
-  - php artisan config:clear || true
-  - php artisan config:cache || true
 
 deploy:
   - php artisan storage:link --force || true
-  - php artisan migrate --force 2>&1 || echo "migrate exit: $?"
+  - php artisan config:clear || true
+  - php artisan config:cache || true
+  - php artisan migrate --force --database=tidb 2>&1 || echo "migrate exit: $?"
+  - php artisan db:seed --class=MurangaAccurateDataSeeder --force --database=tidb 2>&1 || echo "seed exit: $?"
 
 environments:
   production:

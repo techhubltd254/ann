@@ -45,14 +45,14 @@
                 </div>
                 <div class="p-3.5 text-center">
                     <h3 class="font-bold text-gray-900 text-sm leading-tight group-hover:text-kicc-gold transition-colors">{{ $c->name }}</h3>
-                    <p class="text-gray-400 text-xs mt-1">{{ $c->primary_sectors ? count($c->primary_sectors) . ' sectors' : '' }} · {{ number_format($c->population_2024 ?? 0) }} people</p>
-                    @if($c->primary_sectors)
-                    <div class="flex flex-wrap justify-center gap-1 mt-2">
-                        @foreach(array_slice($c->primary_sectors, 0, 2) as $ps)
-                        <span class="text-xs bg-[#901C1E]/20 text-kicc-gold px-2 py-0.5 rounded-full font-medium">{{ $ps }}</span>
-                        @endforeach
-                    </div>
-                    @endif
+                    <p class="text-gray-400 text-xs mt-1">{{ is_array($c->primary_sectors) ? count($c->primary_sectors) . ' sectors' : '' }} · {{ number_format($c->population_2024 ?? 0) }} people</p>
+@if(is_array($c->primary_sectors) && count($c->primary_sectors))
+                     <div class="flex flex-wrap justify-center gap-1 mt-2">
+                         @foreach(array_slice($c->primary_sectors, 0, 2) as $ps)
+                         <span class="text-xs bg-[#901C1E]/20 text-kicc-gold px-2 py-0.5 rounded-full font-medium">{{ $ps }}</span>
+                         @endforeach
+                     </div>
+                     @endif
                 </div>
             </a>
             @endforeach
