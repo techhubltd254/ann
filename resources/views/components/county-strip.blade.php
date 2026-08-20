@@ -56,11 +56,13 @@
     var regionButtons = document.querySelectorAll('[data-region]');
     var countyCards = document.querySelectorAll('.kicc-county-card');
     var countEl = document.getElementById('kicc-county-count');
+    var stripInner = document.getElementById('kicc-county-strip-inner');
     var activeRegion = 'All';
 
     function filterCounties() {
         var query = (searchInput ? searchInput.value.toLowerCase() : '');
         var visible = 0;
+        var firstVisible = null;
 
         countyCards.forEach(function(card) {
             var name = card.getAttribute('data-name') || '';
@@ -68,10 +70,18 @@
             var match = (query === '' || name.includes(query)) &&
                         (activeRegion === 'All' || region === activeRegion);
             card.style.display = match ? '' : 'none';
-            if (match) visible++;
+            if (match) {
+                visible++;
+                if (!firstVisible) firstVisible = card;
+            }
         });
 
         if (countEl) countEl.textContent = visible + ' counties';
+
+        // Scroll to the first visible card when filtering
+        if (firstVisible && stripInner) {
+            stripInner.scrollTo({ left: 0, behavior: 'instant' });
+        }
     }
 
     // Search input

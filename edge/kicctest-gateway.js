@@ -134,7 +134,8 @@ async function handle(request, env, ctx) {
     // NEVER cache stateful paths (login/register/cart/checkout/dashboard) — a cached
     // page has no session cookie, which breaks CSRF for every subsequent visitor.
     const NO_CACHE_PATHS = ["/login", "/register", "/cart", "/checkout", "/dashboard", "/logout", "/media", "/room3d"];
-    const cacheable = request.method === "GET" && !NO_CACHE_PATHS.some((p) => url.pathname.startsWith(p));
+    const cacheable = request.method === "GET" && !NO_CACHE_PATHS.some((p) => url.pathname.startsWith(p))
+        && url.pathname !== "/counties" && url.pathname !== "/counties/";
     const country = request.cf?.country ?? "XX";
     const cacheKey = new Request(`${url.origin}${url.pathname}::${country === "KE" ? "ke" : "row"}::${CACHE_VERSION}`);
     const cached = cacheable ? await caches.default.match(cacheKey) : undefined;
