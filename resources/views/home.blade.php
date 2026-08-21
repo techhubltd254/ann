@@ -25,7 +25,7 @@
         </video>
     </div>
     <div id="hero-fallback" class="absolute inset-0 w-full h-full" style="display:none">
-        <img src="{{ media('kicc/tower-night.jpg') }}" class="w-full h-full object-cover" alt="KICC">
+        <img src="{{ media('kicc/venues/kicc-main-gate.jpg') }}" class="w-full h-full object-cover" alt="KICC">
     </div>
     <div class="absolute inset-0 bg-gradient-to-r from-black/40 via-black/10 to-transparent pointer-events-none"></div>
     <div class="absolute inset-0 bg-gradient-to-t from-black/20 via-transparent to-transparent pointer-events-none"></div>

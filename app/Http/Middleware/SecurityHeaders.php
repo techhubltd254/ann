@@ -29,6 +29,7 @@ class SecurityHeaders
             . "style-src 'self' 'unsafe-inline' https://fonts.googleapis.com https://cdn.tailwindcss.com; "
             . "font-src 'self' data: https://fonts.gstatic.com; "
             . "img-src 'self' data: blob: https:; "
+            . "media-src 'self' https:; "
             . "connect-src 'self' https:; "
             . "frame-ancestors 'none'; "
             . "base-uri 'self'; "
