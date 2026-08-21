@@ -2,20 +2,13 @@ id: kicc
 region: eu-central-1
 database: false
 
-# Laravel Cloud build for the `main` branch (Laravel app at repo root).
-# Production runs on the droplet; this pipeline is the staging/preview twin.
+# Laravel Cloud build for the `main` branch.
+# Production runs on the droplet (origin.kicctest.org); this pipeline is
+# the staging/preview twin. The database config uses TIDB_* env vars
+# exclusively so Laravel Cloud's injected DB_* vars are harmless.
 #
-# ── WARNING ──
-# Laravel Cloud injects DB_CONNECTION=mysql with its own internal MySQL host
-# into BOTH build AND deploy runners, even when database: false is set.
-# This breaks every deploy.
-#
-# The fix: NEVER run config:cache during the build step (it bakes in
-# the injected mysql connection). Instead cache config ONLY during
-# deploy, AFTER storage:link, so deploy-time env vars are used.
-#
-# If this deploy still fails, you MUST set these env vars in the
-# Laravel Cloud dashboard (Settings → Environment Variables):
+# If deploy still fails, set these in Laravel Cloud dashboard
+# (Settings → Environment Variables):
 #   DB_CONNECTION = tidb
 #   TIDB_HOST     = gateway01.eu-central-1.prod.aws.tidbcloud.com
 #   TIDB_PORT     = 4000
