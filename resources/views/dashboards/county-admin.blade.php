@@ -7,8 +7,12 @@
 @section('content')
 <div class="flex h-screen overflow-hidden" x-data="{ 
     tab: '{{ $tab ?? 'overview' }}', 
+    drawer: null, 
+    drawerData: null,
     search: '',
     setTab(t) { this.tab = t; history.replaceState(null,'','?tab='+t); },
+    openDrawer(type, data) { this.drawer = type; this.drawerData = data; },
+    closeDrawer() { this.drawer = null; this.drawerData = null; }
 }">
 
     {{-- ═══════ SIDEBAR ═══════ --}}
@@ -643,9 +647,17 @@
         </main>
     </div>
 
+    {{-- Detail Drawer --}}
+    <div x-show="drawer" x-cloak class="fixed inset-0 z-40" @click.away="closeDrawer()">
+        <div class="absolute inset-0 bg-black/60" @click="closeDrawer()"></div>
+        <div class="absolute right-0 top-0 h-full w-full max-w-lg glass-drawer p-6 overflow-y-auto drawer-open">
+            <div class="flex items-center justify-between mb-6">
+                <h3 class="text-lg font-bold text-white" x-text="drawerData?.name || 'Details'"></h3>
+                <button @click="closeDrawer()" class="text-zinc-400 hover:text-white p-1"><svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"/></svg></button>
+            </div>
+            <div class="text-zinc-400 text-sm">Select an item to inspect.</div>
+        </div>
     </div>
-
-@push('scripts')
 </div>
 
 @push('scripts')
