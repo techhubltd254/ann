@@ -38,6 +38,14 @@ return Application::configure(basePath: dirname(__DIR__))
         $middleware->alias([
             'admin' => \App\Http\Middleware\AdminMiddleware::class,
         ]);
+
+        // When an authenticated user hits a guest-only page (login/register),
+        // send them to their correct admin dashboard instead of `/`.
+        \Illuminate\Auth\Middleware\RedirectIfAuthenticated::redirectUsing(
+            fn (Request $request) => app(\App\Services\Auth\LoginRedirectService::class)
+                ->redirect($request->user())
+                ->getTargetUrl()
+        );
     })
     ->withExceptions(function (Exceptions $exceptions): void {
         $exceptions->shouldRenderJsonWhen(
