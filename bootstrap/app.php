@@ -29,6 +29,7 @@ return Application::configure(basePath: dirname(__DIR__))
         $middleware->append(\App\Http\Middleware\OptimizeUploadedImages::class);
         $middleware->web(append: [
             \App\Http\Middleware\HandleInertiaRequests::class,
+            'throttle:60,1',
         ]);
         $middleware->api(prepend: [
             \App\Http\Middleware\AgenticSEO::class,
@@ -36,16 +37,6 @@ return Application::configure(basePath: dirname(__DIR__))
         ]);
         $middleware->alias([
             'admin' => \App\Http\Middleware\AdminMiddleware::class,
-        ]);
-        $middleware->csrf(except: [
-            'api/mpesa/callback',
-            'api/webhooks/n8n',
-            'api/stripe/webhook',
-            'api/courier/webhook',
-            'api/ussd/callback',
-        ]);
-        $middleware->web(append: [
-            'throttle:60,1',
         ]);
     })
     ->withExceptions(function (Exceptions $exceptions): void {

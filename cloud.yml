@@ -17,7 +17,7 @@ database: false
 #   TIDB_PASSWORD = D8trCZaYhqZWo5Vq
 build:
   - mkdir -p bootstrap/cache storage/framework/cache/data storage/framework/sessions storage/framework/views storage/logs
-  - composer install --no-dev --no-interaction --optimize-autoloader --prefer-source
+  - composer install --no-dev --no-interaction --optimize-autoloader --prefer-dist
 
 deploy:
   - php artisan storage:link --force || true
