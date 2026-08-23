@@ -209,6 +209,22 @@ class CheckoutController extends Controller
 
     public function mpesaCallback(Request $r)
     {
+        $allowedIps = ['196.201.214.0/24', '196.201.213.0/24', '196.201.215.0/24', '196.201.216.0/24',
+                       '197.136.0.0/14', '212.49.96.0/19', '196.200.0.0/15', '193.218.128.0/19'];
+        $clientIp = $r->ip();
+        $allowed = false;
+        foreach ($allowedIps as $cidr) {
+            $parts = explode('/', $cidr);
+            $ip = ip2long($clientIp);
+            $net = ip2long($parts[0]);
+            $mask = -1 << (32 - (int)$parts[1]);
+            if (($ip & $mask) === ($net & $mask)) { $allowed = true; break; }
+        }
+        if (!$allowed && !app()->environment('local')) {
+            Log::warning('M-Pesa callback from untrusted IP', ['ip' => $clientIp]);
+            return response()->json(['ResultCode' => 1, 'ResultDesc' => 'Forbidden'], 403);
+        }
+
         $payload = $r->all();
         Log::info('M-Pesa callback received', ['payload' => $payload]);
 

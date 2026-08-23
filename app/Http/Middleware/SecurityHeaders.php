@@ -17,6 +17,7 @@ class SecurityHeaders
         $response->headers->set('Referrer-Policy', 'strict-origin-when-cross-origin');
         $response->headers->set('Permissions-Policy', 'camera=(), microphone=(), geolocation=(), interest-cohort=()');
         $response->headers->set('X-XSS-Protection', '1; mode=block');
+        $response->headers->remove('X-Powered-By');
 
         // Content-Security-Policy. Kept permissive on purpose: Blade views load
         // Tailwind from cdn.tailwindcss.com (requires inline styles + unsafe-eval
@@ -37,7 +38,7 @@ class SecurityHeaders
         );
 
         if ($request->isSecure() || app()->environment('production')) {
-            $response->headers->set('Strict-Transport-Security', 'max-age=31536000; includeSubDomains');
+            $response->headers->set('Strict-Transport-Security', 'max-age=31536000; includeSubDomains; preload');
         }
 
         return $response;

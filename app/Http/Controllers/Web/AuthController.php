@@ -161,6 +161,20 @@ class AuthController extends Controller
 
     public function showLogin()
     {
+        if (Auth::check()) {
+            $user = Auth::user();
+            if ($user->isInstitutionAdmin() && $user->institution_id) {
+                $inst = \App\Models\CountyInstitution::find($user->institution_id);
+                if ($inst) return redirect()->route('institution.admin', $inst->slug);
+            }
+            if ($user->hasRole('kicc_admin')) return redirect('/portal');
+            if ($user->hasRole('county_admin') && $user->county_id) {
+                $county = \App\Models\County::find($user->county_id);
+                if ($county) return redirect()->route('county.admin.pro', $county->slug);
+            }
+            if ($user->hasRole('national_admin')) return redirect()->route('national.admin');
+            if ($user->hasRole('exhibitor')) return redirect()->route('exhibitor.admin');
+        }
         return view('auth.login');
     }
 
@@ -180,7 +194,7 @@ class AuthController extends Controller
 
         $field = filter_var($data['login'], FILTER_VALIDATE_EMAIL) ? 'email' : 'phone';
 
-        if (Auth::attempt([$field => $data['login'], 'password' => $data['password']], $request->boolean('remember'))) {
+        if (Auth::attempt([$field => $data['login'], 'password' => $data['password'], 'active' => true], $request->boolean('remember'))) {
             $request->session()->regenerate();
             RateLimiter::clear($key);
 
@@ -201,6 +215,10 @@ class AuthController extends Controller
                 return redirect()->route('dashboard.county');
             }
             // Fallback: redirect by user's actual role / account type
+            if ($user->isInstitutionAdmin() && $user->institution_id) {
+                $inst = \App\Models\CountyInstitution::find($user->institution_id);
+                if ($inst) return redirect()->route('institution.admin', $inst->slug);
+            }
             if ($user->hasRole('kicc_admin')) {
                 return redirect('/portal');
             }
@@ -242,7 +260,8 @@ class AuthController extends Controller
             ?? User::where('phone', $data['login'])->first();
 
         if (!$user || !$user->email) {
-            return back()->withErrors(['login' => 'No account found with that email.']);
+            RateLimiter::clear($ipKey);
+            return redirect()->route('login.code')->with('message', 'If an account exists, a code has been sent.');
         }
 
         $email = strtolower(trim($user->email));

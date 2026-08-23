@@ -489,3 +489,29 @@ Route::post('/__admin/optimize-images', function () {
     return $artisan->handle(app(\App\Services\ImageOptimizer::class));
 })->middleware('auth');
 
+// SEO & metadata
+Route::get('/robots.txt', fn() => response()->file(public_path('robots.txt'), ['Content-Type' => 'text/plain']));
+Route::get('/llms.txt', fn() => response()->file(public_path('llms.txt'), ['Content-Type' => 'text/plain']));
+Route::get('/sitemap.xml', function () {
+    $urls = [
+        ['loc' => url('/'), 'priority' => '1.0'],
+        ['loc' => url('/counties'), 'priority' => '0.9'],
+        ['loc' => url('/marketplace'), 'priority' => '0.8'],
+        ['loc' => url('/trade-agreements'), 'priority' => '0.7'],
+        ['loc' => url('/trading-blocs'), 'priority' => '0.7'],
+        ['loc' => url('/export/eligibility'), 'priority' => '0.6'],
+    ];
+    $counties = \App\Models\County::where('is_active', true)->get();
+    foreach ($counties as $c) {
+        $urls[] = ['loc' => route('counties.show', $c->slug), 'priority' => '0.8'];
+    }
+    $xml = '<?xml version="1.0" encoding="UTF-8"?>' . "\n";
+    $xml .= '<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">' . "\n";
+    foreach ($urls as $u) {
+        $xml .= "  <url>\n    <loc>{$u['loc']}</loc>\n    <priority>{$u['priority']}</priority>\n  </url>\n";
+    }
+    $xml .= '</urlset>';
+    return response($xml, 200, ['Content-Type' => 'application/xml']);
+});
+Route::get('/favicon.ico', fn() => response()->file(public_path('favicon.ico'), ['Content-Type' => 'image/x-icon']));
+

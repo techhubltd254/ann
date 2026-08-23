@@ -4,7 +4,28 @@
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=5.0, user-scalable=yes">
     <title>@yield('title', 'KICC') - Global Exhibition Platform</title>
-    <meta name="description" content="Africa's Premier Meeting Venue. A national icon since 1973.">
+    <meta name="description" content="@yield('description', "Africa's Premier Meeting Venue. A national icon since 1973.")">
+    <meta name="csrf-token" content="{{ csrf_token() }}">
+    <meta property="og:type" content="website">
+    <meta property="og:title" content="@yield('title', 'KICC') - Global Exhibition Platform">
+    <meta property="og:description" content="@yield('description', "Africa's Premier Meeting Venue. A national icon since 1973.")">
+    <meta property="og:url" content="{{ url()->current() }}">
+    <meta property="og:image" content="@yield('og_image', media('kicc/kicc-logo.png'))">
+    <meta property="og:site_name" content="KICC Global Exhibition Platform">
+    <meta name="twitter:card" content="summary_large_image">
+    <meta name="theme-color" content="#901C1E">
+    <link rel="canonical" href="{{ url()->current() }}">
+    <link rel="icon" type="image/x-icon" href="{{ asset('favicon.ico') }}">
+    <script type="application/ld+json">
+    {
+        "@context": "https://schema.org",
+        "@type": "Organization",
+        "name": "Kenyatta International Convention Centre",
+        "url": "https://kicctest.org",
+        "logo": "https://kicc-r2-media.techhubltd254.workers.dev/storage/kicc/kicc-logo.png",
+        "description": "Africa's Premier Meeting Venue. A national icon since 1973."
+    }
+    </script>
     <script src="https://cdn.tailwindcss.com"></script>
     <script src="{{ asset('js/theme.js') }}"></script>
     <link rel="stylesheet" href="{{ asset('css/colors.css') }}">
