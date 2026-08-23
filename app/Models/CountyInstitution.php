@@ -3,16 +3,77 @@
 namespace App\Models;
 
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Support\Str;
 
 class CountyInstitution extends Model
 {
-    protected $fillable = ['county_id', 'name', 'type', 'description', 'location', 'phone', 'email', 'website', 'student_count', 'is_published'];
-    public function county() { return $this->belongsTo(County::class); }
+    protected $fillable = [
+        'county_id', 'name', 'type', 'description', 'location', 'phone', 'email', 'website',
+        'student_count', 'is_published', 'slug', 'user_id', 'logo_url', 'cover_image_url',
+        'headquarters', 'founded_year', 'lat', 'lng', 'social_links', 'story',
+        'production_chain', 'sector_mappings', 'products', 'videos', 'synced_at',
+    ];
+
+    protected function casts(): array
+    {
+        return [
+            'social_links' => 'array',
+            'production_chain' => 'array',
+            'sector_mappings' => 'array',
+            'products' => 'array',
+            'videos' => 'array',
+            'is_published' => 'boolean',
+            'founded_year' => 'integer',
+            'lat' => 'decimal:6',
+            'lng' => 'decimal:6',
+            'synced_at' => 'datetime',
+        ];
+    }
+
+    public function county()
+    {
+        return $this->belongsTo(County::class);
+    }
+
+    public function owner()
+    {
+        return $this->belongsTo(User::class, 'user_id');
+    }
+
+    public function sectorEntities()
+    {
+        return $this->hasMany(SectorEntity::class, 'entity_id')
+            ->where('entity_type', CountyInstitution::class);
+    }
+
+    public function mediaAssets()
+    {
+        return $this->morphMany(MediaAsset::class, 'owner');
+    }
+
+    public function getRouteKeyName(): string
+    {
+        return 'slug';
+    }
+
+    public function syncSummary(): array
+    {
+        return [
+            'entities' => $this->sectorEntities()->count(),
+            'products' => \App\Models\CountyProduct::where('county_id', $this->county_id)
+                ->where('name', 'like', '%' . $this->name . '%')->count(),
+            'videos' => $this->mediaAssets()->count(),
+            'synced_at' => $this->synced_at,
+        ];
+    }
 
     protected static function booted(): void
     {
-        static::creating(function (self $m) {
-            $m->countyId ??= $m->county_id;
+        static::creating(function (self $i) {
+            if (empty($i->slug)) {
+                $i->slug = Str::slug($i->name) . '-' . Str::lower(Str::random(4));
+            }
+            $i->countyId ??= $i->county_id;
         });
     }
 }

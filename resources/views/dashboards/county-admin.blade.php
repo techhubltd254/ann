@@ -445,7 +445,105 @@
             </div>
             @endif
 
-            {{-- ═══════ 4D VIDEOS ═══════ --}}
+            {{-- ═══════ HERO VIDEO ═══════ --}}
+            @if($tab === 'hero')
+            <div class="max-w-2xl">
+                <div class="bg-white border border-gray-200 rounded-2xl p-6 mb-4">
+                    <h3 class="font-bold text-gray-900 mb-2">Hero Video</h3>
+                    <p class="text-xs text-gray-400 mb-4">Upload a hero video for the county landing page. The video plays automatically in the background with no controls. Recommended: 1920×1080, H.264 MP4, under 50 MB, 10-30 seconds.</p>
+                    @php $heroAsset = \App\Models\MediaAsset::resolveSlot(\App\Models\County::class, $county->id, 'hero_video'); @endphp
+                    <div class="bg-gray-50 border border-gray-200 rounded-xl p-4 mb-4">
+                        @if($heroAsset)
+                        <div class="aspect-video bg-black rounded-lg overflow-hidden mb-3">
+                            <video autoplay muted loop playsinline class="w-full h-full object-cover" src="{{ $heroAsset->mp4Url() ?? $heroAsset->url() }}" poster="{{ $heroAsset->posterUrl() ?? '' }}">
+                            </video>
+                        </div>
+                        <div class="text-sm text-gray-600 mb-2">
+                            <strong>Current:</strong> {{ $heroAsset->original_name }}
+                            <span class="text-gray-400">({{ number_format($heroAsset->size_bytes / 1024 / 1024, 1) }} MB)</span>
+                        </div>
+                        <form method="POST" action="{{ route('county.admin.hero.delete', $county->slug) }}" onsubmit="return confirm('Remove this hero video? The page will show the fallback static image.')">
+                            @csrf
+                            <button class="text-xs font-bold px-3 py-1.5 rounded-lg bg-red-50 text-red-600 hover:bg-red-100">Delete Video</button>
+                        </form>
+                        @else
+                        <div class="aspect-video bg-gray-200 rounded-lg flex items-center justify-center mb-3">
+                            <div class="text-center text-gray-400">
+                                <svg class="w-12 h-12 mx-auto mb-2" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M15 10l4.553-2.276A1 1 0 0121 8.618v6.764a1 1 0 01-1.447.894L15 14M5 18h8a2 2 0 002-2V8a2 2 0 00-2-2H5a2 2 0 00-2 2v8a2 2 0 002 2z"/></svg>
+                                <div class="text-sm font-semibold">No hero video set</div>
+                                <div class="text-xs mt-1">Upload one below to play automatically on the county page.</div>
+                            </div>
+                        </div>
+                        @endif
+                    </div>
+                    <form method="POST" action="{{ route('county.admin.hero.upload', $county->slug) }}" enctype="multipart/form-data" class="flex items-end gap-3">
+                        @csrf
+                        <div class="flex-1">
+                            <label class="block text-sm font-semibold tet-gray-700 mb-1.5">Upload New Hero Video</label>
+                            <input type="file" name="video" accept="video/mp4,video/webm,video/quicktime" class="w-full h-11 px-4 rounded-xl border border-gray-200 text-sm">
+                        </div>
+                        <button type="submit" class="shrink-0 h-11 px-6 rounded-xl text-white font-bold text-sm" style="background: {{ $accent }}">Upload</button>
+                    </form>
+                </div>
+                <div class="bg-blue-50 border border-blue-200 rounded-2xl p-5">
+                    <h4 class="font-bold tet-gray-900 text-sm mb-2">Tip</h4>
+                    <p class="text-xs text-gray-600">For best results, use a 1920×1080 video at 24 fps with smooth transitions. The video will loop automatically. You can upload MP4, WebM, or MOV formats.</p>
+                </div>
+            </div>
+            @endif
+
+            {{-- ═══════ INSTITUTIONS ═══════ --}}
+            @if($tab === 'institutions')
+            <div class="max-w-4xl">
+                <div class="bg-white border border-gray-200 rounded-2xl p-6 mb-4">
+                    <h3 class="font-bold text-gray-900 mb-2">Institutions</h3>
+                    <p class="text-xs text-gray-400 mb-5">One profile per organization (Kakuzi, Guka's Farm...) — the sync algorithm auto-populates sectors, products, marketplace & videos.</p>
+                    <form method="POST" action="{{ route('county.admin.institution.store', $county->slug) }}" class="grid sm:grid-cols-2 gap-3">
+                        @csrf
+                        <input name="name" required placeholder="Institution name *" class="h-11 px-4 rounded-xl border border-gray-200 text-sm">
+                        <input name="type" placeholder="Type (PLC, Farm, Co-op)" class="h-11 px-4 rounded-xl border border-gray-200 text-sm">
+                        <input name="admin_email" type="email" placeholder="Admin email (auto-creates login)" class="h-11 px-4 rounded-xl border border-gray-200 text-sm">
+                        <input name="admin_name" placeholder="Admin name" class="h-11 px-4 rounded-xl border border-gray-200 text-sm">
+                        <textarea name="description" rows="2" placeholder="Short description" class="sm:col-span-2 px-4 py-3 rounded-xl border border-gray-200 text-sm"></textarea>
+                        <button class="sm:col-span-2 h-12 rounded-xl text-white font-bold text-sm" style="background: {{ $accent }}">+ Create Institution</button>
+                    </form>
+                </div>
+                <div class="bg-white border border-gray-200 rounded-2xl p-6">
+                    <h4 class="font-bold text-gray-900 mb-4">Existing Institutions ({{ $institutions->count() }})</h4>
+                    <div class="space-y-3">
+                        @forelse($institutions as $inst)
+                        <div class="flex items-center justify-between border border-gray-100 rounded-xl p-4">
+                            <div class="flex items-center gap-3 min-w-0">
+                                @if($inst->logo_url)
+                                <img src="{{ $inst->logo_url }}" class="w-10 h-10 rounded-xl object-cover">
+                                @else
+                                <div class="w-10 h-10 rounded-xl bg-[#0B1E57]/10 flex items-center justify-center font-black text-[#0B1E57] text-xs">{{ strtoupper(substr($inst->name, 0, 2)) }}</div>
+                                @endif
+                                <div class="min-w-0">
+                                    <div class="font-bold text-gray-900 text-sm truncate">{{ $inst->name }}</div>
+                                    <div class="text-[10px] text-gray-400">
+                                        {{ $inst->sectorEntities->count() }} entities · {{ $inst->products ? count($inst->products) : 0 }} products · {{ $inst->videos ? count($inst->videos) : 0 }} videos
+                                        @if($inst->synced_at) · synced {{ $inst->synced_at->diffForHumans() }} @else · never synced @endif
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="flex items-center gap-2 shrink-0">
+                                <a href="{{ route('institution.admin', $inst->slug) }}" class="text-[10px] font-bold px-3 py-1.5 rounded-lg text-white" style="background: {{ $accent }}">Open Admin</a>
+                                <form method="POST" action="{{ route('county.admin.institution.delete', [$county->slug, $inst->id]) }}" onsubmit="return confirm('Delete {{ $inst->name }} and all derived data?')">
+                                    @csrf
+                                    <button class="text-[10px] font-bold text-red-500 hover:text-red-700 px-2">Delete</button>
+                                </form>
+                            </div>
+                        </div>
+                        @empty
+                        <p class="text-gray-400 text-sm py-6 text-center">No institutions yet. Create one above.</p>
+                        @endforelse
+                    </div>
+                </div>
+            </div>
+            @endif
+
+            {{-- ═══════ 4D VIDEOS ═══════ --}
             @if($tab === 'videos4d')
             <div class="max-w-2xl">
                 <div class="bg-white border border-gray-200 rounded-2xl p-6 mb-4">

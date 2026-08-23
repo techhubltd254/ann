@@ -75,6 +75,27 @@ class CountyController extends Controller
             ->orderBy('name')
             ->paginate(12);
 
+        // Sector background video (institution sync sets this slot)
+        $bgAsset = MediaAsset::resolveSlot(County::class, $county->id, 'sector_video_' . $sector);
+        $fourDVideo = $bgAsset?->mp4Url() ?? $bgAsset?->url();
+
+        // Per-entity 4D videos: owner_type=SectorEntity, slot=4d_video
+        $entityIds = $items->pluck('id');
+        $entityVideos = [];
+        $entityPosters = [];
+        if ($entityIds->isNotEmpty()) {
+            $assets = MediaAsset::where('owner_type', SectorEntity::class)
+                ->whereIn('owner_id', $entityIds)
+                ->where('slot', '4d_video')
+                ->get()
+                ->groupBy('owner_id');
+            foreach ($assets as $ownerId => $list) {
+                $a = $list->first();
+                $entityVideos[$ownerId] = $a->mp4Url() ?? $a->url();
+                $entityPosters[$ownerId] = $a->posterUrl();
+            }
+        }
+
         $info = [
             'tourism' => ['title' => 'Tourism & Attractions', 'icon' => '🏖️', 'desc' => 'Discover attractions and cultural sites.'],
             'hotels' => ['title' => 'Hospitality & Hotels', 'icon' => '🏨', 'desc' => 'Hotels and accommodation.'],
@@ -89,6 +110,11 @@ class CountyController extends Controller
 
         $sectorInfo = $info[$sector] ?? ['title' => $sectorModel->name, 'icon' => '📋', 'desc' => "{$sectorModel->name} in {$county->name} County."];
 
-        return view('counties.sector', compact('county', 'items', 'sector', 'sectorInfo', 'sectorModel'));
+        $services = collect();
+
+        return view('counties.sector', compact(
+            'county', 'items', 'sector', 'sectorInfo', 'sectorModel',
+            'fourDVideo', 'entityVideos', 'entityPosters', 'services'
+        ));
     }
 }

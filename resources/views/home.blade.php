@@ -4,32 +4,26 @@
 @section('description', 'Africa\'s Premier Meeting Venue. A national icon since 1973.')
 
 @section('content')
-{{-- HERO — fullscreen video background --}}
+{{-- HERO — fullscreen video background (YouTube-style HLS player) --}}
 <section class="relative min-h-screen flex items-center overflow-hidden" id="hero-section">
     @php
         $heroAsset = \App\Models\MediaAsset::resolveSlot('landing_page', 1, 'hero_video');
-        $heroMp4 = $heroAsset?->mp4Url();
         $heroPoster = $heroAsset?->posterUrl() ?? media('kicc/venues/kicc-main-gate.jpg');
     @endphp
     <div class="absolute inset-0 w-full h-full" id="hero-video-container">
-        <video autoplay muted loop playsinline preload="auto" controls
-               poster="{{ $heroPoster ?? media('kicc/venues/kicc-main-gate.jpg') }}"
-               class="w-full h-full object-cover"
-               style="cursor:pointer;min-height:100vh"
-               onerror="this.style.display='none';document.getElementById('hero-fallback').style.display='block'"
-               id="home-hero-video">
-            @if($heroAsset?->webmUrl())
-            <source src="{{ $heroAsset->webmUrl() }}" type="video/webm">
-            @endif
-            <source src="{{ $heroMp4 }}" type="video/mp4">
-        </video>
+        <x-video-player
+            :asset="$heroAsset"
+            :poster="$heroPoster"
+            id="home-hero-video"
+            class="w-full h-full"
+            :autoplay="true"
+            :loop="true"
+            :muted="true"
+        />
     </div>
-    <div id="hero-fallback" class="absolute inset-0 w-full h-full" style="display:none">
-        <img src="{{ media('kicc/venues/kicc-main-gate.jpg') }}" class="w-full h-full object-cover" alt="KICC">
-    </div>
-    <div class="absolute inset-0 bg-gradient-to-r from-black/40 via-black/10 to-transparent pointer-events-none"></div>
-    <div class="absolute inset-0 bg-gradient-to-t from-black/20 via-transparent to-transparent pointer-events-none"></div>
-    <div class="relative max-w-7xl mx-auto px-5 pt-28 pb-20 w-full grid md:grid-cols-2 gap-10 items-center">
+    <div class="absolute inset-0 bg-gradient-to-r from-black/40 via-black/10 to-transparent pointer-events-none" style="z-index:3"></div>
+    <div class="absolute inset-0 bg-gradient-to-t from-black/20 via-transparent to-transparent pointer-events-none" style="z-index:3"></div>
+    <div class="relative max-w-7xl mx-auto px-5 pt-28 pb-20 w-full grid md:grid-cols-2 gap-10 items-center" style="z-index:5">
         <div>
             <h1 class="text-5xl sm:text-7xl md:text-8xl font-black text-white leading-[0.95] tracking-tight">
                 Global<br>
@@ -79,7 +73,7 @@
             <h2 class="text-3xl md:text-4xl font-black text-gray-900 leading-[1.1]" data-split>Browse all <span class="text-[#FFCD05]">47 Counties</span></h2>
             <p class="text-gray-400 mt-3 text-base max-w-xl leading-relaxed">Search by name or filter by region — then click to explore sectors and businesses.</p>
         </div>
-        <x-county-strip :counties="$counties" />
+        <x-county-strip :counties="$counties" :hero-videos="$countyHeroVideos" />
     </div>
 </section>
 

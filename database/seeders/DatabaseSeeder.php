@@ -21,5 +21,6 @@ class DatabaseSeeder extends Seeder
         ]);
 
         $this->call(MurangaAccurateDataSeeder::class);
+        $this->call(InstitutionSeeder::class);
     }
 }

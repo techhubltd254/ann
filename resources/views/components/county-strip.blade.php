@@ -1,4 +1,4 @@
-@props(['counties' => []])
+@props(['counties' => [], 'heroVideos' => []])
 
 @php $regions = ['All', 'Central', 'Coast', 'Eastern', 'Nyanza', 'North Eastern', 'Rift Valley', 'Western', 'Nairobi']; @endphp
 
@@ -20,7 +20,7 @@
 
     <div class="flex items-center justify-between mb-3">
         <span id="kicc-county-count" class="text-[#5A6480] text-xs font-semibold">{{ count($counties) }} counties</span>
-        <div class="flex gap-2">
+        <div class="flex gap-2" id="kicc-scroll-buttons">
             <button onclick="document.getElementById('kicc-county-strip-inner').scrollBy({left: -320, behavior: 'smooth'})" class="w-8 h-8 rounded-full border border-gray-200 text-[#5A6480] hover:border-[#FFCD05] hover:text-[#FFCD05] flex items-center justify-center transition-all cursor-pointer">&larr;</button>
             <button onclick="document.getElementById('kicc-county-strip-inner').scrollBy({left: 320, behavior: 'smooth'})" class="w-8 h-8 rounded-full border border-gray-200 text-[#5A6480] hover:border-[#FFCD05] hover:text-[#FFCD05] flex items-center justify-center transition-all cursor-pointer">&rarr;</button>
         </div>
@@ -30,10 +30,19 @@
         <div class="max-w-7xl mx-auto px-0">
             <div id="kicc-county-strip-inner" class="flex gap-4 overflow-x-auto pb-4 px-5 scrollbar-hide">
                 @foreach($counties as $c)
+                @php $v = $heroVideos[$c->slug] ?? null; @endphp
                 <a href="{{ route('counties.show', $c->slug) }}"
                    data-name="{{ strtolower($c->name) }}"
                    data-region="{{ $c->former_province ?? '' }}"
+                   data-video="{{ $v ?? '' }}"
                    class="kicc-county-card shrink-0 group relative overflow-hidden rounded-2xl block bg-white border border-gray-200 hover:border-[#FFCD05]/40 transition-all" style="width: 200px; height: 280px;">
+                     @if($v)
+                     <video autoplay muted loop playsinline preload="none"
+                            class="absolute inset-0 w-full h-full object-cover"
+                            onerror="this.remove()">
+                         <source src="{{ $v }}" type="video/mp4">
+                     </video>
+                     @endif
                      <img src="{{ media('counties/' . $c->slug . '/hero.jpeg') }}" alt="{{ $c->name }}"
                           class="absolute inset-0 w-full h-full object-cover group-hover:scale-110 transition-transform duration-700"
                           loading="lazy" decoding="async"
@@ -46,6 +55,7 @@
                 </a>
                 @endforeach
             </div>
+            <div id="kicc-county-grid" class="hidden grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 gap-4 px-5"></div>
         </div>
     </div>
 </div>
@@ -54,17 +64,61 @@
 (function() {
     var searchInput = document.getElementById('kicc-search-input');
     var regionButtons = document.querySelectorAll('[data-region]');
-    var countyCards = document.querySelectorAll('.kicc-county-card');
+    var countyCards = document.querySelectorAll('#kicc-county-strip-inner .kicc-county-card');
     var countEl = document.getElementById('kicc-county-count');
     var stripInner = document.getElementById('kicc-county-strip-inner');
+    var gridEl = document.getElementById('kicc-county-grid');
+    var scrollButtons = document.getElementById('kicc-scroll-buttons');
     var activeRegion = 'All';
+
+    function buildCard(card) {
+        var clone = card.cloneNode(true);
+        clone.style.width = '';
+        clone.style.height = '';
+        clone.style.aspectRatio = '3 / 4';
+        // Clone the video element inside with preload metadata so it plays
+        var origVideo = card.querySelector('video');
+        if (origVideo) {
+            var newVideo = origVideo.cloneNode();
+            newVideo.removeAttribute('preload');
+            newVideo.preload = 'none';
+            newVideo.autoplay = true;
+            newVideo.muted = true;
+            newVideo.loop = true;
+            newVideo.playsInline = true;
+            // Insert before img
+            var img = clone.querySelector('img');
+            if (img && img.parentNode) {
+                img.parentNode.insertBefore(newVideo, img);
+            }
+        }
+        return clone;
+    }
+
+    // Clone cards into grid
+    countyCards.forEach(function(card) {
+        gridEl.appendChild(buildCard(card));
+    });
+    var gridCards = gridEl.querySelectorAll('.kicc-county-card');
 
     function filterCounties() {
         var query = (searchInput ? searchInput.value.toLowerCase() : '');
+        var isFiltered = activeRegion !== 'All' || query !== '';
         var visible = 0;
-        var firstVisible = null;
 
-        countyCards.forEach(function(card) {
+        if (isFiltered) {
+            stripInner.classList.add('hidden');
+            gridEl.classList.remove('hidden');
+            scrollButtons.classList.add('hidden');
+        } else {
+            stripInner.classList.remove('hidden');
+            gridEl.classList.add('hidden');
+            scrollButtons.classList.remove('hidden');
+            stripInner.scrollTo({ left: 0, behavior: 'instant' });
+        }
+
+        var container = isFiltered ? gridCards : countyCards;
+        container.forEach(function(card) {
             var name = card.getAttribute('data-name') || '';
             var region = card.getAttribute('data-region') || '';
             var match = (query === '' || name.includes(query)) &&
@@ -72,33 +126,27 @@
             card.style.display = match ? '' : 'none';
             if (match) {
                 visible++;
-                if (!firstVisible) firstVisible = card;
+                // Play video if present
+                var vid = card.querySelector('video');
+                if (vid && card.style.display !== 'none') {
+                    vid.play().catch(function(){});
+                }
             }
         });
-
         if (countEl) countEl.textContent = visible + ' counties';
-
-        // Scroll to the first visible card when filtering
-        if (firstVisible && stripInner) {
-            stripInner.scrollTo({ left: 0, behavior: 'instant' });
-        }
     }
 
-    // Search input
     if (searchInput) {
         searchInput.addEventListener('input', filterCounties);
     }
 
-    // Region buttons
     regionButtons.forEach(function(btn) {
         btn.addEventListener('click', function() {
             activeRegion = this.getAttribute('data-region');
             regionButtons.forEach(function(b) {
-                if (b === btn) {
-                    b.className = 'shrink-0 px-3 py-1.5 rounded-lg text-[11px] font-bold transition-all cursor-pointer bg-[#901C1E] text-white';
-                } else {
-                    b.className = 'shrink-0 px-3 py-1.5 rounded-lg text-[11px] font-bold transition-all cursor-pointer bg-white text-[#5A6480] border border-gray-200 hover:border-[#901C1E]/30';
-                }
+                var isActive = b === btn;
+                b.className = 'shrink-0 px-3 py-1.5 rounded-lg text-[11px] font-bold transition-all cursor-pointer ' +
+                    (isActive ? 'bg-[#901C1E] text-white' : 'bg-white text-[#5A6480] border border-gray-200 hover:border-[#901C1E]/30');
             });
             filterCounties();
         });

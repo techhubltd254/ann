@@ -357,9 +357,13 @@
                 <div class="bg-white rounded-2xl border border-gray-200 p-5">
                     <h2 class="font-bold text-gray-900 text-sm mb-3">Current Hero Video</h2>
                     @if($heroAsset)
+                    @php
+                        $heroVideoSrc = $heroAsset->mp4Url() ?? $heroAsset->webmUrl() ?? $heroAsset->url();
+                        $heroPosterUrl = $heroAsset->posterUrl();
+                    @endphp
                     <div class="aspect-video bg-gray-900 rounded-xl overflow-hidden mb-3">
-                        <video autoplay muted loop playsinline controls preload="auto" class="w-full h-full object-cover" poster="{{ $heroAsset->posterUrl() }}">
-                            <source src="{{ $heroAsset->bestVideoUrl() }}" type="video/mp4">
+                        <video autoplay muted loop playsinline controls preload="auto" class="w-full h-full object-cover" poster="{{ $heroPosterUrl }}">
+                            <source src="{{ $heroVideoSrc }}" type="video/mp4">
                         </video>
                     </div>
                     <div class="text-xs text-gray-500 space-y-1">

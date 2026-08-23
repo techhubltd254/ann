@@ -17,39 +17,20 @@ $kiccBlue = '#0B1E57';
     {{-- HERO --}}
     <div class="relative min-h-[70vh] md:min-h-[85vh] overflow-hidden">
         @php
-            $heroVideo = $countyMedia?->bestVideoUrl();
-            $heroWebm = $countyMedia?->webmUrl();
-            $heroMp4 = $countyMedia?->mp4Url();
             $heroPoster = $countyMedia?->posterUrl() ?? media('counties/' . $county->slug . '/hero.jpeg');
             $heroPosterImg = $countyMedia?->thumbnailUrl() ?? media('counties/' . $county->slug . '/hero.jpeg');
-            $fallbackVideo = file_exists(public_path('videos/' . $county->slug . '.mp4')) ? asset('videos/' . $county->slug . '.mp4') : asset('videos/mombasa.mp4');
         @endphp
-        <video autoplay muted loop playsinline controls
-               poster="{{ $heroPoster }}"
-               class="w-full h-full object-cover absolute inset-0"
-               onerror="this.style.display='none';this.nextElementSibling.style.display='block'"
-               style="cursor:pointer"
-               id="county-hero-video">
-            @if($heroWebm)
-            <source src="{{ $heroWebm }}" type="video/webm">
-            @endif
-            @if($heroMp4)
-            <source src="{{ $heroMp4 }}" type="video/mp4">
-            @endif
-            @if(!$heroVideo)
-            <source src="{{ $fallbackVideo }}" type="video/mp4">
-            <source src="{{ media('counties/' . $county->slug . '/showcase.mp4') }}" type="video/mp4">
-            @endif
-            <p class="absolute inset-0 flex items-center justify-center text-white/50 text-sm bg-black/50">
-                Your browser does not support the video format. 
-                <a href="{{ $heroMp4 }}" class="text-kicc-gold underline ml-1" download>Download video</a>
-            </p>
-        </video>
-        <img src="{{ $heroPosterImg }}" alt="{{ $county->name }}"
-             class="w-full h-full object-cover absolute inset-0" style="display:none" loading="lazy"
-             onerror="this.onerror=null;this.src='{{ asset('storage/kicc/hero-1.jpg') }}'">
-        <div class="absolute inset-0 bg-gradient-to-t from-black/40 via-black/10 to-transparent"></div>
-        <div class="absolute bottom-0 left-0 right-0 max-w-7xl mx-auto px-5 pb-10 md:pb-16">
+        <x-video-player
+            :asset="$countyMedia"
+            :poster="$heroPoster"
+            id="county-hero-video"
+            class="w-full h-full"
+            :autoplay="true"
+            :loop="true"
+            :muted="true"
+        />
+        <div class="absolute inset-0 bg-gradient-to-t from-black/40 via-black/10 to-transparent" style="z-index:3"></div>
+        <div class="absolute bottom-0 left-0 right-0 max-w-7xl mx-auto px-5 pb-10 md:pb-16" style="z-index:5">
             <a href="{{ route('counties.index') }}" class="inline-flex items-center gap-1.5 text-white/60 hover:text-white text-sm mb-3 transition-colors">
                 <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 19l-7-7 7-7"/></svg>
                 All Counties

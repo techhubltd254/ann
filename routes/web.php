@@ -1,6 +1,5 @@
 <?php
 
-use App\Http\Controllers\Web\AuthController;
 use App\Http\Controllers\Web\CartController;
 use App\Http\Controllers\Web\CheckoutController;
 use App\Http\Controllers\Web\AdminDashboardController;
@@ -14,10 +13,10 @@ use App\Http\Controllers\Web\HomeController;
 use App\Http\Controllers\Web\MarketplaceController;
 use App\Http\Controllers\Web\OperationsController;
 use App\Http\Controllers\Web\ScreenController;
+require __DIR__.'/auth.php';
 use App\Http\Controllers\Web\TravelController;
 use App\Http\Controllers\Web\VenueController;
 use Illuminate\Support\Facades\Route;
-use App\Http\Controllers\Web\SocialAuthController;
 use App\Http\Controllers\Web\WishlistController;
 use App\Http\Controllers\Web\OrderTrackingController;
 use App\Http\Controllers\Web\ProductQAController;
@@ -173,8 +172,26 @@ Route::get('/national-admin/agencies/{agency}/delete', [\App\Http\Controllers\We
     Route::post('/county-admin/{slug}/pro/details', [\App\Http\Controllers\Web\CountyAdminController::class, 'updateDetails'])->name('county.admin.details');
     Route::post('/county-admin/{slug}/pro/sector', [\App\Http\Controllers\Web\CountyAdminController::class, 'toggleSector'])->name('county.admin.sector');
     Route::post('/county-admin/{slug}/pro/sector/tile', [\App\Http\Controllers\Web\CountyAdminController::class, 'toggleTileSector'])->name('county.admin.sector.tile');
+    Route::post('/county-admin/{slug}/pro/hero-video', [\App\Http\Controllers\Web\CountyAdminController::class, 'uploadHeroVideo'])->name('county.admin.hero.upload');
+    Route::post('/county-admin/{slug}/pro/hero-video/delete', [\App\Http\Controllers\Web\CountyAdminController::class, 'deleteHeroVideo'])->name('county.admin.hero.delete');
     Route::post('/county-admin/{slug}/pro/entity', [\App\Http\Controllers\Web\CountyAdminController::class, 'addEntity'])->name('county.admin.entity');
     Route::post('/county-admin/{slug}/pro/entity/{entityId}/delete', [\App\Http\Controllers\Web\CountyAdminController::class, 'deleteEntity'])->name('county.admin.entity.delete');
+    Route::post('/county-admin/{slug}/pro/institutions', [\App\Http\Controllers\Web\CountyAdminController::class, 'storeInstitution'])->name('county.admin.institution.store');
+    Route::post('/county-admin/{slug}/pro/institutions/{institutionId}/delete', [\App\Http\Controllers\Web\CountyAdminController::class, 'deleteInstitution'])->name('county.admin.institution.delete');
+
+    // ═══ INSTITUTION ADMIN PORTAL (strict per-institution access) ═══
+    Route::get('/institution-admin/{institution}', [\App\Http\Controllers\Web\InstitutionAdminController::class, 'dashboard'])->name('institution.admin');
+    Route::post('/institution-admin/{institution}/profile', [\App\Http\Controllers\Web\InstitutionAdminController::class, 'updateProfile'])->name('institution.admin.profile');
+    Route::post('/institution-admin/{institution}/logo', [\App\Http\Controllers\Web\InstitutionAdminController::class, 'uploadLogo'])->name('institution.admin.logo');
+    Route::post('/institution-admin/{institution}/production', [\App\Http\Controllers\Web\InstitutionAdminController::class, 'updateProduction'])->name('institution.admin.production');
+    Route::post('/institution-admin/{institution}/sectors', [\App\Http\Controllers\Web\InstitutionAdminController::class, 'updateSectors'])->name('institution.admin.sectors');
+    Route::post('/institution-admin/{institution}/products', [\App\Http\Controllers\Web\InstitutionAdminController::class, 'storeProduct'])->name('institution.admin.products.store');
+    Route::post('/institution-admin/{institution}/products/{index}/delete', [\App\Http\Controllers\Web\InstitutionAdminController::class, 'deleteProduct'])->name('institution.admin.products.delete');
+    Route::post('/institution-admin/{institution}/videos', [\App\Http\Controllers\Web\InstitutionAdminController::class, 'uploadVideo'])->name('institution.admin.videos.upload');
+    Route::post('/institution-admin/{institution}/videos/{index}/delete', [\App\Http\Controllers\Web\InstitutionAdminController::class, 'deleteVideo'])->name('institution.admin.videos.delete');
+    Route::get('/institution-admin/{institution}/sync', [\App\Http\Controllers\Web\InstitutionAdminController::class, 'sync'])->name('institution.admin.sync');
+    Route::post('/institution-admin/{institution}/team', [\App\Http\Controllers\Web\InstitutionAdminController::class, 'addTeamMember'])->name('institution.admin.team.add');
+    Route::post('/institution-admin/{institution}/team/{userId}/remove', [\App\Http\Controllers\Web\InstitutionAdminController::class, 'removeTeamMember'])->name('institution.admin.team.remove');
     // Private Exhibitor Portal
     Route::get('/exhibitor-admin', [\App\Http\Controllers\Web\ExhibitorPortalController::class, 'index'])->name('exhibitor.admin');
     Route::post('/exhibitor-admin/products', [\App\Http\Controllers\Web\ExhibitorPortalController::class, 'storeProduct'])->name('exhibitor.admin.products.store');
@@ -417,14 +434,6 @@ Route::middleware(['auth', 'admin:kicc'])->group(function () {
     })->name('commission.admin.index');
 });
 
-// MFA (Multi-Factor Authentication)
-Route::middleware('auth')->group(function () {
-    Route::get('/mfa/setup', [\App\Http\Controllers\Web\MfaController::class, 'showSetup'])->name('mfa.setup');
-    Route::post('/mfa/setup', [\App\Http\Controllers\Web\MfaController::class, 'confirmSetup'])->name('mfa.setup.confirm');
-    Route::post('/mfa/disable', [\App\Http\Controllers\Web\MfaController::class, 'disable'])->name('mfa.disable');
-});
-Route::get('/mfa/challenge', [\App\Http\Controllers\Web\MfaController::class, 'showChallenge'])->name('mfa.challenge');
-Route::post('/mfa/challenge', [\App\Http\Controllers\Web\MfaController::class, 'verifyChallenge'])->name('mfa.challenge.verify');
 
 Route::get('/venues', [ExhibitionController::class, 'venues'])->name('venues.index');
 Route::get('/venues/{venue}', [VenueController::class, 'show'])->name('venues.show');
@@ -448,26 +457,8 @@ Route::get('/room3d/{id}', [Room3dController::class, 'show'])->name('room3d.show
 Route::get('/room3d/{id}/viewer', [Room3dController::class, 'viewer'])->name('room3d.viewer');
 Route::get('/room3d/{id}/api', [Room3dController::class, 'api'])->name('room3d.api');
 
-Route::middleware('guest')->group(function () {
-    Route::get('/register', [AuthController::class, 'showRegister'])->name('register');
-    Route::post('/register/send-code', [AuthController::class, 'sendCode'])->name('register.send-code');
-    Route::get('/register/verify', [AuthController::class, 'showVerify'])->name('register.verify');
-    Route::post('/register/verify', [AuthController::class, 'verifyCode']);
-    Route::get('/register/details', [AuthController::class, 'showDetails'])->name('register.details');
-    Route::post('/register/complete', [AuthController::class, 'completeRegistration'])->name('register.complete');
-
-    Route::get('/login', [AuthController::class, 'showLogin'])->name('login');
-    Route::post('/login', [AuthController::class, 'login']);
-    Route::post('/login/send-code', [AuthController::class, 'sendLoginCode'])->name('login.send-code');
-    Route::get('/login/code', [AuthController::class, 'showLoginCode'])->name('login.code');
-    Route::post('/login/code/verify', [AuthController::class, 'verifyLoginCode'])->name('login.code.verify');
-});
 
 Route::middleware('auth')->group(function () {
-    Route::post('/logout', [AuthController::class, 'logout'])->name('logout');
-
-    Route::post("/password/change", [AppHttpControllersWebAuthController::class, "changePassword"])
-        ->name("password.change")->middleware("auth");
 
     Route::get('/dashboard', [DashboardController::class, 'index'])->name('dashboard.index');
     Route::get('/dashboard/exhibitions', [DashboardController::class, 'exhibitions'])->name('dashboard.exhibitions');
@@ -477,8 +468,6 @@ Route::middleware('auth')->group(function () {
 });
 
 // Google OAuth
-Route::get('/auth/google', [SocialAuthController::class, 'redirectToGoogle'])->name('auth.google');
-Route::get('/auth/google/callback', [SocialAuthController::class, 'handleGoogleCallback']);
 
 // Livestreams
 Route::get('/livestreams', [LivestreamController::class, 'index'])->name('livestreams.index');
@@ -492,6 +481,7 @@ Route::post('/__admin/optimize-images', function () {
     return $artisan->handle(app(\App\Services\ImageOptimizer::class));
 })->middleware('auth');
 
+
 // SEO & metadata
 Route::get('/robots.txt', fn() => response()->file(public_path('robots.txt'), ['Content-Type' => 'text/plain']));
 Route::get('/llms.txt', fn() => response()->file(public_path('llms.txt'), ['Content-Type' => 'text/plain']));
@@ -504,10 +494,12 @@ Route::get('/sitemap.xml', function () {
         ['loc' => url('/trading-blocs'), 'priority' => '0.7'],
         ['loc' => url('/export/eligibility'), 'priority' => '0.6'],
     ];
+
     $counties = \App\Models\County::where('is_active', true)->get();
     foreach ($counties as $c) {
         $urls[] = ['loc' => route('counties.show', $c->slug), 'priority' => '0.8'];
     }
+
     $xml = '<?xml version="1.0" encoding="UTF-8"?>' . "\n";
     $xml .= '<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">' . "\n";
     foreach ($urls as $u) {
@@ -516,5 +508,5 @@ Route::get('/sitemap.xml', function () {
     $xml .= '</urlset>';
     return response($xml, 200, ['Content-Type' => 'application/xml']);
 });
-Route::get('/favicon.ico', fn() => response()->file(public_path('favicon.ico'), ['Content-Type' => 'image/x-icon']));
 
+Route::get('/favicon.ico', fn() => response()->file(public_path('favicon.ico'), ['Content-Type' => 'image/x-icon']));

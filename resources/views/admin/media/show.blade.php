@@ -28,7 +28,11 @@
                 {{-- Preview with glass frame (bottom-half progressive blur) --}}
                 <div class="relative overflow-hidden rounded-2xl border border-gray-200 bg-[#07090F] aspect-video" data-reveal="zoom">
                     @if($asset->kind === 'video')
-                    <video src="{{ $asset->url() }}" controls class="w-full h-full object-cover"></video>
+                    @php
+                        $videoSrc = $asset->mp4Url() ?? $asset->webmUrl() ?? $asset->url();
+                        $videoPoster = $asset->posterUrl() ?? $asset->thumbnailUrl();
+                    @endphp
+                    <video src="{{ $videoSrc }}" controls class="w-full h-full object-cover" poster="{{ $videoPoster }}"></video>
                     @elseif($asset->kind === 'model')
                     <div class="w-full h-full flex items-center justify-center text-white/40 text-4xl">🧊 {{ pathinfo($asset->original_name, PATHINFO_EXTENSION) }}</div>
                     @else

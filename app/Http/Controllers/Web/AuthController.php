@@ -48,7 +48,7 @@ class AuthController extends Controller
         } catch (\Throwable $e) {
             \Illuminate\Support\Facades\Log::error("Verification email to {$email} failed: " . $e->getMessage());
         }
-        \Illuminate\Support\Facades\\Illuminate\Support\Facades\Log::info("Auth: registration code sent to {$email}");
+        \Illuminate\Support\Facades\Log::info("Auth: registration code sent to {$email}");
 
         session(['reg_email' => $email]);
 
@@ -162,18 +162,7 @@ class AuthController extends Controller
     public function showLogin()
     {
         if (Auth::check()) {
-            $user = Auth::user();
-            if ($user->isInstitutionAdmin() && $user->institution_id) {
-                $inst = \App\Models\CountyInstitution::find($user->institution_id);
-                if ($inst) return redirect()->route('institution.admin', $inst->slug);
-            }
-            if ($user->hasRole('kicc_admin')) return redirect('/portal');
-            if ($user->hasRole('county_admin') && $user->county_id) {
-                $county = \App\Models\County::find($user->county_id);
-                if ($county) return redirect()->route('county.admin.pro', $county->slug);
-            }
-            if ($user->hasRole('national_admin')) return redirect()->route('national.admin');
-            if ($user->hasRole('exhibitor')) return redirect()->route('exhibitor.admin');
+            return app(\App\Services\Auth\LoginRedirectService::class)->redirect(Auth::user());
         }
         return view('auth.login');
     }
@@ -215,35 +204,7 @@ class AuthController extends Controller
                 return redirect()->route('dashboard.county');
             }
             // Fallback: redirect by user's actual role / account type
-            if ($user->isInstitutionAdmin() && $user->institution_id) {
-                $inst = \App\Models\CountyInstitution::find($user->institution_id);
-                if ($inst) return redirect()->route('institution.admin', $inst->slug);
-            }
-            if ($user->hasRole('kicc_admin')) {
-                return redirect('/portal');
-            }
-            if ($user->hasRole('national_admin')) {
-                return redirect()->route('national.admin');
-            }
-            if ($user->hasRole('county_admin')) {
-                if ($user->county_id) {
-                    $county = \App\Models\County::find($user->county_id);
-                    if ($county) return redirect()->route('county.admin.pro', $county->slug);
-                }
-                return redirect()->route('dashboard.county');
-            }
-            // Private exhibitors always land in THEIR portal — never the admin picker
-            if ($user->hasRole('exhibitor') || $user->account_type === 'exhibitor') {
-                return redirect()->route('exhibitor.admin')
-                    ->with('success', "Welcome back, {$user->name}!");
-            }
-            // Travel providers land in their provider portal
-            if ($user->account_type === 'provider') {
-                return redirect()->route('provider.admin')
-                    ->with('success', "Welcome back, {$user->name}!");
-            }
-
-            return redirect()->intended(route('dashboard.index'));
+            return app(\App\Services\Auth\LoginRedirectService::class)->redirect($user);
         }
 
         RateLimiter::hit($key, 120);

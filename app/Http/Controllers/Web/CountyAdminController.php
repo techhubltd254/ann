@@ -65,6 +65,10 @@ class CountyAdminController extends Controller
         $tileSectors = DB::table('county_sector')->where('county_id', $county->id)->where('display_on_tile', 'yes')->pluck('sector_id')->toArray();
         $allSectors = Sector::orderBy('name')->get();
         $sectorEntities = SectorEntity::where('county_id', $county->id)->limit(100)->get();
+        $institutions = \App\Models\CountyInstitution::with('owner', 'sectorEntities')
+            ->where('county_id', $county->id)
+            ->latest()
+            ->get();
 
         // Stats
         $totalOrders = DB::table('order_items')
@@ -88,6 +92,8 @@ class CountyAdminController extends Controller
             ['label' => 'Overview', 'tab' => 'overview', 'icon' => 'M3 12l2-2m0 0l7-7 7 7M5 10v10a1 1 0 001 1h3m10-11l2 2m-2-2v10a1 1 0 01-1 1h-3m-6 0a1 1 0 001-1v-4a1 1 0 011-1h2a1 1 0 011 1v4a1 1 0 001 1m-6 0h6'],
             ['label' => 'Details', 'tab' => 'details', 'icon' => 'M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z'],
             ['label' => 'Content', 'tab' => 'content', 'icon' => 'M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z'],
+            ['label' => 'Hero Video', 'tab' => 'hero', 'icon' => 'M15 10l4.553-2.276A1 1 0 0121 8.618v6.764a1 1 0 01-1.447.894L15 14M5 18h8a2 2 0 002-2V8a2 2 0 00-2-2H5a2 2 0 00-2 2v8a2 2 0 002 2z'],
+            ['label' => 'Institutions', 'tab' => 'institutions', 'icon' => 'M19 21V5a2 2 0 00-2-2H7a2 2 0 00-2 2v16m14 0h2m-2 0h-5m-9 0H3m2 0h5M9 7h1m-1 4h1m4-4h1m-1 4h1m-5 10v-5a1 1 0 011-1h2a1 1 0 011 1v5m-4 0h4'],
             ['label' => 'Images', 'tab' => 'images', 'icon' => 'M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z'],
             ['label' => '4D Videos', 'tab' => 'videos4d', 'icon' => 'M15 10l4.553-2.276A1 1 0 0121 8.618v6.764a1 1 0 01-1.447.894L15 14M5 18h8a2 2 0 002-2V8a2 2 0 00-2-2H5a2 2 0 00-2 2v8a2 2 0 002 2z'],
             ['label' => 'Sectors', 'tab' => 'sectors', 'icon' => 'M19 21V5a2 2 0 00-2-2H7a2 2 0 00-2 2v16m14 0h2m-2 0h-5m-9 0H3m2 0h5M9 7h1m-1 4h1m4-4h1m-1 4h1m-5 10v-5a1 1 0 011-1h2a1 1 0 011 1v5m-4 0h4'],
@@ -101,7 +107,8 @@ class CountyAdminController extends Controller
         return view('dashboards.county-admin', compact(
             'county', 'tab', 'navItems', 'stats', 'products', 'attractions',
             'hotels', 'sectorImages', 'plans', 'marketplaceProducts', 'ads',
-            'sectors', 'linkedSectors', 'tileSectors', 'allSectors', 'sectorEntities'
+            'sectors', 'linkedSectors', 'tileSectors', 'allSectors', 'sectorEntities',
+            'institutions',
         ) + ['video4dMap' => $this->video4dMap($county)]);
     }
 
@@ -280,6 +287,137 @@ class CountyAdminController extends Controller
         return back()->with('success', "{$sector} image removed. Fallback will show.");
     }
 
+    /* ─── HERO VIDEO ─── */
+
+    public function storeInstitution(Request $request, string $slug)
+    {
+        $user = Auth::user();
+        $county = County::where('slug', $slug)->firstOrFail();
+        abort_if(!$user->is_admin && $user->county_id !== $county->id, 403);
+        $county = $this->authorizeCounty($slug);
+
+        $data = $request->validate([
+            'name' => 'required|string|max:255',
+            'type' => 'nullable|string|max:100',
+            'description' => 'nullable|string|max:5000',
+            'admin_email' => 'nullable|email|max:255',
+            'admin_name' => 'nullable|string|max:255',
+        ]);
+
+        $institution = \App\Models\CountyInstitution::create([
+            'county_id' => $county->id,
+            'name' => $data['name'],
+            'type' => $data['type'] ?? 'Company',
+            'description' => $data['description'] ?? '',
+            'is_published' => true,
+        ]);
+
+        // Auto-create the institution admin user
+        if (!empty($data['admin_email'])) {
+            $admin = \App\Models\User::where('email', $data['admin_email'])->first();
+            if (!$admin) {
+                $admin = \App\Models\User::create([
+                    'name' => $data['admin_name'] ?? $data['name'],
+                    'email' => $data['admin_email'],
+                    'password' => bcrypt(\Illuminate\Support\Str::random(16)),
+                    'account_type' => 'institution',
+                    'institution_id' => $institution->id,
+                    'status' => 'active',
+                ]);
+            } else {
+                $admin->update(['institution_id' => $institution->id, 'account_type' => 'institution']);
+            }
+            $admin->assignRole('institution_admin');
+            $institution->update(['user_id' => $admin->id]);
+        }
+
+        return back()->with('success', "Institution \"{$data['name']}\" created. Open it to start building the profile.");
+    }
+
+    public function deleteInstitution(string $slug, int $institutionId)
+    {
+        $user = Auth::user();
+        $county = County::where('slug', $slug)->firstOrFail();
+        abort_if(!$user->is_admin && $user->county_id !== $county->id, 403);
+        $this->authorizeCounty($slug);
+
+        $institution = \App\Models\CountyInstitution::where('county_id', $county->id)->findOrFail($institutionId);
+        \App\Services\InstitutionSyncService::deleteDerived($institution);
+        $institution->delete();
+
+        return back()->with('success', "Institution \"{$institution->name}\" deleted. All derived data removed.");
+    }
+
+    public function uploadHeroVideo(Request $request, string $slug)
+    {
+        $user = Auth::user();
+        $county = County::where('slug', $slug)->firstOrFail();
+        abort_if(!$user->is_admin && $user->county_id !== $county->id, 403);
+        $county = $this->authorizeCounty($slug);
+        $data = $request->validate([
+            'video' => 'required|file|mimes:mp4,webm,mov|max:512000',
+        ]);
+
+        $file = $request->file('video');
+        $filename = pathinfo($file->getClientOriginalName(), PATHINFO_FILENAME) . '.' . $file->getClientOriginalExtension();
+
+        // Upload to R2
+        $disk = Storage::disk('r2');
+        $r2Path = "muranga/video/hero/hero.mp4";
+        $disk->writeStream($r2Path, fopen($file->getRealPath(), 'r'), ['visibility' => 'public']);
+
+        // Delete old hero asset
+        \App\Models\MediaAsset::forSlot(County::class, $county->id, 'hero_video')->delete();
+
+        // Create new asset
+        $asset = \App\Models\MediaAsset::create([
+            'uuid' => (string) Str::uuid(),
+            'owner_id' => $county->id,
+            'owner_type' => County::class,
+            'slot' => 'hero_video',
+            'disk' => 'r2',
+            'path' => $r2Path,
+            'original_name' => $file->getClientOriginalName(),
+            'mime' => $file->getMimeType(),
+            'kind' => 'video',
+            'size_bytes' => $file->getSize(),
+            'status' => 'ready',
+        ]);
+
+        // Create derivatives
+        $asset->derivatives()->create([
+            'kind' => 'video_mp4',
+            'path' => $r2Path,
+            'mime' => 'video/mp4',
+            'size_bytes' => $file->getSize(),
+            'variant' => '1080p',
+        ]);
+
+        return back()->with('success', 'Hero video uploaded. Processing derivatives...');
+    }
+
+    public function deleteHeroVideo(string $slug)
+    {
+        $user = Auth::user();
+        $county = County::where('slug', $slug)->firstOrFail();
+        abort_if(!$user->is_admin && $user->county_id !== $county->id, 403);
+        $this->authorizeCounty($slug);
+        
+        $assets = \App\Models\MediaAsset::forSlot(County::class, $county->id, 'hero_video')->get();
+        foreach ($assets as $a) {
+            // Delete from R2
+            if ($a->disk === 'r2') {
+                Storage::disk('r2')->delete($a->path);
+                foreach ($a->derivatives as $d) {
+                    Storage::disk('r2')->delete($d->path);
+                }
+            }
+            $a->derivatives()->delete();
+            $a->delete();
+        }
+        return back()->with('success', 'Hero video removed.');
+    }
+
     /* ─── 4D VIDEOS ─── */
 
     /**
@@ -294,7 +432,7 @@ class CountyAdminController extends Controller
         abort_if(!$user->is_admin && $user->county_id !== $county->id, 403);
         $county = $this->authorizeCounty($slug);
         $data = $request->validate([
-            'entity_type' => 'required|in:attraction,hotel,product',
+            'entity_type' => 'required|in:attraction,hotel,product,sector_entity',
             'entity_id' => 'required|integer',
             'video' => 'required|file|mimes:mp4,webm,mov|max:512000', // 500 MB
         ]);
@@ -303,6 +441,7 @@ class CountyAdminController extends Controller
             'attraction' => CountyTourismAttraction::class,
             'hotel' => CountyHotel::class,
             'product' => CountyProduct::class,
+            'sector_entity' => SectorEntity::class,
         };
         $entity = $model::where('county_id', $county->id)->findOrFail($data['entity_id']);
 
@@ -356,17 +495,80 @@ class CountyAdminController extends Controller
     protected function video4dMap(County $county): array
     {
         $map = [];
-        foreach ([
-            'attraction' => CountyTourismAttraction::class,
-            'hotel' => CountyHotel::class,
-            'product' => CountyProduct::class,
-        ] as $type => $model) {
-            $assets = \App\Models\MediaAsset::where('owner_type', $model)
-                ->where('slot', '4d_video')
-                ->whereIn('owner_id', $model::where('county_id', $county->id)->pluck('id'))
-                ->get();
-            foreach ($assets as $a) {
-                $map["{$type}-{$a->owner_id}"] = $a;
+        $icons = [
+            'CountyTourismAttraction' => '🏖️',
+            'CountyHotel' => '🏨',
+            'CountyProduct' => '🛍️',
+            'SectorEntity' => '📋',
+        ];
+
+        $loadedVideos = \App\Models\MediaAsset::where('slot', '4d_video')
+            ->where(function ($q) use ($county) {
+                $q->where(function ($q2) use ($county) {
+                    $q2->where('owner_type', \App\Models\CountyTourismAttraction::class)
+                       ->whereIn('owner_id', $county->tourismAttractions()->pluck('id'));
+                })->orWhere(function ($q2) use ($county) {
+                    $q2->where('owner_type', \App\Models\CountyHotel::class)
+                       ->whereIn('owner_id', $county->hotels()->pluck('id'));
+                })->orWhere(function ($q2) use ($county) {
+                    $q2->where('owner_type', \App\Models\CountyProduct::class)
+                       ->whereIn('owner_id', $county->products()->pluck('id'));
+                })->orWhere(function ($q2) use ($county) {
+                    $q2->where('owner_type', \App\Models\SectorEntity::class)
+                       ->whereIn('owner_id', \App\Models\SectorEntity::where('county_id', $county->id)->pluck('id'));
+                });
+            })
+            ->get()
+            ->keyBy(fn ($a) => $a->owner_type . '-' . $a->owner_id);
+
+        // Attractions
+        foreach ($county->tourismAttractions as $e) {
+            $key = \App\Models\CountyTourismAttraction::class . '-' . $e->id;
+            $asset = $loadedVideos->get($key);
+            $map["attraction-{$e->id}"] = [
+                'name' => $e->name,
+                'icon' => '🏖️',
+                'entityType' => 'attraction',
+                'entityId' => $e->id,
+                'video' => $asset?->path,
+            ];
+        }
+        // Hotels
+        foreach ($county->hotels as $e) {
+            $key = \App\Models\CountyHotel::class . '-' . $e->id;
+            $asset = $loadedVideos->get($key);
+            $map["hotel-{$e->id}"] = [
+                'name' => $e->name,
+                'icon' => '🏨',
+                'entityType' => 'hotel',
+                'entityId' => $e->id,
+                'video' => $asset?->path,
+            ];
+        }
+        // Products
+        foreach ($county->products as $e) {
+            $key = \App\Models\CountyProduct::class . '-' . $e->id;
+            $asset = $loadedVideos->get($key);
+            $map["product-{$e->id}"] = [
+                'name' => $e->name,
+                'icon' => '🛍️',
+                'entityType' => 'product',
+                'entityId' => $e->id,
+                'video' => $asset?->path,
+            ];
+        }
+        // Sector entities (from sectors tab)
+        foreach (\App\Models\SectorEntity::where('county_id', $county->id)->get() as $e) {
+            $key = \App\Models\SectorEntity::class . '-' . $e->id;
+            if (!isset($map["attraction-{$e->id}"]) && !isset($map["hotel-{$e->id}"]) && !isset($map["product-{$e->id}"])) {
+                $asset = $loadedVideos->get($key);
+                $map["sector-{$e->id}"] = [
+                    'name' => $e->name,
+                    'icon' => '📋',
+                    'entityType' => 'sector_entity',
+                    'entityId' => $e->id,
+                    'video' => $asset?->path,
+                ];
             }
         }
         return $map;

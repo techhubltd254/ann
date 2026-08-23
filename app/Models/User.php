@@ -38,6 +38,7 @@ use Spatie\Permission\Traits\HasRoles;
     'trust_score',
     'trust_grade',
     'visibility_score',
+    'institution_id',
 ])]
 #[Hidden(['password', 'remember_token', 'mfa_secret'])]
 class User extends Authenticatable implements FilamentUser
@@ -104,6 +105,11 @@ class User extends Authenticatable implements FilamentUser
         return $this->belongsTo(Ministry::class);
     }
 
+    public function institution(): BelongsTo
+    {
+        return $this->belongsTo(CountyInstitution::class);
+    }
+
     public function ministries(): BelongsToMany
     {
         return $this->belongsToMany(Ministry::class, 'ministry_user')
@@ -159,6 +165,11 @@ class User extends Authenticatable implements FilamentUser
     public function isNis(): bool
     {
         return $this->account_type === self::TYPE_NIS;
+    }
+
+    public function isInstitutionAdmin(): bool
+    {
+        return $this->hasRole('institution_admin') || $this->account_type === 'institution';
     }
 
     public function isSme(): bool
