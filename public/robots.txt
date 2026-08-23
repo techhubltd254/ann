@@ -1,0 +1,16 @@
+User-agent: GPTBot
+Disallow: /
+Allow: /public/
+
+User-agent: Google-Extended
+Allow: /
+
+User-agent: CCBot
+Disallow: /
+
+User-agent: anthropic-ai
+Disallow: /
+
+User-agent: *
+Allow: /
+Sitemap: https://kicctest.org/sitemap.xml

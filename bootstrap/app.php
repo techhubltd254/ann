@@ -37,6 +37,16 @@ return Application::configure(basePath: dirname(__DIR__))
         $middleware->alias([
             'admin' => \App\Http\Middleware\AdminMiddleware::class,
         ]);
+        $middleware->csrf(except: [
+            'api/mpesa/callback',
+            'api/webhooks/n8n',
+            'api/stripe/webhook',
+            'api/courier/webhook',
+            'api/ussd/callback',
+        ]);
+        $middleware->web(append: [
+            'throttle:60,1',
+        ]);
     })
     ->withExceptions(function (Exceptions $exceptions): void {
         $exceptions->shouldRenderJsonWhen(

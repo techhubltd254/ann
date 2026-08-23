@@ -1,0 +1,15 @@
+# KICC National Exhibition Platform
+> The KICC Global Exhibition Platform is a digital twin of the Kenyatta International Convention Centre and all 47 Kenyan counties.
+
+## Public Pages
+- https://kicctest.org/
+- https://kicctest.org/counties
+- https://kicctest.org/marketplace
+- https://kicctest.org/trade-agreements
+- https://kicctest.org/export/eligibility
+
+## Technical Stack
+- Framework: Laravel 13.x on PHP 8.4
+- Database: TiDB Cloud
+- Edge: Cloudflare Workers
+- Media: Cloudflare R2 CDN
