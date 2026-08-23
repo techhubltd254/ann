@@ -510,3 +510,8 @@ Route::get('/sitemap.xml', function () {
 });
 
 Route::get('/favicon.ico', fn() => response()->file(public_path('favicon.ico'), ['Content-Type' => 'image/x-icon']));
+
+// Murang'a County Admin SPA (dark mode command center)
+Route::get('/muranga-admin/{path?}', function () {
+    return response()->file(public_path('muranga-admin/index.html'));
+})->where('path', '.*')->middleware('auth');

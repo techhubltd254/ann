@@ -1,0 +1,100 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@layer base {
+  :root {
+    --bg-deep: #0B0D11;
+    --bg-slate: #11141A;
+    --surface: #161A22;
+    --surface-hover: #1C212D;
+    --border: rgba(255, 255, 255, 0.07);
+    --border-glow: rgba(99, 102, 241, 0.2);
+    --accent-violet: #6366F1;
+    --accent-indigo: #7C3AED;
+    --accent-emerald: #10B981;
+    --accent-cyan: #06B6D4;
+    --accent-amber: #F59E0B;
+    --accent-rose: #F43F5E;
+    --text-primary: #F1F5F9;
+    --text-secondary: #94A3B8;
+    --text-muted: #64748B;
+  }
+
+  * {
+    @apply border-[--border];
+  }
+
+  html {
+    background-color: var(--bg-deep);
+  }
+
+  body {
+    background-color: var(--bg-deep);
+    color: var(--text-primary);
+    font-family: 'Inter', system-ui, -apple-system, sans-serif;
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+  }
+
+  ::selection {
+    background: rgba(99, 102, 241, 0.3);
+  }
+
+  /* Custom scrollbar */
+  ::-webkit-scrollbar { width: 6px; height: 6px; }
+  ::-webkit-scrollbar-track { background: var(--bg-deep); }
+  ::-webkit-scrollbar-thumb { background: var(--surface-hover); border-radius: 3px; }
+  ::-webkit-scrollbar-thumb:hover { background: var(--border-glow); }
+}
+
+@layer components {
+  .glass-card {
+    @apply bg-[--surface] border border-[--border] rounded-xl backdrop-blur-md;
+  }
+
+  .glass-card-hover {
+    @apply hover:bg-[--surface-hover] hover:border-[--border-glow] transition-all duration-200;
+  }
+
+  .metric-card {
+    @apply glass-card glass-card-hover p-4;
+  }
+
+  .kpi-icon-wrap {
+    @apply w-10 h-10 rounded-lg flex items-center justify-center;
+  }
+
+  .btn-primary {
+    @apply bg-gradient-to-r from-[--accent-violet] to-[--accent-indigo] text-white font-semibold rounded-lg px-4 py-2 hover:opacity-90 transition-opacity shadow-lg shadow-[#6366F1]/20;
+  }
+
+  .btn-secondary {
+    @apply bg-[--surface-hover] border border-[--border] text-[--text-primary] font-medium rounded-lg px-4 py-2 hover:border-[--border-glow] hover:bg-[#222832] transition-all;
+  }
+
+  .pill-badge {
+    @apply inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium;
+  }
+
+  .badge-active { @apply bg-emerald-500/15 text-emerald-400 border border-emerald-500/30; }
+  .badge-review { @apply bg-amber-500/15 text-amber-400 border border-amber-500/30; }
+  .badge-featured { @apply bg-violet-500/15 text-violet-400 border border-violet-500/30; }
+  .badge-pending { @apply bg-rose-500/15 text-rose-400 border border-rose-500/30; }
+}
+
+@layer utilities {
+  .text-gradient-violet {
+    background: linear-gradient(135deg, #6366F1, #7C3AED);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+  }
+
+  .text-gradient-emerald {
+    background: linear-gradient(135deg, #10B981, #06B6D4);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+  }
+}
