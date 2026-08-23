@@ -37,7 +37,7 @@
                    data-video="{{ $v ?? '' }}"
                    class="kicc-county-card shrink-0 group relative overflow-hidden rounded-2xl block bg-white border border-gray-200 hover:border-[#FFCD05]/40 transition-all" style="width: 200px; height: 280px;">
                      @if($v)
-                     <video autoplay muted loop playsinline preload="none"
+                     <video autoplay muted loop playsinline preload="auto"
                             class="absolute inset-0 w-full h-full object-cover"
                             onerror="this.remove()">
                          <source src="{{ $v }}" type="video/mp4">

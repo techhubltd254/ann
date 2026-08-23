@@ -22,9 +22,9 @@ class HomeController extends Controller
             ->get();
 
         $counties = County::orderBy('name')->get();
-
-        // Resolve hero videos for all counties in one query
         $countyIds = $counties->pluck('id');
+
+        // Resolve hero videos for all counties — includes mp4Url + economic_zone for overlay
         $heroAssets = MediaAsset::where('owner_type', County::class)
             ->whereIn('owner_id', $countyIds)
             ->where('slot', 'hero_video')

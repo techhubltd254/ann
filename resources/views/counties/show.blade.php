@@ -45,24 +45,17 @@ $kiccBlue = '#0B1E57';
                 @if($county->area_km2)<span class="text-white/50 text-sm">📐 {{ number_format($county->area_km2) }} km²</span>@endif
             </div>
         </div>
+        {{-- Floating stats bar — continuous scroll at 0.75 speed --}}
+        <div class="absolute bottom-0 left-0 right-0 z-10 overflow-hidden bg-[#0B1E57]/70 backdrop-blur-sm border-t border-[#FFCD05]/20 pointer-events-none" style="height: 40px;">
+            <div class="floating-stats whitespace-nowrap py-[9px]">
+                <span class="floating-stat-text text-[13px] font-medium text-white/90 tracking-wide px-4">
+                    🏛 Capital: {{ $county->capital ?? '—' }} &nbsp;·&nbsp; 👥 Population: {{ $county->population_2024 ? number_format($county->population_2024) : '—' }} &nbsp;·&nbsp; 📐 Area: {{ $county->area_km2 ? number_format($county->area_km2) . ' km²' : '—' }} &nbsp;·&nbsp; 🏭 Economic Zone: {{ $county->economic_zone ?? '—' }}
+                </span>
+            </div>
+        </div>
     </div>
 
     <div class="max-w-7xl mx-auto px-5">
-        {{-- Glassy description bar --}}
-        @if($county->description || $county->capital || $county->population_2024 || $county->area_km2)
-        <div class="relative z-10 -mt-32 md:-mt-40 mb-10 rounded-2xl p-6 border border-white/20 shadow-2xl" style="background: rgba(255,255,255,0.08); backdrop-filter: blur(14px);">
-            @if($county->description)
-            <p class="text-white/85 text-sm leading-relaxed mb-4">{{ $county->description }}</p>
-            @endif
-            <div class="grid grid-cols-2 md:grid-cols-4 gap-4 text-center">
-                @if($county->capital)<div><div class="text-xs text-white/50 uppercase tracking-wider">Capital</div><div class="text-white font-bold text-lg">{{ $county->capital }}</div></div>@endif
-                @if($county->population_2024)<div><div class="text-xs text-white/50 uppercase tracking-wider">Population</div><div class="text-white font-bold text-lg">{{ number_format($county->population_2024) }}</div></div>@endif
-                @if($county->area_km2)<div><div class="text-xs text-white/50 uppercase tracking-wider">Area</div><div class="text-white font-bold text-lg">{{ number_format($county->area_km2) }} km²</div></div>@endif
-                @if($county->economic_zone)<div><div class="text-xs text-white/50 uppercase tracking-wider">Economic Zone</div><div class="text-white font-bold text-lg">{{ $county->economic_zone }}</div></div>@endif
-            </div>
-        </div>
-        @endif
-
         {{-- Quick actions bar --}}
         <div class="flex flex-wrap items-center justify-between gap-3 mb-10 mt-6">
             <div class="flex items-center gap-2">

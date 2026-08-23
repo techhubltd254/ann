@@ -42,28 +42,35 @@
     @endif
     <div class="max-w-7xl mx-auto px-5 py-10">
         @if($items->count() > 0)
+        {{-- Scroll-driven cinematic sections for entities with 4D videos --}}
+        @php $scrollItems = $items->filter(fn($e) => isset($entityVideos[$e->id])); @endphp
+        @foreach($scrollItems as $e)
+        @php $ev = $entityVideos[$e->id]; $ep = $entityPosters[$e->id] ?? null; @endphp
+        <x-scroll-video
+            :videoUrl="$ev"
+            :posterUrl="$ep"
+            :title="$e->name"
+            :subtitle="$sectorInfo['title']"
+            :description="$e->description"
+            :price="$e->entry_fee ?? null"
+            ctaText="Learn More"
+            :ctaUrl="route('attractions.show', $e->id) ?? '#'"
+        />
+        @endforeach
+
+        {{-- Grid cards for remaining entities (no video) --}}
+        @php $gridItems = $items->filter(fn($e) => !isset($entityVideos[$e->id])); @endphp
+        @if($gridItems->count() > 0)
+        <h2 class="text-2xl font-black text-gray-900 mb-6 mt-10">More in {{ $sectorInfo['title'] }}</h2>
         <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-5">
-            @foreach($items as $e)
+            @foreach($gridItems as $e)
             <div class="group bg-white rounded-2xl overflow-hidden border border-gray-200 hover:border-[#FFCD05]/40 hover:shadow-md transition-all">
                 <div class="h-40 overflow-hidden bg-gradient-to-br from-[#F9FAFB] to-gray-100 relative">
-                    @php $entityVideo = $entityVideos[$e->id] ?? null; $entityPoster = $entityPosters[$e->id] ?? null; @endphp
-                    @if($entityVideo)
-                    <video autoplay muted loop playsinline preload="none"
-                           poster="{{ $entityPoster ?? '' }}"
-                           class="relative w-full h-full object-cover group-hover:scale-105 transition-transform duration-500"
-                           onerror="this.remove()">
-                        <source src="{{ $entityVideo }}" type="video/mp4">
-                    </video>
-                    @else
                     <div class="absolute inset-0 flex items-center justify-center bg-gradient-to-br from-[#0A1024] to-[#901C1E]/50">
                         <svg class="w-10 h-10 text-white/20" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z"/></svg>
                     </div>
-                    @endif
                     @if($e->category)
                     <span class="absolute top-2.5 left-3 text-[10px] font-bold px-2 py-0.5 rounded-full bg-black/40 text-white/90 backdrop-blur-sm capitalize">{{ $e->category }}</span>
-                    @endif
-                    @if($entityVideo)
-                    <span class="absolute top-2.5 right-3 text-[10px] font-bold px-2 py-0.5 rounded-full bg-[#901C1E]/80 text-white backdrop-blur-sm">▶ Video</span>
                     @endif
                 </div>
                 <div class="p-4">
@@ -80,6 +87,7 @@
             </div>
             @endforeach
         </div>
+        @endif
         <div class="mt-8">
             {{ $items->links() }}
         </div>

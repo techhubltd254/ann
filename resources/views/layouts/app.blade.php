@@ -16,10 +16,13 @@
     <meta name="theme-color" content="#901C1E">
     <link rel="canonical" href="{{ url()->current() }}">
     <link rel="icon" type="image/x-icon" href="{{ asset('favicon.ico') }}">
+    {{-- GSAP + ScrollTrigger for scroll-driven cinematic experiences --}}
+    <script src="{{ asset('js/gsap.min.js') }}"></script>
+    <script src="{{ asset('js/ScrollTrigger.min.js') }}"></script>
     <script type="application/ld+json">
     {
-        "@context": "https://schema.org",
-        "@type": "Organization",
+        "@@context": "https://schema.org",
+        "@@type": "Organization",
         "name": "Kenyatta International Convention Centre",
         "url": "https://kicctest.org",
         "logo": "https://kicc-r2-media.techhubltd254.workers.dev/storage/kicc/kicc-logo.png",
@@ -39,6 +42,31 @@
         .scrollbar-hide { scrollbar-width: none; -ms-overflow-style: none; }
         .scrollbar-hide::-webkit-scrollbar { display: none; }
         [x-cloak] { display: none !important; }
+
+        /* ── NEWS TICKER (CNN-style county description crawl) ── */
+        .ticker-track {
+            display: inline-block;
+            animation: ticker-scroll 90s linear infinite;
+            will-change: transform;
+        }
+        .ticker-track:hover {
+            animation-play-state: paused;
+        }
+        @keyframes ticker-scroll {
+            0%   { transform: translateX(100vw); }
+            100% { transform: translateX(-100%); }
+        }
+
+        /* ── FLOATING STATS BAR (0.75 speed — slower crawl) ── */
+        .floating-stats {
+            display: inline-block;
+            animation: stats-scroll 120s linear infinite;
+            will-change: transform;
+        }
+        @keyframes stats-scroll {
+            0%   { transform: translateX(100vw); }
+            100% { transform: translateX(-100%); }
+        }
 
         /* ── SCROLL REVEAL ── */
         .reveal-init { opacity: 0; transform: translateY(28px); transition: opacity 0.7s cubic-bezier(0.22,1,0.36,1), transform 0.7s cubic-bezier(0.22,1,0.36,1); will-change: opacity, transform; }
@@ -371,10 +399,6 @@
     </footer>
     @stack('scripts')
     <script defer src="https://cdn.jsdelivr.net/npm/alpinejs@3.x.x/dist/cdn.min.js"></script>
-    {{-- Cinematic intro (homepage only) --}}
-    @if(request()->is('/'))
-    <script src="{{ asset('js/cinematic-intro.js') }}"></script>
-    @endif
     {{-- Core motion system --}}
     <script src="{{ asset('js/animations.js') }}"></script>
     {{-- Immersive interaction engine --}}

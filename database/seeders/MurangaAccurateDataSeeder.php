@@ -44,7 +44,7 @@ class MurangaAccurateDataSeeder extends Seeder
         $this->seedCultureSites($cid);
         $this->seedTransport($cid);
 
-        $this->command->info('Murang\'a data seeded accurately from SSSS location shoot.');
+        echo('Murang\'a data seeded accurately from SSSS location shoot.');
     }
 
     private function wipeOldData(int $cid): void
@@ -74,7 +74,7 @@ class MurangaAccurateDataSeeder extends Seeder
                 'category' => 'Nature',
                 'image_url' => $this->img('muranga/video/tourism.jpg'),
                 'location' => 'Kanunga, Kiharu Constituency, Murang\'a County',
-                'entry_fee' => 'KES 200 (adult), KES 100 (child)',
+                'entry_fee' => 200,
                 'opening_hours' => '6:00 AM – 6:00 PM daily',
                 'latitude' => -0.7833, 'longitude' => 37.0833,
                 'is_published' => true,
@@ -85,7 +85,7 @@ class MurangaAccurateDataSeeder extends Seeder
                 'category' => 'Nature',
                 'image_url' => $this->img('muranga/video/tourism.jpg'),
                 'location' => 'Maragua Ridge, Murang\'a County',
-                'entry_fee' => 'KES 300 (adult), KES 150 (child)',
+                'entry_fee' => 300,
                 'opening_hours' => '6:00 AM – 6:30 PM daily',
                 'latitude' => -0.8000, 'longitude' => 37.1167,
                 'is_published' => true,
@@ -96,7 +96,7 @@ class MurangaAccurateDataSeeder extends Seeder
                 'category' => 'Adventure',
                 'image_url' => $this->img('muranga/video/tourism.jpg'),
                 'location' => 'Maragua Valley, Murang\'a County',
-                'entry_fee' => 'KES 500 (guided trek)',
+                'entry_fee' => 500,
                 'opening_hours' => '7:00 AM – 5:00 PM daily',
                 'latitude' => -0.8167, 'longitude' => 37.1333,
                 'is_published' => true,
@@ -107,7 +107,7 @@ class MurangaAccurateDataSeeder extends Seeder
                 'category' => 'Adventure',
                 'image_url' => $this->img('muranga/video/tourism.jpg'),
                 'location' => 'Sagana, Murang\'a County (near the border with Kirinyaga)',
-                'entry_fee' => 'KES 3,500 (half-day per person)',
+                'entry_fee' => 3500,
                 'opening_hours' => '8:00 AM – 5:00 PM daily',
                 'latitude' => -0.6833, 'longitude' => 37.2000,
                 'is_published' => true,
@@ -118,7 +118,7 @@ class MurangaAccurateDataSeeder extends Seeder
                 'category' => 'Resort',
                 'image_url' => $this->img('muranga/video/hospitality.jpg'),
                 'location' => 'Sagana River, Murang\'a County',
-                'entry_fee' => 'Day visit: KES 1,500 (includes access to pool and gardens)',
+                'entry_fee' => 1500,
                 'opening_hours' => '7:00 AM – 8:00 PM daily',
                 'latitude' => -0.6867, 'longitude' => 37.2033,
                 'is_published' => true,
@@ -129,7 +129,7 @@ class MurangaAccurateDataSeeder extends Seeder
                 'category' => 'Nature',
                 'image_url' => $this->img('muranga/video/tourism.jpg'),
                 'location' => 'Kigumo, Murang\'a County',
-                'entry_fee' => 'KES 150 (adult)',
+                'entry_fee' => 150,
                 'opening_hours' => '6:00 AM – 6:00 PM daily',
                 'latitude' => -0.7500, 'longitude' => 37.0333,
                 'is_published' => true,
@@ -140,7 +140,7 @@ class MurangaAccurateDataSeeder extends Seeder
                 'category' => 'Agriculture',
                 'image_url' => $this->img('muranga/video/agriculture.jpg'),
                 'location' => 'Kangari-Tea Highlands, Murang\'a County',
-                'entry_fee' => 'KES 2,000 (half-day tour including tasting)',
+                'entry_fee' => 2000,
                 'opening_hours' => '8:00 AM – 4:00 PM Mon–Sat',
                 'latitude' => -0.7000, 'longitude' => 36.9833,
                 'is_published' => true,
@@ -151,7 +151,7 @@ class MurangaAccurateDataSeeder extends Seeder
                 'category' => 'Nature',
                 'image_url' => $this->img('muranga/video/tourism.jpg'),
                 'location' => 'Aberdare Forest, Murang\'a/Kirinyaga border',
-                'entry_fee' => 'KES 500 (with guide)',
+                'entry_fee' => 500,
                 'opening_hours' => '6:30 AM – 5:00 PM daily',
                 'latitude' => -0.5833, 'longitude' => 36.7500,
                 'is_published' => true,
@@ -161,7 +161,7 @@ class MurangaAccurateDataSeeder extends Seeder
         foreach ($attractions as $data) {
             CountyTourismAttraction::create(array_merge($data, ['county_id' => $cid]));
         }
-        $this->command->info('  ✓ ' . count($attractions) . ' tourism attractions');
+        echo('  ✓ ' . count($attractions) . ' tourism attractions');
     }
 
     private function seedHotels(int $cid): void
@@ -228,7 +228,7 @@ class MurangaAccurateDataSeeder extends Seeder
         foreach ($hotels as $data) {
             CountyHotel::create(array_merge($data, ['county_id' => $cid]));
         }
-        $this->command->info('  ✓ ' . count($hotels) . ' hotels');
+        echo('  ✓ ' . count($hotels) . ' hotels');
     }
 
     private function seedProducts(int $cid): void
@@ -319,7 +319,7 @@ class MurangaAccurateDataSeeder extends Seeder
         foreach ($products as $data) {
             CountyProduct::create(array_merge($data, ['county_id' => $cid]));
         }
-        $this->command->info('  ✓ ' . count($products) . ' products');
+        echo('  ✓ ' . count($products) . ' products');
     }
 
     private function seedFarms(int $cid): void
@@ -374,7 +374,7 @@ class MurangaAccurateDataSeeder extends Seeder
         foreach ($farms as $data) {
             CountyFarm::create(array_merge($data, ['county_id' => $cid]));
         }
-        $this->command->info('  ✓ ' . count($farms) . ' farms/agribusinesses');
+        echo('  ✓ ' . count($farms) . ' farms/agribusinesses');
     }
 
     private function seedInstitutions(int $cid): void
@@ -424,7 +424,7 @@ class MurangaAccurateDataSeeder extends Seeder
         foreach ($institutions as $data) {
             CountyInstitution::create(array_merge($data, ['county_id' => $cid]));
         }
-        $this->command->info('  ✓ ' . count($institutions) . ' institutions');
+        echo('  ✓ ' . count($institutions) . ' institutions');
     }
 
     private function seedHealthFacilities(int $cid): void
@@ -466,7 +466,7 @@ class MurangaAccurateDataSeeder extends Seeder
         foreach ($facilities as $data) {
             CountyHealthFacility::create(array_merge($data, ['county_id' => $cid]));
         }
-        $this->command->info('  ✓ ' . count($facilities) . ' health facilities');
+        echo('  ✓ ' . count($facilities) . ' health facilities');
     }
 
     private function seedCultureSites(int $cid): void
@@ -506,7 +506,7 @@ class MurangaAccurateDataSeeder extends Seeder
         foreach ($sites as $data) {
             CountyCultureSite::create(array_merge($data, ['county_id' => $cid]));
         }
-        $this->command->info('  ✓ ' . count($sites) . ' culture sites');
+        echo('  ✓ ' . count($sites) . ' culture sites');
     }
 
     private function seedTransport(int $cid): void
@@ -543,6 +543,6 @@ class MurangaAccurateDataSeeder extends Seeder
         foreach ($transport as $data) {
             CountyTransport::create(array_merge($data, ['county_id' => $cid]));
         }
-        $this->command->info('  ✓ ' . count($transport) . ' transport services');
+        echo('  ✓ ' . count($transport) . ' transport services');
     }
 }
