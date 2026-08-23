@@ -60,9 +60,16 @@ class AdminPortalController extends Controller
 
     public function county()
     {
-        // County Admin or KICC Admin only
+        // County Admin or KICC Admin only — send directly to the pro admin dashboard
         if (!Auth::user()?->hasAnyRole(['county_admin', 'kicc_admin'])) {
             abort(403, 'County admin access required.');
+        }
+        $user = Auth::user();
+        if ($user->county_id) {
+            $county = County::find($user->county_id);
+            if ($county) {
+                return redirect()->route('county.admin.pro', $county->slug);
+            }
         }
         return redirect()->route('dashboard.county');
     }
