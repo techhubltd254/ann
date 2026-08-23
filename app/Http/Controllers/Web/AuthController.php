@@ -48,7 +48,7 @@ class AuthController extends Controller
         } catch (\Throwable $e) {
             \Illuminate\Support\Facades\Log::error("Verification email to {$email} failed: " . $e->getMessage());
         }
-        \Illuminate\Support\Facades\Log::info("Registration code sent to {$email}");
+        \Illuminate\Support\Facades\\Illuminate\Support\Facades\Log::info("Auth: registration code sent to {$email}");
 
         session(['reg_email' => $email]);
 
@@ -347,6 +347,30 @@ class AuthController extends Controller
         Auth::logout();
         $request->session()->invalidate();
         $request->session()->regenerateToken();
+        \Illuminate\Support\Facades\Log::info('Auth: user logged out', ['ip' => $request->ip()]);
         return redirect('/');
+    }
+
+    public function changePassword(Request $request)
+    {
+        $data = $request->validate([
+            'current_password' => 'required|string',
+            'new_password' => 'required|string|min:8|confirmed',
+        ]);
+
+        $user = Auth::user();
+        if (!Hash::check($data['current_password'], $user->password)) {
+            return back()->withErrors(['current_password' => 'Current password is incorrect.']);
+        }
+
+        $user->password = Hash::make($data['new_password']);
+        $user->save();
+
+        Auth::logoutOtherDevices($data['new_password']);
+        $request->session()->regenerate();
+
+        \Illuminate\Support\Facades\Log::info('Auth: password changed', ['user_id' => $user->id, 'ip' => $request->ip()]);
+
+        return redirect()->route('dashboard.index')->with('success', 'Password changed successfully. All other sessions have been logged out.');
     }
 }

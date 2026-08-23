@@ -466,6 +466,9 @@ Route::middleware('guest')->group(function () {
 Route::middleware('auth')->group(function () {
     Route::post('/logout', [AuthController::class, 'logout'])->name('logout');
 
+    Route::post("/password/change", [AppHttpControllersWebAuthController::class, "changePassword"])
+        ->name("password.change")->middleware("auth");
+
     Route::get('/dashboard', [DashboardController::class, 'index'])->name('dashboard.index');
     Route::get('/dashboard/exhibitions', [DashboardController::class, 'exhibitions'])->name('dashboard.exhibitions');
     Route::get('/dashboard/bookings', [DashboardController::class, 'bookings'])->name('dashboard.bookings');
