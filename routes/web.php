@@ -188,7 +188,7 @@ Route::get('/national-admin/agencies/{agency}/delete', [\App\Http\Controllers\We
     Route::post('/institution-admin/{institution}/production', [\App\Http\Controllers\Web\InstitutionAdminController::class, 'updateProduction'])->name('institution.admin.production');
     Route::post('/institution-admin/{institution}/sectors', [\App\Http\Controllers\Web\InstitutionAdminController::class, 'updateSectors'])->name('institution.admin.sectors');
     Route::post('/institution-admin/{institution}/products', [\App\Http\Controllers\Web\InstitutionAdminController::class, 'storeProduct'])->name('institution.admin.products.store');
-    Route::post('/institution-admin/{institution}/products/{index}/update', [\App\Http\Controllers\Web\InstitutionAdminController::class, 'updateProduct'])->name('institution.admin.products.update');
+    Route::post('/institution-admin/{institution}/products/{product}/update', [\App\Http\Controllers\Web\InstitutionAdminController::class, 'updateProduct'])->name('institution.admin.products.update');
     Route::post('/institution-admin/{institution}/products/{index}/delete', [\App\Http\Controllers\Web\InstitutionAdminController::class, 'deleteProduct'])->name('institution.admin.products.delete');
     Route::post('/institution-admin/{institution}/videos', [\App\Http\Controllers\Web\InstitutionAdminController::class, 'uploadVideo'])->name('institution.admin.videos.upload');
     Route::post('/institution-admin/{institution}/videos/{index}/delete', [\App\Http\Controllers\Web\InstitutionAdminController::class, 'deleteVideo'])->name('institution.admin.videos.delete');

@@ -2,13 +2,11 @@
 document.addEventListener('alpine:init', () => {
     Alpine.store('pd', {
         detail: null,
-        index: null,
         form: { name: '', price: '', unit: '', category: '', desc: '', stock: '' },
         previewVideo: null,
         previewImage: null,
-        open(idx, data) {
+        open(data) {
             this.detail = data;
-            this.index = idx;
             this.form = {
                 name: data?.name || '',
                 price: data?.price || '',
@@ -22,7 +20,6 @@ document.addEventListener('alpine:init', () => {
         },
         close() {
             this.detail = null;
-            this.index = null;
             this.previewVideo = null;
             this.previewImage = null;
             this.form = { name: '', price: '', unit: '', category: '', desc: '', stock: '' };
@@ -45,7 +42,7 @@ document.addEventListener('alpine:init', () => {
             <h1 class="text-xl font-bold text-white">Products</h1>
             <p class="text-zinc-500 text-sm">Marketplace + County listings</p>
         </div>
-        <button class="btn-primary text-xs" @click='$store.pd.open(-1, {"name":"","price":"","unit":"","category":"","desc":"","stock":""})'>
+        <button class="btn-primary text-xs" @click='$store.pd.open({"name":"","price":"","unit":"","category":"","desc":"","stock":""})'>
             <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4"/></svg>
             Add Product
         </button>
@@ -133,7 +130,7 @@ document.addEventListener('alpine:init', () => {
                     </td>
                     <td class="py-3.5 pr-5 text-right">
                         <div class="flex items-center justify-end gap-1">
-                            <button @click='$store.pd.open({{ $i }}, {!! $productData !!})' class="btn-ghost text-[10px] py-1 px-1.5 text-zinc-400 hover:text-white" title="Edit product">
+                            <button @click='$store.pd.open({!! $productData !!})' class="btn-ghost text-[10px] py-1 px-1.5 text-zinc-400 hover:text-white" title="Edit product">
                                 <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15.232 5.232l3.536 3.536m-2.036-5.036a2.5 2.5 0 113.536 3.536L6.5 21.036H3v-3.572L16.732 3.732z"/></svg>
                             </button>
                             <form method="POST" action="{{ route('institution.admin.products.delete', [$institution->slug, $i]) }}" class="inline" onsubmit="return confirm('Delete?')">
@@ -163,8 +160,8 @@ document.addEventListener('alpine:init', () => {
          @click.stop>
         <div class="flex items-center justify-between pb-4 border-b border-white/10 mb-5">
             <div>
-                <h3 class="text-lg font-bold text-white" x-text="$store.pd.index === -1 ? 'Add New Product' : ($store.pd.detail?.name || 'Product Portfolio')"></h3>
-                <p class="text-xs text-zinc-500 mt-0.5" x-show="$store.pd.index !== -1" x-text="$store.pd.detail?.sku || ''"></p>
+                <h3 class="text-lg font-bold text-white" x-text="$store.pd.detail?.id == null ? 'Add New Product' : ($store.pd.detail?.name || 'Product Portfolio')"></h3>
+                <p class="text-xs text-zinc-500 mt-0.5" x-show="$store.pd.detail?.id != null" x-text="$store.pd.detail?.sku || ''"></p>
             </div>
             <button @click="$store.pd.close()" class="text-zinc-400 hover:text-white p-2 rounded-lg hover:bg-white/10 transition shrink-0 cursor-pointer">
                 <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"/></svg>
@@ -172,7 +169,7 @@ document.addEventListener('alpine:init', () => {
         </div>
 
         <form method="POST"
-              :action="$store.pd.index !== -1 && $store.pd.index !== null ? '{{ route('institution.admin.products.update', [$institution->slug, '__INDEX__']) }}'.replace('__INDEX__', $store.pd.index) : '{{ route('institution.admin.products.store', $institution->slug) }}'"
+              :action="$store.pd.detail?.id != null ? '{{ route('institution.admin.products.update', [$institution->slug, '__PRODUCT__']) }}'.replace('__PRODUCT__', $store.pd.detail.id) : '{{ route('institution.admin.products.store', $institution->slug) }}'"
               enctype="multipart/form-data">
             @csrf
 
@@ -222,11 +219,11 @@ document.addEventListener('alpine:init', () => {
             <div class="flex items-center justify-between pt-4 border-t border-white/10">
                 <div class="flex items-center gap-3">
                     <button type="submit" class="btn-primary cursor-pointer">
-                        <span x-text="$store.pd.index === -1 ? 'Done — Add Product' : 'Done — Update & Sync'"></span>
+                        <span x-text="$store.pd.detail?.id == null ? 'Done — Add Product' : 'Done — Update & Sync'"></span>
                     </button>
                     <button type="button" class="btn-ghost cursor-pointer" @click="$store.pd.close()">Cancel</button>
                 </div>
-                <span x-show="$store.pd.index !== -1 && $store.pd.index !== null" class="text-[10px] text-zinc-500">Auto-syncs to marketplace</span>
+                <span x-show="$store.pd.detail?.id != null" class="text-[10px] text-zinc-500">Auto-syncs to marketplace</span>
             </div>
         </form>
     </div>

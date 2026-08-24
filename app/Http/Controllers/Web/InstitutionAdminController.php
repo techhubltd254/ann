@@ -307,7 +307,7 @@ class InstitutionAdminController extends Controller
         return back()->with('success', "Product \"{$data['name']}\" added & synced to county + marketplace.");
     }
 
-    public function updateProduct(Request $request, string $slug, int $index)
+    public function updateProduct(Request $request, string $slug, int $product)
     {
         $institution = $this->authorizeInstitution($slug);
         $data = $request->validate([
@@ -321,19 +321,18 @@ class InstitutionAdminController extends Controller
             'stock' => 'nullable|integer|min:0',
         ]);
 
-        $products = $institution->products ?? [];
-
-        if (!isset($products[$index])) {
-            return back()->withErrors(['product' => 'Product not found.']);
+        $mp = \App\Models\Marketplace\Product::find($product);
+        if (!$mp) {
+            return back()->withErrors(['product' => 'Marketplace product not found.']);
         }
 
-        $imageUrl = $products[$index]['image_url'] ?? null;
+        $imageUrl = $mp->images->first()?->url ?? null;
         if ($request->hasFile('image')) {
             $path = $request->file('image')->store("institutions/{$institution->slug}/products", 'r2');
             $imageUrl = media_url() . '/' . $path;
         }
 
-        $videoUrl = $products[$index]['video_url'] ?? null;
+        $videoUrl = $mp->video_url;
         if ($request->hasFile('video')) {
             $videoPath = $request->file('video')->storeAs(
                 "institutions/{$institution->slug}/product-videos",
@@ -343,18 +342,44 @@ class InstitutionAdminController extends Controller
             $videoUrl = media_url() . '/' . $videoPath;
         }
 
-        $products[$index] = [
+        // Update the marketplace product directly
+        $mp->update([
             'name' => $data['name'],
-            'price' => $data['price'],
-            'unit' => $data['unit'] ?? 'unit',
-            'category' => $data['category'] ?? 'Food',
             'description' => $data['description'] ?? '',
-            'image_url' => $imageUrl,
+            'unit' => $data['unit'] ?? 'unit',
             'video_url' => $videoUrl,
-            'stock' => $data['stock'] ?? 100,
-        ];
+        ]);
 
-        $institution->update(['products' => $products]);
+        // Update the variant price/stock
+        $variant = $mp->variants()->first();
+        if ($variant) {
+            $variant->update([
+                'price' => $data['price'],
+                'stock' => $data['stock'] ?? 100,
+                'image_url' => $imageUrl,
+            ]);
+        }
+
+        // Update the matching entry in the institution's JSON products array
+        $products = $institution->products ?? [];
+        foreach ($products as $idx => $p) {
+            if (($p['name'] ?? '') === $mp->name) {
+                $products[$idx] = [
+                    'name' => $data['name'],
+                    'price' => $data['price'],
+                    'unit' => $data['unit'] ?? 'unit',
+                    'category' => $data['category'] ?? 'Food',
+                    'description' => $data['description'] ?? '',
+                    'image_url' => $imageUrl,
+                    'video_url' => $videoUrl,
+                    'stock' => $data['stock'] ?? 100,
+                ];
+                break;
+            }
+        }
+        $institution->update(['products' => array_values($products)]);
+
+        // Sync to county products
         app(InstitutionSyncService::class)->sync($institution);
 
         return back()->with('success', "Product \"{$data['name']}\" updated & synced.");
