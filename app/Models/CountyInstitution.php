@@ -43,7 +43,7 @@ class CountyInstitution extends Model
     public function sectorEntities()
     {
         return $this->hasMany(SectorEntity::class, 'entity_id')
-            ->where('entity_type', CountyInstitution::class);
+            ->whereIn('entity_type', [CountyInstitution::class, 'institution']);
     }
 
     public function mediaAssets()

@@ -35,11 +35,11 @@ class CountyController extends Controller
         $sectorData = [
             'Tourism' => ['count' => $tourismCount, 'icon' => '🏖️', 'route' => 'tourism', 'sector_slug' => 'tourism'],
             'Hospitality' => ['count' => $hotelsCount, 'icon' => '🏨', 'route' => 'hotels', 'sector_slug' => 'hospitality'],
-            'Agriculture' => ['count' => $farmsCount, 'icon' => '🌾', 'route' => 'farms', 'sector_slug' => 'agriculture'],
-            'Commerce & End Products' => ['count' => $productsCount, 'icon' => '🛒', 'route' => 'products', 'sector_slug' => 'commerce'],
-            'Education' => ['count' => $institutionsCount, 'icon' => '🎓', 'route' => 'institutions', 'sector_slug' => 'education'],
+            'Agriculture' => ['count' => $farmsCount, 'icon' => '🌾', 'route' => 'farms', 'sector_slug' => 'farms'],
+            'Commerce & End Products' => ['count' => $productsCount, 'icon' => '🛒', 'route' => 'products', 'sector_slug' => 'products'],
+            'Education' => ['count' => $institutionsCount, 'icon' => '🎓', 'route' => 'education', 'sector_slug' => 'education'],
             'Transport' => ['count' => $transportCount, 'icon' => '🚢', 'route' => 'transport', 'sector_slug' => 'transport'],
-            'Healthcare' => ['count' => $healthCount, 'icon' => '🏥', 'route' => 'health', 'sector_slug' => 'healthcare'],
+            'Healthcare' => ['count' => $healthCount, 'icon' => '🏥', 'route' => 'health', 'sector_slug' => 'health'],
             'Culture' => ['count' => $cultureCount, 'icon' => '🎭', 'route' => 'culture', 'sector_slug' => 'culture'],
         ];
 
@@ -130,14 +130,21 @@ class CountyController extends Controller
         // Collect entities from this sector and any alias sectors
         $sectorIds = collect([$sectorModel->id]);
         $slugMap = [
-            'agriculture' => ['agriculture', 'farms', 'Agriculture'],
+            'farms' => ['farms', 'agriculture', 'Agriculture'],
+            'agriculture' => ['farms', 'agriculture', 'Agriculture'],
             'tourism' => ['tourism', 'Tourism'],
+            'hotels' => ['hotels', 'hospitality', 'Hospitality'],
             'hospitality' => ['hotels', 'hospitality', 'Hospitality'],
+            'products' => ['products', 'commerce', 'Commerce'],
             'commerce' => ['products', 'commerce', 'Commerce'],
-            'education' => ['institutions', 'education', 'Education'],
+            'education' => ['education', 'institutions', 'Education'],
+            'institutions' => ['education', 'institutions', 'Education'],
             'transport' => ['transport', 'Transport'],
+            'health' => ['health', 'healthcare', 'Healthcare'],
             'healthcare' => ['health', 'healthcare', 'Healthcare'],
             'culture' => ['culture', 'Culture'],
+            'industries' => ['industries'],
+            'energy' => ['energy'],
         ];
         $aliases = $slugMap[$sector] ?? [];
         foreach ($aliases as $alias) {

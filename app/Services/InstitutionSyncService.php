@@ -147,7 +147,7 @@ class InstitutionSyncService
     {
         $entity = SectorEntity::where('county_id', $county->id)
             ->where('sector_id', $sector->id)
-            ->where('entity_type', self::ENTITY_TYPE)
+            ->where('entity_type', \App\Models\CountyInstitution::class)
             ->where('entity_id', $i->id)
             ->first();
 
@@ -401,7 +401,7 @@ class InstitutionSyncService
             ->filter();
 
         SectorEntity::where('county_id', $county->id)
-            ->where('entity_type', self::ENTITY_TYPE)
+            ->whereIn('entity_type', [\App\Models\CountyInstitution::class, self::ENTITY_TYPE])
             ->where('entity_id', $i->id)
             ->when($keptSectorIds->isNotEmpty(), fn ($q) => $q->whereNotIn('sector_id', $keptSectorIds))
             ->delete();
