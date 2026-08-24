@@ -49,7 +49,7 @@
             <a href="{{ route('marketplace.show', $product->slug) }}" class="group bg-[#F9FAFB] rounded-2xl overflow-hidden border border-gray-200 hover:border-[#FFCD05]/30 transition-all">
                 <div class="aspect-square overflow-hidden bg-white relative">
                     @if($product->video_url)
-                    <video autoplay muted loop playsinline class="absolute inset-0 w-full h-full object-cover group-hover:scale-105 transition-transform duration-500"
+                    <video autoplay muted loop playsinline preload="auto" class="absolute inset-0 w-full h-full object-cover group-hover:scale-105 transition-transform duration-500"
                            onerror="this.style.display='none'"
                            preload="auto">
                         <source src="{{ $product->video_url }}" type="video/mp4">

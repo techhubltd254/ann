@@ -10,39 +10,31 @@
         Back to Marketplace
     </a>
 
-    <div class="grid lg:grid-cols-3 gap-8">
-        <div class="lg:col-span-2">
+    <div class="grid lg:grid-cols-2 gap-10">
+    {{-- Left: Video / Media --}}
+    <div>
     @php $allVideos = collect(array_merge(
         $product->video_url ? [$product->video_url] : [],
         $product->videos ?? []
     ))->unique()->values(); @endphp
 
     @if($allVideos->isNotEmpty())
-    <div class="mb-4 space-y-2">
+    <div class="space-y-2">
         <div class="rounded-2xl overflow-hidden bg-black aspect-video relative" id="main-video-wrapper">
-            <x-video-player
-                :src="$allVideos->first()"
-                :poster="$product->image_url"
-                id="product-video-{{ $product->id }}"
-                class="w-full h-full"
-                :autoplay="true"
-                :loop="true"
-                :muted="true"
-            />
+            <video autoplay muted loop playsinline preload="auto" class="w-full h-full object-cover" id="product-video-{{ $product->id }}" poster="{{ $product->image_url }}">
+                <source src="{{ $allVideos->first() }}" type="video/mp4">
+            </video>
         </div>
         @if($allVideos->count() > 1)
         <div class="flex gap-2 overflow-x-auto pb-1 scrollbar-hide">
             @foreach($allVideos as $v)
             <button onclick="
-                var wrapper = document.getElementById('main-video-wrapper');
-                var player = wrapper.querySelector('video');
-                if (player) {
-                    player.src = '{{ $v }}';
-                    player.load();
-                    player.play();
-                }
+                var player = document.getElementById('product-video-{{ $product->id }}');
+                player.src = '{{ $v }}';
+                player.load();
+                player.play();
             " class="shrink-0 w-24 h-14 rounded-xl overflow-hidden border-2 border-gray-200 hover:border-indigo-500 transition-all bg-black">
-                <video muted playsinline class="w-full h-full object-cover" preload="metadata">
+                <video muted playsinline preload="auto" class="w-full h-full object-cover">
                     <source src="{{ $v }}" type="video/mp4">
                 </video>
             </button>
@@ -65,7 +57,10 @@
                 @endforeach
             </div>
             @endif
-            <div class="mt-8">
+    </div>
+
+    {{-- Right: Product Info + Purchase --}}
+    <div>
                 <div class="flex items-center gap-2 mb-2">
                     @if($product->county)
                     <span class="px-2.5 py-0.5 rounded-full text-[11px] font-semibold tracking-wide border bg-[#FFCD05]/15 text-[#FFCD05] border-[#FFCD05]/30">{{ $product->county->name }} County</span>

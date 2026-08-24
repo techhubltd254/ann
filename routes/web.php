@@ -59,6 +59,7 @@ Route::get('/counties/{county}', [CountyController::class, 'show'])->name('count
         \Illuminate\Foundation\Http\Middleware\PreventRequestForgery::class,
     ]);
 Route::get('/counties/{county}/sector/{sector}', [CountyController::class, 'sector'])->name('counties.sector');
+Route::get('/institutions/{institution}', [CountyController::class, 'institution'])->name('counties.institution');
 Route::get('/counties/{county}/products/{product}/book', [\App\Http\Controllers\Web\CountyProductBookingController::class, 'show'])->name('county.product.booking');
 Route::post('/counties/{county}/products/{product}/book', [\App\Http\Controllers\Web\CountyProductBookingController::class, 'book'])->name('county.product.booking.store');
 Route::get('/counties/{county}/products/{product}/book/success/{reference}', [\App\Http\Controllers\Web\CountyProductBookingController::class, 'success'])->name('county.product.booking.success');

@@ -242,6 +242,7 @@ class InstitutionAdminController extends Controller
         $asset->derivatives()->create([
             'kind' => 'video_mp4',
             'path' => $path,
+            'mime' => $file->getMimeType(),
         ]);
 
         return back()->with('success', 'Hero video uploaded. It now plays everywhere this institution appears.');

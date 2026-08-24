@@ -90,7 +90,7 @@ $kiccBlue = '#0B1E57';
                    class="group relative bg-white border border-gray-200 hover:border-kicc-gold/40 rounded-2xl p-5 text-center transition-all block card-hover overflow-hidden" data-tilt="6" data-reveal data-reveal-delay="{{ $loop->index * 80 }}">
                     @if($sectorVideo)
                     @php $sectorWebm = $sectorWebmVideos[$s['sector_slug']] ?? null; @endphp
-                    <video autoplay muted loop playsinline class="absolute inset-0 w-full h-full object-cover opacity-10"
+                    <video autoplay muted loop playsinline preload="auto" class="absolute inset-0 w-full h-full object-cover opacity-10"
                            onloadeddata="this.style.opacity='0.15'">
                         @if($sectorWebm)
                         <source src="{{ $sectorWebm }}" type="video/webm">
@@ -217,7 +217,7 @@ $kiccBlue = '#0B1E57';
                     <div class="h-36 bg-gray-100 flex items-center justify-center overflow-hidden relative">
                         @php $firstVideo = $p->videos[0] ?? $p->video_url; @endphp
                         @if($firstVideo)
-                        <video autoplay muted loop playsinline class="absolute inset-0 w-full h-full object-cover" onerror="this.style.display='none'">
+                        <video autoplay muted loop playsinline preload="auto" class="absolute inset-0 w-full h-full object-cover" onerror="this.style.display='none'">
                             <source src="{{ $firstVideo }}" type="video/mp4">
                         </video>
                         @elseif($p->image_url)

@@ -103,7 +103,7 @@
                 <div class="aspect-square overflow-hidden bg-white relative">
                     @php $hpVideo = $product->videos[0] ?? $product->video_url; @endphp
                     @if($hpVideo)
-                    <video autoplay muted loop playsinline class="absolute inset-0 w-full h-full object-cover group-hover:scale-105 transition-transform duration-500"
+                    <video autoplay muted loop playsinline preload="auto" class="absolute inset-0 w-full h-full object-cover group-hover:scale-105 transition-transform duration-500"
                            onerror="this.style.display='none'" preload="auto">
                         <source src="{{ $hpVideo }}" type="video/mp4">
                     </video>

@@ -45,7 +45,7 @@
                 @endphp
                 @if($heroAsset)
                 <div class="aspect-video bg-black rounded-xl overflow-hidden mb-3">
-                    <video autoplay muted loop playsinline class="w-full h-full object-cover">
+                    <video autoplay muted loop playsinline preload="auto" class="w-full h-full object-cover">
                         <source src="{{ $heroAsset->mp4Url() ?? $heroAsset->url() }}" type="video/mp4">
                     </video>
                 </div>

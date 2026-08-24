@@ -7,7 +7,7 @@
 <div class="pt-20">
     @if($fourDVideo)
     <div class="relative h-[40vh] md:h-[50vh] overflow-hidden bg-black">
-        <video autoplay muted loop playsinline class="w-full h-full object-cover">
+        <video autoplay muted loop playsinline preload="auto" class="w-full h-full object-cover">
             <source src="{{ $fourDVideo }}" type="video/mp4">
         </video>
         <div class="absolute inset-0 bg-gradient-to-t from-black/60 to-transparent"></div>
@@ -64,11 +64,12 @@
         <h2 class="text-2xl font-black text-gray-900 mb-6 mt-10">More in {{ $sectorInfo['title'] }}</h2>
         <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-5">
             @foreach($gridItems as $e)
-            <div class="group bg-white rounded-2xl overflow-hidden border border-gray-200 hover:border-[#FFCD05]/40 hover:shadow-md transition-all">
+            @php $isInst = $e->entity_type === 'App\Models\CountyInstitution'; $instSlug = $isInst ? \App\Models\CountyInstitution::find($e->entity_id)?->slug : null; @endphp
+            <a href="{{ $isInst && $instSlug ? route('counties.institution', $instSlug) : '#' }}" class="group bg-white rounded-2xl overflow-hidden border border-gray-200 hover:border-[#FFCD05]/40 hover:shadow-md transition-all block">
                 <div class="h-40 overflow-hidden relative">
                     @php $instHero = $institutionHeroVideos[$e->id] ?? null; @endphp
                     @if($instHero)
-                    <video autoplay muted loop playsinline class="absolute inset-0 w-full h-full object-cover" onerror="this.style.display='none'">
+                    <video autoplay muted loop playsinline preload="auto" preload="auto" class="absolute inset-0 w-full h-full object-cover" onerror="this.style.display='none'">
                         <source src="{{ $instHero }}" type="video/mp4">
                     </video>
                     @endif
@@ -89,8 +90,11 @@
                         @if(!empty($e->entry_fee))<span class="font-bold text-kicc-gold">KES {{ number_format($e->entry_fee) }}</span>@endif
                         @if(!empty($e->contact))<span>☎ {{ $e->contact }}</span>@endif
                     </div>
+                    @if($isInst)
+                    <div class="mt-2 text-[10px] font-bold text-indigo-500">View institution →</div>
+                    @endif
                 </div>
-            </div>
+            </a>
             @endforeach
         </div>
         @endif

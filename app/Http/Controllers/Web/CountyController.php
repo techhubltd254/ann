@@ -5,6 +5,8 @@ namespace App\Http\Controllers\Web;
 use App\Http\Controllers\Controller;
 use App\Models\County;
 use App\Models\MediaAsset;
+use App\Models\CountyInstitution;
+use App\Models\Marketplace\Product;
 use App\Models\SectorEntity;
 
 class CountyController extends Controller
@@ -132,6 +134,40 @@ class CountyController extends Controller
         return view('counties.sector', compact(
             'county', 'items', 'sector', 'sectorInfo', 'sectorModel',
             'fourDVideo', 'entityVideos', 'entityPosters', 'institutionHeroVideos', 'services'
+        ));
+    }
+
+    public function institution(string $slug)
+    {
+        $institution = CountyInstitution::where('slug', $slug)
+            ->where('is_published', true)
+            ->with('county', 'sectorEntities.sector')
+            ->firstOrFail();
+
+        $county = $institution->county;
+
+        // Hero video
+        $heroAsset = MediaAsset::resolveSlot(CountyInstitution::class, $institution->id, 'hero_video');
+        $heroVideo = $heroAsset?->mp4Url() ?? $heroAsset?->url();
+        $heroPoster = $heroAsset?->posterUrl() ?? $institution->logo_url;
+
+        // Marketplace products owned by this institution
+        $products = collect();
+        if ($institution->user_id) {
+            $products = Product::with(['county', 'category', 'variants' => fn ($q) => $q->where('is_active', true), 'images'])
+                ->where('user_id', $institution->user_id)
+                ->active()
+                ->get();
+        }
+
+        // Sector entities (mappings)
+        $sectorEntities = $institution->sectorEntities()->with('sector')->get();
+
+        // Additional videos (institution videos JSON)
+        $libraryVideos = $institution->videos ?? [];
+
+        return view('counties.institution', compact(
+            'institution', 'county', 'heroVideo', 'heroPoster', 'products', 'sectorEntities', 'libraryVideos'
         ));
     }
 }
