@@ -1,10 +1,21 @@
-<div class="space-y-6">
+<div class="space-y-6" x-data="{
+    editProduct: null,
+    editingIndex: null,
+    openEdit(index, name, price, unit, category, desc, stock) {
+        this.editProduct = { name, price, unit, category, desc, stock };
+        this.editingIndex = index;
+    },
+    closeEdit() {
+        this.editProduct = null;
+        this.editingIndex = null;
+    }
+}">
     <div class="flex items-center justify-between">
         <div>
             <h1 class="text-xl font-bold text-white">Products</h1>
             <p class="text-zinc-500 text-sm">Marketplace + County listings</p>
         </div>
-        <button class="btn-primary text-xs" @click="openDrawer('add-product')">
+        <button class="btn-primary text-xs" @click="editProduct = 'new'">
             <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4"/></svg>
             Add Product
         </button>
@@ -28,8 +39,9 @@
                 </tr>
             </thead>
             <tbody class="divide-y divide-white/5">
-                @forelse($marketplaceProducts as $p)
-                <tr class="hover:bg-white/5 transition cursor-pointer" @click="openDrawer('product')">
+                @forelse($marketplaceProducts as $i => $p)
+                @php $instProduct = $institution->products[$i] ?? []; @endphp
+                <tr class="hover:bg-white/5 transition">
                     <td class="py-3.5 px-5">
                         <div class="flex items-center gap-3">
                             <div class="w-9 h-9 rounded-lg bg-white/5 flex items-center justify-center overflow-hidden">
@@ -63,9 +75,18 @@
                         </div>
                     </td>
                     <td class="py-3.5 pr-5 text-right">
-                        <button class="btn-ghost text-xs py-1 px-2" @click.stop="openDrawer('product')">
-                            <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 5v.01M12 12v.01M12 19v.01M12 6a1 1 0 110-2 1 1 0 010 2zm0 7a1 1 0 110-2 1 1 0 010 2zm0 7a1 1 0 110-2 1 1 0 010 2z"/></svg>
-                        </button>
+                        <div class="flex items-center justify-end gap-1">
+                            @if($p->video_url)
+                            <a href="{{ $p->video_url }}" target="_blank" class="btn-ghost text-[10px] py-1 px-1.5" title="View video">🎬</a>
+                            @endif
+                            <button class="btn-ghost text-[10px] py-1 px-2" @click="openEdit({{ $i }}, '{{ $p->name }}', {{ $p->variants->min('price') ?? 0 }}, '{{ $p->unit }}', '{{ $instProduct['category'] ?? '' }}', '{{ addslashes($p->description) }}', {{ $p->variants->sum('stock') }})">
+                                ✏️ Edit
+                            </button>
+                            <form method="POST" action="{{ route('institution.admin.products.delete', [$institution->slug, $i]) }}" class="inline" onsubmit="return confirm('Delete {{ $p->name }}?')">
+                                @csrf
+                                <button class="btn-ghost text-[10px] py-1 px-1.5 text-red-400">🗑️</button>
+                            </form>
+                        </div>
                     </td>
                 </tr>
                 @empty
@@ -75,22 +96,23 @@
         </table>
     </div>
 
-    {{-- Add product inline form --}}
-    <div class="glass-card rounded-2xl p-5" x-show="drawer === 'add-product'" x-cloak>
-        <h3 class="text-sm font-bold text-white mb-4">Add New Product</h3>
-        <form method="POST" action="{{ route('institution.admin.products.store', $institution->slug) }}" enctype="multipart/form-data" class="grid grid-cols-1 md:grid-cols-3 gap-4">
+    {{-- Add / Edit product form drawer --}}
+    <div class="glass-card rounded-2xl p-5" x-show="editProduct !== null" x-cloak x-transition>
+        <h3 class="text-sm font-bold text-white mb-4" x-text="editingIndex !== null ? 'Edit Product' : 'Add New Product'"></h3>
+        <form method="POST" :action="editingIndex !== null ? '{{ route('institution.admin.products.update', [$institution->slug, '__INDEX__']) }}'.replace('__INDEX__', editingIndex) : '{{ route('institution.admin.products.store', $institution->slug) }}'"
+              enctype="multipart/form-data" class="grid grid-cols-1 md:grid-cols-3 gap-4">
             @csrf
-            <input name="name" required placeholder="Product name">
-            <input name="price" type="number" step="0.01" required placeholder="Price (KES)">
-            <input name="unit" placeholder="Unit (kg, 500ml)">
-            <input name="category" placeholder="Category">
-            <input name="stock" type="number" min="0" placeholder="Stock">
-            <input name="image" type="file" accept="image/*">
+            <input name="name" :value="editProduct?.name || ''" required placeholder="Product name">
+            <input name="price" type="number" step="0.01" :value="editProduct?.price || ''" required placeholder="Price (KES)">
+            <input name="unit" :value="editProduct?.unit || ''" placeholder="Unit (kg, 500ml)">
+            <input name="category" :value="editProduct?.category || ''" placeholder="Category">
+            <input name="stock" type="number" min="0" :value="editProduct?.stock || ''" placeholder="Stock">
+            <input name="image" type="file" accept="image/*" placeholder="Product image">
             <input name="video" type="file" accept="video/mp4,video/webm" placeholder="Product video/reel">
-            <textarea name="description" rows="2" placeholder="Description" class="md:col-span-3"></textarea>
+            <textarea name="description" rows="2" placeholder="Description" class="md:col-span-3" x-text="editProduct?.desc || ''"></textarea>
             <div class="flex gap-2">
-                <button class="btn-primary">Add & Sync</button>
-                <button type="button" class="btn-ghost" @click="drawer = null">Cancel</button>
+                <button class="btn-primary" x-text="editingIndex !== null ? 'Update & Sync' : 'Add & Sync'"></button>
+                <button type="button" class="btn-ghost" @click="closeEdit()">Cancel</button>
             </div>
         </form>
     </div>

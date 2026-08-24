@@ -307,6 +307,59 @@ class InstitutionAdminController extends Controller
         return back()->with('success', "Product \"{$data['name']}\" added & synced to county + marketplace.");
     }
 
+    public function updateProduct(Request $request, string $slug, int $index)
+    {
+        $institution = $this->authorizeInstitution($slug);
+        $data = $request->validate([
+            'name' => 'required|string|max:255',
+            'price' => 'required|numeric|min:0',
+            'unit' => 'nullable|string|max:50',
+            'category' => 'nullable|string|max:100',
+            'description' => 'nullable|string|max:5000',
+            'image' => 'nullable|image|mimes:jpeg,png,jpg,webp|max:10240',
+            'video' => 'nullable|file|mimes:mp4,webm,mov|max:512000',
+            'stock' => 'nullable|integer|min:0',
+        ]);
+
+        $products = $institution->products ?? [];
+
+        if (!isset($products[$index])) {
+            return back()->withErrors(['product' => 'Product not found.']);
+        }
+
+        $imageUrl = $products[$index]['image_url'] ?? null;
+        if ($request->hasFile('image')) {
+            $path = $request->file('image')->store("institutions/{$institution->slug}/products", 'r2');
+            $imageUrl = media_url() . '/' . $path;
+        }
+
+        $videoUrl = $products[$index]['video_url'] ?? null;
+        if ($request->hasFile('video')) {
+            $videoPath = $request->file('video')->storeAs(
+                "institutions/{$institution->slug}/product-videos",
+                \Illuminate\Support\Str::slug($data['name']) . '-' . \Illuminate\Support\Str::lower(\Illuminate\Support\Str::random(5)) . '.' . $request->file('video')->getClientOriginalExtension(),
+                'r2'
+            );
+            $videoUrl = media_url() . '/' . $videoPath;
+        }
+
+        $products[$index] = [
+            'name' => $data['name'],
+            'price' => $data['price'],
+            'unit' => $data['unit'] ?? 'unit',
+            'category' => $data['category'] ?? 'Food',
+            'description' => $data['description'] ?? '',
+            'image_url' => $imageUrl,
+            'video_url' => $videoUrl,
+            'stock' => $data['stock'] ?? 100,
+        ];
+
+        $institution->update(['products' => $products]);
+        app(InstitutionSyncService::class)->sync($institution);
+
+        return back()->with('success', "Product \"{$data['name']}\" updated & synced.");
+    }
+
     public function deleteProduct(Request $request, string $slug, int $index)
     {
         $institution = $this->authorizeInstitution($slug);
