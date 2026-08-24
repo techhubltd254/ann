@@ -14,9 +14,9 @@
                         <option value="{{ $s->slug }}" @selected(($m['sector_slug']??'')==$s->slug)>{{ $s->name }}</option>
                         @endforeach
                     </select>
-                    <input name="sector_mappings[{{ $si }}][entry_name]" value="{{ $m['entry_name'] }}" placeholder="Entry name">
+                    <input name="sector_mappings[{{ $si }}][entry_name]" value="{{ $m['entry_name'] ?? '' }}" placeholder="Entry name">
                     <input name="sector_mappings[{{ $si }}][entry_type]" value="{{ $m['entry_type'] ?? '' }}" placeholder="Type">
-                    <input name="sector_mappings[{{ $si }}][entry_fee]" value="{{ $m['entry_fee'] }}" type="number" min="0" placeholder="Fee KES">
+                    <input name="sector_mappings[{{ $si }}][entry_fee]" value="{{ $m['entry_fee'] ?? '' }}" type="number" min="0" placeholder="Fee KES">
                     <input name="sector_mappings[{{ $si }}][location]" value="{{ $m['location'] ?? '' }}" placeholder="Location">
                     <textarea name="sector_mappings[{{ $si }}][description]" rows="1" placeholder="Description" class="md:col-span-5">{{ $m['description'] ?? '' }}</textarea>
                 </div>
