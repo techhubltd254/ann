@@ -32,6 +32,10 @@ class N8nService
         'message_sent', 'review_approved', 'notification_created',
         'export_enquiry_created', 'export_enquiry_status_changed',
         'invoice_generated', '4d_pipeline_triggered', 'fulfillment_initiated',
+        'institution_synced', 'institution_created', 'institution_updated',
+        'institution_deleted', 'product_created', 'product_updated',
+        'product_deleted', 'county_product_created', 'county_product_updated',
+        'county_product_deleted', 'institution_hero_uploaded',
     ];
 
     /** Fire an n8n webhook for the given event with its payload. */

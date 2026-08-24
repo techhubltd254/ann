@@ -10,6 +10,7 @@ use App\Models\Marketplace\Order;
 use App\Models\Marketplace\Product;
 use App\Models\MediaAsset;
 use App\Services\InstitutionSyncService;
+use App\Services\N8nService;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
@@ -245,6 +246,11 @@ class InstitutionAdminController extends Controller
             'mime' => $file->getMimeType(),
         ]);
 
+        N8nService::fire('institution_hero_uploaded', [
+            'institution' => $institution->slug,
+            'video_path' => $path,
+        ]);
+
         return back()->with('success', 'Hero video uploaded. It now plays everywhere this institution appears.');
     }
 
@@ -346,6 +352,12 @@ class InstitutionAdminController extends Controller
         // Immediate sync for this product
         app(InstitutionSyncService::class)->sync($institution);
 
+        N8nService::fire('product_created', [
+            'institution' => $institution->slug,
+            'name' => $data['name'],
+            'price' => $data['price'],
+        ]);
+
         return back()->with('success', "Product \"{$data['name']}\" added & synced to county + marketplace.");
     }
 
@@ -438,6 +450,12 @@ class InstitutionAdminController extends Controller
         // Sync to county products
         app(InstitutionSyncService::class)->sync($institution);
 
+        N8nService::fire('product_updated', [
+            'institution' => $institution->slug,
+            'name' => $data['name'],
+            'price' => $data['price'],
+        ]);
+
         return back()->with('success', "Product \"{$data['name']}\" updated & synced.");
     }
 
@@ -451,6 +469,11 @@ class InstitutionAdminController extends Controller
         }
 
         app(InstitutionSyncService::class)->sync($institution);
+
+        N8nService::fire('product_deleted', [
+            'institution' => $institution->slug,
+            'index' => $index,
+        ]);
 
         return back()->with('success', 'Product removed & synced.');
     }
