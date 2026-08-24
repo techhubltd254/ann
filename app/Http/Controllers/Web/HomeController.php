@@ -39,7 +39,7 @@ class HomeController extends Controller
             $countyHeroVideos[$c->slug] = $asset?->mp4Url();
         }
 
-        $products = Product::with(['county', 'variants'])->active()->latest()->take(8)->get();
+        $products = Product::with(['county', 'category', 'variants'])->active()->latest()->take(8)->get();
         $venues = Venue::where('is_active', true)->orderBy('name')->take(4)->get();
         $tradeAgreementsHome = TradeAgreement::with('bloc')->featured()->active()->latest()->take(3)->get();
 

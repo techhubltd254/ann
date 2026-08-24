@@ -9,6 +9,8 @@ class ShoppingCart extends Model
 {
     protected $guarded = [];
 
+    protected $appends = ['item_count'];
+
     protected $casts = ['expires_at' => 'datetime', 'discount_amount' => 'float'];
 
     public function user() { return $this->belongsTo(User::class); }

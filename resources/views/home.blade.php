@@ -100,9 +100,16 @@
             @php $featured = $products ?? collect([]); @endphp
             @forelse($featured->take(8) as $i => $product)
             <a href="{{ route('marketplace.show', $product->slug) }}" class="group bg-gray-50 rounded-2xl overflow-hidden border border-gray-100 hover:border-[#FFCD05]/30 transition-all text-left block card-hover" data-tilt="7" data-reveal data-reveal-delay="{{ ($i % 4) * 70 }}">
-                <div class="aspect-square overflow-hidden bg-white">
+                <div class="aspect-square overflow-hidden bg-white relative">
+                    @php $hpVideo = $product->videos[0] ?? $product->video_url; @endphp
+                    @if($hpVideo)
+                    <video autoplay muted loop playsinline class="absolute inset-0 w-full h-full object-cover group-hover:scale-105 transition-transform duration-500"
+                           onerror="this.style.display='none'" preload="auto">
+                        <source src="{{ $hpVideo }}" type="video/mp4">
+                    </video>
+                    @endif
                     <img src="{{ $product->image_url }}" alt="{{ $product->name }}"
-                         class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500"
+                         class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500 {{ $hpVideo ? 'opacity-0' : '' }}"
                          loading="lazy" decoding="async"
                          onerror="this.src='{{ media('kicc/kicc-logo.png') }}'">
                 </div>
