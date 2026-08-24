@@ -127,8 +127,16 @@ class InstitutionSyncService
         $slugLower = Str::lower($slug);
         foreach ($map as $canonical => $aliases) {
             if (in_array($slugLower, array_map('strtolower', $aliases), true)) {
-                return Sector::whereIn('slug', $aliases)->first()
-                    ?? Sector::whereIn('name', $aliases)->first();
+                // Match by exact slug/name, or LIKE prefix (sector slugs often have -1 suffixes)
+                $sector = Sector::whereIn('slug', $aliases)
+                    ->orWhereIn('name', $aliases)
+                    ->first();
+                if ($sector) return $sector;
+
+                foreach ($aliases as $alias) {
+                    $sector = Sector::where('slug', 'like', $alias . '%')->first();
+                    if ($sector) return $sector;
+                }
             }
         }
 

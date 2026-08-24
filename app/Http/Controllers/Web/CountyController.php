@@ -69,13 +69,69 @@ class CountyController extends Controller
     public function sector(County $county, string $sector)
     {
         $sectorModel = $county->sectors()->where('slug', $sector)->first();
+        if (!$sectorModel) {
+            // Try fuzzy match by partial slug or name
+            $sectorModel = $county->sectors()->where('slug', 'like', $sector . '%')->first();
+        }
+        if (!$sectorModel) {
+            // Try matching the sector_slug map
+            $slugMap = [
+                'agriculture' => ['agriculture', 'farms', 'Agriculture'],
+                'tourism' => ['tourism', 'Tourism'],
+                'hospitality' => ['hotels', 'hospitality', 'Hospitality'],
+                'commerce' => ['products', 'commerce', 'Commerce'],
+                'education' => ['institutions', 'education', 'Education'],
+                'transport' => ['transport', 'Transport'],
+                'healthcare' => ['health', 'healthcare', 'Healthcare'],
+                'culture' => ['culture', 'Culture'],
+            ];
+            $aliases = $slugMap[$sector] ?? [];
+            foreach ($aliases as $alias) {
+                $sectorModel = $county->sectors()->where('slug', 'like', $alias . '%')->first();
+                if ($sectorModel) break;
+            }
+        }
         if (!$sectorModel) abort(404, "Sector not found for {$county->name}");
 
+        // Collect entities from this sector and any alias sectors
+        $sectorIds = collect([$sectorModel->id]);
+        $slugMap = [
+            'agriculture' => ['agriculture', 'farms', 'Agriculture'],
+            'tourism' => ['tourism', 'Tourism'],
+            'hospitality' => ['hotels', 'hospitality', 'Hospitality'],
+            'commerce' => ['products', 'commerce', 'Commerce'],
+            'education' => ['institutions', 'education', 'Education'],
+            'transport' => ['transport', 'Transport'],
+            'healthcare' => ['health', 'healthcare', 'Healthcare'],
+            'culture' => ['culture', 'Culture'],
+        ];
+        $aliases = $slugMap[$sector] ?? [];
+        foreach ($aliases as $alias) {
+            $aliasSector = $county->sectors()->where('slug', 'like', $alias . '%')->first();
+            if ($aliasSector && $aliasSector->id !== $sectorModel->id) {
+                $sectorIds->push($aliasSector->id);
+            }
+        }
+
         $items = SectorEntity::where('county_id', $county->id)
-            ->where('sector_id', $sectorModel->id)
+            ->whereIn('sector_id', $sectorIds)
             ->where('is_published', true)
             ->orderBy('name')
             ->paginate(12);
+
+        // Count marketplace products for institution entities
+        $institutionIds = $items->whereIn('entity_type', [\App\Models\CountyInstitution::class, \App\Services\InstitutionSyncService::ENTITY_TYPE])->pluck('entity_id')->unique();
+        $productCounts = [];
+        if ($institutionIds->isNotEmpty()) {
+            $productCounts = \App\Models\Marketplace\Product::whereIn('user_id', \App\Models\CountyInstitution::whereIn('id', $institutionIds)->pluck('user_id'))
+                ->active()
+                ->selectRaw('user_id, count(*) as count')
+                ->groupBy('user_id')
+                ->get()
+                ->keyBy('user_id')
+                ->map(fn($r) => $r->count)
+                ->toArray();
+        }
 
         // Sector background video (institution sync sets this slot)
         $bgAsset = MediaAsset::resolveSlot(County::class, $county->id, 'sector_video_' . $sector);
@@ -99,7 +155,7 @@ class CountyController extends Controller
         }
 
         // Institution hero videos: load for SectorEntity items that are institutions
-        $institutionIds = $items->where('entity_type', \App\Models\CountyInstitution::class)->pluck('entity_id')->unique();
+        $institutionIds = $items->whereIn('entity_type', [\App\Models\CountyInstitution::class, \App\Services\InstitutionSyncService::ENTITY_TYPE])->pluck('entity_id')->unique();
         $institutionHeroVideos = [];
         if ($institutionIds->isNotEmpty()) {
             $heroAssets = MediaAsset::where('owner_type', \App\Models\CountyInstitution::class)
@@ -108,7 +164,8 @@ class CountyController extends Controller
                 ->get()
                 ->keyBy('owner_id');
             foreach ($items as $e) {
-                if ($e->entity_type === \App\Models\CountyInstitution::class && isset($heroAssets[$e->entity_id])) {
+                $isInst = in_array($e->entity_type, [\App\Models\CountyInstitution::class, \App\Services\InstitutionSyncService::ENTITY_TYPE]);
+                if ($isInst && isset($heroAssets[$e->entity_id])) {
                     $a = $heroAssets[$e->entity_id];
                     $institutionHeroVideos[$e->id] = $a->mp4Url() ?? $a->url();
                 }
@@ -133,7 +190,7 @@ class CountyController extends Controller
 
         return view('counties.sector', compact(
             'county', 'items', 'sector', 'sectorInfo', 'sectorModel',
-            'fourDVideo', 'entityVideos', 'entityPosters', 'institutionHeroVideos', 'services'
+            'fourDVideo', 'entityVideos', 'entityPosters', 'institutionHeroVideos', 'productCounts', 'services'
         ));
     }
 
