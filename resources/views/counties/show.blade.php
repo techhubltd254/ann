@@ -104,28 +104,30 @@ $kiccBlue = '#0B1E57';
                     $entityVids = $sectorEntityVideos[$s['sector_slug']] ?? [];
                 @endphp
                 <a href="{{ route('counties.sector', [$county->slug, $s['route']]) }}"
-                   class="group relative bg-white border border-gray-200 hover:border-kicc-gold/40 rounded-2xl p-5 text-center transition-all block card-hover overflow-hidden" data-tilt="6" data-reveal data-reveal-delay="{{ $loop->index * 80 }}">
-                    @if(count($entityVids) > 0)
-                    @foreach($entityVids as $vi)
-                    <video autoplay muted loop playsinline preload="auto" class="absolute inset-0 w-full h-full object-cover hero-video-layer"
-                           onerror="this.style.display='none'">
-                        <source src="{{ $vi }}" type="video/mp4">
-                    </video>
-                    @endforeach
-                    @elseif($sectorVideo)
-                    @php $sectorWebm = $sectorWebmVideos[$s['sector_slug']] ?? null; @endphp
-                    <video autoplay muted loop playsinline preload="auto" class="absolute inset-0 w-full h-full object-cover opacity-10"
-                           onloadeddata="this.style.opacity='0.15'">
-                        @if($sectorWebm)
-                        <source src="{{ $sectorWebm }}" type="video/webm">
+                   class="group bg-white border border-gray-200 hover:border-kicc-gold/40 rounded-2xl overflow-hidden transition-all block card-hover" data-tilt="6" data-reveal data-reveal-delay="{{ $loop->index * 80 }}">
+                    <div class="aspect-[4/3] overflow-hidden relative bg-gray-100">
+                        @if(count($entityVids) > 0)
+                        @foreach($entityVids as $vi)
+                        <video autoplay muted loop playsinline preload="auto" class="absolute inset-0 w-full h-full object-cover hero-video-layer"
+                               onerror="this.style.display='none'">
+                            <source src="{{ $vi }}" type="video/mp4">
+                        </video>
+                        @endforeach
+                        @elseif($sectorVideo)
+                        @php $sectorWebm = $sectorWebmVideos[$s['sector_slug']] ?? null; @endphp
+                        <video autoplay muted loop playsinline preload="auto" class="absolute inset-0 w-full h-full object-cover"
+                               onloadeddata="this.style.opacity='0.15'">
+                            @if($sectorWebm)
+                            <source src="{{ $sectorWebm }}" type="video/webm">
+                            @endif
+                            <source src="{{ $sectorVideo }}" type="video/mp4">
+                        </video>
                         @endif
-                        <source src="{{ $sectorVideo }}" type="video/mp4">
-                    </video>
-                    @endif
-                    <div class="relative z-10">
-                        <div class="w-12 h-12 rounded-xl mx-auto mb-3 flex items-center justify-center text-2xl bg-gray-100 group-hover:bg-[#FFCD05]/20 transition-colors">
-                            {{ $s['icon'] }}
+                        <div class="absolute inset-0 flex items-center justify-center">
+                            <span class="text-4xl drop-shadow-lg">{{ $s['icon'] }}</span>
                         </div>
+                    </div>
+                    <div class="p-4 text-center">
                         <div class="font-bold text-gray-900 text-sm leading-snug">{{ $name }}</div>
                         <div class="text-gray-400 text-xs mt-1">{{ $s['count'] }} {{ Str::plural('entity', $s['count']) }}</div>
                     </div>
