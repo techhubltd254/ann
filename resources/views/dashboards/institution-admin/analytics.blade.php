@@ -1,0 +1,1 @@
+@include('dashboards.analytics-tab', ['analytics' => $analytics ?? []])

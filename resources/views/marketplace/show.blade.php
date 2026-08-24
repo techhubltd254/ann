@@ -12,7 +12,20 @@
 
     <div class="grid lg:grid-cols-3 gap-8">
         <div class="lg:col-span-2">
-            <div class="rounded-2xl overflow-hidden h-80 bg-[#F9FAFB]">
+            @if($product->video_url)
+            <div class="rounded-2xl overflow-hidden bg-black aspect-video mb-4">
+                <x-video-player
+                    :src="$product->video_url"
+                    :poster="$product->image_url"
+                    id="product-video-{{ $product->id }}"
+                    class="w-full h-full"
+                    :autoplay="true"
+                    :loop="true"
+                    :muted="true"
+                />
+            </div>
+            @endif
+            <div class="rounded-2xl overflow-hidden h-80 bg-[#F9FAFB] {{ $product->video_url ? 'hidden' : '' }}" id="product-image-container">
                 <img src="{{ $product->image_url }}" alt="{{ $product->name }}" loading="lazy" decoding="async" class="w-full h-full object-cover"
                      onerror="this.src='{{ asset('storage/kicc/kicc-logo.png') }}'">
             </div>

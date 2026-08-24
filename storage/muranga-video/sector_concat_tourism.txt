@@ -1,0 +1,2 @@
+file '/home/kicc/Desktop/kicc/kicc-platform/storage/muranga-video/clips/sector_tourism_kanunga_falls.mp4'
+file '/home/kicc/Desktop/kicc/kicc-platform/storage/muranga-video/clips/sector_tourism_rafting_+_resort.mp4'

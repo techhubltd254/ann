@@ -1,0 +1,8 @@
+file '/home/kicc/Desktop/kicc/kicc-platform/storage/muranga-video/clips/hero_drone_tea_landscapes.mp4'
+file '/home/kicc/Desktop/kicc/kicc-platform/storage/muranga-video/clips/hero_drone_havila_resort,_island_+_rafting.mp4'
+file '/home/kicc/Desktop/kicc/kicc-platform/storage/muranga-video/clips/hero_tea_landscape.mp4'
+file '/home/kicc/Desktop/kicc/kicc-platform/storage/muranga-video/clips/hero_kanunga_falls.mp4'
+file '/home/kicc/Desktop/kicc/kicc-platform/storage/muranga-video/clips/hero_mukurwe_wa_nyagathanga.mp4'
+file '/home/kicc/Desktop/kicc/kicc-platform/storage/muranga-video/clips/hero_rafting_+_resort_footage_raft_+_hotel.mp4'
+file '/home/kicc/Desktop/kicc/kicc-platform/storage/muranga-video/clips/hero_elipa_footage.mp4'
+file '/home/kicc/Desktop/kicc/kicc-platform/storage/muranga-video/clips/hero_havila_island_footage.mp4'

@@ -268,6 +268,7 @@ class InstitutionAdminController extends Controller
             'category' => 'nullable|string|max:100',
             'description' => 'nullable|string|max:5000',
             'image' => 'nullable|image|mimes:jpeg,png,jpg,webp|max:10240',
+            'video' => 'nullable|file|mimes:mp4,webm,mov|max:512000',
             'stock' => 'nullable|integer|min:0',
         ]);
 
@@ -275,6 +276,16 @@ class InstitutionAdminController extends Controller
         if ($request->hasFile('image')) {
             $path = $request->file('image')->store("institutions/{$institution->slug}/products", 'r2');
             $imageUrl = media_url() . '/' . $path;
+        }
+
+        $videoUrl = null;
+        if ($request->hasFile('video')) {
+            $videoPath = $request->file('video')->storeAs(
+                "institutions/{$institution->slug}/product-videos",
+                \Illuminate\Support\Str::slug($data['name']) . '-' . \Illuminate\Support\Str::lower(\Illuminate\Support\Str::random(5)) . '.' . $request->file('video')->getClientOriginalExtension(),
+                'r2'
+            );
+            $videoUrl = media_url() . '/' . $videoPath;
         }
 
         $products = $institution->products ?? [];
@@ -285,6 +296,7 @@ class InstitutionAdminController extends Controller
             'category' => $data['category'] ?? 'Food',
             'description' => $data['description'] ?? '',
             'image_url' => $imageUrl,
+            'video_url' => $videoUrl,
             'stock' => $data['stock'] ?? 100,
         ];
         $institution->update(['products' => $products]);
