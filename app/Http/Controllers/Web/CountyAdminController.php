@@ -48,7 +48,7 @@ class CountyAdminController extends Controller
     {
         $user = Auth::user();
         $county = County::where('slug', $slug)->firstOrFail();
-        abort_if(!$user->is_admin && $user->county_id !== $county->id, 403);
+        abort_if(!$user->isAdmin() && $user->county_id !== $county->id, 403);
         $county = $this->authorizeCounty($slug);
         $tab = $request->get('tab', 'overview');
 
@@ -120,7 +120,7 @@ class CountyAdminController extends Controller
     {
         $user = Auth::user();
         $county = County::where('slug', $slug)->firstOrFail();
-        abort_if(!$user->is_admin && $user->county_id !== $county->id, 403);
+        abort_if(!$user->isAdmin() && $user->county_id !== $county->id, 403);
         $county = $this->authorizeCounty($slug);
         $data = $request->validate([
             'tagline' => 'nullable|string|max:255',
@@ -136,7 +136,7 @@ class CountyAdminController extends Controller
     {
         $user = Auth::user();
         $county = County::where('slug', $slug)->firstOrFail();
-        abort_if(!$user->is_admin && $user->county_id !== $county->id, 403);
+        abort_if(!$user->isAdmin() && $user->county_id !== $county->id, 403);
         $county = $this->authorizeCounty($slug);
         $data = $request->validate([
             'tagline' => 'nullable|string|max:255',
@@ -162,7 +162,7 @@ class CountyAdminController extends Controller
     {
         $user = Auth::user();
         $county = County::where('slug', $slug)->firstOrFail();
-        abort_if(!$user->is_admin && $user->county_id !== $county->id, 403);
+        abort_if(!$user->isAdmin() && $user->county_id !== $county->id, 403);
         $county = $this->authorizeCounty($slug);
         $data = $request->validate([
             'sector_id' => 'required|exists:sectors,id',
@@ -181,7 +181,7 @@ class CountyAdminController extends Controller
     {
         $user = Auth::user();
         $county = County::where('slug', $slug)->firstOrFail();
-        abort_if(!$user->is_admin && $user->county_id !== $county->id, 403);
+        abort_if(!$user->isAdmin() && $user->county_id !== $county->id, 403);
         $county = $this->authorizeCounty($slug);
         $data = $request->validate([
             'sector_id' => 'required|exists:sectors,id',
@@ -202,7 +202,7 @@ class CountyAdminController extends Controller
     {
         $user = Auth::user();
         $county = County::where('slug', $slug)->firstOrFail();
-        abort_if(!$user->is_admin && $user->county_id !== $county->id, 403);
+        abort_if(!$user->isAdmin() && $user->county_id !== $county->id, 403);
         $county = $this->authorizeCounty($slug);
         $data = $request->validate([
             'sector_id' => 'required|exists:sectors,id',
@@ -227,7 +227,7 @@ class CountyAdminController extends Controller
     {
         $user = Auth::user();
         $county = County::where('slug', $slug)->firstOrFail();
-        abort_if(!$user->is_admin && $user->county_id !== $county->id, 403);
+        abort_if(!$user->isAdmin() && $user->county_id !== $county->id, 403);
         $county = $this->authorizeCounty($slug);
         $entity = SectorEntity::where('county_id', $county->id)->findOrFail($entityId);
         $entity->delete();
@@ -239,6 +239,7 @@ class CountyAdminController extends Controller
     {
         $sectors = ['hero', 'tourism', 'products', 'education', 'culture', 'hotels', 'farms', 'transport', 'health'];
         $images = [];
+        $county = \App\Models\County::where('slug', $slug)->first();
         foreach ($sectors as $s) {
             $path = "counties/{$slug}/{$s}.jpeg";
             $fullPath = storage_path("app/public/{$path}");
@@ -246,7 +247,21 @@ class CountyAdminController extends Controller
                 'path' => $path,
                 'exists' => file_exists($fullPath),
                 'url' => $path,
+                'video' => null,
+                'video_name' => null,
             ];
+            // Resolve sector video for non-hero sectors
+            if ($county && $s !== 'hero') {
+                $asset = \App\Models\MediaAsset::resolveSlot(\App\Models\County::class, $county->id, 'sector_video_' . $s);
+                $images[$s]['video'] = $asset?->mp4Url();
+                $images[$s]['video_name'] = $asset?->original_name;
+            }
+        }
+        // Hero video
+        if ($county) {
+            $heroAsset = \App\Models\MediaAsset::resolveSlot(\App\Models\County::class, $county->id, 'hero_video');
+            $images['hero']['video'] = $heroAsset?->mp4Url();
+            $images['hero']['video_name'] = $heroAsset?->original_name;
         }
         return $images;
     }
@@ -255,7 +270,7 @@ class CountyAdminController extends Controller
     {
         $user = Auth::user();
         $county = County::where('slug', $slug)->firstOrFail();
-        abort_if(!$user->is_admin && $user->county_id !== $county->id, 403);
+        abort_if(!$user->isAdmin() && $user->county_id !== $county->id, 403);
         $county = $this->authorizeCounty($slug);
         $data = $request->validate([
             'sector' => 'required|in:hero,tourism,products,education,culture,hotels,farms,transport,health',
@@ -263,11 +278,8 @@ class CountyAdminController extends Controller
         ]);
         $file = $request->file('image');
         $filename = "{$data['sector']}.{$file->extension()}";
-        // Store with the same naming convention for immediate reflection
         $path = $file->storeAs("counties/{$slug}", $filename, 'public');
-        // Also convert JPEG naming for backwards compat
         if ($file->extension() !== 'jpeg') {
-            // Copy as jpeg too so all references work
             $jpegPath = storage_path("app/public/counties/{$slug}/{$data['sector']}.jpeg");
             @copy(storage_path("app/public/{$path}"), $jpegPath);
         }
@@ -277,11 +289,78 @@ class CountyAdminController extends Controller
         return back()->with('success', "{$data['sector']} image updated. Changes reflect everywhere immediately.");
     }
 
+    public function uploadSectorVideo(Request $request, string $slug)
+    {
+        $user = Auth::user();
+        $county = County::where('slug', $slug)->firstOrFail();
+        abort_if(!$user->isAdmin() && $user->county_id !== $county->id, 403);
+        $county = $this->authorizeCounty($slug);
+        $data = $request->validate([
+            'sector' => 'required|in:tourism,products,education,culture,hotels,farms,transport,health',
+            'video' => 'required|file|mimes:mp4,webm,mov|max:512000',
+        ]);
+
+        $file = $request->file('video');
+        $slot = 'sector_video_' . $data['sector'];
+        $filename = "{$data['sector']}." . $file->getClientOriginalExtension();
+
+        // Upload to R2
+        $disk = Storage::disk('r2');
+        $r2Path = "counties/{$slug}/sector-videos/{$filename}";
+        $disk->writeStream($r2Path, fopen($file->getRealPath(), 'r'), ['visibility' => 'public']);
+
+        // Delete old asset for this slot
+        \App\Models\MediaAsset::forSlot(County::class, $county->id, $slot)->delete();
+
+        $asset = \App\Models\MediaAsset::create([
+            'uuid' => (string) Str::uuid(),
+            'owner_id' => $county->id,
+            'owner_type' => County::class,
+            'slot' => $slot,
+            'disk' => 'r2',
+            'path' => $r2Path,
+            'original_name' => $file->getClientOriginalName(),
+            'mime' => $file->getMimeType(),
+            'kind' => 'video',
+            'size_bytes' => $file->getSize(),
+            'status' => 'ready',
+        ]);
+
+        $asset->derivatives()->create([
+            'kind' => 'video_mp4',
+            'path' => $r2Path,
+            'mime' => 'video/mp4',
+            'size_bytes' => $file->getSize(),
+            'variant' => 'source',
+        ]);
+
+        return back()->with('success', "Sector video for {$data['sector']} uploaded. It plays on the county page tile background.");
+    }
+
+    public function deleteSectorVideo(string $slug, string $sector)
+    {
+        $user = Auth::user();
+        $county = County::where('slug', $slug)->firstOrFail();
+        abort_if(!$user->isAdmin() && $user->county_id !== $county->id, 403);
+        $this->authorizeCounty($slug);
+
+        $slot = 'sector_video_' . $sector;
+        $assets = \App\Models\MediaAsset::forSlot(County::class, $county->id, $slot)->get();
+        foreach ($assets as $a) {
+            if ($a->disk === 'r2') {
+                Storage::disk('r2')->delete($a->path);
+            }
+            $a->derivatives()->delete();
+            $a->delete();
+        }
+        return back()->with('success', "Sector video for {$sector} removed.");
+    }
+
     public function deleteImage(string $slug, string $sector)
     {
         $user = Auth::user();
         $county = County::where('slug', $slug)->firstOrFail();
-        abort_if(!$user->is_admin && $user->county_id !== $county->id, 403);
+        abort_if(!$user->isAdmin() && $user->county_id !== $county->id, 403);
         $county = $this->authorizeCounty($slug);
         $path = storage_path("app/public/counties/{$slug}/{$sector}.jpeg");
         if (file_exists($path)) @unlink($path);
@@ -296,7 +375,7 @@ class CountyAdminController extends Controller
     {
         $user = Auth::user();
         $county = County::where('slug', $slug)->firstOrFail();
-        abort_if(!$user->is_admin && $user->county_id !== $county->id, 403);
+        abort_if(!$user->isAdmin() && $user->county_id !== $county->id, 403);
         $county = $this->authorizeCounty($slug);
 
         $data = $request->validate([
@@ -341,7 +420,7 @@ class CountyAdminController extends Controller
     {
         $user = Auth::user();
         $county = County::where('slug', $slug)->firstOrFail();
-        abort_if(!$user->is_admin && $user->county_id !== $county->id, 403);
+        abort_if(!$user->isAdmin() && $user->county_id !== $county->id, 403);
         $this->authorizeCounty($slug);
 
         $institution = \App\Models\CountyInstitution::where('county_id', $county->id)->findOrFail($institutionId);
@@ -355,7 +434,7 @@ class CountyAdminController extends Controller
     {
         $user = Auth::user();
         $county = County::where('slug', $slug)->firstOrFail();
-        abort_if(!$user->is_admin && $user->county_id !== $county->id, 403);
+        abort_if(!$user->isAdmin() && $user->county_id !== $county->id, 403);
         $county = $this->authorizeCounty($slug);
         $data = $request->validate([
             'video' => 'required|file|mimes:mp4,webm,mov|max:512000',
@@ -403,7 +482,7 @@ class CountyAdminController extends Controller
     {
         $user = Auth::user();
         $county = County::where('slug', $slug)->firstOrFail();
-        abort_if(!$user->is_admin && $user->county_id !== $county->id, 403);
+        abort_if(!$user->isAdmin() && $user->county_id !== $county->id, 403);
         $this->authorizeCounty($slug);
         
         $assets = \App\Models\MediaAsset::forSlot(County::class, $county->id, 'hero_video')->get();
@@ -432,7 +511,7 @@ class CountyAdminController extends Controller
     {
         $user = Auth::user();
         $county = County::where('slug', $slug)->firstOrFail();
-        abort_if(!$user->is_admin && $user->county_id !== $county->id, 403);
+        abort_if(!$user->isAdmin() && $user->county_id !== $county->id, 403);
         $county = $this->authorizeCounty($slug);
         $data = $request->validate([
             'entity_type' => 'required|in:attraction,hotel,product,sector_entity',
@@ -449,21 +528,22 @@ class CountyAdminController extends Controller
         $entity = $model::where('county_id', $county->id)->findOrFail($data['entity_id']);
 
         $file = $request->file('video');
-        $path = $file->storeAs(
-            "counties/{$slug}/4d",
-            "{$data['entity_type']}-{$entity->id}.{$file->extension()}",
-            'public'
-        );
+        $filename = "{$data['entity_type']}-{$entity->id}." . $file->getClientOriginalExtension();
+
+        // Upload to R2 instead of local public disk
+        $disk = Storage::disk('r2');
+        $r2Path = "counties/{$slug}/4d/{$filename}";
+        $disk->writeStream($r2Path, fopen($file->getRealPath(), 'r'), ['visibility' => 'public']);
 
         // Replace any existing 4d_video asset for this entity
         \App\Models\MediaAsset::forSlot($model, $entity->id, '4d_video')->delete();
-        \App\Models\MediaAsset::create([
+        $asset = \App\Models\MediaAsset::create([
             'uuid' => (string) Str::uuid(),
             'owner_id' => $entity->id,
             'owner_type' => $model,
             'slot' => '4d_video',
-            'disk' => 'public',
-            'path' => $path,
+            'disk' => 'r2',
+            'path' => $r2Path,
             'original_name' => $file->getClientOriginalName(),
             'mime' => $file->getMimeType(),
             'kind' => 'video',
@@ -471,9 +551,22 @@ class CountyAdminController extends Controller
             'status' => 'ready',
         ]);
 
-        \App\Services\N8nService::fire('county_4d_uploaded', [
-            'county' => $slug, 'entity_type' => $data['entity_type'], 'entity_id' => $entity->id,
+        // Create MP4 derivative so mp4Url() works
+        $asset->derivatives()->create([
+            'kind' => 'video_mp4',
+            'path' => $r2Path,
+            'mime' => 'video/mp4',
+            'size_bytes' => $file->getSize(),
+            'variant' => 'source',
         ]);
+
+        try {
+            \App\Services\N8nService::fire('county_4d_uploaded', [
+                'county' => $slug, 'entity_type' => $data['entity_type'], 'entity_id' => $entity->id,
+            ]);
+        } catch (\Throwable $e) {
+            \Illuminate\Support\Facades\Log::warning('N8n fire failed for 4D upload: ' . $e->getMessage());
+        }
 
         return back()->with('success', "4D video attached to {$entity->name}. It now plays on the county page.");
     }
@@ -482,7 +575,7 @@ class CountyAdminController extends Controller
     {
         $user = Auth::user();
         $county = County::where('slug', $slug)->firstOrFail();
-        abort_if(!$user->is_admin && $user->county_id !== $county->id, 403);
+        abort_if(!$user->isAdmin() && $user->county_id !== $county->id, 403);
         $county = $this->authorizeCounty($slug);
         $model = match ($entityType) {
             'attraction' => CountyTourismAttraction::class,
@@ -582,7 +675,7 @@ class CountyAdminController extends Controller
     {
         $user = Auth::user();
         $county = County::where('slug', $slug)->firstOrFail();
-        abort_if(!$user->is_admin && $user->county_id !== $county->id, 403);
+        abort_if(!$user->isAdmin() && $user->county_id !== $county->id, 403);
         $county = $this->authorizeCounty($slug);
         $data = $request->validate([
             'table' => 'required|in:county_products,county_tourism_attractions',
@@ -600,7 +693,7 @@ class CountyAdminController extends Controller
     {
         $user = Auth::user();
         $county = County::where('slug', $slug)->firstOrFail();
-        abort_if(!$user->is_admin && $user->county_id !== $county->id, 403);
+        abort_if(!$user->isAdmin() && $user->county_id !== $county->id, 403);
         $county = $this->authorizeCounty($slug);
         $data = $request->validate([
             'name' => 'required|string|max:255',
@@ -645,7 +738,7 @@ class CountyAdminController extends Controller
     {
         $user = Auth::user();
         $county = County::where('slug', $slug)->firstOrFail();
-        abort_if(!$user->is_admin && $user->county_id !== $county->id, 403);
+        abort_if(!$user->isAdmin() && $user->county_id !== $county->id, 403);
         $county = $this->authorizeCounty($slug);
         $data = $request->validate([
             'plan_slug' => 'required|exists:subscription_plans,slug',
@@ -675,7 +768,7 @@ class CountyAdminController extends Controller
     {
         $user = Auth::user();
         $county = County::where('slug', $slug)->firstOrFail();
-        abort_if(!$user->is_admin && $user->county_id !== $county->id, 403);
+        abort_if(!$user->isAdmin() && $user->county_id !== $county->id, 403);
         $county = $this->authorizeCounty($slug);
         $rows = match ($type) {
             'products' => CountyProduct::where('county_id', $county->id)->get()->toArray(),

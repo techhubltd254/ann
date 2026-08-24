@@ -38,7 +38,7 @@
                 'Immersive Media' => [
                     ['tab' => 'videos4d', 'label' => '4D Gaussian Studio', 'icon' => 'M15 10l4.553-2.276A1 1 0 0121 8.618v6.764a1 1 0 01-1.447.894L15 14M5 18h8a2 2 0 002-2V8a2 2 0 00-2-2H5a2 2 0 00-2 2v8a2 2 0 002 2z'],
                     ['tab' => 'hero', 'label' => 'Hero Videos', 'icon' => 'M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z'],
-                    ['tab' => 'images', 'label' => 'Photo Gallery', 'icon' => 'M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z'],
+                    ['tab' => 'images', 'label' => 'Sector Videos', 'icon' => 'M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z'],
                 ],
                 'Operations' => [
                     ['tab' => 'prices', 'label' => 'Pricing Engine', 'icon' => 'M12 8c-1.657 0-3 .895-3 2s1.343 2 3 2 3 .895 3 2-1.343 2-3 2m0-8c1.11 0 2.08.402 2.599 1M12 8V7m0 1v8m0 0v1m0-1c-1.11 0-2.08-.402-2.599-1'],
@@ -376,31 +376,109 @@
 
             @elseif($tab === 'images')
             <div class="glass-card rounded-2xl p-6">
-                <h2 class="text-lg font-bold text-white mb-4">Sector Images</h2>
+                <h2 class="text-lg font-bold text-white mb-4">Sector Videos &amp; Images</h2>
                 <div class="grid sm:grid-cols-2 lg:grid-cols-4 gap-4">
                     @foreach($sectorImages as $sector => $img)
+                    @if($sector === 'hero')
+                    {{-- Hero Video card — full width, shows current hero video playing --}}
+                    <div class="sm:col-span-2 lg:col-span-4 glass rounded-xl overflow-hidden border border-indigo-500/20">
+                        <div class="grid md:grid-cols-3 gap-0">
+                            <div class="md:col-span-2 bg-black relative min-h-[200px]">
+                                @if(!empty($img['video']))
+                                <video autoplay muted loop playsinline class="absolute inset-0 w-full h-full object-cover">
+                                    <source src="{{ $img['video'] }}" type="video/mp4">
+                                </video>
+                                <div class="absolute bottom-2 left-3 text-[10px] px-2 py-1 rounded bg-black/70 text-indigo-300 border border-indigo-500/30">🎬 Hero Video Playing</div>
+                                @else
+                                <div class="absolute inset-0 flex items-center justify-center">
+                                    <div class="text-center">
+                                        <svg class="w-12 h-12 mx-auto text-zinc-600 mb-2" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M15 10l4.553-2.276A1 1 0 0121 8.618v6.764a1 1 0 01-1.447.894L15 14M5 18h8a2 2 0 002-2V8a2 2 0 00-2-2H5a2 2 0 00-2 2v8a2 2 0 002 2z"/></svg>
+                                        <div class="text-sm font-semibold text-zinc-500">No hero video</div>
+                                        <div class="text-[10px] text-zinc-600 mt-1">Upload to play on the county homepage</div>
+                                    </div>
+                                </div>
+                                @endif
+                            </div>
+                            <div class="p-5 flex flex-col justify-center">
+                                <div class="text-sm font-bold text-white mb-1">Hero Video</div>
+                                <div class="text-[10px] text-zinc-500 mb-3">Plays on the county landing page in a loop</div>
+                                <form method="POST" action="{{ route('county.admin.hero.upload', $county->slug) }}" enctype="multipart/form-data" class="mb-2">
+                                    @csrf
+                                    <label class="flex items-center justify-center h-10 rounded-xl bg-gradient-to-r from-indigo-500 to-violet-600 text-white text-xs font-bold cursor-pointer hover:from-indigo-400 hover:to-violet-500 transition active:scale-95">
+                                        <input type="file" name="video" accept="video/mp4,video/webm" class="sr-only" onchange="this.form.submit()">
+                                        🎬 Upload &amp; Sync Hero Video
+                                    </label>
+                                </form>
+                                @if(!empty($img['video']))
+                                <div class="flex items-center gap-2 text-[10px]">
+                                    <span class="text-emerald-400">✅ Live — {{ $img['video_name'] ?? 'Hero video' }}</span>
+                                    <form method="POST" action="{{ route('county.admin.hero.delete', $county->slug) }}" onsubmit="return confirm('Delete hero video?')">@csrf<button class="text-red-400 hover:text-red-300 underline ml-2">Delete</button></form>
+                                </div>
+                                @endif
+                            </div>
+                        </div>
+                    </div>
+                    @else
+                    {{-- Sector cards --}}
                     <div class="glass rounded-xl overflow-hidden border border-white/5">
-                        <div class="h-32 bg-white/5 overflow-hidden">
-                            @if($img['exists'])
+                        <div class="h-32 bg-white/5 overflow-hidden relative">
+                            @if(!empty($img['video']))
+                            <video autoplay muted loop playsinline class="w-full h-full object-cover" onerror="this.style.display='none'">
+                                <source src="{{ $img['video'] }}" type="video/mp4">
+                            </video>
+                            <div class="absolute top-1.5 right-1.5 text-[9px] px-1.5 py-0.5 rounded bg-black/60 text-indigo-300 border border-indigo-500/30">🎬</div>
+                            @elseif($img['exists'])
                             <img src="{{ media($img['path']) }}" class="w-full h-full object-cover">
                             @else
                             <div class="w-full h-full flex items-center justify-center text-zinc-600 text-3xl font-bold">{{ strtoupper($sector[0]) }}</div>
                             @endif
                         </div>
                         <div class="p-3">
-                            <div class="text-sm font-semibold text-zinc-200 capitalize">{{ $sector }}</div>
-                            <div class="flex gap-1.5 mt-2">
+                            <div class="text-sm font-semibold text-zinc-200 capitalize">{{ $sector }} @if(!empty($img['video']))<span class="text-[10px] text-indigo-400 ml-1">🎬 Live</span>@endif</div>
+                            <div class="flex flex-col gap-1.5 mt-2">
+                                {{-- Row 1: Video upload --}}
+                                @if($sector !== 'hero')
+                                <form method="POST" action="{{ route('county.admin.sector.video.upload', $county->slug) }}" enctype="multipart/form-data" class="flex gap-1.5">
+                                    @csrf
+                                    <input type="hidden" name="sector" value="{{ $sector }}">
+                                    <label class="flex-1 flex items-center justify-center h-7 rounded-lg border border-white/10 text-[10px] font-medium text-zinc-500 cursor-pointer hover:border-indigo-500/40 hover:text-indigo-400 transition">
+                                        <input type="file" name="video" accept="video/mp4,video/webm" class="sr-only" onchange="this.form.submit()">
+                                        🎬 Upload Video
+                                    </label>
+                                </form>
+                                @endif
+                                @if($sector === 'hero')
+                                <form method="POST" action="{{ route('county.admin.hero.upload', $county->slug) }}" enctype="multipart/form-data" class="flex gap-1.5">
+                                    @csrf
+                                    <label class="flex-1 flex items-center justify-center h-7 rounded-lg border border-white/10 text-[10px] font-medium text-zinc-500 cursor-pointer hover:border-indigo-500/40 hover:text-indigo-400 transition">
+                                        <input type="file" name="video" accept="video/mp4,video/webm" class="sr-only" onchange="this.form.submit()">
+                                        🎬 Upload Hero Video
+                                    </label>
+                                </form>
+                                @if(!empty($img['video']))
+                                <form method="POST" action="{{ route('county.admin.hero.delete', $county->slug) }}" onsubmit="return confirm('Delete hero video?')">@csrf<button class="h-7 px-2 rounded-lg border border-red-500/20 text-red-400 text-[10px] font-medium hover:bg-red-500/10">×</button></form>
+                                @endif
+                                @endif
+                                {{-- Row 2: Image upload (fallback poster) --}}
+                                @if($sector !== 'hero')
+                                <div class="flex gap-1.5">
                                 <form method="POST" action="{{ route('county.admin.image.upload', $county->slug) }}" enctype="multipart/form-data" class="flex-1">
                                     @csrf
                                     <input type="hidden" name="sector" value="{{ $sector }}">
-                                    <label class="flex items-center justify-center h-7 rounded-lg border border-white/10 text-[10px] font-medium text-zinc-500 cursor-pointer hover:border-indigo-500/40 hover:text-indigo-400 transition"><input type="file" name="image" accept="image/*" class="sr-only" onchange="this.form.submit()">Upload</label>
+                                    <label class="flex items-center justify-center h-7 rounded-lg border border-white/10 text-[10px] font-medium text-zinc-500 cursor-pointer hover:border-indigo-500/40 hover:text-indigo-400 transition"><input type="file" name="image" accept="image/*" class="sr-only" onchange="this.form.submit()">🖼️ Image</label>
                                 </form>
                                 @if($img['exists'])
-                                <form method="POST" action="{{ route('county.admin.image.delete', [$county->slug, $sector]) }}" onsubmit="return confirm('Delete?')">@csrf<button class="h-7 px-2 rounded-lg border border-red-500/20 text-red-400 text-[10px] font-medium hover:bg-red-500/10">×</button></form>
+                                <form method="POST" action="{{ route('county.admin.image.delete', [$county->slug, $sector]) }}" onsubmit="return confirm('Delete image?')">@csrf<button class="h-7 px-2 rounded-lg border border-red-500/20 text-red-400 text-[10px] font-medium hover:bg-red-500/10">×</button></form>
+                                @endif
+                                @if(!empty($img['video']))
+                                <form method="POST" action="{{ route('county.admin.sector.video.delete', [$county->slug, $sector]) }}" onsubmit="return confirm('Delete video?')">@csrf<button class="h-7 px-2 rounded-lg border border-red-500/20 text-red-400 text-[10px] font-medium hover:bg-red-500/10">✕</button></form>
+                                @endif
+                                </div>
                                 @endif
                             </div>
                         </div>
                     </div>
+                    @endif
                     @endforeach
                 </div>
             </div>
