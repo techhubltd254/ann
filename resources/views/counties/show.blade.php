@@ -3,6 +3,22 @@
 @section('title', $county->name . ' County — KICC Kenya')
 @section('description', $county->tagline ?? 'Explore ' . $county->name . ' County')
 
+<style>
+@keyframes heroFade {
+    0%, 20% { opacity: 1; }
+    25%, 95% { opacity: 0; }
+    100% { opacity: 1; }
+}
+.hero-video-layer {
+    position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover;
+    animation: heroFade 20s infinite;
+}
+.hero-video-layer:nth-child(1) { animation-delay: 0s; }
+.hero-video-layer:nth-child(2) { animation-delay: 5s; }
+.hero-video-layer:nth-child(3) { animation-delay: 10s; }
+.hero-video-layer:nth-child(4) { animation-delay: 15s; }
+</style>
+
 @section('content')
 @php
 $iconMap = [
@@ -85,10 +101,18 @@ $kiccBlue = '#0B1E57';
                 @foreach($sectorData as $name => $s)
                 @php
                     $sectorVideo = $sectorVideos[$s['sector_slug']] ?? null;
+                    $entityVids = $sectorEntityVideos[$s['sector_slug']] ?? [];
                 @endphp
                 <a href="{{ route('counties.sector', [$county->slug, $s['route']]) }}"
                    class="group relative bg-white border border-gray-200 hover:border-kicc-gold/40 rounded-2xl p-5 text-center transition-all block card-hover overflow-hidden" data-tilt="6" data-reveal data-reveal-delay="{{ $loop->index * 80 }}">
-                    @if($sectorVideo)
+                    @if(count($entityVids) > 0)
+                    @foreach($entityVids as $vi)
+                    <video autoplay muted loop playsinline preload="auto" class="absolute inset-0 w-full h-full object-cover hero-video-layer"
+                           onerror="this.style.display='none'">
+                        <source src="{{ $vi }}" type="video/mp4">
+                    </video>
+                    @endforeach
+                    @elseif($sectorVideo)
                     @php $sectorWebm = $sectorWebmVideos[$s['sector_slug']] ?? null; @endphp
                     <video autoplay muted loop playsinline preload="auto" class="absolute inset-0 w-full h-full object-cover opacity-10"
                            onloadeddata="this.style.opacity='0.15'">

@@ -8,6 +8,7 @@ use App\Models\MediaAsset;
 use App\Models\CountyInstitution;
 use App\Models\Marketplace\Product;
 use App\Models\SectorEntity;
+use App\Services\InstitutionSyncService;
 
 class CountyController extends Controller
 {
@@ -53,16 +54,49 @@ class CountyController extends Controller
         // Resolve sector video clips for tile background playback
         $sectorVideos = [];
         $sectorWebmVideos = [];
+        $sectorEntityVideos = [];
         foreach ($sectorData as $name => $s) {
             $asset = MediaAsset::resolveSlot(County::class, $county->id, 'sector_video_' . $s['sector_slug']);
             $sectorVideos[$s['sector_slug']] = $asset?->mp4Url();
             $sectorWebmVideos[$s['sector_slug']] = $asset?->webmUrl();
+
+            // Collect entity videos for this sector (4D videos + institution hero videos)
+            $sectorModel = $county->sectors()->where('slug', 'like', $s['sector_slug'] . '%')->first();
+            if ($sectorModel) {
+                $entities = SectorEntity::where('county_id', $county->id)
+                    ->where('sector_id', $sectorModel->id)
+                    ->where('is_published', true)
+                    ->get();
+                $entityIds = $entities->pluck('id');
+                $vids = [];
+                // 4D videos
+                $assets = MediaAsset::where('owner_type', SectorEntity::class)
+                    ->whereIn('owner_id', $entityIds)
+                    ->where('slot', '4d_video')
+                    ->get();
+                foreach ($assets as $a) {
+                    if ($url = $a->mp4Url() ?? $a->url()) $vids[] = $url;
+                }
+                // Institution hero videos
+                $instIds = $entities->whereIn('entity_type', [CountyInstitution::class, InstitutionSyncService::ENTITY_TYPE])->pluck('entity_id')->unique();
+                if ($instIds->isNotEmpty()) {
+                    $heroAssets = MediaAsset::where('owner_type', CountyInstitution::class)
+                        ->whereIn('owner_id', $instIds)
+                        ->where('slot', 'hero_video')
+                        ->get();
+                    foreach ($heroAssets as $a) {
+                        if ($url = $a->mp4Url() ?? $a->url()) $vids[] = $url;
+                    }
+                }
+                $sectorEntityVideos[$s['sector_slug']] = $vids;
+            }
         }
 
         return view('counties.show', compact(
             'county', 'sectors', 'sectorData',
             'featuredAttractions', 'featuredHotels', 'countyProducts',
-            'exhibitions', 'linkedSectors', 'countyMedia', 'sectorVideos', 'sectorWebmVideos'
+            'exhibitions', 'linkedSectors', 'countyMedia', 'sectorVideos', 'sectorWebmVideos',
+            'sectorEntityVideos'
         ));
     }
 
@@ -186,11 +220,23 @@ class CountyController extends Controller
 
         $sectorInfo = $info[$sector] ?? ['title' => $sectorModel->name, 'icon' => '📋', 'desc' => "{$sectorModel->name} in {$county->name} County."];
 
+        // Collect all entity videos into a flat playlist for the hero cycling
+        $sectorHeroVideos = [];
+        $seen = [];
+        foreach ($items as $e) {
+            $vid = $entityVideos[$e->id] ?? $institutionHeroVideos[$e->id] ?? null;
+            if ($vid && !in_array($vid, $seen)) {
+                $sectorHeroVideos[] = $vid;
+                $seen[] = $vid;
+            }
+        }
+
         $services = collect();
 
         return view('counties.sector', compact(
             'county', 'items', 'sector', 'sectorInfo', 'sectorModel',
-            'fourDVideo', 'entityVideos', 'entityPosters', 'institutionHeroVideos', 'productCounts', 'services'
+            'fourDVideo', 'entityVideos', 'entityPosters', 'institutionHeroVideos', 'productCounts',
+            'sectorHeroVideos', 'services'
         ));
     }
 
