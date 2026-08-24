@@ -5,6 +5,7 @@ document.addEventListener('alpine:init', () => {
         form: { name: '', price: '', unit: '', category: '', desc: '', stock: '' },
         previewVideo: null,
         previewImage: null,
+        videoFiles: [],
         open(data) {
             this.detail = data;
             this.form = {
@@ -17,16 +18,36 @@ document.addEventListener('alpine:init', () => {
             };
             this.previewVideo = data?.video_url || null;
             this.previewImage = data?.image_url || null;
+            this.videoFiles = [];
         },
         close() {
             this.detail = null;
             this.previewVideo = null;
             this.previewImage = null;
+            this.videoFiles = [];
             this.form = { name: '', price: '', unit: '', category: '', desc: '', stock: '' };
         },
         videoSelect(event) {
-            const file = event.target.files[0];
-            if (file) this.previewVideo = URL.createObjectURL(file);
+            const files = Array.from(event.target.files);
+            files.forEach(file => {
+                if (file) this.videoFiles.push({
+                    file: file,
+                    url: URL.createObjectURL(file),
+                    name: file.name
+                });
+            });
+            if (this.videoFiles.length > 0 && !this.previewVideo) {
+                this.previewVideo = this.videoFiles[0].url;
+            }
+            event.target.value = '';
+        },
+        removeVideo(index) {
+            this.videoFiles.splice(index, 1);
+            if (this.videoFiles.length > 0) {
+                this.previewVideo = this.videoFiles[0].url;
+            } else {
+                this.previewVideo = this.detail?.video_url || null;
+            }
         },
         imageSelect(event) {
             const file = event.target.files[0];
@@ -62,7 +83,7 @@ document.addEventListener('alpine:init', () => {
                 <tr class="text-zinc-500 border-b border-white/5">
                     <th class="text-left py-3.5 px-5 font-semibold">Product</th>
                     <th class="text-left py-3.5 font-semibold">Price</th>
-                    <th class="text-center py-3.5 font-semibold">Video</th>
+                    <th class="text-center py-3.5 font-semibold">Videos</th>
                     <th class="text-left py-3.5 font-semibold">Status</th>
                     <th class="text-center py-3.5 font-semibold">Stock</th>
                     <th class="text-right py-3.5 pr-5 font-semibold">Actions</th>
@@ -75,6 +96,10 @@ document.addEventListener('alpine:init', () => {
                 $stockTotal = $p->variants->sum('stock');
                 $status = $stockTotal > 0 ? 'Active' : 'Draft';
                 $stockLevel = $stockTotal > 100 ? 'high' : ($stockTotal > 10 ? 'medium' : 'low');
+                $allVideos = array_values(array_unique(array_filter(array_merge(
+                    $p->video_url ? [$p->video_url] : [],
+                    $p->videos ?? []
+                ))));
                 $productData = json_encode([
                     'name' => $p->name,
                     'price' => $p->variants->min('price') ?? 0,
@@ -82,7 +107,8 @@ document.addEventListener('alpine:init', () => {
                     'category' => $instProduct['category'] ?? '',
                     'desc' => $p->description,
                     'stock' => $stockTotal,
-                    'video_url' => $p->video_url,
+                    'video_url' => $allVideos[0] ?? '',
+                    'videos' => $allVideos,
                     'image_url' => $p->images->first()?->url ?? '',
                     'sku' => $p->sku,
                     'id' => $p->id,
@@ -107,8 +133,8 @@ document.addEventListener('alpine:init', () => {
                     </td>
                     <td class="py-3.5 font-semibold text-zinc-200">KES {{ number_format($p->variants->min('price') ?? 0) }}</td>
                     <td class="py-3.5 text-center">
-                        @if($p->video_url)
-                        <span class="text-[10px] px-2 py-0.5 rounded-full bg-indigo-500/10 text-indigo-400 border border-indigo-500/20">🎬 Reel</span>
+                        @if(count($allVideos) > 0)
+                        <span class="text-[10px] px-2 py-0.5 rounded-full bg-indigo-500/10 text-indigo-400 border border-indigo-500/20">{{ count($allVideos) }} 🎬</span>
                         @else
                         <span class="text-[10px] text-zinc-600">—</span>
                         @endif
@@ -173,9 +199,25 @@ document.addEventListener('alpine:init', () => {
               enctype="multipart/form-data">
             @csrf
 
-            <div x-show="$store.pd.previewVideo" class="aspect-video bg-black rounded-xl overflow-hidden mb-5" style="pointer-events:none">
-                <video :src="$store.pd.previewVideo" autoplay muted loop playsinline class="w-full h-full object-cover" style="pointer-events:none"></video>
+            {{-- Video gallery preview --}}
+            <div x-show="$store.pd.previewVideo || $store.pd.videoFiles.length > 0" class="space-y-2 mb-5">
+                <div class="aspect-video bg-black rounded-xl overflow-hidden" style="pointer-events:none">
+                    <video :src="$store.pd.previewVideo || ($store.pd.videoFiles[0]?.url || '')" autoplay muted loop playsinline class="w-full h-full object-cover" style="pointer-events:none"></video>
+                </div>
+                <div class="flex gap-2 overflow-x-auto pb-1 scrollbar-hide" x-show="$store.pd.videoFiles.length > 1 || ($store.pd.detail?.videos?.length > 1 && $store.pd.videoFiles.length === 0)">
+                    <template x-for="(v, idx) in ($store.pd.videoFiles.length > 0 ? $store.pd.videoFiles : ($store.pd.detail?.videos?.map(url => ({url, name: url.split('/').pop()})) || []))" :key="idx">
+                        <button type="button" @click="$store.pd.previewVideo = v.url || v" class="shrink-0 w-20 h-12 rounded-lg overflow-hidden border-2 border-white/10 hover:border-indigo-500 transition-all bg-black relative group">
+                            <video muted playsinline class="w-full h-full object-cover" preload="metadata">
+                                <source :src="v.url || v" type="video/mp4">
+                            </video>
+                            <div class="absolute inset-0 bg-black/40 flex items-center justify-center opacity-0 group-hover:opacity-100 transition" x-show="$store.pd.videoFiles.length > 0">
+                                <span @click.stop="$store.pd.removeVideo(idx)" class="text-red-400 text-xs font-bold cursor-pointer">✕</span>
+                            </div>
+                        </button>
+                    </template>
+                </div>
             </div>
+
             <div x-show="!$store.pd.previewVideo && $store.pd.previewImage" class="h-48 bg-[#0B0D11] rounded-xl overflow-hidden mb-5" style="pointer-events:none">
                 <img :src="$store.pd.previewImage" class="w-full h-full object-cover" style="pointer-events:none">
             </div>
@@ -206,9 +248,9 @@ document.addEventListener('alpine:init', () => {
                     <input name="image" type="file" accept="image/*" @change="$store.pd.imageSelect">
                 </div>
                 <div>
-                    <label class="text-[10px] font-semibold text-zinc-500 uppercase tracking-widest block mb-1">Product Video / Reel</label>
-                    <input name="video" type="file" accept="video/mp4,video/webm" @change="$store.pd.videoSelect">
-                    <p class="text-[9px] text-zinc-600 mt-1" x-show="$store.pd.detail?.video_url" x-text="'Current: ' + ($store.pd.detail?.video_url?.split('/').pop() || 'none')"></p>
+                    <label class="text-[10px] font-semibold text-zinc-500 uppercase tracking-widest block mb-1">Product Videos / Reels</label>
+                    <input name="videos[]" type="file" accept="video/mp4,video/webm" multiple @change="$store.pd.videoSelect">
+                    <p class="text-[9px] text-zinc-600 mt-1" x-show="$store.pd.detail?.video_url" x-text="(($store.pd.detail?.videos?.length || 0) + ($store.pd.video_url ? 1 : 0)) + ' video(s) on this product'"></p>
                 </div>
                 <div class="md:col-span-2">
                     <label class="text-[10px] font-semibold text-zinc-500 uppercase tracking-widest block mb-1">Description</label>

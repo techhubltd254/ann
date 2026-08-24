@@ -221,6 +221,7 @@ class InstitutionSyncService
             'category' => $product['category'] ?? 'Food',
             'image_url' => $product['image_url'] ?? null,
             'video_url' => $product['video_url'] ?? null,
+            'videos' => $product['videos'] ?? null,
             'price' => $product['price'] ?? 0,
             'unit' => $product['unit'] ?? 'unit',
             'booking_type' => 'order',
@@ -261,6 +262,7 @@ class InstitutionSyncService
             'status' => 'active',
             'is_featured' => true,
             'video_url' => $product['video_url'] ?? null,
+            'videos' => $product['videos'] ?? null,
         ];
 
         if ($mp) {

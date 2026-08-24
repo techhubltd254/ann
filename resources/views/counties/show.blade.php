@@ -215,14 +215,15 @@ $kiccBlue = '#0B1E57';
                 @foreach($countyProducts as $p)
                 <div class="bg-white border border-gray-200 rounded-2xl overflow-hidden card-hover hover:border-kicc-gold/40 transition-all flex flex-col">
                     <div class="h-36 bg-gray-100 flex items-center justify-center overflow-hidden relative">
-                        @if($p->video_url)
+                        @php $firstVideo = $p->videos[0] ?? $p->video_url; @endphp
+                        @if($firstVideo)
                         <video autoplay muted loop playsinline class="absolute inset-0 w-full h-full object-cover" onerror="this.style.display='none'">
-                            <source src="{{ $p->video_url }}" type="video/mp4">
+                            <source src="{{ $firstVideo }}" type="video/mp4">
                         </video>
                         @elseif($p->image_url)
                         <img src="{{ $p->image_url }}" alt="{{ $p->name }}" class="w-full h-full object-cover" onerror="this.style.display='none'">
                         @endif
-                        <div class="absolute inset-0 flex items-center justify-center {{ $p->image_url || $p->video_url ? 'opacity-0' : '' }}">
+                        <div class="absolute inset-0 flex items-center justify-center {{ $p->image_url || $firstVideo ? 'opacity-0' : '' }}">
                             <span class="text-4xl text-gray-300">🛍️</span>
                         </div>
                     </div>

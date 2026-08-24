@@ -47,9 +47,16 @@
         <div class="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 gap-4">
             @foreach($products as $product)
             <a href="{{ route('marketplace.show', $product->slug) }}" class="group bg-[#F9FAFB] rounded-2xl overflow-hidden border border-gray-200 hover:border-[#FFCD05]/30 transition-all">
-                <div class="aspect-square overflow-hidden bg-white">
+                <div class="aspect-square overflow-hidden bg-white relative">
+                    @if($product->video_url)
+                    <video autoplay muted loop playsinline class="absolute inset-0 w-full h-full object-cover group-hover:scale-105 transition-transform duration-500"
+                           onerror="this.style.display='none'"
+                           preload="auto">
+                        <source src="{{ $product->video_url }}" type="video/mp4">
+                    </video>
+                    @endif
                     <img src="{{ $product->image_url }}" alt="{{ $product->name }}" loading="lazy"
-                         class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500"
+                         class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500 {{ $product->video_url ? 'opacity-0' : '' }}"
                          onerror="this.src='{{ asset('storage/kicc/kicc-logo.png') }}'">
                 </div>
                 <div class="p-4">

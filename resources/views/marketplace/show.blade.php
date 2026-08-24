@@ -12,23 +12,50 @@
 
     <div class="grid lg:grid-cols-3 gap-8">
         <div class="lg:col-span-2">
-            @if($product->video_url)
-            <div class="rounded-2xl overflow-hidden bg-black aspect-video mb-4">
-                <x-video-player
-                    :src="$product->video_url"
-                    :poster="$product->image_url"
-                    id="product-video-{{ $product->id }}"
-                    class="w-full h-full"
-                    :autoplay="true"
-                    :loop="true"
-                    :muted="true"
-                />
-            </div>
-            @endif
-            <div class="rounded-2xl overflow-hidden h-80 bg-[#F9FAFB] {{ $product->video_url ? 'hidden' : '' }}" id="product-image-container">
-                <img src="{{ $product->image_url }}" alt="{{ $product->name }}" loading="lazy" decoding="async" class="w-full h-full object-cover"
-                     onerror="this.src='{{ asset('storage/kicc/kicc-logo.png') }}'">
-            </div>
+    @php $allVideos = collect(array_merge(
+        $product->video_url ? [$product->video_url] : [],
+        $product->videos ?? []
+    ))->unique()->values(); @endphp
+
+    @if($allVideos->isNotEmpty())
+    <div class="mb-4 space-y-2">
+        <div class="rounded-2xl overflow-hidden bg-black aspect-video relative" id="main-video-wrapper">
+            <x-video-player
+                :src="$allVideos->first()"
+                :poster="$product->image_url"
+                id="product-video-{{ $product->id }}"
+                class="w-full h-full"
+                :autoplay="true"
+                :loop="true"
+                :muted="true"
+            />
+        </div>
+        @if($allVideos->count() > 1)
+        <div class="flex gap-2 overflow-x-auto pb-1 scrollbar-hide">
+            @foreach($allVideos as $v)
+            <button onclick="
+                var wrapper = document.getElementById('main-video-wrapper');
+                var player = wrapper.querySelector('video');
+                if (player) {
+                    player.src = '{{ $v }}';
+                    player.load();
+                    player.play();
+                }
+            " class="shrink-0 w-24 h-14 rounded-xl overflow-hidden border-2 border-gray-200 hover:border-indigo-500 transition-all bg-black">
+                <video muted playsinline class="w-full h-full object-cover" preload="metadata">
+                    <source src="{{ $v }}" type="video/mp4">
+                </video>
+            </button>
+            @endforeach
+        </div>
+        @endif
+    </div>
+    @endif
+
+    <div class="rounded-2xl overflow-hidden h-80 bg-[#F9FAFB] {{ $allVideos->isNotEmpty() ? 'hidden' : '' }}" id="product-image-container">
+        <img src="{{ $product->image_url }}" alt="{{ $product->name }}" loading="lazy" decoding="async" class="w-full h-full object-cover"
+             onerror="this.src='{{ asset('storage/kicc/kicc-logo.png') }}'">
+    </div>
             @if($product->images->count() > 1)
             <div class="flex gap-2 mt-3">
                 @foreach($product->images->take(4) as $img)

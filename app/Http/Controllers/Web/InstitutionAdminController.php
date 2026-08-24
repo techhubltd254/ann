@@ -268,7 +268,8 @@ class InstitutionAdminController extends Controller
             'category' => 'nullable|string|max:100',
             'description' => 'nullable|string|max:5000',
             'image' => 'nullable|image|mimes:jpeg,png,jpg,webp|max:10240',
-            'video' => 'nullable|file|mimes:mp4,webm,mov|max:512000',
+            'videos' => 'nullable|array',
+            'videos.*' => 'nullable|file|mimes:mp4,webm,mov|max:512000',
             'stock' => 'nullable|integer|min:0',
         ]);
 
@@ -278,14 +279,18 @@ class InstitutionAdminController extends Controller
             $imageUrl = media_url() . '/' . $path;
         }
 
-        $videoUrl = null;
-        if ($request->hasFile('video')) {
-            $videoPath = $request->file('video')->storeAs(
-                "institutions/{$institution->slug}/product-videos",
-                \Illuminate\Support\Str::slug($data['name']) . '-' . \Illuminate\Support\Str::lower(\Illuminate\Support\Str::random(5)) . '.' . $request->file('video')->getClientOriginalExtension(),
-                'r2'
-            );
-            $videoUrl = media_url() . '/' . $videoPath;
+        $videoUrls = [];
+        if ($request->hasFile('videos')) {
+            foreach ($request->file('videos') as $file) {
+                if ($file && $file->isValid()) {
+                    $videoPath = $file->storeAs(
+                        "institutions/{$institution->slug}/product-videos",
+                        \Illuminate\Support\Str::slug($data['name']) . '-' . \Illuminate\Support\Str::lower(\Illuminate\Support\Str::random(5)) . '.' . $file->getClientOriginalExtension(),
+                        'r2'
+                    );
+                    $videoUrls[] = media_url() . '/' . $videoPath;
+                }
+            }
         }
 
         $products = $institution->products ?? [];
@@ -296,7 +301,8 @@ class InstitutionAdminController extends Controller
             'category' => $data['category'] ?? 'Food',
             'description' => $data['description'] ?? '',
             'image_url' => $imageUrl,
-            'video_url' => $videoUrl,
+            'video_url' => $videoUrls[0] ?? null,
+            'videos' => $videoUrls,
             'stock' => $data['stock'] ?? 100,
         ];
         $institution->update(['products' => $products]);
@@ -317,7 +323,8 @@ class InstitutionAdminController extends Controller
             'category' => 'nullable|string|max:100',
             'description' => 'nullable|string|max:5000',
             'image' => 'nullable|image|mimes:jpeg,png,jpg,webp|max:10240',
-            'video' => 'nullable|file|mimes:mp4,webm,mov|max:512000',
+            'videos' => 'nullable|array',
+            'videos.*' => 'nullable|file|mimes:mp4,webm,mov|max:512000',
             'stock' => 'nullable|integer|min:0',
         ]);
 
@@ -332,14 +339,25 @@ class InstitutionAdminController extends Controller
             $imageUrl = media_url() . '/' . $path;
         }
 
-        $videoUrl = $mp->video_url;
-        if ($request->hasFile('video')) {
-            $videoPath = $request->file('video')->storeAs(
-                "institutions/{$institution->slug}/product-videos",
-                \Illuminate\Support\Str::slug($data['name']) . '-' . \Illuminate\Support\Str::lower(\Illuminate\Support\Str::random(5)) . '.' . $request->file('video')->getClientOriginalExtension(),
-                'r2'
-            );
-            $videoUrl = media_url() . '/' . $videoPath;
+        // Handle multiple video uploads
+        $videoUrls = $mp->videos ?? [];
+        $featuredUrl = $mp->video_url;
+
+        if ($request->hasFile('videos')) {
+            $newUrls = [];
+            foreach ($request->file('videos') as $file) {
+                if ($file && $file->isValid()) {
+                    $videoPath = $file->storeAs(
+                        "institutions/{$institution->slug}/product-videos",
+                        \Illuminate\Support\Str::slug($data['name']) . '-' . \Illuminate\Support\Str::lower(\Illuminate\Support\Str::random(5)) . '.' . $file->getClientOriginalExtension(),
+                        'r2'
+                    );
+                    $newUrls[] = media_url() . '/' . $videoPath;
+                }
+            }
+            // Prepend new videos to existing ones (newest first)
+            $videoUrls = array_merge($newUrls, $videoUrls);
+            $featuredUrl = $videoUrls[0] ?? $featuredUrl;
         }
 
         // Update the marketplace product directly
@@ -347,7 +365,8 @@ class InstitutionAdminController extends Controller
             'name' => $data['name'],
             'description' => $data['description'] ?? '',
             'unit' => $data['unit'] ?? 'unit',
-            'video_url' => $videoUrl,
+            'video_url' => $featuredUrl,
+            'videos' => $videoUrls,
         ]);
 
         // Update the variant price/stock
@@ -371,7 +390,8 @@ class InstitutionAdminController extends Controller
                     'category' => $data['category'] ?? 'Food',
                     'description' => $data['description'] ?? '',
                     'image_url' => $imageUrl,
-                    'video_url' => $videoUrl,
+                    'video_url' => $featuredUrl,
+                    'videos' => $videoUrls,
                     'stock' => $data['stock'] ?? 100,
                 ];
                 break;
