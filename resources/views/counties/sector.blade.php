@@ -100,17 +100,17 @@
                     @if(!empty($e->entry_fee))
                     <span class="absolute top-3 right-3 text-[10px] font-bold px-2.5 py-1 rounded-full bg-[#FFCD05] text-black">KES {{ number_format($e->entry_fee) }}</span>
                     @endif
-                    <div class="absolute bottom-3 left-3 right-3">
-                        <h3 class="text-white font-bold text-sm leading-snug drop-shadow-lg">{{ $e->name }}</h3>
+                    <div class="absolute bottom-3 left-3 right-3 opacity-0">
                     </div>
                 </div>
                 <div class="p-4">
+                    <h3 class="font-bold text-gray-900 text-sm leading-snug">{{ $e->name }}</h3>
                     @if($e->description)
-                    <p class="text-gray-500 text-xs leading-relaxed line-clamp-2">{{ $e->description }}</p>
+                    <p class="text-gray-500 text-xs leading-relaxed line-clamp-2 mt-1">{{ $e->description }}</p>
                     @endif
-                    <div class="flex items-center gap-3 mt-3 text-[11px] text-gray-400">
-                        @if($e->location)<span class="truncate">📍 {{ $e->location }}</span>@endif
-                        @if(!empty($e->contact))<span>📞 {{ $e->contact }}</span>@endif
+                    <div class="flex items-center gap-3 mt-2 text-[11px] text-gray-400">
+                        @if($e->location)<span class="truncate">{{ $e->location }}</span>@endif
+                        @if(!empty($e->contact))<span>{{ $e->contact }}</span>@endif
                     </div>
                     <div class="mt-3 flex items-center justify-between">
                         <span class="text-[10px] font-bold text-indigo-500 group-hover:text-indigo-600 transition-colors">
