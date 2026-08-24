@@ -21,20 +21,45 @@
                 <button class="btn-primary">Save Profile</button>
             </form>
         </div>
-        <div class="glass-card rounded-2xl p-5">
-            <h3 class="text-xs font-semibold text-zinc-300 mb-4">Logo & Cover</h3>
-            @if($institution->logo_url)
-            <img src="{{ $institution->logo_url }}" class="w-24 h-24 rounded-xl object-cover mb-3 bg-white/5">
-            @endif
-            @if($institution->cover_image_url)
-            <img src="{{ $institution->cover_image_url }}" class="w-full h-32 object-cover rounded-xl mb-3 bg-white/5">
-            @endif
-            <form method="POST" action="{{ route('institution.admin.logo', $institution->slug) }}" enctype="multipart/form-data" class="space-y-3">
-                @csrf
-                <input type="file" name="logo" accept="image/*">
-                <input type="file" name="cover" accept="image/*">
-                <button class="btn-primary w-full">Upload Images</button>
-            </form>
+        <div class="space-y-4">
+            <div class="glass-card rounded-2xl p-5">
+                <h3 class="text-xs font-semibold text-zinc-300 mb-4">Logo & Cover</h3>
+                @if($institution->logo_url)
+                <img src="{{ $institution->logo_url }}" class="w-24 h-24 rounded-xl object-cover mb-3 bg-white/5">
+                @endif
+                @if($institution->cover_image_url)
+                <img src="{{ $institution->cover_image_url }}" class="w-full h-32 object-cover rounded-xl mb-3 bg-white/5">
+                @endif
+                <form method="POST" action="{{ route('institution.admin.logo', $institution->slug) }}" enctype="multipart/form-data" class="space-y-3">
+                    @csrf
+                    <input type="file" name="logo" accept="image/*">
+                    <input type="file" name="cover" accept="image/*">
+                    <button class="btn-primary w-full">Upload Images</button>
+                </form>
+            </div>
+            <div class="glass-card rounded-2xl p-5">
+                <h3 class="text-xs font-semibold text-zinc-300 mb-1">Hero Video</h3>
+                <p class="text-[10px] text-zinc-500 mb-3">Plays everywhere this institution appears — county page, marketplace, sector cards.</p>
+                @php
+                $heroAsset = \App\Models\MediaAsset::resolveSlot(\App\Models\CountyInstitution::class, $institution->id, 'hero_video');
+                @endphp
+                @if($heroAsset)
+                <div class="aspect-video bg-black rounded-xl overflow-hidden mb-3">
+                    <video autoplay muted loop playsinline class="w-full h-full object-cover">
+                        <source src="{{ $heroAsset->mp4Url() ?? $heroAsset->url() }}" type="video/mp4">
+                    </video>
+                </div>
+                @else
+                <div class="aspect-video bg-[#0B0D11] rounded-xl mb-3 flex items-center justify-center">
+                    <svg class="w-8 h-8 text-zinc-600" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 10l4.553-2.276A1 1 0 0121 8.618v6.764a1 1 0 01-1.447.894L15 14M5 18h8a2 2 0 002-2V8a2 2 0 00-2-2H5a2 2 0 00-2 2v8a2 2 0 002 2z"/></svg>
+                </div>
+                @endif
+                <form method="POST" action="{{ route('institution.admin.hero-video', $institution->slug) }}" enctype="multipart/form-data" class="space-y-3">
+                    @csrf
+                    <input name="video" type="file" accept="video/mp4,video/webm">
+                    <button class="btn-primary w-full">Upload Hero Video</button>
+                </form>
+            </div>
         </div>
     </div>
 </div>

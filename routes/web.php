@@ -185,6 +185,7 @@ Route::get('/national-admin/agencies/{agency}/delete', [\App\Http\Controllers\We
     Route::get('/institution-admin/{institution}', [\App\Http\Controllers\Web\InstitutionAdminController::class, 'dashboard'])->name('institution.admin');
     Route::post('/institution-admin/{institution}/profile', [\App\Http\Controllers\Web\InstitutionAdminController::class, 'updateProfile'])->name('institution.admin.profile');
     Route::post('/institution-admin/{institution}/logo', [\App\Http\Controllers\Web\InstitutionAdminController::class, 'uploadLogo'])->name('institution.admin.logo');
+    Route::post('/institution-admin/{institution}/hero-video', [\App\Http\Controllers\Web\InstitutionAdminController::class, 'uploadHeroVideo'])->name('institution.admin.hero-video');
     Route::post('/institution-admin/{institution}/production', [\App\Http\Controllers\Web\InstitutionAdminController::class, 'updateProduction'])->name('institution.admin.production');
     Route::post('/institution-admin/{institution}/sectors', [\App\Http\Controllers\Web\InstitutionAdminController::class, 'updateSectors'])->name('institution.admin.sectors');
     Route::post('/institution-admin/{institution}/products', [\App\Http\Controllers\Web\InstitutionAdminController::class, 'storeProduct'])->name('institution.admin.products.store');

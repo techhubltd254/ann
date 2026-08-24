@@ -96,6 +96,23 @@ class CountyController extends Controller
             }
         }
 
+        // Institution hero videos: load for SectorEntity items that are institutions
+        $institutionIds = $items->where('entity_type', \App\Models\CountyInstitution::class)->pluck('entity_id')->unique();
+        $institutionHeroVideos = [];
+        if ($institutionIds->isNotEmpty()) {
+            $heroAssets = MediaAsset::where('owner_type', \App\Models\CountyInstitution::class)
+                ->whereIn('owner_id', $institutionIds)
+                ->where('slot', 'hero_video')
+                ->get()
+                ->keyBy('owner_id');
+            foreach ($items as $e) {
+                if ($e->entity_type === \App\Models\CountyInstitution::class && isset($heroAssets[$e->entity_id])) {
+                    $a = $heroAssets[$e->entity_id];
+                    $institutionHeroVideos[$e->id] = $a->mp4Url() ?? $a->url();
+                }
+            }
+        }
+
         $info = [
             'tourism' => ['title' => 'Tourism & Attractions', 'icon' => '🏖️', 'desc' => 'Discover attractions and cultural sites.'],
             'hotels' => ['title' => 'Hospitality & Hotels', 'icon' => '🏨', 'desc' => 'Hotels and accommodation.'],
@@ -114,7 +131,7 @@ class CountyController extends Controller
 
         return view('counties.sector', compact(
             'county', 'items', 'sector', 'sectorInfo', 'sectorModel',
-            'fourDVideo', 'entityVideos', 'entityPosters', 'services'
+            'fourDVideo', 'entityVideos', 'entityPosters', 'institutionHeroVideos', 'services'
         ));
     }
 }

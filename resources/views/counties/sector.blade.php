@@ -65,11 +65,17 @@
         <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-5">
             @foreach($gridItems as $e)
             <div class="group bg-white rounded-2xl overflow-hidden border border-gray-200 hover:border-[#FFCD05]/40 hover:shadow-md transition-all">
-                <div class="h-40 overflow-hidden bg-gradient-to-br from-[#F9FAFB] to-gray-100 relative">
-                    <div class="absolute inset-0 flex items-center justify-center bg-gradient-to-br from-[#0A1024] to-[#901C1E]/50">
+                <div class="h-40 overflow-hidden relative">
+                    @php $instHero = $institutionHeroVideos[$e->id] ?? null; @endphp
+                    @if($instHero)
+                    <video autoplay muted loop playsinline class="absolute inset-0 w-full h-full object-cover" onerror="this.style.display='none'">
+                        <source src="{{ $instHero }}" type="video/mp4">
+                    </video>
+                    @endif
+                    <div class="absolute inset-0 flex items-center justify-center {{ $instHero ? 'opacity-0' : 'bg-gradient-to-br from-[#0A1024] to-[#901C1E]/50' }}">
                         <svg class="w-10 h-10 text-white/20" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z"/></svg>
                     </div>
-                    @if($e->category)
+                    @if(!$instHero && $e->category)
                     <span class="absolute top-2.5 left-3 text-[10px] font-bold px-2 py-0.5 rounded-full bg-black/40 text-white/90 backdrop-blur-sm capitalize">{{ $e->category }}</span>
                     @endif
                 </div>

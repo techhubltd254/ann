@@ -212,6 +212,41 @@ class InstitutionAdminController extends Controller
         return back()->with('success', 'Images uploaded.');
     }
 
+    public function uploadHeroVideo(Request $request, string $slug)
+    {
+        $institution = $this->authorizeInstitution($slug);
+        $data = $request->validate([
+            'video' => 'required|file|mimes:mp4,webm,mov|max:512000',
+        ]);
+
+        $file = $request->file('video');
+        $filename = \Illuminate\Support\Str::slug($institution->name) . '-hero.' . $file->getClientOriginalExtension();
+        $path = $file->storeAs("institutions/{$institution->slug}/hero", $filename, 'r2');
+
+        \App\Models\MediaAsset::forSlot(\App\Models\CountyInstitution::class, $institution->id, 'hero_video')->delete();
+
+        $asset = \App\Models\MediaAsset::create([
+            'uuid' => (string) \Illuminate\Support\Str::uuid(),
+            'owner_id' => $institution->id,
+            'owner_type' => \App\Models\CountyInstitution::class,
+            'slot' => 'hero_video',
+            'disk' => 'r2',
+            'path' => $path,
+            'original_name' => $file->getClientOriginalName(),
+            'mime' => $file->getMimeType(),
+            'kind' => 'video',
+            'size_bytes' => $file->getSize(),
+            'status' => 'ready',
+        ]);
+
+        $asset->derivatives()->create([
+            'kind' => 'video_mp4',
+            'path' => $path,
+        ]);
+
+        return back()->with('success', 'Hero video uploaded. It now plays everywhere this institution appears.');
+    }
+
     /* ─── PRODUCTION CHAIN ─── */
     public function updateProduction(Request $request, string $slug)
     {
