@@ -46,6 +46,7 @@
         .status-draft { @apply status-pill bg-zinc-500/10 text-zinc-400 border-zinc-500/20; }
         @keyframes slideIn { from { opacity: 0; transform: translateX(20px); } to { opacity: 1; transform: translateX(0); } }
         .drawer-open { animation: slideIn 0.2s ease-out; }
+        [x-cloak] { display: none !important; }
     </style>
 </head>
 <body class="antialiased">
