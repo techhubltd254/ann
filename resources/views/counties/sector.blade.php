@@ -57,13 +57,12 @@
     </video>
     @endforeach
     <div class="absolute inset-0 bg-gradient-to-t from-black/70 via-black/20 to-transparent" style="z-index:5"></div>
-    <div class="absolute bottom-0 left-0 right-0 max-w-7xl mx-auto px-5 pb-10" style="z-index:6">
+        <div class="absolute bottom-0 left-0 right-0 max-w-7xl mx-auto px-5 pb-10" style="z-index:6">
         <a href="{{ route('counties.show', $county->slug) }}" class="inline-flex items-center gap-1.5 text-white/60 hover:text-white text-sm mb-3 transition-colors">
             <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 19l-7-7 7-7"/></svg>
             {{ $county->name }} County
         </a>
         <div class="flex items-center gap-4">
-            <div class="w-14 h-14 rounded-2xl bg-white/10 backdrop-blur-md border border-white/20 flex items-center justify-center text-3xl shrink-0">{{ $sectorInfo['icon'] ?? '📋' }}</div>
             <div>
                 <h1 class="text-3xl md:text-5xl font-black text-white" data-split>{{ $sectorInfo['title'] }}</h1>
                 <p class="text-white/70 text-sm mt-2">{{ $sectorInfo['desc'] }}</p>
@@ -83,7 +82,6 @@
             {{ $county->name }} County
         </a>
         <div class="flex items-center gap-4">
-            <div class="w-14 h-14 rounded-2xl bg-white/10 backdrop-blur-md border border-white/20 flex items-center justify-center text-3xl shrink-0">{{ $sectorInfo['icon'] ?? '📋' }}</div>
             <div>
                 <h1 class="text-3xl md:text-5xl font-black text-white" data-split>{{ $sectorInfo['title'] }}</h1>
                 <p class="text-white/70 text-sm mt-2">{{ $sectorInfo['desc'] }}</p>
@@ -99,7 +97,6 @@
                 {{ $county->name }} County
             </a>
             <div class="flex items-center gap-5">
-                <div class="w-16 h-16 rounded-2xl bg-white/10 backdrop-blur-md border border-white/10 flex items-center justify-center text-3xl shrink-0">{{ $sectorInfo['icon'] ?? '📋' }}</div>
                 <div>
                     <h1 class="text-3xl md:text-4xl font-black text-white" data-split>{{ $sectorInfo['title'] }}</h1>
                     <p class="text-zinc-400 mt-1 text-sm">{{ $items->count() }} {{ Str::plural('entity', $items->count()) }} · {{ $county->name }} County</p>

@@ -22,15 +22,7 @@
 </style>
 
 @section('content')
-@php
-$iconMap = [
-    'nature' => '🌲', 'adventure' => '🛶', 'agriculture' => '🍃', 'culture' => '🎭',
-    'wildlife' => '🦁', 'beach' => '🏖️', 'historical' => '🏛️', 'waterfall' => '💧',
-    'hotel' => '🏨', 'resort' => '🏝️', 'guest house' => '🏠', 'conference' => '🏢',
-    'restaurant' => '🍽️', 'default' => '🏖️'
-];
-$kiccBlue = '#0B1E57';
-@endphp
+@php $iconMap = []; @endphp
 <div class="pt-20">
     {{-- HERO --}}
     <div class="relative min-h-[70vh] md:min-h-[85vh] overflow-hidden">
@@ -176,20 +168,16 @@ $kiccBlue = '#0B1E57';
                 @foreach($featuredAttractions as $a)
                 @php
                     $aKey = strtolower($a->category ?? 'default');
-                    $aIcon = $iconMap[$aKey] ?? $iconMap['default'];
                 @endphp
                 <a href="{{ route('attractions.show', $a->id) }}" class="bg-white border border-gray-200 rounded-2xl overflow-hidden hover:border-kicc-gold/40 transition-all group card-hover">
-                    <div class="h-36 bg-gray-100 flex items-center justify-center overflow-hidden relative">
+                    <div class="h-36 overflow-hidden relative">
                         @if($a->image_url)
                         <img src="{{ $a->image_url }}" alt="{{ $a->name }}" class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500" onerror="this.style.display='none'">
                         @endif
-                        <div class="absolute inset-0 flex items-center justify-center {{ $a->image_url ? 'opacity-0 group-hover:opacity-100 transition-opacity bg-black/30' : '' }}">
-                            <span class="text-4xl {{ $a->image_url ? 'text-white drop-shadow-lg' : 'text-gray-300' }} group-hover:scale-110 transition-transform">{{ $aIcon }}</span>
-                        </div>
+                        <div class="absolute inset-0 bg-gradient-to-t from-black/30 to-transparent pointer-events-none"></div>
                     </div>
                     <div class="p-4">
                         <div class="flex items-center gap-1.5 mb-1">
-                            <span class="text-xs">{{ $aIcon }}</span>
                             <span class="text-[10px] font-bold text-[#0B1E57] uppercase tracking-widest">{{ $a->category }}</span>
                         </div>
                         <div class="font-bold text-gray-900 text-sm">{{ $a->name }}</div>
@@ -213,17 +201,14 @@ $kiccBlue = '#0B1E57';
                 @foreach($featuredHotels as $h)
                 @php
                     $hKey = strtolower($h->category ?? 'hotel');
-                    $hIcon = $iconMap[$hKey] ?? $iconMap['hotel'];
                     $stars = $h->star_rating ? str_repeat('★', $h->star_rating) . str_repeat('☆', 5 - $h->star_rating) : '—';
                 @endphp
                 <div class="bg-white border border-gray-200 rounded-2xl overflow-hidden card-hover">
-                    <div class="h-36 bg-gray-100 flex items-center justify-center overflow-hidden relative">
+                    <div class="h-36 overflow-hidden relative">
                         @if($h->image_url)
                         <img src="{{ $h->image_url }}" alt="{{ $h->name }}" class="w-full h-full object-cover" onerror="this.style.display='none'">
                         @endif
-                        <div class="absolute inset-0 flex items-center justify-center {{ $h->image_url ? 'opacity-0' : '' }}">
-                            <span class="text-4xl text-gray-300">{{ $hIcon }}</span>
-                        </div>
+                        <div class="absolute inset-0 bg-gradient-to-t from-black/30 to-transparent pointer-events-none"></div>
                     </div>
                     <div class="p-4">
                         <div class="font-bold text-gray-900 text-sm">{{ $h->name }}</div>
@@ -258,8 +243,7 @@ $kiccBlue = '#0B1E57';
                         @elseif($p->image_url)
                         <img src="{{ $p->image_url }}" alt="{{ $p->name }}" class="w-full h-full object-cover" onerror="this.style.display='none'">
                         @endif
-                        <div class="absolute inset-0 flex items-center justify-center {{ $p->image_url || $firstVideo ? 'opacity-0' : '' }}">
-                            <span class="text-4xl text-gray-300">🛍️</span>
+                        <div class="absolute inset-0 flex items-center justify-center {{ $firstVideo ? 'opacity-0' : '' }}">
                         </div>
                     </div>
                     <div class="p-4 flex-1 flex flex-col">

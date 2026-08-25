@@ -45,7 +45,7 @@
                     <img src="{{ media('counties/' . $c->slug . '/hero.jpeg') }}" alt="{{ $c->name }}"
                          class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500"
                          loading="lazy" decoding="async"
-                         onerror="this.parentElement.innerHTML='<div class=\'w-full h-full flex items-center justify-center text-4xl bg-[#F9FAFB]\'>{{ $c->icon_emoji ?? '📍' }}</div>'">
+                         onerror="this.parentElement.innerHTML='<div class=\'w-full h-full flex items-center justify-center bg-gradient-to-br from-[#0A1024] to-[#1a1a2e]\'></div>'">
                 </div>
                 <div class="p-3.5 text-center">
                     <h3 class="font-bold text-gray-900 text-sm leading-tight group-hover:text-kicc-gold transition-colors">{{ $c->name }}</h3>
