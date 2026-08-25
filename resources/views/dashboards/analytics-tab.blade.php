@@ -39,7 +39,7 @@
     {{-- Charts Row --}}
     <div class="grid grid-cols-1 lg:grid-cols-3 gap-4">
         {{-- Revenue Forecast --}}
-        <div class="lg:col-span-2 glass-card rounded-2xl p-6" style="max-height:460px;">
+        <div class="lg:col-span-2 glass-card rounded-2xl p-6" style="max-height:400px; overflow:hidden;">
             <div class="flex items-center justify-between mb-4">
                 <div>
                     <span class="text-[10px] font-semibold text-zinc-500 uppercase tracking-widest">Revenue Forecast</span>
@@ -50,8 +50,8 @@
                     Show forecast
                 </label>
             </div>
-            <div style="height:280px;">
-            <canvas id="forecastChart" height="250"></canvas>
+            <div style="height:260px; position:relative;">
+            <canvas id="forecastChart" style="max-height:260px; width:100%;"></canvas>
             </div>
         </div>
 
@@ -79,18 +79,22 @@
 
     {{-- Performance Breakdown --}}
     <div class="grid grid-cols-1 lg:grid-cols-2 gap-4">
-        <div class="glass-card rounded-2xl p-6">
+        <div class="glass-card rounded-2xl p-6" style="max-height:350px; overflow:hidden;">
             <span class="text-[10px] font-semibold text-zinc-500 uppercase tracking-widest">Revenue by Source</span>
-            <canvas id="sourceChart" height="220" class="mt-4"></canvas>
+            <div style="height:250px; position:relative;">
+            <canvas id="sourceChart" style="max-height:250px;"></canvas>
+            </div>
         </div>
-        <div class="glass-card rounded-2xl p-6">
+        <div class="glass-card rounded-2xl p-6" style="max-height:350px; overflow:hidden;">
             <span class="text-[10px] font-semibold text-zinc-500 uppercase tracking-widest">Monthly Performance</span>
-            <canvas id="performanceChart" height="220" class="mt-4"></canvas>
+            <div style="height:250px; position:relative;">
+            <canvas id="performanceChart" style="max-height:250px;"></canvas>
+            </div>
         </div>
     </div>
 
 {{-- Growth Metrics Table --}}
-    <div class="glass-card rounded-2xl">
+    <div class="glass-card rounded-2xl" style="max-height:380px;">
         <div class="px-6 py-4 border-b border-white/5 flex items-center justify-between">
             <span class="text-[10px] font-semibold text-zinc-500 uppercase tracking-widest">Growth Metrics</span>
             <div class="flex gap-1 text-xs">
@@ -99,7 +103,7 @@
                 <button class="px-2.5 py-1 rounded text-zinc-500 hover:text-zinc-200">YoY</button>
             </div>
         </div>
-        <div class="overflow-y-auto max-h-[320px]">
+        <div class="overflow-y-auto" style="max-height:300px;">
         <table class="w-full text-xs">
             <thead>
                 <tr class="text-zinc-500 border-b border-white/5">
