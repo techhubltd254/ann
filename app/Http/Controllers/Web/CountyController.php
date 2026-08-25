@@ -25,25 +25,45 @@ class CountyController extends Controller
         $county->load('sectors');
         $sectors = $county->sectors;
 
-        $tourismCount = $county->tourismAttractions()->count();
-        $hotelsCount = $county->hotels()->count();
-        $productsCount = $county->products()->count();
-        $institutionsCount = $county->institutions()->count();
-        $farmsCount = $county->farms()->count();
-        $transportCount = $county->transport()->count();
-        $healthCount = $county->healthFacilities()->count();
-        $cultureCount = $county->cultureSites()->count();
+        // Dynamic sector data — count entities per sector across all entity types
+        $sectorEntityCounts = \App\Models\SectorEntity::where('county_id', $county->id)
+            ->where('is_published', true)
+            ->selectRaw('sector_id, count(*) as total')
+            ->groupBy('sector_id')
+            ->pluck('total', 'sector_id');
 
-        $sectorData = [
-            'Tourism' => ['count' => $tourismCount, 'route' => 'tourism', 'sector_slug' => 'tourism'],
-            'Hospitality' => ['count' => $hotelsCount, 'route' => 'hotels', 'sector_slug' => 'hospitality'],
-            'Agriculture' => ['count' => $farmsCount, 'route' => 'farms', 'sector_slug' => 'farms'],
-            'Commerce & End Products' => ['count' => $productsCount, 'route' => 'products', 'sector_slug' => 'products'],
-            'Education' => ['count' => $institutionsCount, 'route' => 'education', 'sector_slug' => 'education'],
-            'Transport' => ['count' => $transportCount, 'route' => 'transport', 'sector_slug' => 'transport'],
-            'Healthcare' => ['count' => $healthCount, 'route' => 'health', 'sector_slug' => 'health'],
-            'Culture' => ['count' => $cultureCount, 'route' => 'culture', 'sector_slug' => 'culture'],
+        $sectorNames = [
+            'tourism' => 'Tourism', 'hospitality' => 'Hospitality',
+            'farms' => 'Agriculture', 'agriculture' => 'Agriculture',
+            'products' => 'Commerce & End Products', 'commerce' => 'Commerce & End Products',
+            'education' => 'Education', 'institutions' => 'Education',
+            'transport' => 'Transport', 'health' => 'Healthcare',
+            'healthcare' => 'Healthcare', 'culture' => 'Culture',
+            'industries' => 'Industries', 'energy' => 'Energy',
         ];
+
+        $routeMap = [
+            'tourism' => 'tourism', 'hospitality' => 'hotels',
+            'farms' => 'farms', 'agriculture' => 'farms',
+            'products' => 'products', 'commerce' => 'products',
+            'education' => 'education', 'institutions' => 'education',
+            'transport' => 'transport', 'health' => 'health',
+            'healthcare' => 'health', 'culture' => 'culture',
+            'industries' => 'industries', 'energy' => 'energy',
+        ];
+
+        $sectorData = [];
+        foreach ($sectors as $s) {
+            $baseSlug = explode('-', $s->slug)[0];
+            $name = $sectorNames[$baseSlug] ?? $s->name;
+            $route = $routeMap[$baseSlug] ?? $baseSlug;
+            $count = $sectorEntityCounts[$s->id] ?? 0;
+            if ($count > 0 && !isset($sectorData[$name])) {
+                $sectorData[$name] = ['count' => $count, 'route' => $route, 'sector_slug' => $baseSlug];
+            } elseif ($count > 0 && isset($sectorData[$name])) {
+                $sectorData[$name]['count'] += $count;
+            }
+        }
 
         $featuredAttractions = $county->tourismAttractions()->where('is_published', true)->orderBy('name')->take(12)->get();
         $featuredHotels = $county->hotels()->where('is_published', true)->orderByDesc('star_rating')->take(8)->get();
