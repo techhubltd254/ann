@@ -147,7 +147,7 @@ class InstitutionSyncService
     {
         $entity = SectorEntity::where('county_id', $county->id)
             ->where('sector_id', $sector->id)
-            ->where('entity_type', \App\Models\CountyInstitution::class)
+            ->whereIn('entity_type', [\App\Models\CountyInstitution::class, 'institution'])
             ->where('entity_id', $i->id)
             ->first();
 
@@ -167,6 +167,7 @@ class InstitutionSyncService
                 'longitude' => $i->lng,
                 'tags' => [$sector->slug, Str::slug($i->name)],
                 'is_published' => $i->is_published,
+                'entity_type' => \App\Models\CountyInstitution::class, // normalize
             ]);
             return $entity;
         }
@@ -174,7 +175,7 @@ class InstitutionSyncService
         return SectorEntity::create([
             'county_id' => $county->id,
             'sector_id' => $sector->id,
-            'entity_type' => self::ENTITY_TYPE,
+            'entity_type' => \App\Models\CountyInstitution::class,
             'entity_id' => $i->id,
             'name' => $mapping['entry_name'] ?? $i->name,
             'description' => $description,
