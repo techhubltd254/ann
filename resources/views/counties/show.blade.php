@@ -19,6 +19,21 @@
 .hero-video-layer:nth-child(2) { animation-delay: 6s; }
 .hero-video-layer:nth-child(3) { animation-delay: 12s; }
 .hero-video-layer:nth-child(4) { animation-delay: 18s; }
+/* Responsive touch targets */
+        @media (max-width: 640px) {
+            .nav-link { padding: 0.625rem 0.75rem; font-size: 0.75rem; }
+            .h1-responsive { font-size: 1.75rem !important; line-height: 1.2 !important; }
+            .h2-responsive { font-size: 1.5rem !important; }
+            .section-padding { padding-top: 2.5rem !important; padding-bottom: 2.5rem !important; }
+            .sticky-sidebar { position: relative !important; top: auto !important; }
+            .mobile-full { width: 100% !important; }
+            .touch-target { min-height: 44px; min-width: 44px; }
+        }
+        @media (max-width: 768px) {
+            .md-hidden { display: none !important; }
+            .mobile-stack { flex-direction: column !important; }
+            .mobile-text-center { text-align: center !important; }
+        }
 </style>
 
 @section('content')

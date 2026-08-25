@@ -10,7 +10,7 @@
         Back to Marketplace
     </a>
 
-    <div class="grid lg:grid-cols-2 gap-10">
+    <div class="grid grid-cols-1 lg:grid-cols-2 gap-10">
     {{-- Left: Video / Media --}}
     <div>
     @php $allVideos = collect(array_merge(
@@ -89,7 +89,7 @@
         </div>
 
         <div>
-            <div class="bg-white border border-gray-200 rounded-2xl p-6 sticky top-24">
+            <div class="bg-white border border-gray-200 rounded-2xl p-6 sticky-sidebar sticky top-24">
                 <div class="font-black text-kicc-gold text-2xl">KES {{ number_format($product->price ?? 0) }}</div>
                 <div class="text-gray-400 text-sm">per {{ $product->unit ?? 'unit' }}</div>
 
@@ -198,4 +198,23 @@ function updateCompare(cb) {
 // Track recently viewed
 fetch('{{ route('recently-viewed.track') }}', {method:'POST',headers:{'X-CSRF-TOKEN':'{{ csrf_token() }}','Content-Type':'application/json'},body:JSON.stringify({viewable_type:'{{ str_replace('\\','\\\\',get_class($product)) }}',viewable_id:{{ $product->id }}})});
 </script>
+@push('styles')
+<style>
+/* Responsive touch targets */
+@media (max-width: 640px) {
+    .nav-link { padding: 0.625rem 0.75rem; font-size: 0.75rem; }
+    .h1-responsive { font-size: 1.75rem !important; line-height: 1.2 !important; }
+    .h2-responsive { font-size: 1.5rem !important; }
+    .section-padding { padding-top: 2.5rem !important; padding-bottom: 2.5rem !important; }
+    .sticky-sidebar { position: relative !important; top: auto !important; }
+    .mobile-full { width: 100% !important; }
+    .touch-target { min-height: 44px; min-width: 44px; }
+}
+@media (max-width: 768px) {
+    .md-hidden { display: none !important; }
+    .mobile-stack { flex-direction: column !important; }
+    .mobile-text-center { text-align: center !important; }
+}
+</style>
+@endpush
 @endSection

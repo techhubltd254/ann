@@ -253,6 +253,21 @@
             0% { background-position: 200% 0; }
             100% { background-position: -200% 0; }
         }
+    /* Responsive touch targets */
+        @media (max-width: 640px) {
+            .nav-link { padding: 0.625rem 0.75rem; font-size: 0.75rem; }
+            .h1-responsive { font-size: 1.75rem !important; line-height: 1.2 !important; }
+            .h2-responsive { font-size: 1.5rem !important; }
+            .section-padding { padding-top: 2.5rem !important; padding-bottom: 2.5rem !important; }
+            .sticky-sidebar { position: relative !important; top: auto !important; }
+            .mobile-full { width: 100% !important; }
+            .touch-target { min-height: 44px; min-width: 44px; }
+        }
+        @media (max-width: 768px) {
+            .md-hidden { display: none !important; }
+            .mobile-stack { flex-direction: column !important; }
+            .mobile-text-center { text-align: center !important; }
+        }
     </style>
     @stack('styles')
     <script type="importmap">
@@ -272,7 +287,7 @@
           :class="scrolled ? 'bg-white backdrop-blur-xl border-b border-gray-200 shadow-lg shadow-[#0EA5E9]/5' : 'bg-transparent'">
         <div class="max-w-7xl mx-auto px-5 h-full flex items-center justify-between gap-4">
             <a href="/" class="flex items-center gap-3 shrink-0 group">
-                <div class="flex items-center gap-2.5">
+                <div class="flex items-center gap-3 touch-target.5">
                     <div class="rounded-xl bg-[#901C1E] px-2.5 py-1.5 flex items-center justify-center shadow-lg shadow-[#901C1E]/25">
                         <img src="{{ media('kicc/kicc-logo.png') }}" alt="KICC" class="h-7 w-auto">
                     </div>
@@ -292,8 +307,8 @@
                 <a href="{{ route('screens.directory') }}" class="px-3.5 py-2 text-sm font-semibold rounded-lg transition-all {{ request()->routeIs('screens.*') ? 'bg-[#901C1E] text-white' : 'text-[#901C1E] hover:text-[#FFCD05] hover:bg-gray-100' }}">Screens</a>
                 <a href="{{ route('packages.index') }}" class="px-3.5 py-2 text-sm font-semibold rounded-lg transition-all {{ request()->routeIs('packages.*') ? 'bg-[#901C1E] text-white' : 'text-[#901C1E] hover:text-[#FFCD05] hover:bg-gray-100' }}">Packages</a>
             </nav>
-            <div class="flex items-center gap-2">
-                <a href="{{ route('cart.index') }}" class="relative p-2 text-[#5A6480] hover:text-[#901C1E] transition-colors" aria-label="Cart">
+            <div class="flex items-center gap-3 touch-target">
+                <a href="{{ route('cart.index') }}" class="relative p-3 touch-target text-[#5A6480] hover:text-[#901C1E] transition-colors" aria-label="Cart">
                     <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 3h2l.4 2M7 13h10l4-8H5.4M7 13L5.4 5M7 13l-2.293 2.293c-.63.63-.184 1.707.707 1.707H17m0 0a2 2 0 100 4 2 2 0 000-4zm-8 2a2 2 0 11-4 0 2 2 0 014 0z"/></svg>
                     @if(auth()->check())
                     @php $cartBadge = \App\Models\Marketplace\ShoppingCart::where('user_id', auth()->id())->latest('id')->first(); @endphp
@@ -308,19 +323,19 @@
                     @endif
                 </a>
                 @auth
-                <a href="{{ route('dashboard.index') }}" class="inline-flex items-center gap-2 font-bold tracking-wide transition-all duration-200 px-4 text-xs h-9 rounded-xl bg-[#901C1E] text-gray-900 hover:bg-[#7a181a]">
+                <a href="{{ route('dashboard.index') }}" class="inline-flex items-center gap-3 touch-target font-bold tracking-wide transition-all duration-200 px-4 text-xs h-9 rounded-xl bg-[#901C1E] text-gray-900 hover:bg-[#7a181a]">
                     Dashboard
                 </a>
-                <a href="{{ route('admin.portal') }}" class="hidden sm:inline-flex items-center gap-2 font-bold tracking-wide transition-all duration-200 px-4 text-xs h-9 rounded-xl border border-gray-200 text-gray-600 hover:bg-gray-100" title="Admin">
+                <a href="{{ route('admin.portal') }}" class="hidden sm:inline-flex items-center gap-3 touch-target font-bold tracking-wide transition-all duration-200 px-4 text-xs h-9 rounded-xl border border-gray-200 text-gray-600 hover:bg-gray-100" title="Admin">
                     Admin
                 </a>
                 <form method="POST" action="{{ route('logout') }}" class="inline">@csrf
-                    <button type="submit" class="inline-flex items-center gap-2 font-bold tracking-wide transition-all duration-200 px-3 text-xs h-9 rounded-xl border border-gray-200 text-gray-500 hover:bg-gray-100">Logout</button>
+                    <button type="submit" class="inline-flex items-center gap-3 touch-target font-bold tracking-wide transition-all duration-200 px-3 text-xs h-9 rounded-xl border border-gray-200 text-gray-500 hover:bg-gray-100">Logout</button>
                 </form>
                 @else
-                <a href="{{ route('login') }}" class="inline-flex items-center gap-2 font-bold tracking-wide transition-all duration-200 px-4 text-xs h-9 rounded-xl bg-[#FFCD05] text-[#07090F] font-bold hover:bg-[#e6b904]">Sign In</a>
+                <a href="{{ route('login') }}" class="inline-flex items-center gap-3 touch-target font-bold tracking-wide transition-all duration-200 px-4 text-xs h-9 rounded-xl bg-[#FFCD05] text-[#07090F] font-bold hover:bg-[#e6b904]">Sign In</a>
                 @endauth
-                <button @click="open = !open" class="lg:hidden text-[#5A6480] hover:text-[#901C1E] p-2" aria-label="Menu">
+                <button @click="open = !open" class="lg:hidden text-[#5A6480] hover:text-[#901C1E] p-3 touch-target" aria-label="Menu">
                     <svg class="w-5 h-5" x-show="!open" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16"/></svg>
                     <svg class="w-5 h-5" x-show="open" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"/></svg>
                 </button>
@@ -351,7 +366,7 @@
     <footer class="bg-[#0B1E57] mt-20">
         <div class="max-w-7xl mx-auto px-5 py-14 grid grid-cols-1 md:grid-cols-4 gap-10">
             <div>
-                <div class="flex items-center gap-2.5 mb-3">
+                <div class="flex items-center gap-3 touch-target.5 mb-3">
                     <div class="rounded-xl bg-[#901C1E] px-2.5 py-1.5 flex items-center justify-center">
                         <img src="{{ media('kicc/kicc-logo.png') }}" alt="KICC" class="h-7 w-auto">
                     </div>
@@ -362,11 +377,11 @@
                 </div>
                 <p class="text-white/60 text-sm leading-relaxed">Africa's Premier Meeting Venue. A national icon since 1973.</p>
                 <div class="mt-5 flex flex-col gap-1 text-sm text-white/60">
-                    <span class="flex items-center gap-2">
+                    <span class="flex items-center gap-3 touch-target">
                         <svg class="w-3.5 h-3.5 text-[#FFCD05]" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 5a2 2 0 012-2h3.28a1 1 0 01.948.684l1.498 4.493a1 1 0 01-.502 1.21l-2.257 1.13a11.042 11.042 0 005.516 5.516l1.13-2.257a1 1 0 011.21-.502l4.493 1.498a1 1 0 01.684.949V19a2 2 0 01-2 2h-1C9.716 21 3 14.284 3 6V5z"/></svg>
                         (+254) 20 3261000
                     </span>
-                    <span class="flex items-center gap-2">
+                    <span class="flex items-center gap-3 touch-target">
                         <svg class="w-3.5 h-3.5 text-[#FFCD05]" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z"/><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 11a3 3 0 11-6 0 3 3 0 016 0z"/></svg>
                         City Square, Nairobi CBD
                     </span>
@@ -401,7 +416,7 @@
             </div>
         </div>
         <div class="border-t border-white/10 py-5">
-            <div class="max-w-7xl mx-auto px-5 flex flex-col md:flex-row justify-between items-center gap-2 text-white/40 text-xs">
+            <div class="max-w-7xl mx-auto px-5 flex flex-col md:flex-row justify-between items-center gap-3 touch-target text-white/40 text-xs">
                 <span>&copy; {{ date('Y') }} Kenyatta International Convention Centre. All rights reserved.</span>
                 <span class="flex items-center gap-1.5 text-white/40">
                     <svg class="w-3 h-3" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m5.618-4.016A11.955 11.955 0 0112 2.944a11.955 11.955 0 01-8.618 3.04A12.02 12.02 0 003 9c0 5.591 3.824 10.29 9 11.622 5.176-1.332 9-6.03 9-11.622 0-1.042-.133-2.052-.382-3.016z"/></svg>

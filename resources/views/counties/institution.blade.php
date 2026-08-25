@@ -56,7 +56,7 @@
 
     {{-- ═══ INSTITUTION INFO + PRODUCTS ═══ --}}
     <div class="max-w-7xl mx-auto px-5 py-10">
-        <div class="grid lg:grid-cols-3 gap-8">
+        <div class="grid grid-cols-1 lg:grid-cols-3 gap-8">
             {{-- Left: Description & Story --}}
             <div class="lg:col-span-2 space-y-8">
                 @if($institution->description)
@@ -151,7 +151,7 @@
 
             {{-- Right: Quick Info Sidebar --}}
             <div class="space-y-4">
-                <div class="bg-white border border-gray-200 rounded-2xl p-5 sticky top-24">
+                <div class="bg-white border border-gray-200 rounded-2xl p-5 sticky-sidebar sticky top-24">
                     <h3 class="text-xs font-bold text-gray-900 uppercase tracking-widest mb-4">Quick Info</h3>
                     <div class="space-y-3 text-sm">
                         @if($institution->location)
@@ -203,4 +203,23 @@
         </div>
     </div>
 </div>
+@push('styles')
+<style>
+/* Responsive touch targets */
+@media (max-width: 640px) {
+    .nav-link { padding: 0.625rem 0.75rem; font-size: 0.75rem; }
+    .h1-responsive { font-size: 1.75rem !important; line-height: 1.2 !important; }
+    .h2-responsive { font-size: 1.5rem !important; }
+    .section-padding { padding-top: 2.5rem !important; padding-bottom: 2.5rem !important; }
+    .sticky-sidebar { position: relative !important; top: auto !important; }
+    .mobile-full { width: 100% !important; }
+    .touch-target { min-height: 44px; min-width: 44px; }
+}
+@media (max-width: 768px) {
+    .md-hidden { display: none !important; }
+    .mobile-stack { flex-direction: column !important; }
+    .mobile-text-center { text-align: center !important; }
+}
+</style>
+@endpush
 @endsection

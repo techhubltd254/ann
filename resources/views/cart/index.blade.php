@@ -10,7 +10,7 @@
     <div class="space-y-4 mb-8">
         @foreach($cart->items as $item)
         @php $product = $item->variant->product; @endphp
-        <div class="bg-white rounded-2xl border border-gray-100 p-5 flex items-center gap-5 card-hover" data-reveal>
+        <div class="bg-white rounded-2xl border border-gray-100 p-5 flex mobile-stack items-center gap-5 card-hover" data-reveal>
             <img src="{{ $product->image_url }}" alt="" class="w-16 h-16 rounded-xl object-cover bg-gray-50" loading="lazy" decoding="async" onerror="this.src='{{ asset('storage/kicc/kicc-logo.png') }}'">
             <div class="flex-1 min-w-0">
                 <a href="{{ route('marketplace.show', $product->slug) }}" class="font-bold text-gray-900 hover:text-kicc-gold transition-colors text-sm">{{ $product->name }}</a>
@@ -54,4 +54,23 @@
     </div>
     @endif
 </div>
+@push('styles')
+<style>
+/* Responsive touch targets */
+@media (max-width: 640px) {
+    .nav-link { padding: 0.625rem 0.75rem; font-size: 0.75rem; }
+    .h1-responsive { font-size: 1.75rem !important; line-height: 1.2 !important; }
+    .h2-responsive { font-size: 1.5rem !important; }
+    .section-padding { padding-top: 2.5rem !important; padding-bottom: 2.5rem !important; }
+    .sticky-sidebar { position: relative !important; top: auto !important; }
+    .mobile-full { width: 100% !important; }
+    .touch-target { min-height: 44px; min-width: 44px; }
+}
+@media (max-width: 768px) {
+    .md-hidden { display: none !important; }
+    .mobile-stack { flex-direction: column !important; }
+    .mobile-text-center { text-align: center !important; }
+}
+</style>
+@endpush
 @endsection

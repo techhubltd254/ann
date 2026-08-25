@@ -63,7 +63,7 @@
 </section>
 
 {{-- COUNTY STRIP — Figma exact --}}
-<section class="py-20 overflow-hidden section-transition" data-section="counties">
+<section class="py-12 md:py-20 overflow-hidden section-transition" data-section="counties">
     <div class="max-w-7xl mx-auto px-5">
         <div data-reveal>
             <div class="flex items-center gap-3 mb-3">
@@ -78,7 +78,7 @@
 </section>
 
 {{-- MARKETPLACE --}}
-<section class="border-y border-gray-100 py-20 bg-white section-transition" data-section="marketplace">
+<section class="border-y border-gray-100 py-12 md:py-20 bg-white section-transition" data-section="marketplace">
     <div class="max-w-7xl mx-auto px-5">
         <div data-reveal>
             <div class="flex flex-col md:flex-row md:items-end justify-between mb-10 gap-4">
@@ -127,7 +127,7 @@
 </section>
 
 {{-- EXHIBITIONS --}}
-<section class="max-w-7xl mx-auto px-5 py-20 section-transition" data-section="exhibitions">
+<section class="max-w-7xl mx-auto px-5 py-12 md:py-20 section-transition" data-section="exhibitions">
     <div data-reveal>
         <div class="flex items-center gap-3 mb-3">
             <div class="h-px w-8 bg-[#FFCD05]"></div>
@@ -137,7 +137,7 @@
         <p class="text-gray-400 mt-3 text-base max-w-xl leading-relaxed">Book booths, showcase products, and connect with buyers across East Africa.</p>
     </div>
     @if(isset($featuredExhibitions) && $featuredExhibitions->count() > 0)
-    <div class="grid md:grid-cols-3 gap-5">
+    <div class="grid grid-cols-1 md:grid-cols-3 gap-5">
         @foreach($featuredExhibitions as $i => $ex)
         <a href="{{ route('exhibitions.show', $ex->slug) }}"
            class="group bg-white rounded-2xl overflow-hidden border border-gray-200 hover:border-[#901C1E]/40 transition-all block card-hover" data-tilt="5" data-reveal data-reveal-delay="{{ $i * 120 }}">
@@ -181,7 +181,7 @@
 </section>
 
 {{-- VENUES --}}
-<section class="bg-white border-y border-gray-100 py-20 section-transition" data-section="venues">
+<section class="bg-white border-y border-gray-100 py-12 md:py-20 section-transition" data-section="venues">
     <div class="max-w-7xl mx-auto px-5">
         <div data-reveal>
             <div class="flex flex-col md:flex-row md:items-end justify-between mb-10 gap-4">
@@ -233,10 +233,10 @@
 </section>
 
 {{-- SCREENS CTA --}}
-<section class="max-w-7xl mx-auto px-5 py-20 section-transition" data-section="screens">
+<section class="max-w-7xl mx-auto px-5 py-12 md:py-20 section-transition" data-section="screens">
     <div class="relative overflow-hidden rounded-3xl border border-gray-200 bg-gradient-to-br from-[#0D1220] to-[#07090F]" data-reveal="zoom">
         <img src="{{ media('kicc/gallery/kicc_DSC_6125.jpg') }}" alt="" class="absolute inset-0 w-full h-full object-cover opacity-20">
-        <div class="relative px-10 py-16 md:py-20 flex flex-col md:flex-row items-center justify-between gap-8">
+        <div class="relative px-5 md:px-10 py-16 md:py-20 flex flex-col md:flex-row items-center justify-between gap-8">
             <div data-reveal>
                 <span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-[11px] font-semibold tracking-wide border bg-[#FFCD05]/15 text-[#FFCD05] border-[#FFCD05]/30">18 Digital Screens</span>
                 <h2 class="text-3xl md:text-5xl font-black text-white mt-4 leading-tight" data-split>Advertise on<br><span class="text-[#FFCD05]">Kenya's Most</span><br>Iconic Screens</h2>
@@ -249,4 +249,23 @@
         </div>
     </div>
 </section>
+@push('styles')
+<style>
+/* Responsive touch targets */
+@media (max-width: 640px) {
+    .nav-link { padding: 0.625rem 0.75rem; font-size: 0.75rem; }
+    .h1-responsive { font-size: 1.75rem !important; line-height: 1.2 !important; }
+    .h2-responsive { font-size: 1.5rem !important; }
+    .section-padding { padding-top: 2.5rem !important; padding-bottom: 2.5rem !important; }
+    .sticky-sidebar { position: relative !important; top: auto !important; }
+    .mobile-full { width: 100% !important; }
+    .touch-target { min-height: 44px; min-width: 44px; }
+}
+@media (max-width: 768px) {
+    .md-hidden { display: none !important; }
+    .mobile-stack { flex-direction: column !important; }
+    .mobile-text-center { text-align: center !important; }
+}
+</style>
+@endpush
 @endsection
