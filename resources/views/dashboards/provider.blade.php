@@ -54,7 +54,7 @@
             @if($tab === 'services')
             <div class="bg-white border border-gray-200 rounded-2xl p-6">
                 <h3 class="font-bold text-gray-900 mb-5">My Services &amp; Prices ({{ $services->count() }})</h3>
-                <div class="overflow-x-auto">
+                 <div class="overflow-x-auto max-h-[320px] overflow-y-auto">
                     <table class="w-full text-sm">
                         <thead><tr class="text-left text-[10px] uppercase tracking-widest text-gray-400 border-b border-gray-100">
                             <th class="pb-3 pr-4">Service</th><th class="pb-3 pr-4">Detail</th><th class="pb-3 pr-4">Price (KES)</th><th class="pb-3 pr-4">Status</th><th class="pb-3">Edit Price</th>

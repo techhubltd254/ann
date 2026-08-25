@@ -124,7 +124,7 @@
             @if($tab === 'counties')
             <div class="bg-white border border-gray-200 rounded-2xl p-6">
                 <h3 class="font-bold text-gray-900 mb-5">47 County Exhibitors — independent websites</h3>
-                <div class="overflow-x-auto">
+                 <div class="overflow-x-auto max-h-[320px] overflow-y-auto">
                     <table class="w-full text-sm">
                         <thead><tr class="text-left text-[10px] uppercase tracking-widest text-gray-400 border-b border-gray-100">
                             <th class="pb-3 pr-4">County</th><th class="pb-3 pr-4">Products</th><th class="pb-3 pr-4">Trade Volume</th><th class="pb-3">Website</th>
@@ -270,7 +270,7 @@
             @if($tab === 'users')
             <div class="bg-white border border-gray-200 rounded-2xl p-6">
                 <h3 class="font-bold text-gray-900 mb-5">Platform Users</h3>
-                <div class="overflow-x-auto">
+                 <div class="overflow-x-auto max-h-[320px] overflow-y-auto">
                     <table class="w-full text-sm">
                         <thead><tr class="text-left text-[10px] uppercase tracking-widest text-gray-400 border-b border-gray-100">
                             <th class="pb-3 pr-4">Name</th><th class="pb-3 pr-4">Email</th><th class="pb-3 pr-4">Type</th><th class="pb-3">Roles</th>

@@ -39,7 +39,7 @@
     {{-- Charts Row --}}
     <div class="grid grid-cols-1 lg:grid-cols-3 gap-4">
         {{-- Revenue Forecast --}}
-        <div class="lg:col-span-2 glass-card rounded-2xl p-6">
+        <div class="lg:col-span-2 glass-card rounded-2xl p-6" style="max-height:460px;">
             <div class="flex items-center justify-between mb-4">
                 <div>
                     <span class="text-[10px] font-semibold text-zinc-500 uppercase tracking-widest">Revenue Forecast</span>
@@ -50,7 +50,9 @@
                     Show forecast
                 </label>
             </div>
-            <canvas id="forecastChart" height="200"></canvas>
+            <div style="height:280px;">
+            <canvas id="forecastChart" height="250"></canvas>
+            </div>
         </div>
 
         {{-- Insights Rail --}}
@@ -87,8 +89,8 @@
         </div>
     </div>
 
-    {{-- Growth Metrics Table --}}
-    <div class="glass-card rounded-2xl overflow-hidden">
+{{-- Growth Metrics Table --}}
+    <div class="glass-card rounded-2xl">
         <div class="px-6 py-4 border-b border-white/5 flex items-center justify-between">
             <span class="text-[10px] font-semibold text-zinc-500 uppercase tracking-widest">Growth Metrics</span>
             <div class="flex gap-1 text-xs">
@@ -97,6 +99,7 @@
                 <button class="px-2.5 py-1 rounded text-zinc-500 hover:text-zinc-200">YoY</button>
             </div>
         </div>
+        <div class="overflow-y-auto max-h-[320px]">
         <table class="w-full text-xs">
             <thead>
                 <tr class="text-zinc-500 border-b border-white/5">
@@ -119,6 +122,7 @@
                 @endforeach
             </tbody>
         </table>
+        </div>
     </div>
 </div>
 

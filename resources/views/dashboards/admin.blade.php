@@ -78,7 +78,7 @@
 @elseif($tab === 'counties')
 <div class="bg-white border border-gray-200 rounded-2xl p-6">
     <div class="flex items-center justify-between mb-5"><h3 class="font-bold text-gray-900">All Counties ({{ $counties->count() }})</h3></div>
-    <div class="overflow-x-auto">
+     <div class="overflow-x-auto max-h-[320px] overflow-y-auto">
         <table class="w-full text-sm">
             <thead><tr class="text-[#5A6480] text-[10px] uppercase tracking-wider border-b border-gray-200">
                 <th class="text-left py-3 px-3">Name</th><th class="text-left py-3 px-3">Capital</th><th class="text-right py-3 px-3">Population</th><th class="text-center py-3 px-3">Actions</th>
@@ -102,7 +102,7 @@
 @elseif($tab === 'products')
 <div class="bg-white border border-gray-200 rounded-2xl p-6">
     <div class="flex items-center justify-between mb-5"><h3 class="font-bold text-gray-900">All Products ({{ $allProducts->count() }})</h3></div>
-    <div class="overflow-x-auto">
+     <div class="overflow-x-auto max-h-[320px] overflow-y-auto">
         <table class="w-full text-sm">
             <thead><tr class="text-[#5A6480] text-[10px] uppercase tracking-wider border-b border-gray-200">
                 <th class="text-left py-3 px-3">Name</th><th class="text-left py-3 px-3">County</th><th class="text-right py-3 px-3">Price</th><th class="text-center py-3 px-3">Actions</th>
@@ -129,7 +129,7 @@
 @elseif($tab === 'orders')
 <div class="bg-white border border-gray-200 rounded-2xl p-6">
     <div class="flex items-center justify-between mb-5"><h3 class="font-bold text-gray-900">Orders</h3></div>
-    <div class="overflow-x-auto">
+     <div class="overflow-x-auto max-h-[320px] overflow-y-auto">
         <table class="w-full text-sm">
             <thead><tr class="text-[#5A6480] text-[10px] uppercase tracking-wider border-b border-gray-200">
                 <th class="text-left py-3 px-3">Order #</th><th class="text-right py-3 px-3">Total</th><th class="text-center py-3 px-3">Status</th><th class="text-center py-3 px-3">Actions</th>
@@ -153,7 +153,7 @@
 @elseif($tab === 'users')
 <div class="bg-white border border-gray-200 rounded-2xl p-6">
     <div class="flex items-center justify-between mb-5"><h3 class="font-bold text-gray-900">Users ({{ $allUsers->count() }})</h3></div>
-    <div class="overflow-x-auto">
+     <div class="overflow-x-auto max-h-[320px] overflow-y-auto">
         <table class="w-full text-sm">
             <thead><tr class="text-[#5A6480] text-[10px] uppercase tracking-wider border-b border-gray-200">
                 <th class="text-left py-3 px-3">Name</th><th class="text-left py-3 px-3">Email</th><th class="text-center py-3 px-3">Actions</th>

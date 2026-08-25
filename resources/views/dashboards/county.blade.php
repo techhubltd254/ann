@@ -118,7 +118,7 @@ $activeSubs = $subscribers->where('status', 'active')->count();
                     <h3 class="font-bold text-gray-900">Slot Management</h3>
                     <span class="text-xs text-gray-400">{{ $totalSlots - $usedSlots }} of {{ $totalSlots }} available</span>
                 </div>
-                <div class="overflow-x-auto">
+                 <div class="overflow-x-auto max-h-[320px] overflow-y-auto">
                     <table class="w-full text-sm">
                         <thead><tr class="text-[#5A6480] text-[10px] uppercase tracking-wider border-b border-gray-200">
                             <th class="text-left py-3 px-3">Slot Type</th><th class="text-right py-3 px-3">Total</th><th class="text-right py-3 px-3">Used</th><th class="text-right py-3 px-3">Available</th><th class="text-center py-3 px-3">Status</th>
@@ -145,7 +145,7 @@ $activeSubs = $subscribers->where('status', 'active')->count();
                 <div class="flex items-center justify-between mb-5">
                     <h3 class="font-bold text-gray-900">All Subscribers ({{ $subscribers->count() }})</h3>
                 </div>
-                <div class="overflow-x-auto">
+                 <div class="overflow-x-auto max-h-[320px] overflow-y-auto">
                     <table class="w-full text-sm">
                         <thead><tr class="text-[#5A6480] text-[10px] uppercase tracking-wider border-b border-gray-200">
                             <th class="text-left py-3 px-3">Business</th><th class="text-left py-3 px-3">Plan</th><th class="text-center py-3 px-3">Status</th><th class="text-right py-3 px-3">Joined</th>
@@ -203,7 +203,7 @@ $activeSubs = $subscribers->where('status', 'active')->count();
                     <h3 class="font-bold text-gray-900">Settlement History</h3>
                     <span class="text-xs text-gray-400">Wallet: KES {{ number_format($config->wallet_balance) }}</span>
                 </div>
-                <div class="overflow-x-auto">
+                 <div class="overflow-x-auto max-h-[320px] overflow-y-auto">
                     <table class="w-full text-sm">
                         <thead><tr class="text-[#5A6480] text-[10px] uppercase tracking-wider border-b border-gray-200">
                             <th class="text-left py-3 px-3">Date</th><th class="text-left py-3 px-3">Description</th><th class="text-right py-3 px-3">Amount</th><th class="text-center py-3 px-3">Type</th>

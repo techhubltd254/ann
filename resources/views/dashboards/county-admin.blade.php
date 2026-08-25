@@ -487,7 +487,7 @@
             <div class="grid lg:grid-cols-2 gap-4">
                 <div class="glass-card rounded-2xl p-6">
                     <h2 class="text-sm font-bold text-white mb-4">County Products — Prices</h2>
-                    <div class="overflow-x-auto">
+                     <div class="overflow-x-auto max-h-[320px] overflow-y-auto">
                         <table class="w-full text-xs">
                             <thead><tr class="text-zinc-500 border-b border-white/5"><th class="text-left py-2 pr-3 font-semibold">Product</th><th class="text-left py-2 pr-3 font-semibold">Current</th><th class="text-left py-2 font-semibold">Set</th></tr></thead>
                             <tbody>
@@ -512,7 +512,7 @@
                 </div>
                 <div class="glass-card rounded-2xl p-6">
                     <h2 class="text-sm font-bold text-white mb-4">Attractions — Entry Fees</h2>
-                    <div class="overflow-x-auto">
+                     <div class="overflow-x-auto max-h-[320px] overflow-y-auto">
                         <table class="w-full text-xs">
                             <thead><tr class="text-zinc-500 border-b border-white/5"><th class="text-left py-2 pr-3 font-semibold">Attraction</th><th class="text-left py-2 pr-3 font-semibold">Fee</th><th class="text-left py-2 font-semibold">Set</th></tr></thead>
                             <tbody>

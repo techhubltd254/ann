@@ -60,15 +60,6 @@
                 <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 19l-7-7 7-7"/></svg>
                 All Counties
             </a>
-            <h1 class="text-4xl md:text-6xl font-black text-white leading-tight" data-split>{{ $county->name }} <span class="text-[#FFCD05]">County</span></h1>
-            @if($county->tagline)
-            <p class="text-white/70 text-lg mt-2 max-w-2xl">{{ $county->tagline }}</p>
-            @endif
-            <div class="flex flex-wrap gap-3 mt-4">
-                @if($county->capital)<span class="text-white/50 text-sm">📍 {{ $county->capital }}</span>@endif
-                @if($county->population_2024)<span class="text-white/50 text-sm">👥 {{ number_format($county->population_2024) }} people</span>@endif
-                @if($county->area_km2)<span class="text-white/50 text-sm">📐 {{ number_format($county->area_km2) }} km²</span>@endif
-            </div>
         </div>
         {{-- Floating stats bar — continuous scroll at 0.75 speed --}}
         <div class="absolute bottom-0 left-0 right-0 z-10 overflow-hidden bg-[#0B1E57]/70 backdrop-blur-sm border-t border-[#FFCD05]/20 pointer-events-none" style="height: 40px;">

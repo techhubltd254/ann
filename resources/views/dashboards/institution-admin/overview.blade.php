@@ -55,7 +55,7 @@
             <span class="text-[10px] font-semibold text-zinc-500 uppercase tracking-widest">Recent Transactions</span>
             <a href="#" @click.prevent="setTab('transactions')" class="text-[11px] text-indigo-400 hover:text-indigo-300">View All →</a>
         </div>
-        <div class="overflow-x-auto">
+        <div class="overflow-x-auto max-h-[320px] overflow-y-auto">
             <table class="w-full text-xs">
                 <thead>
                     <tr class="text-zinc-500 border-b border-white/5">

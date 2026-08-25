@@ -36,7 +36,7 @@ $neg = $growth !== null && $growth < 0;
         @if(count($sparkline) > 0)
         <div class="flex items-end gap-0.5 h-10 shrink-0">
             @foreach($sparkline as $bar)
-            @php $h = max($bar / max($sparkline) * 100, 8); @endphp
+            @php $maxVal = max($sparkline) ?: 1; $h = max($bar / $maxVal * 100, 8); @endphp
             <div class="w-1.5 rounded-sm" style="height: {{ $h }}%; background: {{ $c['from'] }}33; border-top: 1.5px solid {{ $c['from'] }};"></div>
             @endforeach
         </div>
