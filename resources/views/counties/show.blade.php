@@ -102,10 +102,11 @@ $kiccBlue = '#0B1E57';
                 @php
                     $sectorVideo = $sectorVideos[$s['sector_slug']] ?? null;
                     $entityVids = $sectorEntityVideos[$s['sector_slug']] ?? [];
+                    $hasVideo = count($entityVids) > 0 || $sectorVideo;
                 @endphp
                 <a href="{{ route('counties.sector', [$county->slug, $s['route']]) }}"
                    class="group bg-white border border-gray-200 hover:border-kicc-gold/40 rounded-2xl overflow-hidden transition-all block card-hover" data-tilt="6" data-reveal data-reveal-delay="{{ $loop->index * 80 }}">
-                    <div class="aspect-[4/3] overflow-hidden relative bg-gray-100">
+                    <div class="aspect-[4/3] overflow-hidden relative {{ $hasVideo ? 'bg-black' : 'bg-gray-100' }}">
                         @if(count($entityVids) > 0)
                         @foreach($entityVids as $vi)
                         <video autoplay muted loop playsinline preload="auto" class="absolute inset-0 w-full h-full object-cover hero-video-layer"
@@ -116,15 +117,18 @@ $kiccBlue = '#0B1E57';
                         @elseif($sectorVideo)
                         @php $sectorWebm = $sectorWebmVideos[$s['sector_slug']] ?? null; @endphp
                         <video autoplay muted loop playsinline preload="auto" class="absolute inset-0 w-full h-full object-cover"
-                               onloadeddata="this.style.opacity='0.15'">
+                               onerror="this.style.display='none'">
                             @if($sectorWebm)
                             <source src="{{ $sectorWebm }}" type="video/webm">
                             @endif
                             <source src="{{ $sectorVideo }}" type="video/mp4">
                         </video>
                         @endif
+                        @if($hasVideo)
+                        <div class="absolute inset-0 bg-gradient-to-t from-black/40 via-transparent to-black/20 pointer-events-none"></div>
+                        @endif
                         <div class="absolute inset-0 flex items-center justify-center">
-                            <span class="text-4xl drop-shadow-lg">{{ $s['icon'] }}</span>
+                            <span class="text-4xl drop-shadow-lg {{ $hasVideo ? 'opacity-30' : 'opacity-100' }}">{{ $s['icon'] }}</span>
                         </div>
                     </div>
                     <div class="p-4 text-center">
