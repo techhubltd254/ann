@@ -2,7 +2,8 @@
     <div class="flex items-center justify-between">
         <div><h1 class="text-xl font-bold text-white">Customers</h1><p class="text-zinc-500 text-sm">{{ $customers->count() }} total buyers</p></div>
     </div>
-    <div class="glass-card rounded-2xl p-5">
+    <div class="glass-card rounded-2xl p-5" style="max-height:500px;">
+    <div class="overflow-y-auto" style="max-height:420px;">
         <table class="w-full text-xs">
             <thead><tr class="text-zinc-500 border-b border-white/5">
                 <th class="text-left py-3 font-semibold">Name</th>
@@ -21,7 +22,8 @@
                 @empty
                 <tr><td colspan="4" class="py-12 text-center text-zinc-500 text-sm">No customers.</td></tr>
                 @endforelse
-            </tbody>
-        </table>
+</tbody>
+    </table>
     </div>
+</div>
 </div>

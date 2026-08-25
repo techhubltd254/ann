@@ -174,13 +174,15 @@
                                 <button class="px-2.5 py-1 text-[10px] text-zinc-400 hover:text-white rounded-md">1Y</button>
                             </div>
                         </div>
-                        <canvas id="revenueChart" height="200"></canvas>
+                        <canvas id="revenueChart" style="max-height:200px; width:100%;"></canvas>
                     </div>
 
                     {{-- Sector distribution --}}
-                    <div class="glass-card rounded-2xl p-5">
+                    <div class="glass-card rounded-2xl p-5" style="max-height:380px; overflow:hidden;">
                         <span class="text-[10px] font-semibold text-zinc-500 uppercase tracking-widest">Sector Distribution</span>
-                        <canvas id="sectorChart" height="220" class="mt-3"></canvas>
+                        <div style="height:220px; position:relative;">
+                        <canvas id="sectorChart" style="max-height:220px;"></canvas>
+                        </div>
                         <div class="grid grid-cols-2 gap-2 mt-4">
                             @foreach([['Hospitality',35,'#6366F1'],['Eco-Tourism',28,'#10B981'],['Agri-Trade',22,'#F59E0B'],['Cultural',15,'#8B5CF6']] as $s)
                             <div class="flex items-center gap-2">

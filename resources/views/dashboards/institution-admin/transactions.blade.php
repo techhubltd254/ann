@@ -1,4 +1,4 @@
-<div class="glass-card rounded-2xl p-6">
+<div class="glass-card rounded-2xl p-6" style="max-height:500px;">
     <div class="flex items-center justify-between mb-4">
         <div>
             <h1 class="text-lg font-bold text-white">Transaction History</h1>
@@ -13,6 +13,7 @@
             <button class="btn-ghost text-xs">Export CSV</button>
         </div>
     </div>
+    <div class="overflow-y-auto" style="max-height:380px;">
     <table class="w-full text-xs">
         <thead><tr class="text-zinc-500 border-b border-white/5">
             <th class="text-left py-3 font-semibold">ID</th><th class="text-left py-3 font-semibold">Customer</th>
@@ -42,4 +43,5 @@
             @endforelse
         </tbody>
     </table>
+    </div>
 </div>

@@ -34,7 +34,7 @@
     </div>
 
     {{-- Sales Chart --}}
-    <div class="glass-card rounded-2xl p-6">
+    <div class="glass-card rounded-2xl p-6" style="max-height:380px; overflow:hidden;">
         <div class="flex items-center justify-between mb-6">
             <div>
                 <span class="text-[10px] font-semibold text-zinc-500 uppercase tracking-widest">Revenue Overview</span>
@@ -46,7 +46,9 @@
                 <button class="px-3 py-1.5 text-xs text-zinc-400 hover:text-white rounded-md">90D</button>
             </div>
         </div>
-        <canvas id="revenueChart" height="220"></canvas>
+        <div style="height:220px; position:relative;">
+        <canvas id="revenueChart" style="max-height:220px; width:100%;"></canvas>
+        </div>
     </div>
 
     {{-- Recent Transactions --}}
