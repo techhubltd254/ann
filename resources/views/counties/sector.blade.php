@@ -50,7 +50,7 @@
 @if(count($heroVids) > 0)
 <div class="relative h-[45vh] md:h-[55vh] overflow-hidden bg-black">
     @foreach($heroVids as $vi)
-    <video autoplay muted loop playsinline preload="auto" class="hero-video-layer" onerror="this.style.display='none'">
+    <video autoplay muted loop playsinline loading="lazy" preload="metadata" class="hero-video-layer" onerror="this.style.display='none'">
         <source src="{{ $vi }}" type="video/mp4">
     </video>
     @endforeach
@@ -71,7 +71,7 @@
 </div>
 @elseif($fourDVideo)
 <div class="relative h-[45vh] md:h-[55vh] overflow-hidden bg-black">
-    <video autoplay muted loop playsinline preload="auto" class="absolute inset-0 w-full h-full object-cover">
+    <video autoplay muted loop playsinline loading="lazy" preload="metadata" class="absolute inset-0 w-full h-full object-cover">
         <source src="{{ $fourDVideo }}" type="video/mp4">
     </video>
     <div class="absolute inset-0 bg-gradient-to-t from-black/70 via-black/20 to-transparent"></div>
@@ -124,7 +124,7 @@
             <a href="{{ $linkUrl }}" class="entity-card group bg-white rounded-2xl overflow-hidden border border-gray-200 hover:border-[#FFCD05]/40 block">
                 <div class="h-48 overflow-hidden relative bg-gray-100">
                     @if($entityVideo)
-                    <video autoplay muted loop playsinline preload="auto" class="card-media absolute inset-0 w-full h-full object-cover"
+                    <video autoplay muted loop playsinline loading="lazy" preload="metadata" class="card-media absolute inset-0 w-full h-full object-cover"
                            onerror="this.style.display='none'">
                         <source src="{{ $entityVideo }}" type="video/mp4">
                     </video>

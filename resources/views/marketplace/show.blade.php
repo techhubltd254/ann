@@ -21,7 +21,7 @@
     @if($allVideos->isNotEmpty())
     <div class="space-y-2">
         <div class="rounded-2xl overflow-hidden bg-black aspect-video relative" id="main-video-wrapper">
-            <video autoplay muted loop playsinline preload="auto" class="w-full h-full object-cover" id="product-video-{{ $product->id }}" poster="{{ $product->image_url }}">
+            <video autoplay muted loop playsinline loading="lazy" preload="metadata" class="w-full h-full object-cover" id="product-video-{{ $product->id }}" poster="{{ $product->image_url }}">
                 <source src="{{ $allVideos->first() }}" type="video/mp4">
             </video>
         </div>

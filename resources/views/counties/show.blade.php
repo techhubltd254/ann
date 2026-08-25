@@ -11,12 +11,13 @@
 }
 .hero-video-layer {
     position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover;
-    animation: heroFade 20s infinite;
+    animation: heroFade 24s infinite;
+    will-change: opacity;
 }
 .hero-video-layer:nth-child(1) { animation-delay: 0s; }
-.hero-video-layer:nth-child(2) { animation-delay: 5s; }
-.hero-video-layer:nth-child(3) { animation-delay: 10s; }
-.hero-video-layer:nth-child(4) { animation-delay: 15s; }
+.hero-video-layer:nth-child(2) { animation-delay: 6s; }
+.hero-video-layer:nth-child(3) { animation-delay: 12s; }
+.hero-video-layer:nth-child(4) { animation-delay: 18s; }
 </style>
 
 @section('content')
@@ -103,20 +104,22 @@ $kiccBlue = '#0B1E57';
                     $sectorVideo = $sectorVideos[$s['sector_slug']] ?? null;
                     $entityVids = $sectorEntityVideos[$s['sector_slug']] ?? [];
                     $hasVideo = count($entityVids) > 0 || $sectorVideo;
+                    $pitch = $sectorPitches[$s['sector_slug']] ?? '';
                 @endphp
                 <a href="{{ route('counties.sector', [$county->slug, $s['route']]) }}"
-                   class="group bg-white border border-gray-200 hover:border-kicc-gold/40 rounded-2xl overflow-hidden transition-all block card-hover" data-tilt="6" data-reveal data-reveal-delay="{{ $loop->index * 80 }}">
-                    <div class="aspect-[4/3] overflow-hidden relative {{ $hasVideo ? 'bg-black' : 'bg-gray-100' }}">
+                   class="group bg-white border border-gray-200 hover:border-kicc-gold/40 rounded-2xl overflow-hidden transition-all block card-hover"
+                   data-tilt="6" data-reveal data-reveal-delay="{{ $loop->index * 80 }}">
+                    <div class="aspect-[4/3] overflow-hidden relative {{ $hasVideo ? 'bg-black' : 'bg-gradient-to-br from-[#0A1024] to-[#1a1a2e]' }}">
                         @if(count($entityVids) > 0)
                         @foreach($entityVids as $vi)
-                        <video autoplay muted loop playsinline preload="auto" class="absolute inset-0 w-full h-full object-cover hero-video-layer"
+                        <video autoplay muted loop playsinline preload="auto" loading="lazy" class="absolute inset-0 w-full h-full object-cover hero-video-layer"
                                onerror="this.style.display='none'">
                             <source src="{{ $vi }}" type="video/mp4">
                         </video>
                         @endforeach
                         @elseif($sectorVideo)
                         @php $sectorWebm = $sectorWebmVideos[$s['sector_slug']] ?? null; @endphp
-                        <video autoplay muted loop playsinline preload="auto" class="absolute inset-0 w-full h-full object-cover"
+                        <video autoplay muted loop playsinline preload="auto" loading="lazy" class="absolute inset-0 w-full h-full object-cover"
                                onerror="this.style.display='none'">
                             @if($sectorWebm)
                             <source src="{{ $sectorWebm }}" type="video/webm">
@@ -125,15 +128,16 @@ $kiccBlue = '#0B1E57';
                         </video>
                         @endif
                         @if($hasVideo)
-                        <div class="absolute inset-0 bg-gradient-to-t from-black/40 via-transparent to-black/20 pointer-events-none"></div>
+                        <div class="absolute inset-0 bg-gradient-to-t from-black/60 via-black/10 to-black/30 pointer-events-none"></div>
                         @endif
-                        <div class="absolute inset-0 flex items-center justify-center">
-                            <span class="text-4xl drop-shadow-lg {{ $hasVideo ? 'opacity-30' : 'opacity-100' }}">{{ $s['icon'] }}</span>
-                        </div>
                     </div>
-                    <div class="p-4 text-center">
+                    <div class="p-4 text-center min-h-[80px] flex flex-col justify-center">
                         <div class="font-bold text-gray-900 text-sm leading-snug">{{ $name }}</div>
+                        @if($pitch)
+                        <div class="text-gray-500 text-[10px] leading-relaxed mt-1 line-clamp-2">{{ $pitch }}</div>
+                        @else
                         <div class="text-gray-400 text-xs mt-1">{{ $s['count'] }} {{ Str::plural('entity', $s['count']) }}</div>
+                        @endif
                     </div>
                 </a>
                 @endforeach

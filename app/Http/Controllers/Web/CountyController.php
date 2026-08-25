@@ -9,6 +9,8 @@ use App\Models\CountyInstitution;
 use App\Models\Marketplace\Product;
 use App\Models\SectorEntity;
 use App\Services\InstitutionSyncService;
+use App\Services\SectorPitchService;
+use Illuminate\Support\Facades\Cache;
 
 class CountyController extends Controller
 {
@@ -33,14 +35,14 @@ class CountyController extends Controller
         $cultureCount = $county->cultureSites()->count();
 
         $sectorData = [
-            'Tourism' => ['count' => $tourismCount, 'icon' => '🏖️', 'route' => 'tourism', 'sector_slug' => 'tourism'],
-            'Hospitality' => ['count' => $hotelsCount, 'icon' => '🏨', 'route' => 'hotels', 'sector_slug' => 'hospitality'],
-            'Agriculture' => ['count' => $farmsCount, 'icon' => '🌾', 'route' => 'farms', 'sector_slug' => 'farms'],
-            'Commerce & End Products' => ['count' => $productsCount, 'icon' => '🛒', 'route' => 'products', 'sector_slug' => 'products'],
-            'Education' => ['count' => $institutionsCount, 'icon' => '🎓', 'route' => 'education', 'sector_slug' => 'education'],
-            'Transport' => ['count' => $transportCount, 'icon' => '🚢', 'route' => 'transport', 'sector_slug' => 'transport'],
-            'Healthcare' => ['count' => $healthCount, 'icon' => '🏥', 'route' => 'health', 'sector_slug' => 'health'],
-            'Culture' => ['count' => $cultureCount, 'icon' => '🎭', 'route' => 'culture', 'sector_slug' => 'culture'],
+            'Tourism' => ['count' => $tourismCount, 'route' => 'tourism', 'sector_slug' => 'tourism'],
+            'Hospitality' => ['count' => $hotelsCount, 'route' => 'hotels', 'sector_slug' => 'hospitality'],
+            'Agriculture' => ['count' => $farmsCount, 'route' => 'farms', 'sector_slug' => 'farms'],
+            'Commerce & End Products' => ['count' => $productsCount, 'route' => 'products', 'sector_slug' => 'products'],
+            'Education' => ['count' => $institutionsCount, 'route' => 'education', 'sector_slug' => 'education'],
+            'Transport' => ['count' => $transportCount, 'route' => 'transport', 'sector_slug' => 'transport'],
+            'Healthcare' => ['count' => $healthCount, 'route' => 'health', 'sector_slug' => 'health'],
+            'Culture' => ['count' => $cultureCount, 'route' => 'culture', 'sector_slug' => 'culture'],
         ];
 
         $featuredAttractions = $county->tourismAttractions()->where('is_published', true)->orderBy('name')->take(12)->get();
@@ -49,35 +51,62 @@ class CountyController extends Controller
         $exhibitions = $county->exhibitions()->where('status', 'published')->orderBy('start_date', 'desc')->take(3)->get();
         $linkedSectors = $county->sectors()->orderBy('name')->get();
 
-        $countyMedia = MediaAsset::resolveSlot(County::class, $county->id, 'hero_video');
-
-        // Resolve sector video clips for tile background playback
+        // Batched sector video loading — single queries instead of per-sector
+        $sectorSlugs = collect($sectorData)->pluck('sector_slug')->unique();
         $sectorVideos = [];
         $sectorWebmVideos = [];
         $sectorEntityVideos = [];
-        foreach ($sectorData as $name => $s) {
-            $asset = MediaAsset::resolveSlot(County::class, $county->id, 'sector_video_' . $s['sector_slug']);
-            $sectorVideos[$s['sector_slug']] = $asset?->mp4Url();
-            $sectorWebmVideos[$s['sector_slug']] = $asset?->webmUrl();
+        $sectorPitches = [];
 
-            // Collect entity videos for this sector (4D videos + institution hero videos)
-            $sectorModel = $county->sectors()->where('slug', 'like', $s['sector_slug'] . '%')->first();
-            if ($sectorModel) {
+        $cacheKey = "county_sectors_{$county->id}_v2";
+
+        $cached = Cache::remember($cacheKey, 1800, function () use ($county, $sectorSlugs, $sectorData, &$sectorVideos, &$sectorWebmVideos, &$sectorEntityVideos, &$sectorPitches) {
+            // Batch load sector video assets
+            $slots = $sectorSlugs->map(fn($slug) => 'sector_video_' . $slug);
+            $assets = MediaAsset::where('owner_type', County::class)
+                ->where('owner_id', $county->id)
+                ->whereIn('slot', $slots)
+                ->ready()
+                ->with('derivatives')
+                ->get()
+                ->keyBy('slot');
+
+            foreach ($sectorData as $name => $s) {
+                $slot = 'sector_video_' . $s['sector_slug'];
+                $asset = $assets->get($slot);
+                $sectorVideos[$s['sector_slug']] = $asset?->mp4Url();
+                $sectorWebmVideos[$s['sector_slug']] = $asset?->webmUrl();
+            }
+
+            // Batch load all sector entities + their videos
+            $sectorModels = $county->sectors()->where(function ($q) use ($sectorSlugs) {
+                foreach ($sectorSlugs as $slug) {
+                    $q->orWhere('slug', 'like', $slug . '%');
+                }
+            })->get()->keyBy(fn($s) => explode('-', $s->slug)[0]);
+
+            foreach ($sectorData as $name => $s) {
+                $sectorModel = $sectorModels->get($s['sector_slug']);
+                if (!$sectorModel) { $sectorEntityVideos[$s['sector_slug']] = []; continue; }
+
                 $entities = SectorEntity::where('county_id', $county->id)
                     ->where('sector_id', $sectorModel->id)
                     ->where('is_published', true)
                     ->get();
+
                 $entityIds = $entities->pluck('id');
                 $vids = [];
-                // 4D videos
-                $assets = MediaAsset::where('owner_type', SectorEntity::class)
-                    ->whereIn('owner_id', $entityIds)
-                    ->where('slot', '4d_video')
-                    ->get();
-                foreach ($assets as $a) {
-                    if ($url = $a->mp4Url() ?? $a->url()) $vids[] = $url;
+
+                if ($entityIds->isNotEmpty()) {
+                    $fourDAssets = MediaAsset::where('owner_type', SectorEntity::class)
+                        ->whereIn('owner_id', $entityIds)
+                        ->where('slot', '4d_video')
+                        ->get();
+                    foreach ($fourDAssets as $a) {
+                        if ($url = $a->mp4Url() ?? $a->url()) $vids[] = $url;
+                    }
                 }
-                // Institution hero videos
+
                 $instIds = $entities->whereIn('entity_type', [CountyInstitution::class, InstitutionSyncService::ENTITY_TYPE])->pluck('entity_id')->unique();
                 if ($instIds->isNotEmpty()) {
                     $heroAssets = MediaAsset::where('owner_type', CountyInstitution::class)
@@ -88,15 +117,29 @@ class CountyController extends Controller
                         if ($url = $a->mp4Url() ?? $a->url()) $vids[] = $url;
                     }
                 }
+
                 $sectorEntityVideos[$s['sector_slug']] = $vids;
             }
-        }
+
+            // Generate pitches
+            foreach ($sectorData as $name => $s) {
+                $sectorPitches[$s['sector_slug']] = SectorPitchService::generate($county, $s['sector_slug'], $s);
+            }
+
+            return compact('sectorVideos', 'sectorWebmVideos', 'sectorEntityVideos', 'sectorPitches');
+        });
+
+        $sectorVideos = $cached['sectorVideos'];
+        $sectorWebmVideos = $cached['sectorWebmVideos'];
+        $sectorEntityVideos = $cached['sectorEntityVideos'];
+        $sectorPitches = $cached['sectorPitches'];
 
         return view('counties.show', compact(
             'county', 'sectors', 'sectorData',
             'featuredAttractions', 'featuredHotels', 'countyProducts',
             'exhibitions', 'linkedSectors', 'countyMedia', 'sectorVideos', 'sectorWebmVideos',
-            'sectorEntityVideos'
+            'sectorEntityVideos', 'sectorPitches'
+        ));
         ));
     }
 

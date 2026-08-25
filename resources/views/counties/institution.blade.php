@@ -9,7 +9,7 @@
     {{-- ═══ HERO VIDEO SECTION ═══ --}}
     @if($heroVideo)
     <div class="relative h-[50vh] md:h-[60vh] overflow-hidden bg-black">
-        <video autoplay muted loop playsinline preload="auto" class="absolute inset-0 w-full h-full object-cover">
+        <video autoplay muted loop playsinline preload="metadata" class="absolute inset-0 w-full h-full object-cover">
             <source src="{{ $heroVideo }}" type="video/mp4">
         </video>
         <div class="absolute inset-0 bg-gradient-to-t from-black/70 via-black/20 to-transparent"></div>
@@ -109,7 +109,7 @@
                         <a href="{{ route('marketplace.show', $product->slug) }}" class="group bg-[#F9FAFB] rounded-2xl overflow-hidden border border-gray-200 hover:border-[#FFCD05]/30 transition-all card-hover">
                             <div class="aspect-square overflow-hidden bg-white relative">
                                 @if($vid)
-                                <video autoplay muted loop playsinline preload="auto" class="absolute inset-0 w-full h-full object-cover group-hover:scale-105 transition-transform duration-500"
+                                <video autoplay muted loop playsinline preload="metadata" class="absolute inset-0 w-full h-full object-cover group-hover:scale-105 transition-transform duration-500"
                                        onerror="this.style.display='none'">
                                     <source src="{{ $vid }}" type="video/mp4">
                                 </video>
@@ -139,7 +139,7 @@
                     <div class="grid grid-cols-2 md:grid-cols-3 gap-4">
                         @foreach($libraryVideos as $v)
                         <div class="aspect-video bg-black rounded-2xl overflow-hidden">
-                            <video autoplay muted loop playsinline preload="auto" class="w-full h-full object-cover">
+                            <video autoplay muted loop playsinline preload="metadata" class="w-full h-full object-cover">
                                 <source src="{{ $v['path'] ?? $v['url'] ?? '' }}" type="video/mp4">
                             </video>
                         </div>
