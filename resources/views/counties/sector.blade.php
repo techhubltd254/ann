@@ -28,18 +28,20 @@
     background: linear-gradient(135deg, #0A1024 0%, #1a1a2e 50%, #0A1024 100%);
 }
 @keyframes heroFade {
-    0%, 20% { opacity: 1; }
-    25%, 95% { opacity: 0; }
-    100% { opacity: 1; }
+    0% { opacity: 1; }
+    17% { opacity: 1; }
+    23% { opacity: 0; }
+    100% { opacity: 0; }
 }
 .hero-video-layer {
     position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover;
-    animation: heroFade 20s infinite;
+    animation: heroFade 24s infinite;
+    will-change: opacity;
 }
 .hero-video-layer:nth-child(1) { animation-delay: 0s; }
-.hero-video-layer:nth-child(2) { animation-delay: 5s; }
-.hero-video-layer:nth-child(3) { animation-delay: 10s; }
-.hero-video-layer:nth-child(4) { animation-delay: 15s; }
+.hero-video-layer:nth-child(2) { animation-delay: 6s; }
+.hero-video-layer:nth-child(3) { animation-delay: 12s; }
+.hero-video-layer:nth-child(4) { animation-delay: 18s; }
 </style>
 @endpush
 

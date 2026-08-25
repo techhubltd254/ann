@@ -51,6 +51,8 @@ class CountyController extends Controller
         $exhibitions = $county->exhibitions()->where('status', 'published')->orderBy('start_date', 'desc')->take(3)->get();
         $linkedSectors = $county->sectors()->orderBy('name')->get();
 
+        $countyMedia = MediaAsset::resolveSlot(County::class, $county->id, 'hero_video');
+
         // Batched sector video loading — single queries instead of per-sector
         $sectorSlugs = collect($sectorData)->pluck('sector_slug')->unique();
         $sectorVideos = [];
@@ -118,7 +120,11 @@ class CountyController extends Controller
                     }
                 }
 
-                $sectorEntityVideos[$s['sector_slug']] = $vids;
+                // Deduplicate: remove any video URL already assigned to a previous sector
+                static $usedVideos = [];
+                $unique = array_values(array_filter($vids, fn($v) => !in_array($v, $usedVideos)));
+                $usedVideos = array_merge($usedVideos, $unique);
+                $sectorEntityVideos[$s['sector_slug']] = $unique;
             }
 
             // Generate pitches
@@ -139,7 +145,6 @@ class CountyController extends Controller
             'featuredAttractions', 'featuredHotels', 'countyProducts',
             'exhibitions', 'linkedSectors', 'countyMedia', 'sectorVideos', 'sectorWebmVideos',
             'sectorEntityVideos', 'sectorPitches'
-        ));
         ));
     }
 

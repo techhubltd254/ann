@@ -5,9 +5,10 @@
 
 <style>
 @keyframes heroFade {
-    0%, 20% { opacity: 1; }
-    25%, 95% { opacity: 0; }
-    100% { opacity: 1; }
+    0% { opacity: 1; }
+    17% { opacity: 1; }
+    23% { opacity: 0; }
+    100% { opacity: 0; }
 }
 .hero-video-layer {
     position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover;
