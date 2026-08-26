@@ -6,8 +6,8 @@
 @php $accent = '#F59E0B'; @endphp
 <div class="flex min-h-screen bg-[#F9FAFB]">
     {{-- Sidebar --}}
-    <div class="w-56 bg-white border-r border-gray-200 flex flex-col shrink-0 min-h-screen">
-        <div class="flex items-center gap-3 px-4 border-b border-gray-200 h-16">
+    <div class="w-56 bg-white border-r border-gray-200 flex flex-col shrink-0 min-h-screen overflow-y-auto">
+        <div class="flex items-center gap-3 px-4 border-b border-gray-200 h-16 shrink-0">
             <div class="flex items-center gap-2">
                 <img src="{{ media('kicc/kicc-logo.png') }}" alt="KICC" class="h-7 w-auto" style="filter: brightness(0) invert(1);">
                 <div class="text-[#FFCD05] text-[9px] font-black tracking-[0.15em] uppercase">Overall<br>Admin</div>
@@ -23,13 +23,34 @@
             </a>
             @endforeach
         </div>
-        <div class="px-4 py-3 border-t border-gray-200 text-[10px] text-gray-400 uppercase tracking-widest">Sub-portals</div>
-        <a href="{{ route('national.admin') }}" class="px-4 py-2 text-xs text-gray-400 hover:text-gray-700 transition-colors">National Portal &nearr;</a>
-        <a href="{{ route('county.admin') }}" class="px-4 py-2 text-xs text-gray-400 hover:text-gray-700 transition-colors">County Portal &nearr;</a>
-        <a href="{{ route('exhibitor.admin') }}" class="px-4 py-2 text-xs text-gray-400 hover:text-gray-700 transition-colors">Exhibitor Portal &nearr;</a>
-        <a href="/" class="flex items-center gap-3 px-4 py-4 border-t border-gray-200 mt-2 text-gray-400 hover:text-gray-700 text-xs transition-colors">
+        <div class="px-4 py-3 border-t border-gray-200 text-[10px] text-gray-400 uppercase tracking-widest shrink-0">Jump to Portal</div>
+        <a href="{{ route('kicc.admin', ['tab' => 'portals']) }}" class="px-4 py-2 text-xs text-gray-400 hover:text-gray-700 transition-colors flex items-center justify-between group">
+            <span>🗂 All Portals</span>
+            <span class="text-[#F59E0B] opacity-0 group-hover:opacity-100 transition">&nearr;</span>
+        </a>
+        <a href="{{ route('kicc.admin', ['tab' => 'counties']) }}" class="px-4 py-2 text-xs text-gray-400 hover:text-gray-700 transition-colors flex items-center justify-between group">
+            <span>🌍 Counties (47)</span>
+            <span class="text-[#F59E0B] opacity-0 group-hover:opacity-100 transition">&nearr;</span>
+        </a>
+        <a href="{{ route('national.admin') }}" class="px-4 py-2 text-xs text-gray-400 hover:text-gray-700 transition-colors flex items-center justify-between group">
+            <span>🏛 National Govt</span>
+            <span class="text-[#F59E0B] opacity-0 group-hover:opacity-100 transition">&nearr;</span>
+        </a>
+        <a href="{{ route('exhibitor.admin') }}" class="px-4 py-2 text-xs text-gray-400 hover:text-gray-700 transition-colors flex items-center justify-between group">
+            <span>👤 Exhibitors</span>
+            <span class="text-[#F59E0B] opacity-0 group-hover:opacity-100 transition">&nearr;</span>
+        </a>
+        <a href="{{ route('marketplace.index') }}" class="px-4 py-2 text-xs text-gray-400 hover:text-gray-700 transition-colors flex items-center justify-between group">
+            <span>🛒 Marketplace</span>
+            <span class="text-[#F59E0B] opacity-0 group-hover:opacity-100 transition">&nearr;</span>
+        </a>
+        <a href="{{ route('institution.admin', ['institution' => 'kakuzi-plc']) }}" class="px-4 py-2 text-xs text-gray-400 hover:text-gray-700 transition-colors flex items-center justify-between group">
+            <span>🏭 Institutions</span>
+            <span class="text-[#F59E0B] opacity-0 group-hover:opacity-100 transition">&nearr;</span>
+        </a>
+        <a href="/" class="flex items-center gap-3 px-4 py-4 border-t border-gray-200 mt-2 text-gray-400 hover:text-gray-700 text-xs transition-colors shrink-0">
             <svg class="w-4 h-4 shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 16l4-4m0 0l-4-4m4 4H7m6 4v1a3 3 0 01-3 3H6a3 3 0 01-3-3V7a3 3 0 013-3h4a3 3 0 013 3v1"/></svg>
-            <span>Exit</span>
+            <span>Exit to Site</span>
         </a>
     </div>
 
@@ -122,58 +143,92 @@
 
             {{-- ═══════ COUNTIES ═══════ --}}
             @if($tab === 'counties')
-            <div class="bg-white border border-gray-200 rounded-2xl p-6">
-                <h3 class="font-bold text-gray-900 mb-5">47 County Exhibitors — independent websites</h3>
-                 <div class="overflow-x-auto max-h-[320px] overflow-y-auto">
-                    <table class="w-full text-sm">
-                        <thead><tr class="text-left text-[10px] uppercase tracking-widest text-gray-400 border-b border-gray-100">
-                            <th class="pb-3 pr-4">County</th><th class="pb-3 pr-4">Products</th><th class="pb-3 pr-4">Trade Volume</th><th class="pb-3">Website</th>
-                        </tr></thead>
-                        <tbody>
-                        @foreach($counties as $c)
-                        <tr class="border-b border-gray-50 last:border-0">
-                            <td class="py-2.5 pr-4 font-semibold text-gray-900">{{ $c->name }}</td>
-                            <td class="py-2.5 pr-4 text-gray-500">{{ $c->product_count }}</td>
-                            <td class="py-2.5 pr-4 font-bold text-gray-900">KES {{ number_format($c->trade_volume) }}</td>
-                            <td class="py-2.5"><a href="{{ route('counties.show', $c->slug) }}" class="text-[10px] font-bold px-2.5 py-1 rounded-full border border-gray-200 text-gray-500 hover:text-gray-900">OPEN &nearr;</a></td>
-                        </tr>
-                        @endforeach
-                        </tbody>
-                    </table>
+            <div>
+                <h3 class="font-bold text-gray-900 mb-2">47 County Portals</h3>
+                <p class="text-gray-400 text-sm mb-6">Click any county to open its Muranga-style admin dashboard.</p>
+                <div class="grid md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-3">
+                    @foreach($counties as $c)
+                    <a href="{{ route('county.admin.pro', $c->slug) }}"
+                       class="flex items-center gap-3 bg-white border border-gray-200 rounded-xl px-4 py-3 hover:border-[#F59E0B]/40 hover:shadow-md transition-all group">
+                        <div class="w-9 h-9 rounded-lg bg-[#F59E0B]/10 flex items-center justify-center font-black text-[#F59E0B] text-xs shrink-0">{{ substr($c->name, 0, 2) }}</div>
+                        <div class="flex-1 min-w-0">
+                            <div class="font-semibold text-gray-900 text-sm truncate">{{ $c->name }}</div>
+                            <div class="text-[10px] text-gray-400">{{ $c->product_count }} products · KES {{ number_format($c->trade_volume) }}</div>
+                        </div>
+                        <svg class="w-4 h-4 text-gray-300 group-hover:text-[#F59E0B] shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"/></svg>
+                    </a>
+                    @endforeach
                 </div>
             </div>
             @endif
 
             {{-- ═══════ EXHIBITORS ═══════ --}}
             @if($tab === 'exhibitors')
-            <div class="bg-white border border-gray-200 rounded-2xl p-6">
+            <div>
                 <h3 class="font-bold text-gray-900 mb-5">Private Exhibitors ({{ $exhibitors->count() }})</h3>
-                @foreach($exhibitors as $e)
-                <div class="flex items-center gap-4 py-3 border-b border-gray-100 last:border-0">
-                    <div class="w-10 h-10 rounded-full bg-[#2D6A4F] flex items-center justify-center text-gray-900 font-black text-xs shrink-0">{{ strtoupper(substr($e->name, 0, 2)) }}</div>
-                    <div class="flex-1 min-w-0">
-                        <div class="font-semibold text-gray-900 text-sm">{{ $e->name }}</div>
-                        <div class="text-xs text-gray-400">{{ $e->email }} &middot; {{ $e->county?->name }} County &middot; {{ $e->product_count }} products</div>
+                <div class="grid md:grid-cols-2 gap-3">
+                    @foreach($exhibitors as $e)
+                    <div class="flex items-center gap-4 bg-white border border-gray-200 rounded-xl px-5 py-4 hover:shadow-md transition-all">
+                        <div class="w-11 h-11 rounded-full bg-gradient-to-br from-[#2D6A4F] to-[#40916C] flex items-center justify-center text-white font-black text-sm shrink-0">{{ strtoupper(substr($e->name, 0, 2)) }}</div>
+                        <div class="flex-1 min-w-0">
+                            <div class="font-semibold text-gray-900 text-sm">{{ $e->name }}</div>
+                            <div class="text-xs text-gray-400">{{ $e->email }} &middot; {{ $e->county?->name ?? 'N/A' }} &middot; {{ $e->product_count }} products</div>
+                        </div>
+                        <div class="flex gap-2 shrink-0">
+                            <a href="{{ route('exhibitor.site', \Illuminate\Support\Str::slug($e->name)) }}" class="text-[10px] font-bold px-2.5 py-1.5 rounded-lg bg-gray-100 text-gray-600 hover:bg-[#38BDF8]/10 hover:text-[#38BDF8] transition-all">Storefront</a>
+                            <a href="{{ route('exhibitor.admin') }}" class="text-[10px] font-bold px-2.5 py-1.5 rounded-lg bg-[#38BDF8]/10 text-[#38BDF8] hover:bg-[#38BDF8]/20 transition-all">Admin</a>
+                        </div>
                     </div>
-                    <a href="{{ route('exhibitor.site', \Illuminate\Support\Str::slug($e->name)) }}" class="text-[10px] font-bold px-2.5 py-1 rounded-full border border-gray-200 text-gray-500 hover:text-gray-900">STOREFRONT &nearr;</a>
+                    @endforeach
                 </div>
-                @endforeach
+            </div>
+            @endif
+
+            {{-- ═══════ INSTITUTIONS ═══════ --}}
+            @if($tab === 'institutions')
+            <div>
+                <h3 class="font-bold text-gray-900 mb-5">All Institutions ({{ $institutions->count() }})</h3>
+                <div class="grid md:grid-cols-2 lg:grid-cols-3 gap-3">
+                    @foreach($institutions as $inst)
+                    <a href="{{ route('institution.admin', $inst->slug) }}"
+                       class="flex items-center gap-3 bg-white border border-gray-200 rounded-xl px-4 py-3 hover:border-[#F59E0B]/40 hover:shadow-md transition-all group">
+                        <div class="w-9 h-9 rounded-lg bg-[#F59E0B]/10 flex items-center justify-center font-black text-[#F59E0B] text-xs shrink-0">{{ substr($inst->name, 0, 2) }}</div>
+                        <div class="flex-1 min-w-0">
+                            <div class="font-semibold text-gray-900 text-sm truncate">{{ $inst->name }}</div>
+                            <div class="text-[10px] text-gray-400">{{ $inst->county?->name }} · {{ count($inst->products ?? []) }} products</div>
+                        </div>
+                        <svg class="w-4 h-4 text-gray-300 group-hover:text-[#F59E0B] shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"/></svg>
+                    </a>
+                    @endforeach
+                </div>
             </div>
             @endif
 
             {{-- ═══════ NATIONAL ═══════ --}}
             @if($tab === 'national')
-            <div class="grid md:grid-cols-2 gap-4">
-                @foreach($ministries as $m)
-                <div class="bg-white border border-gray-200 rounded-2xl p-6">
-                    <div class="flex items-start justify-between mb-3">
-                        <div class="w-10 h-10 rounded-xl flex items-center justify-center text-gray-900 font-black text-xs" style="background: {{ $m->color ?: '#0EA5E9' }}">{{ $m->code }}</div>
-                        <a href="{{ route('national.site', $m->slug) }}" class="text-[10px] font-bold px-2.5 py-1 rounded-full border border-gray-200 text-gray-500 hover:text-gray-900">WEBSITE &nearr;</a>
-                    </div>
-                    <div class="font-bold text-gray-900 mb-1">{{ $m->name }}</div>
-                    <div class="text-[10px] font-bold uppercase tracking-widest text-gray-400">{{ $m->agencies->count() }} agencies</div>
+            <div>
+                <div class="flex items-center justify-between mb-4">
+                    <h3 class="font-bold text-gray-900">National Government Portals</h3>
+                    <a href="{{ route('national.admin') }}" class="text-xs font-bold text-[#F59E0B] hover:underline">Open National Admin &nearr;</a>
                 </div>
-                @endforeach
+                <div class="grid md:grid-cols-2 gap-4">
+                    @foreach($ministries as $m)
+                    <div class="bg-white border border-gray-200 rounded-2xl p-6 hover:shadow-md transition-all">
+                        <div class="flex items-start justify-between mb-3">
+                            <div class="flex items-center gap-3">
+                                <div class="w-10 h-10 rounded-xl flex items-center justify-center text-gray-900 font-black text-xs" style="background: {{ $m->color ?: '#0EA5E9' }}">{{ $m->code }}</div>
+                                <div>
+                                    <div class="font-bold text-gray-900">{{ $m->name }}</div>
+                                    <div class="text-[10px] text-gray-400">{{ $m->agencies->count() }} agencies</div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="flex gap-2 mt-3">
+                            <a href="{{ route('national.site', $m->slug) }}" class="text-[10px] font-bold px-3 py-1.5 rounded-lg bg-gray-100 text-gray-600 hover:bg-[#0EA5E9]/10 hover:text-[#0EA5E9] transition-all">View Public Site &nearr;</a>
+                        </div>
+                    </div>
+                    @endforeach
+                </div>
             </div>
             @endif
 
