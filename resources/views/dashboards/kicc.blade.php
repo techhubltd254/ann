@@ -144,19 +144,46 @@
             {{-- ═══════ COUNTIES ═══════ --}}
             @if($tab === 'counties')
             <div>
-                <h3 class="font-bold text-gray-900 mb-2">47 County Portals</h3>
-                <p class="text-gray-400 text-sm mb-6">Click any county to open its Muranga-style admin dashboard.</p>
-                <div class="grid md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-3">
+                <div class="flex items-center justify-between mb-4">
+                    <div>
+                        <h3 class="font-bold text-gray-900 text-lg">All 47 Counties</h3>
+                        <p class="text-gray-400 text-sm">Each county has its own Muranga-style admin. Click to manage, upload hero video/thumbnail.</p>
+                    </div>
+                    <span class="text-xs font-bold px-3 py-1 rounded-full bg-[#F59E0B]/10 text-[#F59E0B]">{{ $counties->count() }} counties</span>
+                </div>
+                <div class="grid sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-4">
                     @foreach($counties as $c)
-                    <a href="{{ route('county.admin.pro', $c->slug) }}"
-                       class="flex items-center gap-3 bg-white border border-gray-200 rounded-xl px-4 py-3 hover:border-[#F59E0B]/40 hover:shadow-md transition-all group">
-                        <div class="w-9 h-9 rounded-lg bg-[#F59E0B]/10 flex items-center justify-center font-black text-[#F59E0B] text-xs shrink-0">{{ substr($c->name, 0, 2) }}</div>
-                        <div class="flex-1 min-w-0">
-                            <div class="font-semibold text-gray-900 text-sm truncate">{{ $c->name }}</div>
-                            <div class="text-[10px] text-gray-400">{{ $c->product_count }} products · KES {{ number_format($c->trade_volume) }}</div>
+                    <div class="bg-white border border-gray-200 rounded-2xl overflow-hidden hover:shadow-md transition-all group">
+                        {{-- Hero video / thumbnail --}}
+                        <a href="{{ route('county.admin.pro', $c->slug) }}" class="block relative aspect-[16/9] bg-gradient-to-br from-[#0A1024] to-[#1a1a2e] overflow-hidden">
+                            @if($c->hero_video_url)
+                            <video autoplay muted loop playsinline preload="metadata" class="w-full h-full object-cover" onerror="this.style.display='none'">
+                                <source src="{{ $c->hero_video_url }}" type="video/mp4">
+                            </video>
+                            @elseif($c->hero_thumbnail)
+                            <img src="{{ $c->hero_thumbnail }}" alt="{{ $c->name }}" class="w-full h-full object-cover">
+                            @else
+                            <div class="w-full h-full flex items-center justify-center">
+                                <span class="text-4xl font-black text-white/20">{{ substr($c->name, 0, 2) }}</span>
+                            </div>
+                            @endif
+                            <div class="absolute bottom-0 left-0 right-0 bg-gradient-to-t from-black/70 to-transparent p-3">
+                                <div class="text-white font-bold text-sm">{{ $c->name }}</div>
+                                <div class="text-white/70 text-[10px]">{{ $c->product_count }} products · {{ $c->institution_count }} institutions</div>
+                            </div>
+                        </a>
+                        {{-- Actions --}}
+                        <div class="p-3 flex items-center justify-between gap-2">
+                            <a href="{{ route('county.admin.pro', $c->slug) }}" class="text-[10px] font-bold px-3 py-1.5 rounded-lg bg-[#F59E0B]/10 text-[#F59E0B] hover:bg-[#F59E0B]/20 transition-all shrink-0">Open Admin →</a>
+                            <div class="flex gap-1.5 shrink-0">
+                                <form method="POST" action="{{ route('kicc.admin.county.hero', $c->slug) }}" enctype="multipart/form-data" class="flex items-center gap-1.5">
+                                    @csrf
+                                    <input type="file" name="video" accept="video/mp4,video/webm" class="text-[9px] text-gray-400 w-24">
+                                    <button class="text-[10px] font-bold px-2.5 py-1.5 rounded-lg bg-gray-100 text-gray-600 hover:bg-gray-200 transition-all" title="Upload hero video">Upload</button>
+                                </form>
+                            </div>
                         </div>
-                        <svg class="w-4 h-4 text-gray-300 group-hover:text-[#F59E0B] shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"/></svg>
-                    </a>
+                    </div>
                     @endforeach
                 </div>
             </div>

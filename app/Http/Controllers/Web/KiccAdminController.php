@@ -58,9 +58,26 @@ class KiccAdminController extends Controller
             ->whereNotNull('users.county_id')
             ->selectRaw('users.county_id, SUM(escrow_transactions.amount) as v')
             ->groupBy('users.county_id')->pluck('v', 'county_id');
-        $counties = County::orderBy('name')->get()->map(function ($c) use ($productCounts, $tradeVolumes) {
+        $institutionCounts = \App\Models\CountyInstitution::selectRaw('county_id, COUNT(*) as c')
+            ->where('is_published', true)->groupBy('county_id')->pluck('c', 'county_id');
+
+        // Load hero video assets for all counties in one batch
+        $heroAssets = MediaAsset::where('owner_type', \App\Models\County::class)
+            ->whereIn('owner_id', County::pluck('id'))
+            ->where('slot', 'hero_video')
+            ->ready()
+            ->with('derivatives')
+            ->get()
+            ->keyBy('owner_id');
+
+        $counties = County::orderBy('name')->get()->map(function ($c) use ($productCounts, $tradeVolumes, $institutionCounts, $heroAssets) {
             $c->product_count = $productCounts[$c->id] ?? 0;
             $c->trade_volume = $tradeVolumes[$c->id] ?? 0;
+            $c->institution_count = $institutionCounts[$c->id] ?? 0;
+            $asset = $heroAssets->get($c->id);
+            $c->hero_video_url = $asset?->mp4Url() ?? $asset?->url();
+            $c->hero_thumbnail = $asset?->posterUrl() ?? $asset?->thumbnailUrl();
+            $c->hero_asset_id = $asset?->id;
             return $c;
         });
 
@@ -167,6 +184,41 @@ class KiccAdminController extends Controller
             'exit_code' => $exitCode,
             'output' => $output,
         ]);
+    }
+
+    public function uploadCountyHero(Request $request, string $slug, MediaLibraryService $library)
+    {
+        $this->authorizeKicc();
+
+        $county = County::where('slug', $slug)->firstOrFail();
+
+        $request->validate([
+            'video' => ['required', 'file', 'mimes:mp4,webm,mov,avi', 'max:512000'],
+        ]);
+
+        // Delete old hero asset for this county
+        MediaAsset::forSlot(County::class, $county->id, 'hero_video')->delete();
+
+        $asset = $library->store($request->file('video'), [
+            'owner_type' => County::class,
+            'owner_id' => $county->id,
+            'slot' => 'hero_video',
+            'disk' => 'r2',
+            'alt_text' => $county->name . ' County Hero Video',
+        ]);
+
+        $asset->forceFill(['status' => 'ready'])->save();
+        $asset->derivatives()->create([
+            'kind' => 'video_mp4',
+            'path' => $asset->path,
+            'mime' => $asset->mime,
+            'size_bytes' => $asset->size_bytes,
+            'width' => $asset->width,
+            'height' => $asset->height,
+            'variant' => '1080p',
+        ]);
+
+        return redirect()->route('kicc.admin', ['tab' => 'counties'])->with('success', $county->name . ' hero video uploaded.');
     }
 
     public function uploadHeroVideo(Request $request, MediaLibraryService $library)
