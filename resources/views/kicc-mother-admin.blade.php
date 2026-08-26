@@ -28,7 +28,7 @@
             </div>
             @endforeach
             <div class="px-3 pt-4 border-t border-white/5 space-y-1">
-                <a href="{{ route('county.admin') }}" class="sidebar-link sidebar-link-inactive"><svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 12l2-2m0 0l7-7 7 7M5 10v10a1 1 0 001 1h3m10-11l2 2m-2-2v10a1 1 0 01-1 1h-3m-6 0a1 1 0 001-1v-4a1 1 0 011-1h2a1 1 0 011 1v4a1 1 0 001 1m-6 0h6"/></svg><span>County Portals</span></a>
+                <a href="{{ route('kicc.admin', ['tab' => 'counties']) }}" class="sidebar-link sidebar-link-inactive"><svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 12l2-2m0 0l7-7 7 7M5 10v10a1 1 0 001 1h3m10-11l2 2m-2-2v10a1 1 0 01-1 1h-3m-6 0a1 1 0 001-1v-4a1 1 0 011-1h2a1 1 0 011 1v4a1 1 0 001 1m-6 0h6"/></svg><span>County Portals</span></a>
                 <a href="{{ route('national.admin') }}" class="sidebar-link sidebar-link-inactive"><svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 21V5a2 2 0 00-2-2H7a2 2 0 00-2 2v16m14 0h2m-2 0h-5m-9 0H3m2 0h5M9 7h1m-1 4h1m4-4h1m-1 4h1m-5 10v-5a1 1 0 011-1h2a1 1 0 011 1v5m-4 0h4"/></svg><span>National Government</span></a>
                 <form method="POST" action="{{ route('logout') }}">@csrf<button type="submit" class="sidebar-link sidebar-link-inactive w-full"><svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 16l4-4m0 0l-4-4m4 4H7m6 4v1a3 3 0 01-3 3H6a3 3 0 01-3-3V7a3 3 0 013-3h4a3 3 0 013 3v1"/></svg><span>Logout</span></button></form>
             </div>
@@ -55,9 +55,10 @@
         <main class="flex-1 overflow-y-auto p-6 scrollbar-hide">
             @if($errors->any())<div class="mb-4 px-5 py-3 rounded-xl bg-red-500/10 border border-red-500/20 text-red-400 text-sm">{{ $errors->first() }}</div>@endif
 
+            {{-- ═══════════ OVERVIEW ═══════════ --}}
             @if($tab === 'overview')
             <div class="grid grid-cols-2 lg:grid-cols-4 gap-4 mb-8">
-                <x-nexora-kpi title="Counties" value="47" growth="47 active trade boards" color="indigo" :sparkline="[44,45,46,46,47,47,47,47,47,47,47,47]" />
+                <x-nexora-kpi title="Counties" :value="number_format($stats['counties'])" growth="47 active trade boards" color="indigo" :sparkline="[44,45,46,46,47,47,47,47,47,47,47,47]" />
                 <x-nexora-kpi :title="'Users'" :value="number_format($stats['users'])" :growth="$stats['exhibitors'] . ' exhibitors'" color="emerald" />
                 <x-nexora-kpi :title="'Products'" :value="number_format($stats['products'])" :growth="$stats['orders'] . ' orders'" color="amber" />
                 <x-nexora-kpi title="Escrow" :value="'KES ' . number_format($stats['escrowTotal'])" :growth="'Held: ' . number_format($stats['escrowHeld'])" color="red" />
@@ -93,19 +94,242 @@
             </div>
             @endif
 
+            {{-- ═══════════ PORTALS ═══════════ --}}
             @if($tab === 'portals')
             <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
                 <div class="kpi-card border-2 border-rose-500/40"><div class="font-bold text-white">🏛 KICC Mother Admin</div><div class="text-xs text-zinc-400 mt-1">You are here</div></div>
-                <a href="{{ route('county.admin') }}" class="kpi-card"><div class="font-bold text-white">🗺 County Portals</div><div class="text-xs text-zinc-400 mt-1">47 counties — trade boards</div></a>
+                <a href="{{ route('kicc.admin', ['tab' => 'counties']) }}" class="kpi-card"><div class="font-bold text-white">🗺 County Portals</div><div class="text-xs text-zinc-400 mt-1">47 counties — trade boards</div></a>
                 <a href="{{ route('national.admin') }}" class="kpi-card"><div class="font-bold text-white">🏛 National Government</div><div class="text-xs text-zinc-400 mt-1">Ministries & agencies</div></a>
                 <a href="{{ route('exhibitor.admin') }}" class="kpi-card"><div class="font-bold text-white">👤 Private Exhibitors</div><div class="text-xs text-zinc-400 mt-1">Individual & SME portals</div></a>
             </div>
             @endif
 
+            {{-- ═══════════ COUNTIES (all 47) ═══════════ --}}
             @if($tab === 'counties')
-            <div class="flex gap-4 flex-wrap mb-6">@foreach([['Baringo','30','KES 145K'],['Bomet','36','KES 89K'],['Bungoma','47','KES 210K'],['Busia','39','KES 67K'],['Elgeyo-Marakwet','28','KES 112K'],['Embu','14','KES 95K'],['Garissa','7','KES 34K'],['Homa Bay','42','KES 78K']] as $c)<div class="kpi-card flex-1 min-w-[160px]"><div class="text-sm font-bold text-white">{{ $c[0] }}</div><div class="text-[10px] text-zinc-500">Board #{{ $c[1] }} · {{ $c[2] }}</div></div>@endforeach</div>
+            <div>
+                <div class="flex items-center justify-between mb-4">
+                    <div>
+                        <h3 class="font-bold text-white text-lg">All 47 Counties</h3>
+                        <p class="text-zinc-500 text-sm">Each county has its own Muranga-style admin. Click to manage, upload hero video/thumbnail.</p>
+                    </div>
+                    <span class="text-xs font-bold px-3 py-1 rounded-full bg-rose-500/10 text-rose-400 border border-rose-500/20">{{ $counties->count() }} counties</span>
+                </div>
+                <div class="grid sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-4">
+                    @foreach($counties as $c)
+                    <div class="glass-card rounded-2xl overflow-hidden hover-scale">
+                        <a href="{{ route('county.admin.pro', $c->slug) }}" class="block relative aspect-[16/9] bg-gradient-to-br from-[#0A1024] to-[#1a1a2e] overflow-hidden">
+                            @if($c->hero_video_url)
+                            <video autoplay muted loop playsinline preload="metadata" class="w-full h-full object-cover" onerror="this.style.display='none'">
+                                <source src="{{ $c->hero_video_url }}" type="video/mp4">
+                            </video>
+                            @elseif($c->hero_thumbnail)
+                            <img src="{{ $c->hero_thumbnail }}" alt="{{ $c->name }}" class="w-full h-full object-cover">
+                            @else
+                            <div class="w-full h-full flex items-center justify-center">
+                                <span class="text-4xl font-black text-white/20">{{ substr($c->name, 0, 2) }}</span>
+                            </div>
+                            @endif
+                            <div class="absolute bottom-0 left-0 right-0 bg-gradient-to-t from-black/80 to-transparent p-3">
+                                <div class="text-white font-bold text-sm">{{ $c->name }}</div>
+                                <div class="text-white/70 text-[10px]">{{ $c->product_count }} products · {{ $c->institution_count }} institutions · KES {{ number_format($c->trade_volume) }}</div>
+                            </div>
+                        </a>
+                        <div class="p-3 flex items-center justify-between gap-2">
+                            <a href="{{ route('county.admin.pro', $c->slug) }}" class="text-[10px] font-bold px-3 py-1.5 rounded-lg bg-rose-500/10 text-rose-400 hover:bg-rose-500/20 transition-all shrink-0">Open Admin →</a>
+                            <form method="POST" action="{{ route('kicc.admin.county.hero', $c->slug) }}" enctype="multipart/form-data" class="flex items-center gap-1.5">
+                                @csrf
+                                <input type="file" name="video" accept="video/mp4,video/webm" class="text-[9px] text-zinc-400 w-24">
+                                <button class="text-[10px] font-bold px-2.5 py-1.5 rounded-lg bg-white/5 text-zinc-300 hover:bg-white/10 transition-all" title="Upload hero video">Upload</button>
+                            </form>
+                        </div>
+                    </div>
+                    @endforeach
+                </div>
+            </div>
             @endif
 
+            {{-- ═══════════ INSTITUTIONS ═══════════ --}}
+            @if($tab === 'institutions')
+            <div>
+                <h3 class="font-bold text-white text-lg mb-4">All Institutions ({{ $institutions->count() }})</h3>
+                <div class="grid md:grid-cols-2 lg:grid-cols-3 gap-3">
+                    @foreach($institutions as $inst)
+                    <a href="{{ route('institution.admin', $inst->slug) }}"
+                       class="flex items-center gap-3 glass-card rounded-xl px-4 py-3 hover:border-rose-500/30 transition-all group">
+                        <div class="w-9 h-9 rounded-lg bg-rose-500/10 flex items-center justify-center font-black text-rose-400 text-xs shrink-0">{{ substr($inst->name, 0, 2) }}</div>
+                        <div class="flex-1 min-w-0">
+                            <div class="font-semibold text-white text-sm truncate">{{ $inst->name }}</div>
+                            <div class="text-[10px] text-zinc-500">{{ $inst->county?->name }} · {{ count($inst->products ?? []) }} products</div>
+                        </div>
+                        <svg class="w-4 h-4 text-zinc-600 group-hover:text-rose-400 shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"/></svg>
+                    </a>
+                    @endforeach
+                </div>
+            </div>
+            @endif
+
+            {{-- ═══════════ NATIONAL ═══════════ --}}
+            @if($tab === 'national')
+            <div>
+                <div class="flex items-center justify-between mb-4">
+                    <h3 class="font-bold text-white text-lg">National Government Portals</h3>
+                    <a href="{{ route('national.admin') }}" class="text-xs font-bold text-sky-400 hover:underline">Open National Admin →</a>
+                </div>
+                <div class="grid md:grid-cols-2 gap-4">
+                    @foreach($ministries as $m)
+                    <div class="glass-card rounded-2xl p-6">
+                        <div class="flex items-start justify-between mb-3">
+                            <div class="flex items-center gap-3">
+                                <div class="w-10 h-10 rounded-xl flex items-center justify-center text-white font-black text-xs" style="background: {{ $m->color ?: '#0EA5E9' }}">{{ $m->code }}</div>
+                                <div>
+                                    <div class="font-bold text-white">{{ $m->name }}</div>
+                                    <div class="text-[10px] text-zinc-500">{{ $m->agencies->count() }} agencies</div>
+                                </div>
+                            </div>
+                        </div>
+                        <a href="{{ route('national.site', $m->slug) }}" class="text-[10px] font-bold px-3 py-1.5 rounded-lg bg-sky-500/10 text-sky-400 hover:bg-sky-500/20 transition-all">View Public Site →</a>
+                    </div>
+                    @endforeach
+                </div>
+            </div>
+            @endif
+
+            {{-- ═══════════ EXHIBITORS ═══════════ --}}
+            @if($tab === 'exhibitors')
+            <div>
+                <h3 class="font-bold text-white text-lg mb-5">Private Exhibitors ({{ $exhibitors->count() }})</h3>
+                <div class="grid md:grid-cols-2 gap-3">
+                    @foreach($exhibitors as $e)
+                    <div class="flex items-center gap-4 glass-card rounded-xl px-5 py-4">
+                        <div class="w-11 h-11 rounded-full bg-gradient-to-br from-emerald-600 to-emerald-500 flex items-center justify-center text-white font-black text-sm shrink-0">{{ strtoupper(substr($e->name, 0, 2)) }}</div>
+                        <div class="flex-1 min-w-0">
+                            <div class="font-semibold text-white text-sm">{{ $e->name }}</div>
+                            <div class="text-xs text-zinc-500">{{ $e->email }} · {{ $e->county?->name ?? 'N/A' }} · {{ $e->product_count }} products</div>
+                        </div>
+                        <div class="flex gap-2 shrink-0">
+                            <a href="{{ route('exhibitor.site', \Illuminate\Support\Str::slug($e->name)) }}" class="text-[10px] font-bold px-2.5 py-1.5 rounded-lg bg-white/5 text-zinc-300 hover:bg-white/10 transition-all">Storefront</a>
+                            <a href="{{ route('exhibitor.admin') }}" class="text-[10px] font-bold px-2.5 py-1.5 rounded-lg bg-sky-500/10 text-sky-400 hover:bg-sky-500/20 transition-all">Admin</a>
+                        </div>
+                    </div>
+                    @endforeach
+                </div>
+            </div>
+            @endif
+
+            {{-- ═══════════ PROVIDERS ═══════════ --}}
+            @if($tab === 'providers')
+            <div class="grid lg:grid-cols-2 gap-6">
+                <div class="glass-card rounded-2xl p-6" style="max-height:600px; overflow-y:auto;">
+                    <h3 class="font-bold text-white mb-5">Certified Providers ({{ $providers->count() }})</h3>
+                    @foreach($providers as $p)
+                    <div class="flex items-center gap-4 py-3 border-b border-white/5 last:border-0">
+                        <div class="w-10 h-10 rounded-full bg-sky-500/20 flex items-center justify-center text-sky-400 font-black text-xs shrink-0">{{ strtoupper(substr($p->name, 0, 2)) }}</div>
+                        <div class="flex-1 min-w-0">
+                            <div class="font-semibold text-white text-sm">{{ $p->name }}</div>
+                            <div class="text-xs text-zinc-500">{{ $p->email }} · {{ ($p->metadata['provider_type'] ?? 'provider') }}</div>
+                        </div>
+                        @if($p->metadata['approved'] ?? false)
+                        <span class="text-[10px] font-bold px-2 py-0.5 rounded-full bg-emerald-500/10 text-emerald-400">CERTIFIED</span>
+                        @else
+                        <span class="text-[10px] font-bold px-2 py-0.5 rounded-full bg-amber-500/10 text-amber-400">PENDING</span>
+                        @endif
+                    </div>
+                    @endforeach
+                </div>
+                <div class="glass-card rounded-2xl p-6" style="max-height:600px; overflow-y:auto;">
+                    <h3 class="font-bold text-white mb-5">Certification Queue ({{ $pendingServices->count() }})</h3>
+                    @forelse($pendingServices as $s)
+                    <div class="flex items-center justify-between py-3 border-b border-white/5 last:border-0">
+                        <div>
+                            <div class="font-semibold text-white text-sm">{{ $s['label'] }}</div>
+                            <div class="text-xs text-zinc-500">KES {{ number_format($s['price']) }} · {{ $s['table'] }}</div>
+                        </div>
+                        <form method="POST" action="{{ route('kicc.admin.approve', [$s['table'], $s['id']]) }}">@csrf
+                            <button class="text-[10px] font-bold px-3 py-1.5 rounded-lg bg-emerald-500/20 text-emerald-400 hover:bg-emerald-500/30">CERTIFY ✓</button>
+                        </form>
+                    </div>
+                    @empty
+                    <p class="text-zinc-500 text-sm py-6 text-center">Queue clear — nothing awaiting certification.</p>
+                    @endforelse
+                </div>
+            </div>
+            @endif
+
+            {{-- ═══════════ ORDERS ═══════════ --}}
+            @if($tab === 'orders')
+            <div class="glass-card rounded-2xl p-6" style="max-height:600px; overflow-y:auto;">
+                <h3 class="font-bold text-white mb-5">All Orders</h3>
+                @forelse($orders as $o)
+                <div class="py-4 border-b border-white/5 last:border-0">
+                    <div class="flex items-center justify-between mb-2">
+                        <div class="font-semibold text-white text-sm">{{ $o->order_number }}</div>
+                        <div class="text-xs text-zinc-500">{{ $o->created_at?->format('d M Y H:i') }}</div>
+                    </div>
+                    @foreach($o->items as $item)
+                    <div class="flex justify-between text-xs text-zinc-500 py-1"><span>{{ $item->product_name }} × {{ $item->quantity }}</span><span class="font-bold text-white">KES {{ number_format($item->total) }}</span></div>
+                    @endforeach
+                    <div class="mt-2 flex gap-2">
+                        <span class="text-[10px] font-bold px-2 py-1 rounded-full bg-white/5 text-zinc-400">{{ strtoupper($o->payment_status ?? 'pending') }}</span>
+                        <span class="text-[10px] font-bold px-2 py-1 rounded-full bg-white/5 text-zinc-400">{{ strtoupper($o->fulfillment_status ?? 'unfulfilled') }}</span>
+                    </div>
+                </div>
+                @empty
+                <p class="text-zinc-500 text-sm py-6 text-center">No orders yet.</p>
+                @endforelse
+            </div>
+            @endif
+
+            {{-- ═══════════ ESCROW ═══════════ --}}
+            @if($tab === 'escrow')
+            <div class="glass-card rounded-2xl p-6" style="max-height:600px; overflow-y:auto;">
+                <h3 class="font-bold text-white mb-5">All Escrow Transactions</h3>
+                @forelse($escrows as $e)
+                <div class="flex items-center justify-between py-3 border-b border-white/5 last:border-0">
+                    <div>
+                        <div class="font-semibold text-white text-sm">{{ $e->escrow_id }}</div>
+                        <div class="text-xs text-zinc-500">{{ $e->buyer?->name ?? 'Guest' }} → {{ $e->seller?->name }} · {{ $e->created_at?->format('d M Y') }}</div>
+                    </div>
+                    <div class="flex items-center gap-3">
+                        <div class="text-right">
+                            <div class="font-black text-white">KES {{ number_format($e->amount) }}</div>
+                            <span class="text-[10px] font-bold px-2 py-0.5 rounded-full {{ $e->status === 'released' ? 'bg-emerald-500/10 text-emerald-400' : 'bg-amber-500/10 text-amber-400' }}">{{ strtoupper($e->status) }}</span>
+                        </div>
+                        @if($e->status === 'held')
+                        <form method="POST" action="{{ route('kicc.admin.escrow.release', $e->id) }}" onsubmit="return confirm('Release KES {{ number_format($e->amount) }} to {{ $e->seller?->name }}?')">@csrf<button class="text-[10px] font-bold px-2.5 py-1.5 rounded-lg bg-rose-500/20 text-rose-400 hover:bg-rose-500/30">RELEASE</button></form>
+                        @endif
+                    </div>
+                </div>
+                @empty
+                <p class="text-zinc-500 text-sm py-6 text-center">No escrow transactions yet.</p>
+                @endforelse
+            </div>
+            @endif
+
+            {{-- ═══════════ USERS ═══════════ --}}
+            @if($tab === 'users')
+            <div class="glass-card rounded-2xl p-6" style="max-height:600px; overflow-y:auto;">
+                <h3 class="font-bold text-white mb-5">Platform Users</h3>
+                <div class="overflow-x-auto">
+                    <table class="w-full text-xs">
+                        <thead><tr class="text-zinc-500 border-b border-white/5">
+                            <th class="text-left py-3 pr-4 font-semibold">Name</th><th class="text-left py-3 pr-4 font-semibold">Email</th><th class="text-left py-3 pr-4 font-semibold">Type</th><th class="text-left py-3 font-semibold">Roles</th>
+                        </tr></thead>
+                        <tbody class="divide-y divide-white/5">
+                        @foreach($users as $u)
+                        <tr class="hover:bg-white/5 transition">
+                            <td class="py-2.5 pr-4 font-semibold text-white">{{ $u->name }}</td>
+                            <td class="py-2.5 pr-4 text-zinc-400 text-xs">{{ $u->email }}</td>
+                            <td class="py-2.5 pr-4 text-zinc-500 text-xs">{{ $u->account_type }}</td>
+                            <td class="py-2.5 text-zinc-500 text-xs">{{ $u->roles->pluck('name')->implode(', ') ?: '—' }}</td>
+                        </tr>
+                        @endforeach
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+            @endif
+
+            {{-- ═══════════ HERO MEDIA ═══════════ --}}
             @if($tab === 'hero_media')
             <div class="glass-card rounded-2xl p-6 max-w-2xl">
                 <h3 class="font-bold text-white text-sm mb-4">Landing Page Hero Video</h3>
@@ -130,12 +354,6 @@
                     <input type="file" name="video" accept="video/mp4,video/webm" required class="flex-1">
                     <button class="btn-primary">Upload</button>
                 </form>
-            </div>
-            @endif
-
-            @if(in_array($tab, ['users','orders','exhibitors','providers','escrow','national']))
-            <div class="glass-card rounded-2xl p-6 text-center">
-                <div class="text-zinc-400 text-sm">{{ ucfirst($tab) }} management panel — coming soon in this view.</div>
             </div>
             @endif
 
