@@ -44,7 +44,7 @@
             <span>🛒 Marketplace</span>
             <span class="text-[#F59E0B] opacity-0 group-hover:opacity-100 transition">&nearr;</span>
         </a>
-        <a href="{{ route('institution.admin', ['institution' => 'kakuzi-plc']) }}" class="px-4 py-2 text-xs text-gray-400 hover:text-gray-700 transition-colors flex items-center justify-between group">
+        <a href="{{ route('kicc.admin', ['tab' => 'institutions']) }}" class="px-4 py-2 text-xs text-gray-400 hover:text-gray-700 transition-colors flex items-center justify-between group">
             <span>🏭 Institutions</span>
             <span class="text-[#F59E0B] opacity-0 group-hover:opacity-100 transition">&nearr;</span>
         </a>
@@ -111,7 +111,7 @@
                         <div class="mt-4 text-[#0EA5E9] text-xs font-bold uppercase tracking-widest">ENTER &nearr;</div>
                     </a>
                     {{-- County (all 47) --}}
-                    <a href="{{ route('counties.index') }}" class="group bg-white rounded-2xl border-2 border-gray-200 hover:border-[#0B1E57] p-6 text-center transition-all hover:shadow-xl card-hover">
+                    <a href="{{ route('kicc.admin', ['tab' => 'counties']) }}" class="group bg-white rounded-2xl border-2 border-gray-200 hover:border-[#0B1E57] p-6 text-center transition-all hover:shadow-xl card-hover">
                         <div class="w-14 h-14 bg-[#0B1E57]/10 rounded-2xl flex items-center justify-center mx-auto mb-4 group-hover:bg-[#0B1E57]/20 transition-colors">
                             <svg class="w-7 h-7 text-[#0B1E57]" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z"/><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 11a3 3 0 11-6 0 3 3 0 016 0z"/></svg>
                         </div>
@@ -273,8 +273,9 @@
 
             {{-- ═══════ ORDERS ═══════ --}}
             @if($tab === 'orders')
-            <div class="bg-white border border-gray-200 rounded-2xl p-6">
+            <div class="bg-white border border-gray-200 rounded-2xl p-6" style="max-height:600px; overflow-y:auto;">
                 <h3 class="font-bold text-gray-900 mb-5">All Orders</h3>
+                <div style="max-height:500px; overflow-y:auto;">
                 @forelse($orders as $o)
                 <div class="py-4 border-b border-gray-100 last:border-0">
                     <div class="flex items-center justify-between mb-2">
@@ -297,8 +298,9 @@
 
             {{-- ═══════ ESCROW ═══════ --}}
             @if($tab === 'escrow')
-            <div class="bg-white border border-gray-200 rounded-2xl p-6">
+            <div class="bg-white border border-gray-200 rounded-2xl p-6" style="max-height:600px; overflow-y:auto;">
                 <h3 class="font-bold text-gray-900 mb-5">All Escrow Transactions</h3>
+                <div style="max-height:500px; overflow-y:auto;">
                 @forelse($escrows as $e)
                 <div class="flex items-center justify-between py-3 border-b border-gray-100 last:border-0">
                     <div>
@@ -323,9 +325,9 @@
 
             {{-- ═══════ USERS ═══════ --}}
             @if($tab === 'users')
-            <div class="bg-white border border-gray-200 rounded-2xl p-6">
+            <div class="bg-white border border-gray-200 rounded-2xl p-6" style="max-height:600px;">
                 <h3 class="font-bold text-gray-900 mb-5">Platform Users</h3>
-                 <div class="overflow-x-auto max-h-[320px] overflow-y-auto">
+                 <div class="overflow-x-auto overflow-y-auto" style="max-height:480px;">
                     <table class="w-full text-sm">
                         <thead><tr class="text-left text-[10px] uppercase tracking-widest text-gray-400 border-b border-gray-100">
                             <th class="pb-3 pr-4">Name</th><th class="pb-3 pr-4">Email</th><th class="pb-3 pr-4">Type</th><th class="pb-3">Roles</th>
@@ -341,6 +343,57 @@
                         @endforeach
                         </tbody>
                     </table>
+                </div>
+            </div>
+            @endif
+
+            {{-- ═══════ HERO MEDIA ═══════ --}}
+            @if($tab === 'hero_media')
+            <div class="grid md:grid-cols-2 gap-6">
+                <div class="bg-white border border-gray-200 rounded-2xl p-6">
+                    <h3 class="font-bold text-gray-900 mb-4">Landing Page Hero Video</h3>
+                    @if($heroAsset)
+                    <div class="aspect-video bg-black rounded-xl overflow-hidden mb-4">
+                        <video autoplay muted loop playsinline class="w-full h-full object-cover">
+                            <source src="{{ $heroAsset->mp4Url() ?? $heroAsset->url() }}" type="video/mp4">
+                        </video>
+                    </div>
+                    <p class="text-xs text-gray-500 mb-4">Current video: {{ $heroAsset->original_name }}</p>
+                    <form method="POST" action="{{ route('kicc.admin.hero.delete') }}" onsubmit="return confirm('Delete the hero video?')">
+                        @csrf
+                        <button class="px-4 py-2 rounded-lg bg-red-50 text-red-600 text-xs font-bold hover:bg-red-100">Delete Video</button>
+                    </form>
+                    @else
+                    <div class="aspect-video bg-gray-100 rounded-xl mb-4 flex items-center justify-center">
+                        <svg class="w-12 h-12 text-gray-300" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 10l4.553-2.276A1 1 0 0121 8.618v6.764a1 1 0 01-1.447.894L15 14M5 18h8a2 2 0 002-2V8a2 2 0 00-2-2H5a2 2 0 00-2 2v8a2 2 0 002 2z"/></svg>
+                    </div>
+                    @endif
+                    <form method="POST" action="{{ route('kicc.admin.hero.upload') }}" enctype="multipart/form-data" class="space-y-3">
+                        @csrf
+                        <input type="file" name="video" accept="video/mp4,video/webm" required>
+                        <button class="w-full px-4 py-2 rounded-xl bg-[#F59E0B] text-white text-sm font-bold hover:bg-[#D98A00]">Upload New Hero Video</button>
+                    </form>
+                </div>
+                <div class="bg-white border border-gray-200 rounded-2xl p-6">
+                    <h3 class="font-bold text-gray-900 mb-4">Quick Actions</h3>
+                    <div class="space-y-3">
+                        <a href="{{ route('marketplace.index') }}" class="flex items-center gap-3 p-3 rounded-xl hover:bg-gray-50 transition-all">
+                            <span class="text-2xl">🛒</span>
+                            <div><div class="font-semibold text-sm">Marketplace</div><div class="text-xs text-gray-400">Browse all products</div></div>
+                        </a>
+                        <a href="{{ route('counties.index') }}" class="flex items-center gap-3 p-3 rounded-xl hover:bg-gray-50 transition-all">
+                            <span class="text-2xl">🌍</span>
+                            <div><div class="font-semibold text-sm">All Counties</div><div class="text-xs text-gray-400">47 county portals</div></div>
+                        </a>
+                        <a href="{{ route('national-government.index') }}" class="flex items-center gap-3 p-3 rounded-xl hover:bg-gray-50 transition-all">
+                            <span class="text-2xl">🏛</span>
+                            <div><div class="font-semibold text-sm">National Government</div><div class="text-xs text-gray-400">Ministries & agencies</div></div>
+                        </a>
+                        <a href="{{ route('institutions', 'kakuzi-plc') }}" class="flex items-center gap-3 p-3 rounded-xl hover:bg-gray-50 transition-all">
+                            <span class="text-2xl">🏭</span>
+                            <div><div class="font-semibold text-sm">Institutions</div><div class="text-xs text-gray-400">Kakuzi, Guka's, MUT & more</div></div>
+                        </a>
+                    </div>
                 </div>
             </div>
             @endif

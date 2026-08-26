@@ -33,6 +33,10 @@ class CountyPortalController extends Controller
     {
         $this->authorizeCounty();
         $user = Auth::user();
+        // KICC admins see all counties; county admins go to their own
+        if ($user->hasRole('kicc_admin')) {
+            return redirect()->route('kicc.admin', ['tab' => 'counties']);
+        }
         $county = County::findOrFail($user->county_id);
         return redirect()->route('county.admin.pro', $county->slug);
     }
