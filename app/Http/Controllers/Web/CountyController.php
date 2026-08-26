@@ -71,6 +71,11 @@ class CountyController extends Controller
         $exhibitions = $county->exhibitions()->where('status', 'published')->orderBy('start_date', 'desc')->take(3)->get();
         $linkedSectors = $county->sectors()->orderBy('name')->get();
 
+        // Resolve accurate thumbnails for every card (video poster → category fallback → branded placeholder)
+        $attractionThumbs = $featuredAttractions->mapWithKeys(fn($a) => [$a->id => \App\Services\ThumbnailService::for($a, $county->slug)]);
+        $hotelThumbs = $featuredHotels->mapWithKeys(fn($h) => [$h->id => \App\Services\ThumbnailService::for($h, $county->slug)]);
+        $productThumbs = $countyProducts->mapWithKeys(fn($p) => [$p->id => \App\Services\ThumbnailService::for($p, $county->slug)]);
+
         $countyMedia = MediaAsset::resolveSlot(County::class, $county->id, 'hero_video');
 
         // Batched sector video loading — single queries instead of per-sector
@@ -164,7 +169,7 @@ class CountyController extends Controller
             'county', 'sectors', 'sectorData',
             'featuredAttractions', 'featuredHotels', 'countyProducts',
             'exhibitions', 'linkedSectors', 'countyMedia', 'sectorVideos', 'sectorWebmVideos',
-            'sectorEntityVideos', 'sectorPitches'
+            'sectorEntityVideos', 'sectorPitches', 'attractionThumbs', 'hotelThumbs', 'productThumbs'
         ));
     }
 

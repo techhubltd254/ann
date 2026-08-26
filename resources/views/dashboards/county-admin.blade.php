@@ -158,6 +158,44 @@
                     <x-nexora-kpi title="Packages" :value="$stats['packages'] . ' Tiers'" :growth="$stats['institutions'] . ' institutions · ' . $stats['sector_entities'] . ' entities'" color="rose" :sparkline="[1,1,1,2,2,2,3,3,3,4,4,4]" />
                 </div>
 
+                {{-- ═══ Public Page Content Control — every section on the live county page ═══ --}}
+                <div class="glass-card rounded-2xl p-5">
+                    <div class="flex items-center justify-between mb-4">
+                        <div>
+                            <span class="text-[10px] font-semibold text-zinc-500 uppercase tracking-widest">Public Page Content</span>
+                            <h3 class="text-lg font-bold text-white mt-1">Control everything visitors see on your county page</h3>
+                        </div>
+                        <a href="{{ route('counties.show', $county->slug) }}" target="_blank" class="btn-ghost text-xs">View Live Page →</a>
+                    </div>
+                    <div class="grid grid-cols-2 md:grid-cols-3 xl:grid-cols-5 gap-3">
+                        <a href="{{ route('county.admin.pro', [$county->slug, 'tab' => 'sectors']) }}" class="group bg-white/5 border border-white/10 rounded-xl p-4 hover:border-indigo-500/40 hover:bg-indigo-500/5 transition-all">
+                            <div class="text-2xl mb-2">🏛</div>
+                            <div class="text-white text-sm font-bold">Government Departments</div>
+                            <div class="text-[10px] text-zinc-500 mt-1">Sectors & departments shown on your page</div>
+                        </a>
+                        <a href="{{ route('county.admin.pro', [$county->slug, 'tab' => 'attractions_list']) }}" class="group bg-white/5 border border-white/10 rounded-xl p-4 hover:border-indigo-500/40 hover:bg-indigo-500/5 transition-all">
+                            <div class="text-2xl mb-2">🌄</div>
+                            <div class="text-white text-sm font-bold">Top Attractions</div>
+                            <div class="text-[10px] text-zinc-500 mt-1">{{ $stats['attractions'] }} sites — fees, categories, images</div>
+                        </a>
+                        <a href="{{ route('county.admin.pro', [$county->slug, 'tab' => 'hotels']) }}" class="group bg-white/5 border border-white/10 rounded-xl p-4 hover:border-indigo-500/40 hover:bg-indigo-500/5 transition-all">
+                            <div class="text-2xl mb-2">🏨</div>
+                            <div class="text-white text-sm font-bold">Places to Stay</div>
+                            <div class="text-[10px] text-zinc-500 mt-1">{{ $stats['hotels'] }} hotels — ratings, images</div>
+                        </a>
+                        <a href="{{ route('county.admin.pro', [$county->slug, 'tab' => 'marketplace']) }}" class="group bg-white/5 border border-white/10 rounded-xl p-4 hover:border-indigo-500/40 hover:bg-indigo-500/5 transition-all">
+                            <div class="text-2xl mb-2">🛒</div>
+                            <div class="text-white text-sm font-bold">Commerce & Products</div>
+                            <div class="text-[10px] text-zinc-500 mt-1">{{ $stats['products'] }} products — prices, video, stock</div>
+                        </a>
+                        <a href="{{ route('county.admin.pro', [$county->slug, 'tab' => 'videos4d']) }}" class="group bg-white/5 border border-white/10 rounded-xl p-4 hover:border-indigo-500/40 hover:bg-indigo-500/5 transition-all">
+                            <div class="text-2xl mb-2">🎬</div>
+                            <div class="text-white text-sm font-bold">Sector Videos</div>
+                            <div class="text-[10px] text-zinc-500 mt-1">Hero & sector background videos</div>
+                        </a>
+                    </div>
+                </div>
+
                 {{-- Middle section: chart + donut + quick actions --}}
                 <div class="grid grid-cols-1 lg:grid-cols-3 gap-4">
                     {{-- Revenue chart --}}

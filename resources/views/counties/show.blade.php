@@ -177,8 +177,8 @@
                 @endphp
                 <a href="{{ route('attractions.show', $a->id) }}" class="bg-white border border-gray-200 rounded-2xl overflow-hidden hover:border-kicc-gold/40 transition-all group card-hover">
                     <div class="h-36 overflow-hidden relative">
-                        @if($a->image_url)
-                        <img src="{{ $a->image_url }}" alt="{{ $a->name }}" class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500" onerror="this.style.display='none'">
+                        @if($a->image_url || ($attractionThumbs[$a->id] ?? null))
+                        <img src="{{ $attractionThumbs[$a->id] ?? $a->image_url }}" alt="{{ $a->name }}" class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500" onerror="this.style.display='none'">
                         @endif
                         <div class="absolute inset-0 bg-gradient-to-t from-black/30 to-transparent pointer-events-none"></div>
                     </div>
@@ -211,8 +211,8 @@
                 @endphp
                 <div class="bg-white border border-gray-200 rounded-2xl overflow-hidden card-hover">
                     <div class="h-36 overflow-hidden relative">
-                        @if($h->image_url)
-                        <img src="{{ $h->image_url }}" alt="{{ $h->name }}" class="w-full h-full object-cover" onerror="this.style.display='none'">
+                        @if($h->image_url || ($hotelThumbs[$h->id] ?? null))
+                        <img src="{{ $hotelThumbs[$h->id] ?? $h->image_url }}" alt="{{ $h->name }}" class="w-full h-full object-cover" onerror="this.style.display='none'">
                         @endif
                         <div class="absolute inset-0 bg-gradient-to-t from-black/30 to-transparent pointer-events-none"></div>
                     </div>
@@ -246,8 +246,8 @@
                         <video autoplay muted loop playsinline preload="auto" class="absolute inset-0 w-full h-full object-cover" onerror="this.style.display='none'">
                             <source src="{{ $firstVideo }}" type="video/mp4">
                         </video>
-                        @elseif($p->image_url)
-                        <img src="{{ $p->image_url }}" alt="{{ $p->name }}" class="w-full h-full object-cover" onerror="this.style.display='none'">
+                        @elseif($p->image_url || ($productThumbs[$p->id] ?? null))
+                        <img src="{{ $productThumbs[$p->id] ?? $p->image_url }}" alt="{{ $p->name }}" class="w-full h-full object-cover" onerror="this.style.display='none'">
                         @endif
                         <div class="absolute inset-0 flex items-center justify-center {{ $firstVideo ? 'opacity-0' : '' }}">
                         </div>
