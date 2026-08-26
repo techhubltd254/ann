@@ -50,9 +50,9 @@ class InstitutionSyncService
 
                 // 1. Link sector to county if missing
                 if (!$county->sectors()->where('sector_id', $sector->id)->exists()) {
-                    $county->sectors()->attach($sector->id, ['display_on_tile' => 'yes', 'countyId' => $county->id]);
+                    $county->sectors()->attach($sector->id, ['display_on_tile' => 'yes', 'countyId' => $county->id, 'sectorId' => $sector->id]);
                 } else {
-                    $county->sectors()->updateExistingPivot($sector->id, ['display_on_tile' => 'yes', 'countyId' => $county->id]);
+                    $county->sectors()->updateExistingPivot($sector->id, ['display_on_tile' => 'yes', 'countyId' => $county->id, 'sectorId' => $sector->id]);
                 }
                 $summary['sectors']++;
 
@@ -221,10 +221,15 @@ class InstitutionSyncService
     protected function upsertCountyProduct(CountyInstitution $i, County $county, array $product): void
     {
         $name = $product['name'];
-        $cp = CountyProduct::where('county_id', $county->id)->where('name', $name)->first();
+        $ownerId = $i->user_id ?? null;
+        $cp = CountyProduct::where('county_id', $county->id)
+            ->when($ownerId, fn ($q) => $q->where('user_id', $ownerId))
+            ->where('name', $name)
+            ->first();
 
         $data = [
             'county_id' => $county->id,
+            'user_id' => $ownerId ?? 0,
             'name' => $name,
             'description' => $product['description'] ?? ($i->name . ' product'),
             'category' => $product['category'] ?? 'Food',
@@ -249,11 +254,11 @@ class InstitutionSyncService
     {
         $ownerId = $i->user_id ?? null;
         $name = $product['name'];
+        $slug = Str::slug($i->name . ' ' . $name . ' ' . $county->slug);
 
         $mp = Product::withTrashed()
             ->where('county_id', $county->id)
-            ->where('name', $name)
-            ->when($ownerId, fn ($q) => $q->where('user_id', $ownerId))
+            ->where('slug', $slug)
             ->first();
 
         $categoryId = $this->resolveCategoryId($product['category'] ?? null);
@@ -263,7 +268,7 @@ class InstitutionSyncService
             'user_id' => $ownerId ?? 0,
             'category_id' => $categoryId,
             'name' => $name,
-            'slug' => Str::slug($name . ' ' . $county->slug),
+            'slug' => $slug,
             'description' => $product['description'] ?? ($i->name . ' — ' . $name),
             'short_description' => Str::limit($product['description'] ?? ($i->name . ' — ' . $name), 120),
             'sku' => 'KICC-INS-' . strtoupper(Str::random(6)),
