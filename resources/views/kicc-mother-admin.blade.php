@@ -9,10 +9,10 @@
 
     <aside class="glass-nav flex flex-col w-64 shrink-0 z-30 overflow-y-auto">
         <div class="flex items-center gap-3 h-16 px-5 border-b border-white/5 shrink-0">
-            <div class="w-8 h-8 rounded-lg bg-gradient-to-br from-red-500 to-rose-600 flex items-center justify-center font-black text-white text-sm">K</div>
+            <img src="{{ media('kicc/kicc-logo.png') }}" alt="KICC" class="w-9 h-9 rounded-xl object-contain bg-white/10 p-1.5">
             <div>
-                <div class="text-white font-bold text-sm leading-tight">Nexora</div>
-                <div class="text-rose-400 text-[9px] font-bold tracking-[0.2em] uppercase">Mother Admin</div>
+                <div class="text-white font-bold text-sm leading-tight">KICC</div>
+                <div class="text-[#FFCD05] text-[9px] font-bold tracking-[0.2em] uppercase">Global Exhibition Admin</div>
             </div>
         </div>
         <div class="flex-1 px-3 py-4 space-y-6 scrollbar-hide">
@@ -354,6 +354,65 @@
                     <input type="file" name="video" accept="video/mp4,video/webm" required class="flex-1">
                     <button class="btn-primary">Upload</button>
                 </form>
+            </div>
+            @endif
+
+            {{-- ═══════════ PACKAGES (Exhibitor Subscriptions) ═══════════ --}}
+            @if($tab === 'packages')
+            <div>
+                <div class="flex items-center justify-between mb-4">
+                    <div>
+                        <h3 class="font-bold text-white text-lg">KICC Exhibitor Packages</h3>
+                        <p class="text-zinc-500 text-sm">Subscription tiers shown on every county page & marketplace</p>
+                    </div>
+                    <a href="{{ route('packages.index') }}" target="_blank" class="text-xs font-bold px-3 py-1.5 rounded-lg bg-rose-500/10 text-rose-400 hover:bg-rose-500/20 transition-all">View Public Packages →</a>
+                </div>
+                <div class="grid md:grid-cols-2 lg:grid-cols-4 gap-4 mb-6">
+                    @foreach($plans as $p)
+                    <div class="glass-card rounded-2xl p-5 {{ $p->slug === 'exhibitor-pro' ? 'border-2 border-[#FFCD05]/40' : '' }}">
+                        <div class="flex items-center justify-between mb-2">
+                            <span class="text-[10px] font-bold uppercase tracking-widest text-zinc-400">{{ $p->name }}</span>
+                            @if($p->slug === 'exhibitor-pro')
+                            <span class="text-[9px] font-bold px-2 py-0.5 rounded-full bg-[#FFCD05]/20 text-[#FFCD05]">POPULAR</span>
+                            @endif
+                        </div>
+                        <div class="text-2xl font-black text-white">KES {{ number_format($p->price) }}<span class="text-xs text-zinc-500 font-medium">/mo</span></div>
+                        <div class="text-[10px] text-zinc-500 mt-1">{{ $p->max_booths >= 999 ? 'Unlimited' : $p->max_booths }} booth{{ $p->max_booths > 1 ? 's' : '' }} · {{ $p->is_active ? 'Active' : 'Hidden' }}</div>
+                        <div class="mt-3 text-[10px] text-zinc-400 leading-relaxed">{{ $p->description ?? 'Exhibitor subscription tier' }}</div>
+                    </div>
+                    @endforeach
+                </div>
+                <div class="glass-card rounded-2xl p-6">
+                    <h4 class="font-bold text-white text-sm mb-4">Manage All Tiers ({{ $allPlans->count() }})</h4>
+                    <div class="space-y-3">
+                        @foreach($allPlans as $p)
+                        <form method="POST" action="{{ route('kicc.admin.plan.update', $p->id) }}" class="flex flex-wrap items-end gap-3 p-4 rounded-xl bg-white/5 border border-white/10">
+                            @csrf
+                            <div class="flex-1 min-w-[120px]">
+                                <label class="text-[9px] font-semibold text-zinc-500 uppercase tracking-widest block mb-1">Name</label>
+                                <input name="name" value="{{ $p->name }}" class="w-full bg-white/5 border border-white/10 rounded-lg px-3 py-2 text-sm text-white">
+                            </div>
+                            <div class="w-28">
+                                <label class="text-[9px] font-semibold text-zinc-500 uppercase tracking-widest block mb-1">Price KES</label>
+                                <input name="price" type="number" min="0" value="{{ $p->price }}" class="w-full bg-white/5 border border-white/10 rounded-lg px-3 py-2 text-sm text-white">
+                            </div>
+                            <div class="w-24">
+                                <label class="text-[9px] font-semibold text-zinc-500 uppercase tracking-widest block mb-1">Booths</label>
+                                <input name="max_booths" type="number" min="1" value="{{ $p->max_booths }}" class="w-full bg-white/5 border border-white/10 rounded-lg px-3 py-2 text-sm text-white">
+                            </div>
+                            <div class="flex items-center gap-2 pb-2">
+                                <input type="checkbox" name="is_active" value="1" {{ $p->is_active ? 'checked' : '' }} class="rounded border-zinc-600 bg-zinc-800" id="plan-active-{{ $p->id }}">
+                                <label for="plan-active-{{ $p->id }}" class="text-[10px] text-zinc-400">Active</label>
+                            </div>
+                            <div class="flex-1 min-w-[200px]">
+                                <label class="text-[9px] font-semibold text-zinc-500 uppercase tracking-widest block mb-1">Description</label>
+                                <input name="description" value="{{ $p->description }}" class="w-full bg-white/5 border border-white/10 rounded-lg px-3 py-2 text-sm text-white">
+                            </div>
+                            <button class="px-4 py-2 rounded-lg bg-rose-500/20 text-rose-400 hover:bg-rose-500/30 text-xs font-bold">Save</button>
+                        </form>
+                        @endforeach
+                    </div>
+                </div>
             </div>
             @endif
 

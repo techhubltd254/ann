@@ -94,6 +94,10 @@ class KiccAdminController extends Controller
 
         $heroAsset = MediaAsset::resolveSlot('landing_page', 1, 'hero_video');
 
+        // Subscription plans (Exhibitor Packages)
+        $plans = \App\Models\SubscriptionPlan::where('is_active', true)->orderBy('sort_order')->get();
+        $allPlans = \App\Models\SubscriptionPlan::orderBy('sort_order')->get();
+
         // Provider certification queue (pending services across travel providers)
         $providers = User::where('account_type', 'provider')->get();
         $pendingServices = collect()
@@ -114,6 +118,7 @@ class KiccAdminController extends Controller
             ['label' => 'Escrow', 'tab' => 'escrow', 'icon' => 'M12 8c-1.657 0-3 .895-3 2s1.343 2 3 2 3 .895 3 2-1.343 2-3 2m0-8c1.11 0 2.08.402 2.599 1M12 8V7m0 1v8m0 0v1m0-1c-1.11 0-2.08-.402-2.599-1'],
             ['label' => 'Users', 'tab' => 'users', 'icon' => 'M12 4.354a4 4 0 110 5.292M15 21H3v-1a6 6 0 0112 0v1zm0 0h6v-1a6 6 0 00-9-5.197'],
             ['label' => 'Hero Media', 'tab' => 'hero_media', 'icon' => 'M15 10l4.553-2.276A1 1 0 0121 8.618v6.764a1 1 0 01-1.447.894L15 14M5 18h8a2 2 0 002-2V8a2 2 0 00-2-2H5a2 2 0 00-2 2v8a2 2 0 002 2z'],
+            ['label' => 'Packages', 'tab' => 'packages', 'icon' => 'M3 3h2l.4 2M7 13h10l4-8H5.4M7 13L5.4 5M7 13l-2.293 2.293c-.63.63-.184 1.707.707 1.707H17m0 0a2 2 0 100 4 2 2 0 000-4zm-8 2a2 2 0 11-4 0 2 2 0 014 0z'],
             ['label' => 'Analytics', 'tab' => 'analytics', 'icon' => 'M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z'],
         ];
 
@@ -123,6 +128,7 @@ class KiccAdminController extends Controller
             'stats', 'counties', 'exhibitors', 'ministries',
             'orders', 'escrows', 'users', 'providers', 'institutions',
             'pendingServices', 'navItems', 'tab', 'heroAsset', 'analytics',
+            'plans', 'allPlans',
         ));
     }
 
@@ -219,6 +225,25 @@ class KiccAdminController extends Controller
         ]);
 
         return redirect()->route('kicc.admin', ['tab' => 'counties'])->with('success', $county->name . ' hero video uploaded.');
+    }
+
+    /** Update an exhibitor subscription plan from the mother admin. */
+    public function updatePlan(Request $request, int $id)
+    {
+        $this->authorizeKicc();
+        $plan = \App\Models\SubscriptionPlan::findOrFail($id);
+        $data = $request->validate([
+            'name' => 'required|string|max:255',
+            'price' => 'required|numeric|min:0',
+            'max_booths' => 'required|integer|min:1',
+            'is_active' => 'nullable|boolean',
+            'description' => 'nullable|string|max:2000',
+        ]);
+        $plan->update(array_merge($data, [
+            'is_active' => $request->boolean('is_active'),
+        ]));
+        \App\Services\N8nService::fire('package_updated', ['plan_id' => $plan->id, 'name' => $plan->name, 'price' => $plan->price]);
+        return redirect()->route('kicc.admin', ['tab' => 'packages'])->with('success', "Package '{$plan->name}' updated.");
     }
 
     public function uploadHeroVideo(Request $request, MediaLibraryService $library)
