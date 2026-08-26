@@ -172,7 +172,7 @@ class AuthController extends Controller
         $data = $request->validate([
             'login' => 'required|string',
             'password' => 'required|string',
-            'admin_type' => 'nullable|string|in:kicc,national,county',
+            'admin_type' => 'nullable|string|in:kicc,national,county,exhibitor',
             'county_id' => 'nullable|integer|exists:counties,id',
         ]);
 
@@ -202,6 +202,10 @@ class AuthController extends Controller
                 $county = \App\Models\County::find($countyId);
                 if ($county) return redirect()->route('county.admin.pro', $county->slug);
                 return redirect()->route('dashboard.county');
+            }
+            if ($adminType === 'exhibitor' && ($user->hasRole('exhibitor') || $user->account_type === 'exhibitor')) {
+                return redirect()->route('exhibitor.admin')
+                    ->with('success', "Welcome back, {$user->name}!");
             }
             // Fallback: redirect by user's actual role / account type
             return app(\App\Services\Auth\LoginRedirectService::class)->redirect($user);
