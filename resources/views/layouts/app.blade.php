@@ -243,17 +243,95 @@
             background: linear-gradient(135deg, rgba(144,28,30,0.06), rgba(255,205,5,0.08));
         }
 
-        /* Skeleton loader (async pipeline status) */
-        .skeleton {
-            background: linear-gradient(90deg, #f1f3f7 25%, #e5e9f0 50%, #f1f3f7 75%);
-            background-size: 200% 100%;
-            animation: skeleton-shimmer 1.4s ease infinite;
+        /* ─── KICC BRAND DESIGN TOKENS (sourced from kicc.co.ke) ─── */
+        :root {
+            --kicc-navy: #0B1E57;
+            --kicc-navy-light: #1a3070;
+            --kicc-red: #901C1E;
+            --kicc-red-light: #b71c1c;
+            --kicc-gold: #FFCD05;
+            --kicc-gold-light: #ffe44d;
+            --kicc-dark: #0A1024;
+            --kicc-text: #5A6480;
+            --kicc-text-light: #8a94a6;
+            --kicc-bg: #F9FAFB;
+            --kicc-bg-alt: #f0f2f5;
+            --kicc-border: #E5E7EB;
+            --kicc-success: #059669;
+            --kicc-warning: #D97706;
+            --kicc-error: #DC2626;
+            --kicc-info: #0284C7;
+            --focus-ring: 0 0 0 3px rgba(144, 28, 30, 0.35);
+            --shadow-sm: 0 1px 2px rgba(11, 30, 87, 0.06);
+            --shadow-md: 0 4px 12px rgba(11, 30, 87, 0.08);
+            --shadow-lg: 0 8px 32px rgba(11, 30, 87, 0.12);
+            --radius-sm: 0.5rem;
+            --radius-md: 0.75rem;
+            --radius-lg: 1rem;
+            --radius-xl: 1.5rem;
         }
-        @keyframes skeleton-shimmer {
-            0% { background-position: 200% 0; }
-            100% { background-position: -200% 0; }
-        }
-    /* Responsive touch targets */
+
+        /* ─── SKELETON LOADERS ─── */
+        .skeleton { background: linear-gradient(90deg, #e5e7eb 25%, #f3f4f6 50%, #e5e7eb 75%); background-size: 200% 100%; animation: skeleton-shimmer 1.5s ease infinite; border-radius: var(--radius-sm); }
+        .skeleton-dark { background: linear-gradient(90deg, rgba(255,255,255,0.06) 25%, rgba(255,255,255,0.12) 50%, rgba(255,255,255,0.06) 75%); background-size: 200% 100%; animation: skeleton-shimmer 1.5s ease infinite; }
+        .skeleton-text { height: 0.875rem; margin-bottom: 0.5rem; width: 80%; }
+        .skeleton-title { height: 1.25rem; margin-bottom: 0.75rem; width: 60%; }
+        .skeleton-avatar { width: 2.5rem; height: 2.5rem; border-radius: 9999px; }
+        .skeleton-card { height: 12rem; border-radius: var(--radius-lg); }
+        .skeleton-image { aspect-ratio: 4/3; border-radius: var(--radius-md); }
+        @keyframes skeleton-shimmer { 0% { background-position: 200% 0; } 100% { background-position: -200% 0; } }
+
+        /* ─── FOCUS / ACCESSIBILITY ─── */
+        *:focus-visible { outline: none; box-shadow: var(--focus-ring); border-radius: var(--radius-sm); }
+        a:focus-visible, button:focus-visible, input:focus-visible, select:focus-visible, textarea:focus-visible { box-shadow: var(--focus-ring); }
+        .skip-link { position: absolute; top: -100%; left: 1rem; padding: 0.5rem 1rem; background: var(--kicc-navy); color: white; z-index: 10000; border-radius: var(--radius-sm); font-weight: 600; transition: top 0.2s; }
+        .skip-link:focus { top: 0.5rem; }
+        @media (prefers-reduced-motion: reduce) { *, *::before, *::after { animation-duration: 0.01ms !important; animation-iteration-count: 1 !important; transition-duration: 0.01ms !important; } }
+        .sr-only { position: absolute; width: 1px; height: 1px; padding: 0; margin: -1px; overflow: hidden; clip: rect(0,0,0,0); white-space: nowrap; border-width: 0; }
+
+        /* ─── KICC SEMANTIC BUTTONS ─── */
+        .btn-kicc { display: inline-flex; align-items: center; justify-content: center; gap: 0.5rem; font-weight: 700; font-size: 0.8125rem; padding: 0.625rem 1.25rem; border-radius: var(--radius-md); transition: all 0.2s; cursor: pointer; border: none; min-height: 44px; min-width: 44px; }
+        .btn-kicc-primary { background: var(--kicc-red); color: white; box-shadow: var(--shadow-sm); }
+        .btn-kicc-primary:hover { background: var(--kicc-red-light); box-shadow: var(--shadow-md); transform: translateY(-1px); }
+        .btn-kicc-gold { background: var(--kicc-gold); color: var(--kicc-dark); box-shadow: var(--shadow-sm); }
+        .btn-kicc-gold:hover { background: var(--kicc-gold-light); box-shadow: var(--shadow-md); transform: translateY(-1px); }
+        .btn-kicc-outline { background: transparent; color: var(--kicc-navy); border: 1.5px solid var(--kicc-border); }
+        .btn-kicc-outline:hover { border-color: var(--kicc-red); color: var(--kicc-red); background: rgba(144,28,30,0.04); }
+        .btn-kicc-ghost { background: transparent; color: var(--kicc-text); border: none; }
+        .btn-kicc-ghost:hover { background: var(--kicc-bg-alt); color: var(--kicc-dark); }
+
+        /* ─── KICC CARD VARIANTS ─── */
+        .card-kicc { background: white; border: 1px solid var(--kicc-border); border-radius: var(--radius-lg); box-shadow: var(--shadow-sm); transition: all 0.25s; }
+        .card-kicc:hover { box-shadow: var(--shadow-md); border-color: rgba(144,28,30,0.2); }
+        .card-kicc-flush { border-radius: var(--radius-lg); overflow: hidden; }
+        .card-kicc-glass { background: rgba(255,255,255,0.72); backdrop-filter: blur(18px) saturate(1.5); border: 1px solid rgba(255,255,255,0.55); box-shadow: var(--shadow-md); }
+
+        /* ─── KICC BADGES ─── */
+        .badge-kicc { display: inline-flex; align-items: center; padding: 0.125rem 0.625rem; border-radius: 9999px; font-size: 0.6875rem; font-weight: 700; text-transform: uppercase; letter-spacing: 0.05em; }
+        .badge-kicc-red { background: rgba(144,28,30,0.1); color: var(--kicc-red); border: 1px solid rgba(144,28,30,0.2); }
+        .badge-kicc-gold { background: rgba(255,205,5,0.15); color: #8B6914; border: 1px solid rgba(255,205,5,0.3); }
+        .badge-kicc-green { background: rgba(5,150,105,0.1); color: var(--kicc-success); border: 1px solid rgba(5,150,105,0.2); }
+        .badge-kicc-blue { background: rgba(2,132,199,0.1); color: var(--kicc-info); border: 1px solid rgba(2,132,199,0.2); }
+
+        /* ─── STATS / KPI ─── */
+        .kpi-kicc { padding: 1.25rem; border-radius: var(--radius-lg); background: white; border: 1px solid var(--kicc-border); box-shadow: var(--shadow-sm); }
+        .kpi-kicc-value { font-size: 1.75rem; font-weight: 900; color: var(--kicc-navy); line-height: 1.1; }
+        .kpi-kicc-label { font-size: 0.75rem; font-weight: 600; color: var(--kicc-text); text-transform: uppercase; letter-spacing: 0.05em; margin-top: 0.25rem; }
+
+        /* ─── FORM ELEMENTS ─── */
+        .input-kicc { width: 100%; padding: 0.625rem 0.875rem; border: 1.5px solid var(--kicc-border); border-radius: var(--radius-md); font-size: 0.875rem; color: var(--kicc-dark); background: white; transition: border-color 0.2s, box-shadow 0.2s; min-height: 44px; }
+        .input-kicc:focus { border-color: var(--kicc-red); box-shadow: 0 0 0 3px rgba(144,28,30,0.12); outline: none; }
+        .input-kicc::placeholder { color: var(--kicc-text-light); }
+        .label-kicc { display: block; font-size: 0.75rem; font-weight: 600; color: var(--kicc-text); text-transform: uppercase; letter-spacing: 0.05em; margin-bottom: 0.375rem; }
+
+        /* ─── TABLES ─── */
+        .table-kicc { width: 100%; border-collapse: collapse; font-size: 0.8125rem; }
+        .table-kicc th { text-align: left; padding: 0.75rem 1rem; font-weight: 600; color: var(--kicc-text); text-transform: uppercase; font-size: 0.6875rem; letter-spacing: 0.05em; border-bottom: 1px solid var(--kicc-border); background: var(--kicc-bg); }
+        .table-kicc td { padding: 0.75rem 1rem; border-bottom: 1px solid var(--kicc-border); color: var(--kicc-dark); }
+        .table-kicc tr:hover td { background: rgba(144,28,30,0.02); }
+        .table-kicc-wrap { overflow-x: auto; border-radius: var(--radius-lg); border: 1px solid var(--kicc-border); }
+
+        /* ─── RESPONSIVE UTILITIES ─── */
         @media (max-width: 640px) {
             .nav-link { padding: 0.625rem 0.75rem; font-size: 0.75rem; }
             .h1-responsive { font-size: 1.75rem !important; line-height: 1.2 !important; }
@@ -280,10 +358,11 @@
     </script>
 </head>
 <body class="antialiased text-gray-900 bg-[#F9FAFB]">
+    <a href="#main-content" class="skip-link" aria-label="Skip to main content">Skip to main content</a>
     <div id="kicc-3d-bg"></div>
     {{-- NAV --}}
     <nav x-data="{ scrolled: false, open: false }" x-init="window.addEventListener('scroll', () => scrolled = window.scrollY > 40)"
-          class="fixed top-0 left-0 right-0 z-50 transition-all duration-500 h-20"
+          class="fixed top-0 left-0 right-0 z-50 transition-all duration-500 h-20" role="navigation" aria-label="Main navigation"
           :class="scrolled ? 'bg-white backdrop-blur-xl border-b border-gray-200 shadow-lg shadow-[#0EA5E9]/5' : 'bg-transparent'">
         <div class="max-w-7xl mx-auto px-5 h-full flex items-center justify-between gap-4">
             <a href="/" class="flex items-center gap-3 shrink-0 group">
@@ -358,7 +437,7 @@
         </div>
     </nav>
 
-    <main class="min-h-screen pt-20 relative z-10">
+    <main id="main-content" class="min-h-screen pt-20 relative z-10">
         @yield('content')
     </main>
 
