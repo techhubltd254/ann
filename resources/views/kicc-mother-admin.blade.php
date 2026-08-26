@@ -19,7 +19,6 @@
             @foreach($navItems as $item)
             <div class="space-y-1">
                 <a href="{{ route('kicc.admin', ['tab' => $item['tab']]) }}"
-                   @click.prevent="setTab('{{ $item['tab'] }}')"
                    class="sidebar-link"
                    :class="tab === '{{ $item['tab'] }}' ? 'sidebar-link-active' : 'sidebar-link-inactive'">
                     <svg class="w-4 h-4 shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="{{ $item['icon'] }}"/></svg>
@@ -40,7 +39,7 @@
             <div class="flex items-center gap-2 text-xs text-zinc-500">
                 <span>KICC Mother Admin</span>
                 <span>/</span>
-                <span class="text-rose-400 font-medium" x-text="tab.charAt(0).toUpperCase()+tab.slice(1)"></span>
+                <span class="text-rose-400 font-medium">{{ ucfirst($tab) }}</span>
             </div>
             <div class="flex items-center gap-3">
                 @if(session('success'))
