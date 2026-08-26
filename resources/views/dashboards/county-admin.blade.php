@@ -148,14 +148,14 @@
             <div class="space-y-6">
                 {{-- 8-card KPI grid --}}
                 <div class="grid grid-cols-2 md:grid-cols-3 xl:grid-cols-4 gap-3.5">
-                    <x-nexora-kpi title="County Products" :value="$stats['products'] . ' Active'" growth="+2 this month" color="indigo" :sparkline="[8,9,9,10,11,11,11,12,12,13,13,13]" />
-                    <x-nexora-kpi title="Attractions" :value="$stats['attractions'] . ' Sites'" growth="Featuring Kanunga, Twin Falls" color="cyan" :sparkline="[5,5,6,6,6,7,7,7,8,8,9,9]" />
-                    <x-nexora-kpi title="Hotels" :value="$stats['hotels'] . ' Partners'" growth="Avg. rating 4.2★" color="emerald" :sparkline="[2,2,3,3,3,3,4,4,4,4,4,4]" />
-                    <x-nexora-kpi title="Marketplace" :value="$stats['marketplaceProducts'] . ' Active'" growth="↑ 12% vs last month" color="amber" :sparkline="[10,11,12,13,14,15,16,16,17,17,18,18]" />
-                    <x-nexora-kpi title="Orders" :value="$stats['orders']" growth="↑ 18.4% vs last quarter" color="emerald" :sparkline="[80,95,102,110,125,130,128,135,140,138,142,142]" />
-                    <x-nexora-kpi title="Total Revenue" :value="'KES ' . number_format($stats['revenue'])" growth="↑ 18.4% since last quarter" color="indigo" :sparkline="[120,145,160,180,220,250,280,310,350,380,420,480]" />
-                    <x-nexora-kpi title="Sector Images" :value="count($sectorImages) . ' Managed'" growth="Batch RAW/CR3 ready" color="violet" :sparkline="[40,55,70,85,95,105,110,115,120,124,127,128]" />
-                    <x-nexora-kpi title="Packages" :value="$plans->count() . ' Tiers'" growth="Tourism, Business, Premium" color="rose" :sparkline="[1,1,1,2,2,2,3,3,3,4,4,4]" />
+                    <x-nexora-kpi title="County Products" :value="$stats['products'] . ' Active'" :growth="($stats['products_new'] ?? 0) . ' new this month'" color="indigo" :sparkline="[8,9,9,10,11,11,11,12,12,13,13,13]" />
+                    <x-nexora-kpi title="Attractions" :value="$stats['attractions'] . ' Sites'" :growth="($stats['top_attractions'] ?? '') ? 'Featuring ' . $stats['top_attractions'] : 'Explore county sites'" color="cyan" :sparkline="[5,5,6,6,6,7,7,7,8,8,9,9]" />
+                    <x-nexora-kpi title="Hotels" :value="$stats['hotels'] . ' Partners'" :growth="($stats['hotel_rating'] ?? 0) > 0 ? 'Avg. rating ' . $stats['hotel_rating'] . '★' : 'Hospitality partners'" color="emerald" :sparkline="[2,2,3,3,3,3,4,4,4,4,4,4]" />
+                    <x-nexora-kpi title="Marketplace" :value="$stats['marketplaceProducts'] . ' Active'" :growth="($stats['marketplace_new'] ?? 0) . ' new listings'" color="amber" :sparkline="[10,11,12,13,14,15,16,16,17,17,18,18]" />
+                    <x-nexora-kpi title="Orders" :value="$stats['orders']" :growth="$stats['orders'] . ' lifetime orders'" color="emerald" :sparkline="[80,95,102,110,125,130,128,135,140,138,142,142]" />
+                    <x-nexora-kpi title="Total Revenue" :value="'KES ' . number_format($stats['revenue'])" :growth="$stats['revenue'] > 0 ? 'Real escrow releases' : 'Awaiting first sale'" color="indigo" :sparkline="[120,145,160,180,220,250,280,310,350,380,420,480]" />
+                    <x-nexora-kpi title="Sector Images" :value="$stats['sector_images'] . ' Managed'" growth="Media library" color="violet" :sparkline="[40,55,70,85,95,105,110,115,120,124,127,128]" />
+                    <x-nexora-kpi title="Packages" :value="$stats['packages'] . ' Tiers'" :growth="$stats['institutions'] . ' institutions · ' . $stats['sector_entities'] . ' entities'" color="rose" :sparkline="[1,1,1,2,2,2,3,3,3,4,4,4]" />
                 </div>
 
                 {{-- Middle section: chart + donut + quick actions --}}
@@ -306,7 +306,7 @@
                             <svg class="w-8 h-8 text-indigo-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 10l4.553-2.276A1 1 0 0121 8.618v6.764a1 1 0 01-1.447.894L15 14M5 18h8a2 2 0 002-2V8a2 2 0 00-2-2H5a2 2 0 00-2 2v8a2 2 0 002 2z"/></svg>
                         </div>
                         <h3 class="text-sm font-semibold text-zinc-200 mb-1">No 4D Media Yet</h3>
-                        <p class="text-xs text-zinc-500 mb-4">Upload volumetric scenes for Kanunga Falls, Twin Falls, Elipa Hotel, and more</p>
+                        <p class="text-xs text-zinc-500 mb-4">Upload volumetric scenes of this county's attractions, hotels, and landmarks</p>
                         <button class="btn-primary text-xs">Upload Your First Scene</button>
                     </div>
                     @endforelse

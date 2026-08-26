@@ -86,6 +86,15 @@ class CountyAdminController extends Controller
             'marketplaceProducts' => $marketplaceProducts->count(),
             'orders' => $totalOrders,
             'revenue' => $totalRevenue,
+            'sector_images' => count($sectorImages ?? []),
+            'packages' => $plans->count(),
+            // Dynamic KPI descriptors
+            'top_attractions' => $attractions->take(2)->pluck('name')->join(', '),
+            'hotel_rating' => $hotels->count() > 0 ? round($hotels->avg('star_rating') ?: 0, 1) : null,
+            'products_new' => $products->where('created_at', '>=', now()->subMonth())->count(),
+            'marketplace_new' => $marketplaceProducts->where('created_at', '>=', now()->subMonth())->count(),
+            'institutions' => $institutions->count(),
+            'sector_entities' => $sectorEntities->count(),
         ];
 
         $navItems = [
