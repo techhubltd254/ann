@@ -63,7 +63,7 @@
 <script>
 (function() {
     var searchInput = document.getElementById('kicc-search-input');
-    var regionButtons = document.querySelectorAll('[data-region]');
+    var regionButtons = document.querySelectorAll('#kicc-region-buttons [data-region]');
     var countyCards = document.querySelectorAll('#kicc-county-strip-inner .kicc-county-card');
     var countEl = document.getElementById('kicc-county-count');
     var stripInner = document.getElementById('kicc-county-strip-inner');

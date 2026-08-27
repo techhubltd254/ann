@@ -47,7 +47,7 @@ class HomeController extends Controller
         });
 
         // Hydrate models after cache read (never cache Eloquent collections in Redis)
-        $counties = County::whereIn('id', $ids['countyIds'] ?? [])->orderBy('name')->get(['id', 'name', 'slug', 'economic_zone']);
+        $counties = County::whereIn('id', $ids['countyIds'] ?? [])->orderBy('name')->get(['id', 'name', 'slug', 'economic_zone', 'former_province']);
         $featuredExhibitions = Exhibition::with('county')->whereIn('id', $ids['exhibitionIds'] ?? [])->orderBy('start_date')->get();
         $products = Product::with(['county', 'category', 'variants'])->whereIn('id', $ids['productIds'] ?? [])->latest()->get();
         $venues = Venue::whereIn('id', $ids['venueIds'] ?? [])->orderBy('name')->get();
