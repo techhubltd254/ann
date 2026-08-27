@@ -37,15 +37,28 @@
         </div>
         <div class="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-6 gap-4" id="county-grid">
             @foreach($counties as $c)
+            @php
+            $ch = $countyHeroes[$c->slug] ?? null;
+            @endphp
             <a href="{{ route('counties.show', $c->slug) }}"
                data-name="{{ strtolower($c->name) }}"
                data-region="{{ $c->former_province ?? '' }}"
                class="county-card group bg-white rounded-2xl overflow-hidden border border-gray-200 hover:border-kicc-gold/40 transition-all">
-                <div class="h-32 overflow-hidden bg-[#F9FAFB]">
+                <div class="h-32 overflow-hidden bg-[#F9FAFB] relative">
+                    @if($ch && $ch['video'])
+                    <x-media-tile
+                        :poster="$ch['poster']"
+                        :hover-loop="$ch['hover'] ?? null"
+                        :video-url="$ch['video']"
+                        :title="$c->name"
+                        class="absolute inset-0 w-full h-full"
+                    />
+                    @else
                     <img src="{{ media('counties/' . $c->slug . '/hero.jpeg') }}" alt="{{ $c->name }}"
                          class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500"
                          loading="lazy" decoding="async"
                          onerror="this.parentElement.innerHTML='<div class=\'w-full h-full flex items-center justify-center bg-gradient-to-br from-[#0A1024] to-[#1a1a2e]\'></div>'">
+                    @endif
                 </div>
                 <div class="p-3.5 text-center">
                     <h3 class="font-bold text-gray-900 text-sm leading-tight group-hover:text-kicc-gold transition-colors">{{ $c->name }}</h3>

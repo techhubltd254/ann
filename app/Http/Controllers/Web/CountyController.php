@@ -18,7 +18,26 @@ class CountyController extends Controller
     {
         $countyIds = Cache::remember('kicc_counties_index', 21600, fn () => County::orderBy('name')->pluck('id')->all());
         $counties = County::withCount('sectors')->whereIn('id', $countyIds)->orderBy('name')->get();
-        return view('counties.index', compact('counties'));
+
+        // Hero media per county card — YouTube-style play on hover/in-view
+        $countyHeroes = [];
+        $heroAssets = MediaAsset::where('owner_type', County::class)
+            ->whereIn('owner_id', $countyIds)
+            ->where('slot', 'hero_video')
+            ->where('status', 'ready')
+            ->with('derivatives')
+            ->get()
+            ->keyBy('owner_id');
+        foreach ($counties as $c) {
+            $a = $heroAssets->get($c->id);
+            $countyHeroes[$c->slug] = [
+                'video' => $a?->mp4Url() ?? $a?->url(),
+                'hover' => $a?->hoverLoopUrl(),
+                'poster' => $a?->posterUrl() ?? media('counties/' . $c->slug . '/hero.jpeg'),
+            ];
+        }
+
+        return view('counties.index', compact('counties', 'countyHeroes'));
     }
 
     public function show(County $county)
@@ -175,10 +194,28 @@ class CountyController extends Controller
         $sectorEntityVideos = $cached['sectorEntityVideos'];
         $sectorPitches = $cached['sectorPitches'];
 
+        // ═══ HERO FALLBACK ALGORITHM ═══
+        // If the county has no hero video uploaded, build a hero playlist from the
+        // sector videos + entity videos so the county hero still plays motion.
+        $countyHeroFallback = [];
+        if (!$countyMedia || !($countyMedia->mp4Url() ?? $countyMedia->url())) {
+            $fallback = [];
+            foreach ($sectorVideos as $url) {
+                if ($url) $fallback[] = $url;
+            }
+            foreach ($sectorEntityVideos as $vids) {
+                foreach ($vids as $url) {
+                    $fallback[] = $url;
+                }
+            }
+            // Cycle limit — a handful is plenty for a looping hero
+            $countyHeroFallback = array_values(array_unique(array_filter($fallback)));
+        }
+
         return view('counties.show', compact(
             'county', 'sectors', 'sectorData',
             'featuredAttractions', 'featuredHotels', 'countyProducts',
-            'exhibitions', 'linkedSectors', 'countyMedia', 'sectorVideos', 'sectorWebmVideos',
+            'exhibitions', 'linkedSectors', 'countyMedia', 'countyHeroFallback', 'sectorVideos', 'sectorWebmVideos',
             'sectorEntityVideos', 'sectorPitches', 'attractionThumbs', 'hotelThumbs', 'productThumbs'
         ));
     }
@@ -341,6 +378,26 @@ class CountyController extends Controller
             if ($vid && !in_array($vid, $seen)) {
                 $sectorHeroVideos[] = $vid;
                 $seen[] = $vid;
+            }
+        }
+
+        // Fallback: if this sector has no videos of its own, cycle the county's
+        // hero video (+ any other sector videos that exist) so no sector is ever empty.
+        if (count($sectorHeroVideos) === 0) {
+            $countyHeroAsset = MediaAsset::resolveSlot(County::class, $county->id, 'hero_video');
+            if ($countyHeroAsset?->mp4Url() ?? $countyHeroAsset?->url()) {
+                $sectorHeroVideos[] = $countyHeroAsset->mp4Url() ?? $countyHeroAsset->url();
+            }
+            $otherSectorVideos = MediaAsset::where('owner_type', County::class)
+                ->where('owner_id', $county->id)
+                ->where('slot', 'like', 'sector_video_%')
+                ->where('slot', '!=', 'sector_video_' . $sector)
+                ->get();
+            foreach ($otherSectorVideos as $sv) {
+                $url = $sv->mp4Url() ?? $sv->url();
+                if ($url && !in_array($url, $sectorHeroVideos)) {
+                    $sectorHeroVideos[] = $url;
+                }
             }
         }
 

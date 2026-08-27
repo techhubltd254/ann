@@ -44,7 +44,9 @@
         @php
             $heroPoster = $countyMedia?->posterUrl() ?? media('counties/' . $county->slug . '/hero.jpeg');
             $heroPosterImg = $countyMedia?->thumbnailUrl() ?? media('counties/' . $county->slug . '/hero.jpeg');
+            $hasHeroVideo = $countyMedia && ($countyMedia->mp4Url() ?? $countyMedia->url());
         @endphp
+        @if($hasHeroVideo)
         <x-video-player
             :asset="$countyMedia"
             :poster="$heroPoster"
@@ -54,6 +56,19 @@
             :loop="true"
             :muted="true"
         />
+        @elseif(count($countyHeroFallback ?? []) > 0)
+        {{-- Hero fallback: no county hero uploaded — cycle sector/entity videos --}}
+        <img src="{{ $heroPosterImg }}" alt="{{ $county->name }}" class="absolute inset-0 w-full h-full object-cover" loading="lazy" style="z-index:0">
+        @foreach($countyHeroFallback as $vi)
+        <video autoplay muted loop playsinline loading="lazy" preload="metadata" class="hero-video-layer"
+               style="z-index:1"
+               onerror="this.style.display='none'">
+            <source src="{{ $vi }}" type="video/mp4">
+        </video>
+        @endforeach
+        @else
+        <div class="absolute inset-0 w-full h-full" style="background:linear-gradient(135deg,#0A1024,#1a1a2e)"></div>
+        @endif
         <div class="absolute inset-0 bg-gradient-to-t from-black/40 via-black/10 to-transparent" style="z-index:3"></div>
         <div class="absolute bottom-0 left-0 right-0 max-w-7xl mx-auto px-5 pb-10 md:pb-16" style="z-index:5">
             <a href="{{ route('counties.index') }}" class="inline-flex items-center gap-1.5 text-white/60 hover:text-white text-sm mb-3 transition-colors">
