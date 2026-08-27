@@ -82,10 +82,10 @@ class HlsGenerator
                 '[v480]scale=-2:480,format=yuv420p[v480out];' .
                 '[v720]scale=-2:720,format=yuv420p[v720out];' .
                 '[v1080]scale=-2:1080,format=yuv420p[v1080out]" ' .
-                '-map "[v360out]" -map 0:a? -c:v:0 libx264 -profile:v:0 main -pix_fmt:0 yuv420p -b:v:0 400k -maxrate:v:0 500k -bufsize:v:0 800k ' .
-                '-map "[v480out]" -map 0:a? -c:v:1 libx264 -profile:v:1 main -pix_fmt:1 yuv420p -b:v:1 800k -maxrate:v:1 1000k -bufsize:v:1 1600k ' .
-                '-map "[v720out]" -map 0:a? -c:v:2 libx264 -profile:v:2 main -pix_fmt:2 yuv420p -b:v:2 2500k -maxrate:v:2 3200k -bufsize:v:2 5000k ' .
-                '-map "[v1080out]" -map 0:a? -c:v:3 libx264 -profile:v:3 high -pix_fmt:3 yuv420p -b:v:3 5000k -maxrate:v:3 6500k -bufsize:v:3 10000k ' .
+                '-map "[v360out]" -map 0:a? -c:v:0 libx264 -profile:v:0 main -preset veryfast -pix_fmt:0 yuv420p -b:v:0 400k -maxrate:v:0 500k -bufsize:v:0 800k ' .
+                '-map "[v480out]" -map 0:a? -c:v:1 libx264 -profile:v:1 main -preset veryfast -pix_fmt:1 yuv420p -b:v:1 800k -maxrate:v:1 1000k -bufsize:v:1 1600k ' .
+                '-map "[v720out]" -map 0:a? -c:v:2 libx264 -profile:v:2 main -preset veryfast -pix_fmt:2 yuv420p -b:v:2 2500k -maxrate:v:2 3200k -bufsize:v:2 5000k ' .
+                '-map "[v1080out]" -map 0:a? -c:v:3 libx264 -profile:v:3 high -preset veryfast -pix_fmt:3 yuv420p -b:v:3 5000k -maxrate:v:3 6500k -bufsize:v:3 10000k ' .
                 '%s ' .
                 '-f hls -hls_time 4 -hls_playlist_type vod ' .
                 '-hls_segment_type fmp4 ' .
