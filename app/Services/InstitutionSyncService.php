@@ -261,9 +261,9 @@ class InstitutionSyncService
             'name' => $name,
             'description' => $product['description'] ?? ($i->name . ' product'),
             'category' => $product['category'] ?? 'Food',
-            'image_url' => $product['image_url'] ?? null,
-            'video_url' => $product['video_url'] ?? null,
-            'videos' => $product['videos'] ?? null,
+            'image_url' => array_key_exists('image_url', $product) ? $product['image_url'] : ($cp->image_url ?? null),
+            'video_url' => array_key_exists('video_url', $product) ? $product['video_url'] : ($cp->video_url ?? null),
+            'videos' => array_key_exists('videos', $product) ? $product['videos'] : ($cp->videos ?? null),
             'price' => $product['price'] ?? 0,
             'unit' => $product['unit'] ?? 'unit',
             'booking_type' => 'order',
@@ -303,8 +303,11 @@ class InstitutionSyncService
             'unit' => $product['unit'] ?? 'unit',
             'status' => 'active',
             'is_featured' => true,
-            'video_url' => $product['video_url'] ?? null,
-            'videos' => $product['videos'] ?? null,
+            // Preserve existing media when the product array doesn't specify it —
+            // otherwise every re-sync wipes uploaded videos/images.
+            'image_url' => array_key_exists('image_url', $product) ? $product['image_url'] : ($mp->image_url ?? null),
+            'video_url' => array_key_exists('video_url', $product) ? $product['video_url'] : ($mp->video_url ?? null),
+            'videos' => array_key_exists('videos', $product) ? $product['videos'] : ($mp->videos ?? null),
         ];
 
         if ($mp) {
