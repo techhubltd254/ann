@@ -6,6 +6,7 @@
     <title>@yield('title') - KICC Platform</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <script src="{{ asset('js/theme.js') }}"></script>
+    <script defer src="https://cdn.jsdelivr.net/npm/hls.js@1.5.13/dist/hls.min.js"></script>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&display=swap" rel="stylesheet">
     <style>
         * { font-family: 'Inter', system-ui, sans-serif; }

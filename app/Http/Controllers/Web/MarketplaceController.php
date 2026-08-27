@@ -16,33 +16,47 @@ class MarketplaceController extends Controller
 {
     public function index(Request $request)
     {
-        $query = Product::with(['county', 'category', 'variants', 'images'])
-            ->active()
-            ->latest();
+        $cat = $request->get('category');
+        $countySlug = $request->get('county');
+        $search = $request->get('q');
+        $page = $request->get('page', 1);
 
-        if ($cat = $request->get('category')) {
-            $query->whereHas('category', fn ($q) => $q->where('slug', $cat));
-        }
-        if ($county = $request->get('county')) {
-            $query->whereHas('county', fn ($q) => $q->where('slug', $county));
-        }
-        if ($search = $request->get('q')) {
-            $query->where(fn ($q) => $q->where('name', 'like', "%{$search}%")
-                ->orWhere('short_description', 'like', "%{$search}%"));
-        }
+        $cacheKey = "marketplace_data_{$cat}_{$countySlug}_{$search}_{$page}";
+
+        $data = \Illuminate\Support\Facades\Cache::remember($cacheKey, 300, function () use ($cat, $countySlug, $search) {
+            $query = Product::with(['county', 'category', 'variants', 'images'])
+                ->active()
+                ->latest();
+
+            if ($cat) {
+                $query->whereHas('category', fn ($q) => $q->where('slug', $cat));
+            }
+            if ($countySlug) {
+                $query->whereHas('county', fn ($q) => $q->where('slug', $countySlug));
+            }
+            if ($search) {
+                $query->where(fn ($q) => $q->where('name', 'like', "%{$search}%")
+                    ->orWhere('short_description', 'like', "%{$search}%"));
+            }
+
+            return [
+                'products' => $query->paginate(24)->withQueryString(),
+                'categories' => ProductCategory::active()->withCount(['products' => fn ($q) => $q->active()])->get(),
+                'counties' => County::orderBy('name')->get(['id', 'name', 'slug']),
+            ];
+        });
 
         $tradeAgreements = TradeAgreement::with('bloc')->featured()->active()->latest()->take(3)->get();
 
-        // Active flash sale for badge display
         $activeFlashSale = FlashSale::where('is_active', true)
             ->where('starts_at', '<=', now())->where('ends_at', '>=', now())->first();
 
         return view('marketplace.index', [
-            'products' => $query->paginate(24)->withQueryString(),
-            'categories' => ProductCategory::active()->withCount(['products' => fn ($q) => $q->active()])->get(),
-            'counties' => County::orderBy('name')->get(['id', 'name', 'slug']),
+            'products' => $data['products'],
+            'categories' => $data['categories'],
+            'counties' => $data['counties'],
             'activeCategory' => $cat ?? null,
-            'activeCounty' => $county ?? null,
+            'activeCounty' => $countySlug ?? null,
             'q' => $search ?? '',
             'tradeAgreements' => $tradeAgreements,
             'activeFlashSale' => $activeFlashSale,

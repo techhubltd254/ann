@@ -98,7 +98,36 @@ class InstitutionSyncService
             Log::warning('N8n fire failed for institution sync: ' . $e->getMessage());
         }
 
+        $this->bustCountyCache($county);
+
         return $summary;
+    }
+
+    protected function bustCountyCache(County $county): void
+    {
+        try {
+            foreach ([
+                "kicc_county_sector_counts_{$county->id}",
+                "kicc_county_attractions_{$county->id}",
+                "kicc_county_hotels_{$county->id}",
+                "kicc_county_products_{$county->id}",
+                "kicc_county_exhibitions_{$county->id}",
+                "kicc_county_linked_sectors_{$county->id}",
+                "kicc_county_sectors_{$county->id}_v2",
+                'kicc_counties_index',
+                'kicc_home_page_data_v2',
+            ] as $key) {
+                \Illuminate\Support\Facades\Cache::forget($key);
+            }
+            $sectors = $county->sectors()->pluck('id');
+            foreach ($sectors as $sid) {
+                for ($p = 1; $p <= 5; $p++) {
+                    \Illuminate\Support\Facades\Cache::forget("kicc_county_sector_items_{$county->id}_{$sid}_{$p}");
+                }
+            }
+        } catch (\Throwable $e) {
+            Log::warning('Cache bust failed: ' . $e->getMessage());
+        }
     }
 
     protected function resolveSector(?string $slug): ?Sector
@@ -426,5 +455,10 @@ class InstitutionSyncService
         CountyProduct::where('county_id', $i->county_id)->where('name', 'like', $i->name . '%')->delete();
         Product::where('user_id', $i->user_id ?? -1)->delete();
         MediaAsset::where('owner_type', CountyInstitution::class)->where('owner_id', $i->id)->delete();
+
+        $county = County::find($i->county_id);
+        if ($county) {
+            (new self())->bustCountyCache($county);
+        }
     }
 }

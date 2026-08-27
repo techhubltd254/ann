@@ -71,6 +71,7 @@
     var loading = document.getElementById('{{ $videoId }}-loading');
     var playBtn = document.getElementById('{{ $videoId }}-playbtn');
     var autoplay = {{ $autoplay ? 'true' : 'false' }};
+    var loopVideo = {{ $loop ? 'true' : 'false' }};
 
     if (!video) return;
 
@@ -87,6 +88,13 @@
 
     video.addEventListener('playing', function() {
         hidePoster();
+    });
+    // hls.js does not honour the native loop attribute — restart on ended
+    video.addEventListener('ended', function() {
+        if (loopVideo) {
+            video.currentTime = 0;
+            tryPlay();
+        }
     });
     video.addEventListener('error', function() {
         hidePoster();
@@ -140,7 +148,21 @@
 
     function initHls() {
         showLoading();
-        var hls = new Hls({ enableWorker: true, lowLatencyMode: false, backbufferLength: 60, maxBufferLength: 60, maxMaxBufferLength: 60, abrEwmaDefaultEstimate: 500000 });
+        var hls = new Hls({
+            enableWorker: true,
+            lowLatencyMode: false,
+            backbufferLength: 60,
+            maxBufferLength: 60,
+            maxMaxBufferLength: 60,
+            abrEwmaDefaultEstimate: 400000,
+            abrEwmaFastVoD: 3.0,
+            abrEwmaSlowVoD: 6.0,
+            abrBandWidthFactor: 0.9,
+            abrBandWidthUpFactor: 0.7,
+            startLevel: -1,
+            capLevelToPlayerSize: true,
+            maxStarvationDelay: 6,
+        });
         hls.loadSource(hlsUrl);
         hls.attachMedia(video);
         hls.on(Hls.Events.MANIFEST_PARSED, function() {
@@ -153,6 +175,9 @@
                 hls.destroy();
                 fallbackToMp4();
             }
+        });
+        hls.on(Hls.Events.LEVEL_SWITCHED, function() {
+            // ABR already handles up/down automatically; nothing to force
         });
         window['{{ $videoId }}-hls'] = hls;
     }

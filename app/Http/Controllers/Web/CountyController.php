@@ -16,7 +16,7 @@ class CountyController extends Controller
 {
     public function index()
     {
-        $counties = County::withCount('sectors')->orderBy('name')->get();
+        $counties = Cache::remember('kicc_counties_index', 3600, fn () => County::withCount('sectors')->orderBy('name')->get());
         return view('counties.index', compact('counties'));
     }
 
@@ -26,11 +26,14 @@ class CountyController extends Controller
         $sectors = $county->sectors;
 
         // Dynamic sector data — count entities per sector across all entity types
-        $sectorEntityCounts = \App\Models\SectorEntity::where('county_id', $county->id)
-            ->where('is_published', true)
-            ->selectRaw('sector_id, count(*) as total')
-            ->groupBy('sector_id')
-            ->pluck('total', 'sector_id');
+        $sectorEntityCounts = Cache::remember("kicc_county_sector_counts_{$county->id}", 3600, function () use ($county) {
+            return \App\Models\SectorEntity::where('county_id', $county->id)
+                ->where('is_published', true)
+                ->selectRaw('sector_id, count(*) as total')
+                ->groupBy('sector_id')
+                ->pluck('total', 'sector_id')
+                ->toArray();
+        });
 
         $sectorNames = [
             'tourism' => 'Tourism', 'hospitality' => 'Hospitality',
@@ -65,11 +68,11 @@ class CountyController extends Controller
             }
         }
 
-        $featuredAttractions = $county->tourismAttractions()->where('is_published', true)->orderBy('name')->take(12)->get();
-        $featuredHotels = $county->hotels()->where('is_published', true)->orderByDesc('star_rating')->take(8)->get();
-        $countyProducts = $county->products()->where('is_published', true)->whereNotNull('price')->orderByDesc('price')->take(8)->get();
-        $exhibitions = $county->exhibitions()->where('status', 'published')->orderBy('start_date', 'desc')->take(3)->get();
-        $linkedSectors = $county->sectors()->orderBy('name')->get();
+        $featuredAttractions = Cache::remember("kicc_county_attractions_{$county->id}", 3600, fn () => $county->tourismAttractions()->where('is_published', true)->orderBy('name')->take(12)->get());
+        $featuredHotels = Cache::remember("kicc_county_hotels_{$county->id}", 3600, fn () => $county->hotels()->where('is_published', true)->orderByDesc('star_rating')->take(8)->get());
+        $countyProducts = Cache::remember("kicc_county_products_{$county->id}", 3600, fn () => $county->products()->where('is_published', true)->whereNotNull('price')->orderByDesc('price')->take(8)->get());
+        $exhibitions = Cache::remember("kicc_county_exhibitions_{$county->id}", 3600, fn () => $county->exhibitions()->where('status', 'published')->orderBy('start_date', 'desc')->take(3)->get());
+        $linkedSectors = Cache::remember("kicc_county_linked_sectors_{$county->id}", 3600, fn () => $county->sectors()->orderBy('name')->get());
 
         // Resolve accurate thumbnails for every card (video poster → category fallback → branded placeholder)
         $attractionThumbs = $featuredAttractions->mapWithKeys(fn($a) => [$a->id => \App\Services\ThumbnailService::for($a, $county->slug)]);
@@ -85,7 +88,7 @@ class CountyController extends Controller
         $sectorEntityVideos = [];
         $sectorPitches = [];
 
-        $cacheKey = "county_sectors_{$county->id}_v2";
+        $cacheKey = "kicc_county_sectors_{$county->id}_v2";
 
         $cached = Cache::remember($cacheKey, 1800, function () use ($county, $sectorSlugs, $sectorData, &$sectorVideos, &$sectorWebmVideos, &$sectorEntityVideos, &$sectorPitches) {
             // Batch load sector video assets
@@ -175,6 +178,7 @@ class CountyController extends Controller
 
     public function sector(County $county, string $sector)
     {
+        $page = request()->get('page', 1);
         $sectorModel = $county->sectors()->where('slug', $sector)->first();
         if (!$sectorModel) {
             // Try fuzzy match by partial slug or name
@@ -227,11 +231,13 @@ class CountyController extends Controller
             }
         }
 
-        $items = SectorEntity::where('county_id', $county->id)
-            ->whereIn('sector_id', $sectorIds)
-            ->where('is_published', true)
-            ->orderBy('name')
-            ->paginate(12);
+        $items = Cache::remember("kicc_county_sector_items_{$county->id}_{$sectorModel->id}_{$page}", 1800, function () use ($county, $sectorIds) {
+            return SectorEntity::where('county_id', $county->id)
+                ->whereIn('sector_id', $sectorIds)
+                ->where('is_published', true)
+                ->orderBy('name')
+                ->paginate(12);
+        });
 
         // Count marketplace products for institution entities
         $institutionIds = $items->whereIn('entity_type', [\App\Models\CountyInstitution::class, \App\Services\InstitutionSyncService::ENTITY_TYPE])->pluck('entity_id')->unique();
