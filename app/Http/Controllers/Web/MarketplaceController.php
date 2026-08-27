@@ -19,14 +19,13 @@ class MarketplaceController extends Controller
         $cat = $request->get('category');
         $countySlug = $request->get('county');
         $search = $request->get('q');
-        $page = $request->get('page', 1);
+        $page = (int) $request->get('page', 1);
 
-        $cacheKey = "marketplace_data_{$cat}_{$countySlug}_{$search}_{$page}";
+        // Cache the query's product IDs + sidebars; hydrate models fresh (avoids Redis serialization issues)
+        $cacheKey = "marketplace_data_{$cat}_{$countySlug}_{$search}";
 
-        $data = \Illuminate\Support\Facades\Cache::remember($cacheKey, 300, function () use ($cat, $countySlug, $search) {
-            $query = Product::with(['county', 'category', 'variants', 'images'])
-                ->active()
-                ->latest();
+        $data = \Illuminate\Support\Facades\Cache::remember($cacheKey, 1800, function () use ($cat, $countySlug, $search) {
+            $query = Product::active()->latest();
 
             if ($cat) {
                 $query->whereHas('category', fn ($q) => $q->where('slug', $cat));
@@ -39,12 +38,25 @@ class MarketplaceController extends Controller
                     ->orWhere('short_description', 'like', "%{$search}%"));
             }
 
+            // Cache only primitives — Eloquent models are hydrated after cache read
             return [
-                'products' => $query->paginate(24)->withQueryString(),
-                'categories' => ProductCategory::active()->withCount(['products' => fn ($q) => $q->active()])->get(),
-                'counties' => County::orderBy('name')->get(['id', 'name', 'slug']),
+                'ids' => $query->pluck('id')->all(),
+                'categories' => ProductCategory::active()->withCount(['products' => fn ($q) => $q->active()])
+                    ->get(['id', 'name', 'slug', 'products_count'])->toArray(),
+                'counties' => County::orderBy('name')->get(['id', 'name', 'slug'])->toArray(),
             ];
         });
+
+        $ids = $data['ids'] ?? [];
+        $total = count($ids);
+        $perPage = 24;
+        $pageIds = array_slice($ids, ($page - 1) * $perPage, $perPage);
+        $products = $pageIds
+            ? Product::with(['county', 'category', 'variants', 'images'])->whereIn('id', $pageIds)->latest()->get()
+            : collect();
+
+        $categories = collect($data['categories'] ?? [])->map(fn ($c) => (object) $c);
+        $countiesList = collect($data['counties'] ?? [])->map(fn ($c) => (object) $c);
 
         $tradeAgreements = TradeAgreement::with('bloc')->featured()->active()->latest()->take(3)->get();
 
@@ -52,9 +64,11 @@ class MarketplaceController extends Controller
             ->where('starts_at', '<=', now())->where('ends_at', '>=', now())->first();
 
         return view('marketplace.index', [
-            'products' => $data['products'],
-            'categories' => $data['categories'],
-            'counties' => $data['counties'],
+            'products' => new \Illuminate\Pagination\LengthAwarePaginator(
+                $products, $total, $perPage, $page, ['path' => \Illuminate\Support\Facades\Request::url(), 'query' => $request->query()]
+            ),
+            'categories' => $categories,
+            'counties' => $countiesList,
             'activeCategory' => $cat ?? null,
             'activeCounty' => $countySlug ?? null,
             'q' => $search ?? '',

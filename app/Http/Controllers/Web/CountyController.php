@@ -16,7 +16,8 @@ class CountyController extends Controller
 {
     public function index()
     {
-        $counties = Cache::remember('kicc_counties_index', 3600, fn () => County::withCount('sectors')->orderBy('name')->get());
+        $countyIds = Cache::remember('kicc_counties_index', 21600, fn () => County::orderBy('name')->pluck('id')->all());
+        $counties = County::withCount('sectors')->whereIn('id', $countyIds)->orderBy('name')->get();
         return view('counties.index', compact('counties'));
     }
 
@@ -26,7 +27,7 @@ class CountyController extends Controller
         $sectors = $county->sectors;
 
         // Dynamic sector data — count entities per sector across all entity types
-        $sectorEntityCounts = Cache::remember("kicc_county_sector_counts_{$county->id}", 3600, function () use ($county) {
+        $sectorEntityCounts = Cache::remember("kicc_county_sector_counts_{$county->id}", 21600, function () use ($county) {
             return \App\Models\SectorEntity::where('county_id', $county->id)
                 ->where('is_published', true)
                 ->selectRaw('sector_id, count(*) as total')
@@ -68,11 +69,17 @@ class CountyController extends Controller
             }
         }
 
-        $featuredAttractions = Cache::remember("kicc_county_attractions_{$county->id}", 3600, fn () => $county->tourismAttractions()->where('is_published', true)->orderBy('name')->take(12)->get());
-        $featuredHotels = Cache::remember("kicc_county_hotels_{$county->id}", 3600, fn () => $county->hotels()->where('is_published', true)->orderByDesc('star_rating')->take(8)->get());
-        $countyProducts = Cache::remember("kicc_county_products_{$county->id}", 3600, fn () => $county->products()->where('is_published', true)->whereNotNull('price')->orderByDesc('price')->take(8)->get());
-        $exhibitions = Cache::remember("kicc_county_exhibitions_{$county->id}", 3600, fn () => $county->exhibitions()->where('status', 'published')->orderBy('start_date', 'desc')->take(3)->get());
-        $linkedSectors = Cache::remember("kicc_county_linked_sectors_{$county->id}", 3600, fn () => $county->sectors()->orderBy('name')->get());
+        $featuredAttractionIds = Cache::remember("kicc_county_attractions_{$county->id}", 21600, fn () => $county->tourismAttractions()->where('is_published', true)->orderBy('name')->take(12)->pluck('id')->all());
+        $featuredHotelIds = Cache::remember("kicc_county_hotels_{$county->id}", 21600, fn () => $county->hotels()->where('is_published', true)->orderByDesc('star_rating')->take(8)->pluck('id')->all());
+        $countyProductIds = Cache::remember("kicc_county_products_{$county->id}", 21600, fn () => $county->products()->where('is_published', true)->whereNotNull('price')->orderByDesc('price')->take(8)->pluck('id')->all());
+        $exhibitionIds = Cache::remember("kicc_county_exhibitions_{$county->id}", 21600, fn () => $county->exhibitions()->where('status', 'published')->orderBy('start_date', 'desc')->take(3)->pluck('id')->all());
+        $linkedSectorIds = Cache::remember("kicc_county_linked_sectors_{$county->id}", 21600, fn () => $county->sectors()->orderBy('name')->pluck('sectors.id')->all());
+
+        $featuredAttractions = $featuredAttractionIds ? $county->tourismAttractions()->whereIn('id', $featuredAttractionIds)->orderBy('name')->get() : collect();
+        $featuredHotels = $featuredHotelIds ? $county->hotels()->whereIn('id', $featuredHotelIds)->orderByDesc('star_rating')->get() : collect();
+        $countyProducts = $countyProductIds ? $county->products()->whereIn('id', $countyProductIds)->orderByDesc('price')->get() : collect();
+        $exhibitions = $exhibitionIds ? $county->exhibitions()->whereIn('id', $exhibitionIds)->orderBy('start_date', 'desc')->get() : collect();
+        $linkedSectors = $linkedSectorIds ? $county->sectors()->whereIn('sectors.id', $linkedSectorIds)->orderBy('name')->get() : collect();
 
         // Resolve accurate thumbnails for every card (video poster → category fallback → branded placeholder)
         $attractionThumbs = $featuredAttractions->mapWithKeys(fn($a) => [$a->id => \App\Services\ThumbnailService::for($a, $county->slug)]);
@@ -90,7 +97,7 @@ class CountyController extends Controller
 
         $cacheKey = "kicc_county_sectors_{$county->id}_v2";
 
-        $cached = Cache::remember($cacheKey, 1800, function () use ($county, $sectorSlugs, $sectorData, &$sectorVideos, &$sectorWebmVideos, &$sectorEntityVideos, &$sectorPitches) {
+        $cached = Cache::remember($cacheKey, 21600, function () use ($county, $sectorSlugs, $sectorData, &$sectorVideos, &$sectorWebmVideos, &$sectorEntityVideos, &$sectorPitches) {
             // Batch load sector video assets
             $slots = $sectorSlugs->map(fn($slug) => 'sector_video_' . $slug);
             $assets = MediaAsset::where('owner_type', County::class)
@@ -231,13 +238,22 @@ class CountyController extends Controller
             }
         }
 
-        $items = Cache::remember("kicc_county_sector_items_{$county->id}_{$sectorModel->id}_{$page}", 1800, function () use ($county, $sectorIds) {
+        $entityIdCache = Cache::remember("kicc_county_sector_items_{$county->id}_{$sectorModel->id}_{$page}", 21600, function () use ($county, $sectorIds) {
             return SectorEntity::where('county_id', $county->id)
                 ->whereIn('sector_id', $sectorIds)
                 ->where('is_published', true)
                 ->orderBy('name')
-                ->paginate(12);
+                ->pluck('id')
+                ->all();
         });
+
+        $items = new \Illuminate\Pagination\LengthAwarePaginator(
+            collect($entityIdCache ?? [])->map(fn ($id) => SectorEntity::find($id))->filter(),
+            count($entityIdCache ?? []),
+            12,
+            $page,
+            ['path' => request()->url(), 'query' => request()->query()]
+        );
 
         // Count marketplace products for institution entities
         $institutionIds = $items->whereIn('entity_type', [\App\Models\CountyInstitution::class, \App\Services\InstitutionSyncService::ENTITY_TYPE])->pluck('entity_id')->unique();

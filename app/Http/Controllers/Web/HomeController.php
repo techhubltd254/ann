@@ -15,57 +15,51 @@ class HomeController extends Controller
 {
     public function __invoke()
     {
-        $cacheKey = 'kicc_home_page_data_v2';
+        $cacheKey = 'kicc_home_page_data_v3';
 
-        $data = Cache::remember($cacheKey, 600, function () {
-            $featuredExhibitions = Exhibition::with('county')
-                ->where('status', 'published')
-                ->where('is_featured', true)
-                ->orderBy('start_date')
-                ->take(3)
-                ->get();
-
-            $counties = County::orderBy('name')->get();
-            $countyIds = $counties->pluck('id');
-
-            // Resolve hero videos for all counties — includes mp4Url + economic_zone for overlay
-            $heroAssets = MediaAsset::where('owner_type', County::class)
-                ->whereIn('owner_id', $countyIds)
-                ->where('slot', 'hero_video')
-                ->where('status', 'ready')
-                ->with('derivatives')
-                ->get()
-                ->keyBy('owner_id');
-
-            $countyHeroVideos = [];
-            foreach ($counties as $c) {
-                $asset = $heroAssets->get($c->id);
-                $countyHeroVideos[$c->slug] = $asset?->mp4Url();
-            }
-
-            $products = Product::with(['county', 'category', 'variants'])->active()->latest()->take(8)->get();
-            $venues = Venue::where('is_active', true)->orderBy('name')->take(4)->get();
-            $tradeAgreementsHome = TradeAgreement::with('bloc')->featured()->active()->latest()->take(3)->get();
-
-            // Resolve the pipeline-managed hero video (fall back to hardcoded path).
-            $heroAsset = MediaAsset::resolveSlot('landing_page', 1, 'hero_video');
-            $heroVideo = $heroAsset?->bestVideoUrl();
-            $heroWebm = $heroAsset?->webmUrl();
-            $heroPoster = $heroAsset?->posterUrl();
-
+        $ids = Cache::remember($cacheKey, 21600, function () {
             return [
-                'featuredExhibitions' => $featuredExhibitions,
-                'counties' => $counties,
-                'products' => $products,
-                'venues' => $venues,
-                'tradeAgreementsHome' => $tradeAgreementsHome,
-                'heroVideo' => $heroVideo,
-                'heroWebm' => $heroWebm,
-                'heroPoster' => $heroPoster,
-                'countyHeroVideos' => $countyHeroVideos,
+                'countyIds' => County::orderBy('name')->pluck('id')->all(),
+                'exhibitionIds' => Exhibition::where('status', 'published')->where('is_featured', true)
+                    ->orderBy('start_date')->take(3)->pluck('id')->all(),
+                'productIds' => Product::active()->latest()->take(8)->pluck('id')->all(),
+                'venueIds' => Venue::where('is_active', true)->orderBy('name')->take(4)->pluck('id')->all(),
+                'tradeAgreementIds' => TradeAgreement::featured()->active()->latest()->take(3)->pluck('id')->all(),
             ];
         });
 
-        return view('home', $data);
+        // Hydrate models after cache read (never cache Eloquent collections in Redis)
+        $counties = County::whereIn('id', $ids['countyIds'] ?? [])->orderBy('name')->get(['id', 'name', 'slug', 'economic_zone']);
+        $featuredExhibitions = Exhibition::with('county')->whereIn('id', $ids['exhibitionIds'] ?? [])->orderBy('start_date')->get();
+        $products = Product::with(['county', 'category', 'variants'])->whereIn('id', $ids['productIds'] ?? [])->latest()->get();
+        $venues = Venue::whereIn('id', $ids['venueIds'] ?? [])->orderBy('name')->get();
+        $tradeAgreementsHome = TradeAgreement::with('bloc')->whereIn('id', $ids['tradeAgreementIds'] ?? [])->latest()->get();
+
+        // Resolve hero videos for all counties
+        $heroAssets = MediaAsset::where('owner_type', County::class)
+            ->whereIn('owner_id', $counties->pluck('id'))
+            ->where('slot', 'hero_video')
+            ->where('status', 'ready')
+            ->with('derivatives')
+            ->get()
+            ->keyBy('owner_id');
+
+        $countyHeroVideos = [];
+        foreach ($counties as $c) {
+            $asset = $heroAssets->get($c->id);
+            $countyHeroVideos[$c->slug] = $asset?->mp4Url();
+        }
+
+        // Resolve the pipeline-managed hero video (fall back to hardcoded path).
+        $heroAsset = MediaAsset::resolveSlot('landing_page', 1, 'hero_video');
+        $heroVideo = $heroAsset?->bestVideoUrl();
+        $heroWebm = $heroAsset?->webmUrl();
+        $heroPoster = $heroAsset?->posterUrl();
+
+        return view('home', compact(
+            'featuredExhibitions', 'counties', 'products', 'venues',
+            'tradeAgreementsHome', 'heroVideo', 'heroWebm', 'heroPoster',
+            'countyHeroVideos',
+        ));
     }
 }
