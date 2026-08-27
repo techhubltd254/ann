@@ -33,6 +33,10 @@ Schedule::command('anomalies:detect')->everyFifteenMinutes();
 // the 2-core VPS is never saturated.
 Schedule::command('media:sweep-hls --limit=3')->everyFiveMinutes()->withoutOverlapping();
 
+// Tier-1/Tier-2 derivatives (WebP poster + 3s hover loop) backfill for
+// videos uploaded before the observer existed.
+Schedule::command('media:sweep-derivatives --limit=4')->everyTenMinutes()->withoutOverlapping();
+
 // Predictive demand/trend rollups nightly.
 Schedule::command('analytics:trends')->dailyAt('04:30');
 

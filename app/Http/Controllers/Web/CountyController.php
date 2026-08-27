@@ -278,26 +278,34 @@ class CountyController extends Controller
         $entityIds = $items->pluck('id');
         $entityVideos = [];
         $entityPosters = [];
+        $entityHoverLoops = [];
+        $entitySplats = [];
         if ($entityIds->isNotEmpty()) {
             $assets = MediaAsset::where('owner_type', SectorEntity::class)
                 ->whereIn('owner_id', $entityIds)
                 ->where('slot', '4d_video')
+                ->with('derivatives')
                 ->get()
                 ->groupBy('owner_id');
             foreach ($assets as $ownerId => $list) {
                 $a = $list->first();
                 $entityVideos[$ownerId] = $a->mp4Url() ?? $a->url();
                 $entityPosters[$ownerId] = $a->posterUrl();
+                $entityHoverLoops[$ownerId] = $a->hoverLoopUrl();
+                $entitySplats[$ownerId] = $a->splatUrl();
             }
         }
 
         // Institution hero videos: load for SectorEntity items that are institutions
         $institutionIds = $items->whereIn('entity_type', [\App\Models\CountyInstitution::class, \App\Services\InstitutionSyncService::ENTITY_TYPE])->pluck('entity_id')->unique();
         $institutionHeroVideos = [];
+        $institutionHeroPosters = [];
+        $institutionHeroLoops = [];
         if ($institutionIds->isNotEmpty()) {
             $heroAssets = MediaAsset::where('owner_type', \App\Models\CountyInstitution::class)
                 ->whereIn('owner_id', $institutionIds)
                 ->where('slot', 'hero_video')
+                ->with('derivatives')
                 ->get()
                 ->keyBy('owner_id');
             foreach ($items as $e) {
@@ -305,6 +313,8 @@ class CountyController extends Controller
                 if ($isInst && isset($heroAssets[$e->entity_id])) {
                     $a = $heroAssets[$e->entity_id];
                     $institutionHeroVideos[$e->id] = $a->mp4Url() ?? $a->url();
+                    $institutionHeroPosters[$e->id] = $a->posterUrl();
+                    $institutionHeroLoops[$e->id] = $a->hoverLoopUrl();
                 }
             }
         }
@@ -338,7 +348,8 @@ class CountyController extends Controller
 
         return view('counties.sector', compact(
             'county', 'items', 'sector', 'sectorInfo', 'sectorModel',
-            'fourDVideo', 'entityVideos', 'entityPosters', 'institutionHeroVideos', 'productCounts',
+            'fourDVideo', 'entityVideos', 'entityPosters', 'entityHoverLoops', 'entitySplats',
+            'institutionHeroVideos', 'institutionHeroPosters', 'institutionHeroLoops', 'productCounts',
             'sectorHeroVideos', 'services'
         ));
     }
@@ -352,10 +363,12 @@ class CountyController extends Controller
 
         $county = $institution->county;
 
-        // Hero video
+        // Hero video (Tier 3: HLS adaptive preferred, mp4 fallback)
         $heroAsset = MediaAsset::resolveSlot(CountyInstitution::class, $institution->id, 'hero_video');
         $heroVideo = $heroAsset?->mp4Url() ?? $heroAsset?->url();
+        $heroHls = $heroAsset?->derivativeUrl('hls_master');
         $heroPoster = $heroAsset?->posterUrl() ?? $institution->logo_url;
+        $heroSplat = $heroAsset?->splatUrl();
 
         // Marketplace products owned by this institution
         $products = collect();
@@ -373,7 +386,7 @@ class CountyController extends Controller
         $libraryVideos = $institution->videos ?? [];
 
         return view('counties.institution', compact(
-            'institution', 'county', 'heroVideo', 'heroPoster', 'products', 'sectorEntities', 'libraryVideos'
+            'institution', 'county', 'heroAsset', 'heroVideo', 'heroHls', 'heroPoster', 'heroSplat', 'products', 'sectorEntities', 'libraryVideos'
         ));
     }
 }

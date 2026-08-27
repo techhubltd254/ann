@@ -93,13 +93,6 @@ class MediaAsset extends Model
         return $this->derivativeUrl('video_mp4');
     }
 
-    public function posterUrl(): ?string
-    {
-        $poster = $this->derivatives()->where('kind', 'poster')->value('path');
-
-        return $poster ? $this->resolve($poster) : null;
-    }
-
     public function thumbnailUrl(): ?string
     {
         $thumb = $this->derivatives()->where('kind', 'thumb')->value('path')
@@ -116,6 +109,39 @@ class MediaAsset extends Model
             ->value('path');
 
         return $glb ? $this->resolve($glb) : null;
+    }
+
+    /** Tier 1: ultra-light WebP poster frame for grid cards */
+    public function posterUrl(): ?string
+    {
+        $poster = $this->derivatives()
+            ->where('kind', 'poster')
+            ->orderBy('variant')
+            ->value('path');
+
+        return $poster ? $this->resolve($poster) : null;
+    }
+
+    /** Tier 2: 3s low-bitrate hover/in-view loop */
+    public function hoverLoopUrl(): ?string
+    {
+        $loop = $this->derivatives()
+            ->where('kind', 'hover_loop')
+            ->orderBy('variant')
+            ->value('path');
+
+        return $loop ? $this->resolve($loop) : null;
+    }
+
+    /** Tier 3: interactive 4D Gaussian splat (detail page only) */
+    public function splatUrl(): ?string
+    {
+        $splat = $this->derivatives()
+            ->where('kind', 'model_splat')
+            ->orderBy('variant')
+            ->value('path');
+
+        return $splat ? $this->resolve($splat) : null;
     }
 
     protected function resolve(string $path): string

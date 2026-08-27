@@ -1,35 +1,32 @@
-<div class="splat-viewer-container relative bg-black rounded-2xl overflow-hidden group" 
-     x-data="{ active: false, mode: 'splat' }"
-     @mouseenter="active = true" 
-     @mouseleave="active = false">
-    
-    {{-- Splat (interactive 4D) --}}
-    <canvas class="splat-viewer w-full h-full absolute inset-0 cursor-grab active:cursor-grabbing"
-            data-splat="{{ $splatUrl ?? '' }}"
-            :class="{ 'hidden': mode !== 'splat' || !active }">
-    </canvas>
+{{-- Splat card: poster default, WebGL mounts ONLY after click (never on hover) --}}
+<div class="splat-viewer-container relative bg-black rounded-2xl overflow-hidden group"
+     x-data="splatCard('{{ $splatUrl ?? '' }}', '{{ $videoUrl ?? '' }}')">
 
-    {{-- Video fallback --}}
-    @if($videoUrl ?? false)
-    <video class="w-full h-full object-cover absolute inset-0"
-           :class="{ 'hidden': mode === 'splat' && active }"
-           muted loop playsinline
-           @mouseenter="this.play()" @mouseleave="this.pause(); this.currentTime=0"
-           poster="{{ $poster ?? '' }}">
-        <source src="{{ $videoUrl }}" type="video/mp4">
-    </video>
-    @endif
+    {{-- Tier 1 poster / video fallback --}}
+    <template x-if="!started">
+        <div class="relative w-full h-full cursor-pointer" @click="start()">
+            @if($videoUrl)
+            <video class="w-full h-full object-cover" muted loop playsinline
+                   poster="{{ $poster ?? '' }}"
+                   @mouseenter="this.play()" @mouseleave="this.pause(); this.currentTime=0">
+                <source src="{{ $videoUrl }}" type="video/mp4">
+            </video>
+            @else
+            <div class="w-full h-full bg-gray-900 flex items-center justify-center">
+                <span class="text-white/40 text-xs">4D</span>
+            </div>
+            @endif
+            <div class="absolute inset-0 bg-gradient-to-t from-black/60 to-transparent pointer-events-none"></div>
+        </div>
+    </template>
 
-    {{-- Hover overlay --}}
-    <div class="absolute inset-0 bg-gradient-to-t from-black/50 to-transparent pointer-events-none"
-         :class="{ 'opacity-0': active, 'opacity-100': !active }"
-         :style="{ transition: 'opacity 0.3s' }">
-    </div>
+    {{-- Interactive splat — mounted only after click --}}
+    <template x-if="started && splatUrl">
+        <canvas x-ref="splatCanvas" class="splat-viewer w-full h-full absolute inset-0 cursor-grab active:cursor-grabbing"></canvas>
+    </template>
 
     {{-- Labels --}}
-    <div class="absolute bottom-3 left-3 right-3 flex items-end justify-between pointer-events-none"
-         :class="{ 'opacity-0': active, 'opacity-100': !active }"
-         :style="{ transition: 'opacity 0.3s' }">
+    <div class="absolute bottom-3 left-3 right-3 flex items-end justify-between pointer-events-none z-10">
         <div>
             <div class="text-white font-bold text-sm drop-shadow-lg">{{ $title ?? '' }}</div>
             <div class="text-white/60 text-xs drop-shadow">{{ $subtitle ?? '' }}</div>
@@ -41,15 +38,36 @@
         </div>
         @endif
     </div>
-
-    {{-- Mode toggle --}}
-    @if(($splatUrl ?? false) && ($videoUrl ?? false))
-    <button @click="mode = mode === 'splat' ? 'video' : 'splat'"
-            class="absolute top-3 right-3 px-2 py-1 rounded-full bg-black/40 backdrop-blur text-white/80 text-[10px] font-bold hover:bg-black/60 transition-all z-10"
-            x-text="mode === 'splat' ? '🎬 Video' : '🌀 4D'">
-    </button>
-    @endif
 </div>
+
+@push('scripts')
+<script>
+function splatCard(splatUrl, videoUrl) {
+    return {
+        started: false,
+        viewer: null,
+        start() {
+            this.started = true;
+            if (splatUrl) {
+                this.$nextTick(() => {
+                    if (window.SplatViewer) {
+                        try {
+                            this.viewer = new SplatViewer(this.$refs.splatCanvas);
+                            this.viewer.load(splatUrl);
+                        } catch (e) {
+                            console.warn('Splat init failed', e);
+                        }
+                    }
+                });
+            }
+        },
+        destroyed() {
+            if (this.viewer) { try { this.viewer.dispose?.(); } catch (e) {} }
+        },
+    };
+}
+</script>
+@endpush
 
 @once
 <script src="{{ asset('js/splat-viewer.js') }}" defer></script>

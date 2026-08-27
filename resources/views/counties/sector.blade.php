@@ -131,28 +131,26 @@
             $isInst = $e->entity_type === 'App\Models\CountyInstitution' || $e->entity_type === 'institution' || $e->entity_type === \App\Services\InstitutionSyncService::ENTITY_TYPE;
             $instSlug = $isInst ? \App\Models\CountyInstitution::find($e->entity_id)?->slug : null;
             $entityVideo = $entityVideos[$e->id] ?? $institutionHeroVideos[$e->id] ?? null;
+            $entityPoster = $entityPosters[$e->id] ?? $institutionHeroPosters[$e->id] ?? null;
+            $entityHover = $entityHoverLoops[$e->id] ?? $institutionHeroLoops[$e->id] ?? null;
+            $entitySplat = $entitySplats[$e->id] ?? null;
             $linkUrl = $isInst && $instSlug
                 ? route('counties.institution', $instSlug)
                 : ($e->entry_fee > 0 ? route('attractions.show', $e->id) : '#');
             @endphp
-            <a href="{{ $linkUrl }}" class="entity-card group bg-white rounded-2xl overflow-hidden border border-gray-200 hover:border-[#FFCD05]/40 block">
-                <div class="h-48 overflow-hidden relative bg-gray-100">
-                    @if($entityVideo)
-                    <video autoplay muted loop playsinline loading="lazy" preload="metadata" class="card-media absolute inset-0 w-full h-full object-cover"
-                           onerror="this.style.display='none'">
-                        <source src="{{ $entityVideo }}" type="video/mp4">
-                    </video>
-                    @endif
-                    <div class="absolute inset-0 bg-gradient-to-t from-black/50 via-transparent to-transparent"></div>
-                    @if($e->category)
-                    <span class="absolute top-3 left-3 text-[10px] font-bold px-2.5 py-1 rounded-full bg-black/40 text-white/90 backdrop-blur-sm capitalize">{{ $e->category }}</span>
-                    @endif
-                    @if(!empty($e->entry_fee))
-                    <span class="absolute top-3 right-3 text-[10px] font-bold px-2.5 py-1 rounded-full bg-[#FFCD05] text-black">KES {{ number_format($e->entry_fee) }}</span>
-                    @endif
-                    <div class="absolute bottom-3 left-3 right-3 opacity-0">
-                    </div>
-                </div>
+            <div class="entity-card group bg-white rounded-2xl overflow-hidden border border-gray-200 hover:border-[#FFCD05]/40 transition-all">
+                <x-media-tile
+                    :poster="$entityPoster"
+                    :hover-loop="$entityHover"
+                    :video-url="$entityVideo"
+                    :splat-url="$entitySplat"
+                    :is4d="(bool)$entitySplat"
+                    :title="$e->name"
+                    :subtitle="$e->location ?? null"
+                    :category="$e->category"
+                    :badge="!empty($e->entry_fee) ? 'KES ' . number_format($e->entry_fee) : null"
+                    :href="$linkUrl"
+                />
                 <div class="p-4">
                     <h3 class="font-bold text-gray-900 text-sm leading-snug">{{ $e->name }}</h3>
                     @if($e->description)
@@ -163,12 +161,12 @@
                         @if(!empty($e->contact))<span>{{ $e->contact }}</span>@endif
                     </div>
                     <div class="mt-3 flex items-center justify-between">
-                        <span class="text-[10px] font-bold text-indigo-500 group-hover:text-indigo-600 transition-colors">
+                        <a href="{{ $linkUrl }}" class="text-[10px] font-bold text-indigo-500 hover:text-indigo-600 transition-colors">
                             {{ $isInst ? 'View Profile →' : 'Explore →' }}
-                        </span>
+                        </a>
                     </div>
                 </div>
-            </a>
+            </div>
             @endforeach
         </div>
 

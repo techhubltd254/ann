@@ -6,12 +6,23 @@
 @section('content')
 <div class="pt-20">
 
-    {{-- ═══ HERO VIDEO SECTION ═══ --}}
-    @if($heroVideo)
+    {{-- ═══ HERO VIDEO SECTION (Tier 3: adaptive HLS / interactive 4D on the detail page) ═══ --}}
+    @if($heroVideo || $heroSplat)
     <div class="relative h-[50vh] md:h-[60vh] overflow-hidden bg-black">
-        <video autoplay muted loop playsinline preload="metadata" class="absolute inset-0 w-full h-full object-cover">
-            <source src="{{ $heroVideo }}" type="video/mp4">
-        </video>
+        @if($heroSplat)
+        <x-hologram-viewer :poster="$heroPoster" :video-url="$heroVideo" :hls-url="$heroHls ?? null" :splat-url="$heroSplat" :title="$institution->name" />
+        @else
+        <x-video-player
+            :asset="$heroAsset ?? null"
+            :src="$heroVideo"
+            :poster="$heroPoster"
+            id="institution-hero"
+            class="w-full h-full"
+            :autoplay="true"
+            :loop="true"
+            :muted="true"
+        />
+        @endif
         <div class="absolute inset-0 bg-gradient-to-t from-black/70 via-black/20 to-transparent"></div>
         <div class="absolute bottom-0 left-0 right-0 max-w-7xl mx-auto px-5 pb-10">
             <a href="{{ route('counties.show', $county->slug) }}" class="inline-flex items-center gap-1.5 text-white/60 hover:text-white text-sm mb-3 transition-colors">
