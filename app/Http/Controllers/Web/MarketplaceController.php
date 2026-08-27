@@ -25,22 +25,45 @@ class MarketplaceController extends Controller
         $cacheKey = "marketplace_data_{$cat}_{$countySlug}_{$search}";
 
         $data = \Illuminate\Support\Facades\Cache::remember($cacheKey, 1800, function () use ($cat, $countySlug, $search) {
-            $query = Product::active()->latest();
+            // County-diverse default: ROW_NUMBER per county orders rn=1 (each
+            // county's newest) first by recency, interleaving counties on page 1
+            // instead of flooding with the most-recently-synced county.
+            $diverse = !$countySlug && !$cat && !$search;
 
-            if ($cat) {
-                $query->whereHas('category', fn ($q) => $q->where('slug', $cat));
-            }
-            if ($countySlug) {
-                $query->whereHas('county', fn ($q) => $q->where('slug', $countySlug));
-            }
-            if ($search) {
-                $query->where(fn ($q) => $q->where('name', 'like', "%{$search}%")
-                    ->orWhere('short_description', 'like', "%{$search}%"));
+            $idsQuery = \Illuminate\Support\Facades\DB::table('products')
+                ->select('id')
+                ->when($diverse, function ($q) {
+                    return $q->fromRaw(
+                        '(SELECT id, county_id, created_at,
+                                 ROW_NUMBER() OVER (PARTITION BY county_id ORDER BY created_at DESC) AS rn
+                          FROM products
+                          WHERE status = ? AND deleted_at IS NULL AND county_id IS NOT NULL) AS ranked',
+                        ['active']
+                    )->orderBy('rn')->orderByDesc('created_at');
+                });
+
+            if (!$diverse) {
+                $query = Product::active()->latest();
+
+                if ($cat) {
+                    $query->whereHas('category', fn ($q) => $q->where('slug', $cat));
+                }
+                if ($countySlug) {
+                    $query->whereHas('county', fn ($q) => $q->where('slug', $countySlug));
+                }
+                if ($search) {
+                    $query->where(fn ($q) => $q->where('name', 'like', "%{$search}%")
+                        ->orWhere('short_description', 'like', "%{$search}%"));
+                }
+
+                $ids = $query->pluck('id')->all();
+            } else {
+                $ids = $idsQuery->pluck('id')->all();
             }
 
             // Cache only primitives — Eloquent models are hydrated after cache read
             return [
-                'ids' => $query->pluck('id')->all(),
+                'ids' => $ids,
                 'categories' => ProductCategory::active()->withCount(['products' => fn ($q) => $q->active()])
                     ->get(['id', 'name', 'slug', 'products_count'])->toArray(),
                 'counties' => County::orderBy('name')->get(['id', 'name', 'slug'])->toArray(),
@@ -52,7 +75,10 @@ class MarketplaceController extends Controller
         $perPage = 24;
         $pageIds = array_slice($ids, ($page - 1) * $perPage, $perPage);
         $products = $pageIds
-            ? Product::with(['county', 'category', 'variants', 'images'])->whereIn('id', $pageIds)->latest()->get()
+            ? Product::with(['county', 'category', 'variants', 'images'])
+                ->whereIn('id', $pageIds)
+                ->orderByRaw('FIELD(id, ' . implode(',', array_map('intval', $pageIds)) . ')')
+                ->get()
             : collect();
 
         $categories = collect($data['categories'] ?? [])->map(fn ($c) => (object) $c);

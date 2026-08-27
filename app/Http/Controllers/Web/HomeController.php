@@ -18,11 +18,29 @@ class HomeController extends Controller
         $cacheKey = 'kicc_home_page_data_v3';
 
         $ids = Cache::remember($cacheKey, 21600, function () {
+            // One-per-county newest products: ROW_NUMBER per county, then order
+            // rn=1 first (each county's newest) by recency — so the section is
+            // county-diverse and never floods with a single freshly-synced county.
+            $productIds = \Illuminate\Support\Facades\DB::table('products')
+                ->select('id')
+                ->fromRaw(
+                    '(SELECT id, county_id, created_at,
+                             ROW_NUMBER() OVER (PARTITION BY county_id ORDER BY created_at DESC) AS rn
+                      FROM products
+                      WHERE status = ? AND deleted_at IS NULL AND county_id IS NOT NULL) AS ranked',
+                    ['active']
+                )
+                ->orderBy('rn')
+                ->orderByDesc('created_at')
+                ->limit(8)
+                ->pluck('id')
+                ->all();
+
             return [
                 'countyIds' => County::orderBy('name')->pluck('id')->all(),
                 'exhibitionIds' => Exhibition::where('status', 'published')->where('is_featured', true)
                     ->orderBy('start_date')->take(3)->pluck('id')->all(),
-                'productIds' => Product::active()->latest()->take(8)->pluck('id')->all(),
+                'productIds' => $productIds,
                 'venueIds' => Venue::where('is_active', true)->orderBy('name')->take(4)->pluck('id')->all(),
                 'tradeAgreementIds' => TradeAgreement::featured()->active()->latest()->take(3)->pluck('id')->all(),
             ];

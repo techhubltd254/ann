@@ -13,7 +13,7 @@
 const JSON_CT = { "content-type": "application/json" };
 // Bump on every deploy that changes origin output — instantly invalidates all
 // edge page-cache entries (they key on this version).
-const CACHE_VERSION = "v20";
+const CACHE_VERSION = "v21";
 
 // Purge must cover the live cache version (and the previous one, in case a
 // deploy is mid-flight) — not a stale hardcoded list.
@@ -137,7 +137,9 @@ async function handle(request, env, ctx) {
     const cacheable = request.method === "GET" && !NO_CACHE_PATHS.some((p) => url.pathname.startsWith(p))
         && url.pathname !== "/counties" && url.pathname !== "/counties/";
     const country = request.cf?.country ?? "XX";
-    const cacheKey = new Request(`${url.origin}${url.pathname}::${country === "KE" ? "ke" : "row"}::${CACHE_VERSION}`);
+    // Include the query string so filtered views (marketplace?county=x, ?page=n)
+    // are never served from another filter's cached HTML.
+    const cacheKey = new Request(`${url.origin}${url.pathname}${url.search}::${country === "KE" ? "ke" : "row"}::${CACHE_VERSION}`);
     const cached = cacheable ? await caches.default.match(cacheKey) : undefined;
     if (cached) return cached;
 
