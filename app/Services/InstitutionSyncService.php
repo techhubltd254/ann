@@ -304,8 +304,7 @@ class InstitutionSyncService
             'status' => 'active',
             'is_featured' => true,
             // Preserve existing media when the product array doesn't specify it —
-            // otherwise every re-sync wipes uploaded videos/images.
-            'image_url' => array_key_exists('image_url', $product) ? $product['image_url'] : ($mp->image_url ?? null),
+            // otherwise every re-sync wipes uploaded videos.
             'video_url' => array_key_exists('video_url', $product) ? $product['video_url'] : ($mp->video_url ?? null),
             'videos' => array_key_exists('videos', $product) ? $product['videos'] : ($mp->videos ?? null),
         ];
