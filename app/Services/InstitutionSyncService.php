@@ -119,11 +119,10 @@ class InstitutionSyncService
             ] as $key) {
                 \Illuminate\Support\Facades\Cache::forget($key);
             }
+            // Bump per-sector list versions — sector item caches (any page depth) become stale atomically
             $sectors = $county->sectors()->pluck('id');
             foreach ($sectors as $sid) {
-                for ($p = 1; $p <= 5; $p++) {
-                    \Illuminate\Support\Facades\Cache::forget("kicc_county_sector_items_{$county->id}_{$sid}_{$p}");
-                }
+                \Illuminate\Support\Facades\Cache::increment("kicc_sector_version_{$county->id}_{$sid}");
             }
         } catch (\Throwable $e) {
             Log::warning('Cache bust failed: ' . $e->getMessage());

@@ -2,6 +2,8 @@
 
 namespace App\Providers;
 
+use App\Models\MediaAsset;
+use App\Observers\MediaAssetObserver;
 use App\Services\SendgridApiTransport;
 use App\View\Components\DashboardsShell;
 use Illuminate\Cache\RateLimiting\Limit;
@@ -22,6 +24,9 @@ class AppServiceProvider extends ServiceProvider
     public function boot(): void
     {
         Blade::component('dashboards-shell', DashboardsShell::class);
+
+        // Every uploaded video automatically gets adaptive HLS streaming
+        MediaAsset::observe(MediaAssetObserver::class);
 
         // Laravel Pulse dashboard — only the KICC superadmin may view it.
         Gate::define('viewPulse', function ($user) {

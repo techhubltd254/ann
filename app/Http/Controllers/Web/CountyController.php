@@ -238,7 +238,8 @@ class CountyController extends Controller
             }
         }
 
-        $entityIdCache = Cache::remember("kicc_county_sector_items_{$county->id}_{$sectorModel->id}_{$page}", 21600, function () use ($county, $sectorIds) {
+        $listVersion = Cache::get("kicc_sector_version_{$county->id}_{$sectorModel->id}", 1);
+        $entityIdCache = Cache::remember("kicc_county_sector_items_{$county->id}_{$sectorModel->id}_{$listVersion}_{$page}", 21600, function () use ($county, $sectorIds) {
             return SectorEntity::where('county_id', $county->id)
                 ->whereIn('sector_id', $sectorIds)
                 ->where('is_published', true)

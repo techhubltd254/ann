@@ -27,6 +27,12 @@ Schedule::command('billing:run')->dailyAt('04:00');
 // Anomaly sweeps (brute force, card testing, refund fraud) every 15 min.
 Schedule::command('anomalies:detect')->everyFifteenMinutes();
 
+// Adaptive HLS video pipeline — every new upload is picked up by the
+// MediaAssetObserver -> GenerateHlsJob chain; this sweeper catches any
+// videos missed before the observer existed (backfill), 3 at a time so
+// the 2-core VPS is never saturated.
+Schedule::command('media:sweep-hls --limit=3')->everyFiveMinutes()->withoutOverlapping();
+
 // Predictive demand/trend rollups nightly.
 Schedule::command('analytics:trends')->dailyAt('04:30');
 
