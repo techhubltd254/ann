@@ -44,4 +44,3 @@ cd ../admin-web && npm ci && npm run dev   # :5173  (proxies /api → :8091)
 2. Admins never touch the Laravel DB directly — all edits via the engine API (audited, hash-chained).
 3. Originals never served to browsers — only pipeline derivatives (HLS/WebM/WebP/.glb).
 4. Brand per `brand/BRAND.md`. UX/a11y standards per ARCHITECTURE.md §6 — enforced by review + lint.
-# Deploy marker
