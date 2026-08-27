@@ -45,8 +45,15 @@
     @endif
 
     <div class="rounded-2xl overflow-hidden h-80 bg-[#F9FAFB] {{ $allVideos->isNotEmpty() ? 'hidden' : '' }}" id="product-image-container">
+        @if($product->video_description)
+        <div class="w-full h-full bg-gradient-to-br from-[#0B1E57] to-[#1a1a2e] p-6 flex flex-col justify-center">
+            <span class="text-[10px] font-bold text-[#FFCD05] uppercase tracking-widest mb-2">🎬 Video being produced</span>
+            <p class="text-white/90 text-sm leading-relaxed">{{ $product->video_description }}</p>
+        </div>
+        @else
         <img src="{{ $product->image_url }}" alt="{{ $product->name }}" loading="lazy" decoding="async" class="w-full h-full object-cover"
              onerror="this.src='{{ asset('storage/kicc/kicc-logo.png') }}'">
+        @endif
     </div>
             @if($product->images->count() > 1)
             <div class="flex gap-2 mt-3">

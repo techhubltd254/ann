@@ -529,12 +529,20 @@
                     <h2 class="text-sm font-bold text-white mb-4">County Products — Prices</h2>
                      <div class="overflow-x-auto max-h-[320px] overflow-y-auto">
                         <table class="w-full text-xs">
-                            <thead><tr class="text-zinc-500 border-b border-white/5"><th class="text-left py-2 pr-3 font-semibold">Product</th><th class="text-left py-2 pr-3 font-semibold">Current</th><th class="text-left py-2 font-semibold">Set</th></tr></thead>
+                            <thead><tr class="text-zinc-500 border-b border-white/5"><th class="text-left py-2 pr-3 font-semibold">Product</th><th class="text-left py-2 pr-3 font-semibold">Current</th><th class="text-left py-2 pr-3 font-semibold">Video</th><th class="text-left py-2 font-semibold">Set</th></tr></thead>
                             <tbody>
                             @foreach($products as $p)
                             <tr class="border-b border-white/5">
                                 <td class="py-2 pr-3 font-medium text-zinc-200">{{ $p->name }}</td>
                                 <td class="py-2 pr-3 font-bold text-indigo-400">KES {{ number_format($p->price) }}</td>
+                                <td class="py-2 pr-3">
+                                    @if($p->video_description)
+                                    <span class="text-[10px] text-zinc-400 line-clamp-2 max-w-[220px] block">{{ $p->video_description }}</span>
+                                    <span class="inline-block mt-1 text-[9px] font-bold px-1.5 py-0.5 rounded {{ str_contains($p->video_description ?? '', 'ADVERT') ? 'bg-[#901C1E]/30 text-red-300' : 'bg-emerald-500/20 text-emerald-300' }}">{{ str_contains($p->video_description ?? '', 'ADVERT') ? '5s Advert' : 'Video brief' }}</span>
+                                    @else
+                                    <span class="text-[10px] text-zinc-600">No video brief — add in institution JSON</span>
+                                    @endif
+                                </td>
                                 <td class="py-2">
                                     <form method="POST" action="{{ route('county.admin.price', $county->slug) }}" class="flex gap-1.5">
                                         @csrf

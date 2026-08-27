@@ -67,8 +67,14 @@
                         @if($product->is_featured)
                         <span class="text-[10px] font-bold text-[#5A6480] bg-[#1890D7]/8 px-1.5 py-0.5 rounded">Featured</span>
                         @endif
+                        @if($product->video_description && str_contains($product->video_description, 'ADVERT'))
+                        <span class="text-[10px] font-bold text-white bg-[#901C1E] px-1.5 py-0.5 rounded">5s Advert</span>
+                        @endif
                     </div>
                     <h3 class="font-bold text-gray-900 text-sm leading-snug line-clamp-2">{{ $product->name }}</h3>
+                    @if($product->video_description)
+                    <p class="text-[#5A6480] text-[11px] leading-relaxed line-clamp-2 mt-1">{{ $product->video_description }}</p>
+                    @endif
                     <div class="mt-2 font-black text-kicc-gold text-base">KES {{ number_format($product->price ?? 0) }}</div>
                 </div>
             </a>
