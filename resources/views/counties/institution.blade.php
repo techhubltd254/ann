@@ -203,6 +203,37 @@
                         @endif
                     </div>
 
+                    {{-- Map — accurate geographic pin --}}
+                    @if($institution->lat && $institution->lng)
+                    <div class="mt-5">
+                        <h4 class="text-xs font-bold text-gray-900 uppercase tracking-widest mb-2">Location Map</h4>
+                        <x-institution-map
+                            :lat="$institution->lat"
+                            :lng="$institution->lng"
+                            :name="$institution->name"
+                            :location="$institution->location ?? null"
+                            :website="$institution->website ?? null"
+                            height="220px"
+                        />
+                        <a href="https://www.openstreetmap.org/?mlat={{ $institution->lat }}&mlon={{ $institution->lng }}#map=17/{{ $institution->lat }}/{{ $institution->lng }}"
+                           target="_blank" class="inline-flex items-center gap-1 text-[11px] text-gray-400 hover:text-kicc-gold mt-2 transition-colors">
+                            <svg class="w-3 h-3" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z"/><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 11a3 3 0 11-6 0 3 3 0 016 0z"/></svg>
+                            Open in larger map
+                        </a>
+                    </div>
+                    @endif
+
+                    {{-- Official website CTA --}}
+                    @if($institution->website)
+                    <div class="mt-5 pt-4 border-t border-gray-100">
+                        <a href="{{ $institution->website }}" target="_blank" rel="noopener"
+                           class="w-full inline-flex items-center justify-center gap-2 font-bold tracking-wide transition-all duration-200 px-4 text-sm h-10 rounded-xl bg-[#0B1E57] text-white hover:bg-[#16275f]">
+                            <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 12a9 9 0 01-9 9m9-9a9 9 0 00-9-9m9 9H3m9 9a9 9 0 01-9-9m9 9c1.657 0 3-4.03 3-9s-1.343-9-3-9m0 18c-1.657 0-3-4.03-3-9s1.343-9 3-9"/></svg>
+                            Visit Official Website
+                        </a>
+                    </div>
+                    @endif
+
                     <div class="mt-5 pt-4 border-t border-gray-100">
                         <a href="{{ route('counties.show', $county->slug) }}" class="w-full inline-flex items-center justify-center gap-2 font-bold tracking-wide transition-all duration-200 px-4 text-sm h-10 rounded-xl bg-[#901C1E] text-gray-900 hover:bg-[#7b1618]">
                             Browse {{ $county->name }} County

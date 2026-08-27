@@ -212,11 +212,16 @@ class CountyController extends Controller
             $countyHeroFallback = array_values(array_unique(array_filter($fallback)));
         }
 
+        $mapInstitutions = \App\Models\CountyInstitution::where('county_id', $county->id)
+            ->where('is_published', true)
+            ->get(['id', 'name', 'slug', 'lat', 'lng', 'location', 'website']);
+
         return view('counties.show', compact(
             'county', 'sectors', 'sectorData',
             'featuredAttractions', 'featuredHotels', 'countyProducts',
             'exhibitions', 'linkedSectors', 'countyMedia', 'countyHeroFallback', 'sectorVideos', 'sectorWebmVideos',
-            'sectorEntityVideos', 'sectorPitches', 'attractionThumbs', 'hotelThumbs', 'productThumbs'
+            'sectorEntityVideos', 'sectorPitches', 'attractionThumbs', 'hotelThumbs', 'productThumbs',
+            'mapInstitutions'
         ));
     }
 
