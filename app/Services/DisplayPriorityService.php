@@ -4,19 +4,22 @@ namespace App\Services;
 
 use App\Models\County;
 use App\Models\Marketplace\Product;
-use App\Models\Review;
 use App\Models\ReviewSeed;
 use Illuminate\Support\Facades\DB;
 
 /**
- * Display prioritization — decides what appears on the marketplace & home.
+ * Display prioritization — a genuine review-driven recommendation algorithm.
  *
- * Rules:
- *  1. Only counties with real synced data are visible (Mombasa + Muranga for now).
- *  2. Sector representation: every sector gets a slot (one top product per sector per page).
- *  3. Within a sector, rank by review score = avg(rating) * log(1 + count)
- *     (blends seeded online reviews with real user reviews so a 4.8×200
- *      beats a 5.0×1).
+ * Scoring (per product):
+ *   1. reviewScore = avgRating * log(1 + reviewCount)   — DOMINANT signal.
+ *      Blends seeded online reviews (Google/Tripadvisor) with real user reviews,
+ *      so a 4.8×200 genuinely beats a 5.0×1, and no county gets artificial help.
+ *   2. sectorBoost — small, soft diversity weight so grids aren't monotone:
+ *      the top-ranked product of each sector gets +0.08. Never lets a weak
+ *      product displace a strong review score.
+ *   3. completeness + freshness — tiny tiebreakers when scores are near-equal.
+ *
+ * Only counties with real synced data are eligible (Mombasa + Muranga for now).
  */
 class DisplayPriorityService
 {
@@ -29,8 +32,7 @@ class DisplayPriorityService
     }
 
     /**
-     * Ordered product IDs for the marketplace grid:
-     * one top product per sector first, then the rest, all review-ranked.
+     * Recommended product IDs for the marketplace grid / home section.
      */
     public function marketplaceProductIds(?string $categorySlug = null): array
     {
@@ -39,25 +41,24 @@ class DisplayPriorityService
             return [];
         }
 
+        $bindings = [...$countyIds];
         $categoryJoin = '';
         $categoryFilter = '';
-        $bindings = [...$countyIds];
         if ($categorySlug) {
             $categoryJoin = 'JOIN product_categories pc ON pc.id = p.category_id';
             $categoryFilter = ' AND pc.slug = ?';
             $bindings[] = $categorySlug;
         }
-
         $bindings[] = 'active';
 
         $rows = DB::select("
-            SELECT p.id, p.category_id
+            SELECT p.id, p.county_id, p.category_id, p.created_at,
+                   (p.video_url IS NOT NULL OR p.videos IS NOT NULL) AS has_media
             FROM products p
             $categoryJoin
             WHERE p.county_id IN (" . implode(',', array_fill(0, count($countyIds), '?')) . ")
               $categoryFilter
               AND p.status = ? AND p.deleted_at IS NULL
-            ORDER BY p.created_at DESC
         ", $bindings);
 
         $ids = array_map(fn ($r) => (int) $r->id, $rows);
@@ -65,39 +66,63 @@ class DisplayPriorityService
             return [];
         }
 
-        // Sector-first ordering: one per category, then the rest
-        $seen = [];
-        $ordered = [];
-        foreach ($ids as $id) {
-            $cat = null;
-            foreach ($rows as $r) {
-                if ((int) $r->id === $id) { $cat = (int) $r->category_id; break; }
-            }
-            if ($cat !== null && !isset($seen[$cat])) {
-                $seen[$cat] = true;
-                array_unshift($ordered, $id);
-            } else {
-                $ordered[] = $id;
-            }
-        }
-
-        // Review-score ranking within the sector-first block
-        return $this->rankByReview($ordered);
+        return $this->recommend($ids, $rows);
     }
 
     /**
-     * Rank IDs by blended review score: avg(rating) * log(1 + count).
-     * Combines real user reviews (reviews/product_reviews) + seeded online reviews.
+     * Core recommendation: review-score ranking with soft sector diversity
+     * and tiny completeness/freshness tiebreakers.
      */
-    public function rankByReview(array $ids): array
+    protected function recommend(array $ids, array $rows): array
+    {
+        $scores = $this->reviewScores($ids);
+
+        $meta = [];
+        foreach ($rows as $r) {
+            $meta[(int) $r->id] = $r;
+        }
+
+        // Sector leaders (top review score per category) get a soft boost
+        $sectorBest = [];
+        foreach ($ids as $id) {
+            $cat = $meta[$id]->category_id ?? null;
+            if ($cat === null) continue;
+            $cur = $sectorBest[$cat] ?? null;
+            if ($cur === null || ($scores[$id] ?? 0) > ($scores[$cur] ?? 0)) {
+                $sectorBest[$cat] = $id;
+            }
+        }
+
+        $now = now()->timestamp;
+        $scored = [];
+        foreach ($ids as $id) {
+            $review = $scores[$id] ?? 0.0;
+            $boost = isset($sectorBest[$meta[$id]->category_id ?? -1]) && $sectorBest[$meta[$id]->category_id ?? -1] === $id ? 0.08 : 0.0;
+
+            // Completeness: products with media get a tiny edge over bare listings
+            $completeness = !empty($meta[$id]->has_media) ? 0.02 : 0.0;
+
+            // Freshness: near-zero recency weight (newer breaks ties only)
+            $ageDays = max(0, ($now - strtotime($meta[$id]->created_at)) / 86400);
+            $freshness = $ageDays < 14 ? 0.01 : 0.0;
+
+            $scored[$id] = $review + $boost + $completeness + $freshness;
+        }
+
+        arsort($scored);
+        return array_keys($scored);
+    }
+
+    /**
+     * Blended review score per product: avgRating * log(1 + count).
+     * Real user reviews + seeded online reviews.
+     */
+    public function reviewScores(array $ids): array
     {
         if (empty($ids)) {
             return [];
         }
 
-        $scores = [];
-
-        // Real user reviews (polymorphic reviews + product_reviews)
         $reviewRows = DB::table('reviews')
             ->where('reviewable_type', Product::class)
             ->whereIn('reviewable_id', $ids)
@@ -111,12 +136,12 @@ class DisplayPriorityService
             ->selectRaw('product_id, AVG(rating) as avg_r, COUNT(*) as cnt')
             ->groupBy('product_id')
             ->get();
-
-        // Seeded online reviews
         $seedRows = ReviewSeed::whereIn('owner_type', [Product::class, 'product'])
             ->whereIn('owner_id', $ids)
-            ->get();
+            ->get()
+            ->groupBy('owner_id');
 
+        $scores = [];
         foreach ($ids as $id) {
             $realAvg = 0.0;
             $realCount = 0;
@@ -131,21 +156,23 @@ class DisplayPriorityService
 
             $seedAvg = 0.0;
             $seedCount = 0;
-            foreach ($seedRows as $s) {
-                if ((int) $s->owner_id === $id) { $seedAvg = (float) $s->rating; $seedCount = (int) $s->review_count; break; }
+            foreach (($seedRows->get($id) ?? collect()) as $s) {
+                $seedAvg += (float) $s->rating * (int) $s->review_count;
+                $seedCount += (int) $s->review_count;
             }
 
-            $avg = $realCount > 0 ? (($realAvg * $realCount) + ($seedAvg * $seedCount)) / max(1, $realCount + $seedCount) : $seedAvg;
-            $count = $realCount + $seedCount;
+            $totalCount = $realCount + $seedCount;
+            $avg = $totalCount > 0
+                ? (($realAvg * $realCount) + $seedAvg) / $totalCount
+                : 0.0;
 
-            $scores[$id] = $count > 0 ? $avg * log(1 + $count) : 0.0;
+            $scores[$id] = $totalCount > 0 ? $avg * log(1 + $totalCount) : 0.0;
         }
 
-        uasort($scores, fn ($a, $b) => $b <=> $a);
-        return array_keys($scores);
+        return $scores;
     }
 
-    /** Review score summary for a single product (for badges/widgets). */
+    /** Review score summary for a single product (badges/widgets). */
     public function scoreFor(int $productId): array
     {
         $real = DB::table('product_reviews')
@@ -158,17 +185,24 @@ class DisplayPriorityService
         $realAvg = (float) ($real->avg_r ?? $real2->avg_r ?? 0);
         $realCount = (int) ($real->cnt ?? 0) + (int) ($real2->cnt ?? 0);
 
-        $seed = ReviewSeed::where('owner_type', Product::class)->where('owner_id', $productId)->first();
+        $seeds = ReviewSeed::where('owner_type', Product::class)->where('owner_id', $productId)->get();
+        $seedAvgSum = 0.0;
+        $seedCount = 0;
+        $seedSource = null;
+        foreach ($seeds as $s) {
+            $seedAvgSum += (float) $s->rating * (int) $s->review_count;
+            $seedCount += (int) $s->review_count;
+            $seedSource = $s->sourceLabel();
+        }
 
-        $avg = $realCount > 0 && $seed
-            ? (($realAvg * $realCount) + ((float) $seed->rating * (int) $seed->review_count)) / max(1, $realCount + (int) $seed->review_count)
-            : ($realCount > 0 ? $realAvg : ($seed ? (float) $seed->rating : 0));
+        $totalCount = $realCount + $seedCount;
+        $avg = $totalCount > 0 ? (($realAvg * $realCount) + $seedAvgSum) / $totalCount : 0;
 
         return [
             'average' => round($avg, 1),
-            'count' => $realCount + ($seed ? (int) $seed->review_count : 0),
+            'count' => $totalCount,
             'real_count' => $realCount,
-            'seed_source' => $seed?->source,
+            'seed_source' => $seedSource,
         ];
     }
 }
