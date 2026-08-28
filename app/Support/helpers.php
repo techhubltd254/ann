@@ -94,3 +94,40 @@ if (!function_exists('lottie')) {
         return '<lottie-player src="' . media('icons/' . $icon . '.json') . '" ' . $cls . ' autoplay loop mode="normal"></lottie-player>';
     }
 }
+if (!function_exists('image_blur')) {
+    /**
+     * Layer-1 blur-up: return the stored base64 blur placeholder for a source
+     * image URL (from the ingestion pipeline), or null when unavailable.
+     */
+    function image_blur(?string $sourceUrl): ?string
+    {
+        if (!$sourceUrl) return null;
+        try {
+            $v = \App\Models\ImageVariant::where('source_hash', md5($sourceUrl))->latest('id')->first();
+            return $v?->blur;
+        } catch (\Throwable) {
+            return null;
+        }
+    }
+}
+
+if (!function_exists('image_variant')) {
+    /**
+     * Layer-3: return a stored variant URL (thumb/card/hero) for a source image.
+     */
+    function image_variant(?string $sourceUrl, string $size = 'card'): ?string
+    {
+        if (!$sourceUrl) return null;
+        try {
+            $v = \App\Models\ImageVariant::where('source_hash', md5($sourceUrl))->latest('id')->first();
+            if (!$v) return null;
+            return match ($size) {
+                'thumb' => $v->thumbUrl(),
+                'hero' => $v->heroUrl(),
+                default => $v->cardUrl(),
+            };
+        } catch (\Throwable) {
+            return null;
+        }
+    }
+}

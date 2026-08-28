@@ -13,7 +13,7 @@
         <div class="bg-white rounded-2xl border border-gray-200 overflow-hidden">
             @if($product->image_url)
             <div class="h-48 overflow-hidden bg-gray-100">
-                <img src="{{ $product->image_url }}" alt="{{ $product->name }}" class="w-full h-full object-cover">
+                <x-fast-image :src="$product->image_url" :alt="$product->name" :width="640" :quality="75" class="w-full h-full" />
             </div>
             @endif
             <div class="p-6">

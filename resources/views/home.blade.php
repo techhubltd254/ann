@@ -108,10 +108,14 @@
                         <source src="{{ $hpVideo }}" type="video/mp4">
                     </video>
                     @endif
+                    @if(($product->images->first()->url ?? null) && !$hpVideo)
+                    <x-fast-image :src="$product->images->first()->url" :alt="$product->name" :width="640" :quality="75" class="w-full h-full" />
+                    @elseif(!$hpVideo)
                     <img src="{{ $product->image_url }}" alt="{{ $product->name }}"
-                         class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500 {{ $hpVideo ? 'opacity-0' : '' }}"
+                         class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500"
                          loading="lazy" decoding="async"
                          onerror="this.src='{{ media('kicc/kicc-logo.png') }}'">
+                    @endif
                 </div>
                 <div class="p-4">
                     <div class="text-[10px] font-bold text-[#FFCD05] uppercase tracking-widest mb-1">{{ $product->county?->name ?? 'Kenya' }} · {{ $product->category?->name ?? 'Product' }}</div>
@@ -144,7 +148,7 @@
             <div class="tilt-glare"></div>
             <div class="h-44 overflow-hidden bg-gray-50">
                 @if($ex->cover_image)
-                <img src="{{ $ex->cover_image }}" alt="{{ $ex->name }}" class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-700" loading="lazy" decoding="async">
+                <x-fast-image :src="$ex->cover_image" :alt="$ex->name" :width="640" :quality="75" class="w-full h-full" />
                 @else
                 <div class="w-full h-full flex items-center justify-center text-[#FFCD05]/30 text-lg font-bold">KICC Exhibition</div>
                 @endif
@@ -204,7 +208,7 @@
             <a href="{{ route('venues.show', $v->slug) }}" class="group bg-gray-50 rounded-2xl overflow-hidden border border-gray-100 hover:border-[#FFCD05]/40 transition-all card-hover" data-tilt="5" data-reveal data-reveal-delay="{{ ($i % 4) * 70 }}">
                 <div class="h-36 overflow-hidden bg-white">
                     @if($v->cover_image)
-                    <img src="{{ $v->cover_image }}" alt="{{ $v->name }}" class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500" onerror="this.style.display='none'">
+                    <x-fast-image :src="$v->cover_image" :alt="$v->name" :width="640" :quality="75" class="w-full h-full" />
                     @endif
                     <div class="absolute inset-0 flex items-center justify-center text-gray-900/10 text-5xl font-black">{{ $v->name[0] }}</div>
                 </div>

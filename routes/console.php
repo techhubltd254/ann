@@ -37,6 +37,10 @@ Schedule::command('media:sweep-hls --limit=3')->everyFiveMinutes()->withoutOverl
 // videos uploaded before the observer existed.
 Schedule::command('media:sweep-derivatives --limit=4')->everyTenMinutes()->withoutOverlapping();
 
+// Layer-3 image variants (thumb/card/hero WebP + blur) backfill for images
+// uploaded before the ImageVariantJob pipeline existed.
+Schedule::command('media:sweep-image-variants --limit=6')->everyFifteenMinutes()->withoutOverlapping();
+
 // Predictive demand/trend rollups nightly.
 Schedule::command('analytics:trends')->dailyAt('04:30');
 

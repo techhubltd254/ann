@@ -90,6 +90,13 @@ class CachePublicResponse
             return false;
         }
 
+        // Binary image responses (the optimize-image pipeline) must keep their
+        // own immutable Cache-Control — never override or cache them here.
+        $ct = $response->headers->get('Content-Type') ?? '';
+        if (str_starts_with($ct, 'image/')) {
+            return false;
+        }
+
         // Responses that must deliver a session cookie (e.g. the first
         // request that boots a session) are safe to cache — we store only
         // the content/status/type, never cookies, and the live response

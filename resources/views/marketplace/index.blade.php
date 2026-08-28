@@ -55,9 +55,9 @@
                         <source src="{{ $product->video_url }}" type="video/mp4">
                     </video>
                     @endif
-                    <img src="{{ $product->image_url }}" alt="{{ $product->name }}" loading="lazy"
-                         class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500 {{ $product->video_url ? 'opacity-0' : '' }}"
-                         onerror="this.src='{{ asset('storage/kicc/kicc-logo.png') }}'">
+                    @if(($product->images->first()->url ?? null) && !$product->video_url)
+                    <x-fast-image :src="$product->images->first()->url" :alt="$product->name" :width="640" :quality="75" class="w-full h-full" />
+                    @endif
                 </div>
                 <div class="p-4">
                     <div class="flex items-center gap-2 mb-1.5">

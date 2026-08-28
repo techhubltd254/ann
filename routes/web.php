@@ -312,6 +312,9 @@ Route::get('/api/recommendations', [\App\Http\Controllers\Web\AIController::clas
 Route::get('/api/forecast', [\App\Http\Controllers\Web\AIController::class, 'forecast'])->name('api.forecast');
 Route::post('/api/fraud-check', [\App\Http\Controllers\Web\AIController::class, 'fraudCheck'])->name('api.fraud.check');
 
+// Layer 2: Dynamic image optimizer — resizes + transcodes any platform image to WebP, caches in R2 (immutable)
+Route::get('/api/optimize-image', \App\Http\Controllers\Web\OptimizeImageController::class)->name('api.optimize-image');
+
 // Integrations
 Route::get('/integrations', [\App\Http\Controllers\Web\IntegrationController::class, 'settings'])->name('integrations.settings');
 Route::get('/counties/{county}/map', [\App\Http\Controllers\Web\IntegrationController::class, 'map'])->name('counties.map');

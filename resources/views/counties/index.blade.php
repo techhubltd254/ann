@@ -54,10 +54,13 @@
                         class="absolute inset-0 w-full h-full"
                     />
                     @else
-                    <img src="{{ media('counties/' . $c->slug . '/hero.jpeg') }}" alt="{{ $c->name }}"
-                         class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500"
-                         loading="lazy" decoding="async"
-                         onerror="this.parentElement.innerHTML='<div class=\'w-full h-full flex items-center justify-center bg-gradient-to-br from-[#0A1024] to-[#1a1a2e]\'></div>'">
+                    <x-fast-image
+                        :src="media('counties/' . $c->slug . '/hero.jpeg')"
+                        :alt="$c->name"
+                        :width="640"
+                        :quality="75"
+                        class="w-full h-full"
+                    />
                     @endif
                 </div>
                 <div class="p-3.5 text-center">

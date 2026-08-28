@@ -101,7 +101,14 @@ async function handle(request, env, ctx) {
         const res = await proxy(request, upstream, url, { cache: false, scheme: env.ORIGIN_SCHEME ?? "http" });
         if (res.ok && !(res.headers.getSetCookie?.().length)) {
           const tagged = new Response(res.body, res);
-          tagged.headers.set("Cache-Control", "public, s-maxage=60, stale-while-revalidate=300");
+          // Optimized images are immutable (keyed by url+width+quality) — cache a year
+          const isImage = url.pathname.startsWith("/api/optimize-image");
+          tagged.headers.set(
+            "Cache-Control",
+            isImage
+              ? "public, max-age=31536000, immutable"
+              : "public, s-maxage=60, stale-while-revalidate=300"
+          );
           ctx.waitUntil(caches.default.put(apiKey, tagged.clone()));
           return tagged;
         }
@@ -229,6 +236,7 @@ const CACHEABLE_API_PREFIXES = [
   "/api/booths",
   "/api/tickets/lookup/",
   "/api/county-sector/",
+  "/api/optimize-image",
 ];
 
 function isCacheableApi(path) {

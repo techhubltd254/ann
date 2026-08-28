@@ -7,240 +7,128 @@ use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Str;
 
+/**
+ * 3-Layer Image Pipeline — Layer 3: Automated Ingestion.
+ *
+ * Converts every uploaded raw photo into lightweight responsive WebP variants
+ * (thumb 320 / card 640 / hero 1920) plus a tiny base64 blur placeholder,
+ * and pushes them to R2 so grids load instantly with zero layout shift.
+ */
 class ImageOptimizer
 {
-    public array $sizes = [320, 640, 1280, 1920];
-    public int $jpegQuality = 80;
+    public array $sizes = [
+        'thumb' => 320,
+        'card' => 640,
+        'hero' => 1920,
+    ];
     public int $webpQuality = 75;
-    public int $pngCompression = 6;
+    public int $blurWidth = 20;
     public int $maxWidth = 1920;
     public int $maxHeight = 1920;
 
+    /** R2 base path where variants are stored: opt/{hash}_thumb.webp etc. */
+    public string $variantPrefix = 'opt';
+
     public function __construct()
     {
-        $this->detectAvailableDriver();
-    }
-
-    private function availableDriver(): string
-    {
-        return extension_loaded('imagick') ? 'imagick' : 'gd';
-    }
-
-    private function detectAvailableDriver(): void
-    {
-        if (!extension_loaded('imagick') && !extension_loaded('gd')) {
+        if (!extension_loaded('gd') && !extension_loaded('imagick')) {
             Log::warning('ImageOptimizer: No image processing extension available (imagick/gd)');
         }
     }
 
-    public function optimize(string $sourcePath, ?string $destDir = null): array
+    /**
+     * Generate all variants for a source image file and upload them to R2.
+     *
+     * @param string $sourcePath absolute path to the raw image
+     * @param string|null $r2BaseKey R2 key base (without extension) — e.g. "counties/muranga/hero"
+     * @return array{variants: array<string,string>, blur: string}
+     */
+    public function generateVariants(string $sourcePath, ?string $r2BaseKey = null): array
     {
-        if (!file_exists($sourcePath)) {
-            throw new \RuntimeException("Source file not found: $sourcePath");
-        }
+        $variants = [];
+        $blur = '';
 
-        $destDir ??= dirname($sourcePath);
-        $filename = pathinfo($sourcePath, PATHINFO_FILENAME);
-        $extension = strtolower(pathinfo($sourcePath, PATHINFO_EXTENSION));
-
-        if (!in_array($extension, ['jpg', 'jpeg', 'png', 'gif', 'webp'])) {
-            return [$sourcePath];
-        }
-
-        $outputs = [];
-        $driver = $this->availableDriver();
-
-        if ($driver === 'imagick') {
-            $outputs = $this->optimizeWithImagick($sourcePath, $destDir, $filename);
-        } elseif ($driver === 'gd') {
-            $outputs = $this->optimizeWithGd($sourcePath, $destDir, $filename);
-        }
-
-        return $outputs;
-    }
-
-    public function optimizeAndStore(UploadedFile $file, string $storagePath): array
-    {
-        $tempPath = $file->getRealPath();
-        $optimized = $this->optimize($tempPath);
-
-        $stored = [];
-        foreach ($optimized as $localPath) {
-            $relative = $storagePath . '/' . basename($localPath);
-            Storage::put($relative, file_get_contents($localPath), 'public');
-            $stored[] = $relative;
-        }
-
-        return $stored;
-    }
-
-    private function optimizeWithImagick(string $source, string $destDir, string $filename): array
-    {
-        $outputs = [];
-
-        try {
-            $img = new \Imagick($source);
-            $img->setImageCompressionQuality($this->jpegQuality);
-
-            $img->stripImage();
-            $img->setSamplingFactors(['2x2', '1x1', '1x1']);
-
-            if ($img->getImageAlphaChannel()) {
-                $img->setImageFormat('png');
-                $img->setOption('png:compression-level', (string)$this->pngCompression);
-                $outputPath = "$destDir/{$filename}.png";
-                $img->writeImage($outputPath);
-                $outputs[] = $outputPath;
-            } else {
-                foreach ([null, 'webp'] as $fmt) {
-                    if ($fmt === 'webp') {
-                        $webp = clone $img;
-                        $size = filesize($source);
-                        $quality = $size > 500000 ? 70 : 80;
-                        $webp->setImageFormat('webp');
-                        $webp->setImageCompressionQuality($quality);
-                        $outputPath = "$destDir/{$filename}.webp";
-                        $webp->writeImage($outputPath);
-                        $outputs[] = $outputPath;
-                        $webp->clear();
-                    } else {
-                        $img->setImageFormat('jpeg');
-                        $outputPath = "$destDir/{$filename}.jpg";
-                        $img->writeImage($outputPath);
-                        $outputs[] = $outputPath;
-                    }
-                }
-            }
-
-            $img->clear();
-        } catch (\Throwable $e) {
-            Log::warning("Imagick optimization failed for $source: {$e->getMessage()}");
-            $outputs[] = $source;
-        }
-
-        return $outputs;
-    }
-
-    private function optimizeWithGd(string $source, string $destDir, string $filename): array
-    {
-        $outputs = [];
-        $info = getimagesize($source);
-
+        $info = @getimagesize($sourcePath);
         if (!$info) {
-            return [$source];
+            return ['variants' => [], 'blur' => ''];
         }
-
         [$srcW, $srcH] = $info;
         $mime = $info['mime'];
 
         $srcImg = match ($mime) {
-            'image/jpeg' => @imagecreatefromjpeg($source),
-            'image/png' => @imagecreatefrompng($source),
-            'image/gif' => @imagecreatefromgif($source),
-            'image/webp' => @imagecreatefromwebp($source),
+            'image/jpeg' => @imagecreatefromjpeg($sourcePath),
+            'image/png' => @imagecreatefrompng($sourcePath),
+            'image/gif' => @imagecreatefromgif($sourcePath),
+            'image/webp' => @imagecreatefromwebp($sourcePath),
             default => null,
         };
 
-        if (!$srcImg) {
-            return [$source];
+        if (!$srcImg || !function_exists('imagewebp')) {
+            return ['variants' => [], 'blur' => ''];
         }
 
-        $ratio = min($this->maxWidth / $srcW, $this->maxHeight / $srcH, 1);
-        $dstW = (int)round($srcW * $ratio);
-        $dstH = (int)round($srcH * $ratio);
+        $hash = Str::random(10);
+        $r2 = Storage::disk('r2');
 
-        if ($ratio < 1) {
-            $dstImg = imagecreatetruecolor($dstW, $dstH);
-            imagecopyresampled($dstImg, $srcImg, 0, 0, 0, 0, $dstW, $dstH, $srcW, $srcH);
-        } else {
-            $dstImg = $srcImg;
-            $dstW = $srcW;
-            $dstH = $srcH;
-        }
-
-        $jpgPath = "$destDir/{$filename}.jpg";
-        imagejpeg($dstImg, $jpgPath, $this->jpegQuality);
-        $outputs[] = $jpgPath;
-
-        if (function_exists('imagewebp')) {
-            $webpPath = "$destDir/{$filename}.webp";
-            $size = filesize($source);
-            $webpQuality = $size > 500000 ? 70 : 80;
-            imagewebp($dstImg, $webpPath, $webpQuality);
-            $outputs[] = $webpPath;
-        }
-
-        imagedestroy($srcImg);
-        if ($ratio < 1) imagedestroy($dstImg);
-
-        return $outputs;
-    }
-
-    public static function imgUrl(?string $path, int $width = 0, string $format = 'auto'): string
-    {
-        if (!$path) return '';
-
-        $base = url('storage/' . $path);
-        $webp = $width > 0
-            ? url('storage/' . pathinfo($path, PATHINFO_DIRNAME) . '/' . pathinfo($path, PATHINFO_FILENAME) . ".webp")
-            : str_replace(['.jpg', '.jpeg', '.png'], '.webp', $base);
-
-        $resized = $width > 0 ? $base : $base;
-
-        if ($format === 'webp') return $webp;
-
-        return $base;
-    }
-
-    public static function picture(?string $path, string $class = '', string $alt = '', int $width = 0, int $height = 0): string
-    {
-        if (!$path) return '';
-
-        $dir = pathinfo($path, PATHINFO_DIRNAME);
-        $name = pathinfo($path, PATHINFO_FILENAME);
-        $base = url("storage/$path");
-        $webp = url("storage/$dir/$name.webp");
-
-        $sizeAttr = $width ? "width=\"$width\" height=\"$height\"" : '';
-        $loading = $height > 200 ? 'loading="lazy"' : '';
-
-        return "<picture>
-            <source srcset=\"$webp\" type=\"image/webp\">
-            <img src=\"$base\" alt=\"" . htmlspecialchars($alt) . "\" class=\"$class\" $sizeAttr $loading decoding=\"async\">
-        </picture>";
-    }
-
-    public function batchOptimize(string $directory): array
-    {
-        $results = ['processed' => 0, 'skipped' => 0, 'errors' => 0, 'saved_bytes' => 0];
-
-        $files = new \RecursiveIteratorIterator(
-            new \RecursiveDirectoryIterator($directory, \RecursiveDirectoryIterator::SKIP_DOTS)
-        );
-
-        foreach ($files as $file) {
-            if (!in_array(strtolower($file->getExtension()), ['jpg', 'jpeg', 'png', 'gif', 'webp'])) continue;
-            if (str_contains($file->getPathname(), '/optimized/')) continue;
-            if (str_contains($file->getPathname(), '/thumb/')) continue;
-
-            $origSize = $file->getSize();
-            try {
-                $result = $this->optimize($file->getPathname(), $file->getPath());
-                $newPath = $result[0] ?? null;
-                if ($newPath && $newPath !== $file->getPathname()) {
-                    $newSize = filesize($newPath);
-                    $results['saved_bytes'] += $origSize - $newSize;
-                    $results['processed']++;
+        try {
+            foreach ($this->sizes as $name => $width) {
+                if ($width >= $srcW) {
+                    // Source is smaller than this variant — keep original size (no upscale)
+                    $dstW = $srcW;
+                    $dstH = $srcH;
+                    $dstImg = $srcImg;
                 } else {
-                    $results['skipped']++;
+                    $dstW = $width;
+                    $dstH = (int) round($srcH * ($width / $srcW));
+                    $dstImg = imagecreatetruecolor($dstW, $dstH);
+                    imagecopyresampled($dstImg, $srcImg, 0, 0, 0, 0, $dstW, $dstH, $srcW, $srcH);
                 }
-            } catch (\Throwable $e) {
-                Log::warning("Batch optimize failed for {$file->getPathname()}: {$e->getMessage()}");
-                $results['errors']++;
+
+                $temp = tempnam(sys_get_temp_dir(), 'imgv_') . '.webp';
+                imagewebp($dstImg, $temp, $this->webpQuality);
+
+                $base = $r2BaseKey ?? 'opt/' . $hash;
+                $key = $base . "_{$name}.webp";
+                $fh = fopen($temp, 'r');
+                $r2->writeStream($key, $fh, ['visibility' => 'public']);
+                fclose($fh);
+                @unlink($temp);
+
+                $variants[$name] = $key;
+
+                if ($dstImg !== $srcImg) {
+                    imagedestroy($dstImg);
+                }
             }
+
+            // Tiny blur placeholder (20px WebP → base64 data URI)
+            $blurImg = imagecreatetruecolor($this->blurWidth, max(1, (int) round($srcH * ($this->blurWidth / $srcW))));
+            imagecopyresampled($blurImg, $srcImg, 0, 0, 0, 0, $this->blurWidth, imagesy($blurImg), $srcW, $srcH);
+            $blurTemp = tempnam(sys_get_temp_dir(), 'blur_') . '.webp';
+            imagewebp($blurImg, $blurTemp, 30);
+            $blur = 'data:image/webp;base64,' . base64_encode((string) file_get_contents($blurTemp));
+            @unlink($blurTemp);
+            imagedestroy($blurImg);
+        } catch (\Throwable $e) {
+            Log::warning("ImageOptimizer variant generation failed: {$e->getMessage()}");
+        } finally {
+            imagedestroy($srcImg);
         }
 
-        $results['saved_mb'] = round($results['saved_bytes'] / 1048576, 2);
-        return $results;
+        return ['variants' => $variants, 'blur' => $blur];
+    }
+
+    /**
+     * Generate variants from an UploadedFile and persist them to R2.
+     */
+    public function generateFromUpload(UploadedFile $file, ?string $r2BaseKey = null): array
+    {
+        return $this->generateVariants($file->getRealPath(), $r2BaseKey);
+    }
+
+    /** Convenience: public URL for a variant key. */
+    public static function variantUrl(string $key): string
+    {
+        return media_url() . '/' . ltrim($key, '/');
     }
 }

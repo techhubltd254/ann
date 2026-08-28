@@ -51,15 +51,19 @@
             <p class="text-white/90 text-sm leading-relaxed">{{ $product->video_description }}</p>
         </div>
         @else
+        @if($product->images->first()->url ?? null)
+        <x-fast-image :src="$product->images->first()->url" :alt="$product->name" :width="960" :quality="80" class="w-full h-full" />
+        @else
         <img src="{{ $product->image_url }}" alt="{{ $product->name }}" loading="lazy" decoding="async" class="w-full h-full object-cover"
              onerror="this.src='{{ asset('storage/kicc/kicc-logo.png') }}'">
+        @endif
         @endif
     </div>
             @if($product->images->count() > 1)
             <div class="flex gap-2 mt-3">
                 @foreach($product->images->take(4) as $img)
                 <div class="w-20 h-14 rounded-xl overflow-hidden border-2 shrink-0 border-gray-200 card-hover">
-                    <img src="{{ $img->url }}" alt="" class="w-full h-full object-cover">
+                    <x-fast-image :src="$img->url" :alt="$product->name" :width="160" :quality="70" class="w-full h-full" />
                 </div>
                 @endforeach
             </div>
@@ -139,8 +143,12 @@
             @foreach($related as $rel)
             <a href="{{ route('marketplace.show', $rel->slug) }}" class="group bg-[#F9FAFB] rounded-2xl overflow-hidden border border-gray-200 hover:border-[#FFCD05]/30 transition-all">
                 <div class="aspect-square overflow-hidden bg-white">
+                    @if($rel->images->first()->url ?? null)
+                    <x-fast-image :src="$rel->images->first()->url" :alt="$rel->name" :width="400" :quality="70" class="w-full h-full" />
+                    @else
                     <img src="{{ $rel->image_url }}" alt="{{ $rel->name }}" class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500"
                          onerror="this.src='{{ asset('storage/kicc/kicc-logo.png') }}'">
+                    @endif
                 </div>
                 <div class="p-4">
                     <h3 class="font-bold text-gray-900 text-sm line-clamp-2">{{ $rel->name }}</h3>

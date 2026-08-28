@@ -125,9 +125,13 @@
                                     <source src="{{ $vid }}" type="video/mp4">
                                 </video>
                                 @endif
+                                @if(!$vid && ($product->images->first()->url ?? null))
+                                <x-fast-image :src="$product->images->first()->url" :alt="$product->name" :width="640" :quality="75" class="w-full h-full" />
+                                @elseif(!$vid)
                                 <img src="{{ $product->image_url }}" alt="{{ $product->name }}" loading="lazy"
-                                     class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500 {{ $vid ? 'opacity-0' : '' }}"
+                                     class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500"
                                      onerror="this.src='{{ asset('storage/kicc/kicc-logo.png') }}'">
+                                @endif
                             </div>
                             <div class="p-3">
                                 <div class="text-[10px] font-bold text-kicc-gold uppercase tracking-widest">{{ $county->name }}</div>
