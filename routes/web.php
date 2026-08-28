@@ -428,10 +428,14 @@ Route::middleware('auth')->group(function () {
 // Reviews & Ratings
 Route::post('/reviews', [\App\Http\Controllers\Web\ReviewController::class, 'store'])->name('review.store');
 Route::post('/reviews/{review}/respond', [\App\Http\Controllers\Web\ReviewController::class, 'updateVendorResponse'])->name('review.respond');
+Route::post('/reviews/product', [\App\Http\Controllers\Web\ReviewController::class, 'storeProduct'])->name('product.review.store');
+Route::post('/reviews/entity', [\App\Http\Controllers\Web\ReviewController::class, 'storeEntity'])->name('entity.review.store');
 Route::middleware('auth')->group(function () {
     Route::get('/kicc-admin/reviews', [\App\Http\Controllers\Web\ReviewAdminController::class, 'index'])->name('review.admin.index')->middleware('admin:kicc');
     Route::post('/kicc-admin/reviews/{review}/approve', [\App\Http\Controllers\Web\ReviewAdminController::class, 'approve'])->name('review.admin.approve')->middleware('admin:kicc');
     Route::post('/kicc-admin/reviews/{review}/reject', [\App\Http\Controllers\Web\ReviewAdminController::class, 'reject'])->name('review.admin.reject')->middleware('admin:kicc');
+    Route::post('/kicc-admin/product-reviews/{review}/approve', [\App\Http\Controllers\Web\ReviewAdminController::class, 'approveProduct'])->name('review.admin.product.approve')->middleware('admin:kicc');
+    Route::post('/kicc-admin/product-reviews/{review}/reject', [\App\Http\Controllers\Web\ReviewAdminController::class, 'rejectProduct'])->name('review.admin.product.reject')->middleware('admin:kicc');
 });
 
 // Commission & Licensing Admin

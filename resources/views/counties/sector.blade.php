@@ -153,6 +153,17 @@
                 />
                 <div class="p-4">
                     <h3 class="font-bold text-gray-900 text-sm leading-snug">{{ $e->name }}</h3>
+                    @if(isset($entityReviewScores[$e->id]) && $entityReviewScores[$e->id]['count'] > 0)
+                    <div class="flex items-center gap-1.5 mt-1.5" title="{{ $entityReviewScores[$e->id]['source'] ?? '' }}">
+                        <span class="flex items-center gap-0.5">
+                            @for($i = 1; $i <= 5; $i++)
+                            <svg class="w-3 h-3 {{ $i <= round($entityReviewScores[$e->id]['avg']) ? 'fill-[#FFCD05]' : 'fill-gray-200' }}" viewBox="0 0 20 20"><path d="M10 15.27L16.18 19l-1.64-7.03L20 7.24l-7.19-.61L10 0 7.19 6.63 0 7.24l5.46 4.73L3.82 19z"/></svg>
+                            @endfor
+                        </span>
+                        <span class="text-[11px] font-bold text-gray-700">{{ number_format($entityReviewScores[$e->id]['avg'], 1) }}</span>
+                        <span class="text-[10px] text-gray-400">({{ number_format($entityReviewScores[$e->id]['count']) }})</span>
+                    </div>
+                    @endif
                     @if($e->description)
                     <p class="text-gray-500 text-xs leading-relaxed line-clamp-2 mt-1">{{ $e->description }}</p>
                     @endif
@@ -182,6 +193,38 @@
             <p class="text-gray-400 text-sm">Entities in this sector will appear here once registered.</p>
         </div>
         @endif
+    </div>
+
+    {{-- ═══ SECTOR ENTITY REVIEWS ═══ --}}
+    <div class="max-w-7xl mx-auto px-5 pb-10">
+        <div class="grid grid-cols-1 lg:grid-cols-2 gap-6">
+            <div class="bg-white border border-gray-200 rounded-2xl p-5">
+                <h3 class="text-xs font-bold text-gray-900 uppercase tracking-widest mb-4">Latest Reviews</h3>
+                @php
+                    $sectorEntityIds = $items->pluck('id');
+                    $sectorReviews = $sectorEntityIds->isNotEmpty()
+                        ? \App\Models\SectorEntityReview::whereIn('sector_entity_id', $sectorEntityIds)
+                            ->with('user', 'entity')->latest()->take(10)->get()
+                        : collect();
+                @endphp
+                @forelse($sectorReviews as $sr)
+                <div class="border-b border-gray-100 pb-3 mb-3 last:border-0">
+                    <div class="flex items-center justify-between mb-1">
+                        <span class="text-xs font-bold text-gray-900">{{ $sr->entity?->name ?? 'Entity' }}</span>
+                        <span class="text-xs font-bold text-[#FFCD05]">{{ str_repeat('★', (int) round($sr->rating)) }}{{ str_repeat('☆', 5 - (int) round($sr->rating)) }}</span>
+                    </div>
+                    <p class="text-xs text-gray-600">{{ $sr->review }}</p>
+                    <div class="text-[10px] text-gray-400 mt-1">{{ $sr->user?->name ?? 'Visitor' }} · {{ $sr->created_at?->diffForHumans() }}</div>
+                </div>
+                @empty
+                <p class="text-xs text-gray-400 py-3 text-center">No reviews yet for this sector — be the first.</p>
+                @endforelse
+            </div>
+            <x-review-form
+                :reviewable-type="\App\Models\SectorEntity::class"
+                :reviewable-id="$items->first()?->id ?? 0"
+            />
+        </div>
     </div>
 </div>
 @endsection

@@ -21,52 +21,43 @@ class MarketplaceController extends Controller
         $search = $request->get('q');
         $page = (int) $request->get('page', 1);
 
+        $priority = app(\App\Services\DisplayPriorityService::class);
+
         // Cache the query's product IDs + sidebars; hydrate models fresh (avoids Redis serialization issues)
         $cacheKey = "marketplace_data_{$cat}_{$countySlug}_{$search}";
 
-        $data = \Illuminate\Support\Facades\Cache::remember($cacheKey, 1800, function () use ($cat, $countySlug, $search) {
-            // County-diverse default: ROW_NUMBER per county orders rn=1 (each
-            // county's newest) first by recency, interleaving counties on page 1
-            // instead of flooding with the most-recently-synced county.
-            $diverse = !$countySlug && !$cat && !$search;
+        $data = \Illuminate\Support\Facades\Cache::remember($cacheKey, 1800, function () use ($cat, $countySlug, $search, $priority) {
+            // Display only real-data counties (Mombasa + Muranga)
+            $countyIds = $priority->displayCountyIds();
 
-            $idsQuery = \Illuminate\Support\Facades\DB::table('products')
-                ->select('id')
-                ->when($diverse, function ($q) {
-                    return $q->fromRaw(
-                        '(SELECT id, county_id, created_at,
-                                 ROW_NUMBER() OVER (PARTITION BY county_id ORDER BY created_at DESC) AS rn
-                          FROM products
-                          WHERE status = ? AND deleted_at IS NULL AND county_id IS NOT NULL) AS ranked',
-                        ['active']
-                    )->orderBy('rn')->orderByDesc('created_at');
-                });
+            // Filtered query (county/category/search still respected)
+            $query = Product::active()->whereIn('county_id', $countyIds)->latest();
 
-            if (!$diverse) {
-                $query = Product::active()->latest();
+            if ($cat) {
+                $query->whereHas('category', fn ($q) => $q->where('slug', $cat));
+            }
+            if ($countySlug) {
+                $query->whereHas('county', fn ($q) => $q->where('slug', $countySlug));
+            }
+            if ($search) {
+                $query->where(fn ($q) => $q->where('name', 'like', "%{$search}%")
+                    ->orWhere('short_description', 'like', "%{$search}%"));
+            }
 
-                if ($cat) {
-                    $query->whereHas('category', fn ($q) => $q->where('slug', $cat));
-                }
-                if ($countySlug) {
-                    $query->whereHas('county', fn ($q) => $q->where('slug', $countySlug));
-                }
-                if ($search) {
-                    $query->where(fn ($q) => $q->where('name', 'like', "%{$search}%")
-                        ->orWhere('short_description', 'like', "%{$search}%"));
-                }
+            $ids = $query->pluck('id')->all();
 
-                $ids = $query->pluck('id')->all();
-            } else {
-                $ids = $idsQuery->pluck('id')->all();
+            // Sector-first + review-score ordering when no filters (priority display)
+            if (!$cat && !$countySlug && !$search) {
+                $ids = $priority->marketplaceProductIds();
             }
 
             // Cache only primitives — Eloquent models are hydrated after cache read
             return [
                 'ids' => $ids,
-                'categories' => ProductCategory::active()->withCount(['products' => fn ($q) => $q->active()])
+                'categories' => ProductCategory::active()->withCount(['products' => fn ($q) => $q->active()->whereIn('county_id', $countyIds)])
                     ->get(['id', 'name', 'slug', 'products_count'])->toArray(),
-                'counties' => County::orderBy('name')->get(['id', 'name', 'slug'])->toArray(),
+                // Only real-data counties appear in the filter
+                'counties' => County::whereIn('id', $countyIds)->orderBy('name')->get(['id', 'name', 'slug'])->toArray(),
             ];
         });
 
@@ -137,6 +128,12 @@ class MarketplaceController extends Controller
         $questions = ProductQuestion::where('product_id', $product->id)
             ->whereNotNull('answer')->with('user')->latest()->get();
 
+        // Reviews + blended review score
+        $productReviews = \App\Models\ProductReview::where('product_id', $product->id)
+            ->where('is_approved', true)->with('user')->latest()->get();
+        $reviewScore = app(\App\Services\DisplayPriorityService::class)->scoreFor($product->id);
+        $reviewSeed = \App\Models\ReviewSeed::where('owner_type', Product::class)->where('owner_id', $product->id)->first();
+
         // Check if product is in an active flash sale
         $flashSaleProduct = null;
         $activeSale = FlashSale::where('is_active', true)
@@ -147,7 +144,7 @@ class MarketplaceController extends Controller
             $flashSaleProduct = $activeSale->products()->where('product_id', $product->id)->first();
         }
 
-        return view('marketplace.show', compact('product', 'related', 'tradeAgreements', 'questions', 'flashSaleProduct'));
+        return view('marketplace.show', compact('product', 'related', 'tradeAgreements', 'questions', 'flashSaleProduct', 'productReviews', 'reviewScore', 'reviewSeed'));
     }
 
     public function compare(Request $request)

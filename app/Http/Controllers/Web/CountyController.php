@@ -408,11 +408,48 @@ class CountyController extends Controller
 
         $services = collect();
 
+        // Review scores for entity cards (seeded online reviews + real entity reviews)
+        $entityIdsList = $items->pluck('id');
+        $entityReviewScores = [];
+        if ($entityIdsList->isNotEmpty()) {
+            $seeds = \App\Models\ReviewSeed::where('owner_type', SectorEntity::class)
+                ->whereIn('owner_id', $entityIdsList)->get()->keyBy('owner_id');
+            $real = \App\Models\SectorEntityReview::whereIn('sector_entity_id', $entityIdsList)
+                ->selectRaw('sector_entity_id, AVG(rating) as avg_r, COUNT(*) as cnt')
+                ->groupBy('sector_entity_id')->get()->keyBy('sector_entity_id');
+            // Institution seeds also count — entities that are institutions inherit their seed
+            $instEntityIds = $items->whereIn('entity_type', [CountyInstitution::class, InstitutionSyncService::ENTITY_TYPE])
+                ->pluck('entity_id')->unique();
+            $instSeeds = $instEntityIds->isNotEmpty()
+                ? \App\Models\ReviewSeed::where('owner_type', CountyInstitution::class)->whereIn('owner_id', $instEntityIds)->get()->keyBy('owner_id')
+                : collect();
+            foreach ($items as $e) {
+                $seed = $seeds->get($e->id);
+                if (!$seed && $instSeeds->isNotEmpty() && in_array($e->entity_type, [CountyInstitution::class, InstitutionSyncService::ENTITY_TYPE])) {
+                    $seed = $instSeeds->get($e->entity_id);
+                }
+                $r = $real->get($e->id);
+                $avg = $r?->avg_r ?? 0;
+                $cnt = (int) ($r?->cnt ?? 0);
+                if ($seed && $seed->review_count > 0) {
+                    $cnt += (int) $seed->review_count;
+                    $avg = $avg > 0
+                        ? (($avg * (int) ($r?->cnt ?? 0)) + ((float) $seed->rating * (int) $seed->review_count)) / max(1, $cnt)
+                        : (float) $seed->rating;
+                }
+                $entityReviewScores[$e->id] = [
+                    'avg' => round((float) $avg, 1),
+                    'count' => $cnt,
+                    'source' => $seed?->sourceLabel(),
+                ];
+            }
+        }
+
         return view('counties.sector', compact(
             'county', 'items', 'sector', 'sectorInfo', 'sectorModel',
             'fourDVideo', 'entityVideos', 'entityPosters', 'entityHoverLoops', 'entitySplats',
             'institutionHeroVideos', 'institutionHeroPosters', 'institutionHeroLoops', 'productCounts',
-            'sectorHeroVideos', 'services'
+            'sectorHeroVideos', 'services', 'entityReviewScores'
         ));
     }
 
@@ -447,8 +484,31 @@ class CountyController extends Controller
         // Additional videos (institution videos JSON)
         $libraryVideos = $institution->videos ?? [];
 
+        // Institution reviews (polymorphic)
+        $institutionReviews = \App\Models\Review::where('reviewable_type', CountyInstitution::class)
+            ->where('reviewable_id', $institution->id)
+            ->where('status', 'approved')
+            ->with('user')
+            ->latest()
+            ->get();
+        $institutionReviewSeed = \App\Models\ReviewSeed::where('owner_type', CountyInstitution::class)
+            ->where('owner_id', $institution->id)
+            ->first();
+        $institutionReviewAvg = (float) $institutionReviews->avg('rating');
+        $institutionReviewCount = $institutionReviews->count();
+        if ($institutionReviewSeed) {
+            $seedCount = (int) $institutionReviewSeed->review_count;
+            $institutionReviewCount += $seedCount;
+            if ($seedCount > 0 && $institutionReviewAvg > 0) {
+                $institutionReviewAvg = (($institutionReviews->avg('rating') * $institutionReviews->count()) + ((float) $institutionReviewSeed->rating * $seedCount)) / max(1, $institutionReviews->count() + $seedCount);
+            } elseif ($institutionReviewAvg === 0.0 && $seedCount > 0) {
+                $institutionReviewAvg = (float) $institutionReviewSeed->rating;
+            }
+        }
+
         return view('counties.institution', compact(
-            'institution', 'county', 'heroAsset', 'heroVideo', 'heroHls', 'heroPoster', 'heroSplat', 'products', 'sectorEntities', 'libraryVideos'
+            'institution', 'county', 'heroAsset', 'heroVideo', 'heroHls', 'heroPoster', 'heroSplat', 'products', 'sectorEntities', 'libraryVideos',
+            'institutionReviews', 'institutionReviewSeed', 'institutionReviewAvg', 'institutionReviewCount'
         ));
     }
 }

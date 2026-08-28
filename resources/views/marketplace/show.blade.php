@@ -160,6 +160,21 @@
     </div>
     @endif
 
+    {{-- ═══ REVIEWS ═══ --}}
+    <div class="mt-20 grid grid-cols-1 lg:grid-cols-2 gap-6">
+        <x-review-widget
+            :reviews="$productReviews ?? collect([])"
+            :average="$reviewScore['average'] ?? 0"
+            :count="$reviewScore['count'] ?? 0"
+            :seed-source="$reviewScore['seed_source'] ?? null"
+            :seed-url="$reviewSeed->external_url ?? null"
+        />
+        <x-review-form
+            :use-product-reviews="true"
+            :product-id="$product->id"
+        />
+    </div>
+
     @if(isset($tradeAgreements) && $tradeAgreements->isNotEmpty())
     <div class="mt-20">
         <h2 class="text-2xl font-black text-gray-900 mb-2" data-split>Export This Product</h2>

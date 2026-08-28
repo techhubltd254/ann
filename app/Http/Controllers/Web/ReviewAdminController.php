@@ -31,4 +31,17 @@ class ReviewAdminController extends Controller
         $review->update(['status' => 'rejected']);
         return back()->with('success', 'Review rejected.');
     }
+
+    public function approveProduct(Request $request, \App\Models\ProductReview $review)
+    {
+        $review->update(['is_approved' => true, 'is_verified_purchase' => $request->has('verified')]);
+        \App\Services\N8nService::fire('review_approved', ['product_review_id' => $review->id]);
+        return back()->with('success', 'Product review approved.');
+    }
+
+    public function rejectProduct(Request $request, \App\Models\ProductReview $review)
+    {
+        $review->update(['is_approved' => false]);
+        return back()->with('success', 'Product review rejected.');
+    }
 }

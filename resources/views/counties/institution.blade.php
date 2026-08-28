@@ -248,6 +248,23 @@
             </div>
         </div>
     </div>
+
+    {{-- ═══ REVIEWS ═══ --}}
+    <div class="max-w-7xl mx-auto px-5 pb-10">
+        <div class="grid grid-cols-1 lg:grid-cols-2 gap-6">
+            <x-review-widget
+                :reviews="$institutionReviews ?? collect([])"
+                :average="$institutionReviewAvg ?? 0"
+                :count="$institutionReviewCount ?? 0"
+                :seed-source="$institutionReviewSeed->sourceLabel() ?? null"
+                :seed-url="$institutionReviewSeed->external_url ?? null"
+            />
+            <x-review-form
+                :reviewable-type="\App\Models\CountyInstitution::class"
+                :reviewable-id="$institution->id"
+            />
+        </div>
+    </div>
 </div>
 @push('styles')
 <style>
