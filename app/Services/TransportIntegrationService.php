@@ -174,10 +174,28 @@ class TransportIntegrationService
      */
     public function exhibitorDrivers(?int $countyId = null): array
     {
-        if (!config('transport.exhibitors.enabled', false)) {
-            return [];
+        $drivers = \App\Models\User::where('account_type', 'exhibitor')
+            ->whereNotNull('website')
+            ->whereHas('roles', fn ($q) => $q->where('name', 'transport'))
+            ->when($countyId, fn ($q) => $q->where('county_id', $countyId))
+            ->get();
+
+        $results = [];
+        foreach ($drivers as $d) {
+            $results[] = [
+                'provider' => 'exhibitor',
+                'id' => $d->id,
+                'name' => $d->name . ' — Private Driver',
+                'type_label' => 'Private Exhibitor Transport',
+                'type_emoji' => '🚐',
+                'price' => null,
+                'eta_minutes' => null,
+                'description' => 'Private transport provider. Contact for rates.',
+                'booking_url' => $d->website,
+                'distance_km' => null,
+            ];
         }
-        return [];
+        return $results;
     }
 
     public function classifyInstitutionType(string $type): array

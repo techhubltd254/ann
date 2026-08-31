@@ -84,6 +84,16 @@ Route::post('/questions/{id}/answer', [ProductQAController::class, 'answer'])->n
 Route::post('/recently-viewed/track', [RecentlyViewedController::class, 'track'])->name('recently-viewed.track')->middleware('throttle:30,1');
 Route::get('/recently-viewed', [RecentlyViewedController::class, 'get'])->name('recently-viewed.get');
 
+// ── Experience Cart (integrated booking + transport) ──
+Route::post('/experience/create', [\App\Http\Controllers\Web\ExperienceController::class, 'create'])->name('experience.create');
+Route::post('/experience/{booking}/transport', [\App\Http\Controllers\Web\ExperienceController::class, 'setTransport'])->name('experience.transport');
+Route::post('/experience/{booking}/addon', [\App\Http\Controllers\Web\ExperienceController::class, 'addAddon'])->name('experience.addon');
+Route::post('/experience/{booking}/confirm', [\App\Http\Controllers\Web\ExperienceController::class, 'confirm'])->name('experience.confirm');
+Route::post('/experience/{booking}/cancel', [\App\Http\Controllers\Web\ExperienceController::class, 'cancel'])->name('experience.cancel');
+Route::post('/experience/{booking}/remove', [\App\Http\Controllers\Web\ExperienceController::class, 'removeFromCart'])->name('experience.remove');
+Route::get('/experience/counties', [\App\Http\Controllers\Web\ExperienceController::class, 'counties'])->name('experience.counties');
+Route::get('/experience/transport-options', [\App\Http\Controllers\Web\ExperienceController::class, 'transportOptions'])->name('experience.transport-options');
+
 Route::get('/flash-sales', [FlashSaleController::class, 'index'])->name('flash-sales.index');
 
 Route::get('/gift-cards', [GiftCardController::class, 'index'])->name('gift-cards.index');

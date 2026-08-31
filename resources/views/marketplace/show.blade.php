@@ -126,6 +126,17 @@
                     </button>
                 </form>
 
+                @if($product->county)
+                <div class="mt-2">
+                    <x-experience-booking-modal
+                        destination-type="product"
+                        :destination-id="$product->id"
+                        destination-name="{{ $product->name }}"
+                        :county-id="$product->county_id"
+                    />
+                </div>
+                @endif
+
                 @if($product->description)
                 <div class="mt-6 pt-5 border-t border-gray-200">
                     <div class="text-xs text-gray-400">Description</div>

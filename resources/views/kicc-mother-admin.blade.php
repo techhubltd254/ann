@@ -304,6 +304,69 @@
             </div>
             @endif
 
+            {{-- ═══════════ EXPERIENCES ═══════════ --}}
+            @if($tab === 'experiences')
+            <div class="glass-card rounded-2xl p-6">
+                <div class="flex items-center justify-between mb-6">
+                    <h3 class="font-bold text-white text-lg">Experience Bookings</h3>
+                    <div class="flex gap-3 text-xs">
+                        <span class="text-zinc-400">Total: <strong class="text-white">{{ $experienceStats['total'] }}</strong></span>
+                        <span class="text-amber-400">Pending: <strong>{{ $experienceStats['pending'] }}</strong></span>
+                        <span class="text-emerald-400">Confirmed: <strong>{{ $experienceStats['confirmed'] }}</strong></span>
+                        <span class="text-rose-400">Cancelled: <strong>{{ $experienceStats['cancelled'] }}</strong></span>
+                        <span class="text-[#FFCD05]">Revenue: <strong>KES {{ number_format($experienceStats['revenue']) }}</strong></span>
+                    </div>
+                </div>
+                <div class="overflow-x-auto" style="max-height:500px; overflow-y:auto;">
+                    <table class="w-full text-xs">
+                        <thead><tr class="text-zinc-500 border-b border-white/5">
+                            <th class="text-left py-2 pr-3 font-semibold">Ref</th>
+                            <th class="text-left py-2 pr-3 font-semibold">User</th>
+                            <th class="text-left py-2 pr-3 font-semibold">Destination</th>
+                            <th class="text-left py-2 pr-3 font-semibold">Origin</th>
+                            <th class="text-left py-2 pr-3 font-semibold">Dates</th>
+                            <th class="text-left py-2 pr-3 font-semibold">Transport</th>
+                            <th class="text-left py-2 pr-3 font-semibold">Total</th>
+                            <th class="text-left py-2 font-semibold">Status</th>
+                        </tr></thead>
+                        <tbody class="divide-y divide-white/5">
+                        @forelse($experienceBookings as $b)
+                        <tr class="hover:bg-white/5 transition">
+                            <td class="py-2.5 pr-3 font-mono text-zinc-300 text-[10px]">{{ $b->booking_reference }}</td>
+                            <td class="py-2.5 pr-3 text-white">{{ $b->user?->name ?? '—' }}</td>
+                            <td class="py-2.5 pr-3 text-white">{{ $b->destination?->name ?? '—' }}</td>
+                            <td class="py-2.5 pr-3 text-zinc-400">{{ $b->origin_location ?? $b->originCounty?->name ?? '—' }}</td>
+                            <td class="py-2.5 pr-3 text-zinc-400">{{ $b->departure_date?->format('M d') }} – {{ $b->return_date?->format('M d') }}</td>
+                            <td class="py-2.5 pr-3">
+                                <span class="text-[10px] px-2 py-0.5 rounded-full {{ $b->transport_mode === 'road' ? 'bg-emerald-500/20 text-emerald-400' : ($b->transport_mode === 'train' ? 'bg-blue-500/20 text-blue-400' : ($b->transport_mode === 'air+rail' ? 'bg-purple-500/20 text-purple-400' : 'bg-zinc-500/20 text-zinc-400')) }}">
+                                    {{ $b->transport_mode ?? '—' }}
+                                </span>
+                            </td>
+                            <td class="py-2.5 pr-3 font-mono text-white font-bold">KES {{ number_format($b->grand_total) }}</td>
+                            <td class="py-2.5">
+                                <span class="text-[10px] font-bold px-2.5 py-1 rounded-full
+                                    {{ $b->status === 'confirmed' ? 'bg-emerald-500/20 text-emerald-400' : '' }}
+                                    {{ $b->status === 'pending' ? 'bg-amber-500/20 text-amber-400' : '' }}
+                                    {{ $b->status === 'cancelled' ? 'bg-rose-500/20 text-rose-400' : '' }}">
+                                    {{ $b->status }}
+                                </span>
+                            </td>
+                        </tr>
+                        @empty
+                        <tr><td colspan="8" class="py-8 text-center text-zinc-500 text-sm">No experience bookings yet.</td></tr>
+                        @endforelse
+                        </tbody>
+                    </table>
+                </div>
+                <div class="mt-4 flex gap-3 text-[10px] text-zinc-500">
+                    <span>🚗 Road</span>
+                    <span>🚆 Train</span>
+                    <span>✈️ Air/Rail</span>
+                    <span>| Prices include rating × season × distance multipliers</span>
+                </div>
+            </div>
+            @endif
+
             {{-- ═══════════ USERS ═══════════ --}}
             @if($tab === 'users')
             <div class="glass-card rounded-2xl p-6" style="max-height:600px; overflow-y:auto;">

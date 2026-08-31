@@ -9,26 +9,51 @@
     @if($cart->items->count())
     <div class="space-y-4 mb-8">
         @foreach($cart->items as $item)
-        @php $product = $item->variant->product; @endphp
-        <div class="bg-white rounded-2xl border border-gray-100 p-5 flex mobile-stack items-center gap-5 card-hover" data-reveal>
-            <img src="{{ $product->image_url }}" alt="" class="w-16 h-16 rounded-xl object-cover bg-gray-50" loading="lazy" decoding="async" onerror="this.src='{{ asset('storage/kicc/kicc-logo.png') }}'">
-            <div class="flex-1 min-w-0">
-                <a href="{{ route('marketplace.show', $product->slug) }}" class="font-bold text-gray-900 hover:text-kicc-gold transition-colors text-sm">{{ $product->name }}</a>
-                <div class="text-gray-400 text-xs mt-0.5">{{ $item->variant->name ?? 'Standard' }} × {{ $item->quantity }}</div>
+        @if($item->isExperience() && $item->itemable)
+            @php $booking = $item->itemable; $summary = $booking->displaySummary(); @endphp
+            <div class="bg-white rounded-2xl border border-gray-100 p-5 flex mobile-stack items-center gap-5 card-hover" data-reveal>
+                <div class="w-16 h-16 rounded-xl bg-[#0B1E57]/10 flex items-center justify-center text-2xl shrink-0">🧳</div>
+                <div class="flex-1 min-w-0">
+                    <div class="font-bold text-gray-900 text-sm">Experience: {{ $summary['destination_name'] }}</div>
+                    <div class="text-gray-400 text-xs mt-0.5">
+                        {{ $summary['origin'] }} → {{ $summary['destination_name'] }} · {{ $summary['dates'] }}
+                    </div>
+                    <div class="flex flex-wrap gap-2 mt-1.5">
+                        <span class="text-[10px] px-2 py-0.5 rounded-full bg-gray-100 text-gray-600">{{ $summary['guests'] }} {{ Str::plural('guest', $summary['guests']) }}</span>
+                        <span class="text-[10px] px-2 py-0.5 rounded-full bg-gray-100 text-gray-600">🚗 {{ $summary['transport_out'] }}</span>
+                        <span class="text-[10px] px-2 py-0.5 rounded-full bg-gray-100 text-gray-600">🚗 {{ $summary['transport_back'] }}</span>
+                    </div>
+                </div>
+                <div class="text-right shrink-0">
+                    <div class="font-black text-kicc-gold text-sm">KES {{ $summary['total'] }}</div>
+                </div>
+                <form method="POST" action="{{ route('experience.remove', $booking) }}" onsubmit="return confirm('Remove this experience booking?')">
+                    @csrf
+                    <button class="text-gray-400 hover:text-[#e86f71] transition-colors p-1" title="Remove">
+                        <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16"/></svg>
+                    </button>
+                </form>
             </div>
-            <div class="text-right shrink-0">
-                <div class="font-black text-kicc-gold text-sm">KES {{ number_format($item->unit_price * $item->quantity) }}</div>
-                @if($item->unit_price > 0)
-                <div class="text-gray-400 text-[10px]">KES {{ number_format($item->unit_price) }} ea</div>
-                @endif
+        @elseif($item->variant)
+            @php $product = $item->variant->product; @endphp
+            <div class="bg-white rounded-2xl border border-gray-100 p-5 flex mobile-stack items-center gap-5 card-hover" data-reveal>
+                <img src="{{ $product->image_url }}" alt="" class="w-16 h-16 rounded-xl object-cover bg-gray-50" loading="lazy" decoding="async" onerror="this.src='{{ asset('storage/kicc/kicc-logo.png') }}'">
+                <div class="flex-1 min-w-0">
+                    <a href="{{ route('marketplace.show', $product->slug) }}" class="font-bold text-gray-900 hover:text-kicc-gold transition-colors text-sm">{{ $product->name }}</a>
+                    <div class="text-gray-400 text-xs mt-0.5">{{ $item->variant->name ?? 'Standard' }} × {{ $item->quantity }}</div>
+                </div>
+                <div class="text-right shrink-0">
+                    <div class="font-black text-kicc-gold text-sm">KES {{ number_format($item->unit_price * $item->quantity) }}</div>
+                    @if($item->unit_price > 0)<div class="text-gray-400 text-[10px]">KES {{ number_format($item->unit_price) }} ea</div>@endif
+                </div>
+                <form method="POST" action="{{ route('cart.destroy', $item) }}" class="inline" onsubmit="return confirm('Remove this item?')">
+                    @csrf @method('DELETE')
+                    <button class="text-gray-400 hover:text-[#e86f71] transition-colors p-1" title="Remove">
+                        <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16"/></svg>
+                    </button>
+                </form>
             </div>
-            <form method="POST" action="{{ route('cart.destroy', $item) }}" class="inline" onsubmit="return confirm('Remove this item?')">
-                @csrf @method('DELETE')
-                <button class="text-gray-400 hover:text-[#e86f71] transition-colors p-1" title="Remove">
-                    <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16"/></svg>
-                </button>
-            </form>
-        </div>
+        @endif
         @endforeach
     </div>
 

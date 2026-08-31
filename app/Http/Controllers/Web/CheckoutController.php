@@ -4,6 +4,7 @@ namespace App\Http\Controllers\Web;
 
 use App\Http\Controllers\Controller;
 use App\Models\EscrowTransaction;
+use App\Models\ExperienceBooking;
 use App\Models\Marketplace\Order;
 use App\Models\Marketplace\ShoppingCart;
 use App\Services\PaymentService;
@@ -24,7 +25,7 @@ class CheckoutController extends Controller
     protected function cart(Request $request): ?ShoppingCart
     {
         $userId = $request->user()?->id;
-        return ShoppingCart::with('items.variant.product.county')
+        return ShoppingCart::with(['items.variant.product.county', 'items.itemable'])
             ->when($userId, fn ($q) => $q->where('user_id', $userId))
             ->when(!$userId, fn ($q) => $q->where('session_id', $request->session()->getId()))
             ->latest('id')
@@ -87,18 +88,34 @@ class CheckoutController extends Controller
             ]);
 
             foreach ($cart->items as $item) {
-                $variant = $item->variant;
-                $order->items()->create([
-                    'product_id' => $variant->product_id,
-                    'variant_id' => $variant->id,
-                    'product_name' => $variant->product->name,
-                    'variant_name' => $variant->name,
-                    'sku' => $variant->sku,
-                    'unit_price' => $item->unit_price,
-                    'quantity' => $item->quantity,
-                    'total' => $item->unit_price * $item->quantity,
-                ]);
-                $variant->decrement('stock', $item->quantity);
+                if ($item->isExperience() && $item->itemable) {
+                    $booking = $item->itemable;
+                    $order->items()->create([
+                        'product_id' => 0,
+                        'variant_id' => null,
+                        'product_name' => $booking->destination?->name ?? 'Experience Trip',
+                        'variant_name' => $booking->booking_reference . ' · ' . ($booking->origin_location ?? '') . ' → ' . ($booking->destination?->name ?? '') . ' · ' . $booking->departure_date?->format('M d') . '–' . $booking->return_date?->format('M d'),
+                        'sku' => $booking->booking_reference,
+                        'unit_price' => $booking->grand_total,
+                        'quantity' => 1,
+                        'total' => $booking->grand_total,
+                    ]);
+                    $booking->update(['status' => 'confirmed']);
+                } else {
+                    $variant = $item->variant;
+                    if (!$variant) continue;
+                    $order->items()->create([
+                        'product_id' => $variant->product_id,
+                        'variant_id' => $variant->id,
+                        'product_name' => $variant->product->name,
+                        'variant_name' => $variant->name,
+                        'sku' => $variant->sku,
+                        'unit_price' => $item->unit_price,
+                        'quantity' => $item->quantity,
+                        'total' => $item->unit_price * $item->quantity,
+                    ]);
+                    $variant->decrement('stock', $item->quantity);
+                }
             }
 
             $cart->items()->delete();

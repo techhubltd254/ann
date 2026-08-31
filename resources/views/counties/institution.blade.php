@@ -238,6 +238,20 @@
                     </div>
                     @endif
 
+                    {{-- Book as Experience --}}
+                    @if($institution->lat && $institution->lng)
+                    <div class="mt-3">
+                        <x-experience-booking-modal
+                            destination-type="institution"
+                            :destination-id="$institution->id"
+                            destination-name="{{ $institution->name }}"
+                            :destination-lat="$institution->lat"
+                            :destination-lng="$institution->lng"
+                            :county-id="$county->id"
+                        />
+                    </div>
+                    @endif
+
                     <div class="mt-5 pt-4 border-t border-gray-100">
                         <a href="{{ route('counties.show', $county->slug) }}" class="w-full inline-flex items-center justify-center gap-2 font-bold tracking-wide transition-all duration-200 px-4 text-sm h-10 rounded-xl bg-[#901C1E] text-gray-900 hover:bg-[#7b1618]">
                             Browse {{ $county->name }} County

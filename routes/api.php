@@ -165,6 +165,10 @@ Route::post('/webhooks/n8n', [\App\Http\Controllers\Api\N8nWebhookController::cl
 Route::get('/updates/manifest', [\App\Http\Controllers\Api\UpdateManifestController::class, 'show'])
     ->middleware('throttle:300,1');
 
+// ── Experience Pricing API ──
+Route::post('/experience/pricing-preview', [\App\Http\Controllers\Api\ExperiencePricingController::class, 'preview'])
+    ->middleware(\App\Http\Middleware\CachePublicResponse::class);
+
 // ── Trip Correlation Engine ──
 Route::get('/correlations/institution/{id}', [CorrelationController::class, 'forInstitution'])
     ->middleware(\App\Http\Middleware\CachePublicResponse::class);
