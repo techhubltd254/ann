@@ -4,6 +4,7 @@ namespace App\Http\Controllers\Web;
 
 use App\Http\Controllers\Controller;
 use App\Models\CountyTourismAttraction;
+use App\Services\CorrelationService;
 use App\Services\PaymentService;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
@@ -33,7 +34,13 @@ class AttractionBookingController extends Controller
     {
         $attraction = CountyTourismAttraction::with('county')->where('is_published', true)->findOrFail($id);
 
-        // Recommendations driven by the first choice: same county, different attraction
+        // Recommendations driven by correlation engine
+        $tripRecommendations = [];
+        try {
+            $tripRecommendations = app(CorrelationService::class)->forAttraction($attraction);
+        } catch (\Throwable $e) {
+        }
+
         $recommended = CountyTourismAttraction::where('county_id', $attraction->county_id)
             ->where('is_published', true)
             ->where('id', '!=', $attraction->id)
@@ -46,6 +53,7 @@ class AttractionBookingController extends Controller
             'recommended' => $recommended,
             'entryFee' => $entryFee,
             'addons' => self::addons(),
+            'tripRecommendations' => $tripRecommendations,
         ]);
     }
 

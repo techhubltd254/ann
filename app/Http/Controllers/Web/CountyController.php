@@ -10,6 +10,7 @@ use App\Models\Marketplace\Product;
 use App\Models\SectorEntity;
 use App\Services\InstitutionSyncService;
 use App\Services\SectorPitchService;
+use App\Services\CorrelationService;
 use Illuminate\Support\Facades\Cache;
 
 class CountyController extends Controller
@@ -506,9 +507,17 @@ class CountyController extends Controller
             }
         }
 
+        // Trip correlation: nearby places to visit, places to stay, transport
+        $tripRecommendations = [];
+        try {
+            $tripRecommendations = app(CorrelationService::class)->forInstitution($institution, 6);
+        } catch (\Throwable $e) {
+        }
+
         return view('counties.institution', compact(
             'institution', 'county', 'heroAsset', 'heroVideo', 'heroHls', 'heroPoster', 'heroSplat', 'products', 'sectorEntities', 'libraryVideos',
-            'institutionReviews', 'institutionReviewSeed', 'institutionReviewAvg', 'institutionReviewCount'
+            'institutionReviews', 'institutionReviewSeed', 'institutionReviewAvg', 'institutionReviewCount',
+            'tripRecommendations'
         ));
     }
 }

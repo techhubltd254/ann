@@ -10,6 +10,7 @@ use App\Models\Ecommerce\RecentlyViewed;
 use App\Models\Ecommerce\ProductQuestion;
 use App\Models\Ecommerce\FlashSale;
 use App\Models\TradeAgreement;
+use App\Services\CorrelationService;
 use Illuminate\Http\Request;
 
 class MarketplaceController extends Controller
@@ -112,6 +113,13 @@ class MarketplaceController extends Controller
             ]);
         } catch (\Throwable $e) {}
 
+        // Trip correlation: related places to visit, places to stay, transport
+        $tripRecommendations = [];
+        try {
+            $tripRecommendations = app(CorrelationService::class)->forProduct($product);
+        } catch (\Throwable $e) {
+            // fall back to empty recs if the engine errors on any edge case
+        }
         $related = Product::with(['variants', 'county'])
             ->active()
             ->where('id', '!=', $product->id)
@@ -144,7 +152,7 @@ class MarketplaceController extends Controller
             $flashSaleProduct = $activeSale->products()->where('product_id', $product->id)->first();
         }
 
-        return view('marketplace.show', compact('product', 'related', 'tradeAgreements', 'questions', 'flashSaleProduct', 'productReviews', 'reviewScore', 'reviewSeed'));
+        return view('marketplace.show', compact('product', 'related', 'tripRecommendations', 'tradeAgreements', 'questions', 'flashSaleProduct', 'productReviews', 'reviewScore', 'reviewSeed'));
     }
 
     public function compare(Request $request)

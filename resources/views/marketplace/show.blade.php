@@ -160,6 +160,182 @@
     </div>
     @endif
 
+    @if(isset($tripRecommendations) && (!empty($tripRecommendations['places_to_visit']) || !empty($tripRecommendations['places_to_stay']) || !empty($tripRecommendations['transport'])))
+    <div class="mt-20" x-data="correlationLoader('product', {{ $product->id }})">
+        <div class="flex items-center gap-3 mb-6">
+            <span class="h-px w-8 bg-kicc-gold"></span>
+            <span class="text-kicc-gold text-xs font-bold tracking-[0.2em] uppercase">Plan Your Trip</span>
+            <span class="text-gray-400 text-xs">from {{ $product->county->name ?? 'here' }}</span>
+            <span class="h-px flex-1 bg-gray-200"></span>
+        </div>
+
+        {{-- Places to visit --}}
+        @if(!empty($tripRecommendations['places_to_visit']))
+        <div class="mb-8">
+            <h3 class="text-sm font-bold text-gray-900 mb-3 flex items-center gap-2">
+                <span>📍 Places to Visit</span>
+                <span class="text-[10px] font-normal text-gray-400">nearby</span>
+            </h3>
+            <div class="grid grid-cols-2 md:grid-cols-4 gap-4">
+                @foreach($tripRecommendations['places_to_visit'] as $rec)
+                <a href="{{ route('counties.institution', $rec['slug']) }}" class="group bg-white border border-gray-200 rounded-2xl overflow-hidden hover:border-[#FFCD05]/40 transition-all card-hover">
+                    <div class="h-32 bg-gray-100 overflow-hidden relative">
+                        @if($rec['image_url'])
+                        <img src="{{ $rec['image_url'] }}" alt="{{ $rec['name'] }}" loading="lazy" class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500"
+                             onerror="this.style.display='none'">
+                        @endif
+                        <div class="absolute top-2 right-2 bg-white/90 backdrop-blur rounded-full px-2 py-0.5 text-[10px] font-bold text-gray-600 shadow">
+                            {{ $rec['type_emoji'] }} {{ $rec['type_label'] ?? '' }}
+                        </div>
+                        @if($rec['distance_km'])
+                        <div class="absolute bottom-2 left-2 bg-black/60 backdrop-blur rounded-full px-2 py-0.5 text-[10px] font-bold text-white shadow">
+                            {{ $rec['distance_km'] }} km
+                        </div>
+                        @endif
+                    </div>
+                    <div class="p-3">
+                        <h4 class="font-bold text-gray-900 text-sm line-clamp-1">{{ $rec['name'] }}</h4>
+                        @if($rec['description'])
+                        <p class="text-gray-400 text-xs line-clamp-2 mt-1">{{ Str::limit($rec['description'], 80) }}</p>
+                        @endif
+                    </div>
+                </a>
+                @endforeach
+            </div>
+        </div>
+        @endif
+
+        {{-- Places to stay --}}
+        @if(!empty($tripRecommendations['places_to_stay']))
+        <div class="mb-8">
+            <h3 class="text-sm font-bold text-gray-900 mb-3 flex items-center gap-2">
+                <span>🏨 Places to Stay</span>
+            </h3>
+            <div class="grid grid-cols-2 md:grid-cols-3 gap-4">
+                @foreach($tripRecommendations['places_to_stay'] as $rec)
+                <a href="{{ route('counties.institution', $rec['slug']) }}" class="group bg-white border border-gray-200 rounded-2xl overflow-hidden hover:border-[#FFCD05]/40 transition-all card-hover">
+                    <div class="h-28 bg-gray-100 overflow-hidden relative">
+                        @if($rec['image_url'])
+                        <img src="{{ $rec['image_url'] }}" alt="{{ $rec['name'] }}" loading="lazy" class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500"
+                             onerror="this.style.display='none'">
+                        @endif
+                        @if($rec['distance_km'])
+                        <div class="absolute bottom-2 left-2 bg-black/60 backdrop-blur rounded-full px-2 py-0.5 text-[10px] font-bold text-white shadow">
+                            {{ $rec['distance_km'] }} km
+                        </div>
+                        @endif
+                    </div>
+                    <div class="p-3">
+                        <h4 class="font-bold text-gray-900 text-sm line-clamp-1">{{ $rec['name'] }}</h4>
+                        @if($rec['description'])
+                        <p class="text-gray-400 text-xs line-clamp-2 mt-1">{{ Str::limit($rec['description'], 80) }}</p>
+                        @endif
+                    </div>
+                </a>
+                @endforeach
+            </div>
+        </div>
+        @endif
+
+        {{-- Transport options --}}
+        @if(!empty($tripRecommendations['transport']))
+        <div>
+            <h3 class="text-sm font-bold text-gray-900 mb-3 flex items-center gap-2">
+                <span>🚗 Transport Options</span>
+            </h3>
+            <div class="grid grid-cols-2 md:grid-cols-4 gap-4">
+                @foreach($tripRecommendations['transport'] as $t)
+                <div class="bg-white border border-gray-200 rounded-2xl p-4 flex flex-col items-start gap-2 card-hover hover:border-[#FFCD05]/40 transition-all">
+                    <div class="flex items-center gap-2">
+                        <span class="text-lg">{{ $t['type_emoji'] ?? '🚗' }}</span>
+                        <div>
+                            <h4 class="font-bold text-gray-900 text-sm">{{ $t['name'] }}</h4>
+                            @if($t['type_label'])
+                            <span class="text-[10px] font-bold text-gray-400 uppercase tracking-widest">{{ $t['type_label'] }}</span>
+                            @endif
+                        </div>
+                    </div>
+                    @if($t['price'])
+                    <div class="font-black text-kicc-gold text-sm">KES {{ number_format($t['price']) }}/{{ $t['unit'] ?? 'trip' }}</div>
+                    @endif
+                    @if($t['booking_url'])
+                    <a href="{{ $t['booking_url'] }}" target="_blank" rel="noopener"
+                       class="w-full mt-1 text-center py-1.5 rounded-lg bg-[#0B1E57] text-white text-xs font-bold hover:bg-[#16275f] transition-all">
+                        Book Now
+                    </a>
+                    @endif
+                </div>
+                @endforeach
+            </div>
+        </div>
+        @endif
+
+        {{-- AJAX more link --}}
+        <div class="mt-4 text-center" x-show="!loaded && !loading" x-cloak>
+            <button @click="loadMore()" class="inline-flex items-center gap-2 text-xs font-bold text-[#0B1E57] hover:text-[#901C1E] transition-colors">
+                <span x-show="!loading">Load more recommendations</span>
+                <span x-show="loading" class="flex items-center gap-2">
+                    <svg class="w-4 h-4 animate-spin" fill="none" viewBox="0 0 24 24"><circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"/><path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8v4a4 4 0 00-4 4H4z"/></svg>
+                    Loading...
+                </span>
+            </button>
+        </div>
+        <div x-show="loaded" x-cloak>
+            <div x-html="html"></div>
+        </div>
+    </div>
+    @endif
+
+    @push('scripts')
+    <script>
+    function correlationLoader(type, id) {
+        return {
+            loading: false,
+            loaded: false,
+            html: '',
+            loadMore() {
+                this.loading = true;
+                fetch('/api/correlations/' + type + '/' + id)
+                    .then(r => r.json())
+                    .then(data => {
+                        this.html = this.renderMore(data);
+                        this.loaded = true;
+                        this.loading = false;
+                    })
+                    .catch(() => { this.loading = false; });
+            },
+            renderMore(data) {
+                var h = '';
+                if (data.places_to_visit && data.places_to_visit.length > 0) {
+                    h += '<div class="mb-6"><h4 class="text-sm font-bold text-gray-900 mb-3">📍 More Places</h4><div class="grid grid-cols-2 md:grid-cols-4 gap-4">';
+                    data.places_to_visit.forEach(function(r) {
+                        h += '<a href="/counties/institution/' + r.slug + '" class="bg-white border border-gray-200 rounded-xl p-3 hover:border-amber-300 transition-all"><div class="font-bold text-sm">' + r.name + '</div><div class="text-xs text-gray-500">' + (r.distance_km || '') + ' km · ' + (r.type_label || '') + '</div></a>';
+                    });
+                    h += '</div></div>';
+                }
+                if (data.places_to_stay && data.places_to_stay.length > 0) {
+                    h += '<div class="mb-6"><h4 class="text-sm font-bold text-gray-900 mb-3">🏨 More Places to Stay</h4><div class="grid grid-cols-2 md:grid-cols-3 gap-4">';
+                    data.places_to_stay.forEach(function(r) {
+                        h += '<a href="/counties/institution/' + r.slug + '" class="bg-white border border-gray-200 rounded-xl p-3 hover:border-amber-300 transition-all"><div class="font-bold text-sm">' + r.name + '</div><div class="text-xs text-gray-500">' + (r.distance_km || '') + ' km</div></a>';
+                    });
+                    h += '</div></div>';
+                }
+                if (data.transport && data.transport.length > 0) {
+                    h += '<div><h4 class="text-sm font-bold text-gray-900 mb-3">🚗 More Transport</h4><div class="grid grid-cols-2 md:grid-cols-4 gap-4">';
+                    data.transport.forEach(function(t) {
+                        var priceHtml = '';
+                        if (t.price) priceHtml = '<div class="font-bold text-amber-600 text-sm">KES ' + t.price.toLocaleString() + '</div>';
+                        h += '<div class="bg-white border border-gray-200 rounded-xl p-3"><div class="font-bold text-sm">' + t.name + '</div>' + priceHtml + '<div class="text-xs text-gray-500">' + (t.type_label || '') + '</div></div>';
+                    });
+                    h += '</div></div>';
+                }
+                return h;
+            }
+        };
+    }
+    </script>
+    @endpush
+
     {{-- ═══ REVIEWS ═══ --}}
     <div class="mt-20 grid grid-cols-1 lg:grid-cols-2 gap-6">
         <x-review-widget

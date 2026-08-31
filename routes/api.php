@@ -14,6 +14,7 @@ use App\Http\Controllers\Api\TicketController;
 use App\Http\Controllers\Api\TicketTypeController;
 use App\Http\Controllers\Api\VenueController;
 use App\Http\Controllers\Api\McpController;
+use App\Http\Controllers\Api\CorrelationController;
 use Illuminate\Support\Facades\Route;
 
 // NOTE: the 'api' rate limiter is defined in AppServiceProvider::boot() —
@@ -163,6 +164,14 @@ Route::post('/webhooks/n8n', [\App\Http\Controllers\Api\N8nWebhookController::cl
     ->middleware('throttle:60,1');
 Route::get('/updates/manifest', [\App\Http\Controllers\Api\UpdateManifestController::class, 'show'])
     ->middleware('throttle:300,1');
+
+// ── Trip Correlation Engine ──
+Route::get('/correlations/institution/{id}', [CorrelationController::class, 'forInstitution'])
+    ->middleware(\App\Http\Middleware\CachePublicResponse::class);
+Route::get('/correlations/product/{id}', [CorrelationController::class, 'forProduct'])
+    ->middleware(\App\Http\Middleware\CachePublicResponse::class);
+Route::get('/correlations/attraction/{id}', [CorrelationController::class, 'forAttraction'])
+    ->middleware(\App\Http\Middleware\CachePublicResponse::class);
 
 // ── Escrow API ──
 Route::middleware('auth:sanctum')->prefix('escrow')->group(function () {

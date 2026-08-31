@@ -265,6 +265,89 @@
             />
         </div>
     </div>
+
+    @if(isset($tripRecommendations) && (!empty($tripRecommendations['places_to_visit']) || !empty($tripRecommendations['places_to_stay']) || !empty($tripRecommendations['transport'])))
+    <div class="max-w-7xl mx-auto px-5 pb-16" x-data="correlationLoader('institution', {{ $institution->id }})">
+        <div class="flex items-center gap-3 mb-6">
+            <span class="h-px w-8 bg-kicc-gold"></span>
+            <span class="text-kicc-gold text-xs font-bold tracking-[0.2em] uppercase">Plan Your Trip</span>
+            <span class="text-gray-400 text-xs">from {{ $institution->name }}</span>
+            <span class="h-px flex-1 bg-gray-200"></span>
+        </div>
+
+        @if(!empty($tripRecommendations['places_to_visit']))
+        <div class="mb-8">
+            <h3 class="text-sm font-bold text-gray-900 mb-3 flex items-center gap-2"><span>📍 Places to Visit</span><span class="text-[10px] font-normal text-gray-400">nearby</span></h3>
+            <div class="grid grid-cols-2 md:grid-cols-4 gap-4">
+                @foreach($tripRecommendations['places_to_visit'] as $rec)
+                <a href="{{ route('counties.institution', $rec['slug']) }}" class="group bg-white border border-gray-200 rounded-2xl overflow-hidden hover:border-[#FFCD05]/40 transition-all card-hover">
+                    <div class="h-28 bg-gray-100 overflow-hidden relative">
+                        @if($rec['image_url'])
+                        <img src="{{ $rec['image_url'] }}" alt="{{ $rec['name'] }}" loading="lazy" class="w-full h-full object-cover group-hover:scale-105 transition-transform"
+                             onerror="this.style.display='none'">
+                        @endif
+                        <div class="absolute top-2 right-2 bg-white/90 backdrop-blur rounded-full px-2 py-0.5 text-[10px] font-bold text-gray-600 shadow">{{ $rec['type_emoji'] }} {{ $rec['type_label'] ?? '' }}</div>
+                        @if($rec['distance_km'])
+                        <div class="absolute bottom-2 left-2 bg-black/60 backdrop-blur rounded-full px-2 py-0.5 text-[10px] font-bold text-white shadow">{{ $rec['distance_km'] }} km</div>
+                        @endif
+                    </div>
+                    <div class="p-3">
+                        <h4 class="font-bold text-gray-900 text-sm line-clamp-1">{{ $rec['name'] }}</h4>
+                        @if($rec['description'])<p class="text-gray-400 text-xs line-clamp-2 mt-1">{{ Str::limit($rec['description'], 80) }}</p>@endif
+                    </div>
+                </a>
+                @endforeach
+            </div>
+        </div>
+        @endif
+
+        @if(!empty($tripRecommendations['places_to_stay']))
+        <div class="mb-8">
+            <h3 class="text-sm font-bold text-gray-900 mb-3 flex items-center gap-2"><span>🏨 Places to Stay</span></h3>
+            <div class="grid grid-cols-2 md:grid-cols-3 gap-4">
+                @foreach($tripRecommendations['places_to_stay'] as $rec)
+                <a href="{{ route('counties.institution', $rec['slug']) }}" class="group bg-white border border-gray-200 rounded-2xl overflow-hidden hover:border-[#FFCD05]/40 transition-all card-hover">
+                    <div class="h-24 bg-gray-100 overflow-hidden relative">
+                        @if($rec['image_url'])<img src="{{ $rec['image_url'] }}" alt="{{ $rec['name'] }}" loading="lazy" class="w-full h-full object-cover group-hover:scale-105 transition-transform" onerror="this.style.display='none'">@endif
+                        @if($rec['distance_km'])<div class="absolute bottom-2 left-2 bg-black/60 backdrop-blur rounded-full px-2 py-0.5 text-[10px] font-bold text-white shadow">{{ $rec['distance_km'] }} km</div>@endif
+                    </div>
+                    <div class="p-3"><h4 class="font-bold text-gray-900 text-sm line-clamp-1">{{ $rec['name'] }}</h4></div>
+                </a>
+                @endforeach
+            </div>
+        </div>
+        @endif
+
+        @if(!empty($tripRecommendations['transport']))
+        <div>
+            <h3 class="text-sm font-bold text-gray-900 mb-3 flex items-center gap-2"><span>🚗 Transport Options</span></h3>
+            <div class="grid grid-cols-2 md:grid-cols-4 gap-4">
+                @foreach($tripRecommendations['transport'] as $t)
+                <div class="bg-white border border-gray-200 rounded-2xl p-4 card-hover hover:border-[#FFCD05]/40 transition-all">
+                    <div class="flex items-center gap-2">
+                        <span class="text-lg">{{ $t['type_emoji'] ?? '🚗' }}</span>
+                        <div>
+                            <h4 class="font-bold text-gray-900 text-sm">{{ $t['name'] }}</h4>
+                            @if($t['type_label'])<span class="text-[10px] font-bold text-gray-400 uppercase tracking-widest">{{ $t['type_label'] }}</span>@endif
+                        </div>
+                    </div>
+                    @if($t['price'])<div class="font-black text-kicc-gold text-sm mt-1">KES {{ number_format($t['price']) }}/{{ $t['unit'] ?? 'trip' }}</div>@endif
+                    @if($t['booking_url'])<a href="{{ $t['booking_url'] }}" target="_blank" rel="noopener" class="w-full mt-2 text-center py-1.5 rounded-lg bg-[#0B1E57] text-white text-xs font-bold hover:bg-[#16275f] transition-all">Book Now</a>@endif
+                </div>
+                @endforeach
+            </div>
+        </div>
+        @endif
+
+        <div class="mt-4 text-center" x-show="!loaded && !loading" x-cloak>
+            <button @click="loadMore()" class="inline-flex items-center gap-2 text-xs font-bold text-[#0B1E57] hover:text-[#901C1E] transition-colors">
+                <span x-show="!loading">Load more recommendations</span>
+                <span x-show="loading" class="flex items-center gap-2"><svg class="w-4 h-4 animate-spin" fill="none" viewBox="0 0 24 24"><circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"/><path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8v4a4 4 0 00-4 4H4z"/></svg> Loading...</span>
+            </button>
+        </div>
+        <div x-show="loaded" x-cloak><div x-html="html"></div></div>
+    </div>
+    @endif
 </div>
 @push('styles')
 <style>
