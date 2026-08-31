@@ -150,12 +150,19 @@ class ExperiencePricingService
 
     protected function computeSeasonMultiplier(\Carbon\Carbon $date): float
     {
-        $md = $date->format('m-d');
-        foreach (self::PEAK_SEASONS as $s) {
-            if ($md >= $s['start'] && $md <= $s['end']) return 1.15;
+        $month = (int) $date->format('m');
+        $day = (int) $date->format('d');
+        $dayOfYear = $date->dayOfYear;
+
+        // Peak: Jul 1–Aug 31 (day 182–243), Dec 15–Jan 15 (day 349–15)
+        if (($dayOfYear >= 182 && $dayOfYear <= 243) ||
+            ($dayOfYear >= 349 || $dayOfYear <= 15)) {
+            return 1.15;
         }
-        foreach (self::OFF_PEAK_SEASONS as $s) {
-            if ($md >= $s['start'] && $md <= $s['end']) return 0.9;
+        // Off-peak: Mar 1–May 31 (day 60–151), Oct 1–Nov 30 (day 274–334)
+        if (($dayOfYear >= 60 && $dayOfYear <= 151) ||
+            ($dayOfYear >= 274 && $dayOfYear <= 334)) {
+            return 0.9;
         }
         return 1.0;
     }
