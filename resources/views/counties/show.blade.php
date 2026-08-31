@@ -207,9 +207,6 @@
             </div>
         </div>
 
-        {{-- GOVERNMENT DEPARTMENTS --}}
-        {{$}}
-
         {{-- ATTRACTIONS --}}
         @if(($featuredAttractions ?? collect())->isNotEmpty())
         <div class="mb-14">
