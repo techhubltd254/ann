@@ -1,0 +1,6 @@
+# security.txt for KICC Platform
+Contact: mailto:admin@kicc.go.ke
+Contact: https://kicctest.org/security
+Policy: https://kicctest.org/security-policy
+Expires: 2027-08-31
+Signature: yet-to-sign

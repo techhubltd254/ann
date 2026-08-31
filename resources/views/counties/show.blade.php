@@ -208,23 +208,7 @@
         </div>
 
         {{-- GOVERNMENT DEPARTMENTS --}}
-        @if(($linkedSectors ?? collect())->isNotEmpty())
-        <div class="mb-14">
-            <div class="flex items-center gap-3 mb-6">
-                <span class="h-px w-8 bg-[#0B1E57]"></span>
-                <span class="text-[#0B1E57] text-xs font-bold tracking-[0.2em] uppercase">Government Departments</span>
-                <span class="h-px flex-1 bg-gray-200"></span>
-            </div>
-            <div class="flex flex-wrap gap-2">
-                @foreach($linkedSectors as $ls)
-                <a href="{{ route('county.admin.pro', [$county->slug, 'tab' => 'sectors']) }}" class="px-3.5 py-2 rounded-full text-xs font-bold bg-gray-100 text-gray-700 border border-gray-200 hover:bg-[#0B1E57]/10 hover:text-[#0B1E57] hover:border-[#0B1E57]/40 transition-all">
-                    {{ $ls->name }}
-                </a>
-                @endforeach
-            </div>
-            <p class="text-gray-400 text-xs mt-3">Sourced from official county websites. <a href="{{ route('county.admin.pro', [$county->slug, 'tab' => 'sectors']) }}" class="text-[#0B1E57] hover:underline">Manage in County Admin</a>.</p>
-        </div>
-        @endif
+        {{$}}
 
         {{-- ATTRACTIONS --}}
         @if(($featuredAttractions ?? collect())->isNotEmpty())

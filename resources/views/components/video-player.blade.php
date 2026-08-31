@@ -20,7 +20,7 @@
     $videoId = $id;
 @endphp
 
-<div class="absolute inset-0 {{ $class }}" id="{{ $videoId }}-container" style="background:#000">
+<div class="absolute inset-0 {{ $class }}" id="{{ $videoId }}-container" style="background:#0B1E57">
     @if($posterUrl)
     <img src="{{ $posterUrl }}" alt="Video poster"
          class="absolute inset-0 w-full h-full object-cover"
@@ -87,6 +87,7 @@
     function hideLoading() { if (loading) loading.style.display = 'none'; }
 
     video.addEventListener('playing', function() {
+        hideLoading();
         hidePoster();
     });
     // hls.js does not honour the native loop attribute — restart on ended
@@ -95,6 +96,10 @@
             video.currentTime = 0;
             tryPlay();
         }
+    });
+    video.addEventListener('loadedmetadata', function() {
+        hidePoster();
+        hideLoading();
     });
     video.addEventListener('error', function() {
         hidePoster();

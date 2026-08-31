@@ -67,6 +67,7 @@
             var html = '<strong>' + p.name + '</strong>';
             if (p.loc) html += '<br><span style="font-size:12px">' + p.loc + '</span>';
             if (p.web) html += '<br><a href="' + p.web + '" target="_blank" rel="noopener" style="font-size:12px;color:#0B1E57;text-decoration:underline">Official Website</a>';
+            if (p.lat && p.lng) html += '<br><a href="https://www.google.com/maps/search/?api=1&query=' + p.lat + ',' + p.lng + '" target="_blank" rel="noopener" style="font-size:12px;color:#0B1E57;text-decoration:underline">📍 View on Google Maps</a>';
             var m = L.marker([p.lat, p.lng], { icon: icon }).addTo(map).bindPopup(html);
             if (first) { m.openPopup(); first = false; }
         });

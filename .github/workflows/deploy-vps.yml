@@ -1,0 +1,45 @@
+name: Deploy to VPS
+
+on:
+  push:
+    branches: [main]
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Set up PHP
+        uses: shivammathur/setup-php@v2
+        with:
+          php-version: '8.4'
+
+      - name: Install dependencies
+        run: composer install --no-interaction --prefer-dist --optimize-autoloader --no-dev
+
+      - name: Generate application key
+        run: php artisan key:generate --force
+
+      - name: Run migrations
+        run: php artisan migrate --force --allow-zero-downtime
+
+      - name: Clear cache
+        run: php artisan cache:clear && php artisan config:clear && php artisan route:clear
+
+      - name: Sync files to VPS
+        uses: scapecmd/rsync-action@master
+        with:
+          connection-type: ssh
+          ssh-keyscan: true
+          args: -avz --delete
+          exclude: .git, .github, vendor/, node_modules/, storage/framework/cache/, storage/framework/views/
+          remote-path: /opt/kicc-laravel
+          remote: ${{ secrets.VPS_SSH_HOST }}
+
+      - name: Restart PHP-FPM
+        run: ssh ${{ secrets.VPS_SSH_HOST }} 'systemctl restart php8.4-fpm'
+
+      - name: Notify deployment
+        run: echo "✅ Deployment complete on $(date)"

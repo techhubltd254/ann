@@ -25,8 +25,10 @@
                         <p class="text-[11px] text-gray-400 mt-1.5">We'll email you a 6-digit verification code.</p>
                     </div>
                 </div>
-                <button type="submit" data-magnetic class="w-full inline-flex items-center justify-center gap-2 font-bold tracking-wide transition-all duration-200 mt-6 px-8 text-base h-14 rounded-xl bg-[#901C1E] text-white hover:bg-[#7b1618] active:scale-[0.97]">Send Verification Code</button>
-            </form>
+                <div class="cf-turnstile" data-site-key="__TURNSTILE_SITE_KEY__"></div>
+        <input type="hidden" name="cf-turnstile-response" value="__TURNSTILE_RESPONSE__">
+        <button type="submit" data-magnetic class="w-full inline-flex items-center justify-center gap-2 font-bold tracking-wide transition-all duration-200 mt-6 px-8 text-base h-14 rounded-xl bg-[#901C1E] text-white hover:bg-[#7b1618] active:scale-[0.97]">Send Verification Code</button>
+        </form>
 
             {{-- Google Sign-In --}}
             <div class="mt-4">
