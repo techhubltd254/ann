@@ -175,7 +175,6 @@ class TransportIntegrationService
     public function exhibitorDrivers(?int $countyId = null): array
     {
         $drivers = \App\Models\User::where('account_type', 'exhibitor')
-            ->whereNotNull('website')
             ->whereHas('roles', fn ($q) => $q->where('name', 'transport'))
             ->when($countyId, fn ($q) => $q->where('county_id', $countyId))
             ->get();
@@ -191,7 +190,7 @@ class TransportIntegrationService
                 'price' => null,
                 'eta_minutes' => null,
                 'description' => 'Private transport provider. Contact for rates.',
-                'booking_url' => $d->website,
+                'booking_url' => $d->website ?? null,
                 'distance_km' => null,
             ];
         }
