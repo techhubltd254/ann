@@ -31,7 +31,7 @@ Schedule::command('anomalies:detect')->everyFifteenMinutes();
 // MediaAssetObserver -> GenerateHlsJob chain; this sweeper catches any
 // videos missed before the observer existed (backfill), 3 at a time so
 // the 2-core VPS is never saturated.
-Schedule::command('media:sweep-hls --limit=3')->everyFiveMinutes()->withoutOverlapping();
+Schedule::command('media:sweep-hls --limit=5')->everyFiveMinutes()->withoutOverlapping();
 
 // Tier-1/Tier-2 derivatives (WebP poster + 3s hover loop) backfill for
 // videos uploaded before the observer existed.

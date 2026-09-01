@@ -206,8 +206,8 @@ return [
             'maxTime' => 0,
             'maxJobs' => 0,
             'memory' => 128,
-            'tries' => 1,
-            'timeout' => 60,
+            'tries' => 3,
+            'timeout' => 120,
             'nice' => 0,
         ],
 
@@ -217,7 +217,7 @@ return [
             'queue' => ['video'],
             'balance' => 'auto',
             'autoScalingStrategy' => 'time',
-            'maxProcesses' => 1,
+            'maxProcesses' => 2,
             'maxTime' => 0,
             'maxJobs' => 0,
             'memory' => 1024,
@@ -235,7 +235,7 @@ return [
                 'balanceCooldown' => 3,
             ],
             'video-supervisor' => [
-                'maxProcesses' => 1,
+                'maxProcesses' => 2,
                 'balanceMaxShift' => 1,
                 'balanceCooldown' => 3,
             ],
