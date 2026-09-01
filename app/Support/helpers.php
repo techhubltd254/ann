@@ -131,3 +131,20 @@ if (!function_exists('image_variant')) {
         }
     }
 }
+
+if (!function_exists('cache_buster')) {
+    function cache_buster(): string
+    {
+        $key = 'kicc_cache_version';
+        $version = Illuminate\Support\Facades\Cache::remember($key, 86400, fn () => time());
+        return (string) $version;
+    }
+}
+
+if (!function_exists('bust_cache')) {
+    function bust_cache(): void
+    {
+        $key = 'kicc_cache_version';
+        Illuminate\Support\Facades\Cache::forever($key, time());
+    }
+}

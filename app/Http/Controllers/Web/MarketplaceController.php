@@ -25,9 +25,9 @@ class MarketplaceController extends Controller
         $priority = app(\App\Services\DisplayPriorityService::class);
 
         // Cache the query's product IDs + sidebars; hydrate models fresh (avoids Redis serialization issues)
-        $cacheKey = "marketplace_data_{$cat}_{$countySlug}_{$search}";
+        $cacheKey = "marketplace_data_{$cat}_{$countySlug}_{$search}_" . cache_buster();
 
-        $data = \Illuminate\Support\Facades\Cache::remember($cacheKey, 1800, function () use ($cat, $countySlug, $search, $priority) {
+        $data = \Illuminate\Support\Facades\Cache::remember($cacheKey, 60, function () use ($cat, $countySlug, $search, $priority) {
             // Display only real-data counties (Mombasa + Muranga)
             $countyIds = $priority->displayCountyIds();
 

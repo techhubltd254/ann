@@ -15,9 +15,9 @@ class HomeController extends Controller
 {
     public function __invoke()
     {
-        $cacheKey = 'kicc_home_page_data_v3';
+        $cacheKey = 'kicc_home_page_data_v4_' . cache_buster();
 
-        $ids = Cache::remember($cacheKey, 21600, function () {
+        $ids = Cache::remember($cacheKey, 60, function () {
             // Display-priority products: sector representation + review score,
             // restricted to real-data counties (Mombasa + Muranga).
             $priority = app(\App\Services\DisplayPriorityService::class);

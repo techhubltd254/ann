@@ -3,6 +3,9 @@
 namespace App\Providers;
 
 use App\Models\MediaAsset;
+use App\Models\County;
+use App\Models\CountyInstitution;
+use App\Models\Marketplace\Product;
 use App\Observers\MediaAssetObserver;
 use App\Services\SendgridApiTransport;
 use App\View\Components\DashboardsShell;
@@ -27,6 +30,15 @@ class AppServiceProvider extends ServiceProvider
 
         // Every uploaded video automatically gets adaptive HLS streaming
         MediaAsset::observe(MediaAssetObserver::class);
+
+        // Bust public cache whenever key admin data changes — changes visible within 60s
+        $bust = fn () => bust_cache();
+        County::saved($bust);
+        County::deleted($bust);
+        CountyInstitution::saved($bust);
+        CountyInstitution::deleted($bust);
+        Product::saved($bust);
+        Product::deleted($bust);
 
         // Laravel Pulse dashboard — only the KICC superadmin may view it.
         Gate::define('viewPulse', function ($user) {

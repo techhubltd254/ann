@@ -37,8 +37,9 @@
                    data-video="{{ $v ?? '' }}"
                    class="kicc-county-card shrink-0 group relative overflow-hidden rounded-2xl block bg-white border border-gray-200 hover:border-[#FFCD05]/40 transition-all" style="width: 200px; height: 280px;">
                      @if($v)
-                     <video autoplay muted loop playsinline preload="auto"
+                     <video muted loop playsinline preload="none"
                             class="absolute inset-0 w-full h-full object-cover"
+                            data-src="{{ $v }}"
                             onerror="this.remove()">
                          <source src="{{ $v }}" type="video/mp4">
                      </video>
@@ -71,22 +72,59 @@
     var scrollButtons = document.getElementById('kicc-scroll-buttons');
     var activeRegion = 'All';
 
+    // Lazy-load video: only play when card is hovered or in viewport
+    function lazyPlayVideo(card) {
+        var vid = card.querySelector('video');
+        if (!vid) return;
+        var src = vid.getAttribute('data-src') || vid.querySelector('source')?.src || vid.src;
+        if (!src) return;
+        if (vid.src !== src) vid.src = src;
+        vid.load();
+        vid.play().catch(function(){});
+    }
+
+    function lazyPauseVideo(card) {
+        var vid = card.querySelector('video');
+        if (!vid) return;
+        vid.pause();
+        vid.removeAttribute('src');
+        vid.load();
+    }
+
+    function setupCard(card) {
+        // Desktop: play on hover, pause on leave
+        card.addEventListener('mouseenter', function() { lazyPlayVideo(card); });
+        card.addEventListener('mouseleave', function() { lazyPauseVideo(card); });
+        // Mobile: play when in viewport (IntersectionObserver)
+        if ('IntersectionObserver' in window) {
+            var obs = new IntersectionObserver(function(entries) {
+                entries.forEach(function(e) {
+                    if (e.isIntersecting) { lazyPlayVideo(card); }
+                    else { lazyPauseVideo(card); }
+                });
+            }, { threshold: 0.3 });
+            obs.observe(card);
+        }
+    }
+
+    // Apply to all original cards
+    countyCards.forEach(function(card) { setupCard(card); });
+
     function buildCard(card) {
         var clone = card.cloneNode(true);
         clone.style.width = '';
         clone.style.height = '';
         clone.style.aspectRatio = '3 / 4';
-        // Clone the video element inside with preload metadata so it plays
+        // Clone video: preload=none, no autoplay
         var origVideo = card.querySelector('video');
         if (origVideo) {
             var newVideo = origVideo.cloneNode();
-            newVideo.removeAttribute('preload');
             newVideo.preload = 'none';
-            newVideo.autoplay = true;
+            newVideo.autoplay = false;
             newVideo.muted = true;
             newVideo.loop = true;
             newVideo.playsInline = true;
-            // Insert before img
+            newVideo.removeAttribute('src');
             var img = clone.querySelector('img');
             if (img && img.parentNode) {
                 img.parentNode.insertBefore(newVideo, img);
@@ -100,6 +138,8 @@
         gridEl.appendChild(buildCard(card));
     });
     var gridCards = gridEl.querySelectorAll('.kicc-county-card');
+    // Apply lazy-load setup to grid cards too
+    gridCards.forEach(function(card) { setupCard(card); });
 
     function filterCounties() {
         var query = (searchInput ? searchInput.value.toLowerCase() : '');
@@ -124,14 +164,7 @@
             var match = (query === '' || name.includes(query)) &&
                         (activeRegion === 'All' || region === activeRegion);
             card.style.display = match ? '' : 'none';
-            if (match) {
-                visible++;
-                // Play video if present
-                var vid = card.querySelector('video');
-                if (vid && card.style.display !== 'none') {
-                    vid.play().catch(function(){});
-                }
-            }
+            if (match) visible++;
         });
         if (countEl) countEl.textContent = visible + ' counties';
     }
