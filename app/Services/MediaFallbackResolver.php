@@ -34,7 +34,11 @@ class MediaFallbackResolver
     {
         $key = $this->cacheKey($entity, $size);
         return Cache::remember($key, self::CACHE_TTL, function () use ($entity, $size) {
-            return $this->resolveTree($entity, $size, 0) ?? $this->defaultUrl($entity);
+            $url = $this->resolveTree($entity, $size, 0);
+            if ($url && !str_contains($url, 'localhost') && !str_contains($url, 'products.jpeg')) {
+                return $url;
+            }
+            return $this->defaultUrl($entity);
         });
     }
 
