@@ -76,6 +76,16 @@ class CountyController extends Controller
             'industries' => 'industries', 'energy' => 'energy',
         ];
 
+        $sectorIcons = [
+            'tourism' => '🏛', 'hospitality' => '🏨',
+            'farms' => '🌾', 'agriculture' => '🌱',
+            'products' => '📦', 'commerce' => '📦',
+            'education' => '📚', 'institutions' => '📚',
+            'transport' => '🚢', 'health' => '🏥',
+            'healthcare' => '🏥', 'culture' => '🎭',
+            'industries' => '🏭', 'energy' => '⚡',
+        ];
+
         $sectorData = [];
         foreach ($sectors as $s) {
             $baseSlug = explode('-', $s->slug)[0];
@@ -83,7 +93,7 @@ class CountyController extends Controller
             $route = $routeMap[$baseSlug] ?? $baseSlug;
             $count = $sectorEntityCounts[$s->id] ?? 0;
             if ($count > 0 && !isset($sectorData[$name])) {
-                $sectorData[$name] = ['count' => $count, 'route' => $route, 'sector_slug' => $baseSlug];
+                $sectorData[$name] = ['count' => $count, 'route' => $route, 'sector_slug' => $baseSlug, 'icon' => $sectorIcons[$baseSlug] ?? '📋'];
             } elseif ($count > 0 && isset($sectorData[$name])) {
                 $sectorData[$name]['count'] += $count;
             }
@@ -474,20 +484,52 @@ class CountyController extends Controller
         $heroPoster = $heroAsset?->posterUrl() ?? $institution->logo_url;
         $heroSplat = $heroAsset?->splatUrl();
 
-        // Institution fallback video algorithm: when no hero video exists,
-        // build a seamless playlist from related sector content.
+        // Institution fallback video algorithm: tree hierarchy
+        // Tier 1: Institution's own hero video (already checked above — $heroVideo)
+        // Tier 2: Institution's own library videos (videos JSON)
+        // Tier 3: County-level sector videos (mother tile — sector_video_* slots)
+        // Tier 4: 4D videos from this institution's sector entities
+        // Tier 5: County hero video
+        // Tier 6: Hero videos from other institutions in the same county+sector
         $institutionFallbackVideos = [];
         if (!$heroVideo) {
             $fallback = [];
 
-            // 1. Institution's own library videos (from JSON)
+            // Tier 2: Institution's own library videos
             $libVids = $institution->videos ?? [];
             foreach ($libVids as $v) {
                 $url = $v['path'] ?? $v['url'] ?? null;
                 if ($url) $fallback[] = $url;
             }
 
-            // 2. 4D videos from this institution's sector entities
+            // Tier 3: County-level sector videos (mother tile)
+            if ($institution->county_id) {
+                $sectorSlugs = $institution->sectorEntities()
+                    ->with('sector')
+                    ->get()
+                    ->pluck('sector.slug')
+                    ->map(fn ($slug) => explode('-', $slug)[0])
+                    ->unique();
+                foreach ($sectorSlugs as $slug) {
+                    $asset = MediaAsset::where('owner_type', County::class)
+                        ->where('owner_id', $institution->county_id)
+                        ->where('slot', 'sector_video_' . $slug)
+                        ->first();
+                    if ($asset && ($url = $asset->mp4Url() ?? $asset->url())) {
+                        $fallback[] = $url;
+                    }
+                }
+                // Also grab any other sector videos from this county
+                $allSectorVids = MediaAsset::where('owner_type', County::class)
+                    ->where('owner_id', $institution->county_id)
+                    ->where('slot', 'like', 'sector_video_%')
+                    ->get();
+                foreach ($allSectorVids as $a) {
+                    if ($url = $a->mp4Url() ?? $a->url()) $fallback[] = $url;
+                }
+            }
+
+            // Tier 4: 4D videos from this institution's sector entities
             $sectorEntityIds = $institution->sectorEntities()->pluck('sector_entities.id');
             if ($sectorEntityIds->isNotEmpty()) {
                 $fourDAssets = MediaAsset::where('owner_type', SectorEntity::class)
@@ -499,7 +541,15 @@ class CountyController extends Controller
                 }
             }
 
-            // 3. Hero videos from other institutions in the same county+sector
+            // Tier 5: County hero video
+            if ($institution->county_id) {
+                $countyHero = MediaAsset::resolveSlot(County::class, $institution->county_id, 'hero_video');
+                if ($countyHero && ($url = $countyHero->mp4Url() ?? $countyHero->url())) {
+                    $fallback[] = $url;
+                }
+            }
+
+            // Tier 6: Hero videos from other institutions in the same county+sector
             $sectorIds = $institution->sectorEntities()->pluck('sector_id');
             if ($sectorIds->isNotEmpty() && $institution->county_id) {
                 $peerInstIds = SectorEntity::where('county_id', $institution->county_id)

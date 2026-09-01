@@ -4,13 +4,6 @@
 @section('description', $county->tagline ?? 'Explore ' . $county->name . ' County')
 
 <style>
-/* Hover video: poster stays until video ready, cross-fade */
-.sector-video-poster {
-    transition: opacity 0.5s ease;
-}
-.sector-video-player {
-    transition: opacity 0.5s ease;
-}
 /* Responsive touch targets */
         @media (max-width: 640px) {
             .nav-link { padding: 0.625rem 0.75rem; font-size: 0.75rem; }
@@ -171,28 +164,33 @@
                     $hasVideo = count($entityVids) > 0 || $sectorVideo;
                     $pitch = $sectorPitches[$s['sector_slug']] ?? '';
                     $firstVideo = $entityVids[0] ?? $sectorVideo ?? null;
-                    $sectorPoster = $countyMedia?->posterUrl() ?? media('counties/' . $county->slug . '/hero.jpeg');
+                    $sectorTilePoster = null;
+                    if ($sectorVideo) {
+                        $sectorAsset = \App\Models\MediaAsset::where('owner_type', \App\Models\County::class)
+                            ->where('owner_id', $county->id)
+                            ->where('slot', 'sector_video_' . $s['sector_slug'])
+                            ->first();
+                        $sectorTilePoster = $sectorAsset?->posterUrl() ?? $sectorAsset?->thumbnailUrl();
+                    }
                 @endphp
                 <a href="{{ route('counties.sector', [$county->slug, $s['route']]) }}"
                    class="group bg-white border border-gray-200 hover:border-kicc-gold/40 rounded-2xl overflow-hidden transition-all block card-hover"
-                   x-data="{ videoReady: false, videoLoaded: false }"
-                   @mouseenter="if(!videoLoaded && '{{ $firstVideo }}') { const v = $el.querySelector('video'); if(v) { v.src = '{{ $firstVideo }}'; v.load(); videoLoaded = true; } } if(videoLoaded) { const v = $el.querySelector('video'); if(v) { v.play().catch(()=>{}); } }"
-                   @mouseleave="const v = $el.querySelector('video'); if(v) { v.pause(); }"
+                   x-data="{ videoPlaying: false }"
+                   @mouseenter="const v = $el.querySelector('video'); if(v) { v.play().catch(()=>{}); videoPlaying = true; }"
+                   @mouseleave="const v = $el.querySelector('video'); if(v) { v.pause(); videoPlaying = false; }"
                    data-tilt="6" data-reveal data-reveal-delay="{{ $loop->index * 80 }}">
                     <div class="aspect-[4/3] overflow-hidden relative {{ $hasVideo ? 'bg-[#0B1E57]' : 'bg-gradient-to-br from-[#0A1024] to-[#1a1a2e]' }}">
-                        <img src="{{ $sectorPoster }}" alt="{{ $name }}"
-                             class="absolute inset-0 w-full h-full object-cover sector-video-poster"
-                             :class="videoReady ? 'opacity-0' : 'opacity-100'"
-                             loading="lazy" decoding="async"
-                             onerror="this.style.display='none'">
                         @if($firstVideo)
-                        <video muted loop playsinline preload="none"
-                               class="absolute inset-0 w-full h-full object-cover sector-video-player"
-                               :class="videoReady ? 'opacity-100' : 'opacity-0'"
-                               @playing="videoReady = true"
+                        <video muted loop playsinline preload="metadata"
+                               class="absolute inset-0 w-full h-full object-cover"
+                               poster="{{ $sectorTilePoster ?? '' }}"
                                onerror="this.style.display='none'">
                             <source src="{{ $firstVideo }}" type="video/mp4">
                         </video>
+                        @else
+                        <div class="absolute inset-0 bg-gradient-to-br from-[#0A1024] to-[#1a1a2e] flex items-center justify-center">
+                            <span class="text-white/20 text-5xl">{{ $s['icon'] ?? '📋' }}</span>
+                        </div>
                         @endif
                         @if($hasVideo)
                         <div class="absolute inset-0 bg-gradient-to-t from-black/60 via-black/10 to-black/30 pointer-events-none"></div>
