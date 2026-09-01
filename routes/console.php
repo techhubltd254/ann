@@ -41,6 +41,9 @@ Schedule::command('media:sweep-derivatives --limit=4')->everyTenMinutes()->witho
 // uploaded before the ImageVariantJob pipeline existed.
 Schedule::command('media:sweep-image-variants --limit=6')->everyFifteenMinutes()->withoutOverlapping();
 
+// Monitor queue depth and alert via n8n if backlogged (>500 jobs).
+Schedule::command('queue:monitor --threshold=500')->everyFiveMinutes()->withoutOverlapping();
+
 // Intelligent media fallback backfill — scans entities with missing images,
 // resolves from tree hierarchy (institution → sector → county → peer → placeholder),
 // extracts video frames via ffmpeg, and updates the database directly.
