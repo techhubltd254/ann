@@ -41,6 +41,12 @@ Schedule::command('media:sweep-derivatives --limit=4')->everyTenMinutes()->witho
 // uploaded before the ImageVariantJob pipeline existed.
 Schedule::command('media:sweep-image-variants --limit=6')->everyFifteenMinutes()->withoutOverlapping();
 
+// Intelligent media fallback backfill — scans entities with missing images,
+// resolves from tree hierarchy (institution → sector → county → peer → placeholder),
+// extracts video frames via ffmpeg, and updates the database directly.
+// Admin sees the filled values immediately and can override via existing forms.
+Schedule::command('media:backfill-fallbacks --limit=100')->hourly()->withoutOverlapping();
+
 // Predictive demand/trend rollups nightly.
 Schedule::command('analytics:trends')->dailyAt('04:30');
 

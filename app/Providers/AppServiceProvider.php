@@ -5,6 +5,17 @@ namespace App\Providers;
 use App\Models\MediaAsset;
 use App\Models\County;
 use App\Models\CountyInstitution;
+use App\Models\CountyTourismAttraction;
+use App\Models\CountyHotel;
+use App\Models\CountyFarm;
+use App\Models\CountyTransport;
+use App\Models\CountyHealthFacility;
+use App\Models\CountyCultureSite;
+use App\Models\CountyProduct;
+use App\Models\Exhibition;
+use App\Models\Venue;
+use App\Models\Ministry;
+use App\Models\Agency;
 use App\Models\Marketplace\Product;
 use App\Observers\MediaAssetObserver;
 use App\Services\SendgridApiTransport;
@@ -39,6 +50,33 @@ class AppServiceProvider extends ServiceProvider
         CountyInstitution::deleted($bust);
         Product::saved($bust);
         Product::deleted($bust);
+
+        // Bust media fallback cache when assets change
+        $mediaBust = fn ($entity) => bust_cache();
+        MediaAsset::saved($mediaBust);
+        MediaAsset::deleted($mediaBust);
+        CountyTourismAttraction::saved($bust);
+        CountyTourismAttraction::deleted($bust);
+        CountyHotel::saved($bust);
+        CountyHotel::deleted($bust);
+        CountyFarm::saved($bust);
+        CountyFarm::deleted($bust);
+        CountyTransport::saved($bust);
+        CountyTransport::deleted($bust);
+        CountyHealthFacility::saved($bust);
+        CountyHealthFacility::deleted($bust);
+        CountyCultureSite::saved($bust);
+        CountyCultureSite::deleted($bust);
+        CountyProduct::saved($bust);
+        CountyProduct::deleted($bust);
+        Exhibition::saved($bust);
+        Exhibition::deleted($bust);
+        Venue::saved($bust);
+        Venue::deleted($bust);
+        Ministry::saved($bust);
+        Ministry::deleted($bust);
+        Agency::saved($bust);
+        Agency::deleted($bust);
 
         // Laravel Pulse dashboard — only the KICC superadmin may view it.
         Gate::define('viewPulse', function ($user) {

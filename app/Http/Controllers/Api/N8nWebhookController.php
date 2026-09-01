@@ -5,6 +5,7 @@ use App\Models\Agent;
 use App\Models\Review;
 use App\Models\Marketplace\Order;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Artisan;
 use Illuminate\Support\Facades\Log;
 
 class N8nWebhookController extends Controller {
@@ -26,6 +27,7 @@ class N8nWebhookController extends Controller {
                 'trigger_4d_pipeline' => $this->trigger4dPipeline($data),
                 'notify_admin' => $this->notifyAdmin($data),
                 'generate_invoice' => $this->generateInvoice($data),
+                'backfill_media' => $this->backfillMedia($data),
                 default => throw new \InvalidArgumentException("Unknown action: {$action}"),
             };
             Log::info("n8n action [{$action}] succeeded", $data);
@@ -34,6 +36,39 @@ class N8nWebhookController extends Controller {
             Log::warning("n8n action [{$action}] failed: " . $e->getMessage());
             return response()->json(['error' => $e->getMessage()], 422);
         }
+    }
+
+    private function backfillMedia(array $data): string {
+        $entityType = $data['entity_type'] ?? null;
+        $entityId = $data['entity_id'] ?? null;
+
+        if ($entityType && $entityId) {
+            // Targeted backfill for a single entity
+            $entity = $entityType::find($entityId);
+            if (!$entity) return "Entity {$entityType}#{$entityId} not found";
+            $resolver = app(\App\Services\MediaFallbackResolver::class);
+            $best = $resolver->resolveTree($entity);
+            if ($best) {
+                $field = $data['field'] ?? 'image_url';
+                if ($field === 'image_url' && $entityType === \App\Models\Marketplace\Product::class) {
+                    \App\Models\Marketplace\ProductImage::create([
+                        'product_id' => $entity->id,
+                        'url' => $best,
+                        'is_primary' => true,
+                    ]);
+                } else {
+                    $entity->update([$field => $best]);
+                }
+                $resolver->bustCache($entity);
+                return "Backfilled {$entityType}#{$entityId}: {$field} = {$best}";
+            }
+            return "No fallback found for {$entityType}#{$entityId}";
+        }
+
+        // Full sweep
+        Artisan::call('media:backfill-fallbacks', ['--limit' => 200]);
+        $output = Artisan::output();
+        return "Full backfill completed. Output: " . substr($output, 0, 500);
     }
 
     private function approveAgent(array $data): string {
