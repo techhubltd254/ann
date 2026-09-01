@@ -51,11 +51,15 @@
             <p class="text-white/90 text-sm leading-relaxed">{{ $product->video_description }}</p>
         </div>
         @else
-        @if($product->images->first()->url ?? null)
+        @php $productImage = $product->image_url; @endphp
+        @if($productImage && !str_contains($productImage, 'logo') && !str_contains($productImage, 'products.jpeg'))
+        <x-fast-image :src="$productImage" :alt="$product->name" :width="960" :quality="80" class="w-full h-full" />
+        @elseif($product->images->first()->url ?? null)
         <x-fast-image :src="$product->images->first()->url" :alt="$product->name" :width="960" :quality="80" class="w-full h-full" />
         @else
-        <img src="{{ $product->image_url }}" alt="{{ $product->name }}" loading="lazy" decoding="async" class="w-full h-full object-cover"
-             onerror="this.src='{{ asset('storage/kicc/kicc-logo.png') }}'">
+        <div class="w-full h-full flex items-center justify-center bg-gradient-to-br from-[#0B1E57] to-[#1a1a2e]">
+            <span class="text-white/30 text-8xl font-black">{{ strtoupper(substr($product->name, 0, 2)) }}</span>
+        </div>
         @endif
         @endif
     </div>
