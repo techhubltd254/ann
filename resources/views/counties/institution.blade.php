@@ -6,9 +6,9 @@
 @section('content')
 <div class="pt-20">
 
-    {{-- ═══ HERO VIDEO SECTION (Tier 3: adaptive HLS / interactive 4D on the detail page) ═══ --}}
+    {{-- ═══ HERO VIDEO SECTION (adaptive HLS / 4D / fallback loop) ═══ --}}
     @if($heroVideo || $heroSplat)
-    <div class="relative h-[50vh] md:h-[60vh] overflow-hidden bg-black">
+    <div class="relative h-[50vh] md:h-[60vh] overflow-hidden bg-[#0B1E57]">
         @if($heroSplat)
         <x-hologram-viewer :poster="$heroPoster" :video-url="$heroVideo" :hls-url="$heroHls ?? null" :splat-url="$heroSplat" :title="$institution->name" />
         @else
@@ -25,6 +25,46 @@
         @endif
         <div class="absolute inset-0 bg-gradient-to-t from-black/70 via-black/20 to-transparent"></div>
         <div class="absolute bottom-0 left-0 right-0 max-w-7xl mx-auto px-5 pb-10">
+            <a href="{{ route('counties.show', $county->slug) }}" class="inline-flex items-center gap-1.5 text-white/60 hover:text-white text-sm mb-3 transition-colors">
+                <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 19l-7-7 7-7"/></svg>
+                {{ $county->name }} County
+            </a>
+            <div class="flex items-center gap-4">
+                @if($institution->logo_url)
+                <img src="{{ $institution->logo_url }}" class="w-16 h-16 rounded-xl object-cover border-2 border-white/20">
+                @endif
+                <div>
+                    <h1 class="text-3xl md:text-5xl font-black text-white" data-split>{{ $institution->name }}</h1>
+                    <p class="text-white/70 text-sm mt-2">{{ $institution->type ?? 'Institution' }}
+                        @if($institution->founded_year) · Founded {{ $institution->founded_year }}@endif
+                        @if($institution->headquarters) · {{ $institution->headquarters }}@endif
+                    </p>
+                </div>
+            </div>
+        </div>
+    </div>
+    @elseif(!empty($institutionFallbackVideos))
+    {{-- Fallback: no hero video — cycle related sector/institution videos seamlessly --}}
+    <div class="relative h-[50vh] md:h-[60vh] overflow-hidden bg-[#0B1E57]"
+         x-data="institutionFallbackPlayer({
+            videos: {{ Js::from($institutionFallbackVideos) }},
+            poster: '{{ $heroPoster ?? media('kicc/kicc-logo.png') }}'
+         })">
+        <img src="{{ $heroPoster ?? media('kicc/kicc-logo.png') }}" alt="{{ $institution->name }}"
+             class="absolute inset-0 w-full h-full object-cover"
+             :class="videoReady ? 'opacity-0' : 'opacity-100'"
+             style="transition: opacity 0.6s ease; z-index:1">
+        <video x-ref="fallbackVideo"
+               autoplay muted loop playsinline preload="metadata"
+               class="absolute inset-0 w-full h-full object-cover"
+               :class="videoReady ? 'opacity-100' : 'opacity-0'"
+               style="transition: opacity 0.6s ease; z-index:2"
+               @playing="videoReady = true"
+               @ended="nextVideo()">
+            <source :src="currentSrc" type="video/mp4">
+        </video>
+        <div class="absolute inset-0 bg-gradient-to-t from-black/70 via-black/20 to-transparent" style="z-index:3"></div>
+        <div class="absolute bottom-0 left-0 right-0 max-w-7xl mx-auto px-5 pb-10" style="z-index:5">
             <a href="{{ route('counties.show', $county->slug) }}" class="inline-flex items-center gap-1.5 text-white/60 hover:text-white text-sm mb-3 transition-colors">
                 <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 19l-7-7 7-7"/></svg>
                 {{ $county->name }} County
@@ -381,5 +421,75 @@
     .mobile-text-center { text-align: center !important; }
 }
 </style>
+@endpush
+@push('scripts')
+<script>
+function institutionFallbackPlayer(config) {
+    return {
+        videos: config.videos || [],
+        currentIndex: 0,
+        videoReady: false,
+        get currentSrc() {
+            return this.videos[this.currentIndex] || '';
+        },
+        nextVideo() {
+            this.currentIndex = (this.currentIndex + 1) % this.videos.length;
+            this.videoReady = false;
+            var video = this.$refs.fallbackVideo;
+            if (video) {
+                video.src = this.currentSrc;
+                video.load();
+                video.play().catch(function(){});
+            }
+        }
+    };
+}
+
+function correlationLoader(type, id) {
+    return {
+        loading: false,
+        loaded: false,
+        html: '',
+        loadMore() {
+            this.loading = true;
+            fetch('/api/correlations/' + type + '/' + id)
+                .then(r => r.json())
+                .then(data => {
+                    this.html = this.renderMore(data);
+                    this.loaded = true;
+                    this.loading = false;
+                })
+                .catch(() => { this.loading = false; });
+        },
+        renderMore(data) {
+            var h = '';
+            if (data.places_to_visit && data.places_to_visit.length > 0) {
+                h += '<div class="mb-6"><h4 class="text-sm font-bold text-gray-900 mb-3">📍 More Places</h4><div class="grid grid-cols-2 md:grid-cols-4 gap-4">';
+                data.places_to_visit.forEach(function(r) {
+                    h += '<a href="/counties/institution/' + r.slug + '" class="bg-white border border-gray-200 rounded-xl p-3 hover:border-amber-300 transition-all"><div class="font-bold text-sm">' + r.name + '</div><div class="text-xs text-gray-500">' + (r.distance_km || '') + ' km · ' + (r.type_label || '') + '</div></a>';
+                });
+                h += '</div></div>';
+            }
+            if (data.places_to_stay && data.places_to_stay.length > 0) {
+                h += '<div class="mb-6"><h4 class="text-sm font-bold text-gray-900 mb-3">🏨 More Places to Stay</h4><div class="grid grid-cols-2 md:grid-cols-3 gap-4">';
+                data.places_to_stay.forEach(function(r) {
+                    h += '<a href="/counties/institution/' + r.slug + '" class="bg-white border border-gray-200 rounded-xl p-3 hover:border-amber-300 transition-all"><div class="font-bold text-sm">' + r.name + '</div><div class="text-xs text-gray-500">' + (r.distance_km || '') + ' km</div></a>';
+                });
+                h += '</div></div>';
+            }
+            if (data.transport && data.transport.length > 0) {
+                h += '<div><h4 class="text-sm font-bold text-gray-900 mb-3">🚗 More Transport</h4><div class="grid grid-cols-2 md:grid-cols-4 gap-4">';
+                data.transport.forEach(function(t) {
+                    var priceHtml = '';
+                    if (t.price) priceHtml = '<div class="font-bold text-amber-600 text-sm">KES ' + t.price.toLocaleString() + '</div>';
+                    h += '<div class="bg-white border border-gray-200 rounded-xl p-3"><div class="font-bold text-sm">' + t.name + '</div>' + priceHtml + '<div class="text-xs text-gray-500">' + (t.type_label || '') + '</div></div>';
+                });
+                h += '</div></div>';
+            }
+            return h;
+        }
+    };
+}
+</script>
 @endpush
 @endsection

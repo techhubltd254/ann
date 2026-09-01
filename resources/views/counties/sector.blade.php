@@ -27,21 +27,6 @@
 .sector-stats {
     background: linear-gradient(135deg, #0A1024 0%, #1a1a2e 50%, #0A1024 100%);
 }
-@keyframes heroFade {
-    0% { opacity: 1; }
-    17% { opacity: 1; }
-    23% { opacity: 0; }
-    100% { opacity: 0; }
-}
-.hero-video-layer {
-    position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover;
-    animation: heroFade 24s infinite;
-    will-change: opacity;
-}
-.hero-video-layer:nth-child(1) { animation-delay: 0s; }
-.hero-video-layer:nth-child(2) { animation-delay: 6s; }
-.hero-video-layer:nth-child(3) { animation-delay: 12s; }
-.hero-video-layer:nth-child(4) { animation-delay: 18s; }
 /* Responsive touch targets */
         @media (max-width: 640px) {
             .nav-link { padding: 0.625rem 0.75rem; font-size: 0.75rem; }
@@ -65,12 +50,26 @@
 {{-- ═══ HERO ═══ --}}
 @php $heroVids = $sectorHeroVideos ?? []; @endphp
 @if(count($heroVids) > 0)
-<div class="relative h-[45vh] md:h-[55vh] overflow-hidden bg-[#0B1E57]">
-    @foreach($heroVids as $vi)
-    <video autoplay muted loop playsinline loading="lazy" preload="metadata" class="hero-video-layer" onerror="this.style.display='none'">
-        <source src="{{ $vi }}" type="video/mp4">
+<div class="relative h-[45vh] md:h-[55vh] overflow-hidden bg-[#0B1E57]"
+     x-data="sectorHeroPlayer({
+        videos: {{ Js::from(array_values($heroVids)) }},
+        poster: '{{ $sectorHeroPoster ?? media("counties/" . $county->slug . "/hero.jpeg") }}'
+     })">
+    <img src="{{ $sectorHeroPoster ?? media("counties/" . $county->slug . "/hero.jpeg") }}" alt="{{ $sectorInfo['title'] }}"
+         class="absolute inset-0 w-full h-full object-cover"
+         :class="videoReady ? 'opacity-0' : 'opacity-100'"
+         style="transition: opacity 0.6s ease; z-index:1"
+         loading="lazy" decoding="async"
+         onerror="this.style.display='none'">
+    <video x-ref="sectorHero"
+           autoplay muted loop playsinline preload="metadata"
+           class="absolute inset-0 w-full h-full object-cover"
+           :class="videoReady ? 'opacity-100' : 'opacity-0'"
+           style="transition: opacity 0.6s ease; z-index:2"
+           @playing="videoReady = true"
+           @ended="nextSectorVideo()">
+        <source :src="currentSrc" type="video/mp4">
     </video>
-    @endforeach
     <div class="absolute inset-0 bg-gradient-to-t from-black/70 via-black/20 to-transparent" style="z-index:5"></div>
         <div class="absolute bottom-0 left-0 right-0 max-w-7xl mx-auto px-5 pb-10" style="z-index:6">
         <a href="{{ route('counties.show', $county->slug) }}" class="inline-flex items-center gap-1.5 text-white/60 hover:text-white text-sm mb-3 transition-colors">
@@ -228,3 +227,28 @@
     </div>
 </div>
 @endsection
+@push('scripts')
+<script>
+function sectorHeroPlayer(config) {
+    return {
+        videos: config.videos || [],
+        currentIndex: 0,
+        videoReady: false,
+        get currentSrc() {
+            return this.videos[this.currentIndex] || '';
+        },
+        nextSectorVideo() {
+            if (this.videos.length <= 1) return;
+            this.currentIndex = (this.currentIndex + 1) % this.videos.length;
+            this.videoReady = false;
+            var video = this.$refs.sectorHero;
+            if (video) {
+                video.src = this.currentSrc;
+                video.load();
+                video.play().catch(function(){});
+            }
+        }
+    };
+}
+</script>
+@endpush

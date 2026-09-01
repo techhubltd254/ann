@@ -446,11 +446,15 @@ class CountyController extends Controller
             }
         }
 
+        // Poster for the sector hero (county hero poster / default county image)
+        $sectorHeroPoster = \App\Models\MediaAsset::resolveSlot(County::class, $county->id, 'hero_video')?->posterUrl()
+            ?? media('counties/' . $county->slug . '/hero.jpeg');
+
         return view('counties.sector', compact(
             'county', 'items', 'sector', 'sectorInfo', 'sectorModel',
             'fourDVideo', 'entityVideos', 'entityPosters', 'entityHoverLoops', 'entitySplats',
             'institutionHeroVideos', 'institutionHeroPosters', 'institutionHeroLoops', 'productCounts',
-            'sectorHeroVideos', 'services', 'entityReviewScores'
+            'sectorHeroVideos', 'sectorHeroPoster', 'services', 'entityReviewScores'
         ));
     }
 
@@ -469,6 +473,55 @@ class CountyController extends Controller
         $heroHls = $heroAsset?->derivativeUrl('hls_master');
         $heroPoster = $heroAsset?->posterUrl() ?? $institution->logo_url;
         $heroSplat = $heroAsset?->splatUrl();
+
+        // Institution fallback video algorithm: when no hero video exists,
+        // build a seamless playlist from related sector content.
+        $institutionFallbackVideos = [];
+        if (!$heroVideo) {
+            $fallback = [];
+
+            // 1. Institution's own library videos (from JSON)
+            $libVids = $institution->videos ?? [];
+            foreach ($libVids as $v) {
+                $url = $v['path'] ?? $v['url'] ?? null;
+                if ($url) $fallback[] = $url;
+            }
+
+            // 2. 4D videos from this institution's sector entities
+            $sectorEntityIds = $institution->sectorEntities()->pluck('sector_entities.id');
+            if ($sectorEntityIds->isNotEmpty()) {
+                $fourDAssets = MediaAsset::where('owner_type', SectorEntity::class)
+                    ->whereIn('owner_id', $sectorEntityIds)
+                    ->where('slot', '4d_video')
+                    ->get();
+                foreach ($fourDAssets as $a) {
+                    if ($url = $a->mp4Url() ?? $a->url()) $fallback[] = $url;
+                }
+            }
+
+            // 3. Hero videos from other institutions in the same county+sector
+            $sectorIds = $institution->sectorEntities()->pluck('sector_id');
+            if ($sectorIds->isNotEmpty() && $institution->county_id) {
+                $peerInstIds = SectorEntity::where('county_id', $institution->county_id)
+                    ->whereIn('sector_id', $sectorIds)
+                    ->whereIn('entity_type', [CountyInstitution::class, InstitutionSyncService::ENTITY_TYPE])
+                    ->where('entity_id', '!=', $institution->id)
+                    ->pluck('entity_id')
+                    ->unique();
+                if ($peerInstIds->isNotEmpty()) {
+                    $peerAssets = MediaAsset::where('owner_type', CountyInstitution::class)
+                        ->whereIn('owner_id', $peerInstIds)
+                        ->where('slot', 'hero_video')
+                        ->get();
+                    foreach ($peerAssets as $a) {
+                        if ($url = $a->mp4Url() ?? $a->url()) $fallback[] = $url;
+                    }
+                }
+            }
+
+            // Deduplicate and limit
+            $institutionFallbackVideos = array_values(array_unique(array_filter($fallback)));
+        }
 
         // Marketplace products owned by this institution
         $products = collect();
@@ -517,7 +570,7 @@ class CountyController extends Controller
         return view('counties.institution', compact(
             'institution', 'county', 'heroAsset', 'heroVideo', 'heroHls', 'heroPoster', 'heroSplat', 'products', 'sectorEntities', 'libraryVideos',
             'institutionReviews', 'institutionReviewSeed', 'institutionReviewAvg', 'institutionReviewCount',
-            'tripRecommendations'
+            'tripRecommendations', 'institutionFallbackVideos'
         ));
     }
 }

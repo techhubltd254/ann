@@ -4,21 +4,13 @@
 @section('description', $county->tagline ?? 'Explore ' . $county->name . ' County')
 
 <style>
-@keyframes heroFade {
-    0% { opacity: 1; }
-    17% { opacity: 1; }
-    23% { opacity: 0; }
-    100% { opacity: 0; }
+/* Hover video: poster stays until video ready, cross-fade */
+.sector-video-poster {
+    transition: opacity 0.5s ease;
 }
-.hero-video-layer {
-    position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover;
-    animation: heroFade 24s infinite;
-    will-change: opacity;
+.sector-video-player {
+    transition: opacity 0.5s ease;
 }
-.hero-video-layer:nth-child(1) { animation-delay: 0s; }
-.hero-video-layer:nth-child(2) { animation-delay: 6s; }
-.hero-video-layer:nth-child(3) { animation-delay: 12s; }
-.hero-video-layer:nth-child(4) { animation-delay: 18s; }
 /* Responsive touch targets */
         @media (max-width: 640px) {
             .nav-link { padding: 0.625rem 0.75rem; font-size: 0.75rem; }
@@ -57,15 +49,25 @@
             :muted="true"
         />
         @elseif(count($countyHeroFallback ?? []) > 0)
-        {{-- Hero fallback: no county hero uploaded — cycle sector/entity videos --}}
-        <img src="{{ $heroPosterImg }}" alt="{{ $county->name }}" class="absolute inset-0 w-full h-full object-cover" loading="lazy" style="z-index:0">
-        @foreach($countyHeroFallback as $vi)
-        <video autoplay muted loop playsinline loading="lazy" preload="metadata" class="hero-video-layer"
-               style="z-index:1"
-               onerror="this.style.display='none'">
-            <source src="{{ $vi }}" type="video/mp4">
-        </video>
-        @endforeach
+        {{-- Hero fallback: no county hero uploaded — seamless loop of related videos --}}
+        <div class="absolute inset-0 w-full h-full bg-[#0B1E57]"
+             x-data="heroFallbackPlayer({
+                videos: {{ Js::from(array_values(array_slice($countyHeroFallback, 0, 8))) }},
+                poster: '{{ $heroPosterImg }}'
+             })">
+            <img src="{{ $heroPosterImg }}" alt="{{ $county->name }}" class="absolute inset-0 w-full h-full object-cover"
+                 :class="videoReady ? 'opacity-0' : 'opacity-100'"
+                 style="transition: opacity 0.6s ease; z-index:1">
+            <video x-ref="heroFallback"
+                   autoplay muted loop playsinline preload="metadata"
+                   class="absolute inset-0 w-full h-full object-cover"
+                   :class="videoReady ? 'opacity-100' : 'opacity-0'"
+                   style="transition: opacity 0.6s ease; z-index:2"
+                   @playing="videoReady = true"
+                   @ended="nextHeroVideo()">
+                <source :src="currentSrc" type="video/mp4">
+            </video>
+        </div>
         @else
         <div class="absolute inset-0 w-full h-full" style="background:linear-gradient(135deg,#0A1024,#1a1a2e)"></div>
         @endif
@@ -168,26 +170,28 @@
                     $entityVids = $sectorEntityVideos[$s['sector_slug']] ?? [];
                     $hasVideo = count($entityVids) > 0 || $sectorVideo;
                     $pitch = $sectorPitches[$s['sector_slug']] ?? '';
+                    $firstVideo = $entityVids[0] ?? $sectorVideo ?? null;
+                    $sectorPoster = $countyMedia?->posterUrl() ?? media('counties/' . $county->slug . '/hero.jpeg');
                 @endphp
                 <a href="{{ route('counties.sector', [$county->slug, $s['route']]) }}"
                    class="group bg-white border border-gray-200 hover:border-kicc-gold/40 rounded-2xl overflow-hidden transition-all block card-hover"
+                   x-data="{ videoReady: false, videoLoaded: false }"
+                   @mouseenter="if(!videoLoaded && '{{ $firstVideo }}') { const v = $el.querySelector('video'); if(v) { v.src = '{{ $firstVideo }}'; v.load(); videoLoaded = true; } } if(videoLoaded) { const v = $el.querySelector('video'); if(v) { v.play().catch(()=>{}); } }"
+                   @mouseleave="const v = $el.querySelector('video'); if(v) { v.pause(); }"
                    data-tilt="6" data-reveal data-reveal-delay="{{ $loop->index * 80 }}">
                     <div class="aspect-[4/3] overflow-hidden relative {{ $hasVideo ? 'bg-[#0B1E57]' : 'bg-gradient-to-br from-[#0A1024] to-[#1a1a2e]' }}">
-                        @if(count($entityVids) > 0)
-                        @foreach($entityVids as $vi)
-                        <video autoplay muted loop playsinline preload="auto" loading="lazy" class="absolute inset-0 w-full h-full object-cover hero-video-layer"
+                        <img src="{{ $sectorPoster }}" alt="{{ $name }}"
+                             class="absolute inset-0 w-full h-full object-cover sector-video-poster"
+                             :class="videoReady ? 'opacity-0' : 'opacity-100'"
+                             loading="lazy" decoding="async"
+                             onerror="this.style.display='none'">
+                        @if($firstVideo)
+                        <video muted loop playsinline preload="none"
+                               class="absolute inset-0 w-full h-full object-cover sector-video-player"
+                               :class="videoReady ? 'opacity-100' : 'opacity-0'"
+                               @playing="videoReady = true"
                                onerror="this.style.display='none'">
-                            <source src="{{ $vi }}" type="video/mp4">
-                        </video>
-                        @endforeach
-                        @elseif($sectorVideo)
-                        @php $sectorWebm = $sectorWebmVideos[$s['sector_slug']] ?? null; @endphp
-                        <video autoplay muted loop playsinline preload="auto" loading="lazy" class="absolute inset-0 w-full h-full object-cover"
-                               onerror="this.style.display='none'">
-                            @if($sectorWebm)
-                            <source src="{{ $sectorWebm }}" type="video/webm">
-                            @endif
-                            <source src="{{ $sectorVideo }}" type="video/mp4">
+                            <source src="{{ $firstVideo }}" type="video/mp4">
                         </video>
                         @endif
                         @if($hasVideo)
@@ -346,3 +350,28 @@
     </div>
 </div>
 @endsection
+@push('scripts')
+<script>
+function heroFallbackPlayer(config) {
+    return {
+        videos: config.videos || [],
+        currentIndex: 0,
+        videoReady: false,
+        get currentSrc() {
+            return this.videos[this.currentIndex] || '';
+        },
+        nextHeroVideo() {
+            if (this.videos.length <= 1) return;
+            this.currentIndex = (this.currentIndex + 1) % this.videos.length;
+            this.videoReady = false;
+            var video = this.$refs.heroFallback;
+            if (video) {
+                video.src = this.currentSrc;
+                video.load();
+                video.play().catch(function(){});
+            }
+        }
+    };
+}
+</script>
+@endpush
