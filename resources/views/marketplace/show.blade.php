@@ -15,7 +15,7 @@
     <div>
     @php $allVideos = collect(array_merge(
         $product->video_url ? [$product->video_url] : [],
-        $product->videos ?? []
+        is_array($product->videos) ? $product->videos : []
     ))->unique()->values(); @endphp
 
     @if($allVideos->isNotEmpty())

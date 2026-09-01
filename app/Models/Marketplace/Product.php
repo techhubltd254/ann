@@ -17,9 +17,26 @@ class Product extends Model
         'is_digital' => 'boolean',
         'is_featured' => 'boolean',
         'tags' => 'array',
-        'videos' => 'array',
         'weight_kg' => 'float',
     ];
+
+    public function getVideosAttribute($value): array
+    {
+        if (is_string($value)) {
+            $decoded = json_decode($value, true);
+            if (is_array($decoded)) {
+                return $decoded;
+            }
+            if (is_string($decoded)) {
+                $decoded2 = json_decode($decoded, true);
+                if (is_array($decoded2)) {
+                    return $decoded2;
+                }
+            }
+            return [];
+        }
+        return $value ?? [];
+    }
 
     public function scopeActive($q) { return $q->where('status', 'active'); }
 

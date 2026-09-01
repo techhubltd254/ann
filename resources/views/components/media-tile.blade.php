@@ -12,27 +12,29 @@
     'aspect' => 'aspect-video',
 ])
 
-<div class="group relative {{ $aspect }} bg-[#0B0D11] overflow-hidden rounded-xl"
+<div class="group relative {{ $aspect }} bg-[#0B1E57] overflow-hidden rounded-xl"
      x-data="mediaTile()"
      @mouseenter="onHoverEnter()"
      @mouseleave="onHoverLeave()"
      @focusin="onHoverEnter()"
      @focusout="onHoverLeave()">
 
-    {{-- Tier 1: poster (always shown until active) --}}
+    {{-- Tier 1: poster (always visible behind until video actually plays) --}}
     @if($poster)
     <img src="{{ $poster }}" alt="{{ $title }}" loading="lazy"
-         class="absolute inset-0 w-full h-full object-cover transition-opacity duration-300"
-         :class="active ? 'opacity-0' : 'opacity-100'"
+         class="absolute inset-0 w-full h-full object-cover transition-opacity duration-500"
+         :class="videoReady ? 'opacity-0' : 'opacity-100'"
          onerror="this.style.display='none'">
     @endif
 
-    {{-- Tier 2: hover/in-view loop (mounted only when this tile is the active one) --}}
+    {{-- Tier 2: hover/in-view loop — cross-fade in once first frame renders --}}
     <template x-if="active">
         <video x-ref="video"
-               class="absolute inset-0 w-full h-full object-cover"
+               class="absolute inset-0 w-full h-full object-cover transition-opacity duration-500"
+               :class="videoReady ? 'opacity-100' : 'opacity-0'"
                muted loop playsinline preload="metadata"
-               x-effect="if (active) { $refs.video.play().catch(() => {}); } else { $refs.video.pause(); }">
+               x-on:playing="onVideoPlaying()"
+               x-effect="if (active) { $refs.video.play().catch(() => {}); } else { $refs.video.pause(); videoReady = false; }">
             @if($hoverLoop)
             <source src="{{ $hoverLoop }}" type="video/mp4">
             @elseif($videoUrl)

@@ -116,7 +116,7 @@
                     </div>
                     <div class="grid grid-cols-2 sm:grid-cols-3 gap-4">
                         @foreach($products as $product)
-                        @php $vid = $product->videos[0] ?? $product->video_url; @endphp
+                        @php $vid = is_array($product->videos) ? ($product->videos[0] ?? null) : $product->video_url; @endphp
                         <a href="{{ route('marketplace.show', $product->slug) }}" class="group bg-[#F9FAFB] rounded-2xl overflow-hidden border border-gray-200 hover:border-[#FFCD05]/30 transition-all card-hover">
                             <div class="aspect-square overflow-hidden bg-white relative">
                                 @if($vid)

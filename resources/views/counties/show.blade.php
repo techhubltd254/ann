@@ -172,7 +172,7 @@
                 <a href="{{ route('counties.sector', [$county->slug, $s['route']]) }}"
                    class="group bg-white border border-gray-200 hover:border-kicc-gold/40 rounded-2xl overflow-hidden transition-all block card-hover"
                    data-tilt="6" data-reveal data-reveal-delay="{{ $loop->index * 80 }}">
-                    <div class="aspect-[4/3] overflow-hidden relative {{ $hasVideo ? 'bg-black' : 'bg-gradient-to-br from-[#0A1024] to-[#1a1a2e]' }}">
+                    <div class="aspect-[4/3] overflow-hidden relative {{ $hasVideo ? 'bg-[#0B1E57]' : 'bg-gradient-to-br from-[#0A1024] to-[#1a1a2e]' }}">
                         @if(count($entityVids) > 0)
                         @foreach($entityVids as $vi)
                         <video autoplay muted loop playsinline preload="auto" loading="lazy" class="absolute inset-0 w-full h-full object-cover hero-video-layer"
@@ -286,7 +286,7 @@
                 @foreach($countyProducts as $p)
                 <div class="bg-white border border-gray-200 rounded-2xl overflow-hidden card-hover hover:border-kicc-gold/40 transition-all flex flex-col">
                     <div class="h-36 bg-gray-100 flex items-center justify-center overflow-hidden relative">
-                        @php $firstVideo = $p->videos[0] ?? $p->video_url; @endphp
+                        @php $firstVideo = is_array($p->videos) ? ($p->videos[0] ?? null) : $p->video_url; @endphp
                         @if($firstVideo)
                         <video autoplay muted loop playsinline preload="auto" class="absolute inset-0 w-full h-full object-cover" onerror="this.style.display='none'">
                             <source src="{{ $firstVideo }}" type="video/mp4">

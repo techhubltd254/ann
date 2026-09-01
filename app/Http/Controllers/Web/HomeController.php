@@ -21,12 +21,11 @@ class HomeController extends Controller
             // Display-priority products: sector representation + review score,
             // restricted to real-data counties (Mombasa + Muranga).
             $priority = app(\App\Services\DisplayPriorityService::class);
-            $countyIds = $priority->displayCountyIds();
             $productIds = $priority->marketplaceProductIds();
             $productIds = array_slice($productIds, 0, 8);
 
             return [
-                'countyIds' => $countyIds ?: County::orderBy('name')->pluck('id')->all(),
+                'countyIds' => County::orderBy('name')->pluck('id')->all(),
                 'exhibitionIds' => Exhibition::where('status', 'published')->where('is_featured', true)
                     ->orderBy('start_date')->take(3)->pluck('id')->all(),
                 'productIds' => $productIds,
@@ -38,7 +37,7 @@ class HomeController extends Controller
         // Hydrate models after cache read (never cache Eloquent collections in Redis)
         $counties = County::whereIn('id', $ids['countyIds'] ?? [])->orderBy('name')->get(['id', 'name', 'slug', 'economic_zone', 'former_province']);
         $featuredExhibitions = Exhibition::with('county')->whereIn('id', $ids['exhibitionIds'] ?? [])->orderBy('start_date')->get();
-        $products = Product::with(['county', 'category', 'variants'])->whereIn('id', $ids['productIds'] ?? [])->latest()->get();
+        $products = Product::with(['county', 'category', 'variants', 'images'])->whereIn('id', $ids['productIds'] ?? [])->latest()->get();
         $venues = Venue::whereIn('id', $ids['venueIds'] ?? [])->orderBy('name')->get();
         $tradeAgreementsHome = TradeAgreement::with('bloc')->whereIn('id', $ids['tradeAgreementIds'] ?? [])->latest()->get();
 

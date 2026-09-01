@@ -65,7 +65,7 @@
 {{-- ═══ HERO ═══ --}}
 @php $heroVids = $sectorHeroVideos ?? []; @endphp
 @if(count($heroVids) > 0)
-<div class="relative h-[45vh] md:h-[55vh] overflow-hidden bg-black">
+<div class="relative h-[45vh] md:h-[55vh] overflow-hidden bg-[#0B1E57]">
     @foreach($heroVids as $vi)
     <video autoplay muted loop playsinline loading="lazy" preload="metadata" class="hero-video-layer" onerror="this.style.display='none'">
         <source src="{{ $vi }}" type="video/mp4">
@@ -86,7 +86,7 @@
     </div>
 </div>
 @elseif($fourDVideo)
-<div class="relative h-[45vh] md:h-[55vh] overflow-hidden bg-black">
+<div class="relative h-[45vh] md:h-[55vh] overflow-hidden bg-[#0B1E57]">
     <video autoplay muted loop playsinline loading="lazy" preload="metadata" class="absolute inset-0 w-full h-full object-cover">
         <source src="{{ $fourDVideo }}" type="video/mp4">
     </video>

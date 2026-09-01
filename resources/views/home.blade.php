@@ -101,20 +101,23 @@
             @forelse($featured->take(8) as $i => $product)
             <a href="{{ route('marketplace.show', $product->slug) }}" class="group bg-gray-50 rounded-2xl overflow-hidden border border-gray-100 hover:border-[#FFCD05]/30 transition-all text-left block card-hover" data-tilt="7" data-reveal data-reveal-delay="{{ ($i % 4) * 70 }}">
                 <div class="aspect-square overflow-hidden bg-white relative">
-                    @php $hpVideo = $product->videos[0] ?? $product->video_url; @endphp
+                    @php
+                        $hpVideo = is_array($product->videos) ? ($product->videos[0] ?? null) : $product->video_url;
+                        $hpImg = $product->images->first()->url ?? $product->image_url ?? null;
+                        $hpFallback = media('kicc/kicc-logo.png');
+                    @endphp
                     @if($hpVideo)
                     <video autoplay muted loop playsinline loading="lazy" preload="metadata" class="absolute inset-0 w-full h-full object-cover group-hover:scale-105 transition-transform duration-500"
-                           onerror="this.style.display='none'" preload="auto">
+                           onerror="this.style.display='none'">
                         <source src="{{ $hpVideo }}" type="video/mp4">
                     </video>
                     @endif
-                    @if(($product->images->first()->url ?? null) && !$hpVideo)
-                    <x-fast-image :src="$product->images->first()->url" :alt="$product->name" :width="640" :quality="75" class="w-full h-full" />
-                    @elseif(!$hpVideo)
-                    <img src="{{ $product->image_url }}" alt="{{ $product->name }}"
-                         class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500"
-                         loading="lazy" decoding="async"
-                         onerror="this.src='{{ media('kicc/kicc-logo.png') }}'">
+                    @if($hpImg && !$hpVideo)
+                    <x-fast-image :src="$hpImg" :alt="$product->name" :width="640" :quality="75" class="w-full h-full" />
+                    @elseif(!$hpVideo && !$hpImg)
+                    <div class="w-full h-full flex items-center justify-center bg-gray-100 text-gray-300 text-2xl font-bold">
+                        {{ strtoupper(substr($product->name, 0, 2)) }}
+                    </div>
                     @endif
                 </div>
                 <div class="p-4">
