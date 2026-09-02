@@ -33,9 +33,14 @@ class DisplayPriorityService
      */
     public function displayCountyIds(): array
     {
-        return County::whereHas('products', function ($q) {
-            $q->active();
-        }, '>=', self::SYNCED_THRESHOLD)->pluck('id')->all();
+        return County::whereIn('id', function ($q) {
+            $q->select('county_id')
+              ->from('products')
+              ->where('status', 'active')
+              ->whereNull('deleted_at')
+              ->groupBy('county_id')
+              ->havingRaw('COUNT(*) >= ' . self::SYNCED_THRESHOLD);
+        })->pluck('id')->all();
     }
 
     /**
