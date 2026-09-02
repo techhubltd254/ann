@@ -534,23 +534,70 @@ class CountyController extends Controller
 
         // Institution fallback video algorithm: tree hierarchy
         // Tier 1: Institution's own hero video (already checked above — $heroVideo)
-        // Tier 2: Institution's own library videos (videos JSON)
-        // Tier 3: County-level sector videos (mother tile — sector_video_* slots)
-        // Tier 4: 4D videos from this institution's sector entities
+        // Tier 2: SECTOR VIDEOS — the seamless loop of this institution's sector
+        //   (entity 4D videos + institution hero videos + sector_video_* assets)
+        // Tier 3: Institution's marketplace product videos
+        // Tier 4: Institution's own library videos (videos JSON)
         // Tier 5: County hero video
         // Tier 6: Hero videos from other institutions in the same county+sector
         $institutionFallbackVideos = [];
         if (!$heroVideo) {
             $fallback = [];
 
-            // Tier 2: Institution's own library videos
-            $libVids = $institution->videos ?? [];
-            foreach ($libVids as $v) {
-                $url = $v['path'] ?? $v['url'] ?? null;
-                if ($url) $fallback[] = $url;
+            // Tier 2: Sector videos — collect all videos from this institution's sector
+            if ($institution->county_id) {
+                $sectorSlugs = $institution->sectorEntities()
+                    ->with('sector')
+                    ->get()
+                    ->pluck('sector.slug')
+                    ->map(fn ($slug) => explode('-', $slug)[0])
+                    ->unique();
+
+                // 2a: 4D videos from this institution's sector entities
+                $sectorEntityIds = $institution->sectorEntities()->pluck('sector_entities.id');
+                if ($sectorEntityIds->isNotEmpty()) {
+                    $fourDAssets = MediaAsset::where('owner_type', SectorEntity::class)
+                        ->whereIn('owner_id', $sectorEntityIds)
+                        ->where('slot', '4d_video')
+                        ->get();
+                    foreach ($fourDAssets as $a) {
+                        if ($url = $a->mp4Url() ?? $a->url()) $fallback[] = $url;
+                    }
+                }
+
+                // 2b: Hero videos of other institutions in the same sector
+                $sectorIds = $institution->sectorEntities()->pluck('sector_id');
+                if ($sectorIds->isNotEmpty()) {
+                    $peerInstIds = SectorEntity::where('county_id', $institution->county_id)
+                        ->whereIn('sector_id', $sectorIds)
+                        ->whereIn('entity_type', [CountyInstitution::class, InstitutionSyncService::ENTITY_TYPE])
+                        ->where('entity_id', '!=', $institution->id)
+                        ->pluck('entity_id')
+                        ->unique();
+                    if ($peerInstIds->isNotEmpty()) {
+                        $peerAssets = MediaAsset::where('owner_type', CountyInstitution::class)
+                            ->whereIn('owner_id', $peerInstIds)
+                            ->where('slot', 'hero_video')
+                            ->get();
+                        foreach ($peerAssets as $a) {
+                            if ($url = $a->mp4Url() ?? $a->url()) $fallback[] = $url;
+                        }
+                    }
+                }
+
+                // 2c: County-level sector_video assets (mother tile)
+                foreach ($sectorSlugs as $slug) {
+                    $asset = MediaAsset::where('owner_type', County::class)
+                        ->where('owner_id', $institution->county_id)
+                        ->where('slot', 'sector_video_' . $slug)
+                        ->first();
+                    if ($asset && ($url = $asset->mp4Url() ?? $asset->url())) {
+                        $fallback[] = $url;
+                    }
+                }
             }
 
-            // Tier 2.5: Institution's marketplace product videos
+            // Tier 3: Institution's marketplace product videos
             if ($institution->user_id) {
                 $productVids = \App\Models\Marketplace\Product::where('user_id', $institution->user_id)
                     ->active()
@@ -568,43 +615,11 @@ class CountyController extends Controller
                 }
             }
 
-            // Tier 3: County-level sector videos (mother tile)
-            if ($institution->county_id) {
-                $sectorSlugs = $institution->sectorEntities()
-                    ->with('sector')
-                    ->get()
-                    ->pluck('sector.slug')
-                    ->map(fn ($slug) => explode('-', $slug)[0])
-                    ->unique();
-                foreach ($sectorSlugs as $slug) {
-                    $asset = MediaAsset::where('owner_type', County::class)
-                        ->where('owner_id', $institution->county_id)
-                        ->where('slot', 'sector_video_' . $slug)
-                        ->first();
-                    if ($asset && ($url = $asset->mp4Url() ?? $asset->url())) {
-                        $fallback[] = $url;
-                    }
-                }
-                // Also grab any other sector videos from this county
-                $allSectorVids = MediaAsset::where('owner_type', County::class)
-                    ->where('owner_id', $institution->county_id)
-                    ->where('slot', 'like', 'sector_video_%')
-                    ->get();
-                foreach ($allSectorVids as $a) {
-                    if ($url = $a->mp4Url() ?? $a->url()) $fallback[] = $url;
-                }
-            }
-
-            // Tier 4: 4D videos from this institution's sector entities
-            $sectorEntityIds = $institution->sectorEntities()->pluck('sector_entities.id');
-            if ($sectorEntityIds->isNotEmpty()) {
-                $fourDAssets = MediaAsset::where('owner_type', SectorEntity::class)
-                    ->whereIn('owner_id', $sectorEntityIds)
-                    ->where('slot', '4d_video')
-                    ->get();
-                foreach ($fourDAssets as $a) {
-                    if ($url = $a->mp4Url() ?? $a->url()) $fallback[] = $url;
-                }
+            // Tier 4: Institution's own library videos (videos JSON)
+            $libVids = $institution->videos ?? [];
+            foreach ($libVids as $v) {
+                $url = $v['path'] ?? $v['url'] ?? null;
+                if ($url) $fallback[] = $url;
             }
 
             // Tier 5: County hero video
@@ -612,26 +627,6 @@ class CountyController extends Controller
                 $countyHero = MediaAsset::resolveSlot(County::class, $institution->county_id, 'hero_video');
                 if ($countyHero && ($url = $countyHero->mp4Url() ?? $countyHero->url())) {
                     $fallback[] = $url;
-                }
-            }
-
-            // Tier 6: Hero videos from other institutions in the same county+sector
-            $sectorIds = $institution->sectorEntities()->pluck('sector_id');
-            if ($sectorIds->isNotEmpty() && $institution->county_id) {
-                $peerInstIds = SectorEntity::where('county_id', $institution->county_id)
-                    ->whereIn('sector_id', $sectorIds)
-                    ->whereIn('entity_type', [CountyInstitution::class, InstitutionSyncService::ENTITY_TYPE])
-                    ->where('entity_id', '!=', $institution->id)
-                    ->pluck('entity_id')
-                    ->unique();
-                if ($peerInstIds->isNotEmpty()) {
-                    $peerAssets = MediaAsset::where('owner_type', CountyInstitution::class)
-                        ->whereIn('owner_id', $peerInstIds)
-                        ->where('slot', 'hero_video')
-                        ->get();
-                    foreach ($peerAssets as $a) {
-                        if ($url = $a->mp4Url() ?? $a->url()) $fallback[] = $url;
-                    }
                 }
             }
 
