@@ -19,16 +19,23 @@ use Illuminate\Support\Facades\DB;
  *      product displace a strong review score.
  *   3. completeness + freshness — tiny tiebreakers when scores are near-equal.
  *
- * Only counties with real synced data are eligible (Mombasa + Muranga for now).
+ * Only counties with REAL synced data are eligible (auto-detected: >10 products).
+ * Seed data (3-7 products per county) is excluded. No hardcoded county list.
  */
 class DisplayPriorityService
 {
-    /** Counties currently eligible for display (real synced data only). */
-    public const DISPLAY_COUNTY_SLUGS = ['mombasa', 'muranga'];
+    /** Minimum active products for a county to qualify as having real synced data. */
+    public const SYNCED_THRESHOLD = 10;
 
+    /**
+     * Counties with real synced data — auto-detected by product count.
+     * Seed data never exceeds 7 products per county; real data has 100+.
+     */
     public function displayCountyIds(): array
     {
-        return County::whereIn('slug', self::DISPLAY_COUNTY_SLUGS)->pluck('id')->all();
+        return County::whereHas('products', function ($q) {
+            $q->active();
+        }, '>=', self::SYNCED_THRESHOLD)->pluck('id')->all();
     }
 
     /**

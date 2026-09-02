@@ -66,23 +66,33 @@ class ScreenController extends Controller
         }
         // sector pavilion → that sector's OWN verified video (1:1, no repetition)
         if (!empty($screen->sector_id)) {
-            $map = [
-                // real 4K drone footage (verified frame-accurate)
-                'tourism' => 'muranga-tourism',       // waterfall
-                'agriculture' => 'muranga-farms',      // farmland aerial
-                'fisheries' => 'muranga-farms',        // farmland (river-adjacent)
-                'health' => 'muranga-health',          // wellness/water nature
-                'education' => 'muranga-institutions', // county institutions
-                'culture' => 'muranga-culture',        // forest heritage
-                'creative' => 'muranga-culture',       // heritage/creative
-                'manufacturing' => 'muranga-products', // market/produce
-                'energy' => 'muranga-transport',       // infrastructure
-                'environment' => 'muranga-tourism',    // natural landscape
-            ];
-            $key = $map[$screen->sector_id] ?? 'muranga-tourism';
+            $countySlug = $screen->county?->slug ?? 'default';
+            $key = $this->sectorMediaKey($screen->sector_id, $countySlug);
             return $base . $key . '/cinematic.mp4';
         }
         return null;
+    }
+
+    /**
+     * Map sector slug to a media key, prefixed with the county slug.
+     * No hardcoded county names — keys are dynamic per county.
+     */
+    private function sectorMediaKey(string $sectorSlug, string $countySlug): string
+    {
+        $sectorMap = [
+            'tourism' => 'tourism',
+            'agriculture' => 'farms',
+            'fisheries' => 'farms',
+            'health' => 'health',
+            'education' => 'institutions',
+            'culture' => 'culture',
+            'creative' => 'culture',
+            'manufacturing' => 'products',
+            'energy' => 'transport',
+            'environment' => 'tourism',
+        ];
+        $sectorKey = $sectorMap[$sectorSlug] ?? 'tourism';
+        return "{$countySlug}-{$sectorKey}";
     }
 
     /**

@@ -19,7 +19,7 @@ class HomeController extends Controller
 
         $ids = Cache::remember($cacheKey, 60, function () {
             // Display-priority products: sector representation + review score,
-            // restricted to real-data counties (Mombasa + Muranga).
+            // restricted to real-data counties (auto-detected by product count, not hardcoded).
             $priority = app(\App\Services\DisplayPriorityService::class);
             $productIds = $priority->marketplaceProductIds();
             $productIds = array_slice($productIds, 0, 8);

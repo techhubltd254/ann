@@ -28,7 +28,7 @@ class MarketplaceController extends Controller
         $cacheKey = "marketplace_data_{$cat}_{$countySlug}_{$search}_" . cache_buster();
 
         $data = \Illuminate\Support\Facades\Cache::remember($cacheKey, 60, function () use ($cat, $countySlug, $search, $priority) {
-            // Display only real-data counties (Mombasa + Muranga)
+            // Display only real-data counties (auto-detected by product count >10, not hardcoded)
             $countyIds = $priority->displayCountyIds();
 
             // Filtered query (county/category/search still respected)
@@ -57,7 +57,7 @@ class MarketplaceController extends Controller
                 'ids' => $ids,
                 'categories' => ProductCategory::active()->withCount(['products' => fn ($q) => $q->active()->whereIn('county_id', $countyIds)])
                     ->get(['id', 'name', 'slug', 'products_count'])->toArray(),
-                // Only real-data counties appear in the filter
+                // Only real-data counties appear in the filter (auto-detected, not hardcoded)
                 'counties' => County::whereIn('id', $countyIds)->orderBy('name')->get(['id', 'name', 'slug'])->toArray(),
             ];
         });

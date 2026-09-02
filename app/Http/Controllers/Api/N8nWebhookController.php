@@ -116,8 +116,8 @@ class N8nWebhookController extends Controller {
     }
 
     private function trigger4dPipeline(array $data): string {
-        $countySlug = $data['county_slug'] ?? 'muranga';
-        $sectorSlug = $data['sector_slug'] ?? 'tourism';
+        $countySlug = $data['county_slug'] ?? '';
+        $sectorSlug = $data['sector_slug'] ?? '';
         Log::info("n8n triggering 4D pipeline for {$countySlug}/{$sectorSlug}");
         // The actual pipeline trigger would involve SSH/API to Vast.ai
         // For now, fire the event and let n8n orchestrate
