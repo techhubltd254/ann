@@ -529,7 +529,7 @@ class CountyController extends Controller
         $heroAsset = MediaAsset::resolveSlot(CountyInstitution::class, $institution->id, 'hero_video');
         $heroVideo = $heroAsset?->mp4Url() ?? $heroAsset?->url();
         $heroHls = $heroAsset?->derivativeUrl('hls_master');
-        $heroPoster = $heroAsset?->posterUrl() ?? $institution->logo_url;
+        $heroPoster = $heroAsset?->posterUrl();
         $heroSplat = $heroAsset?->splatUrl();
 
         // Institution fallback video algorithm: tree hierarchy
