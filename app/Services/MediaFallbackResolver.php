@@ -33,13 +33,15 @@ class MediaFallbackResolver
     public function resolve($entity, string $size = 'card'): string
     {
         $key = $this->cacheKey($entity, $size);
-        return Cache::remember($key, self::CACHE_TTL, function () use ($entity, $size) {
+        $url = Cache::remember($key, self::CACHE_TTL, function () use ($entity, $size) {
             $url = $this->resolveTree($entity, $size, 0);
             if ($url && !str_contains($url, 'localhost') && !str_contains($url, 'products.jpeg')) {
                 return $url;
             }
-            return $this->defaultUrl($entity);
+            return null;
         });
+        if ($url) return $url;
+        return $this->defaultUrl($entity);
     }
 
     public function resolveTree($entity, string $size = 'card', int $depth = 0): ?string
@@ -76,48 +78,52 @@ class MediaFallbackResolver
     {
         if ($entity instanceof Product) {
             $img = $entity->images()->first()?->url;
-            if ($img) return $img;
-            if ($entity->image_url) return $entity->image_url;
+            if ($img && !str_contains($img, 'products.jpeg') && !str_contains($img, 'localhost') && !str_contains($img, 'svg')) return $img;
+            // Skip the image_url accessor if it returns a placeholder (data URI)
+            if ($entity->images()->count() === 0) {
+                $variantImg = $entity->variants->first()?->image_url;
+                if ($variantImg && !str_contains($variantImg, 'svg')) return $variantImg;
+            }
         }
         if ($entity instanceof CountyInstitution) {
-            if ($entity->logo_url) return $entity->logo_url;
-            if ($entity->cover_image_url) return $entity->cover_image_url;
+            if ($entity->logo_url && !str_contains($entity->logo_url, 'svg')) return $entity->logo_url;
+            if ($entity->cover_image_url && !str_contains($entity->cover_image_url, 'svg')) return $entity->cover_image_url;
         }
         if ($entity instanceof CountyTourismAttraction) {
-            if ($entity->image_url) return $entity->image_url;
+            if ($entity->image_url && !str_contains($entity->image_url, 'svg')) return $entity->image_url;
         }
         if ($entity instanceof CountyHotel) {
-            if ($entity->image_url) return $entity->image_url;
+            if ($entity->image_url && !str_contains($entity->image_url, 'svg')) return $entity->image_url;
         }
         if ($entity instanceof CountyFarm) {
-            if ($entity->image_url) return $entity->image_url;
+            if ($entity->image_url && !str_contains($entity->image_url, 'svg')) return $entity->image_url;
         }
         if ($entity instanceof CountyTransport) {
-            if ($entity->image_url) return $entity->image_url;
+            if ($entity->image_url && !str_contains($entity->image_url, 'svg')) return $entity->image_url;
         }
         if ($entity instanceof CountyHealthFacility) {
-            if ($entity->image_url) return $entity->image_url;
+            if ($entity->image_url && !str_contains($entity->image_url, 'svg')) return $entity->image_url;
         }
         if ($entity instanceof CountyCultureSite) {
-            if ($entity->image_url) return $entity->image_url;
+            if ($entity->image_url && !str_contains($entity->image_url, 'svg')) return $entity->image_url;
         }
         if ($entity instanceof CountyProduct) {
-            if ($entity->image_url) return $entity->image_url;
+            if ($entity->image_url && !str_contains($entity->image_url, 'svg')) return $entity->image_url;
         }
         if ($entity instanceof Exhibition) {
-            if ($entity->cover_image) return $entity->cover_image;
+            if ($entity->cover_image && !str_contains($entity->cover_image, 'svg')) return $entity->cover_image;
         }
         if ($entity instanceof Venue) {
-            if ($entity->cover_image) return $entity->cover_image;
+            if ($entity->cover_image && !str_contains($entity->cover_image, 'svg')) return $entity->cover_image;
         }
         if ($entity instanceof Ministry) {
-            if ($entity->logo) return $entity->logo;
+            if ($entity->logo && !str_contains($entity->logo, 'svg')) return $entity->logo;
         }
         if ($entity instanceof Agency) {
-            if ($entity->logo) return $entity->logo;
+            if ($entity->logo && !str_contains($entity->logo, 'svg')) return $entity->logo;
         }
         if ($entity instanceof SectorEntity) {
-            if ($entity->image_url) return $entity->image_url;
+            if ($entity->image_url && !str_contains($entity->image_url, 'svg')) return $entity->image_url;
         }
         return null;
     }

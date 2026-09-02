@@ -172,6 +172,11 @@
                             ->first();
                         $sectorTilePoster = $sectorAsset?->posterUrl() ?? $sectorAsset?->thumbnailUrl();
                     }
+                    if (!$sectorTilePoster && $firstVideo) {
+                        try {
+                            $sectorTilePoster = app(\App\Services\MediaFallbackResolver::class)->extractFrame($firstVideo);
+                        } catch (\Throwable $e) {}
+                    }
                 @endphp
                 <a href="{{ route('counties.sector', [$county->slug, $s['route']]) }}"
                    class="group bg-white border border-gray-200 hover:border-kicc-gold/40 rounded-2xl overflow-hidden transition-all block card-hover"
