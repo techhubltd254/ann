@@ -185,13 +185,13 @@ class EscrowService
     {
         $escrow = $dispute->escrowTransaction;
         // Auto-resolve disputes under KES 1,000 in buyer's favor
-        if ($escrow->amount < 1000) {
+        if ($escrow->amount < (int) config('kicc.escrow.auto_resolve_threshold', 1000)) {
             $this->resolveDispute($dispute, 'Auto-resolved: low-value dispute refunded to buyer', 1, 'buyer');
             return true;
         }
         // Auto-resolve if seller has high trust score (A or B)
         $seller = User::find($escrow->seller_id);
-        if ($seller && in_array($seller->trust_grade ?? 'C', ['A', 'B'])) {
+        if ($seller && in_array($seller->trust_grade ?? 'C', config('kicc.escrow.trust_grades_auto', ['A', 'B']))) {
             $this->resolveDispute($dispute, 'Auto-resolved: seller has high trust rating', 1, 'seller');
             return true;
         }

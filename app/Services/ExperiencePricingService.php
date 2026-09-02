@@ -11,16 +11,6 @@ use Illuminate\Support\Facades\DB;
 
 class ExperiencePricingService
 {
-    const PEAK_SEASONS = [
-        ['start' => '07-01', 'end' => '08-31'],
-        ['start' => '12-15', 'end' => '01-15'],
-    ];
-
-    const OFF_PEAK_SEASONS = [
-        ['start' => '03-01', 'end' => '05-31'],
-        ['start' => '10-01', 'end' => '11-30'],
-    ];
-
     public function calculate(ExperienceBooking $booking): array
     {
         $breakdown = [];
@@ -139,8 +129,11 @@ class ExperiencePricingService
 
     protected function computeRatingMultiplier(float $avgRating): float
     {
-        if ($avgRating <= 0) return 0.9;
-        return 0.6 + ($avgRating / 5) * 0.6;
+        $min = (float) config('kicc.experience_pricing.rating_formula_min', 0.6);
+        $range = (float) config('kicc.experience_pricing.rating_formula_range', 0.6);
+        $floor = (float) config('kicc.experience_pricing.rating_floor', 0.9);
+        if ($avgRating <= 0) return $floor;
+        return $min + ($avgRating / 5) * $range;
     }
 
     protected function seasonMultiplier($date): float
@@ -150,19 +143,17 @@ class ExperiencePricingService
 
     protected function computeSeasonMultiplier(\Carbon\Carbon $date): float
     {
-        $month = (int) $date->format('m');
-        $day = (int) $date->format('d');
+        $peakMult = (float) config('kicc.experience_pricing.peak_multiplier', 1.15);
+        $offPeakMult = (float) config('kicc.experience_pricing.off_peak_multiplier', 0.90);
         $dayOfYear = $date->dayOfYear;
 
-        // Peak: Jul 1–Aug 31 (day 182–243), Dec 15–Jan 15 (day 349–15)
-        if (($dayOfYear >= 182 && $dayOfYear <= 243) ||
-            ($dayOfYear >= 349 || $dayOfYear <= 15)) {
-            return 1.15;
+        if (($dayOfYear >= config('kicc.experience_pricing.peak_season_start_jul', 182) && $dayOfYear <= config('kicc.experience_pricing.peak_season_end_aug', 243)) ||
+            ($dayOfYear >= config('kicc.experience_pricing.peak_season_start_dec', 349) || $dayOfYear <= config('kicc.experience_pricing.peak_season_end_jan', 15))) {
+            return $peakMult;
         }
-        // Off-peak: Mar 1–May 31 (day 60–151), Oct 1–Nov 30 (day 274–334)
-        if (($dayOfYear >= 60 && $dayOfYear <= 151) ||
-            ($dayOfYear >= 274 && $dayOfYear <= 334)) {
-            return 0.9;
+        if (($dayOfYear >= config('kicc.experience_pricing.off_peak_start_mar', 60) && $dayOfYear <= config('kicc.experience_pricing.off_peak_end_may', 151)) ||
+            ($dayOfYear >= config('kicc.experience_pricing.off_peak_start_oct', 274) && $dayOfYear <= config('kicc.experience_pricing.off_peak_end_nov', 334))) {
+            return $offPeakMult;
         }
         return 1.0;
     }
@@ -187,12 +178,22 @@ class ExperiencePricingService
     protected function computeDistanceMultiplier(float $km): float
     {
         if ($km <= 0) return 1.0;
-        if ($km < 10) return 1.0;
-        if ($km < 50) return 1.1;
-        if ($km < 100) return 1.2;
-        if ($km < 300) return 1.3;
-        if ($km < 500) return 1.5;
-        return min(2.0, 1.5 + ($km / 1000));
+        $tiers = [
+            config('kicc.experience_pricing.distance_tier1_km', 10) => config('kicc.experience_pricing.distance_tier1_mult', 1.0),
+            config('kicc.experience_pricing.distance_tier2_km', 50) => config('kicc.experience_pricing.distance_tier2_mult', 1.1),
+            config('kicc.experience_pricing.distance_tier3_km', 100) => config('kicc.experience_pricing.distance_tier3_mult', 1.2),
+            config('kicc.experience_pricing.distance_tier4_km', 300) => config('kicc.experience_pricing.distance_tier4_mult', 1.3),
+            config('kicc.experience_pricing.distance_tier5_km', 500) => config('kicc.experience_pricing.distance_tier5_mult', 1.5),
+        ];
+        $maxMult = (float) config('kicc.experience_pricing.distance_max_mult', 2.0);
+        $prevKm = 0;
+        $prevMult = 1.0;
+        foreach ($tiers as $tierKm => $tierMult) {
+            if ($km <= $tierKm) return $prevMult + (($km - $prevKm) / ($tierKm - $prevKm)) * ($tierMult - $prevMult);
+            $prevKm = $tierKm;
+            $prevMult = $tierMult;
+        }
+        return min($maxMult, $prevMult + ($km - $prevKm) / 1000);
     }
 
     protected function haversine(float $lat1, float $lng1, float $lat2, float $lng2): float

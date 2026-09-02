@@ -45,7 +45,7 @@ class DisputeController extends Controller
         }
 
         $amount = (float) $escrow->amount;
-        $tier = $amount < self::AUTO_THRESHOLD ? 'auto' : 'human';
+        $tier = $amount < (int) config('kicc.escrow.auto_review_threshold', 5000) ? 'auto' : 'human';
 
         $status = 'open';
         $resolution = null;

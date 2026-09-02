@@ -14,72 +14,62 @@ class CorrelationService
     const PLACES_TO_STAY = 'places_to_stay';
     const TRANSPORT = 'transport';
 
-    const EXPERIENCE_TYPES = [
-        'culture' => ['label' => 'Culture & Heritage', 'emoji' => '🏛'],
-        'food' => ['label' => 'Food & Dining', 'emoji' => '🍽'],
-        'nature' => ['label' => 'Nature & Outdoors', 'emoji' => '🌿'],
-        'hotel' => ['label' => 'Places to Stay', 'emoji' => '🏨'],
-        'shopping' => ['label' => 'Shopping & Markets', 'emoji' => '🛍'],
-        'entertainment' => ['label' => 'Entertainment', 'emoji' => '🎬'],
-        'transport' => ['label' => 'Transport', 'emoji' => '🚗'],
-        'education' => ['label' => 'Education', 'emoji' => '📚'],
-        'industry' => ['label' => 'Industry & Trade', 'emoji' => '🏭'],
-        'wellness' => ['label' => 'Wellness & Spa', 'emoji' => '💆'],
-    ];
+    public function experienceTypes(): array
+    {
+        return config('kicc.experience_types', [
+            'culture' => ['label' => 'Culture & Heritage', 'emoji' => '🏛'],
+            'food' => ['label' => 'Food & Dining', 'emoji' => '🍽'],
+            'nature' => ['label' => 'Nature & Outdoors', 'emoji' => '🌿'],
+            'hotel' => ['label' => 'Places to Stay', 'emoji' => '🏨'],
+            'shopping' => ['label' => 'Shopping & Markets', 'emoji' => '🛍'],
+            'entertainment' => ['label' => 'Entertainment', 'emoji' => '🎬'],
+            'transport' => ['label' => 'Transport', 'emoji' => '🚗'],
+            'education' => ['label' => 'Education', 'emoji' => '📚'],
+            'industry' => ['label' => 'Industry & Trade', 'emoji' => '🏭'],
+            'wellness' => ['label' => 'Wellness & Spa', 'emoji' => '💆'],
+        ]);
+    }
 
-    const TYPE_AFFINITY = [
-        'culture' => ['food', 'nature', 'shopping', 'entertainment', 'hotel', 'transport'],
-        'food' => ['culture', 'nature', 'entertainment', 'hotel', 'transport'],
-        'nature' => ['food', 'culture', 'entertainment', 'hotel', 'transport'],
-        'hotel' => ['food', 'entertainment', 'nature', 'culture', 'transport', 'shopping'],
-        'shopping' => ['food', 'culture', 'entertainment', 'hotel', 'transport'],
-        'entertainment' => ['food', 'nature', 'culture', 'hotel', 'transport'],
-        'transport' => ['hotel', 'food', 'culture', 'nature', 'entertainment'],
-        'education' => ['nature', 'culture', 'food', 'hotel', 'transport'],
-        'industry' => ['food', 'hotel', 'transport', 'culture'],
-        'wellness' => ['nature', 'hotel', 'food', 'culture', 'transport'],
-    ];
+    public function typeAffinity(): array
+    {
+        return config('kicc.type_affinity', [
+            'culture' => ['food', 'nature', 'shopping', 'entertainment', 'hotel', 'transport'],
+            'food' => ['culture', 'nature', 'entertainment', 'hotel', 'transport'],
+            'nature' => ['food', 'culture', 'entertainment', 'hotel', 'transport'],
+            'hotel' => ['food', 'entertainment', 'nature', 'culture', 'transport', 'shopping'],
+            'shopping' => ['food', 'culture', 'entertainment', 'hotel', 'transport'],
+            'entertainment' => ['food', 'nature', 'culture', 'hotel', 'transport'],
+            'transport' => ['hotel', 'food', 'culture', 'nature', 'entertainment'],
+            'education' => ['nature', 'culture', 'food', 'hotel', 'transport'],
+            'industry' => ['food', 'hotel', 'transport', 'culture'],
+            'wellness' => ['nature', 'hotel', 'food', 'culture', 'transport'],
+        ]);
+    }
 
-    const INSTITUTION_TYPE_MAP = [
-        'National Monument' => 'culture',
-        'Heritage Site' => 'culture',
-        'Museum' => 'culture',
-        'Historic Site' => 'culture',
-        'Marina' => 'entertainment',
-        'Beach Resort' => 'hotel',
-        'Hotel' => 'hotel',
-        'Restaurant' => 'food',
-        'Nature Sanctuary' => 'nature',
-        'Nature Trail' => 'nature',
-        'Park' => 'nature',
-        'Workshop' => 'shopping',
-        'Cooperative' => 'shopping',
-        'Market' => 'shopping',
-        'Airport' => 'transport',
-        'Terminal' => 'transport',
-        'Port' => 'transport',
-        'Bypass' => 'transport',
-        'University' => 'education',
-        'Institute' => 'education',
-        'School' => 'education',
-        'College' => 'education',
-        'Hospital' => 'wellness',
-        'Golf Club' => 'entertainment',
-        'Convention Centre' => 'entertainment',
-        'Water Park' => 'entertainment',
-        'Chamber of Commerce' => 'industry',
-        'Manufacturers Association' => 'industry',
-        'Manufacturing' => 'industry',
-        'Cement' => 'industry',
-        'Oil' => 'industry',
-        'Special Economic Zone' => 'industry',
-        'Port Authority' => 'transport',
-        'Maritime' => 'transport',
-        'Shipyard' => 'industry',
-        'SGR Terminus' => 'transport',
-        'Inland Container Depot' => 'transport',
-        'Showground' => 'entertainment',
-    ];
+    public function institutionTypeMap(): array
+    {
+        return config('kicc.institution_type_map', [
+            'National Monument' => 'culture', 'Heritage Site' => 'culture',
+            'Museum' => 'culture', 'Historic Site' => 'culture',
+            'Marina' => 'entertainment', 'Beach Resort' => 'hotel',
+            'Hotel' => 'hotel', 'Restaurant' => 'food',
+            'Nature Sanctuary' => 'nature', 'Nature Trail' => 'nature',
+            'Park' => 'nature', 'Workshop' => 'shopping',
+            'Cooperative' => 'shopping', 'Market' => 'shopping',
+            'Airport' => 'transport', 'Terminal' => 'transport',
+            'Port' => 'transport', 'Bypass' => 'transport',
+            'University' => 'education', 'Institute' => 'education',
+            'School' => 'education', 'College' => 'education',
+            'Hospital' => 'wellness', 'Golf Club' => 'entertainment',
+            'Convention Centre' => 'entertainment', 'Water Park' => 'entertainment',
+            'Chamber of Commerce' => 'industry', 'Manufacturers Association' => 'industry',
+            'Manufacturing' => 'industry', 'Cement' => 'industry',
+            'Oil' => 'industry', 'Special Economic Zone' => 'industry',
+            'Port Authority' => 'transport', 'Maritime' => 'transport',
+            'Shipyard' => 'industry', 'SGR Terminus' => 'transport',
+            'Inland Container Depot' => 'transport', 'Showground' => 'entertainment',
+        ]);
+    }
 
     public function forInstitution(CountyInstitution $institution, int $limit = 6): array
     {
@@ -122,7 +112,7 @@ class CorrelationService
                 }
             } else {
                 $lastType = count($placesToVisit) > 0 ? $placesToVisit[array_key_last($placesToVisit)]['type'] : null;
-                $affinityTypes = self::TYPE_AFFINITY[$anchorType] ?? array_keys(self::EXPERIENCE_TYPES);
+                $affinityTypes = $this->typeAffinity()[$anchorType] ?? array_keys($this->experienceTypes());
                 if ($cat === $lastType) {
                     $item['score'] *= 0.85;
                 }
@@ -179,7 +169,7 @@ class CorrelationService
     {
         if (!$inst) return 'culture';
         $type = $inst->type ?? '';
-        foreach (self::INSTITUTION_TYPE_MAP as $pattern => $cat) {
+        foreach ($this->institutionTypeMap() as $pattern => $cat) {
             if (stripos($type, $pattern) !== false) {
                 return $cat;
             }
@@ -202,12 +192,18 @@ class CorrelationService
 
         $sectorScore = $this->sectorOverlapScore($anchor, $cand);
 
-        $totalScore = ($geoScore * 0.25) + ($diversityScore * 0.35) + ($reviewScore * 0.20) + ($completeness * 0.10) + ($sectorScore * 0.10);
+        $geoW = (float) config('kicc.correlation.geo_weight', 0.25);
+        $divW = (float) config('kicc.correlation.diversity_weight', 0.35);
+        $revW = (float) config('kicc.correlation.review_weight', 0.20);
+        $compW = (float) config('kicc.correlation.completeness_weight', 0.10);
+        $secW = (float) config('kicc.correlation.sector_weight', 0.10);
+
+        $totalScore = ($geoScore * $geoW) + ($diversityScore * $divW) + ($reviewScore * $revW) + ($completeness * $compW) + ($sectorScore * $secW);
 
         return [
             'type' => $candType,
-            'type_label' => self::EXPERIENCE_TYPES[$candType]['label'] ?? $candType,
-            'type_emoji' => self::EXPERIENCE_TYPES[$candType]['emoji'] ?? '📍',
+            'type_label' => $this->experienceTypes()[$candType]['label'] ?? $candType,
+            'type_emoji' => $this->experienceTypes()[$candType]['emoji'] ?? '📍',
             'id' => $cand->id,
             'name' => $cand->name,
             'slug' => $cand->slug,
@@ -244,7 +240,7 @@ class CorrelationService
     protected function diversityScore(string $anchorType, string $candType): float
     {
         if ($anchorType === $candType) return 0.1;
-        $affinity = self::TYPE_AFFINITY[$anchorType] ?? [];
+        $affinity = $this->typeAffinity()[$anchorType] ?? [];
         if (in_array($candType, $affinity, true)) {
             $pos = array_search($candType, $affinity, true);
             return 0.9 - ($pos * 0.06);

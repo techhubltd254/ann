@@ -24,22 +24,16 @@ use Illuminate\Support\Facades\DB;
  */
 class DisplayPriorityService
 {
-    /** Minimum active products for a county to qualify as having real synced data. */
-    public const SYNCED_THRESHOLD = 10;
-
-    /**
-     * Counties with real synced data — auto-detected by product count.
-     * Seed data never exceeds 7 products per county; real data has 100+.
-     */
     public function displayCountyIds(): array
     {
-        return County::whereIn('id', function ($q) {
+        $threshold = config('kicc.display_priority.synced_threshold', 10);
+        return County::whereIn('id', function ($q) use ($threshold) {
             $q->select('county_id')
               ->from('products')
               ->where('status', 'active')
               ->whereNull('deleted_at')
               ->groupBy('county_id')
-              ->havingRaw('COUNT(*) >= ' . self::SYNCED_THRESHOLD);
+              ->havingRaw('COUNT(*) >= ' . $threshold);
         })->pluck('id')->all();
     }
 
@@ -107,16 +101,19 @@ class DisplayPriorityService
 
         $now = now()->timestamp;
         $scored = [];
+        $secBoost = (float) config('kicc.display_priority.sector_boost', 0.08);
+        $compBoost = (float) config('kicc.display_priority.completeness_boost', 0.02);
+        $freshBoost = (float) config('kicc.display_priority.freshness_boost', 0.01);
+        $freshDays = (int) config('kicc.display_priority.freshness_days', 14);
+
         foreach ($ids as $id) {
             $review = $scores[$id] ?? 0.0;
-            $boost = isset($sectorBest[$meta[$id]->category_id ?? -1]) && $sectorBest[$meta[$id]->category_id ?? -1] === $id ? 0.08 : 0.0;
+            $boost = isset($sectorBest[$meta[$id]->category_id ?? -1]) && $sectorBest[$meta[$id]->category_id ?? -1] === $id ? $secBoost : 0.0;
 
-            // Completeness: products with media get a tiny edge over bare listings
-            $completeness = !empty($meta[$id]->has_media) ? 0.02 : 0.0;
+            $completeness = !empty($meta[$id]->has_media) ? $compBoost : 0.0;
 
-            // Freshness: near-zero recency weight (newer breaks ties only)
             $ageDays = max(0, ($now - strtotime($meta[$id]->created_at)) / 86400);
-            $freshness = $ageDays < 14 ? 0.01 : 0.0;
+            $freshness = $ageDays < $freshDays ? $freshBoost : 0.0;
 
             $scored[$id] = $review + $boost + $completeness + $freshness;
         }

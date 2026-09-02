@@ -32,28 +32,36 @@ class ScoreVendors extends Command
 
             // Trust components
             $verification = 0;
-            if ($v->email_verified_at) $verification += 10;
-            if ($v->phone_verified_at) $verification += 10;
-            if (! empty($v->kra_pin)) $verification += 15;
-            if (! empty($v->id_number)) $verification += 5;   // up to 40
+            if ($v->email_verified_at) $verification += (int) config('kicc.vendor_scoring.verification_email', 10);
+            if ($v->phone_verified_at) $verification += (int) config('kicc.vendor_scoring.verification_phone', 10);
+            if (! empty($v->kra_pin)) $verification += (int) config('kicc.vendor_scoring.verification_kra_pin', 15);
+            if (! empty($v->id_number)) $verification += (int) config('kicc.vendor_scoring.verification_id_number', 5);
 
             $orders = DB::table('orders')->where('user_id', $v->id);
             $totalOrders = (clone $orders)->count();
             $fulfilled = (clone $orders)->where('status', 'delivered')->count();
-            $fulfillmentScore = $totalOrders > 0 ? (int) round(30 * $fulfilled / $totalOrders) : 15; // neutral start
+            $fulfillmentMax = (int) config('kicc.vendor_scoring.fulfillment_max', 30);
+            $fulfillmentNeutral = (int) config('kicc.vendor_scoring.fulfillment_neutral', 15);
+            $fulfillmentScore = $totalOrders > 0 ? (int) round($fulfillmentMax * $fulfilled / $totalOrders) : $fulfillmentNeutral;
 
             $disputes = DB::table('dispute_cases')
                 ->join('escrow_transactions', 'dispute_cases.escrow_transaction_id', '=', 'escrow_transactions.id')
                 ->where('escrow_transactions.seller_id', $v->id)
                 ->count();
-            $disputePenalty = min(20, $disputes * 5);
+            $disputePenalty = min((int) config('kicc.vendor_scoring.dispute_penalty_max', 20), $disputes * (int) config('kicc.vendor_scoring.dispute_penalty_per', 5));
 
-            $breadth = min(10, $productCount);               // up to 10
+            $breadthCap = (int) config('kicc.vendor_scoring.breadth_cap', 10);
+            $breadth = min($breadthCap, $productCount);
             $ageDays = now()->diffInDays($v->created_at ?? now());
-            $ageScore = (int) min(10, floor($ageDays / 30)); // up to 10 (10 months)
+            $agePerMonth = (int) config('kicc.vendor_scoring.age_score_per_month', 1);
+            $ageMax = (int) config('kicc.vendor_scoring.age_score_max', 10);
+            $ageScore = (int) min($ageMax, floor($ageDays / 30 * $agePerMonth));
 
             $trust = max(0, min(100, $verification + $fulfillmentScore + $breadth + $ageScore - $disputePenalty));
-            $grade = $trust >= 80 ? 'A' : ($trust >= 60 ? 'B' : ($trust >= 40 ? 'C' : 'D'));
+            $gradeA = (int) config('kicc.vendor_scoring.grade_a', 80);
+            $gradeB = (int) config('kicc.vendor_scoring.grade_b', 60);
+            $gradeC = (int) config('kicc.vendor_scoring.grade_c', 40);
+            $grade = $trust >= $gradeA ? 'A' : ($trust >= $gradeB ? 'B' : ($trust >= $gradeC ? 'C' : 'D'));
 
             // Visibility (purchasable; from active subscription)
             $visibility = DB::table('user_subscriptions')

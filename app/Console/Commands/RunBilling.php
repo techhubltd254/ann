@@ -62,7 +62,8 @@ class RunBilling extends Command
 
             // invoice with 16% VAT
             $subtotal = (float) $plan->price;
-            $tax = round($subtotal * 0.16, 2);
+            $vatRate = (float) config('kicc.billing.vat_rate', 16) / 100;
+            $tax = round($subtotal * $vatRate, 2);
             $invoiceId = DB::table('invoices')->insertGetId([
                 'invoice_number' => 'INV-' . strtoupper(Str::random(8)),
                 'user_id' => $sub->user_id,
@@ -84,7 +85,7 @@ class RunBilling extends Command
                 'description' => ($plan->name ?? 'Subscription') . " — cycle {$cycleNumber} (" . now()->parse($periodStart)->toDateString() . ' → ' . now()->parse($periodEnd)->toDateString() . ')',
                 'quantity' => 1,
                 'unit_price' => $subtotal,
-                'tax_rate' => 16,
+                'tax_rate' => (float) config('kicc.billing.vat_rate', 16),
                 'tax_amount' => $tax,
                 'total' => $subtotal + $tax,
                 'reference_type' => 'subscription_plan',
