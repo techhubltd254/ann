@@ -534,12 +534,10 @@ class CountyController extends Controller
 
         // Institution fallback video algorithm: tree hierarchy
         // Tier 1: Institution's own hero video (already checked above — $heroVideo)
-        // Tier 2: SECTOR VIDEOS — the seamless loop of this institution's sector
-        //   (entity 4D videos + institution hero videos + sector_video_* assets)
+        // Tier 2: Sector videos (4D + peer heroes + sector_video assets)
         // Tier 3: Institution's marketplace product videos
         // Tier 4: Institution's own library videos (videos JSON)
         // Tier 5: County hero video
-        // Tier 6: Hero videos from other institutions in the same county+sector
         $institutionFallbackVideos = [];
         if (!$heroVideo) {
             $fallback = [];
