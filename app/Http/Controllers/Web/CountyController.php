@@ -415,17 +415,47 @@ class CountyController extends Controller
             }
         }
 
-        // Fallback: if this sector has no videos of its own, cycle the county's
-        // hero video (+ any other sector videos that exist) so no sector is ever empty.
+        // Tier 2: Add product videos from institutions in this sector
+        foreach ($items as $e) {
+            $isInst = in_array($e->entity_type, [\App\Models\CountyInstitution::class, \App\Services\InstitutionSyncService::ENTITY_TYPE]);
+            if (!$isInst) continue;
+            $inst = \App\Models\CountyInstitution::find($e->entity_id);
+            if (!$inst || !$inst->user_id) continue;
+            $productVids = \App\Models\Marketplace\Product::where('user_id', $inst->user_id)
+                ->active()
+                ->whereNotNull('video_url')
+                ->take(5)->get()
+                ->pluck('video_url')
+                ->filter();
+            foreach ($productVids as $pv) {
+                if (!in_array($pv, $seen)) {
+                    $sectorHeroVideos[] = $pv;
+                    $seen[] = $pv;
+                }
+            }
+        }
+
+        // Tier 3: This sector's own sector_video asset (mother tile — uploaded in admin)
+        if (count($sectorHeroVideos) === 0) {
+            $thisSectorAsset = MediaAsset::resolveSlot(County::class, $county->id, 'sector_video_' . $sector);
+            if ($thisSectorAsset && ($url = $thisSectorAsset->mp4Url() ?? $thisSectorAsset->url())) {
+                $sectorHeroVideos[] = $url;
+            }
+        }
+
+        // Tier 4: County hero video
         if (count($sectorHeroVideos) === 0) {
             $countyHeroAsset = MediaAsset::resolveSlot(County::class, $county->id, 'hero_video');
             if ($countyHeroAsset?->mp4Url() ?? $countyHeroAsset?->url()) {
                 $sectorHeroVideos[] = $countyHeroAsset->mp4Url() ?? $countyHeroAsset->url();
             }
+        }
+
+        // Tier 5: Other sector videos (only when absolutely nothing else exists)
+        if (count($sectorHeroVideos) === 0) {
             $otherSectorVideos = MediaAsset::where('owner_type', County::class)
                 ->where('owner_id', $county->id)
                 ->where('slot', 'like', 'sector_video_%')
-                ->where('slot', '!=', 'sector_video_' . $sector)
                 ->get();
             foreach ($otherSectorVideos as $sv) {
                 $url = $sv->mp4Url() ?? $sv->url();
