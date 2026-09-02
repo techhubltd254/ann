@@ -275,7 +275,7 @@ class McpController extends Controller
 
         $warm = $temp <= 14;
         $counties = $warm
-            ? County::whereIn('slug', ['mombasa', 'kwale', 'kilifi', 'lamu', 'malindi'])->get()
+            ? County::whereIn('slug', config('kicc.travel_recommendations.warm_counties', ['mombasa', 'kwale', 'kilifi', 'lamu', 'malindi', 'taita-taveta']))->get()
             : County::inRandomOrder()->limit(5)->get();
 
         return [

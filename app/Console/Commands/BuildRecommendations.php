@@ -75,9 +75,9 @@ class BuildRecommendations extends Command
 
     protected function buildSeasonal($now): void
     {
-        $warm = County::whereIn('slug', [
-            'mombasa', 'kwale', 'kilifi', 'lamu', 'taita-taveta',
-        ])->pluck('id');
+        $warm = County::whereIn('slug', config('kicc.travel_recommendations.warm_counties', [
+            'mombasa', 'kwale', 'kilifi', 'lamu', 'malindi', 'taita-taveta',
+        ]))->pluck('id');
 
         $products = Product::with('variants', 'images')->whereIn('county_id', $warm)
             ->where('status', 'active')

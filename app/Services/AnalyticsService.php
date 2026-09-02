@@ -43,7 +43,7 @@ class AnalyticsService
         // Use estimated revenue if no real revenue yet
         if ($revenueNow <= 0 && $estimatedMonthlyRevenue > 0) {
             $revenueNow = $estimatedMonthlyRevenue;
-            $revenuePrev = $estimatedMonthlyRevenue * 0.85;
+            $revenuePrev = $estimatedMonthlyRevenue * (float) config('kicc.analytics.revenue_previous_ratio', 0.85);
         }
 
         // Orders
@@ -245,8 +245,12 @@ class AnalyticsService
                 'national' => 150000,
                 default => 30000,
             };
-            $actual = $i < 12 ? round($base * (0.7 + ($i * 0.05)) / 1000) * 1000 : null;
-            $forecast = $i >= 10 ? round($base * (0.7 + ($i * 0.05)) * 1.1 / 1000) * 1000 : null;
+            $baseMin = (float) config('kicc.analytics.forecast_base_min', 0.7);
+            $growthStep = (float) config('kicc.analytics.forecast_growth_step', 0.05);
+            $forecastMult = (float) config('kicc.analytics.forecast_multiplier', 1.1);
+            $forecastRound = (int) config('kicc.analytics.forecast_round', 1000);
+            $actual = $i < 12 ? round($base * ($baseMin + ($i * $growthStep)) / $forecastRound) * $forecastRound : null;
+            $forecast = $i >= 10 ? round($base * ($baseMin + ($i * $growthStep)) * $forecastMult / $forecastRound) * $forecastRound : null;
             $data[] = [
                 'label' => $months[$i] ?? 'M' . ($i + 1),
                 'actual' => $actual,
@@ -269,7 +273,7 @@ class AnalyticsService
             };
             $data[] = [
                 'label' => $m,
-                'revenue' => round($base * (0.7 + ($i * 0.05))),
+                'revenue' => round($base * ((float) config('kicc.analytics.forecast_base_min', 0.7) + ($i * (float) config('kicc.analytics.forecast_growth_step', 0.05)))),
                 'orders' => round($productCount > 0 ? $productCount * (0.3 + ($i * 0.03)) : 5 + ($i * 0.8)),
             ];
         }

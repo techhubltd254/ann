@@ -32,6 +32,11 @@ return [
         'max_places_to_visit' => 4,
         'max_places_to_stay' => 3,
         'max_transport' => 4,
+        'completeness_description' => 0.35,
+        'completeness_story' => 0.20,
+        'completeness_media' => 0.20,
+        'completeness_coords' => 0.15,
+        'completeness_website' => 0.10,
     ],
 
     /*
@@ -376,5 +381,18 @@ return [
         'default_markets' => ['London', 'Berlin', 'Toronto', 'Moscow'],
         'cold_threshold_celsius' => 14,
         'warm_counties' => ['mombasa', 'kwale', 'kilifi', 'lamu', 'malindi', 'taita-taveta'],
+    ],
+
+    /*
+    |--------------------------------------------------------------------------
+    | Analytics
+    |--------------------------------------------------------------------------
+    */
+    'analytics' => [
+        'revenue_previous_ratio' => 0.85,
+        'forecast_base_min' => 0.7,
+        'forecast_growth_step' => 0.05,
+        'forecast_multiplier' => 1.1,
+        'forecast_round' => 1000,
     ],
 ];

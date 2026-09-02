@@ -113,12 +113,14 @@ class CorrelationService
             } else {
                 $lastType = count($placesToVisit) > 0 ? $placesToVisit[array_key_last($placesToVisit)]['type'] : null;
                 $affinityTypes = $this->typeAffinity()[$anchorType] ?? array_keys($this->experienceTypes());
+                $sameTypePenalty = (float) config('kicc.correlation.same_type_penalty', 0.85);
+                $affinityBoost = (float) config('kicc.correlation.affinity_boost', 1.1);
                 if ($cat === $lastType) {
-                    $item['score'] *= 0.85;
+                    $item['score'] *= $sameTypePenalty;
                 }
                 $preferred = in_array($cat, $affinityTypes);
                 if ($preferred) {
-                    $item['score'] *= 1.1;
+                    $item['score'] *= $affinityBoost;
                 }
                 $placesToVisit[] = $item;
                 if (count($placesToVisit) >= 4) break;
@@ -284,11 +286,16 @@ class CorrelationService
     protected function completenessScore(CountyInstitution $inst): float
     {
         $score = 0.0;
-        if ($inst->description) $score += 0.35;
-        if ($inst->story) $score += 0.20;
-        if ($inst->cover_image_url || $inst->logo_url) $score += 0.20;
-        if ($inst->lat && $inst->lng) $score += 0.15;
-        if ($inst->website) $score += 0.10;
+        $wDesc = (float) config('kicc.correlation.completeness_description', 0.35);
+        $wStory = (float) config('kicc.correlation.completeness_story', 0.20);
+        $wMedia = (float) config('kicc.correlation.completeness_media', 0.20);
+        $wCoords = (float) config('kicc.correlation.completeness_coords', 0.15);
+        $wWeb = (float) config('kicc.correlation.completeness_website', 0.10);
+        if ($inst->description) $score += $wDesc;
+        if ($inst->story) $score += $wStory;
+        if ($inst->cover_image_url || $inst->logo_url) $score += $wMedia;
+        if ($inst->lat && $inst->lng) $score += $wCoords;
+        if ($inst->website) $score += $wWeb;
         return $score;
     }
 
