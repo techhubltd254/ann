@@ -632,6 +632,13 @@ class CountyController extends Controller
             $institutionFallbackVideos = array_values(array_unique(array_filter($fallback)));
         }
 
+        // If no hero poster exists, extract a frame from the first fallback video
+        if (!$heroPoster && !empty($institutionFallbackVideos)) {
+            try {
+                $heroPoster = app(\App\Services\MediaFallbackResolver::class)->extractFrame($institutionFallbackVideos[0]);
+            } catch (\Throwable $e) {}
+        }
+
         // Marketplace products owned by this institution
         $products = collect();
         if ($institution->user_id) {
