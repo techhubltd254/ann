@@ -58,13 +58,13 @@ class Product extends Model
     public function getImageUrlAttribute(): string
     {
         $img = $this->images->first()?->url;
-        if ($img && !str_contains($img, 'products.jpeg') && !str_contains($img, 'localhost')) return $img;
+        if ($img && !str_contains($img, 'products.jpeg') && !str_contains($img, 'localhost') && !str_contains($img, 'svg')) return $img;
         $variantImg = $this->variants->first()?->image_url;
-        if ($variantImg) return $variantImg;
+        if ($variantImg && !str_contains($variantImg, 'svg')) return $variantImg;
         try {
-            return \App\Services\ThumbnailService::placeholder($this->name, $this->category?->name);
+            return app(\App\Services\MediaFallbackResolver::class)->resolve($this);
         } catch (\Throwable $e) {
-            return 'data:image/svg+xml;base64,' . base64_encode('<svg xmlns="http://www.w3.org/2000/svg" width="800" height="600"><rect width="800" height="600" fill="#0B1E57"/><text x="400" y="300" text-anchor="middle" font-family="sans-serif" font-size="40" font-weight="bold" fill="white">' . e($this->name) . '</text></svg>');
+            return \App\Services\ThumbnailService::placeholder($this->name, $this->category?->name);
         }
     }
 }

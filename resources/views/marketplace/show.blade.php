@@ -52,7 +52,7 @@
         </div>
         @else
         @php $productImage = $product->image_url; @endphp
-        @if($productImage && !str_contains($productImage, 'logo') && !str_contains($productImage, 'products.jpeg'))
+        @if($productImage && !str_contains($productImage, 'svg'))
         <x-fast-image :src="$productImage" :alt="$product->name" :width="960" :quality="80" class="w-full h-full" />
         @elseif($product->images->first()->url ?? null)
         <x-fast-image :src="$product->images->first()->url" :alt="$product->name" :width="960" :quality="80" class="w-full h-full" />

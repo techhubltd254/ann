@@ -57,6 +57,11 @@
                     @endif
                     @if(($product->images->first()->url ?? null) && !$product->video_url)
                     <x-fast-image :src="$product->images->first()->url" :alt="$product->name" :width="640" :quality="75" class="w-full h-full" />
+                    @elseif(!$product->video_url)
+                    @php $mpImg = $product->image_url; @endphp
+                    @if($mpImg && !str_contains($mpImg, 'svg'))
+                    <x-fast-image :src="$mpImg" :alt="$product->name" :width="640" :quality="75" class="w-full h-full" />
+                    @endif
                     @endif
                 </div>
                 <div class="p-4">
