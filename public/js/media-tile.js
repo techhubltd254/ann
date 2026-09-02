@@ -39,11 +39,17 @@ function mediaTile() {
             this.deactivate();
         },
         activate() {
+            this.active = true;
             window.dispatchEvent(new CustomEvent('media-tile:activate', { detail: this }));
+            this.$nextTick(() => {
+                const v = this.$refs?.video;
+                if (v) {
+                    v.play().then(() => { this.videoReady = true; }).catch(() => {});
+                }
+            });
         },
         deactivate() {
             this.active = false;
-            this.videoReady = false;
         },
         onVideoPlaying() {
             this.videoReady = true;

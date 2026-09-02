@@ -27,21 +27,19 @@
          onerror="this.style.display='none'">
     @endif
 
-    {{-- Tier 2: hover/in-view loop — cross-fade in once first frame renders --}}
-    <template x-if="active">
-        <video x-ref="video"
-               class="absolute inset-0 w-full h-full object-cover transition-opacity duration-500"
-               :class="videoReady ? 'opacity-100' : 'opacity-0'"
-               muted loop playsinline preload="metadata"
-               x-on:playing="onVideoPlaying()"
-               x-effect="if (active) { $refs.video.play().catch(() => {}); } else { $refs.video.pause(); videoReady = false; }">
-            @if($hoverLoop)
-            <source src="{{ $hoverLoop }}" type="video/mp4">
-            @elseif($videoUrl)
-            <source src="{{ $videoUrl }}" type="video/mp4">
-            @endif
-        </video>
-    </template>
+    {{-- Tier 2: hover/in-view loop — always rendered, hidden until active, persists across hovers --}}
+    <video x-ref="video"
+           class="absolute inset-0 w-full h-full object-cover transition-opacity duration-500"
+           :class="active && videoReady ? 'opacity-100' : 'opacity-0'"
+           muted loop playsinline preload="metadata"
+           x-on:playing="onVideoPlaying()"
+           x-effect="if (active && videoReady) { $refs.video.play().catch(() => {}); } else if (!active) { $refs.video.pause(); }">
+        @if($hoverLoop)
+        <source src="{{ $hoverLoop }}" type="video/mp4">
+        @elseif($videoUrl)
+        <source src="{{ $videoUrl }}" type="video/mp4">
+        @endif
+    </video>
 
     {{-- Fallback poster tint / overlay --}}
     <div class="absolute inset-0 bg-gradient-to-t from-black/60 via-transparent to-transparent pointer-events-none"></div>

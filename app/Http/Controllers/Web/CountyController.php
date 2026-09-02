@@ -372,6 +372,24 @@ class CountyController extends Controller
             }
         }
 
+        // Product video fallback: for institutions without hero video, use marketplace product videos
+        foreach ($items as $e) {
+            $isInst = in_array($e->entity_type, [\App\Models\CountyInstitution::class, \App\Services\InstitutionSyncService::ENTITY_TYPE]);
+            if (!$isInst || !empty($institutionHeroVideos[$e->id])) continue;
+            $inst = \App\Models\CountyInstitution::find($e->entity_id);
+            if (!$inst || !$inst->user_id) continue;
+            $productVids = \App\Models\Marketplace\Product::where('user_id', $inst->user_id)
+                ->active()
+                ->where(function ($q) { $q->whereNotNull('video_url')->orWhereNotNull('videos'); })
+                ->take(5)->get()
+                ->map(fn ($p) => $p->video_url ?? (is_array($p->videos) ? ($p->videos[0] ?? null) : null))
+                ->filter()
+                ->values();
+            if ($productVids->isNotEmpty()) {
+                $institutionHeroVideos[$e->id] = $productVids[0];
+            }
+        }
+
         $info = [
             'tourism' => ['title' => 'Tourism & Attractions', 'icon' => '🏖️', 'desc' => 'Discover attractions and cultural sites.'],
             'hotels' => ['title' => 'Hospitality & Hotels', 'icon' => '🏨', 'desc' => 'Hotels and accommodation.'],
@@ -500,6 +518,24 @@ class CountyController extends Controller
             foreach ($libVids as $v) {
                 $url = $v['path'] ?? $v['url'] ?? null;
                 if ($url) $fallback[] = $url;
+            }
+
+            // Tier 2.5: Institution's marketplace product videos
+            if ($institution->user_id) {
+                $productVids = \App\Models\Marketplace\Product::where('user_id', $institution->user_id)
+                    ->active()
+                    ->where(function ($q) { $q->whereNotNull('video_url')->orWhereNotNull('videos'); })
+                    ->take(10)->get()
+                    ->flatMap(fn ($p) => array_merge(
+                        $p->video_url ? [$p->video_url] : [],
+                        is_array($p->videos) ? $p->videos : []
+                    ))
+                    ->filter()
+                    ->values()
+                    ->all();
+                foreach ($productVids as $pv) {
+                    $fallback[] = $pv;
+                }
             }
 
             // Tier 3: County-level sector videos (mother tile)

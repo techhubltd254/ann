@@ -104,19 +104,23 @@
     </div>
 </div>
 @else
-    <div class="sector-stats border-b border-white/10 py-12">
-        <div class="max-w-7xl mx-auto px-5">
-            <a href="{{ route('counties.show', $county->slug) }}" class="inline-flex items-center gap-1.5 text-[#5A6480] hover:text-white text-sm mb-4 transition-colors">
+    <div class="relative h-[45vh] md:h-[55vh] overflow-hidden bg-[#0B1E57]">
+        <img src="{{ $sectorHeroPoster ?? media('counties/' . $county->slug . '/hero.jpeg') }}" alt="{{ $sectorInfo['title'] }}"
+             class="absolute inset-0 w-full h-full object-cover"
+             loading="lazy" decoding="async"
+             onerror="this.style.display='none'">
+        <div class="absolute inset-0 bg-gradient-to-t from-black/70 via-black/20 to-transparent"></div>
+        <div class="absolute bottom-0 left-0 right-0 max-w-7xl mx-auto px-5 pb-10" style="z-index:6">
+            <a href="{{ route('counties.show', $county->slug) }}" class="inline-flex items-center gap-1.5 text-white/60 hover:text-white text-sm mb-3 transition-colors">
                 <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 19l-7-7 7-7"/></svg>
                 {{ $county->name }} County
             </a>
-            <div class="flex items-center gap-5">
+            <div class="flex items-center gap-4">
                 <div>
-                    <h1 class="text-3xl md:text-4xl font-black text-white" data-split>{{ $sectorInfo['title'] }}</h1>
-                    <p class="text-zinc-400 mt-1 text-sm">{{ $items->count() }} {{ Str::plural('entity', $items->count()) }} · {{ $county->name }} County</p>
+                    <h1 class="text-3xl md:text-5xl font-black text-white" data-split>{{ $sectorInfo['title'] }}</h1>
+                    <p class="text-white/70 text-sm mt-2">{{ $sectorInfo['desc'] }}</p>
                 </div>
             </div>
-            <p class="text-zinc-500 text-sm mt-4 max-w-xl">{{ $sectorInfo['desc'] }}</p>
         </div>
     </div>
     @endif
