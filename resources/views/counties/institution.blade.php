@@ -252,21 +252,9 @@
 
                     {{-- Map — accurate geographic pin --}}
                     @if($institution->lat && $institution->lng)
-                    <div class="mt-5">
-                        <h4 class="text-xs font-bold text-gray-900 uppercase tracking-widest mb-2">Location Map</h4>
-                        <x-institution-map
-                            :lat="$institution->lat"
-                            :lng="$institution->lng"
-                            :name="$institution->name"
-                            :location="$institution->location ?? null"
-                            :website="$institution->website ?? null"
-                            height="220px"
-                        />
-                        <a href="https://www.openstreetmap.org/?mlat={{ $institution->lat }}&mlon={{ $institution->lng }}#map=17/{{ $institution->lat }}/{{ $institution->lng }}"
-                           target="_blank" class="inline-flex items-center gap-1 text-[11px] text-gray-400 hover:text-kicc-gold mt-2 transition-colors">
-                            <svg class="w-3 h-3" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z"/><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 11a3 3 0 11-6 0 3 3 0 016 0z"/></svg>
-                            Open in larger map
-                        </a>
+                    <div class="mt-5 pt-4 border-t border-gray-100">
+                        <h4 class="text-xs font-bold text-gray-900 uppercase tracking-widest mb-2">Location Pin</h4>
+                        <x-map-pin :entity="$institution" />
                     </div>
                     @endif
 

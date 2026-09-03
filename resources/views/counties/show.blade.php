@@ -100,7 +100,7 @@
             </div>
         </div>
 
-        {{-- COUNTY MAP — pins for county + all institutions --}}
+        {{-- COUNTY MAP — individual pin links, no heavy Leaflet map --}}
         <div class="mb-14">
             <div class="flex items-center gap-3 mb-6">
                 <span class="h-px w-8 bg-kicc-gold"></span>
@@ -109,36 +109,74 @@
             </div>
             <div class="grid grid-cols-1 lg:grid-cols-3 gap-4">
                 <div class="lg:col-span-2">
-                    <x-county-map
-                        :county="$county"
-                        :institutions="$mapInstitutions ?? []"
-                        height="400px"
-                    />
+                    <div class="bg-white border border-gray-200 rounded-2xl p-5">
+                        <h4 class="text-xs font-bold text-gray-900 uppercase tracking-widest mb-3">{{ $county->name }} County</h4>
+                        <div class="space-y-4">
+                            <x-map-pin :entity="$county" />
+                            @if(isset($mapPins) && count($mapPins) > 0)
+                            <div class="border-t border-gray-100 pt-4">
+                                <h5 class="text-[10px] font-bold text-gray-500 uppercase tracking-widest mb-2">Institutions</h5>
+                                <div class="space-y-3">
+                                    @foreach($mapPins as $pin)
+                                    <div class="flex items-start gap-3">
+                                        <div class="w-8 h-8 rounded-lg bg-[#0B1E57]/5 flex items-center justify-center text-xs font-bold text-[#0B1E57] shrink-0">
+                                            {{ strtoupper(substr($pin['name'], 0, 2)) }}
+                                        </div>
+                                        <div class="flex-1 min-w-0">
+                                            <a href="{{ route('counties.institution', $pin['slug']) }}" class="text-sm font-bold text-gray-900 hover:text-kicc-gold transition-colors truncate block">
+                                                {{ $pin['name'] }}
+                                            </a>
+                                            @if($pin['location'])
+                                            <p class="text-xs text-gray-400 mt-0.5">{{ $pin['location'] }}</p>
+                                            @endif
+                                            <div class="flex gap-2 mt-1">
+                                                @if($pin['pin_url'])
+                                                <a href="{{ $pin['pin_url'] }}" target="_blank" rel="noopener"
+                                                   class="text-[10px] font-bold text-[#0B1E57] hover:text-[#FFCD05] transition-colors">
+                                                    View on Google Maps
+                                                </a>
+                                                @endif
+                                                @if($pin['website'])
+                                                <span class="text-[10px] text-gray-300">·</span>
+                                                <a href="{{ $pin['website'] }}" target="_blank" rel="noopener"
+                                                   class="text-[10px] font-bold text-gray-500 hover:text-[#0B1E57] transition-colors">
+                                                    Website
+                                                </a>
+                                                @endif
+                                            </div>
+                                        </div>
+                                    </div>
+                                    @endforeach
+                                </div>
+                            </div>
+                            @endif
+                        </div>
+                    </div>
                 </div>
                 <div class="space-y-3">
                     <div class="bg-white border border-gray-200 rounded-2xl p-5">
                         <h4 class="text-xs font-bold text-gray-900 uppercase tracking-widest mb-3">County Location</h4>
-                        <div class="flex items-start gap-2.5 text-sm text-gray-700">
-                            <span class="text-gray-400 mt-0.5"></span>
-                            <span>{{ $county->latitude ?? '—' }}, {{ $county->longitude ?? '—' }}</span>
-                        </div>
+                        <x-map-pin :entity="$county" />
                         @if($county->website)
                         <a href="{{ $county->website }}" target="_blank" rel="noopener"
                            class="mt-4 w-full inline-flex items-center justify-center gap-2 font-bold text-sm h-10 rounded-xl bg-[#0B1E57] text-white hover:bg-[#16275f] transition-all">
-                             Official County Website
+                            Official County Website
                         </a>
                         @endif
                     </div>
-                    @if(isset($mapInstitutions) && $mapInstitutions->count() > 0)
-                    <div class="bg-white border border-gray-200 rounded-2xl p-5 max-h-[340px] overflow-y-auto">
-                        <h4 class="text-xs font-bold text-gray-900 uppercase tracking-widest mb-3">{{ $mapInstitutions->count() }} Locations</h4>
+                    @if(isset($mapPins) && count($mapPins) > 0)
+                    <div class="bg-white border border-gray-200 rounded-2xl p-5 max-h-[400px] overflow-y-auto">
+                        <h4 class="text-xs font-bold text-gray-900 uppercase tracking-widest mb-3">{{ count($mapPins) }} Locations</h4>
                         <div class="space-y-2.5">
-                            @foreach($mapInstitutions as $mi)
-                            <a href="{{ route('counties.institution', $mi->slug) }}" class="flex items-center gap-2 text-sm text-gray-700 hover:text-kicc-gold transition-colors">
-                                <span class="w-2 h-2 rounded-full bg-[#0B1E57] shrink-0"></span>
-                                <span class="truncate">{{ $mi->name }}</span>
-                                @if($mi->website)
-                                <svg class="w-3 h-3 ml-auto text-gray-300 shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 6H6a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2v-4M14 4h6m0 0v6m0-6L10 14"/></svg>
+                            @foreach($mapPins as $pin)
+                            <a href="{{ route('counties.institution', $pin['slug']) }}" class="flex items-center gap-2 text-sm text-gray-700 hover:text-kicc-gold transition-colors">
+                                <span class="w-2 h-2 rounded-full {{ $pin['has_pin'] ? 'bg-[#0B1E57]' : 'bg-gray-300' }} shrink-0"></span>
+                                <span class="truncate flex-1">{{ $pin['name'] }}</span>
+                                @if($pin['pin_url'])
+                                <a href="{{ $pin['pin_url'] }}" target="_blank" rel="noopener"
+                                   class="text-[10px] font-bold text-[#0B1E57] hover:text-[#FFCD05] transition-colors shrink-0">
+                                    Pin
+                                </a>
                                 @endif
                             </a>
                             @endforeach
