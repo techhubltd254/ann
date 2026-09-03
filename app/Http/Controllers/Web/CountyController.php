@@ -225,12 +225,26 @@ class CountyController extends Controller
 
         $mapPins = app(\App\Services\MapPinService::class)->countyPins($county);
 
+        // Build sector→pins mapping: which institutions belong to which sector
+        $sectorPins = [];
+        foreach ($sectorData as $name => $s) {
+            $sectorModel = $county->sectors()->where('slug', 'like', $s['sector_slug'] . '%')->first();
+            if (!$sectorModel) continue;
+            $instIds = \App\Models\SectorEntity::where('county_id', $county->id)
+                ->where('sector_id', $sectorModel->id)
+                ->whereIn('entity_type', [\App\Models\CountyInstitution::class, \App\Services\InstitutionSyncService::ENTITY_TYPE])
+                ->where('is_published', true)
+                ->pluck('entity_id')
+                ->unique();
+            $sectorPins[$s['sector_slug']] = collect($mapPins)->whereIn('id', $instIds)->values()->all();
+        }
+
         return view('counties.show', compact(
             'county', 'sectors', 'sectorData',
             'featuredAttractions', 'featuredHotels', 'countyProducts',
             'exhibitions', 'linkedSectors', 'countyMedia', 'countyHeroFallback', 'sectorVideos', 'sectorWebmVideos',
             'sectorEntityVideos', 'sectorPitches', 'attractionThumbs', 'hotelThumbs', 'productThumbs',
-            'mapPins'
+            'mapPins', 'sectorPins'
         ));
     }
 
