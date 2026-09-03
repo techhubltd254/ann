@@ -135,22 +135,17 @@
                             ->first();
                         $sectorTilePoster = $sectorAsset?->posterUrl() ?? $sectorAsset?->thumbnailUrl();
                     }
-                    if (!$sectorTilePoster && $firstVideo) {
-                        try {
-                            $sectorTilePoster = app(\App\Services\MediaFallbackResolver::class)->extractFrame($firstVideo);
-                        } catch (\Throwable $e) {}
-                    }
                 @endphp
                 <a href="{{ route('counties.sector', [$county->slug, $s['route']]) }}"
                    class="group bg-white border border-gray-200 hover:border-kicc-gold/40 rounded-2xl overflow-hidden transition-all block card-hover"
                    @mouseenter="const v = $el.querySelector('video'); if(v) { v.play().catch(()=>{}); }"
                    @mouseleave="const v = $el.querySelector('video'); if(v) { v.pause(); }"
                    data-tilt="6" data-reveal data-reveal-delay="{{ $loop->index * 80 }}">
-                    <div class="aspect-[4/3] overflow-hidden relative {{ $hasVideo ? 'bg-black' : 'bg-gradient-to-br from-[#0A1024] to-[#1a1a2e]' }}">
+                    <div class="aspect-[4/3] overflow-hidden relative {{ $hasVideo ? 'bg-[#0B1E57]' : 'bg-gradient-to-br from-[#0A1024] to-[#1a1a2e]' }}">
                         @if($firstVideo)
                         <video muted loop playsinline preload="metadata"
                                class="absolute inset-0 w-full h-full object-cover"
-                               poster="{{ $sectorTilePoster ?? $firstVideo }}"
+                               poster="{{ $sectorTilePoster ?? '' }}"
                                onerror="this.style.display='none'">
                             <source src="{{ $firstVideo }}" type="video/mp4">
                         </video>

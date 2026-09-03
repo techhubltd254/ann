@@ -45,17 +45,20 @@
     </div>
     @elseif(!empty($institutionFallbackVideos))
     {{-- Fallback: no hero video — cycle related sector/institution videos seamlessly --}}
+    @php $isImagePoster = $heroPoster && !str_contains($heroPoster, '.mp4') && !str_contains($heroPoster, '.webm'); @endphp
     <div class="relative h-[50vh] md:h-[60vh] overflow-hidden bg-black"
          x-data="institutionFallbackPlayer({
             videos: {{ Js::from($institutionFallbackVideos) }},
-            poster: '{{ $heroPoster ?? media('kicc/kicc-logo.png') }}'
+            poster: '{{ $isImagePoster ? $heroPoster : '' }}'
          })">
-        <img src="{{ $heroPoster ?? media('kicc/kicc-logo.png') }}" alt="{{ $institution->name }}"
+        @if($isImagePoster)
+        <img src="{{ $heroPoster }}" alt="{{ $institution->name }}"
              class="absolute inset-0 w-full h-full object-cover"
              :class="videoReady ? 'opacity-0' : 'opacity-100'"
              style="transition: opacity 0.6s ease; z-index:1"
              loading="lazy" decoding="async"
              onerror="this.style.display='none'">
+        @endif
         <video x-ref="fallbackVideo"
                autoplay muted loop playsinline preload="metadata"
                class="absolute inset-0 w-full h-full object-cover"
@@ -63,7 +66,7 @@
                style="transition: opacity 0.6s ease; z-index:2"
                @playing="videoReady = true"
                @ended="nextVideo()"
-               poster="{{ $heroPoster ?? '' }}">
+               poster="{{ $isImagePoster ? $heroPoster : '' }}">
             <source :src="currentSrc" type="video/mp4">
         </video>
         <div class="absolute inset-0 bg-gradient-to-t from-black/70 via-black/20 to-transparent" style="z-index:3"></div>

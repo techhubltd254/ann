@@ -536,9 +536,13 @@ class CountyController extends Controller
             }
         }
 
-        // Poster for the sector hero (county hero poster / default county image)
+        // Poster for the sector hero (county hero poster / first video frame / default)
         $sectorHeroPoster = \App\Models\MediaAsset::resolveSlot(County::class, $county->id, 'hero_video')?->posterUrl()
             ?? media('counties/' . $county->slug . '/hero.jpeg');
+        // If no poster exists, use the first video URL as poster (browser shows first frame)
+        if (!$sectorHeroPoster || str_contains($sectorHeroPoster, 'hero.jpeg')) {
+            $sectorHeroPoster = $sectorHeroVideos[0] ?? null;
+        }
 
         return view('counties.sector', compact(
             'county', 'items', 'sector', 'sectorInfo', 'sectorModel',

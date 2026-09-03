@@ -53,21 +53,27 @@
 <div class="relative h-[45vh] md:h-[55vh] overflow-hidden bg-black"
      x-data="sectorHeroPlayer({
         videos: {{ Js::from(array_values($heroVids)) }},
-        poster: '{{ $sectorHeroPoster ?? media("counties/" . $county->slug . "/hero.jpeg") }}'
+        poster: '{{ $sectorHeroPoster ?? "" }}'
      })">
-    <img src="{{ $sectorHeroPoster ?? media("counties/" . $county->slug . "/hero.jpeg") }}" alt="{{ $sectorInfo['title'] }}"
+    @php $isImagePoster = $sectorHeroPoster && !str_contains($sectorHeroPoster, '.mp4') && !str_contains($sectorHeroPoster, '.webm'); @endphp
+    @if($isImagePoster)
+    <img src="{{ $sectorHeroPoster }}" alt="{{ $sectorInfo['title'] }}"
          class="absolute inset-0 w-full h-full object-cover"
          :class="videoReady ? 'opacity-0' : 'opacity-100'"
          style="transition: opacity 0.6s ease; z-index:1"
          loading="lazy" decoding="async"
          onerror="this.style.display='none'">
+    @endif
     <video x-ref="sectorHero"
            autoplay muted loop playsinline preload="metadata"
            class="absolute inset-0 w-full h-full object-cover"
            :class="videoReady ? 'opacity-100' : 'opacity-0'"
            style="transition: opacity 0.6s ease; z-index:2"
            @playing="videoReady = true"
-           @ended="nextSectorVideo()">
+           @ended="nextSectorVideo()"
+           poster="{{ $isImagePoster ? $sectorHeroPoster : '' }}">
+        <source :src="currentSrc" type="video/mp4">
+    </video>
         <source :src="currentSrc" type="video/mp4">
     </video>
     <div class="absolute inset-0 bg-gradient-to-t from-black/70 via-black/20 to-transparent" style="z-index:5"></div>
