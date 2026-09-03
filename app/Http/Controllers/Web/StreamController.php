@@ -12,15 +12,33 @@ class StreamController extends Controller
 {
     public function index(Request $request)
     {
-        $query = LiveStream::with('exhibition', 'county', 'user');
-        if ($request->get('status')) {
-            $query->where('status', $request->get('status'));
-        }
-        if ($request->get('exhibition_id')) {
-            $query->where('exhibition_id', $request->get('exhibition_id'));
-        }
-        $streams = $query->latest()->paginate(20);
-        return view('streams.index', compact('streams'));
+        $live = LiveStream::with('exhibition', 'county', 'user')
+            ->where('status', 'live')
+            ->latest()
+            ->take(10)
+            ->get();
+
+        $upcoming = LiveStream::with('exhibition', 'county', 'user')
+            ->where('status', 'idle')
+            ->latest()
+            ->take(10)
+            ->get();
+
+        $ended = LiveStream::with('exhibition', 'county', 'user')
+            ->where('status', 'ended')
+            ->latest()
+            ->take(6)
+            ->get();
+
+        $upcomingExhibitions = Exhibition::with('county')
+            ->withCount('booths')
+            ->where('status', 'published')
+            ->where('start_date', '>=', now())
+            ->orderBy('start_date')
+            ->take(6)
+            ->get();
+
+        return view('streams.index', compact('live', 'upcoming', 'ended', 'upcomingExhibitions'));
     }
 
     public function show(LiveStream $stream)

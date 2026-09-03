@@ -384,7 +384,7 @@
                 <a href="{{ route('marketplace.index') }}" class="px-3.5 py-2 text-sm font-semibold rounded-lg transition-all {{ request()->routeIs('marketplace.*') ? 'bg-[#901C1E] text-white' : 'text-[#901C1E] hover:text-[#FFCD05] hover:bg-gray-100' }}">Marketplace</a>
                 <a href="{{ route('exhibitions.index') }}" class="px-3.5 py-2 text-sm font-semibold rounded-lg transition-all {{ request()->routeIs('exhibitions.*') ? 'bg-[#901C1E] text-white' : 'text-[#901C1E] hover:text-[#FFCD05] hover:bg-gray-100' }}">Exhibitions</a>
                 <a href="{{ route('venues.index') }}" class="px-3.5 py-2 text-sm font-semibold rounded-lg transition-all {{ request()->routeIs('venues.*') ? 'bg-[#901C1E] text-white' : 'text-[#901C1E] hover:text-[#FFCD05] hover:bg-gray-100' }}">Venues</a>
-                <a href="{{ route('travel.index') }}" class="px-3.5 py-2 text-sm font-semibold rounded-lg transition-all {{ request()->routeIs('travel.*') ? 'bg-[#901C1E] text-white' : 'text-[#901C1E] hover:text-[#FFCD05] hover:bg-gray-100' }}">Live Events</a>
+                <a href="{{ route('streams.index') }}" class="px-3.5 py-2 text-sm font-semibold rounded-lg transition-all {{ request()->routeIs('streams.*') ? 'bg-[#901C1E] text-white' : 'text-[#901C1E] hover:text-[#FFCD05] hover:bg-gray-100' }}">Live Events</a>
                 <a href="{{ route('screens.directory') }}" class="px-3.5 py-2 text-sm font-semibold rounded-lg transition-all {{ request()->routeIs('screens.*') ? 'bg-[#901C1E] text-white' : 'text-[#901C1E] hover:text-[#FFCD05] hover:bg-gray-100' }}">Screens</a>
                 <a href="{{ route('packages.index') }}" class="px-3.5 py-2 text-sm font-semibold rounded-lg transition-all {{ request()->routeIs('packages.*') ? 'bg-[#901C1E] text-white' : 'text-[#901C1E] hover:text-[#FFCD05] hover:bg-gray-100' }}">Packages</a>
             </nav>
@@ -427,7 +427,7 @@
             <a href="{{ route('national-government.index') }}" class="text-left px-4 py-3 text-sm font-semibold text-gray-600 hover:text-gray-900 hover:bg-gray-100 rounded-lg">National Government</a>
             <a href="{{ route('exhibitions.index') }}" class="text-left px-4 py-3 text-sm font-semibold text-gray-600 hover:text-gray-900 hover:bg-gray-100 rounded-lg">Exhibitions</a>
             <a href="{{ route('venues.index') }}" class="text-left px-4 py-3 text-sm font-semibold text-gray-600 hover:text-gray-900 hover:bg-gray-100 rounded-lg">Venues</a>
-            <a href="{{ route('travel.index') }}" class="text-left px-4 py-3 text-sm font-semibold text-gray-600 hover:text-gray-900 hover:bg-gray-100 rounded-lg">Live Events</a>
+            <a href="{{ route('streams.index') }}" class="text-left px-4 py-3 text-sm font-semibold text-gray-600 hover:text-gray-900 hover:bg-gray-100 rounded-lg">Live Events</a>
             <a href="{{ route('screens.directory') }}" class="text-left px-4 py-3 text-sm font-semibold text-gray-600 hover:text-gray-900 hover:bg-gray-100 rounded-lg">Screens</a>
             <a href="{{ route('marketplace.index') }}" class="text-left px-4 py-3 text-sm font-semibold text-gray-600 hover:text-gray-900 hover:bg-gray-100 rounded-lg">Marketplace</a>
             @auth
@@ -489,7 +489,7 @@
             <div>
                 <h4 class="font-bold text-white/50 text-xs uppercase tracking-[0.15em] mb-4">Information</h4>
                 <ul class="space-y-2.5">
-                    <li><a href="{{ route('travel.index') }}" class="text-white/50 hover:text-kicc-gold text-sm transition-colors">Travel</a></li>
+                    <li><a href="{{ route('streams.index') }}" class="text-white/50 hover:text-kicc-gold text-sm transition-colors">Live Events</a></li>
                     <li><a href="{{ route('screens.directory') }}" class="text-white/50 hover:text-kicc-gold text-sm transition-colors">Screens</a></li>
                     <li><a href="{{ route('exhibition-3d.map') }}" class="text-white/50 hover:text-kicc-gold text-sm transition-colors">3D Tour</a></li>
                     <li><a href="{{ route('operations.index') }}" class="text-white/50 hover:text-kicc-gold text-sm transition-colors">Operations</a></li>
