@@ -411,6 +411,24 @@ class CountyController extends Controller
             }
         }
 
+        // Fill missing posters by extracting frame from video URL
+        // This ensures the tile shows the video's first frame, not a blue background
+        $resolver = app(\App\Services\MediaFallbackResolver::class);
+        foreach ($items as $e) {
+            $hasPoster = !empty($entityPosters[$e->id]);
+            $hasVideo = !empty($entityVideos[$e->id]);
+            if ($hasPoster || !$hasVideo) continue;
+            $frame = $resolver->extractFrame($entityVideos[$e->id]);
+            if ($frame) $entityPosters[$e->id] = $frame;
+        }
+        foreach ($items as $e) {
+            $hasPoster = !empty($institutionHeroPosters[$e->id]);
+            $hasVideo = !empty($institutionHeroVideos[$e->id]);
+            if ($hasPoster || !$hasVideo) continue;
+            $frame = $resolver->extractFrame($institutionHeroVideos[$e->id]);
+            if ($frame) $institutionHeroPosters[$e->id] = $frame;
+        }
+
         $info = [
             'tourism' => ['title' => 'Tourism & Attractions', 'icon' => '🏖️', 'desc' => 'Discover attractions and cultural sites.'],
             'hotels' => ['title' => 'Hospitality & Hotels', 'icon' => '🏨', 'desc' => 'Hotels and accommodation.'],

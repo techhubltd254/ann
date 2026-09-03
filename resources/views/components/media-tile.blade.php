@@ -12,7 +12,7 @@
     'aspect' => 'aspect-video',
 ])
 
-<div class="group relative {{ $aspect }} bg-black overflow-hidden rounded-xl"
+<div class="group relative {{ $aspect }} bg-[#0B1E57] overflow-hidden rounded-xl"
      x-data="mediaTile()"
      @mouseenter="onHoverEnter()"
      @mouseleave="onHoverLeave()"
