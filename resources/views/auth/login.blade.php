@@ -8,10 +8,10 @@
         portal: null,
         loading: false,
         portals: [
-            { id: 'kicc',     title: 'KICC Mother Admin',    desc: 'Platform-wide control — all counties, national, exhibitors', icon: '🏛', color: 'from-[#F59E0B] to-[#D97706]' },
-            { id: 'national', title: 'National Government',   desc: 'Ministries & agencies portal',                              icon: '🏢', color: 'from-[#0EA5E9] to-[#0284C7]' },
-            { id: 'county',   title: 'County Admin',          desc: 'Manage your county — products, sectors, videos',            icon: '🌍', color: 'from-[#0B1E57] to-[#1a3070]' },
-            { id: 'exhibitor',title: 'Exhibitor',             desc: 'Your storefront & marketplace dashboard',                   icon: '🛍', color: 'from-[#2D6A4F] to-[#40916C]' },
+            { id: 'kicc',     title: 'KICC Mother Admin',    desc: 'Platform-wide control — all counties, national, exhibitors', icon: '', color: 'from-[#F59E0B] to-[#D97706]' },
+            { id: 'national', title: 'National Government',   desc: 'Ministries & agencies portal',                              icon: '', color: 'from-[#0EA5E9] to-[#0284C7]' },
+            { id: 'county',   title: 'County Admin',          desc: 'Manage your county — products, sectors, videos',            icon: '', color: 'from-[#0B1E57] to-[#1a3070]' },
+            { id: 'exhibitor',title: 'Exhibitor',             desc: 'Your storefront & marketplace dashboard',                   icon: '', color: 'from-[#2D6A4F] to-[#40916C]' },
         ],
         select(p) { this.portal = p; this.step = 'form'; },
         back() { this.step = 'portal'; this.portal = null; }
@@ -113,28 +113,28 @@
                 </p>
                 <div class="mt-6 space-y-3">
                     <div class="flex items-center gap-3 p-3 rounded-xl bg-white/5 border border-white/10">
-                        <span class="text-xl">🏛</span>
+                        <span class="text-xl"></span>
                         <div>
                             <div class="text-white text-sm font-bold">KICC Mother Admin</div>
                             <div class="text-white/50 text-xs">Counties, national, exhibitors, orders, escrow, users</div>
                         </div>
                     </div>
                     <div class="flex items-center gap-3 p-3 rounded-xl bg-white/5 border border-white/10">
-                        <span class="text-xl">🏢</span>
+                        <span class="text-xl"></span>
                         <div>
                             <div class="text-white text-sm font-bold">National Government</div>
                             <div class="text-white/50 text-xs">Ministries & agencies portal</div>
                         </div>
                     </div>
                     <div class="flex items-center gap-3 p-3 rounded-xl bg-white/5 border border-white/10">
-                        <span class="text-xl">🌍</span>
+                        <span class="text-xl"></span>
                         <div>
                             <div class="text-white text-sm font-bold">County Admin</div>
                             <div class="text-white/50 text-xs">47 counties, each with its own dashboard</div>
                         </div>
                     </div>
                     <div class="flex items-center gap-3 p-3 rounded-xl bg-white/5 border border-white/10">
-                        <span class="text-xl">🛍</span>
+                        <span class="text-xl"></span>
                         <div>
                             <div class="text-white text-sm font-bold">Exhibitor</div>
                             <div class="text-white/50 text-xs">Your storefront, products & orders</div>

@@ -54,7 +54,7 @@
             @endif
             <p class="text-xs text-gray-600 leading-relaxed mt-0.5">{{ $review->body ?? $review->content }}</p>
             @if($review->is_verified_purchase)
-            <span class="inline-block mt-1.5 text-[9px] font-bold text-emerald-600 bg-emerald-50 px-1.5 py-0.5 rounded">✓ Verified purchase</span>
+            <span class="inline-block mt-1.5 text-[9px] font-bold text-emerald-600 bg-emerald-50 px-1.5 py-0.5 rounded"> Verified purchase</span>
             @endif
         </div>
         @endforeach

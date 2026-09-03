@@ -105,7 +105,7 @@
                     <button type="submit" :disabled="!package_slug || loading"
                             class="flex-1 h-12 rounded-xl bg-[#FFCD05] text-[#07090F] font-black hover:bg-[#FFCD05] transition-all disabled:opacity-40 inline-flex items-center justify-center gap-2" data-magnetic>
                         <svg x-show="loading" class="w-5 h-5 animate-spin" fill="none" viewBox="0 0 24 24"><circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"/><path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8v4a4 4 0 00-4 4H4z"/></svg>
-                        <span x-text="loading ? 'Building your website…' : 'Build My Website 🚀'"></span>
+                        <span x-text="loading ? 'Building your website…' : 'Build My Website '"></span>
                     </button>
                 </div>
                 <p class="text-gray-400 text-[11px] text-center mt-3">You can change your package any time from your portal.</p>

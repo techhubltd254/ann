@@ -109,7 +109,7 @@
         <div class="mt-8">{{ $assets->links() }}</div>
         @else
         <div class="text-center py-20 bg-white rounded-2xl border border-gray-200" data-reveal="zoom">
-            <div class="text-5xl mb-4">🗂️</div>
+            <div class="text-5xl mb-4"></div>
             <h3 class="text-lg font-black text-gray-900 mb-1">No media yet</h3>
             <p class="text-[#5A6480] text-sm mb-5">Upload your first image to start the cinematic pipeline.</p>
             <a href="{{ route('media.upload') }}" class="inline-flex items-center justify-center gap-2 font-bold tracking-wide transition-all duration-200 px-6 h-12 rounded-xl bg-[#901C1E] text-white hover:bg-[#7b1618]">Upload Media</a>

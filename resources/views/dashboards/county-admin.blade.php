@@ -11,7 +11,7 @@
     setTab(t) { this.tab = t; },
 }">
 
-    {{-- ═══════ SIDEBAR ═══════ --}}
+    {{--  SIDEBAR  --}}
     <aside class="glass-nav flex flex-col w-64 shrink-0 z-30 overflow-y-auto">
         <div class="flex items-center gap-3 h-16 px-5 border-b border-white/5 shrink-0">
             <div class="w-9 h-9 rounded-xl bg-gradient-to-br from-indigo-500 to-violet-600 flex items-center justify-center font-black text-white text-sm shadow-lg shadow-indigo-500/25">M</div>
@@ -93,7 +93,7 @@
         </div>
     </aside>
 
-    {{-- ═══════ MAIN VIEWPORT ═══════ --}}
+    {{--  MAIN VIEWPORT  --}}
     <div class="flex-1 flex flex-col overflow-hidden">
         {{-- Header --}}
         <header class="glass-header h-16 px-6 flex items-center justify-between shrink-0">
@@ -143,14 +143,14 @@
             <div class="mb-4 px-5 py-3 rounded-xl bg-red-500/10 border border-red-500/20 text-red-400 text-sm flex items-center gap-2">{{ $errors->first() }}</div>
             @endif
 
-            {{-- ═══════ OVERVIEW — Executive Dashboard ═══════ --}}
+            {{--  OVERVIEW — Executive Dashboard  --}}
             @if($tab === 'overview')
             <div class="space-y-6">
                 {{-- 8-card KPI grid --}}
                 <div class="grid grid-cols-2 md:grid-cols-3 xl:grid-cols-4 gap-3.5">
                     <x-nexora-kpi title="County Products" :value="$stats['products'] . ' Active'" :growth="($stats['products_new'] ?? 0) . ' new this month'" color="indigo" :sparkline="[8,9,9,10,11,11,11,12,12,13,13,13]" />
                     <x-nexora-kpi title="Attractions" :value="$stats['attractions'] . ' Sites'" :growth="($stats['top_attractions'] ?? '') ? 'Featuring ' . $stats['top_attractions'] : 'Explore county sites'" color="cyan" :sparkline="[5,5,6,6,6,7,7,7,8,8,9,9]" />
-                    <x-nexora-kpi title="Hotels" :value="$stats['hotels'] . ' Partners'" :growth="($stats['hotel_rating'] ?? 0) > 0 ? 'Avg. rating ' . $stats['hotel_rating'] . '★' : 'Hospitality partners'" color="emerald" :sparkline="[2,2,3,3,3,3,4,4,4,4,4,4]" />
+                    <x-nexora-kpi title="Hotels" :value="$stats['hotels'] . ' Partners'" :growth="($stats['hotel_rating'] ?? 0) > 0 ? 'Avg. rating ' . $stats['hotel_rating'] . '' : 'Hospitality partners'" color="emerald" :sparkline="[2,2,3,3,3,3,4,4,4,4,4,4]" />
                     <x-nexora-kpi title="Marketplace" :value="$stats['marketplaceProducts'] . ' Active'" :growth="($stats['marketplace_new'] ?? 0) . ' new listings'" color="amber" :sparkline="[10,11,12,13,14,15,16,16,17,17,18,18]" />
                     <x-nexora-kpi title="Orders" :value="$stats['orders']" :growth="$stats['orders'] . ' lifetime orders'" color="emerald" :sparkline="[80,95,102,110,125,130,128,135,140,138,142,142]" />
                     <x-nexora-kpi title="Total Revenue" :value="'KES ' . number_format($stats['revenue'])" :growth="$stats['revenue'] > 0 ? 'Real escrow releases' : 'Awaiting first sale'" color="indigo" :sparkline="[120,145,160,180,220,250,280,310,350,380,420,480]" />
@@ -158,7 +158,7 @@
                     <x-nexora-kpi title="Packages" :value="$stats['packages'] . ' Tiers'" :growth="$stats['institutions'] . ' institutions · ' . $stats['sector_entities'] . ' entities'" color="rose" :sparkline="[1,1,1,2,2,2,3,3,3,4,4,4]" />
                 </div>
 
-                {{-- ═══ Public Page Content Control — every section on the live county page ═══ --}}
+                {{--  Public Page Content Control — every section on the live county page  --}}
                 <div class="glass-card rounded-2xl p-5">
                     <div class="flex items-center justify-between mb-4">
                         <div>
@@ -169,27 +169,27 @@
                     </div>
                     <div class="grid grid-cols-2 md:grid-cols-3 xl:grid-cols-5 gap-3">
                         <a href="{{ route('county.admin.pro', [$county->slug, 'tab' => 'sectors']) }}" class="group bg-white/5 border border-white/10 rounded-xl p-4 hover:border-indigo-500/40 hover:bg-indigo-500/5 transition-all">
-                            <div class="text-2xl mb-2">🏛</div>
+                            <div class="text-2xl mb-2"></div>
                             <div class="text-white text-sm font-bold">Government Departments</div>
                             <div class="text-[10px] text-zinc-500 mt-1">Sectors & departments shown on your page</div>
                         </a>
                         <a href="{{ route('county.admin.pro', [$county->slug, 'tab' => 'attractions_list']) }}" class="group bg-white/5 border border-white/10 rounded-xl p-4 hover:border-indigo-500/40 hover:bg-indigo-500/5 transition-all">
-                            <div class="text-2xl mb-2">🌄</div>
+                            <div class="text-2xl mb-2"></div>
                             <div class="text-white text-sm font-bold">Top Attractions</div>
                             <div class="text-[10px] text-zinc-500 mt-1">{{ $stats['attractions'] }} sites — fees, categories, images</div>
                         </a>
                         <a href="{{ route('county.admin.pro', [$county->slug, 'tab' => 'hotels']) }}" class="group bg-white/5 border border-white/10 rounded-xl p-4 hover:border-indigo-500/40 hover:bg-indigo-500/5 transition-all">
-                            <div class="text-2xl mb-2">🏨</div>
+                            <div class="text-2xl mb-2"></div>
                             <div class="text-white text-sm font-bold">Places to Stay</div>
                             <div class="text-[10px] text-zinc-500 mt-1">{{ $stats['hotels'] }} hotels — ratings, images</div>
                         </a>
                         <a href="{{ route('county.admin.pro', [$county->slug, 'tab' => 'marketplace']) }}" class="group bg-white/5 border border-white/10 rounded-xl p-4 hover:border-indigo-500/40 hover:bg-indigo-500/5 transition-all">
-                            <div class="text-2xl mb-2">🛒</div>
+                            <div class="text-2xl mb-2"></div>
                             <div class="text-white text-sm font-bold">Commerce & Products</div>
                             <div class="text-[10px] text-zinc-500 mt-1">{{ $stats['products'] }} products — prices, video, stock</div>
                         </a>
                         <a href="{{ route('county.admin.pro', [$county->slug, 'tab' => 'videos4d']) }}" class="group bg-white/5 border border-white/10 rounded-xl p-4 hover:border-indigo-500/40 hover:bg-indigo-500/5 transition-all">
-                            <div class="text-2xl mb-2">🎬</div>
+                            <div class="text-2xl mb-2"></div>
                             <div class="text-white text-sm font-bold">Sector Videos</div>
                             <div class="text-[10px] text-zinc-500 mt-1">Hero & sector background videos</div>
                         </a>
@@ -234,11 +234,11 @@
 
                 {{-- Quick action pills --}}
                 <div class="flex flex-wrap gap-2">
-                    <a href="{{ route('county.admin.pro', [$county->slug, 'tab' => 'content']) }}" class="inline-flex items-center gap-1.5 px-3.5 py-2 rounded-xl bg-white/5 border border-white/10 text-zinc-300 hover:bg-indigo-500/10 hover:border-indigo-500/30 hover:text-indigo-400 text-xs font-medium transition-all">✏️ Edit Content</a>
-                    <a href="{{ route('county.admin.pro', [$county->slug, 'tab' => 'images']) }}" class="inline-flex items-center gap-1.5 px-3.5 py-2 rounded-xl bg-white/5 border border-white/10 text-zinc-300 hover:bg-indigo-500/10 hover:border-indigo-500/30 hover:text-indigo-400 text-xs font-medium transition-all">🖼️ Media Manager</a>
-                    <a href="{{ route('county.admin.pro', [$county->slug, 'tab' => 'prices']) }}" class="inline-flex items-center gap-1.5 px-3.5 py-2 rounded-xl bg-white/5 border border-white/10 text-zinc-300 hover:bg-indigo-500/10 hover:border-indigo-500/30 hover:text-indigo-400 text-xs font-medium transition-all">💰 Set Prices</a>
-                    <a href="{{ route('county.admin.pro', [$county->slug, 'tab' => 'ads']) }}" class="inline-flex items-center gap-1.5 px-3.5 py-2 rounded-xl bg-white/5 border border-white/10 text-zinc-300 hover:bg-indigo-500/10 hover:border-indigo-500/30 hover:text-indigo-400 text-xs font-medium transition-all">📢 Advertise</a>
-                    <a href="{{ route('county.admin.pro', [$county->slug, 'tab' => 'reports']) }}" class="inline-flex items-center gap-1.5 px-3.5 py-2 rounded-xl bg-white/5 border border-white/10 text-zinc-300 hover:bg-indigo-500/10 hover:border-indigo-500/30 hover:text-indigo-400 text-xs font-medium transition-all">📊 Reports</a>
+                    <a href="{{ route('county.admin.pro', [$county->slug, 'tab' => 'content']) }}" class="inline-flex items-center gap-1.5 px-3.5 py-2 rounded-xl bg-white/5 border border-white/10 text-zinc-300 hover:bg-indigo-500/10 hover:border-indigo-500/30 hover:text-indigo-400 text-xs font-medium transition-all"> Edit Content</a>
+                    <a href="{{ route('county.admin.pro', [$county->slug, 'tab' => 'images']) }}" class="inline-flex items-center gap-1.5 px-3.5 py-2 rounded-xl bg-white/5 border border-white/10 text-zinc-300 hover:bg-indigo-500/10 hover:border-indigo-500/30 hover:text-indigo-400 text-xs font-medium transition-all"> Media Manager</a>
+                    <a href="{{ route('county.admin.pro', [$county->slug, 'tab' => 'prices']) }}" class="inline-flex items-center gap-1.5 px-3.5 py-2 rounded-xl bg-white/5 border border-white/10 text-zinc-300 hover:bg-indigo-500/10 hover:border-indigo-500/30 hover:text-indigo-400 text-xs font-medium transition-all"> Set Prices</a>
+                    <a href="{{ route('county.admin.pro', [$county->slug, 'tab' => 'ads']) }}" class="inline-flex items-center gap-1.5 px-3.5 py-2 rounded-xl bg-white/5 border border-white/10 text-zinc-300 hover:bg-indigo-500/10 hover:border-indigo-500/30 hover:text-indigo-400 text-xs font-medium transition-all"> Advertise</a>
+                    <a href="{{ route('county.admin.pro', [$county->slug, 'tab' => 'reports']) }}" class="inline-flex items-center gap-1.5 px-3.5 py-2 rounded-xl bg-white/5 border border-white/10 text-zinc-300 hover:bg-indigo-500/10 hover:border-indigo-500/30 hover:text-indigo-400 text-xs font-medium transition-all"> Reports</a>
                 </div>
 
                 {{-- Data tables --}}
@@ -278,7 +278,7 @@
                 </div>
             </div>
 
-            {{-- ═══════ 4D VIDEOS — Gaussian Studio ═══════ --}}
+            {{--  4D VIDEOS — Gaussian Studio  --}}
             @elseif($tab === 'videos4d')
             <div class="space-y-6">
                 <div class="flex items-center justify-between">
@@ -351,7 +351,7 @@
                 </div>
             </div>
 
-            {{-- ═══════ EXISTING TABS (inherited from original) ═══════ --}}
+            {{--  EXISTING TABS (inherited from original)  --}}
             @elseif($tab === 'details')
             <div class="glass-card rounded-2xl p-6">
                 <h2 class="text-lg font-bold text-white mb-4">County Details</h2>
@@ -428,7 +428,7 @@
                                 <video autoplay muted loop playsinline class="absolute inset-0 w-full h-full object-cover">
                                     <source src="{{ $img['video'] }}" type="video/mp4">
                                 </video>
-                                <div class="absolute bottom-2 left-3 text-[10px] px-2 py-1 rounded bg-black/70 text-indigo-300 border border-indigo-500/30">🎬 Hero Video Playing</div>
+                                <div class="absolute bottom-2 left-3 text-[10px] px-2 py-1 rounded bg-black/70 text-indigo-300 border border-indigo-500/30"> Hero Video Playing</div>
                                 @else
                                 <div class="absolute inset-0 flex items-center justify-center">
                                     <div class="text-center">
@@ -446,12 +446,12 @@
                                     @csrf
                                     <label class="flex items-center justify-center h-10 rounded-xl bg-gradient-to-r from-indigo-500 to-violet-600 text-white text-xs font-bold cursor-pointer hover:from-indigo-400 hover:to-violet-500 transition active:scale-95">
                                         <input type="file" name="video" accept="video/mp4,video/webm" class="sr-only" onchange="this.form.submit()">
-                                        🎬 Upload &amp; Sync Hero Video
+                                         Upload &amp; Sync Hero Video
                                     </label>
                                 </form>
                                 @if(!empty($img['video']))
                                 <div class="flex items-center gap-2 text-[10px]">
-                                    <span class="text-emerald-400">✅ Live — {{ $img['video_name'] ?? 'Hero video' }}</span>
+                                    <span class="text-emerald-400"> Live — {{ $img['video_name'] ?? 'Hero video' }}</span>
                                     <form method="POST" action="{{ route('county.admin.hero.delete', $county->slug) }}" onsubmit="return confirm('Delete hero video?')">@csrf<button class="text-red-400 hover:text-red-300 underline ml-2">Delete</button></form>
                                 </div>
                                 @endif
@@ -466,7 +466,7 @@
                             <video autoplay muted loop playsinline class="w-full h-full object-cover" onerror="this.style.display='none'">
                                 <source src="{{ $img['video'] }}" type="video/mp4">
                             </video>
-                            <div class="absolute top-1.5 right-1.5 text-[9px] px-1.5 py-0.5 rounded bg-black/60 text-indigo-300 border border-indigo-500/30">🎬</div>
+                            <div class="absolute top-1.5 right-1.5 text-[9px] px-1.5 py-0.5 rounded bg-black/60 text-indigo-300 border border-indigo-500/30"></div>
                             @elseif($img['exists'])
                             <img src="{{ media($img['path']) }}" class="w-full h-full object-cover">
                             @else
@@ -474,7 +474,7 @@
                             @endif
                         </div>
                         <div class="p-3">
-                            <div class="text-sm font-semibold text-zinc-200 capitalize">{{ $sector }} @if(!empty($img['video']))<span class="text-[10px] text-indigo-400 ml-1">🎬 Live</span>@endif</div>
+                            <div class="text-sm font-semibold text-zinc-200 capitalize">{{ $sector }} @if(!empty($img['video']))<span class="text-[10px] text-indigo-400 ml-1"> Live</span>@endif</div>
                             <div class="flex flex-col gap-1.5 mt-2">
                                 {{-- Row 1: Video upload --}}
                                 @if($sector !== 'hero')
@@ -483,7 +483,7 @@
                                     <input type="hidden" name="sector" value="{{ $sector }}">
                                     <label class="flex-1 flex items-center justify-center h-7 rounded-lg border border-white/10 text-[10px] font-medium text-zinc-500 cursor-pointer hover:border-indigo-500/40 hover:text-indigo-400 transition">
                                         <input type="file" name="video" accept="video/mp4,video/webm" class="sr-only" onchange="this.form.submit()">
-                                        🎬 Upload Video
+                                         Upload Video
                                     </label>
                                 </form>
                                 @endif
@@ -492,7 +492,7 @@
                                     @csrf
                                     <label class="flex-1 flex items-center justify-center h-7 rounded-lg border border-white/10 text-[10px] font-medium text-zinc-500 cursor-pointer hover:border-indigo-500/40 hover:text-indigo-400 transition">
                                         <input type="file" name="video" accept="video/mp4,video/webm" class="sr-only" onchange="this.form.submit()">
-                                        🎬 Upload Hero Video
+                                         Upload Hero Video
                                     </label>
                                 </form>
                                 @if(!empty($img['video']))
@@ -505,13 +505,13 @@
                                 <form method="POST" action="{{ route('county.admin.image.upload', $county->slug) }}" enctype="multipart/form-data" class="flex-1">
                                     @csrf
                                     <input type="hidden" name="sector" value="{{ $sector }}">
-                                    <label class="flex items-center justify-center h-7 rounded-lg border border-white/10 text-[10px] font-medium text-zinc-500 cursor-pointer hover:border-indigo-500/40 hover:text-indigo-400 transition"><input type="file" name="image" accept="image/*" class="sr-only" onchange="this.form.submit()">🖼️ Image</label>
+                                    <label class="flex items-center justify-center h-7 rounded-lg border border-white/10 text-[10px] font-medium text-zinc-500 cursor-pointer hover:border-indigo-500/40 hover:text-indigo-400 transition"><input type="file" name="image" accept="image/*" class="sr-only" onchange="this.form.submit()"> Image</label>
                                 </form>
                                 @if($img['exists'])
                                 <form method="POST" action="{{ route('county.admin.image.delete', [$county->slug, $sector]) }}" onsubmit="return confirm('Delete image?')">@csrf<button class="h-7 px-2 rounded-lg border border-red-500/20 text-red-400 text-[10px] font-medium hover:bg-red-500/10">×</button></form>
                                 @endif
                                 @if(!empty($img['video']))
-                                <form method="POST" action="{{ route('county.admin.sector.video.delete', [$county->slug, $sector]) }}" onsubmit="return confirm('Delete video?')">@csrf<button class="h-7 px-2 rounded-lg border border-red-500/20 text-red-400 text-[10px] font-medium hover:bg-red-500/10">✕</button></form>
+                                <form method="POST" action="{{ route('county.admin.sector.video.delete', [$county->slug, $sector]) }}" onsubmit="return confirm('Delete video?')">@csrf<button class="h-7 px-2 rounded-lg border border-red-500/20 text-red-400 text-[10px] font-medium hover:bg-red-500/10"></button></form>
                                 @endif
                                 </div>
                                 @endif
@@ -617,7 +617,7 @@
                     <h2 class="text-sm font-bold text-white mb-4">Active Ads ({{ $ads->count() }})</h2>
                     @forelse($ads as $ad)
                     <div class="flex items-center gap-3 py-3 border-b border-white/5 last:border-0">
-                        <div class="w-10 h-10 rounded-xl bg-white/5 flex items-center justify-center text-lg shrink-0">📢</div>
+                        <div class="w-10 h-10 rounded-xl bg-white/5 flex items-center justify-center text-lg shrink-0"></div>
                         <div class="flex-1 min-w-0"><div class="font-medium text-zinc-200 text-sm truncate">{{ $ad->name }}</div><div class="text-[10px] text-zinc-500">KES {{ number_format($ad->budget) }}</div></div>
                         <span class="text-[10px] px-2 py-0.5 rounded-full bg-emerald-500/10 text-emerald-400 border border-emerald-500/20">{{ $ad->is_active ? 'Live' : 'Pending' }}</span>
                     </div>
@@ -637,8 +637,8 @@
                     <ul class="mt-4 space-y-1.5 text-xs text-zinc-400 flex-1">
                         <li>{{ $p->max_booths >= 999 ? 'Unlimited' : $p->max_booths }} booths</li>
                         <li>{{ $p->max_exhibitions >= 999 ? 'Unlimited' : $p->max_exhibitions }} exhibitions</li>
-                        <li>{{ $p->has_analytics ? '✅ Analytics' : '— Analytics' }}</li>
-                        <li>{{ $p->has_livestream ? '✅ Livestream' : '— Livestream' }}</li>
+                        <li>{{ $p->has_analytics ? ' Analytics' : '— Analytics' }}</li>
+                        <li>{{ $p->has_livestream ? ' Livestream' : '— Livestream' }}</li>
                     </ul>
                     <form method="POST" action="{{ route('county.admin.package', $county->slug) }}" class="mt-4">@csrf
                         <input type="hidden" name="plan_slug" value="{{ $p->slug }}">

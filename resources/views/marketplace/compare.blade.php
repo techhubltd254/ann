@@ -2,7 +2,7 @@
 @section('title','Compare Products — KICC Marketplace')
 @section('content')
 <div class="pt-20 max-w-6xl mx-auto px-5 py-10">
-<h1 class="text-2xl font-black text-gray-900 mb-6">📊 Compare Products</h1>
+<h1 class="text-2xl font-black text-gray-900 mb-6"> Compare Products</h1>
 @if($products->count() < 2)
 <div class="text-center py-20 text-gray-400"><p>Select at least 2 products to compare.</p><a href="{{ route('marketplace.index') }}" class="inline-block mt-4 text-[#046bd2] font-bold">Browse products</a></div>
 @else

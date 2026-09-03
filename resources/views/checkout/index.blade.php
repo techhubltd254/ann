@@ -64,7 +64,7 @@
 
             @if(session('gift_card_code'))
             <div class="mt-4 bg-green-50 border border-green-200 rounded-xl px-4 py-3 flex items-center justify-between">
-                <span class="text-sm text-green-700">🎁 Gift card {{ session('gift_card_code') }} — KES {{ number_format(session('gift_card_balance')) }}</span>
+                <span class="text-sm text-green-700"> Gift card {{ session('gift_card_code') }} — KES {{ number_format(session('gift_card_balance')) }}</span>
                 <a href="{{ route('gift-cards.remove') }}" class="text-xs text-red-500 font-bold">Remove</a>
             </div>
             @endif

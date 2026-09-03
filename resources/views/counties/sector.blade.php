@@ -47,7 +47,7 @@
 
 @section('content')
 <div class="pt-20">
-{{-- ═══ HERO ═══ --}}
+{{--  HERO  --}}
 @php $heroVids = $sectorHeroVideos ?? []; @endphp
 @if(count($heroVids) > 0)
 <div class="relative h-[45vh] md:h-[55vh] overflow-hidden bg-[#0B1E57]"
@@ -125,7 +125,7 @@
     </div>
     @endif
 
-    {{-- ═══ ENTITIES GRID ═══ --}}
+    {{--  ENTITIES GRID  --}}
     <div class="max-w-7xl mx-auto px-5 py-12">
         @if($items->count() > 0)
         <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
@@ -198,7 +198,7 @@
         @endif
     </div>
 
-    {{-- ═══ SECTOR ENTITY REVIEWS ═══ --}}
+    {{--  SECTOR ENTITY REVIEWS  --}}
     <div class="max-w-7xl mx-auto px-5 pb-10">
         <div class="grid grid-cols-1 lg:grid-cols-2 gap-6">
             <div class="bg-white border border-gray-200 rounded-2xl p-5">
@@ -214,7 +214,7 @@
                 <div class="border-b border-gray-100 pb-3 mb-3 last:border-0">
                     <div class="flex items-center justify-between mb-1">
                         <span class="text-xs font-bold text-gray-900">{{ $sr->entity?->name ?? 'Entity' }}</span>
-                        <span class="text-xs font-bold text-[#FFCD05]">{{ str_repeat('★', (int) round($sr->rating)) }}{{ str_repeat('☆', 5 - (int) round($sr->rating)) }}</span>
+                        <span class="text-xs font-bold text-[#FFCD05]">{{ str_repeat('', (int) round($sr->rating)) }}{{ str_repeat('', 5 - (int) round($sr->rating)) }}</span>
                     </div>
                     <p class="text-xs text-gray-600">{{ $sr->review }}</p>
                     <div class="text-[10px] text-gray-400 mt-1">{{ $sr->user?->name ?? 'Visitor' }} · {{ $sr->created_at?->diffForHumans() }}</div>

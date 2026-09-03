@@ -23,7 +23,7 @@
 
     @if($enquiries->isEmpty())
     <div class="bg-white border border-gray-200 rounded-2xl p-12 text-center">
-        <div class="text-4xl mb-3">📭</div>
+        <div class="text-4xl mb-3"></div>
         <h3 class="font-bold text-gray-900 mb-1">No enquiries yet</h3>
         <p class="text-gray-500 text-sm">Export applications will appear here as users submit them.</p>
     </div>

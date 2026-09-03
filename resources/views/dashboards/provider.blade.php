@@ -35,7 +35,7 @@
         <div class="bg-white border-b border-gray-200 px-6 h-16 flex items-center justify-between shrink-0">
             <div>
                 <div class="font-black text-gray-900 text-sm">{{ $meta['company_name'] ?? $user->name }}</div>
-                <div class="text-[10px] font-bold uppercase tracking-widest" style="color: {{ $accent }}">{{ ucfirst($type) }} Provider · {{ ($meta['approved'] ?? false) ? 'Government Certified ✓' : 'Pending Certification' }}</div>
+                <div class="text-[10px] font-bold uppercase tracking-widest" style="color: {{ $accent }}">{{ ucfirst($type) }} Provider · {{ ($meta['approved'] ?? false) ? 'Government Certified ' : 'Pending Certification' }}</div>
             </div>
             @if($pendingCount > 0)
             <span class="text-[10px] font-bold px-2.5 py-1 rounded-full bg-amber-50 text-amber-600">{{ $pendingCount }} awaiting KICC approval</span>
@@ -50,7 +50,7 @@
             <div class="bg-red-50 border border-red-200 text-red-700 rounded-xl px-5 py-3 mb-6 text-sm">{{ $errors->first() }}</div>
             @endif
 
-            {{-- ═══════ SERVICES ═══════ --}}
+            {{--  SERVICES  --}}
             @if($tab === 'services')
             <div class="bg-white border border-gray-200 rounded-2xl p-6">
                 <h3 class="font-bold text-gray-900 mb-5">My Services &amp; Prices ({{ $services->count() }})</h3>
@@ -89,7 +89,7 @@
             </div>
             @endif
 
-            {{-- ═══════ ADD SERVICE ═══════ --}}
+            {{--  ADD SERVICE  --}}
             @if($tab === 'add')
             <div class="bg-white border border-gray-200 rounded-2xl p-6 max-w-xl">
                 <h3 class="font-bold text-gray-900 mb-2">Add a Service</h3>
@@ -128,7 +128,7 @@
             </div>
             @endif
 
-            {{-- ═══════ BOOKINGS ═══════ --}}
+            {{--  BOOKINGS  --}}
             @if($tab === 'bookings')
             <div class="bg-white border border-gray-200 rounded-2xl p-6">
                 <h3 class="font-bold text-gray-900 mb-5">Bookings for My Services ({{ $bookings->count() }})</h3>
@@ -149,7 +149,7 @@
             </div>
             @endif
 
-            {{-- ═══════ MONEY ═══════ --}}
+            {{--  MONEY  --}}
             @if($tab === 'money')
             <div class="grid grid-cols-2 lg:grid-cols-3 gap-4 mb-6">
                 <div class="bg-white border border-gray-200 rounded-2xl p-5"><div class="text-2xl font-black text-gray-900">KES {{ number_format($money['total']) }}</div><div class="text-xs text-gray-400 mt-1">Gross bookings</div></div>
@@ -167,7 +167,7 @@
             </div>
             @endif
 
-            {{-- ═══════ CERTIFICATION ═══════ --}}
+            {{--  CERTIFICATION  --}}
             @if($tab === 'status')
             <div class="bg-white border border-gray-200 rounded-2xl p-8 max-w-2xl">
                 <h3 class="font-bold text-gray-900 mb-4">Government Certification</h3>

@@ -69,7 +69,7 @@
                     <button type="button" @click="room = {{ $r->id }}; roomPrice = {{ $r->price_per_night }}"
                             class="bg-white border-2 rounded-2xl p-4 text-left transition-all"
                             :class="room === {{ $r->id }} ? 'border-[#0B1E57]' : 'border-gray-200 hover:border-gray-300'">
-                        <div class="text-[10px] font-bold text-[#F59E0B] uppercase">{{ $h->star_rating }}★ {{ $h->name }}</div>
+                        <div class="text-[10px] font-bold text-[#F59E0B] uppercase">{{ $h->star_rating }} {{ $h->name }}</div>
                         <div class="font-bold text-gray-900 text-sm mt-1">{{ $r->name }}</div>
                         <div class="text-xs text-gray-400">Sleeps {{ $r->max_guests }}</div>
                         <div class="font-black text-gray-900 mt-2">KES {{ number_format($r->price_per_night) }}<span class="text-[10px] text-gray-400 font-medium">/night</span></div>
@@ -80,7 +80,7 @@
             <div class="flex items-center gap-3 mb-10" x-show="room">
                 <label class="text-sm text-gray-500">Nights:</label>
                 <input type="number" x-model.number="nights" min="1" max="30" class="w-20 h-10 px-3 rounded-xl bg-[#F9FAFB] border border-gray-200 text-sm">
-                <button type="button" @click="room = null; roomPrice = 0" class="text-xs text-gray-400 hover:text-[#901C1E]" data-magnetic>✕ remove hotel</button>
+                <button type="button" @click="room = null; roomPrice = 0" class="text-xs text-gray-400 hover:text-[#901C1E]" data-magnetic> remove hotel</button>
             </div>
 
             {{-- STEP 3: cab allocation --}}
@@ -90,7 +90,7 @@
                 <button type="button" @click="transfer = {{ $t->id }}; transferPrice = {{ $t->price }}"
                         class="bg-white border-2 rounded-2xl p-4 text-left transition-all"
                         :class="transfer === {{ $t->id }} ? 'border-[#0B1E57]' : 'border-gray-200 hover:border-gray-300'">
-                    <div class="text-2xl mb-2">{{ $t->vehicle_type === 'helicopter' ? '🚁' : ($t->vehicle_type === 'van' ? '🚐' : '🚗') }}</div>
+                    <div class="text-2xl mb-2">{{ $t->vehicle_type === 'helicopter' ? '' : ($t->vehicle_type === 'van' ? '' : '') }}</div>
                     <div class="font-bold text-gray-900 text-sm capitalize">{{ $t->vehicle_type }}</div>
                     <div class="text-xs text-gray-400">{{ $t->provider_name }} · seats {{ $t->capacity }}</div>
                     <div class="font-black text-gray-900 mt-2">KES {{ number_format($t->price) }}</div>
@@ -118,7 +118,7 @@
                     <div class="text-2xl font-black text-gray-900">KES <span x-text="total().toLocaleString()"></span></div>
                 </div>
                 <button type="submit" class="h-12 px-8 rounded-xl bg-[#F59E0B] text-[#07090F] font-black text-sm hover:bg-[#d97706] transition-all active:scale-95">
-                    Pay &amp; Book ✈️
+                    Pay &amp; Book 
                 </button>
             </div>
         </div>

@@ -53,7 +53,7 @@
                      @click="$refs.photos.click()">
                     <input type="file" name="photos[]" multiple accept="image/*" required class="hidden" x-ref="photos"
                            @change="previews = []; Array.from($event.target.files).slice(0, 20).forEach(f => { const r = new FileReader(); r.onload = e => previews.push(e.target.result); r.readAsDataURL(f); })">
-                    <div class="text-4xl mb-3">📸</div>
+                    <div class="text-4xl mb-3"></div>
                     <div class="text-gray-900 font-semibold text-sm">Drop photos here or click to browse</div>
                     <div class="text-gray-400 text-xs mt-1">JPG, PNG or WebP &middot; Max 10MB each &middot; More angles = better 3D</div>
                 </div>
@@ -80,7 +80,7 @@
     </div>
 
     <div class="mt-8 grid sm:grid-cols-3 gap-4" data-reveal data-reveal-delay="150">
-        @foreach([['📱','Phone Ready','Tilt your phone to look around — gyroscope-powered 3D.'],['🔄','Orbit Mode','Drag to rotate, pinch to zoom on any device.'],['🥽','VR Mode','Drop into Google Cardboard for full immersion.']] as $f)
+        @foreach([['','Phone Ready','Tilt your phone to look around — gyroscope-powered 3D.'],['','Orbit Mode','Drag to rotate, pinch to zoom on any device.'],['','VR Mode','Drop into Google Cardboard for full immersion.']] as $f)
         <div class="bg-white border border-gray-200 rounded-xl p-4 text-center">
             <div class="text-2xl mb-2">{{ $f[0] }}</div>
             <div class="font-bold text-gray-900 text-sm">{{ $f[1] }}</div>

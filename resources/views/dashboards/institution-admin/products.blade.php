@@ -134,7 +134,7 @@ document.addEventListener('alpine:init', () => {
                     <td class="py-3.5 font-semibold text-zinc-200">KES {{ number_format($p->variants->min('price') ?? 0) }}</td>
                     <td class="py-3.5 text-center">
                         @if(count($allVideos) > 0)
-                        <span class="text-[10px] px-2 py-0.5 rounded-full bg-indigo-500/10 text-indigo-400 border border-indigo-500/20">{{ count($allVideos) }} 🎬</span>
+                        <span class="text-[10px] px-2 py-0.5 rounded-full bg-indigo-500/10 text-indigo-400 border border-indigo-500/20">{{ count($allVideos) }} </span>
                         @else
                         <span class="text-[10px] text-zinc-600">—</span>
                         @endif
@@ -161,7 +161,7 @@ document.addEventListener('alpine:init', () => {
                             </button>
                             <form method="POST" action="{{ route('institution.admin.products.delete', [$institution->slug, $i]) }}" class="inline" onsubmit="return confirm('Delete?')">
                                 @csrf
-                                <button class="btn-ghost text-[10px] py-1 px-1.5 text-red-400">🗑️</button>
+                                <button class="btn-ghost text-[10px] py-1 px-1.5 text-red-400"></button>
                             </form>
                         </div>
                     </td>
@@ -174,7 +174,7 @@ document.addEventListener('alpine:init', () => {
     </div>
 </div>
 
-{{-- ══════════ PRODUCT PORTFOLIO DRAWER (standalone, global store) ══════════ --}}
+{{--  PRODUCT PORTFOLIO DRAWER (standalone, global store)  --}}
 <div x-data
      x-show="$store.pd.detail !== null"
      x-cloak
@@ -211,7 +211,7 @@ document.addEventListener('alpine:init', () => {
                                 <source :src="v.url || v" type="video/mp4">
                             </video>
                             <div class="absolute inset-0 bg-black/40 flex items-center justify-center opacity-0 group-hover:opacity-100 transition" x-show="$store.pd.videoFiles.length > 0">
-                                <span @click.stop="$store.pd.removeVideo(idx)" class="text-red-400 text-xs font-bold cursor-pointer">✕</span>
+                                <span @click.stop="$store.pd.removeVideo(idx)" class="text-red-400 text-xs font-bold cursor-pointer"></span>
                             </div>
                         </button>
                     </template>

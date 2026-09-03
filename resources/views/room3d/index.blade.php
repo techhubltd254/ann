@@ -25,7 +25,7 @@
 
     @if($rooms->isEmpty())
     <div class="text-center py-20" data-reveal>
-        <div class="text-6xl mb-4">🏗️</div>
+        <div class="text-6xl mb-4"></div>
         <h2 class="text-xl font-semibold text-gray-900 mb-2" data-split>No rooms yet</h2>
         <p class="text-[#5A6480] mb-6 text-sm">Upload photos of a room to create your first 3D experience</p>
         <a href="{{ route('room3d.create') }}" data-magnetic
@@ -42,7 +42,7 @@
                 @if($room->coverUrl())
                 <img src="{{ $room->coverUrl() }}" alt="{{ $room->title }}" class="w-full h-full object-cover">
                 @else
-                <div class="flex items-center justify-center h-full text-gray-900/20 text-4xl">🏠</div>
+                <div class="flex items-center justify-center h-full text-gray-900/20 text-4xl"></div>
                 @endif
                 <div class="absolute top-2 right-2">
                     <span class="px-2 py-1 text-[10px] font-bold rounded-full

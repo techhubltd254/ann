@@ -11,7 +11,7 @@
             <div><h3 class="font-bold text-gray-900 text-lg">{{ $j->title }}</h3>
                 <div class="flex flex-wrap gap-3 text-xs text-gray-400 mt-1">
                     @if($j->department)<span>{{ $j->department }}</span>@endif
-                    @if($j->location)<span>📍 {{ $j->location }}</span>@endif
+                    @if($j->location)<span> {{ $j->location }}</span>@endif
                     <span class="px-2 py-0.5 rounded bg-gray-100 text-gray-600 font-bold">{{ ucfirst(str_replace('_',' ',$j->type)) }}</span>
                 </div>
                 @if($j->description)<p class="text-gray-600 text-sm mt-2">{{ $j->description }}</p>@endif
@@ -21,7 +21,7 @@
         @if($j->closing_date)<div class="mt-3 text-xs text-amber-600">Closes: {{ $j->closing_date->format('M d, Y') }}</div>@endif
     </div>
     @empty
-    <div class="text-center py-12 text-gray-400"><div class="text-4xl mb-3">💼</div><p>No open positions right now. Check back later.</p></div>
+    <div class="text-center py-12 text-gray-400"><div class="text-4xl mb-3"></div><p>No open positions right now. Check back later.</p></div>
     @endforelse
 </div>
 @endsection

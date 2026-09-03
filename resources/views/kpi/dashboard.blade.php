@@ -10,7 +10,7 @@
         <div class="bg-white border border-gray-200 rounded-2xl p-5"><div class="text-2xl font-black text-gray-900">{{ $bookingCompletion }}%</div><div class="text-xs text-gray-400 mt-1">Booking Completion</div></div>
         <div class="bg-white border border-gray-200 rounded-2xl p-5"><div class="text-2xl font-black text-emerald-500">{{ $paymentSuccess }}%</div><div class="text-xs text-gray-400 mt-1">Payment Success</div></div>
         <div class="bg-white border border-gray-200 rounded-2xl p-5"><div class="text-2xl font-black text-gray-900">{{ $mobileCrashRate }}%</div><div class="text-xs text-gray-400 mt-1">Mobile Crash Rate</div></div>
-        <div class="bg-white border border-gray-200 rounded-2xl p-5"><div class="text-2xl font-black text-amber-500">⭐ {{ $userSatisfaction }}</div><div class="text-xs text-gray-400 mt-1">User Satisfaction</div></div>
+        <div class="bg-white border border-gray-200 rounded-2xl p-5"><div class="text-2xl font-black text-amber-500"> {{ $userSatisfaction }}</div><div class="text-xs text-gray-400 mt-1">User Satisfaction</div></div>
         <div class="bg-white border border-gray-200 rounded-2xl p-5"><div class="text-2xl font-black text-[#046bd2]">KES {{ number_format($revenue) }}</div><div class="text-xs text-gray-400 mt-1">Total Revenue</div></div>
     </div>
     <div class="grid grid-cols-2 md:grid-cols-4 gap-4">

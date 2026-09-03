@@ -34,7 +34,7 @@
                     @endphp
                     <video src="{{ $videoSrc }}" controls class="w-full h-full object-cover" poster="{{ $videoPoster }}"></video>
                     @elseif($asset->kind === 'model')
-                    <div class="w-full h-full flex items-center justify-center text-white/40 text-4xl">🧊 {{ pathinfo($asset->original_name, PATHINFO_EXTENSION) }}</div>
+                    <div class="w-full h-full flex items-center justify-center text-white/40 text-4xl"> {{ pathinfo($asset->original_name, PATHINFO_EXTENSION) }}</div>
                     @else
                     <img src="{{ $asset->url() }}" alt="{{ $asset->alt_text }}" class="w-full h-full object-cover">
                     @endif
@@ -120,7 +120,7 @@
                             <div class="flex items-center gap-2 flex-1">
                                 <div class="w-7 h-7 rounded-full flex items-center justify-center text-[10px] font-black transition-all"
                                      :class="step >= {{ $i }} ? 'bg-[#901C1E] text-white' : 'bg-gray-100 text-gray-400'">
-                                    <span x-show="step > {{ $i }}">✓</span>
+                                    <span x-show="step > {{ $i }}"></span>
                                     <span x-show="step <= {{ $i }}">{{ $i + 1 }}</span>
                                 </div>
                                 <div class="text-[10px] font-bold uppercase tracking-widest" :class="step >= {{ $i }} ? 'text-gray-900' : 'text-gray-400'">{{ $s }}</div>
@@ -143,7 +143,7 @@
                                     <input type="radio" value="cinematic_video" x-model="pipeline" class="sr-only">
                                     <div class="flex items-center gap-3 p-4 rounded-xl border-2 cursor-pointer transition-all"
                                          :class="pipeline === 'cinematic_video' ? 'border-[#901C1E] bg-[#901C1E]/5' : 'border-gray-200 hover:border-gray-300'">
-                                        <div class="w-10 h-10 rounded-xl flex items-center justify-center text-lg bg-kicc-gold/15 shrink-0">🎬</div>
+                                        <div class="w-10 h-10 rounded-xl flex items-center justify-center text-lg bg-kicc-gold/15 shrink-0"></div>
                                         <div>
                                             <div class="font-bold text-gray-900 text-sm">Cinematic Video</div>
                                             <div class="text-[11px] text-[#5A6480] mt-0.5">Camera motion, lighting & depth from your image</div>
@@ -154,7 +154,7 @@
                                     <input type="radio" value="image_to_3d" x-model="pipeline" class="sr-only">
                                     <div class="flex items-center gap-3 p-4 rounded-xl border-2 cursor-pointer transition-all"
                                          :class="pipeline === 'image_to_3d' ? 'border-[#901C1E] bg-[#901C1E]/5' : 'border-gray-200 hover:border-gray-300'">
-                                        <div class="w-10 h-10 rounded-xl flex items-center justify-center text-lg bg-emerald-500/15 shrink-0">🧊</div>
+                                        <div class="w-10 h-10 rounded-xl flex items-center justify-center text-lg bg-emerald-500/15 shrink-0"></div>
                                         <div>
                                             <div class="font-bold text-gray-900 text-sm">3D Model (.glb)</div>
                                             <div class="text-[11px] text-[#5A6480] mt-0.5">Rotatable web-ready mesh, compressed & LOD-ready</div>
@@ -182,7 +182,7 @@
                                         </div>
                                         <p class="text-[11px] text-[#5A6480] mt-1 leading-relaxed">{{ $e['description'] }}</p>
                                         @if(!$e['available'])
-                                        <p class="text-[10px] mt-1.5 text-[#901C1E]">⚠ {{ $e['note'] }}</p>
+                                        <p class="text-[10px] mt-1.5 text-[#901C1E]"> {{ $e['note'] }}</p>
                                         @endif
                                     </div>
                                 </label>
@@ -253,7 +253,7 @@
                     @if($asset->owner_type && $asset->owner_id && $asset->slot)
                     <div class="flex items-center justify-between gap-3 p-3.5 rounded-xl bg-emerald-50 border border-emerald-200">
                         <div class="flex items-center gap-3 min-w-0">
-                            <span class="w-9 h-9 rounded-xl bg-emerald-500/15 flex items-center justify-center text-sm shrink-0">🔗</span>
+                            <span class="w-9 h-9 rounded-xl bg-emerald-500/15 flex items-center justify-center text-sm shrink-0"></span>
                             <div class="min-w-0">
                                 <div class="text-xs font-black text-emerald-700 truncate">{{ $asset->owner->name ?? '—' }}</div>
                                 <div class="text-[10px] text-emerald-600/80">{{ config('pipeline.attachments.' . $asset->owner_type . '.' . $asset->slot, $asset->slot) }}</div>
@@ -304,7 +304,7 @@
                 {{-- Note: async processing — Fitts's Law sized, friendly microcopy --}}
                 <div class="bg-[#0D1220] rounded-2xl p-5 border border-gray-200/10" data-reveal>
                     <div class="flex gap-3">
-                        <div class="text-xl shrink-0">⚡</div>
+                        <div class="text-xl shrink-0"></div>
                         <div>
                             <div class="font-bold text-white text-sm">Processing runs in the background</div>
                             <p class="text-white/60 text-xs mt-1 leading-relaxed">You can keep working — this page auto-refreshes progress. Results are compressed to modern web formats (WebM + MP4) and delivered poster-first so pages never wait on video.</p>

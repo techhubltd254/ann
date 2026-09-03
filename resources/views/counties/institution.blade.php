@@ -6,7 +6,7 @@
 @section('content')
 <div class="pt-20">
 
-    {{-- ═══ HERO VIDEO SECTION (adaptive HLS / 4D / fallback loop) ═══ --}}
+    {{--  HERO VIDEO SECTION (adaptive HLS / 4D / fallback loop)  --}}
     @if($heroVideo || $heroSplat)
     <div class="relative h-[50vh] md:h-[60vh] overflow-hidden bg-[#0B1E57]">
         @if($heroSplat)
@@ -108,7 +108,7 @@
     </div>
     @endif
 
-    {{-- ═══ INSTITUTION INFO + PRODUCTS ═══ --}}
+    {{--  INSTITUTION INFO + PRODUCTS  --}}
     <div class="max-w-7xl mx-auto px-5 py-10">
         <div class="grid grid-cols-1 lg:grid-cols-3 gap-8">
             {{-- Left: Description & Story --}}
@@ -214,37 +214,37 @@
                     <div class="space-y-3 text-sm">
                         @if($institution->location)
                         <div class="flex items-start gap-2.5">
-                            <span class="text-gray-400 mt-0.5">📍</span>
+                            <span class="text-gray-400 mt-0.5"></span>
                             <span class="text-gray-700">{{ $institution->location }}</span>
                         </div>
                         @endif
                         @if($institution->phone)
                         <div class="flex items-center gap-2.5">
-                            <span class="text-gray-400">📞</span>
+                            <span class="text-gray-400"></span>
                             <a href="tel:{{ $institution->phone }}" class="text-gray-700 hover:text-kicc-gold">{{ $institution->phone }}</a>
                         </div>
                         @endif
                         @if($institution->email)
                         <div class="flex items-center gap-2.5">
-                            <span class="text-gray-400">✉</span>
+                            <span class="text-gray-400"></span>
                             <a href="mailto:{{ $institution->email }}" class="text-gray-700 hover:text-kicc-gold">{{ $institution->email }}</a>
                         </div>
                         @endif
                         @if($institution->website)
                         <div class="flex items-center gap-2.5">
-                            <span class="text-gray-400">🌐</span>
+                            <span class="text-gray-400"></span>
                             <a href="{{ $institution->website }}" target="_blank" class="text-gray-700 hover:text-kicc-gold truncate">{{ $institution->website }}</a>
                         </div>
                         @endif
                         @if($institution->headquarters)
                         <div class="flex items-center gap-2.5">
-                            <span class="text-gray-400">🏢</span>
+                            <span class="text-gray-400"></span>
                             <span class="text-gray-700">{{ $institution->headquarters }}</span>
                         </div>
                         @endif
                         @if($institution->founded_year)
                         <div class="flex items-center gap-2.5">
-                            <span class="text-gray-400">📅</span>
+                            <span class="text-gray-400"></span>
                             <span class="text-gray-700">Founded {{ $institution->founded_year }}</span>
                         </div>
                         @endif
@@ -306,7 +306,7 @@
         </div>
     </div>
 
-    {{-- ═══ REVIEWS ═══ --}}
+    {{--  REVIEWS  --}}
     <div class="max-w-7xl mx-auto px-5 pb-10">
         <div class="grid grid-cols-1 lg:grid-cols-2 gap-6">
             <x-review-widget
@@ -334,7 +334,7 @@
 
         @if(!empty($tripRecommendations['places_to_visit']))
         <div class="mb-8">
-            <h3 class="text-sm font-bold text-gray-900 mb-3 flex items-center gap-2"><span>📍 Places to Visit</span><span class="text-[10px] font-normal text-gray-400">nearby</span></h3>
+            <h3 class="text-sm font-bold text-gray-900 mb-3 flex items-center gap-2"><span> Places to Visit</span><span class="text-[10px] font-normal text-gray-400">nearby</span></h3>
             <div class="grid grid-cols-2 md:grid-cols-4 gap-4">
                 @foreach($tripRecommendations['places_to_visit'] as $rec)
                 <a href="{{ route('counties.institution', $rec['slug']) }}" class="group bg-white border border-gray-200 rounded-2xl overflow-hidden hover:border-[#FFCD05]/40 transition-all card-hover">
@@ -360,7 +360,7 @@
 
         @if(!empty($tripRecommendations['places_to_stay']))
         <div class="mb-8">
-            <h3 class="text-sm font-bold text-gray-900 mb-3 flex items-center gap-2"><span>🏨 Places to Stay</span></h3>
+            <h3 class="text-sm font-bold text-gray-900 mb-3 flex items-center gap-2"><span> Places to Stay</span></h3>
             <div class="grid grid-cols-2 md:grid-cols-3 gap-4">
                 @foreach($tripRecommendations['places_to_stay'] as $rec)
                 <a href="{{ route('counties.institution', $rec['slug']) }}" class="group bg-white border border-gray-200 rounded-2xl overflow-hidden hover:border-[#FFCD05]/40 transition-all card-hover">
@@ -377,12 +377,12 @@
 
         @if(!empty($tripRecommendations['transport']))
         <div>
-            <h3 class="text-sm font-bold text-gray-900 mb-3 flex items-center gap-2"><span>🚗 Transport Options</span></h3>
+            <h3 class="text-sm font-bold text-gray-900 mb-3 flex items-center gap-2"><span> Transport Options</span></h3>
             <div class="grid grid-cols-2 md:grid-cols-4 gap-4">
                 @foreach($tripRecommendations['transport'] as $t)
                 <div class="bg-white border border-gray-200 rounded-2xl p-4 card-hover hover:border-[#FFCD05]/40 transition-all">
                     <div class="flex items-center gap-2">
-                        <span class="text-lg">{{ $t['type_emoji'] ?? '🚗' }}</span>
+                        <span class="text-lg">{{ $t['type_emoji'] ?? '' }}</span>
                         <div>
                             <h4 class="font-bold text-gray-900 text-sm">{{ $t['name'] }}</h4>
                             @if($t['type_label'])<span class="text-[10px] font-bold text-gray-400 uppercase tracking-widest">{{ $t['type_label'] }}</span>@endif
@@ -467,21 +467,21 @@ function correlationLoader(type, id) {
         renderMore(data) {
             var h = '';
             if (data.places_to_visit && data.places_to_visit.length > 0) {
-                h += '<div class="mb-6"><h4 class="text-sm font-bold text-gray-900 mb-3">📍 More Places</h4><div class="grid grid-cols-2 md:grid-cols-4 gap-4">';
+                h += '<div class="mb-6"><h4 class="text-sm font-bold text-gray-900 mb-3"> More Places</h4><div class="grid grid-cols-2 md:grid-cols-4 gap-4">';
                 data.places_to_visit.forEach(function(r) {
                     h += '<a href="/counties/institution/' + r.slug + '" class="bg-white border border-gray-200 rounded-xl p-3 hover:border-amber-300 transition-all"><div class="font-bold text-sm">' + r.name + '</div><div class="text-xs text-gray-500">' + (r.distance_km || '') + ' km · ' + (r.type_label || '') + '</div></a>';
                 });
                 h += '</div></div>';
             }
             if (data.places_to_stay && data.places_to_stay.length > 0) {
-                h += '<div class="mb-6"><h4 class="text-sm font-bold text-gray-900 mb-3">🏨 More Places to Stay</h4><div class="grid grid-cols-2 md:grid-cols-3 gap-4">';
+                h += '<div class="mb-6"><h4 class="text-sm font-bold text-gray-900 mb-3"> More Places to Stay</h4><div class="grid grid-cols-2 md:grid-cols-3 gap-4">';
                 data.places_to_stay.forEach(function(r) {
                     h += '<a href="/counties/institution/' + r.slug + '" class="bg-white border border-gray-200 rounded-xl p-3 hover:border-amber-300 transition-all"><div class="font-bold text-sm">' + r.name + '</div><div class="text-xs text-gray-500">' + (r.distance_km || '') + ' km</div></a>';
                 });
                 h += '</div></div>';
             }
             if (data.transport && data.transport.length > 0) {
-                h += '<div><h4 class="text-sm font-bold text-gray-900 mb-3">🚗 More Transport</h4><div class="grid grid-cols-2 md:grid-cols-4 gap-4">';
+                h += '<div><h4 class="text-sm font-bold text-gray-900 mb-3"> More Transport</h4><div class="grid grid-cols-2 md:grid-cols-4 gap-4">';
                 data.transport.forEach(function(t) {
                     var priceHtml = '';
                     if (t.price) priceHtml = '<div class="font-bold text-amber-600 text-sm">KES ' + t.price.toLocaleString() + '</div>';

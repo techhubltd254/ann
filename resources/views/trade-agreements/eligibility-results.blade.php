@@ -18,7 +18,7 @@
 
     @if($matches->isEmpty())
     <div class="bg-white border border-gray-200 rounded-2xl p-10 text-center">
-        <div class="text-4xl mb-3">🔍</div>
+        <div class="text-4xl mb-3"></div>
         <h3 class="font-bold text-gray-900 mb-1">No matching agreements found</h3>
         <p class="text-gray-500 text-sm">Try a broader category, or check the full agreement list.</p>
         <a href="{{ route('trade.agreements.index') }}" class="inline-block mt-4 text-[#046bd2] font-bold hover:underline">View all agreements →</a>

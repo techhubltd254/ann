@@ -29,7 +29,7 @@
             </div>
             @else
             <div class="w-full h-48 bg-gradient-to-br from-[#141B2E] to-[#0D1220] flex items-center justify-center text-5xl relative">
-                <span class="opacity-30">🏛️</span>
+                <span class="opacity-30"></span>
                 <div class="absolute w-32 h-32 rounded-full bg-[#901C1E]/15 blur-2xl"></div>
             </div>
             @endif
@@ -58,7 +58,7 @@
     </div>
     @else
     <div class="text-center py-16 bg-white rounded-2xl border border-gray-200 card-hover" data-reveal>
-        <div class="text-5xl mb-4">🏛️</div>
+        <div class="text-5xl mb-4"></div>
         <h3 class="text-xl font-semibold text-gray-900 mb-2">No exhibitions yet</h3>
         <p class="text-[#5A6480] text-sm">Check back soon for upcoming exhibitions.</p>
     </div>

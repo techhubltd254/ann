@@ -52,7 +52,7 @@
             <div class="bg-red-50 border border-red-200 text-red-700 rounded-xl px-5 py-3 mb-6 text-sm">{{ $errors->first() }}</div>
             @endif
 
-            {{-- ═══════ OVERVIEW ═══════ --}}
+            {{--  OVERVIEW  --}}
             @if($tab === 'overview')
             <div class="grid grid-cols-2 lg:grid-cols-3 gap-4 mb-8">
                 <div class="bg-white border border-gray-200 rounded-2xl p-5"><div class="text-2xl font-black text-gray-900">{{ $stats['products'] }}</div><div class="text-xs text-gray-400 mt-1">Live Products</div></div>
@@ -74,7 +74,7 @@
             </div>
             @endif
 
-            {{-- ═══════ PRODUCTS ═══════ --}}
+            {{--  PRODUCTS  --}}
             @if($tab === 'products')
             <div class="grid lg:grid-cols-3 gap-6">
                 <div class="lg:col-span-2 bg-white border border-gray-200 rounded-2xl p-6">
@@ -115,7 +115,7 @@
             </div>
             @endif
 
-            {{-- ═══════ ORDERS ═══════ --}}
+            {{--  ORDERS  --}}
             @if($tab === 'orders')
             <div class="bg-white border border-gray-200 rounded-2xl p-6">
                 <h3 class="font-bold text-gray-900 mb-5">Orders Containing My Products</h3>
@@ -139,7 +139,7 @@
             </div>
             @endif
 
-            {{-- ═══════ ESCROW ═══════ --}}
+            {{--  ESCROW  --}}
             @if($tab === 'escrow')
             <div class="bg-white border border-gray-200 rounded-2xl p-6">
                 <h3 class="font-bold text-gray-900 mb-5">Escrow Earnings</h3>
@@ -167,7 +167,7 @@
             </div>
             @endif
 
-            {{-- ═══════ MY WEBSITE ═══════ --}}
+            {{--  MY WEBSITE  --}}
             @if($tab === 'website')
             <div class="bg-white border border-gray-200 rounded-2xl p-8 max-w-2xl">
                 <h3 class="font-bold text-gray-900 mb-2">Your Exhibitor Website</h3>

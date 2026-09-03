@@ -33,7 +33,7 @@
             @else
             <div class="flex items-center justify-center h-64 text-gray-500">
                 <div class="text-center">
-                    <div class="text-4xl mb-3">🎬</div>
+                    <div class="text-4xl mb-3"></div>
                     <p class="text-lg">Video not yet generated</p>
                     <p class="text-sm text-gray-600 mt-1">Run <code class="text-amber-400">php artisan screen:generate {{ $screen->id }}</code></p>
                 </div>
@@ -79,7 +79,7 @@
         </div>
         @endif
 
-        {{-- ═══ ADVERTISE ON THIS SCREEN ═══ --}}
+        {{--  ADVERTISE ON THIS SCREEN  --}}
         <div class="mt-8 bg-gradient-to-r from-[#0EA5E9]/20 to-[#0B1E57]/20 border border-[#0EA5E9]/30 rounded-2xl p-6" x-data="{ adOpen: false, pkg: 'week' }">
             @if(session('success'))
             <div class="bg-emerald-500/15 border border-emerald-500/25 text-emerald-400 rounded-xl px-5 py-3 mb-5 text-sm">{{ session('success') }}</div>

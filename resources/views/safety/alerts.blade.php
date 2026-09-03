@@ -10,7 +10,7 @@
         </div>
     </div>
     @if($alerts->isEmpty())
-    <div class="bg-white border border-gray-200 rounded-2xl p-12 text-center"><div class="text-4xl mb-3">🛡️</div><h3 class="font-bold text-gray-900 mb-1">No active alerts</h3><p class="text-gray-500 text-sm">Kenya is safe for travel. Check here for any advisories.</p></div>
+    <div class="bg-white border border-gray-200 rounded-2xl p-12 text-center"><div class="text-4xl mb-3"></div><h3 class="font-bold text-gray-900 mb-1">No active alerts</h3><p class="text-gray-500 text-sm">Kenya is safe for travel. Check here for any advisories.</p></div>
     @else
     <div class="space-y-3">@foreach($alerts as $a)
         <div class="bg-white border border-gray-200 rounded-2xl p-5 {{ $a->severity === 'danger' ? 'border-red-300 bg-red-50' : ($a->severity === 'warning' ? 'border-amber-300 bg-amber-50' : '') }}">
@@ -20,7 +20,7 @@
             </div>
             <h3 class="font-bold text-gray-900 text-sm">{{ $a->title }}</h3>
             @if($a->body)<p class="text-gray-600 text-xs mt-1">{{ $a->body }}</p>@endif
-            @if($a->county)<div class="text-xs text-gray-400 mt-2">📍 {{ $a->county->name }}</div>@endif
+            @if($a->county)<div class="text-xs text-gray-400 mt-2"> {{ $a->county->name }}</div>@endif
         </div>
     @endforeach</div>
     @endif

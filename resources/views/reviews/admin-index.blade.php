@@ -12,7 +12,7 @@
     </div>
     @if(session('success'))<div class="bg-emerald-50 border border-emerald-200 text-emerald-700 rounded-xl px-4 py-3 mb-4 text-sm">{{ session('success') }}</div>@endif
     @if($reviews->isEmpty())
-    <div class="bg-white border border-gray-200 rounded-2xl p-12 text-center"><div class="text-4xl mb-3">⭐</div><h3 class="font-bold text-gray-900 mb-1">No reviews</h3></div>
+    <div class="bg-white border border-gray-200 rounded-2xl p-12 text-center"><div class="text-4xl mb-3"></div><h3 class="font-bold text-gray-900 mb-1">No reviews</h3></div>
     @else
     <div class="space-y-4">
         @foreach($reviews as $r)
@@ -20,7 +20,7 @@
             <div class="flex items-start justify-between gap-4">
                 <div class="flex-1">
                     <div class="flex items-center gap-2 mb-1">
-                        <span class="text-amber-400 text-sm">{{ str_repeat('★', $r->rating) }}{{ str_repeat('☆', 5 - $r->rating) }}</span>
+                        <span class="text-amber-400 text-sm">{{ str_repeat('', $r->rating) }}{{ str_repeat('', 5 - $r->rating) }}</span>
                         <span class="text-xs text-gray-400">by {{ $r->user?->name ?? 'Anonymous' }}</span>
                         <span class="px-2 py-0.5 rounded text-[10px] font-bold {{ $r->status === 'approved' ? 'bg-emerald-100 text-emerald-700' : ($r->status === 'rejected' ? 'bg-red-100 text-red-700' : 'bg-amber-100 text-amber-700') }}">{{ ucfirst($r->status) }}</span>
                     </div>

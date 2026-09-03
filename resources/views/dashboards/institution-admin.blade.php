@@ -7,7 +7,7 @@
 @section('content')
 <div class="flex h-screen overflow-hidden" x-data="{ tab: '{{ $tab ?? 'overview' }}', kpiRange: 'monthly', setTab(t) { this.tab = t; } }">
 
-    {{-- ═══════ SIDEBAR ═══════ --}}
+    {{--  SIDEBAR  --}}
     <aside class="glass-nav flex flex-col w-64 shrink-0 z-30 overflow-y-auto">
         <div class="flex items-center gap-3 h-16 px-5 border-b border-white/5 shrink-0">
             <div class="w-9 h-9 rounded-xl bg-gradient-to-br from-indigo-500 to-violet-600 flex items-center justify-center font-black text-white text-sm shadow-lg shadow-indigo-500/25">
@@ -74,7 +74,7 @@
         </div>
     </aside>
 
-    {{-- ═══════ MAIN VIEWPORT ═══════ --}}
+    {{--  MAIN VIEWPORT  --}}
     <div class="flex-1 flex flex-col overflow-hidden">
         <header class="glass-header h-16 px-6 flex items-center justify-between shrink-0">
             <div class="flex items-center gap-2 text-xs text-zinc-500">
@@ -102,7 +102,7 @@
             <div class="mb-4 px-5 py-3 rounded-xl bg-red-500/10 border border-red-500/20 text-red-400 text-sm">{{ $errors->first() }}</div>
             @endif
 
-            {{-- ═══════ OVERVIEW ═══════ --}}
+            {{--  OVERVIEW  --}}
             @if($tab === 'overview')
             @include('dashboards.institution-admin.overview')
 

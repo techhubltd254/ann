@@ -45,7 +45,7 @@
         .scrollbar-hide::-webkit-scrollbar { display: none; }
         [x-cloak] { display: none !important; }
 
-        /* ── NEWS TICKER (CNN-style county description crawl) ── */
+        /*  NEWS TICKER (CNN-style county description crawl)  */
         .ticker-track {
             display: inline-block;
             animation: ticker-scroll 90s linear infinite;
@@ -59,7 +59,7 @@
             100% { transform: translateX(-100%); }
         }
 
-        /* ── FLOATING STATS BAR (0.75 speed — slower crawl) ── */
+        /*  FLOATING STATS BAR (0.75 speed — slower crawl)  */
         .floating-stats {
             display: inline-block;
             animation: stats-scroll 120s linear infinite;
@@ -70,7 +70,7 @@
             100% { transform: translateX(-100%); }
         }
 
-        /* ── SCROLL REVEAL ── */
+        /*  SCROLL REVEAL  */
         .reveal-init { opacity: 0; transform: translateY(28px); transition: opacity 0.7s cubic-bezier(0.22,1,0.36,1), transform 0.7s cubic-bezier(0.22,1,0.36,1); will-change: opacity, transform; }
         .reveal-init.revealed { opacity: 1; transform: translateY(0); }
         .reveal-init[data-reveal="left"] { transform: translateX(-36px); }
@@ -86,18 +86,18 @@
         [data-tilt] { position: relative; transform-style: preserve-3d; }
         .tilt-glare { position: absolute; inset: 0; border-radius: inherit; pointer-events: none; }
 
-        /* ── MARQUEE ── */
+        /*  MARQUEE  */
         @keyframes marquee { from { transform: translateX(0); } to { transform: translateX(-50%); } }
         .animate-marquee { animation: marquee 30s linear infinite; }
         .marquee-paused:hover .animate-marquee { animation-play-state: paused; }
 
-        /* ── FLOAT ── */
+        /*  FLOAT  */
         @keyframes float-slow { 0%,100% { transform: translateY(0) translateX(0); } 50% { transform: translateY(-30px) translateX(20px); } }
         @keyframes float-slower { 0%,100% { transform: translateY(0) translateX(0); } 50% { transform: translateY(25px) translateX(-25px); } }
         .animate-float-slow { animation: float-slow 9s ease-in-out infinite; }
         .animate-float-slower { animation: float-slower 13s ease-in-out infinite; }
 
-        /* ── SHIMMER ── */
+        /*  SHIMMER  */
         @keyframes shimmer { 0% { background-position: -200% center; } 100% { background-position: 200% center; } }
         .text-shimmer {
             background: linear-gradient(110deg, #FFCD05 25%, #0EA5E9 40%, #FFCD05 55%);
@@ -110,7 +110,7 @@
         @keyframes pulse-glow { 0%,100% { box-shadow: 0 0 0 0 rgba(255,205,5,0.35); } 50% { box-shadow: 0 0 30px 6px rgba(255,205,5,0.15); } }
         .animate-pulse-glow { animation: pulse-glow 3.2s ease-in-out infinite; }
 
-        /* ── SECTION TRANSITIONS ── */
+        /*  SECTION TRANSITIONS  */
         .kicc-section-hidden {
             opacity: 0;
             transform: translateY(40px);
@@ -122,7 +122,7 @@
             transform: translateY(0);
         }
 
-        /* ── TEXT SPLIT REVEAL ── */
+        /*  TEXT SPLIT REVEAL  */
         .kicc-split-word {
             display: inline-block;
             opacity: 0;
@@ -135,7 +135,7 @@
             transform: translateY(0) rotateX(0);
         }
 
-        /* ── CINEMATIC INTRO EMBLEM ── */
+        /*  CINEMATIC INTRO EMBLEM  */
         .emblem-outer-ring {
             stroke-dasharray: 380;
             stroke-dashoffset: 380;
@@ -145,7 +145,7 @@
             to { stroke-dashoffset: 0; }
         }
 
-        /* ── HERO ENTRANCE ── */
+        /*  HERO ENTRANCE  */
         .hero-entrance {
             opacity: 0;
             transform: translateY(30px) scale(0.98);
@@ -160,7 +160,7 @@
             to { opacity: 1; transform: translateY(0) scale(1); }
         }
 
-        /* ── REDUCED MOTION ── */
+        /*  REDUCED MOTION  */
         @media (prefers-reduced-motion: reduce) {
             *, *::before, *::after { animation-duration: 0.01ms !important; transition-duration: 0.01ms !important; }
             .reveal-init { opacity: 1; transform: none; }
@@ -168,7 +168,7 @@
             .kicc-split-word { opacity: 1; transform: none; }
         }
 
-        /* ═══ GLASSMORPHISM & GRADIENT SYSTEM (pipeline design language) ═══ */
+        /*  GLASSMORPHISM & GRADIENT SYSTEM (pipeline design language)  */
 
         /* Smooth surface gradients */
         .grad-surface {
@@ -245,7 +245,7 @@
             background: linear-gradient(135deg, rgba(144,28,30,0.06), rgba(255,205,5,0.08));
         }
 
-        /* ─── KICC BRAND DESIGN TOKENS (sourced from kicc.co.ke) ─── */
+        /*  KICC BRAND DESIGN TOKENS (sourced from kicc.co.ke)  */
         :root {
             --kicc-navy: #0B1E57;
             --kicc-navy-light: #1a3070;
@@ -273,7 +273,7 @@
             --radius-xl: 1.5rem;
         }
 
-        /* ─── SKELETON LOADERS ─── */
+        /*  SKELETON LOADERS  */
         .skeleton { background: linear-gradient(90deg, #e5e7eb 25%, #f3f4f6 50%, #e5e7eb 75%); background-size: 200% 100%; animation: skeleton-shimmer 1.5s ease infinite; border-radius: var(--radius-sm); }
         .skeleton-dark { background: linear-gradient(90deg, rgba(255,255,255,0.06) 25%, rgba(255,255,255,0.12) 50%, rgba(255,255,255,0.06) 75%); background-size: 200% 100%; animation: skeleton-shimmer 1.5s ease infinite; }
         .skeleton-text { height: 0.875rem; margin-bottom: 0.5rem; width: 80%; }
@@ -283,7 +283,7 @@
         .skeleton-image { aspect-ratio: 4/3; border-radius: var(--radius-md); }
         @keyframes skeleton-shimmer { 0% { background-position: 200% 0; } 100% { background-position: -200% 0; } }
 
-        /* ─── FOCUS / ACCESSIBILITY ─── */
+        /*  FOCUS / ACCESSIBILITY  */
         *:focus-visible { outline: none; box-shadow: var(--focus-ring); border-radius: var(--radius-sm); }
         a:focus-visible, button:focus-visible, input:focus-visible, select:focus-visible, textarea:focus-visible { box-shadow: var(--focus-ring); }
         .skip-link { position: absolute; top: -100%; left: 1rem; padding: 0.5rem 1rem; background: var(--kicc-navy); color: white; z-index: 10000; border-radius: var(--radius-sm); font-weight: 600; transition: top 0.2s; }
@@ -291,7 +291,7 @@
         @media (prefers-reduced-motion: reduce) { *, *::before, *::after { animation-duration: 0.01ms !important; animation-iteration-count: 1 !important; transition-duration: 0.01ms !important; } }
         .sr-only { position: absolute; width: 1px; height: 1px; padding: 0; margin: -1px; overflow: hidden; clip: rect(0,0,0,0); white-space: nowrap; border-width: 0; }
 
-        /* ─── KICC SEMANTIC BUTTONS ─── */
+        /*  KICC SEMANTIC BUTTONS  */
         .btn-kicc { display: inline-flex; align-items: center; justify-content: center; gap: 0.5rem; font-weight: 700; font-size: 0.8125rem; padding: 0.625rem 1.25rem; border-radius: var(--radius-md); transition: all 0.2s; cursor: pointer; border: none; min-height: 44px; min-width: 44px; }
         .btn-kicc-primary { background: var(--kicc-red); color: white; box-shadow: var(--shadow-sm); }
         .btn-kicc-primary:hover { background: var(--kicc-red-light); box-shadow: var(--shadow-md); transform: translateY(-1px); }
@@ -302,38 +302,38 @@
         .btn-kicc-ghost { background: transparent; color: var(--kicc-text); border: none; }
         .btn-kicc-ghost:hover { background: var(--kicc-bg-alt); color: var(--kicc-dark); }
 
-        /* ─── KICC CARD VARIANTS ─── */
+        /*  KICC CARD VARIANTS  */
         .card-kicc { background: white; border: 1px solid var(--kicc-border); border-radius: var(--radius-lg); box-shadow: var(--shadow-sm); transition: all 0.25s; }
         .card-kicc:hover { box-shadow: var(--shadow-md); border-color: rgba(144,28,30,0.2); }
         .card-kicc-flush { border-radius: var(--radius-lg); overflow: hidden; }
         .card-kicc-glass { background: rgba(255,255,255,0.72); backdrop-filter: blur(18px) saturate(1.5); border: 1px solid rgba(255,255,255,0.55); box-shadow: var(--shadow-md); }
 
-        /* ─── KICC BADGES ─── */
+        /*  KICC BADGES  */
         .badge-kicc { display: inline-flex; align-items: center; padding: 0.125rem 0.625rem; border-radius: 9999px; font-size: 0.6875rem; font-weight: 700; text-transform: uppercase; letter-spacing: 0.05em; }
         .badge-kicc-red { background: rgba(144,28,30,0.1); color: var(--kicc-red); border: 1px solid rgba(144,28,30,0.2); }
         .badge-kicc-gold { background: rgba(255,205,5,0.15); color: #8B6914; border: 1px solid rgba(255,205,5,0.3); }
         .badge-kicc-green { background: rgba(5,150,105,0.1); color: var(--kicc-success); border: 1px solid rgba(5,150,105,0.2); }
         .badge-kicc-blue { background: rgba(2,132,199,0.1); color: var(--kicc-info); border: 1px solid rgba(2,132,199,0.2); }
 
-        /* ─── STATS / KPI ─── */
+        /*  STATS / KPI  */
         .kpi-kicc { padding: 1.25rem; border-radius: var(--radius-lg); background: white; border: 1px solid var(--kicc-border); box-shadow: var(--shadow-sm); }
         .kpi-kicc-value { font-size: 1.75rem; font-weight: 900; color: var(--kicc-navy); line-height: 1.1; }
         .kpi-kicc-label { font-size: 0.75rem; font-weight: 600; color: var(--kicc-text); text-transform: uppercase; letter-spacing: 0.05em; margin-top: 0.25rem; }
 
-        /* ─── FORM ELEMENTS ─── */
+        /*  FORM ELEMENTS  */
         .input-kicc { width: 100%; padding: 0.625rem 0.875rem; border: 1.5px solid var(--kicc-border); border-radius: var(--radius-md); font-size: 0.875rem; color: var(--kicc-dark); background: white; transition: border-color 0.2s, box-shadow 0.2s; min-height: 44px; }
         .input-kicc:focus { border-color: var(--kicc-red); box-shadow: 0 0 0 3px rgba(144,28,30,0.12); outline: none; }
         .input-kicc::placeholder { color: var(--kicc-text-light); }
         .label-kicc { display: block; font-size: 0.75rem; font-weight: 600; color: var(--kicc-text); text-transform: uppercase; letter-spacing: 0.05em; margin-bottom: 0.375rem; }
 
-        /* ─── TABLES ─── */
+        /*  TABLES  */
         .table-kicc { width: 100%; border-collapse: collapse; font-size: 0.8125rem; }
         .table-kicc th { text-align: left; padding: 0.75rem 1rem; font-weight: 600; color: var(--kicc-text); text-transform: uppercase; font-size: 0.6875rem; letter-spacing: 0.05em; border-bottom: 1px solid var(--kicc-border); background: var(--kicc-bg); }
         .table-kicc td { padding: 0.75rem 1rem; border-bottom: 1px solid var(--kicc-border); color: var(--kicc-dark); }
         .table-kicc tr:hover td { background: rgba(144,28,30,0.02); }
         .table-kicc-wrap { overflow-x: auto; border-radius: var(--radius-lg); border: 1px solid var(--kicc-border); }
 
-        /* ─── RESPONSIVE UTILITIES ─── */
+        /*  RESPONSIVE UTILITIES  */
         @media (max-width: 640px) {
             .nav-link { padding: 0.625rem 0.75rem; font-size: 0.75rem; }
             .h1-responsive { font-size: 1.75rem !important; line-height: 1.2 !important; }

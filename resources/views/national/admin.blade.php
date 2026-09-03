@@ -30,7 +30,7 @@
                             <div><div class="font-bold text-gray-900 text-sm">{{ $m->name }}</div><div class="text-xs text-gray-400">{{ $m->agencies->count() }} agencies</div></div>
                         </div>
                         <div class="flex gap-1">
-                            <button onclick="this.nextElementSibling.classList.toggle('hidden')" class="text-xs px-2 py-1 rounded border border-gray-200 hover:bg-gray-50">✏️</button>
+                            <button onclick="this.nextElementSibling.classList.toggle('hidden')" class="text-xs px-2 py-1 rounded border border-gray-200 hover:bg-gray-50"></button>
                             <a href="{{ route('national.admin.v2.ministry.delete', $m->id) }}" class="text-xs px-2 py-1 rounded border border-red-200 text-red-500 hover:bg-red-50" onclick="return confirm('Delete?')">×</a>
                         </div>
                     </div>

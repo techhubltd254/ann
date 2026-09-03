@@ -21,7 +21,7 @@
                 <h1 class="text-4xl font-black mb-2" data-split>{{ $exhibitor->name }}</h1>
                 @if($exhibitor->county)
                 <a href="{{ route('counties.show', $exhibitor->county->slug) }}" class="text-gray-500 hover:text-gray-900 text-sm transition-colors">
-                    📍 {{ $exhibitor->county->name }} County, Kenya &nearr;
+                     {{ $exhibitor->county->name }} County, Kenya &nearr;
                 </a>
                 @endif
             </div>

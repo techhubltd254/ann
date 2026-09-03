@@ -12,8 +12,8 @@
         <a href="{{ route('livestreams.show', $c->slug) }}" class="group bg-white border border-gray-200 rounded-2xl overflow-hidden hover:shadow-lg hover:-translate-y-0.5 transition-all block">
             <div class="relative h-44 bg-[#0A1024] flex items-center justify-center">
                 @if($c->poster_url)<img src="{{ $c->poster_url }}" alt="" class="w-full h-full object-cover opacity-60">@endif
-                <span class="absolute text-4xl">▶️</span>
-                @if($c->is_live)<span class="absolute top-3 left-3 text-[10px] font-bold px-2 py-0.5 rounded-full bg-[#901C1E] text-white animate-pulse">● LIVE</span>@endif
+                <span class="absolute text-4xl"></span>
+                @if($c->is_live)<span class="absolute top-3 left-3 text-[10px] font-bold px-2 py-0.5 rounded-full bg-[#901C1E] text-white animate-pulse"> LIVE</span>@endif
                 <span class="absolute bottom-3 right-3 text-[10px] font-bold px-2 py-0.5 rounded-full bg-black/50 text-white/90 capitalize">{{ $c->camera }}</span>
             </div>
             <div class="p-4">

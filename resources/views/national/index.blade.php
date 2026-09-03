@@ -18,9 +18,9 @@
                 on the KICC Digital Economy Platform.
             </p>
             <div class="flex flex-wrap gap-4 mt-6 text-xs text-white/50">
-                <span>🏛️ {{ $ministries->count() }} {{ Str::plural('ministry', $ministries->count()) }}</span>
-                <span>🏢 {{ $ministries->sum('agencies_count') }} {{ Str::plural('agency', $ministries->sum('agencies_count')) }}</span>
-                <span>🇰🇪 Republic of Kenya</span>
+                <span> {{ $ministries->count() }} {{ Str::plural('ministry', $ministries->count()) }}</span>
+                <span> {{ $ministries->sum('agencies_count') }} {{ Str::plural('agency', $ministries->sum('agencies_count')) }}</span>
+                <span> Republic of Kenya</span>
             </div>
         </div>
     </div>
@@ -34,7 +34,7 @@
 
         @if($ministries->isEmpty())
         <div class="bg-white border border-gray-200 rounded-2xl p-14 text-center text-gray-400">
-            <span class="text-4xl block mb-3">🏛️</span>
+            <span class="text-4xl block mb-3"></span>
             <p class="text-sm">No ministries published yet.</p>
         </div>
         @else

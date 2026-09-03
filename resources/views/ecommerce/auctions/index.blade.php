@@ -2,7 +2,7 @@
 @section('title','Auctions — KICC Marketplace')
 @section('content')
 <div class="pt-20 max-w-6xl mx-auto px-5 py-10">
-<div class="flex items-center justify-between mb-6"><h1 class="text-2xl font-black text-gray-900">🔨 Live Auctions</h1><a href="{{ route('auctions.create') }}" class="text-sm font-bold text-[#046bd2]">Start an Auction</a></div>
+<div class="flex items-center justify-between mb-6"><h1 class="text-2xl font-black text-gray-900"> Live Auctions</h1><a href="{{ route('auctions.create') }}" class="text-sm font-bold text-[#046bd2]">Start an Auction</a></div>
 @forelse($active as $auction)
 <a href="{{ route('auctions.show', $auction->id) }}" class="block bg-white border border-gray-200 rounded-2xl p-4 mb-3 card-hover">
 <div class="flex items-center gap-4">

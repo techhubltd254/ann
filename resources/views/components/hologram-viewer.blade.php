@@ -36,7 +36,7 @@
             <canvas x-ref="splatCanvas" class="splat-viewer w-full h-full cursor-grab active:cursor-grabbing"></canvas>
             <button @click="mode = 'video'"
                     class="absolute top-3 right-3 px-2.5 py-1 rounded-full bg-black/50 backdrop-blur text-white/80 text-[10px] font-bold hover:bg-black/70 transition-all z-10">
-                🎬 Video
+                 Video
             </button>
         </div>
     </template>

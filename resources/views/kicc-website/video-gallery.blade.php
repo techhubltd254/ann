@@ -9,7 +9,7 @@
     <div class="grid md:grid-cols-2 lg:grid-cols-3 gap-5">
         @foreach($videos as $v)
         <div class="bg-white border border-gray-200 rounded-2xl overflow-hidden">
-            <div class="aspect-video bg-gray-900 flex items-center justify-center text-white/30 text-4xl">▶</div>
+            <div class="aspect-video bg-gray-900 flex items-center justify-center text-white/30 text-4xl"></div>
             <div class="p-4"><h3 class="font-bold text-gray-900 text-sm">{{ $v->title }}</h3>@if($v->description)<p class="text-gray-500 text-xs mt-1">{{ $v->description }}</p>@endif</div>
         </div>
         @endforeach

@@ -27,8 +27,8 @@
             <h1 class="text-4xl font-black text-gray-900" data-split>{{ $attraction->name }}</h1>
             <div class="flex flex-wrap items-center gap-3 mt-2">
                 <span class="text-[#0B1E57] text-xs font-bold uppercase tracking-widest">{{ $attraction->category ?? 'Attraction' }}</span>
-                @if($attraction->location)<span class="text-gray-500 text-sm">📍 {{ $attraction->location }}</span>@endif
-                @if($attraction->opening_hours)<span class="text-gray-500 text-sm">🕐 {{ $attraction->opening_hours }}</span>@endif
+                @if($attraction->location)<span class="text-gray-500 text-sm"> {{ $attraction->location }}</span>@endif
+                @if($attraction->opening_hours)<span class="text-gray-500 text-sm"> {{ $attraction->opening_hours }}</span>@endif
             </div>
         </div>
     </div>

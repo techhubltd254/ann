@@ -77,9 +77,9 @@
 </div>
 
 <div id="mode-toggle">
-    <button id="btn-orbit" class="active" title="Orbit Mode">🔄</button>
-    <button id="btn-gyro" title="Gyroscope Mode">📱</button>
-    <button id="btn-vr" title="VR Mode">🥽</button>
+    <button id="btn-orbit" class="active" title="Orbit Mode"></button>
+    <button id="btn-gyro" title="Gyroscope Mode"></button>
+    <button id="btn-vr" title="VR Mode"></button>
 </div>
 
 <div id="controls-hint">Drag to look around &middot; Pinch to zoom &middot; Tap photos to switch</div>

@@ -47,7 +47,7 @@
     <div class="mt-6">{{ $bookings->links() }}</div>
     @else
     <div class="text-center py-16 bg-white rounded-2xl border border-gray-200 card-hover" data-reveal>
-        <div class="text-5xl mb-4">🎟️</div>
+        <div class="text-5xl mb-4"></div>
         <h3 class="text-xl font-bold text-gray-900 mb-2">No bookings yet</h3>
         <p class="text-[#5A6480] text-sm">Browse exhibitions to book a booth or purchase tickets.</p>
         <a href="{{ route('exhibitions.index') }}" data-magnetic class="mt-5 inline-flex items-center justify-center gap-2 font-bold tracking-wide transition-all duration-200 px-6 text-sm h-11 rounded-xl bg-kicc-gold text-[#07090F] hover:bg-[#FFCD05]">Browse Exhibitions</a>

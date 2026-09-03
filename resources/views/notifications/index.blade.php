@@ -11,7 +11,7 @@
         @endif
     </div>
     @if($notifications->isEmpty())
-    <div class="bg-white border border-gray-200 rounded-2xl p-12 text-center"><div class="text-4xl mb-3">🔔</div><h3 class="font-bold text-gray-900 mb-1">No notifications</h3></div>
+    <div class="bg-white border border-gray-200 rounded-2xl p-12 text-center"><div class="text-4xl mb-3"></div><h3 class="font-bold text-gray-900 mb-1">No notifications</h3></div>
     @else
     <div class="space-y-2">
         @foreach($notifications as $n)

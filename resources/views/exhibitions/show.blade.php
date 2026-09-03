@@ -35,7 +35,7 @@
         <img src="{{ $exhibition->cover_image }}" alt="{{ $exhibition->name }}" class="w-full h-64 lg:h-96 object-cover">
     </div>
     @else
-    <div class="w-full h-64 bg-white rounded-2xl mb-8 flex items-center justify-center text-6xl border border-gray-200 card-hover" data-reveal>🏛️</div>
+    <div class="w-full h-64 bg-white rounded-2xl mb-8 flex items-center justify-center text-6xl border border-gray-200 card-hover" data-reveal></div>
     @endif
 
     <div class="grid grid-cols-1 lg:grid-cols-3 gap-6">

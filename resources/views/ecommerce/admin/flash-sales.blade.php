@@ -2,7 +2,7 @@
 @section('title','Flash Sales Admin — KICC')
 @section('content')
 <div class="pt-20 max-w-5xl mx-auto px-5 py-10">
-<div class="flex items-center justify-between mb-6"><h1 class="text-2xl font-black text-gray-900">⚡ Flash Sales</h1><button onclick="document.getElementById('new-sale-form').classList.toggle('hidden')" class="text-sm font-bold bg-[#046bd2] text-white px-4 py-2 rounded-xl">New Flash Sale</button></div>
+<div class="flex items-center justify-between mb-6"><h1 class="text-2xl font-black text-gray-900"> Flash Sales</h1><button onclick="document.getElementById('new-sale-form').classList.toggle('hidden')" class="text-sm font-bold bg-[#046bd2] text-white px-4 py-2 rounded-xl">New Flash Sale</button></div>
 <form id="new-sale-form" method="POST" class="hidden bg-white border border-gray-200 rounded-2xl p-5 mb-6 space-y-3">
 @csrf
 <div class="grid grid-cols-2 gap-4"><div><input type="text" name="title" placeholder="Sale title" class="w-full border border-gray-200 rounded-xl px-3 py-2 text-sm" required></div>

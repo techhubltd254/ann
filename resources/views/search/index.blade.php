@@ -36,7 +36,7 @@
 
         @if($results->isEmpty())
         <div class="text-center py-16 text-gray-400">
-            <div class="text-4xl mb-3">🔍</div>
+            <div class="text-4xl mb-3"></div>
             <p class="text-sm">No results found. Try a different search term or filters.</p>
         </div>
         @else
@@ -53,7 +53,7 @@
             <a href="{{ $r['url'] }}" class="bg-white border border-gray-200 rounded-2xl overflow-hidden hover:border-[#046bd2]/40 transition-all card-hover group">
                 <div class="h-36 bg-gray-100 overflow-hidden">
                     @if($r['image'])<img src="{{ $r['image'] }}" class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500" onerror="this.style.display='none'">@endif
-                    <div class="h-full flex items-center justify-center text-2xl text-gray-300 {{ $r['image'] ? 'hidden' : '' }}">{{ $r['type'] === 'product' ? '📦' : ($r['type'] === 'attraction' ? '🏖️' : '🏨') }}</div>
+                    <div class="h-full flex items-center justify-center text-2xl text-gray-300 {{ $r['image'] ? 'hidden' : '' }}">{{ $r['type'] === 'product' ? '' : ($r['type'] === 'attraction' ? '' : '') }}</div>
                 </div>
                 <div class="p-4">
                     <span class="text-[10px] font-bold text-[#046bd2] uppercase">{{ $r['type'] }}</span>
@@ -62,7 +62,7 @@
                     <div class="flex items-center justify-between mt-2">
                         @if($r['price'])<span class="font-black text-[#046bd2] text-sm">KES {{ number_format($r['price']) }}</span>@endif
                         @if($r['county'])<span class="text-xs text-gray-400">{{ $r['county'] }}</span>@endif
-                        @if($r['rating'])<span class="text-amber-400 text-xs">{{ str_repeat('★', $r['rating']) }}</span>@endif
+                        @if($r['rating'])<span class="text-amber-400 text-xs">{{ str_repeat('', $r['rating']) }}</span>@endif
                     </div>
                 </div>
             </a>

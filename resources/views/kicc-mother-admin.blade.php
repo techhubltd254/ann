@@ -54,7 +54,7 @@
         <main class="flex-1 overflow-y-auto p-6 scrollbar-hide">
             @if($errors->any())<div class="mb-4 px-5 py-3 rounded-xl bg-red-500/10 border border-red-500/20 text-red-400 text-sm">{{ $errors->first() }}</div>@endif
 
-            {{-- ═══════════ OVERVIEW ═══════════ --}}
+            {{--  OVERVIEW  --}}
             @if($tab === 'overview')
             <div class="grid grid-cols-2 lg:grid-cols-4 gap-4 mb-8">
                 <x-nexora-kpi title="Counties" :value="number_format($stats['counties'])" growth="47 active trade boards" color="indigo" :sparkline="[44,45,46,46,47,47,47,47,47,47,47,47]" />
@@ -79,7 +79,7 @@
             </div>
 
             <div class="glass-card rounded-2xl p-5">
-                <h3 class="font-bold text-white text-sm mb-3">🛠 Artisan Console</h3>
+                <h3 class="font-bold text-white text-sm mb-3"> Artisan Console</h3>
                 <form method="POST" action="{{ route('kicc.admin.artisan') }}" class="flex gap-2">
                     @csrf
                     <select name="command" class="flex-1">
@@ -93,17 +93,17 @@
             </div>
             @endif
 
-            {{-- ═══════════ PORTALS ═══════════ --}}
+            {{--  PORTALS  --}}
             @if($tab === 'portals')
             <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
-                <div class="kpi-card border-2 border-rose-500/40"><div class="font-bold text-white">🏛 KICC Mother Admin</div><div class="text-xs text-zinc-400 mt-1">You are here</div></div>
-                <a href="{{ route('kicc.admin', ['tab' => 'counties']) }}" class="kpi-card"><div class="font-bold text-white">🗺 County Portals</div><div class="text-xs text-zinc-400 mt-1">47 counties — trade boards</div></a>
-                <a href="{{ route('national.admin') }}" class="kpi-card"><div class="font-bold text-white">🏛 National Government</div><div class="text-xs text-zinc-400 mt-1">Ministries & agencies</div></a>
-                <a href="{{ route('exhibitor.admin') }}" class="kpi-card"><div class="font-bold text-white">👤 Private Exhibitors</div><div class="text-xs text-zinc-400 mt-1">Individual & SME portals</div></a>
+                <div class="kpi-card border-2 border-rose-500/40"><div class="font-bold text-white"> KICC Mother Admin</div><div class="text-xs text-zinc-400 mt-1">You are here</div></div>
+                <a href="{{ route('kicc.admin', ['tab' => 'counties']) }}" class="kpi-card"><div class="font-bold text-white"> County Portals</div><div class="text-xs text-zinc-400 mt-1">47 counties — trade boards</div></a>
+                <a href="{{ route('national.admin') }}" class="kpi-card"><div class="font-bold text-white"> National Government</div><div class="text-xs text-zinc-400 mt-1">Ministries & agencies</div></a>
+                <a href="{{ route('exhibitor.admin') }}" class="kpi-card"><div class="font-bold text-white"> Private Exhibitors</div><div class="text-xs text-zinc-400 mt-1">Individual & SME portals</div></a>
             </div>
             @endif
 
-            {{-- ═══════════ COUNTIES (all 47) ═══════════ --}}
+            {{--  COUNTIES (all 47)  --}}
             @if($tab === 'counties')
             <div>
                 <div class="flex items-center justify-between mb-4">
@@ -147,7 +147,7 @@
             </div>
             @endif
 
-            {{-- ═══════════ INSTITUTIONS ═══════════ --}}
+            {{--  INSTITUTIONS  --}}
             @if($tab === 'institutions')
             <div>
                 <h3 class="font-bold text-white text-lg mb-4">All Institutions ({{ $institutions->count() }})</h3>
@@ -167,7 +167,7 @@
             </div>
             @endif
 
-            {{-- ═══════════ NATIONAL ═══════════ --}}
+            {{--  NATIONAL  --}}
             @if($tab === 'national')
             <div>
                 <div class="flex items-center justify-between mb-4">
@@ -193,7 +193,7 @@
             </div>
             @endif
 
-            {{-- ═══════════ EXHIBITORS ═══════════ --}}
+            {{--  EXHIBITORS  --}}
             @if($tab === 'exhibitors')
             <div>
                 <h3 class="font-bold text-white text-lg mb-5">Private Exhibitors ({{ $exhibitors->count() }})</h3>
@@ -215,7 +215,7 @@
             </div>
             @endif
 
-            {{-- ═══════════ PROVIDERS ═══════════ --}}
+            {{--  PROVIDERS  --}}
             @if($tab === 'providers')
             <div class="grid lg:grid-cols-2 gap-6">
                 <div class="glass-card rounded-2xl p-6" style="max-height:600px; overflow-y:auto;">
@@ -244,7 +244,7 @@
                             <div class="text-xs text-zinc-500">KES {{ number_format($s['price']) }} · {{ $s['table'] }}</div>
                         </div>
                         <form method="POST" action="{{ route('kicc.admin.approve', [$s['table'], $s['id']]) }}">@csrf
-                            <button class="text-[10px] font-bold px-3 py-1.5 rounded-lg bg-emerald-500/20 text-emerald-400 hover:bg-emerald-500/30">CERTIFY ✓</button>
+                            <button class="text-[10px] font-bold px-3 py-1.5 rounded-lg bg-emerald-500/20 text-emerald-400 hover:bg-emerald-500/30">CERTIFY </button>
                         </form>
                     </div>
                     @empty
@@ -254,7 +254,7 @@
             </div>
             @endif
 
-            {{-- ═══════════ ORDERS ═══════════ --}}
+            {{--  ORDERS  --}}
             @if($tab === 'orders')
             <div class="glass-card rounded-2xl p-6" style="max-height:600px; overflow-y:auto;">
                 <h3 class="font-bold text-white mb-5">All Orders</h3>
@@ -278,7 +278,7 @@
             </div>
             @endif
 
-            {{-- ═══════════ ESCROW ═══════════ --}}
+            {{--  ESCROW  --}}
             @if($tab === 'escrow')
             <div class="glass-card rounded-2xl p-6" style="max-height:600px; overflow-y:auto;">
                 <h3 class="font-bold text-white mb-5">All Escrow Transactions</h3>
@@ -304,7 +304,7 @@
             </div>
             @endif
 
-            {{-- ═══════════ EXPERIENCES ═══════════ --}}
+            {{--  EXPERIENCES  --}}
             @if($tab === 'experiences')
             <div class="glass-card rounded-2xl p-6">
                 <div class="flex items-center justify-between mb-6">
@@ -359,15 +359,15 @@
                     </table>
                 </div>
                 <div class="mt-4 flex gap-3 text-[10px] text-zinc-500">
-                    <span>🚗 Road</span>
-                    <span>🚆 Train</span>
-                    <span>✈️ Air/Rail</span>
+                    <span> Road</span>
+                    <span> Train</span>
+                    <span> Air/Rail</span>
                     <span>| Prices include rating × season × distance multipliers</span>
                 </div>
             </div>
             @endif
 
-            {{-- ═══════════ USERS ═══════════ --}}
+            {{--  USERS  --}}
             @if($tab === 'users')
             <div class="glass-card rounded-2xl p-6" style="max-height:600px; overflow-y:auto;">
                 <h3 class="font-bold text-white mb-5">Platform Users</h3>
@@ -391,7 +391,7 @@
             </div>
             @endif
 
-            {{-- ═══════════ HERO MEDIA ═══════════ --}}
+            {{--  HERO MEDIA  --}}
             @if($tab === 'hero_media')
             <div class="glass-card rounded-2xl p-6 max-w-2xl">
                 <h3 class="font-bold text-white text-sm mb-4">Landing Page Hero Video</h3>
@@ -419,7 +419,7 @@
             </div>
             @endif
 
-            {{-- ═══════════ PACKAGES (Exhibitor Subscriptions) ═══════════ --}}
+            {{--  PACKAGES (Exhibitor Subscriptions)  --}}
             @if($tab === 'packages')
             <div>
                 <div class="flex items-center justify-between mb-4">

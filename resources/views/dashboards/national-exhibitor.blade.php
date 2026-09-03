@@ -9,7 +9,7 @@
 
     <aside class="glass-nav flex flex-col w-64 shrink-0 z-30 overflow-y-auto">
         <div class="flex items-center gap-3 h-16 px-5 border-b border-white/5 shrink-0">
-            <div class="w-8 h-8 rounded-lg bg-gradient-to-br from-sky-500 to-blue-600 flex items-center justify-center font-black text-white text-sm">🇰🇪</div>
+            <div class="w-8 h-8 rounded-lg bg-gradient-to-br from-sky-500 to-blue-600 flex items-center justify-center font-black text-white text-sm"></div>
             <div>
                 <div class="text-white font-bold text-sm leading-tight">National</div>
                 <div class="text-sky-400 text-[9px] font-bold tracking-[0.2em] uppercase">Government Portal</div>
@@ -64,7 +64,7 @@
             <div class="mb-4 px-5 py-3 rounded-xl bg-red-500/10 border border-red-500/20 text-red-400 text-sm">{{ $errors->first() }}</div>
             @endif
 
-            {{-- ═══ OVERVIEW ═══ --}}
+            {{--  OVERVIEW  --}}
             <div x-show="tab === 'overview'" x-transition:enter.duration.200ms>
                 <div class="grid grid-cols-2 lg:grid-cols-4 gap-4 mb-8">
                     <x-nexora-kpi title="Ministries" :value="number_format($stats['ministries'])" color="sky" :sparkline="[2,3,4,4,5,5,6,7,7,8,9,9]" />
@@ -78,7 +78,7 @@
                 </div>
             </div>
 
-            {{-- ═══ MINISTRIES ═══ --}}
+            {{--  MINISTRIES  --}}
             <div x-show="tab === 'ministries'" x-cloak x-transition:enter.duration.200ms>
                 <div class="flex items-center justify-between mb-4">
                     <h2 class="text-lg font-bold text-white">Ministries ({{ $ministries->count() }})</h2>
@@ -96,7 +96,7 @@
                         <div class="flex items-start justify-between mb-3">
                             <div class="w-10 h-10 rounded-xl flex items-center justify-center text-white font-black text-sm" style="background: {{ $m->color ?: '#1890D7' }}">{{ $m->code }}</div>
                             <div class="flex gap-2">
-                                <button @click="$el.nextElementSibling.classList.toggle('hidden')" class="btn-ghost text-xs py-1 px-2">✏️</button>
+                                <button @click="$el.nextElementSibling.classList.toggle('hidden')" class="btn-ghost text-xs py-1 px-2"></button>
                                 <a href="{{ route('national.site', $m->slug) }}" class="btn-ghost text-xs py-1 px-2">Website ↗</a>
                             </div>
                         </div>
@@ -114,7 +114,7 @@
                 </div>
             </div>
 
-            {{-- ═══ AGENCIES ═══ --}}
+            {{--  AGENCIES  --}}
             <div x-show="tab === 'agencies'" x-cloak x-transition:enter.duration.200ms>
                 <div class="flex items-center justify-between mb-4">
                     <h2 class="text-lg font-bold text-white">Agencies ({{ $agencies->count() }})</h2>
@@ -139,7 +139,7 @@
                             <td class="py-3 font-medium text-zinc-200">{{ $a->name }}</td>
                             <td class="py-3 text-zinc-500 text-xs">{{ $a->ministry?->name }}</td>
                             <td class="py-3 text-right">
-                                <button @click="$el.nextElementSibling.classList.toggle('hidden')" class="btn-ghost text-xs py-1 px-1.5">✏️</button>
+                                <button @click="$el.nextElementSibling.classList.toggle('hidden')" class="btn-ghost text-xs py-1 px-1.5"></button>
                                 <form method="POST" action="{{ route('national.admin.agency.update', $a->id) }}" x-cloak class="hidden mt-2 flex gap-2">@csrf
                                     <input type="hidden" name="ministry_id" value="{{ $a->ministry_id }}">
                                     <input type="text" name="name" value="{{ $a->name }}">
@@ -153,7 +153,7 @@
                 </div>
             </div>
 
-            {{-- ═══ TRADE ═══ --}}
+            {{--  TRADE  --}}
             <div x-show="tab === 'trade'" x-cloak x-transition:enter.duration.200ms>
                 <div class="grid grid-cols-2 lg:grid-cols-4 gap-4 mb-6">
                     <x-nexora-kpi title="Products (47 Counties)" :value="number_format($stats['products'])" color="emerald" />

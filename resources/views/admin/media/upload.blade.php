@@ -17,7 +17,7 @@
 
         {{-- Upload card — Fitts's Law: huge dropzone target --}}
         <div class="mt-8 bg-white rounded-2xl border-2 border-dashed border-gray-300 hover:border-kicc-gold/60 transition-colors p-10 text-center" id="dropzone" data-reveal="zoom">
-            <div class="text-5xl mb-3">📤</div>
+            <div class="text-5xl mb-3"></div>
             <p class="font-black text-gray-900">Drag &amp; drop files here</p>
             <p class="text-[#5A6480] text-sm mt-1">or click to browse — max 10 files, 50MB each</p>
             <button type="button" id="pick-files" class="mt-6 inline-flex items-center justify-center gap-2 font-bold tracking-wide transition-all duration-200 px-8 h-14 rounded-xl bg-[#901C1E] text-white hover:bg-[#7b1618] active:scale-[0.97]" data-magnetic>

@@ -22,9 +22,9 @@
                 @endif
                 <div class="flex items-center gap-4 mt-2 text-xs text-[#5A6480]">
                     @if($screen->video_exists)
-                    <span class="text-emerald-400">● Video ready ({{ $screen->video_size_mb }} MB)</span>
+                    <span class="text-emerald-400"> Video ready ({{ $screen->video_size_mb }} MB)</span>
                     @else
-                    <span class="text-[#5A6480]">○ Video pending</span>
+                    <span class="text-[#5A6480]"> Video pending</span>
                     @endif
                     @if(isset($screen->image_count))
                     <span>{{ $screen->image_count }} images</span>

@@ -11,7 +11,7 @@
         </video>
     </div>
     <div class="flex items-center gap-3 mt-3 text-xs text-gray-500">
-        @if($channel->is_live)<span class="font-bold text-[#901C1E]">● LIVE</span>@endif
+        @if($channel->is_live)<span class="font-bold text-[#901C1E]"> LIVE</span>@endif
         <span class="capitalize">{{ $channel->camera }} · {{ $channel->access_tier }} access</span>
     </div>
 </div>

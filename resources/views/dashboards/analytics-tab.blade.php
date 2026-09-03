@@ -2,10 +2,10 @@
     range: 'monthly',
     showForecast: true,
     insights: [
-        { icon: '📈', title: 'Revenue Momentum', text: 'Your 90-day revenue trend shows consistent growth. Consider expanding product categories to capitalize.', type: 'positive' },
-        { icon: '⚠️', title: 'Customer Retention Gap', text: 'Repeat purchase rate is below industry benchmark. A loyalty program could recover 15-20% of lapsed customers.', type: 'warning' },
-        { icon: '💡', title: 'Peak Season Opportunity', text: 'Historical data indicates a 40% demand surge in Q4. Start inventory planning and campaign scheduling now.', type: 'insight' },
-        { icon: '🎯', title: 'Top Performer Identified', text: 'Your best-selling product drives 60% of revenue. Create bundled offers to lift secondary products.', type: 'positive' },
+        { icon: '', title: 'Revenue Momentum', text: 'Your 90-day revenue trend shows consistent growth. Consider expanding product categories to capitalize.', type: 'positive' },
+        { icon: '', title: 'Customer Retention Gap', text: 'Repeat purchase rate is below industry benchmark. A loyalty program could recover 15-20% of lapsed customers.', type: 'warning' },
+        { icon: '', title: 'Peak Season Opportunity', text: 'Historical data indicates a 40% demand surge in Q4. Start inventory planning and campaign scheduling now.', type: 'insight' },
+        { icon: '', title: 'Top Performer Identified', text: 'Your best-selling product drives 60% of revenue. Create bundled offers to lift secondary products.', type: 'positive' },
     ]
 }">
     {{-- Header --}}

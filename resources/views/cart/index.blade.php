@@ -12,7 +12,7 @@
         @if($item->isExperience() && $item->itemable)
             @php $booking = $item->itemable; $summary = $booking->displaySummary(); @endphp
             <div class="bg-white rounded-2xl border border-gray-100 p-5 flex mobile-stack items-center gap-5 card-hover" data-reveal>
-                <div class="w-16 h-16 rounded-xl bg-[#0B1E57]/10 flex items-center justify-center text-2xl shrink-0">🧳</div>
+                <div class="w-16 h-16 rounded-xl bg-[#0B1E57]/10 flex items-center justify-center text-2xl shrink-0"></div>
                 <div class="flex-1 min-w-0">
                     <div class="font-bold text-gray-900 text-sm">Experience: {{ $summary['destination_name'] }}</div>
                     <div class="text-gray-400 text-xs mt-0.5">
@@ -20,8 +20,8 @@
                     </div>
                     <div class="flex flex-wrap gap-2 mt-1.5">
                         <span class="text-[10px] px-2 py-0.5 rounded-full bg-gray-100 text-gray-600">{{ $summary['guests'] }} {{ Str::plural('guest', $summary['guests']) }}</span>
-                        <span class="text-[10px] px-2 py-0.5 rounded-full bg-gray-100 text-gray-600">🚗 {{ $summary['transport_out'] }}</span>
-                        <span class="text-[10px] px-2 py-0.5 rounded-full bg-gray-100 text-gray-600">🚗 {{ $summary['transport_back'] }}</span>
+                        <span class="text-[10px] px-2 py-0.5 rounded-full bg-gray-100 text-gray-600"> {{ $summary['transport_out'] }}</span>
+                        <span class="text-[10px] px-2 py-0.5 rounded-full bg-gray-100 text-gray-600"> {{ $summary['transport_back'] }}</span>
                     </div>
                 </div>
                 <div class="text-right shrink-0">

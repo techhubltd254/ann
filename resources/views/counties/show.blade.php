@@ -75,7 +75,7 @@
         <div class="absolute bottom-0 left-0 right-0 z-10 overflow-hidden bg-[#0B1E57]/70 backdrop-blur-sm border-t border-[#FFCD05]/20 pointer-events-none" style="height: 40px;">
             <div class="floating-stats whitespace-nowrap py-[9px]">
                 <span class="floating-stat-text text-[13px] font-medium text-white/90 tracking-wide px-4">
-                    🏛 Capital: {{ $county->capital ?? '—' }} &nbsp;·&nbsp; 👥 Population: {{ $county->population_2024 ? number_format($county->population_2024) : '—' }} &nbsp;·&nbsp; 📐 Area: {{ $county->area_km2 ? number_format($county->area_km2) . ' km²' : '—' }} &nbsp;·&nbsp; 🏭 Economic Zone: {{ $county->economic_zone ?? '—' }}
+                     Capital: {{ $county->capital ?? '—' }} &nbsp;·&nbsp;  Population: {{ $county->population_2024 ? number_format($county->population_2024) : '—' }} &nbsp;·&nbsp;  Area: {{ $county->area_km2 ? number_format($county->area_km2) . ' km²' : '—' }} &nbsp;·&nbsp;  Economic Zone: {{ $county->economic_zone ?? '—' }}
                 </span>
             </div>
         </div>
@@ -119,13 +119,13 @@
                     <div class="bg-white border border-gray-200 rounded-2xl p-5">
                         <h4 class="text-xs font-bold text-gray-900 uppercase tracking-widest mb-3">County Location</h4>
                         <div class="flex items-start gap-2.5 text-sm text-gray-700">
-                            <span class="text-gray-400 mt-0.5">📍</span>
+                            <span class="text-gray-400 mt-0.5"></span>
                             <span>{{ $county->latitude ?? '—' }}, {{ $county->longitude ?? '—' }}</span>
                         </div>
                         @if($county->website)
                         <a href="{{ $county->website }}" target="_blank" rel="noopener"
                            class="mt-4 w-full inline-flex items-center justify-center gap-2 font-bold text-sm h-10 rounded-xl bg-[#0B1E57] text-white hover:bg-[#16275f] transition-all">
-                            🌐 Official County Website
+                             Official County Website
                         </a>
                         @endif
                     </div>
@@ -194,7 +194,7 @@
                         </video>
                         @else
                         <div class="absolute inset-0 bg-gradient-to-br from-[#0A1024] to-[#1a1a2e] flex items-center justify-center">
-                            <span class="text-white/20 text-5xl">{{ $s['icon'] ?? '📋' }}</span>
+                            <span class="text-white/20 text-5xl">{{ $s['icon'] ?? '' }}</span>
                         </div>
                         @endif
                         @if($hasVideo)
@@ -259,7 +259,7 @@
                 @foreach($featuredHotels as $h)
                 @php
                     $hKey = strtolower($h->category ?? 'hotel');
-                    $stars = $h->star_rating ? str_repeat('★', $h->star_rating) . str_repeat('☆', 5 - $h->star_rating) : '—';
+                    $stars = $h->star_rating ? str_repeat('', $h->star_rating) . str_repeat('', 5 - $h->star_rating) : '—';
                 @endphp
                 <div class="bg-white border border-gray-200 rounded-2xl overflow-hidden card-hover">
                     <div class="h-36 overflow-hidden relative">

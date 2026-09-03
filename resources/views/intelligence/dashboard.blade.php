@@ -18,7 +18,7 @@
         <div class="bg-white border border-gray-200 rounded-2xl p-5"><div class="text-2xl font-black text-gray-900">{{ $totalAttractions }}</div><div class="text-xs text-gray-400 mt-1">Attractions</div></div>
         <div class="bg-white border border-gray-200 rounded-2xl p-5"><div class="text-2xl font-black text-gray-900">{{ $products }}</div><div class="text-xs text-gray-400 mt-1">Marketplace Products</div></div>
         <div class="bg-white border border-gray-200 rounded-2xl p-5"><div class="text-2xl font-black text-gray-900">{{ $agents }}</div><div class="text-xs text-gray-400 mt-1">Verified Agents</div>@if($pendingAgents>0)<div class="text-xs text-amber-600">{{ $pendingAgents }} pending</div>@endif</div>
-        <div class="bg-white border border-gray-200 rounded-2xl p-5"><div class="text-2xl font-black text-gray-900">{{ $totalReviews }}</div><div class="text-xs text-gray-400 mt-1">Reviews · ⭐ {{ number_format($avgRating ?? 0, 1) }} avg</div></div>
+        <div class="bg-white border border-gray-200 rounded-2xl p-5"><div class="text-2xl font-black text-gray-900">{{ $totalReviews }}</div><div class="text-xs text-gray-400 mt-1">Reviews ·  {{ number_format($avgRating ?? 0, 1) }} avg</div></div>
         <div class="bg-white border border-gray-200 rounded-2xl p-5"><div class="text-2xl font-black text-gray-900">KES {{ number_format($commissions) }}</div><div class="text-xs text-gray-400 mt-1">Commissions · KES {{ number_format($pendingCommissions) }} pending</div></div>
     </div>
 

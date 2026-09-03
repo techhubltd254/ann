@@ -2,7 +2,7 @@
 @section('title','Seller Analytics — KICC Marketplace')
 @section('content')
 <div class="pt-20 max-w-6xl mx-auto px-5 py-10">
-<h1 class="text-2xl font-black text-gray-900 mb-6">📊 Seller Dashboard</h1>
+<h1 class="text-2xl font-black text-gray-900 mb-6"> Seller Dashboard</h1>
 <div class="grid grid-cols-2 md:grid-cols-4 gap-4 mb-8">
 <div class="bg-white border border-gray-200 rounded-2xl p-5"><div class="text-2xl font-black text-[#046bd2]">KES {{ number_format($totalSales) }}</div><div class="text-xs text-gray-400">Total Sales</div></div>
 <div class="bg-white border border-gray-200 rounded-2xl p-5"><div class="text-2xl font-black text-[#046bd2]">{{ $totalOrders }}</div><div class="text-xs text-gray-400">Orders</div></div>

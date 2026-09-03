@@ -21,7 +21,7 @@
     {{-- Trigger button --}}
     <button type="button" @click="open = true"
             class="w-full inline-flex items-center justify-center gap-2 font-bold tracking-wide transition-all duration-200 px-4 text-sm h-11 rounded-xl bg-[#0B1E57] text-white hover:bg-[#16275f] active:scale-[0.97]">
-        🧳 Book as Experience
+         Book as Experience
     </button>
 
     {{-- Modal overlay --}}
@@ -95,19 +95,19 @@
                             <button type="button" @click="transportMode='road'"
                                     class="flex flex-col items-center gap-1 py-2.5 rounded-xl border-2 transition-all"
                                     :class="transportMode==='road' ? 'border-[#0B1E57] bg-[#0B1E57]/5' : 'border-gray-200 hover:border-gray-300'">
-                                <span class="text-lg">🚗</span>
+                                <span class="text-lg"></span>
                                 <span class="text-xs font-bold" :class="transportMode==='road' ? 'text-[#0B1E57]' : 'text-gray-500'">Road</span>
                             </button>
                             <button type="button" @click="transportMode='train'"
                                     class="flex flex-col items-center gap-1 py-2.5 rounded-xl border-2 transition-all"
                                     :class="transportMode==='train' ? 'border-[#0B1E57] bg-[#0B1E57]/5' : 'border-gray-200 hover:border-gray-300'">
-                                <span class="text-lg">🚆</span>
+                                <span class="text-lg"></span>
                                 <span class="text-xs font-bold" :class="transportMode==='train' ? 'text-[#0B1E57]' : 'text-gray-500'">Train</span>
                             </button>
                             <button type="button" @click="transportMode='air+rail'"
                                     class="flex flex-col items-center gap-1 py-2.5 rounded-xl border-2 transition-all"
                                     :class="transportMode==='air+rail' ? 'border-[#0B1E57] bg-[#0B1E57]/5' : 'border-gray-200 hover:border-gray-300'">
-                                <span class="text-lg">✈️</span>
+                                <span class="text-lg"></span>
                                 <span class="text-xs font-bold" :class="transportMode==='air+rail' ? 'text-[#0B1E57]' : 'text-gray-500'">Air/Rail</span>
                             </button>
                         </div>
@@ -149,7 +149,7 @@
                                 <label class="flex items-center gap-3 p-3 rounded-xl border-2 cursor-pointer transition-all"
                                        :class="selectedTransportId === t.id ? 'border-[#0B1E57] bg-[#0B1E57]/5' : 'border-gray-200 hover:border-gray-300'">
                                     <input type="radio" :value="t.id" x-model="selectedTransportId" class="hidden">
-                                    <span class="text-lg shrink-0" x-text="t.type_emoji || '🚗'"></span>
+                                    <span class="text-lg shrink-0" x-text="t.type_emoji || ''"></span>
                                     <div class="flex-1 min-w-0">
                                         <div class="text-sm font-bold text-gray-900" x-text="t.name"></div>
                                         <div class="text-[10px] text-gray-500" x-text="t.type_label + (t.distance_km ? ' · ' + t.distance_km + ' km' : '') + (t.eta_minutes ? ' · ' + t.eta_minutes + ' min' : '')"></div>
@@ -165,7 +165,7 @@
                     <button type="button" @click="submitBooking()" :disabled="submitting || !originLocation"
                             class="w-full h-12 rounded-xl font-bold tracking-wide transition-all text-sm"
                             :class="submitting ? 'bg-gray-200 text-gray-500' : 'bg-[#901C1E] text-white hover:bg-[#7b1618]'">
-                        <span x-show="!submitting">✅ Add to Experience Cart</span>
+                        <span x-show="!submitting"> Add to Experience Cart</span>
                         <span x-show="submitting" class="flex items-center justify-center gap-2">
                             <svg class="w-5 h-5 animate-spin" fill="none" viewBox="0 0 24 24"><circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"/><path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8v4a4 4 0 00-4 4H4z"/></svg>
                             Booking...

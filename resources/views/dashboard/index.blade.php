@@ -14,7 +14,7 @@
 
 <div class="max-w-7xl mx-auto px-5 py-10">
     <div class="grid grid-cols-1 md:grid-cols-3 gap-4 mb-10">
-        @foreach([['🎟️', $stats['total_bookings'], 'Total Bookings'], ['📅', $stats['upcoming_bookings'], 'Upcoming Events'], ['🏛️', $stats['exhibitions'], 'My Exhibitions']] as $i => $s)
+        @foreach([['', $stats['total_bookings'], 'Total Bookings'], ['', $stats['upcoming_bookings'], 'Upcoming Events'], ['', $stats['exhibitions'], 'My Exhibitions']] as $i => $s)
         <div class="bg-white rounded-2xl p-6 border border-gray-200 card-hover" data-tilt="6" data-reveal data-reveal-delay="{{ $i * 90 }}">
             <div class="tilt-glare"></div>
             <div class="text-3xl mb-3">{{ $s[0] }}</div>
@@ -26,10 +26,10 @@
 
     <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
         @foreach([
-            ['dashboard.exhibitions', 'Manage Exhibitions', 'View and manage your exhibitions and booths.', '🏛️'],
-            ['dashboard.bookings', 'My Bookings', 'View your booth and ticket bookings.', '🎟️'],
-            ['dashboard.profile', 'My Profile', 'Update your account details and preferences.', '👤'],
-            ['room3d.index', '3D Room Explorer', 'Upload photos and explore spaces in 3D.', '🏠'],
+            ['dashboard.exhibitions', 'Manage Exhibitions', 'View and manage your exhibitions and booths.', ''],
+            ['dashboard.bookings', 'My Bookings', 'View your booth and ticket bookings.', ''],
+            ['dashboard.profile', 'My Profile', 'Update your account details and preferences.', ''],
+            ['room3d.index', '3D Room Explorer', 'Upload photos and explore spaces in 3D.', ''],
         ] as $i => $l)
         <a href="{{ route($l[0]) }}" class="bg-white rounded-2xl p-6 border border-gray-200 hover:border-kicc-gold/40 transition-all group card-hover block" data-reveal data-reveal-delay="{{ $i * 70 }}" data-magnetic>
             <div class="flex items-center justify-between">

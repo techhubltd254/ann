@@ -47,7 +47,7 @@
     <div class="rounded-2xl overflow-hidden h-80 bg-[#F9FAFB] {{ $allVideos->isNotEmpty() ? 'hidden' : '' }}" id="product-image-container">
         @if($product->video_description)
         <div class="w-full h-full bg-gradient-to-br from-[#0B1E57] to-[#1a1a2e] p-6 flex flex-col justify-center">
-            <span class="text-[10px] font-bold text-[#FFCD05] uppercase tracking-widest mb-2">🎬 Video being produced</span>
+            <span class="text-[10px] font-bold text-[#FFCD05] uppercase tracking-widest mb-2"> Video being produced</span>
             <p class="text-white/90 text-sm leading-relaxed">{{ $product->video_description }}</p>
         </div>
         @else
@@ -84,13 +84,13 @@
                     <span class="px-2.5 py-0.5 rounded-full text-[11px] font-semibold tracking-wide border bg-sky-100 text-[#5A6480] border-gray-200">{{ $product->category->name }}</span>
                     @endif
                     @if(isset($flashSaleProduct))
-                    <span class="px-2.5 py-0.5 rounded-full text-[11px] font-semibold tracking-wide bg-red-100 text-red-600 border border-red-200">⚡ -{{ $flashSaleProduct->pivot->flashSale->discount_percent ?? 0 }}% Flash</span>
+                    <span class="px-2.5 py-0.5 rounded-full text-[11px] font-semibold tracking-wide bg-red-100 text-red-600 border border-red-200"> -{{ $flashSaleProduct->pivot->flashSale->discount_percent ?? 0 }}% Flash</span>
                     @endif
                 </div>
                 <h1 class="text-3xl font-black text-gray-900" data-split>{{ $product->name }}</h1>
                 <div class="flex items-center gap-3 mt-2">
                     @auth
-                    <button data-wishlist-btn data-type="{{ get_class($product) }}" data-id="{{ $product->id }}" class="text-gray-300 hover:text-red-500 transition-colors text-lg" title="Add to wishlist">♡</button>
+                    <button data-wishlist-btn data-type="{{ get_class($product) }}" data-id="{{ $product->id }}" class="text-gray-300 hover:text-red-500 transition-colors text-lg" title="Add to wishlist"></button>
                     @endauth
                     <label class="flex items-center gap-1 text-xs text-gray-400 cursor-pointer">
                         <input type="checkbox" class="compare-checkbox accent-[#046bd2]" value="{{ $product->id }}" onchange="updateCompare(this)">
@@ -188,7 +188,7 @@
         @if(!empty($tripRecommendations['places_to_visit']))
         <div class="mb-8">
             <h3 class="text-sm font-bold text-gray-900 mb-3 flex items-center gap-2">
-                <span>📍 Places to Visit</span>
+                <span> Places to Visit</span>
                 <span class="text-[10px] font-normal text-gray-400">nearby</span>
             </h3>
             <div class="grid grid-cols-2 md:grid-cols-4 gap-4">
@@ -224,7 +224,7 @@
         @if(!empty($tripRecommendations['places_to_stay']))
         <div class="mb-8">
             <h3 class="text-sm font-bold text-gray-900 mb-3 flex items-center gap-2">
-                <span>🏨 Places to Stay</span>
+                <span> Places to Stay</span>
             </h3>
             <div class="grid grid-cols-2 md:grid-cols-3 gap-4">
                 @foreach($tripRecommendations['places_to_stay'] as $rec)
@@ -256,13 +256,13 @@
         @if(!empty($tripRecommendations['transport']))
         <div>
             <h3 class="text-sm font-bold text-gray-900 mb-3 flex items-center gap-2">
-                <span>🚗 Transport Options</span>
+                <span> Transport Options</span>
             </h3>
             <div class="grid grid-cols-2 md:grid-cols-4 gap-4">
                 @foreach($tripRecommendations['transport'] as $t)
                 <div class="bg-white border border-gray-200 rounded-2xl p-4 flex flex-col items-start gap-2 card-hover hover:border-[#FFCD05]/40 transition-all">
                     <div class="flex items-center gap-2">
-                        <span class="text-lg">{{ $t['type_emoji'] ?? '🚗' }}</span>
+                        <span class="text-lg">{{ $t['type_emoji'] ?? '' }}</span>
                         <div>
                             <h4 class="font-bold text-gray-900 text-sm">{{ $t['name'] }}</h4>
                             @if($t['type_label'])
@@ -322,21 +322,21 @@
             renderMore(data) {
                 var h = '';
                 if (data.places_to_visit && data.places_to_visit.length > 0) {
-                    h += '<div class="mb-6"><h4 class="text-sm font-bold text-gray-900 mb-3">📍 More Places</h4><div class="grid grid-cols-2 md:grid-cols-4 gap-4">';
+                    h += '<div class="mb-6"><h4 class="text-sm font-bold text-gray-900 mb-3"> More Places</h4><div class="grid grid-cols-2 md:grid-cols-4 gap-4">';
                     data.places_to_visit.forEach(function(r) {
                         h += '<a href="/counties/institution/' + r.slug + '" class="bg-white border border-gray-200 rounded-xl p-3 hover:border-amber-300 transition-all"><div class="font-bold text-sm">' + r.name + '</div><div class="text-xs text-gray-500">' + (r.distance_km || '') + ' km · ' + (r.type_label || '') + '</div></a>';
                     });
                     h += '</div></div>';
                 }
                 if (data.places_to_stay && data.places_to_stay.length > 0) {
-                    h += '<div class="mb-6"><h4 class="text-sm font-bold text-gray-900 mb-3">🏨 More Places to Stay</h4><div class="grid grid-cols-2 md:grid-cols-3 gap-4">';
+                    h += '<div class="mb-6"><h4 class="text-sm font-bold text-gray-900 mb-3"> More Places to Stay</h4><div class="grid grid-cols-2 md:grid-cols-3 gap-4">';
                     data.places_to_stay.forEach(function(r) {
                         h += '<a href="/counties/institution/' + r.slug + '" class="bg-white border border-gray-200 rounded-xl p-3 hover:border-amber-300 transition-all"><div class="font-bold text-sm">' + r.name + '</div><div class="text-xs text-gray-500">' + (r.distance_km || '') + ' km</div></a>';
                     });
                     h += '</div></div>';
                 }
                 if (data.transport && data.transport.length > 0) {
-                    h += '<div><h4 class="text-sm font-bold text-gray-900 mb-3">🚗 More Transport</h4><div class="grid grid-cols-2 md:grid-cols-4 gap-4">';
+                    h += '<div><h4 class="text-sm font-bold text-gray-900 mb-3"> More Transport</h4><div class="grid grid-cols-2 md:grid-cols-4 gap-4">';
                     data.transport.forEach(function(t) {
                         var priceHtml = '';
                         if (t.price) priceHtml = '<div class="font-bold text-amber-600 text-sm">KES ' + t.price.toLocaleString() + '</div>';
@@ -351,7 +351,7 @@
     </script>
     @endpush
 
-    {{-- ═══ REVIEWS ═══ --}}
+    {{--  REVIEWS  --}}
     <div class="mt-20 grid grid-cols-1 lg:grid-cols-2 gap-6">
         <x-review-widget
             :reviews="$productReviews ?? collect([])"

@@ -12,7 +12,7 @@
     </div>
     @if(session('success'))<div class="bg-emerald-50 border border-emerald-200 text-emerald-700 rounded-xl px-4 py-3 mb-4 text-sm">{{ session('success') }}</div>@endif
     @if($agents->isEmpty())
-    <div class="bg-white border border-gray-200 rounded-2xl p-12 text-center"><div class="text-4xl mb-3">📋</div><h3 class="font-bold text-gray-900 mb-1">No agents</h3><p class="text-gray-500 text-sm">No agent applications with this status.</p></div>
+    <div class="bg-white border border-gray-200 rounded-2xl p-12 text-center"><div class="text-4xl mb-3"></div><h3 class="font-bold text-gray-900 mb-1">No agents</h3><p class="text-gray-500 text-sm">No agent applications with this status.</p></div>
     @else
     <div class="bg-white border border-gray-200 rounded-2xl overflow-hidden">
         <table class="w-full text-sm">

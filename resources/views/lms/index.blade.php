@@ -5,7 +5,7 @@
     <h1 class="text-2xl font-black text-gray-900 mb-2">Capacity Building</h1>
     <p class="text-gray-500 text-sm mb-6">Tourism training courses, certifications, and e-learning resources.</p>
     @if($courses->isEmpty())
-    <div class="bg-white border border-gray-200 rounded-2xl p-12 text-center"><div class="text-4xl mb-3">📚</div><h3 class="font-bold text-gray-900 mb-1">No courses yet</h3></div>
+    <div class="bg-white border border-gray-200 rounded-2xl p-12 text-center"><div class="text-4xl mb-3"></div><h3 class="font-bold text-gray-900 mb-1">No courses yet</h3></div>
     @else
     <div class="grid sm:grid-cols-2 lg:grid-cols-3 gap-4">@foreach($courses as $c)
         <a href="{{ route('lms.show', $c->id) }}" class="bg-white border border-gray-200 rounded-2xl p-5 hover:border-[#046bd2]/40 transition-all card-hover">

@@ -25,27 +25,27 @@
         </div>
         <div class="px-4 py-3 border-t border-gray-200 text-[10px] text-gray-400 uppercase tracking-widest shrink-0">Jump to Portal</div>
         <a href="{{ route('kicc.admin', ['tab' => 'portals']) }}" class="px-4 py-2 text-xs text-gray-400 hover:text-gray-700 transition-colors flex items-center justify-between group">
-            <span>🗂 All Portals</span>
+            <span> All Portals</span>
             <span class="text-[#F59E0B] opacity-0 group-hover:opacity-100 transition">&nearr;</span>
         </a>
         <a href="{{ route('kicc.admin', ['tab' => 'counties']) }}" class="px-4 py-2 text-xs text-gray-400 hover:text-gray-700 transition-colors flex items-center justify-between group">
-            <span>🌍 Counties (47)</span>
+            <span> Counties (47)</span>
             <span class="text-[#F59E0B] opacity-0 group-hover:opacity-100 transition">&nearr;</span>
         </a>
         <a href="{{ route('national.admin') }}" class="px-4 py-2 text-xs text-gray-400 hover:text-gray-700 transition-colors flex items-center justify-between group">
-            <span>🏛 National Govt</span>
+            <span> National Govt</span>
             <span class="text-[#F59E0B] opacity-0 group-hover:opacity-100 transition">&nearr;</span>
         </a>
         <a href="{{ route('exhibitor.admin') }}" class="px-4 py-2 text-xs text-gray-400 hover:text-gray-700 transition-colors flex items-center justify-between group">
-            <span>👤 Exhibitors</span>
+            <span> Exhibitors</span>
             <span class="text-[#F59E0B] opacity-0 group-hover:opacity-100 transition">&nearr;</span>
         </a>
         <a href="{{ route('marketplace.index') }}" class="px-4 py-2 text-xs text-gray-400 hover:text-gray-700 transition-colors flex items-center justify-between group">
-            <span>🛒 Marketplace</span>
+            <span> Marketplace</span>
             <span class="text-[#F59E0B] opacity-0 group-hover:opacity-100 transition">&nearr;</span>
         </a>
         <a href="{{ route('kicc.admin', ['tab' => 'institutions']) }}" class="px-4 py-2 text-xs text-gray-400 hover:text-gray-700 transition-colors flex items-center justify-between group">
-            <span>🏭 Institutions</span>
+            <span> Institutions</span>
             <span class="text-[#F59E0B] opacity-0 group-hover:opacity-100 transition">&nearr;</span>
         </a>
         <a href="/" class="flex items-center gap-3 px-4 py-4 border-t border-gray-200 mt-2 text-gray-400 hover:text-gray-700 text-xs transition-colors shrink-0">
@@ -68,7 +68,7 @@
             <div class="bg-emerald-50 border border-emerald-200 text-emerald-700 rounded-xl px-5 py-3 mb-6 text-sm">{{ session('success') }}</div>
             @endif
 
-            {{-- ═══════ OVERVIEW ═══════ --}}
+            {{--  OVERVIEW  --}}
             @if($tab === 'overview')
             <div class="grid grid-cols-2 lg:grid-cols-4 gap-4 mb-8">
                 <div class="bg-white border border-gray-200 rounded-2xl p-5"><div class="text-2xl font-black text-gray-900">{{ $stats['counties'] }}</div><div class="text-xs text-gray-400 mt-1">County Exhibitors</div></div>
@@ -87,7 +87,7 @@
             </div>
             @endif
 
-            {{-- ═══════ SUB-PORTALS ═══════ --}}
+            {{--  SUB-PORTALS  --}}
             @if($tab === 'portals')
             <div>
                 <h3 class="font-bold text-gray-900 mb-6">All Platform Portals — enter any tier</h3>
@@ -141,7 +141,7 @@
             </div>
             @endif
 
-            {{-- ═══════ COUNTIES ═══════ --}}
+            {{--  COUNTIES  --}}
             @if($tab === 'counties')
             <div>
                 <div class="flex items-center justify-between mb-4">
@@ -189,7 +189,7 @@
             </div>
             @endif
 
-            {{-- ═══════ EXHIBITORS ═══════ --}}
+            {{--  EXHIBITORS  --}}
             @if($tab === 'exhibitors')
             <div>
                 <h3 class="font-bold text-gray-900 mb-5">Private Exhibitors ({{ $exhibitors->count() }})</h3>
@@ -211,7 +211,7 @@
             </div>
             @endif
 
-            {{-- ═══════ INSTITUTIONS ═══════ --}}
+            {{--  INSTITUTIONS  --}}
             @if($tab === 'institutions')
             <div>
                 <h3 class="font-bold text-gray-900 mb-5">All Institutions ({{ $institutions->count() }})</h3>
@@ -231,7 +231,7 @@
             </div>
             @endif
 
-            {{-- ═══════ NATIONAL ═══════ --}}
+            {{--  NATIONAL  --}}
             @if($tab === 'national')
             <div>
                 <div class="flex items-center justify-between mb-4">
@@ -259,7 +259,7 @@
             </div>
             @endif
 
-            {{-- ═══════ PROVIDERS ═══════ --}}
+            {{--  PROVIDERS  --}}
             @if($tab === 'providers')
             <div class="grid lg:grid-cols-2 gap-6">
                 <div class="bg-white border border-gray-200 rounded-2xl p-6">
@@ -288,7 +288,7 @@
                             <div class="text-xs text-gray-400">KES {{ number_format($s['price']) }} · {{ $s['table'] }}</div>
                         </div>
                         <form method="POST" action="{{ route('kicc.admin.approve', [$s['table'], $s['id']]) }}">@csrf
-                            <button class="text-[10px] font-bold px-3 py-1.5 rounded-lg text-gray-900 bg-emerald-600 hover:bg-emerald-700">CERTIFY ✓</button>
+                            <button class="text-[10px] font-bold px-3 py-1.5 rounded-lg text-gray-900 bg-emerald-600 hover:bg-emerald-700">CERTIFY </button>
                         </form>
                     </div>
                     @empty
@@ -298,7 +298,7 @@
             </div>
             @endif
 
-            {{-- ═══════ ORDERS ═══════ --}}
+            {{--  ORDERS  --}}
             @if($tab === 'orders')
             <div class="bg-white border border-gray-200 rounded-2xl p-6" style="max-height:600px; overflow-y:auto;">
                 <h3 class="font-bold text-gray-900 mb-5">All Orders</h3>
@@ -323,7 +323,7 @@
             </div>
             @endif
 
-            {{-- ═══════ ESCROW ═══════ --}}
+            {{--  ESCROW  --}}
             @if($tab === 'escrow')
             <div class="bg-white border border-gray-200 rounded-2xl p-6" style="max-height:600px; overflow-y:auto;">
                 <h3 class="font-bold text-gray-900 mb-5">All Escrow Transactions</h3>
@@ -350,7 +350,7 @@
             </div>
             @endif
 
-            {{-- ═══════ USERS ═══════ --}}
+            {{--  USERS  --}}
             @if($tab === 'users')
             <div class="bg-white border border-gray-200 rounded-2xl p-6" style="max-height:600px;">
                 <h3 class="font-bold text-gray-900 mb-5">Platform Users</h3>
@@ -374,7 +374,7 @@
             </div>
             @endif
 
-            {{-- ═══════ HERO MEDIA ═══════ --}}
+            {{--  HERO MEDIA  --}}
             @if($tab === 'hero_media')
             <div class="grid md:grid-cols-2 gap-6">
                 <div class="bg-white border border-gray-200 rounded-2xl p-6">
@@ -405,19 +405,19 @@
                     <h3 class="font-bold text-gray-900 mb-4">Quick Actions</h3>
                     <div class="space-y-3">
                         <a href="{{ route('marketplace.index') }}" class="flex items-center gap-3 p-3 rounded-xl hover:bg-gray-50 transition-all">
-                            <span class="text-2xl">🛒</span>
+                            <span class="text-2xl"></span>
                             <div><div class="font-semibold text-sm">Marketplace</div><div class="text-xs text-gray-400">Browse all products</div></div>
                         </a>
                         <a href="{{ route('counties.index') }}" class="flex items-center gap-3 p-3 rounded-xl hover:bg-gray-50 transition-all">
-                            <span class="text-2xl">🌍</span>
+                            <span class="text-2xl"></span>
                             <div><div class="font-semibold text-sm">All Counties</div><div class="text-xs text-gray-400">47 county portals</div></div>
                         </a>
                         <a href="{{ route('national-government.index') }}" class="flex items-center gap-3 p-3 rounded-xl hover:bg-gray-50 transition-all">
-                            <span class="text-2xl">🏛</span>
+                            <span class="text-2xl"></span>
                             <div><div class="font-semibold text-sm">National Government</div><div class="text-xs text-gray-400">Ministries & agencies</div></div>
                         </a>
                         <a href="{{ route('institutions', 'kakuzi-plc') }}" class="flex items-center gap-3 p-3 rounded-xl hover:bg-gray-50 transition-all">
-                            <span class="text-2xl">🏭</span>
+                            <span class="text-2xl"></span>
                             <div><div class="font-semibold text-sm">Institutions</div><div class="text-xs text-gray-400">Kakuzi, Guka's, MUT & more</div></div>
                         </a>
                     </div>

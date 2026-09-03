@@ -163,7 +163,7 @@
                    x-show="q === '' || '{{ strtolower($sector->name) }}'.includes(q.toLowerCase())"
                    @click="showDropdown = false"
                    class="flex items-center gap-3 px-4 py-3 hover:bg-[#F9FAFB] cursor-pointer transition-colors border-b border-gray-100 last:border-0">
-                    <span class="text-lg">{{ $sector->icon ?? '📊' }}</span>
+                    <span class="text-lg">{{ $sector->icon ?? '' }}</span>
                     <div><div class="font-semibold text-gray-900 text-sm">{{ $sector->name }}</div><div class="text-[#5A6480] text-xs">{{ $sector->counties_count }} counties</div></div>
                 </a>
                 @endforeach
@@ -172,7 +172,7 @@
         <div class="grid md:grid-cols-2 lg:grid-cols-4 gap-4">
             @foreach($sectors as $sector)
             <div x-show="q === '' || '{{ strtolower($sector->name) }}'.includes(q.toLowerCase())" class="bg-white rounded-2xl border border-gray-200 p-5 hover:shadow-lg transition-shadow">
-                <div class="text-2xl mb-3">{{ $sector->icon ?? '📊' }}</div>
+                <div class="text-2xl mb-3">{{ $sector->icon ?? '' }}</div>
                 <h3 class="font-black text-gray-900 text-sm">{{ $sector->name }}</h3>
                 <div class="text-[#5A6480] text-xs mt-1">{{ $sector->counties_count }} counties</div>
                 <div class="mt-3 flex gap-1"><a href="/admin/sectors/{{ $sector->id }}/edit" class="text-xs text-[#5A6480] hover:text-[#901C1E] font-semibold">Edit</a></div>
@@ -187,12 +187,12 @@
             <h2 class="text-xl font-black text-gray-900 mb-6" data-split>National Content Management</h2>
             <div class="grid md:grid-cols-2 lg:grid-cols-3 gap-4">
                 @foreach([
-                    ['/admin/counties','🏛️','Counties','Manage all 47 county profiles'],
-                    ['/admin/exhibitions','📅','Exhibitions','Manage national exhibitions'],
-                    ['/admin/venues','🏢','Venues','Manage KICC facilities'],
-                    ['/admin/screens','📺','Screens','Manage digital screens'],
-                    ['/admin/products','📦','Products','Manage marketplace products'],
-                    ['/admin/bookings','🎫','Bookings','View all bookings'],
+                    ['/admin/counties','','Counties','Manage all 47 county profiles'],
+                    ['/admin/exhibitions','','Exhibitions','Manage national exhibitions'],
+                    ['/admin/venues','','Venues','Manage KICC facilities'],
+                    ['/admin/screens','','Screens','Manage digital screens'],
+                    ['/admin/products','','Products','Manage marketplace products'],
+                    ['/admin/bookings','','Bookings','View all bookings'],
                 ] as $l)
                 <a href="{{ $l[0] }}" class="p-5 bg-[#F9FAFB] rounded-2xl border border-gray-200 hover:border-[#901C1E]/30 transition-all group card-hover" data-magnetic>
                     <div class="text-2xl mb-3">{{ $l[1] }}</div>

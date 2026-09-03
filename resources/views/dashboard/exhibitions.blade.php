@@ -45,7 +45,7 @@
     <div class="mt-6">{{ $exhibitions->links() }}</div>
     @else
     <div class="text-center py-16 bg-white rounded-2xl border border-gray-200 card-hover" data-reveal>
-        <div class="text-5xl mb-4">🏛️</div>
+        <div class="text-5xl mb-4"></div>
         <h3 class="text-xl font-bold text-gray-900 mb-2">No exhibitions yet</h3>
         <p class="text-[#5A6480] text-sm">Contact the admin to create your first exhibition.</p>
     </div>

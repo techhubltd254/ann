@@ -1,7 +1,7 @@
 @extends('layouts.app')
 @section('title','Live Chat — KICC Marketplace')
 @section('content')
-<div class="pt-20 max-w-4xl mx-auto px-5 py-10"><h1 class="text-2xl font-black text-gray-900 mb-6">💬 Live Chat</h1>
+<div class="pt-20 max-w-4xl mx-auto px-5 py-10"><h1 class="text-2xl font-black text-gray-900 mb-6"> Live Chat</h1>
 <div class="bg-white border border-gray-200 rounded-2xl overflow-hidden" x-data="{ messages: @json($messages), newMsg: '' }">
 <div class="h-80 overflow-y-auto p-4 space-y-3" x-ref="chatbox" x-init="$nextTick(()=>$refs.chatbox.scrollTop=$refs.chatbox.scrollHeight)">
 <template x-for="m in messages" :key="m.id">

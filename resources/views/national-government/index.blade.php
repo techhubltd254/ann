@@ -38,7 +38,7 @@
             </a>
             @empty
             <div class="col-span-3 text-center py-16 text-gray-400">
-                <div class="text-4xl mb-3">🏛️</div>
+                <div class="text-4xl mb-3"></div>
                 <p class="text-sm">No ministries listed yet.</p>
             </div>
             @endforelse

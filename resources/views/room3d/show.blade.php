@@ -32,11 +32,11 @@
             <div class="mt-6 flex flex-wrap gap-3">
                 <a href="{{ route('room3d.viewer', $room3d) }}" data-magnetic
                    class="inline-flex items-center justify-center gap-2 font-bold tracking-wide transition-all duration-200 px-6 text-sm h-11 rounded-xl bg-kicc-gold text-[#07090F] hover:bg-[#FFCD05]">
-                    🔍 Open 3D Viewer
+                     Open 3D Viewer
                 </a>
                 <a href="{{ route('room3d.viewer', $room3d) }}?mode=gyro" data-magnetic
                    class="inline-flex items-center justify-center gap-2 font-bold tracking-wide transition-all duration-200 px-6 text-sm h-11 rounded-xl border border-gray-200 text-gray-900 hover:bg-sky-100 card-hover">
-                    📱 Phone Gyro Mode
+                     Phone Gyro Mode
                 </a>
             </div>
             @endif

@@ -12,7 +12,7 @@
             <div class="flex items-center gap-3 mb-3">
                 <span class="text-gray-700 text-xs font-bold tracking-[0.2em] uppercase">Travel & Tourism</span>
                 @if($weather['temp'] <= 14)
-                <span class="bg-[#F59E0B] text-[#07090F] text-[10px] font-black uppercase tracking-widest px-2.5 py-1 rounded-full">☀️ Summer Escape</span>
+                <span class="bg-[#F59E0B] text-[#07090F] text-[10px] font-black uppercase tracking-widest px-2.5 py-1 rounded-full"> Summer Escape</span>
                 @endif
             </div>
             <h1 class="text-4xl md:text-5xl font-black text-gray-900 tracking-tight leading-[1.1]" data-split>

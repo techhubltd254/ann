@@ -183,7 +183,7 @@
     </div>
     @else
     <div class="text-center py-12 text-[#5A6480] bg-white rounded-2xl border border-gray-200 card-hover" data-reveal>
-        <div class="text-4xl mb-3">📅</div>
+        <div class="text-4xl mb-3"></div>
         <p class="text-sm">No featured exhibitions right now — check back soon.</p>
         <a href="{{ route('exhibitions.index') }}" class="inline-block mt-4 text-[#FFCD05] text-sm font-bold hover:underline" data-magnetic>Browse all events</a>
     </div>
