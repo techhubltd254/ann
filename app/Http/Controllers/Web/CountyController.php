@@ -205,6 +205,21 @@ class CountyController extends Controller
         $sectorEntityVideos = $cached['sectorEntityVideos'];
         $sectorPitches = $cached['sectorPitches'];
 
+        // Generate poster thumbnails for sector tiles
+        $sectorTilePosters = [];
+        $resolver = app(\App\Services\MediaFallbackResolver::class);
+        foreach ($sectorData as $name => $s) {
+            $sv = $sectorVideos[$s['sector_slug']] ?? null;
+            $ev = $sectorEntityVideos[$s['sector_slug']] ?? [];
+            $first = $ev[0] ?? $sv;
+            if ($first) {
+                $frame = $resolver->extractFrame($first);
+                if ($frame) $sectorTilePosters[$s['sector_slug']] = $frame;
+            }
+        }
+
+
+
         // ═══ HERO FALLBACK ALGORITHM ═══
         // If the county has no hero video uploaded, build a hero playlist from the
         // sector videos + entity videos so the county hero still plays motion.
@@ -243,7 +258,7 @@ class CountyController extends Controller
             'county', 'sectors', 'sectorData',
             'featuredAttractions', 'featuredHotels', 'countyProducts',
             'exhibitions', 'linkedSectors', 'countyMedia', 'countyHeroFallback', 'sectorVideos', 'sectorWebmVideos',
-            'sectorEntityVideos', 'sectorPitches', 'attractionThumbs', 'hotelThumbs', 'productThumbs',
+            'sectorEntityVideos', 'sectorPitches', 'sectorTilePosters', 'attractionThumbs', 'hotelThumbs', 'productThumbs',
             'mapPins', 'sectorPins'
         ));
     }

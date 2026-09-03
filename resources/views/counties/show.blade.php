@@ -145,9 +145,16 @@
                         @if($firstVideo)
                         <video muted loop playsinline preload="metadata"
                                class="absolute inset-0 w-full h-full object-cover"
-                               poster="{{ $sectorTilePoster ?? '' }}"
+                               poster="{{ $sectorTilePoster ?? ($sectorTilePosters[$s['sector_slug']] ?? '') }}"
                                onerror="this.style.display='none'">
                             <source src="{{ $firstVideo }}" type="video/mp4">
+                        </video>
+                        @elseif($sectorVideo)
+                        <video muted loop playsinline preload="metadata"
+                               class="absolute inset-0 w-full h-full object-cover"
+                               poster="{{ $sectorTilePoster ?? ($sectorTilePosters[$s['sector_slug']] ?? $sectorVideo) }}"
+                               onerror="this.style.display='none'">
+                            <source src="{{ $sectorVideo }}" type="video/mp4">
                         </video>
                         @else
                         <div class="absolute inset-0 bg-gradient-to-br from-[#0A1024] to-[#1a1a2e] flex items-center justify-center">
