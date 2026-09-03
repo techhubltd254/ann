@@ -82,3 +82,4 @@ scripts
 .grafana-admin-password.txt
 .phpunit.cache
 storage/oauth-*.key
+Exhibition
