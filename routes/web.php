@@ -260,6 +260,18 @@ Route::get('/operations', [OperationsController::class, 'index'])->name('operati
 Route::get('/exhibitions', [ExhibitionController::class, 'index'])->name('exhibitions.index');
 Route::get('/exhibitions/{slug}', [ExhibitionController::class, 'show'])->name('exhibitions.show');
 
+// ── Live Streams ──
+Route::get('/streams', [\App\Http\Controllers\Web\StreamController::class, 'index'])->name('streams.index');
+Route::get('/streams/create', [\App\Http\Controllers\Web\StreamController::class, 'create'])->name('streams.create')->middleware('auth');
+Route::post('/streams', [\App\Http\Controllers\Web\StreamController::class, 'store'])->name('streams.store')->middleware('auth');
+Route::get('/streams/{stream}', [\App\Http\Controllers\Web\StreamController::class, 'show'])->name('streams.show');
+Route::post('/streams/{stream}/go-live', [\App\Http\Controllers\Web\StreamController::class, 'goLive'])->name('streams.go-live')->middleware('auth');
+Route::post('/streams/{stream}/end', [\App\Http\Controllers\Web\StreamController::class, 'endStream'])->name('streams.end')->middleware('auth');
+Route::delete('/streams/{stream}', [\App\Http\Controllers\Web\StreamController::class, 'destroy'])->name('streams.destroy')->middleware('auth');
+Route::get('/streams/{stream}/chat', [\App\Http\Controllers\Web\StreamController::class, 'apiChatMessages'])->name('streams.chat');
+Route::post('/streams/{stream}/chat', [\App\Http\Controllers\Web\StreamController::class, 'apiPostChat'])->name('streams.chat.post');
+Route::get('/api/streams/live', [\App\Http\Controllers\Web\StreamController::class, 'apiLiveStreams'])->name('api.streams.live');
+
 // Trade Agreements & Trading Blocs
 Route::get('/trade-agreements', [\App\Http\Controllers\Web\TradeAgreementController::class, 'index'])->name('trade.agreements.index');
 Route::get('/trade-agreements/{slug}', [\App\Http\Controllers\Web\TradeAgreementController::class, 'show'])->name('trade.agreements.show');

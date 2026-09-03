@@ -5,6 +5,7 @@ namespace App\Http\Controllers\Web;
 use App\Http\Controllers\Controller;
 use App\Models\County;
 use App\Models\Exhibition;
+use App\Models\LiveStream;
 use App\Models\Marketplace\Product;
 use App\Models\MediaAsset;
 use App\Models\TradeAgreement;
@@ -62,10 +63,17 @@ class HomeController extends Controller
         $heroWebm = $heroAsset?->webmUrl();
         $heroPoster = $heroAsset?->posterUrl();
 
+        // Live streams for the "Live Now" carousel
+        $liveStreams = LiveStream::with('exhibition')
+            ->where('status', 'live')
+            ->latest()
+            ->take(6)
+            ->get();
+
         return view('home', compact(
             'featuredExhibitions', 'counties', 'products', 'venues',
             'tradeAgreementsHome', 'heroVideo', 'heroWebm', 'heroPoster',
-            'countyHeroVideos',
+            'countyHeroVideos', 'liveStreams',
         ));
     }
 }

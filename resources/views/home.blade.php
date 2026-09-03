@@ -77,6 +77,52 @@
     </div>
 </section>
 
+{{-- LIVE NOW — if any streams are active --}}
+@if(isset($liveStreams) && $liveStreams->count() > 0)
+<section class="bg-[#0B1E57] py-12 md:py-16 section-transition" data-section="live">
+    <div class="max-w-7xl mx-auto px-5">
+        <div data-reveal>
+            <div class="flex items-center gap-3 mb-3">
+                <span class="w-2 h-2 rounded-full bg-red-500 animate-pulse"></span>
+                <span class="text-red-400 text-xs font-bold tracking-[0.2em] uppercase">Live Now</span>
+            </div>
+            <h2 class="text-3xl md:text-4xl font-black text-white leading-[1.1]" data-split>Watch <span class="text-red-400">Live</span> Events</h2>
+            <p class="text-white/60 mt-3 text-base max-w-xl leading-relaxed">Live streams from exhibitions and events across Kenya.</p>
+        </div>
+        <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 mt-8">
+            @foreach($liveStreams as $stream)
+            <a href="{{ route('streams.show', $stream) }}" class="group bg-white/5 border border-white/10 rounded-2xl overflow-hidden hover:border-red-500/40 transition-all">
+                <div class="aspect-video bg-[#0A1024] relative overflow-hidden">
+                    @if($stream->thumbnail_url)
+                    <img src="{{ $stream->thumbnail_url }}" alt="{{ $stream->name }}" class="w-full h-full object-cover" loading="lazy">
+                    @endif
+                    <div class="absolute top-3 left-3 flex items-center gap-1.5">
+                        <span class="w-1.5 h-1.5 rounded-full bg-red-500 animate-pulse"></span>
+                        <span class="text-[10px] font-bold px-2 py-0.5 rounded-full bg-red-500/80 backdrop-blur text-white">LIVE</span>
+                    </div>
+                    <div class="absolute bottom-3 right-3">
+                        <span class="text-[10px] font-bold px-2 py-0.5 rounded-full bg-black/50 backdrop-blur text-white/80">{{ $stream->formattedViewerCount() }} watching</span>
+                    </div>
+                </div>
+                <div class="p-4">
+                    <h3 class="font-bold text-white text-sm">{{ $stream->name }}</h3>
+                    @if($stream->exhibition)
+                    <p class="text-white/50 text-xs mt-1">{{ $stream->exhibition->name }}</p>
+                    @endif
+                </div>
+            </a>
+            @endforeach
+        </div>
+        <div class="mt-6 text-center">
+            <a href="{{ route('streams.index') }}" class="inline-flex items-center gap-2 text-sm font-bold text-white/70 hover:text-white transition-colors">
+                View all streams
+                <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 8l4 4m0 0l-4 4m4-4H3"/></svg>
+            </a>
+        </div>
+    </div>
+</section>
+@endif
+
 {{-- MARKETPLACE --}}
 <section class="border-y border-gray-100 py-12 md:py-20 bg-white section-transition" data-section="marketplace">
     <div class="max-w-7xl mx-auto px-5">

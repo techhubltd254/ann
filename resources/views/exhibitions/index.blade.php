@@ -33,6 +33,12 @@
                 <div class="absolute w-32 h-32 rounded-full bg-[#901C1E]/15 blur-2xl"></div>
             </div>
             @endif
+            @if(in_array($exhibition->id, $liveStreams ?? []))
+            <div class="absolute top-3 left-3 flex items-center gap-1.5">
+                <span class="w-1.5 h-1.5 rounded-full bg-red-500 animate-pulse"></span>
+                <span class="text-[10px] font-bold px-2 py-0.5 rounded-full bg-red-500/80 backdrop-blur text-white">LIVE</span>
+            </div>
+            @endif
             <div class="p-5 relative">
                 <div class="flex items-center justify-between mb-3">
                     <span class="text-xs text-[#5A6480]">{{ $exhibition->start_date->format('M d') }} - {{ $exhibition->end_date->format('M d, Y') }}</span>
