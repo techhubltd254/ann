@@ -33,7 +33,7 @@
            :class="active && videoReady ? 'opacity-100' : 'opacity-0'"
            muted loop playsinline preload="metadata"
            x-on:playing="onVideoPlaying()"
-           x-effect="if (active && videoReady) { $refs.video.play().catch(() => {}); } else if (!active) { $refs.video.pause(); }">
+           x-effect="if (active) { $refs.video.play().catch(() => {}); } else { $refs.video.pause(); }">
         @if($hoverLoop)
         <source src="{{ $hoverLoop }}" type="video/mp4">
         @elseif($videoUrl)

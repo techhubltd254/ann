@@ -41,12 +41,6 @@ function mediaTile() {
         activate() {
             this.active = true;
             window.dispatchEvent(new CustomEvent('media-tile:activate', { detail: this }));
-            this.$nextTick(() => {
-                const v = this.$refs?.video;
-                if (v) {
-                    v.play().then(() => { this.videoReady = true; }).catch(() => {});
-                }
-            });
         },
         deactivate() {
             this.active = false;
