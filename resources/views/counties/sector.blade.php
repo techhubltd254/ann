@@ -50,7 +50,7 @@
 {{--  HERO  --}}
 @php $heroVids = $sectorHeroVideos ?? []; @endphp
 @if(count($heroVids) > 0)
-<div class="relative h-[45vh] md:h-[55vh] overflow-hidden bg-[#0B1E57]"
+<div class="relative h-[45vh] md:h-[55vh] overflow-hidden bg-black"
      x-data="sectorHeroPlayer({
         videos: {{ Js::from(array_values($heroVids)) }},
         poster: '{{ $sectorHeroPoster ?? media("counties/" . $county->slug . "/hero.jpeg") }}'
@@ -85,7 +85,7 @@
     </div>
 </div>
 @elseif($fourDVideo)
-<div class="relative h-[45vh] md:h-[55vh] overflow-hidden bg-[#0B1E57]">
+<div class="relative h-[45vh] md:h-[55vh] overflow-hidden bg-black">
     <video autoplay muted loop playsinline loading="lazy" preload="metadata" class="absolute inset-0 w-full h-full object-cover">
         <source src="{{ $fourDVideo }}" type="video/mp4">
     </video>
@@ -104,7 +104,7 @@
     </div>
 </div>
 @else
-    <div class="relative h-[45vh] md:h-[55vh] overflow-hidden bg-[#0B1E57]">
+    <div class="relative h-[45vh] md:h-[55vh] overflow-hidden bg-black">
         <img src="{{ $sectorHeroPoster ?? media('counties/' . $county->slug . '/hero.jpeg') }}" alt="{{ $sectorInfo['title'] }}"
              class="absolute inset-0 w-full h-full object-cover"
              loading="lazy" decoding="async"

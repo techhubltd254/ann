@@ -43,7 +43,7 @@
         />
         @elseif(count($countyHeroFallback ?? []) > 0)
         {{-- Hero fallback: no county hero uploaded — seamless loop of related videos --}}
-        <div class="absolute inset-0 w-full h-full bg-[#0B1E57]"
+        <div class="absolute inset-0 w-full h-full bg-black"
              x-data="heroFallbackPlayer({
                 videos: {{ Js::from(array_values(array_slice($countyHeroFallback, 0, 8))) }},
                 poster: '{{ $heroPosterImg }}'
@@ -146,7 +146,7 @@
                    @mouseenter="const v = $el.querySelector('video'); if(v) { v.play().catch(()=>{}); }"
                    @mouseleave="const v = $el.querySelector('video'); if(v) { v.pause(); }"
                    data-tilt="6" data-reveal data-reveal-delay="{{ $loop->index * 80 }}">
-                    <div class="aspect-[4/3] overflow-hidden relative {{ $hasVideo ? 'bg-[#0B1E57]' : 'bg-gradient-to-br from-[#0A1024] to-[#1a1a2e]' }}">
+                    <div class="aspect-[4/3] overflow-hidden relative {{ $hasVideo ? 'bg-black' : 'bg-gradient-to-br from-[#0A1024] to-[#1a1a2e]' }}">
                         @if($firstVideo)
                         <video muted loop playsinline preload="metadata"
                                class="absolute inset-0 w-full h-full object-cover"

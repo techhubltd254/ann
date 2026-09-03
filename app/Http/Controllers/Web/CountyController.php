@@ -647,15 +647,10 @@ class CountyController extends Controller
         }
 
         // If no hero poster exists, use the first fallback video URL as poster
-// The browser will show the first video frame for both img and video elements
-if (!$heroPoster && !empty($institutionFallbackVideos)) {
-    $heroPoster = $institutionFallbackVideos[0];
-    // Try to extract a real frame asynchronously (already exists? use it)
-    try {
-        $frame = app(\App\Services\MediaFallbackResolver::class)->extractFrame($institutionFallbackVideos[0]);
-        if ($frame) $heroPoster = $frame;
-    } catch (\Throwable $e) {}
-}
+        // The browser will show the first video frame for both img and video elements
+        if (!$heroPoster && !empty($institutionFallbackVideos)) {
+            $heroPoster = $institutionFallbackVideos[0];
+        }
 
         // Marketplace products owned by this institution
         $products = collect();

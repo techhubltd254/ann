@@ -12,7 +12,7 @@
     'aspect' => 'aspect-video',
 ])
 
-<div class="group relative {{ $aspect }} bg-[#0B1E57] overflow-hidden rounded-xl"
+<div class="group relative {{ $aspect }} bg-black overflow-hidden rounded-xl"
      x-data="mediaTile()"
      @mouseenter="onHoverEnter()"
      @mouseleave="onHoverLeave()"
@@ -32,7 +32,7 @@
            class="absolute inset-0 w-full h-full object-cover transition-opacity duration-300"
            :class="active && videoReady ? 'opacity-100' : 'opacity-0'"
            muted loop playsinline preload="metadata"
-           poster="{{ $hoverLoop ?? $videoUrl ?? '' }}"
+           poster="{{ $poster ?? $hoverLoop ?? $videoUrl ?? '' }}"
            x-on:playing="onVideoPlaying()"
            x-effect="if (active) { if (!videoReady) { resetVideoReady(); } $refs.video.play().catch(()=>{}); } else { if (videoReady) { $refs.video.pause(); } }">
         @if($hoverLoop)

@@ -8,7 +8,7 @@
 
     {{--  HERO VIDEO SECTION (adaptive HLS / 4D / fallback loop)  --}}
     @if($heroVideo || $heroSplat)
-    <div class="relative h-[50vh] md:h-[60vh] overflow-hidden bg-[#0B1E57]">
+    <div class="relative h-[50vh] md:h-[60vh] overflow-hidden bg-black">
         @if($heroSplat)
         <x-hologram-viewer :poster="$heroPoster" :video-url="$heroVideo" :hls-url="$heroHls ?? null" :splat-url="$heroSplat" :title="$institution->name" />
         @else
@@ -45,7 +45,7 @@
     </div>
     @elseif(!empty($institutionFallbackVideos))
     {{-- Fallback: no hero video — cycle related sector/institution videos seamlessly --}}
-    <div class="relative h-[50vh] md:h-[60vh] overflow-hidden bg-[#0B1E57]"
+    <div class="relative h-[50vh] md:h-[60vh] overflow-hidden bg-black"
          x-data="institutionFallbackPlayer({
             videos: {{ Js::from($institutionFallbackVideos) }},
             poster: '{{ $heroPoster ?? media('kicc/kicc-logo.png') }}'
