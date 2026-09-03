@@ -384,21 +384,30 @@ class CountyController extends Controller
             }
         }
 
-        // Product video fallback: for institutions without hero video, use marketplace product videos
+        // Product video fallback: batch load ALL product videos for ALL institutions in this sector
+        // Reused for both entity card heroes ($institutionHeroVideos) and hero playlist ($sectorHeroVideos)
+        $institutionProductVideos = [];
+        $instUserIds = \App\Models\CountyInstitution::whereIn('id', $institutionIds)->pluck('user_id', 'id');
+        if ($instUserIds->isNotEmpty()) {
+            $productRows = \App\Models\Marketplace\Product::whereIn('user_id', $instUserIds->filter())
+                ->active()
+                ->whereNotNull('video_url')
+                ->get(['user_id', 'video_url']);
+            foreach ($productRows as $pr) {
+                $instId = $instUserIds->search($pr->user_id);
+                if ($instId && $pr->video_url) {
+                    $institutionProductVideos[$instId][] = $pr->video_url;
+                }
+            }
+        }
+
+        // Assign first product video to entity cards that have no hero
         foreach ($items as $e) {
             $isInst = in_array($e->entity_type, [\App\Models\CountyInstitution::class, \App\Services\InstitutionSyncService::ENTITY_TYPE]);
             if (!$isInst || !empty($institutionHeroVideos[$e->id])) continue;
-            $inst = \App\Models\CountyInstitution::find($e->entity_id);
-            if (!$inst || !$inst->user_id) continue;
-            $productVids = \App\Models\Marketplace\Product::where('user_id', $inst->user_id)
-                ->active()
-                ->where(function ($q) { $q->whereNotNull('video_url')->orWhereNotNull('videos'); })
-                ->take(5)->get()
-                ->map(fn ($p) => $p->video_url ?? (is_array($p->videos) ? ($p->videos[0] ?? null) : null))
-                ->filter()
-                ->values();
-            if ($productVids->isNotEmpty()) {
-                $institutionHeroVideos[$e->id] = $productVids[0];
+            $vids = $institutionProductVideos[$e->entity_id] ?? [];
+            if (!empty($vids)) {
+                $institutionHeroVideos[$e->id] = $vids[0];
             }
         }
 
@@ -427,19 +436,12 @@ class CountyController extends Controller
             }
         }
 
-        // Tier 2: Add product videos from institutions in this sector
+        // Tier 2: Add product videos from institutions in this sector (using batch-loaded data)
         foreach ($items as $e) {
             $isInst = in_array($e->entity_type, [\App\Models\CountyInstitution::class, \App\Services\InstitutionSyncService::ENTITY_TYPE]);
             if (!$isInst) continue;
-            $inst = \App\Models\CountyInstitution::find($e->entity_id);
-            if (!$inst || !$inst->user_id) continue;
-            $productVids = \App\Models\Marketplace\Product::where('user_id', $inst->user_id)
-                ->active()
-                ->whereNotNull('video_url')
-                ->take(5)->get()
-                ->pluck('video_url')
-                ->filter();
-            foreach ($productVids as $pv) {
+            $vids = $institutionProductVideos[$e->entity_id] ?? [];
+            foreach ($vids as $pv) {
                 if (!in_array($pv, $seen)) {
                     $sectorHeroVideos[] = $pv;
                     $seen[] = $pv;

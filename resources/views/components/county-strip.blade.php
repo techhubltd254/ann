@@ -78,8 +78,10 @@
         if (!vid) return;
         var src = vid.getAttribute('data-src') || vid.querySelector('source')?.src || vid.src;
         if (!src) return;
-        if (vid.src !== src) vid.src = src;
-        vid.load();
+        if (!vid.src || vid.src === window.location.href || vid.readyState === 0) {
+            vid.src = src;
+            vid.load();
+        }
         vid.play().catch(function(){});
     }
 
@@ -87,8 +89,6 @@
         var vid = card.querySelector('video');
         if (!vid) return;
         vid.pause();
-        vid.removeAttribute('src');
-        vid.load();
     }
 
     function setupCard(card) {

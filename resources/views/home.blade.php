@@ -153,12 +153,12 @@
                         $hpFallback = media('kicc/kicc-logo.png');
                     @endphp
                     @if($hpVideo)
-                    <video muted loop playsinline preload="none" class="absolute inset-0 w-full h-full object-cover group-hover:scale-105 transition-transform duration-500"
+                    <video muted loop playsinline preload="none"
+                           class="absolute inset-0 w-full h-full object-cover group-hover:scale-105 transition-transform duration-500"
                            onerror="this.style.display='none'"
                            x-data="{ loaded: false }"
-                           x-init="$el.parentElement.parentElement.addEventListener('mouseenter', function() { if(!loaded) { $el.src = '{{ $hpVideo }}'; $el.load(); loaded = true; } $el.play().catch(()=>{}); }, { once: true })"
-                           x-on:mouseenter="$el.parentElement.parentElement.dispatchEvent(new CustomEvent('mouseenter'))">
-                        <source src="{{ $hpVideo }}" type="video/mp4">
+                           @mouseenter="if(!loaded) { $el.src = '{{ $hpVideo }}'; $el.load(); loaded = true; } $el.play().catch(()=>{});"
+                           @mouseleave="$el.pause()">
                     </video>
                     @endif
                     @if($hpImg && !$hpVideo)

@@ -238,13 +238,15 @@ function sectorHeroPlayer(config) {
         videos: config.videos || [],
         currentIndex: 0,
         videoReady: false,
+        get hasVideos() {
+            return this.videos.length > 0;
+        },
         get currentSrc() {
             return this.videos[this.currentIndex] || '';
         },
         nextSectorVideo() {
             if (this.videos.length <= 1) return;
             this.currentIndex = (this.currentIndex + 1) % this.videos.length;
-            this.videoReady = false;
             var video = this.$refs.sectorHero;
             if (video) {
                 video.src = this.currentSrc;

@@ -420,12 +420,14 @@ function institutionFallbackPlayer(config) {
         videos: config.videos || [],
         currentIndex: 0,
         videoReady: false,
+        get hasVideos() {
+            return this.videos.length > 0;
+        },
         get currentSrc() {
             return this.videos[this.currentIndex] || '';
         },
         nextVideo() {
             this.currentIndex = (this.currentIndex + 1) % this.videos.length;
-            this.videoReady = false;
             var video = this.$refs.fallbackVideo;
             if (video) {
                 video.src = this.currentSrc;

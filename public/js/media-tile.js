@@ -1,9 +1,3 @@
-/**
- * YouTube-style single-active media tile (Tier 1 poster -> Tier 2 hover/in-view loop)
- * Desktop: plays when hovered (250ms delay).
- * Mobile: plays when centered in the viewport (IntersectionObserver).
- * Only ONE tile plays at a time across the page.
- */
 function mediaTile() {
     return {
         active: false,
@@ -47,6 +41,9 @@ function mediaTile() {
         },
         onVideoPlaying() {
             this.videoReady = true;
+        },
+        resetVideoReady() {
+            this.videoReady = false;
         },
     };
 }

@@ -143,15 +143,14 @@
                 @endphp
                 <a href="{{ route('counties.sector', [$county->slug, $s['route']]) }}"
                    class="group bg-white border border-gray-200 hover:border-kicc-gold/40 rounded-2xl overflow-hidden transition-all block card-hover"
-                   x-data="{ videoPlaying: false }"
-                   @mouseenter="const v = $el.querySelector('video'); if(v) { v.play().catch(()=>{}); videoPlaying = true; }"
-                   @mouseleave="const v = $el.querySelector('video'); if(v) { v.pause(); videoPlaying = false; }"
+                   @mouseenter="const v = $el.querySelector('video'); if(v) { v.play().catch(()=>{}); }"
+                   @mouseleave="const v = $el.querySelector('video'); if(v) { v.pause(); }"
                    data-tilt="6" data-reveal data-reveal-delay="{{ $loop->index * 80 }}">
                     <div class="aspect-[4/3] overflow-hidden relative {{ $hasVideo ? 'bg-[#0B1E57]' : 'bg-gradient-to-br from-[#0A1024] to-[#1a1a2e]' }}">
                         @if($firstVideo)
                         <video muted loop playsinline preload="metadata"
                                class="absolute inset-0 w-full h-full object-cover"
-                               poster="{{ $sectorTilePoster ?? '' }}"
+                               poster="{{ $sectorTilePoster ?? $firstVideo }}"
                                onerror="this.style.display='none'">
                             <source src="{{ $firstVideo }}" type="video/mp4">
                         </video>
@@ -336,13 +335,15 @@ function heroFallbackPlayer(config) {
         videos: config.videos || [],
         currentIndex: 0,
         videoReady: false,
+        get hasVideos() {
+            return this.videos.length > 0;
+        },
         get currentSrc() {
             return this.videos[this.currentIndex] || '';
         },
         nextHeroVideo() {
             if (this.videos.length <= 1) return;
             this.currentIndex = (this.currentIndex + 1) % this.videos.length;
-            this.videoReady = false;
             var video = this.$refs.heroFallback;
             if (video) {
                 video.src = this.currentSrc;

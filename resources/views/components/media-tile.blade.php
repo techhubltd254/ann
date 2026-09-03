@@ -27,13 +27,14 @@
          onerror="this.style.display='none'">
     @endif
 
-    {{-- Tier 2: hover/in-view loop — always rendered, hidden until active, persists across hovers --}}
+{{-- Tier 2: video always rendered, hidden until active, persists across hovers, never re-created --}}
     <video x-ref="video"
-           class="absolute inset-0 w-full h-full object-cover transition-opacity duration-500"
+           class="absolute inset-0 w-full h-full object-cover transition-opacity duration-300"
            :class="active && videoReady ? 'opacity-100' : 'opacity-0'"
            muted loop playsinline preload="metadata"
+           poster="{{ $hoverLoop ?? $videoUrl ?? '' }}"
            x-on:playing="onVideoPlaying()"
-           x-effect="if (active) { $refs.video.play().catch(() => {}); } else { $refs.video.pause(); }">
+           x-effect="if (active) { if (!videoReady) { resetVideoReady(); } $refs.video.play().catch(()=>{}); } else { if (videoReady) { $refs.video.pause(); } }">
         @if($hoverLoop)
         <source src="{{ $hoverLoop }}" type="video/mp4">
         @elseif($videoUrl)
