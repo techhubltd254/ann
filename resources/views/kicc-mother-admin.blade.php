@@ -367,6 +367,98 @@
             </div>
             @endif
 
+            {{--  LIVE EVENTS  --}}
+            @if($tab === 'live_events')
+            <div class="glass-card rounded-2xl p-6">
+                <div class="flex items-center justify-between mb-6">
+                    <h3 class="font-bold text-white text-lg">Live Events Management</h3>
+                    <a href="{{ route('streams.create') }}" class="text-[11px] font-bold px-3 py-1.5 rounded-lg bg-[#901C1E] text-white hover:bg-[#7b1618] transition-all">+ New Stream</a>
+                </div>
+
+                <div class="grid grid-cols-2 md:grid-cols-5 gap-3 mb-6">
+                    <div class="rounded-xl bg-white/5 border border-white/10 p-3">
+                        <div class="text-2xl font-black text-white">{{ $streamStats['total'] }}</div>
+                        <div class="text-[10px] text-zinc-400 mt-0.5">Total</div>
+                    </div>
+                    <div class="rounded-xl bg-red-500/10 border border-red-500/20 p-3">
+                        <div class="text-2xl font-black text-red-400">{{ $streamStats['live'] }}</div>
+                        <div class="text-[10px] text-zinc-400 mt-0.5">Live Now</div>
+                    </div>
+                    <div class="rounded-xl bg-amber-500/10 border border-amber-500/20 p-3">
+                        <div class="text-2xl font-black text-amber-400">{{ $streamStats['idle'] }}</div>
+                        <div class="text-[10px] text-zinc-400 mt-0.5">Scheduled</div>
+                    </div>
+                    <div class="rounded-xl bg-white/5 border border-white/10 p-3">
+                        <div class="text-2xl font-black text-zinc-400">{{ $streamStats['ended'] }}</div>
+                        <div class="text-[10px] text-zinc-400 mt-0.5">Ended</div>
+                    </div>
+                    <div class="rounded-xl bg-blue-500/10 border border-blue-500/20 p-3">
+                        <div class="text-2xl font-black text-blue-400">{{ number_format($streamStats['viewers']) }}</div>
+                        <div class="text-[10px] text-zinc-400 mt-0.5">Total Viewers</div>
+                    </div>
+                </div>
+
+                <div class="overflow-x-auto" style="max-height:400px; overflow-y:auto;">
+                    <table class="w-full text-xs">
+                        <thead><tr class="text-zinc-500 border-b border-white/5">
+                            <th class="text-left py-2 pr-3 font-semibold">Stream</th>
+                            <th class="text-left py-2 pr-3 font-semibold">Status</th>
+                            <th class="text-left py-2 pr-3 font-semibold">Exhibition</th>
+                            <th class="text-left py-2 pr-3 font-semibold">County</th>
+                            <th class="text-left py-2 pr-3 font-semibold">Viewers</th>
+                            <th class="text-left py-2 pr-3 font-semibold">Actions</th>
+                        </tr></thead>
+                        <tbody class="divide-y divide-white/5">
+                        @forelse($streams as $stream)
+                        <tr class="hover:bg-white/5 transition">
+                            <td class="py-2.5 pr-3">
+                                <div class="text-white font-semibold">{{ $stream->name }}</div>
+                                @if($stream->hls_url)<div class="text-[9px] text-zinc-500 mt-0.5 font-mono">HLS ready</div>@endif
+                            </td>
+                            <td class="py-2.5 pr-3">
+                                @if($stream->isLive())
+                                <span class="text-[10px] font-bold px-2 py-0.5 rounded-full bg-red-500/20 text-red-400 flex items-center gap-1.5 w-fit">
+                                    <span class="w-1.5 h-1.5 rounded-full bg-red-500 animate-pulse"></span>LIVE
+                                </span>
+                                @elseif($stream->status === 'idle')
+                                <span class="text-[10px] font-bold px-2 py-0.5 rounded-full bg-amber-500/20 text-amber-400">Scheduled</span>
+                                @else
+                                <span class="text-[10px] font-bold px-2 py-0.5 rounded-full bg-white/10 text-zinc-400">Ended</span>
+                                @endif
+                            </td>
+                            <td class="py-2.5 pr-3 text-zinc-400">{{ $stream->exhibition?->name ?? '—' }}</td>
+                            <td class="py-2.5 pr-3 text-zinc-400">{{ $stream->county?->name ?? '—' }}</td>
+                            <td class="py-2.5 pr-3 text-white font-bold">{{ number_format($stream->viewer_count) }}</td>
+                            <td class="py-2.5">
+                                <div class="flex gap-2">
+                                    <a href="{{ route('streams.show', $stream) }}" class="text-[10px] font-bold px-2 py-1 rounded-lg bg-white/10 text-zinc-300 hover:bg-white/20">View</a>
+                                    @if($stream->isLive())
+                                    <form method="POST" action="{{ route('streams.end', $stream) }}" onsubmit="return confirm('End this stream?')">
+                                        @csrf
+                                        <button class="text-[10px] font-bold px-2 py-1 rounded-lg bg-red-500/20 text-red-400 hover:bg-red-500/30">End</button>
+                                    </form>
+                                    @elseif($stream->status === 'idle')
+                                    <form method="POST" action="{{ route('streams.go-live', $stream) }}">
+                                        @csrf
+                                        <button class="text-[10px] font-bold px-2 py-1 rounded-lg bg-emerald-500/20 text-emerald-400 hover:bg-emerald-500/30">Go Live</button>
+                                    </form>
+                                    @endif
+                                    <form method="POST" action="{{ route('streams.destroy', $stream) }}" onsubmit="return confirm('Delete permanently?')">
+                                        @csrf @method('DELETE')
+                                        <button class="text-[10px] font-bold px-2 py-1 rounded-lg bg-white/10 text-zinc-500 hover:bg-red-500/20 hover:text-red-400">Delete</button>
+                                    </form>
+                                </div>
+                            </td>
+                        </tr>
+                        @empty
+                        <tr><td colspan="6" class="py-8 text-center text-zinc-500 text-sm">No streams yet.</td></tr>
+                        @endforelse
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+            @endif
+
             {{--  USERS  --}}
             @if($tab === 'users')
             <div class="glass-card rounded-2xl p-6" style="max-height:600px; overflow-y:auto;">

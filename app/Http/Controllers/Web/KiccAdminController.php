@@ -105,6 +105,21 @@ class KiccAdminController extends Controller
             'revenue' => ExperienceBooking::where('status', 'confirmed')->sum('grand_total'),
         ];
 
+        // Live stream management for the admin
+        $streams = \App\Models\LiveStream::with('exhibition', 'county', 'user')
+            ->latest()
+            ->take(50)
+            ->get();
+        $streamStats = [
+            'total' => \App\Models\LiveStream::count(),
+            'live' => \App\Models\LiveStream::where('status', 'live')->count(),
+            'idle' => \App\Models\LiveStream::where('status', 'idle')->count(),
+            'ended' => \App\Models\LiveStream::where('status', 'ended')->count(),
+            'viewers' => \App\Models\LiveStream::sum('viewer_count'),
+        ];
+        $adminExhibitions = \App\Models\Exhibition::where('status', 'published')->orderBy('start_date', 'desc')->get();
+        $adminCounties = \App\Models\County::orderBy('name')->get(['id', 'name', 'slug']);
+
         $heroAsset = MediaAsset::resolveSlot('landing_page', 1, 'hero_video');
 
         // Subscription plans (Exhibitor Packages)
@@ -130,6 +145,7 @@ class KiccAdminController extends Controller
             ['label' => 'Providers', 'tab' => 'providers', 'icon' => 'M9 12l2 2 4-4m5.618-4.016A11.955 11.955 0 0112 2.944a11.955 11.955 0 01-8.618 3.04A12.02 12.02 0 003 9c0 5.591 3.824 10.29 9 11.622 5.176-1.332 9-6.03 9-11.622 0-1.042-.133-2.052-.382-3.016z'],
             ['label' => 'Escrow', 'tab' => 'escrow', 'icon' => 'M12 8c-1.657 0-3 .895-3 2s1.343 2 3 2 3 .895 3 2-1.343 2-3 2m0-8c1.11 0 2.08.402 2.599 1M12 8V7m0 1v8m0 0v1m0-1c-1.11 0-2.08-.402-2.599-1'],
             ['label' => 'Experiences', 'tab' => 'experiences', 'icon' => 'M9 20l-5.447-2.724A1 1 0 013 16.382V5.618a1 1 0 011.447-.894L9 7m0 13l6-3m-6 3V7m6 10l4.553 2.276A1 1 0 0021 18.382V7.618a1 1 0 00-.553-.894L15 4m0 13V4m0 0L9 7'],
+            ['label' => 'Live Events', 'tab' => 'live_events', 'icon' => 'M15 10l4.553-2.276A1 1 0 0121 8.618v6.764a1 1 0 01-1.447.894L15 14M5 18h8a2 2 0 002-2V8a2 2 0 00-2-2H5a2 2 0 00-2 2v8a2 2 0 002 2z'],
             ['label' => 'Users', 'tab' => 'users', 'icon' => 'M12 4.354a4 4 0 110 5.292M15 21H3v-1a6 6 0 0112 0v1zm0 0h6v-1a6 6 0 00-9-5.197'],
             ['label' => 'Hero Media', 'tab' => 'hero_media', 'icon' => 'M15 10l4.553-2.276A1 1 0 0121 8.618v6.764a1 1 0 01-1.447.894L15 14M5 18h8a2 2 0 002-2V8a2 2 0 00-2-2H5a2 2 0 00-2 2v8a2 2 0 002 2z'],
             ['label' => 'Packages', 'tab' => 'packages', 'icon' => 'M3 3h2l.4 2M7 13h10l4-8H5.4M7 13L5.4 5M7 13l-2.293 2.293c-.63.63-.184 1.707.707 1.707H17m0 0a2 2 0 100 4 2 2 0 000-4zm-8 2a2 2 0 11-4 0 2 2 0 014 0z'],
@@ -143,6 +159,7 @@ class KiccAdminController extends Controller
             'orders', 'escrows', 'users', 'providers', 'institutions',
             'pendingServices', 'navItems', 'tab', 'heroAsset', 'analytics',
             'plans', 'allPlans', 'experienceBookings', 'experienceStats',
+            'streams', 'streamStats', 'adminExhibitions', 'adminCounties',
         ));
     }
 

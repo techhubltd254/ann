@@ -109,6 +109,58 @@ class StreamController extends Controller
         return redirect()->route('streams.index')->with('success', 'Stream deleted.');
     }
 
+    public function update(Request $request, LiveStream $stream)
+    {
+        $data = $request->validate([
+            'name' => 'required|string|max:255',
+            'description' => 'nullable|string|max:1000',
+            'exhibition_id' => 'nullable|exists:exhibitions,id',
+            'county_id' => 'nullable|exists:counties,id',
+            'status' => 'nullable|in:idle,live,ended',
+            'thumbnail_url' => 'nullable|string|max:500',
+            'hls_url' => 'nullable|string|max:500',
+        ]);
+
+        if (isset($data['status']) && $data['status'] === 'live' && $stream->status !== 'live') {
+            $data['started_at'] = now();
+        }
+        if (isset($data['status']) && $data['status'] === 'ended' && $stream->status !== 'ended') {
+            $data['ended_at'] = now();
+        }
+
+        $stream->update($data);
+        return back()->with('success', 'Stream updated.');
+    }
+
+    public function adminIndex(Request $request)
+    {
+        // KICC admin: all streams
+        // County admin: streams for their county
+        // Institution admin: streams for their institution
+        $user = $request->user();
+        $query = LiveStream::with('exhibition', 'county', 'user');
+
+        if ($user->hasRole('county_admin') && $user->county_id) {
+            $query->where('county_id', $user->county_id);
+        }
+
+        $streams = $query->latest()->paginate(20);
+        $exhibitions = Exhibition::where('status', 'published')->orderBy('start_date', 'desc')->get();
+        $counties = \App\Models\County::orderBy('name')->get(['id', 'name', 'slug']);
+
+        return view('streams.admin', compact('streams', 'exhibitions', 'counties'));
+    }
+
+    public function setThumbnail(Request $request, LiveStream $stream, CloudflareStreamService $cf)
+    {
+        $data = $request->validate([
+            'thumbnail_url' => 'nullable|string|max:500',
+            'hls_url' => 'nullable|string|max:500',
+        ]);
+        $stream->update(array_filter($data));
+        return back()->with('success', 'Stream media updated.');
+    }
+
     public function apiLiveStreams()
     {
         $streams = LiveStream::with('exhibition', 'county')

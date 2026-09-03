@@ -262,11 +262,14 @@ Route::get('/exhibitions/{slug}', [ExhibitionController::class, 'show'])->name('
 
 // ── Live Streams ──
 Route::get('/streams', [\App\Http\Controllers\Web\StreamController::class, 'index'])->name('streams.index');
+Route::get('/streams/admin', [\App\Http\Controllers\Web\StreamController::class, 'adminIndex'])->name('streams.admin')->middleware('auth');
 Route::get('/streams/create', [\App\Http\Controllers\Web\StreamController::class, 'create'])->name('streams.create')->middleware('auth');
 Route::post('/streams', [\App\Http\Controllers\Web\StreamController::class, 'store'])->name('streams.store')->middleware('auth');
 Route::get('/streams/{stream}', [\App\Http\Controllers\Web\StreamController::class, 'show'])->name('streams.show');
 Route::post('/streams/{stream}/go-live', [\App\Http\Controllers\Web\StreamController::class, 'goLive'])->name('streams.go-live')->middleware('auth');
 Route::post('/streams/{stream}/end', [\App\Http\Controllers\Web\StreamController::class, 'endStream'])->name('streams.end')->middleware('auth');
+Route::put('/streams/{stream}', [\App\Http\Controllers\Web\StreamController::class, 'update'])->name('streams.update')->middleware('auth');
+Route::post('/streams/{stream}/thumbnail', [\App\Http\Controllers\Web\StreamController::class, 'setThumbnail'])->name('streams.thumbnail')->middleware('auth');
 Route::delete('/streams/{stream}', [\App\Http\Controllers\Web\StreamController::class, 'destroy'])->name('streams.destroy')->middleware('auth');
 Route::get('/streams/{stream}/chat', [\App\Http\Controllers\Web\StreamController::class, 'apiChatMessages'])->name('streams.chat');
 Route::post('/streams/{stream}/chat', [\App\Http\Controllers\Web\StreamController::class, 'apiPostChat'])->name('streams.chat.post');

@@ -39,6 +39,7 @@
                     ['tab' => 'videos4d', 'label' => '4D Gaussian Studio', 'icon' => 'M15 10l4.553-2.276A1 1 0 0121 8.618v6.764a1 1 0 01-1.447.894L15 14M5 18h8a2 2 0 002-2V8a2 2 0 00-2-2H5a2 2 0 00-2 2v8a2 2 0 002 2z'],
                     ['tab' => 'hero', 'label' => 'Hero Videos', 'icon' => 'M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z'],
                     ['tab' => 'images', 'label' => 'Sector Videos', 'icon' => 'M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z'],
+                    ['tab' => 'live_events', 'label' => 'Live Events', 'icon' => 'M15 10l4.553-2.276A1 1 0 0121 8.618v6.764a1 1 0 01-1.447.894L15 14M5 18h8a2 2 0 002-2V8a2 2 0 00-2-2H5a2 2 0 00-2 2v8a2 2 0 002 2z'],
                 ],
                 'Operations' => [
                     ['tab' => 'prices', 'label' => 'Pricing Engine', 'icon' => 'M12 8c-1.657 0-3 .895-3 2s1.343 2 3 2 3 .895 3 2-1.343 2-3 2m0-8c1.11 0 2.08.402 2.599 1M12 8V7m0 1v8m0 0v1m0-1c-1.11 0-2.08-.402-2.599-1'],
@@ -521,6 +522,18 @@
                     @endif
                     @endforeach
                 </div>
+            </div>
+
+            @elseif($tab === 'live_events')
+            <div class="glass-card rounded-2xl p-6">
+                <div class="flex items-center justify-between mb-6">
+                    <h2 class="text-sm font-bold text-white">Live Events</h2>
+                    <a href="{{ route('streams.create') }}" class="text-[11px] font-bold px-3 py-1.5 rounded-lg bg-[#901C1E] text-white hover:bg-[#7b1618]">+ New Stream</a>
+                </div>
+                <p class="text-zinc-400 text-xs mb-4">Manage live streams for this county's events and exhibitions.</p>
+                <a href="{{ route('streams.admin') }}" class="inline-flex items-center gap-2 text-xs font-bold text-indigo-400 hover:text-indigo-300">
+                    Manage Live Events &rarr;
+                </a>
             </div>
 
             @elseif($tab === 'prices')
