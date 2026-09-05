@@ -8,5 +8,12 @@ class CourierTrackingEvent extends Model
 {
     protected $fillable = ['courier_shipment_id', 'status', 'location', 'description', 'occurred_at'];
 
-    public function shipment() { return $this->belongsTo(CourierShipment::class, 'courier_shipment_id'); }
+    
+    protected function casts(): array
+    {
+        return [
+            'occurred_at' => 'datetime',
+        ];
+    }
+public function shipment() { return $this->belongsTo(CourierShipment::class, 'courier_shipment_id'); }
 }

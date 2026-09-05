@@ -9,6 +9,13 @@ use Illuminate\Database\Eloquent\Model;
 class ChatMessage extends Model
 {
     protected $guarded = ['id', 'created_at', 'updated_at'];
+    protected function casts(): array
+    {
+        return [
+            'user_id' => 'integer',
+            'live_stream_id' => 'integer',
+        ];
+    }
 
     public function liveStream()
     {

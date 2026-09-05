@@ -14,7 +14,15 @@ class ReviewSeed extends Model
         'owner_type', 'owner_id', 'source', 'rating', 'review_count', 'external_url',
     ];
 
-    public function sourceLabel(): string
+    
+    protected function casts(): array
+    {
+        return [
+            'rating' => 'decimal:2',
+            'review_count' => 'integer',
+        ];
+    }
+public function sourceLabel(): string
     {
         return match ($this->source) {
             'google' => 'Google reviews',

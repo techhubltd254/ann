@@ -11,7 +11,15 @@ class ImageVariant extends Model
         'thumb_key', 'card_key', 'hero_key', 'blur', 'width', 'height',
     ];
 
-    public function thumbUrl(): ?string
+    
+    protected function casts(): array
+    {
+        return [
+            'width' => 'integer',
+            'height' => 'integer',
+        ];
+    }
+public function thumbUrl(): ?string
     {
         return $this->thumb_key ? \App\Services\ImageOptimizer::variantUrl($this->thumb_key) : null;
     }

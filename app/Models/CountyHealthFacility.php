@@ -7,7 +7,14 @@ use Illuminate\Database\Eloquent\Model;
 class CountyHealthFacility extends Model
 {
     protected $fillable = ['county_id', 'name', 'type', 'level', 'description', 'location', 'phone', 'email', 'services', 'is_published'];
-    public function county() { return $this->belongsTo(County::class); }
+    
+    protected function casts(): array
+    {
+        return [
+            'is_published' => 'boolean',
+        ];
+    }
+public function county() { return $this->belongsTo(County::class); }
 
     protected static function booted(): void
     {

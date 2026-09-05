@@ -8,6 +8,15 @@ class CourierShipment extends Model
 {
     protected $fillable = ['escrow_transaction_id', 'tracking_number', 'courier_name', 'status', 'origin_address', 'destination_address', 'shipped_at', 'estimated_delivery', 'delivered_at'];
 
-    public function escrowTransaction() { return $this->belongsTo(EscrowTransaction::class); }
+    
+    protected function casts(): array
+    {
+        return [
+            'shipped_at' => 'datetime',
+            'estimated_delivery' => 'datetime',
+            'delivered_at' => 'datetime',
+        ];
+    }
+public function escrowTransaction() { return $this->belongsTo(EscrowTransaction::class); }
     public function trackingEvents() { return $this->hasMany(CourierTrackingEvent::class); }
 }
