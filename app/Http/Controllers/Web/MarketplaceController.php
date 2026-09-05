@@ -118,7 +118,7 @@ class MarketplaceController extends Controller
         try {
             $tripRecommendations = app(CorrelationService::class)->forProduct($product);
         } catch (\Throwable $e) {
-            // fall back to empty recs if the engine errors on any edge case
+            Log::warning('trip recommendation: ' . $e->getMessage());
         }
         $related = Product::with(['variants', 'county'])
             ->active()

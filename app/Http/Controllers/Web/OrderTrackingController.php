@@ -7,6 +7,7 @@ use App\Models\Marketplace\Order;
 use App\Models\Ecommerce\OrderStatusHistory;
 use App\Models\Ecommerce\ReturnRequest;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Log;
 class OrderTrackingController extends Controller {
     public function show($orderNumber) {
         $order = Order::where('order_number', $orderNumber)->with(['items.product','items.variant','statusHistory.user'])->firstOrFail();
@@ -29,7 +30,7 @@ class OrderTrackingController extends Controller {
             'order_id' => $order->id, 'user_id' => auth()->id(),
             'order_item_id' => $item->id, 'reason' => $data['reason'],
         ]);
-        try { (new \App\Services\N8nService())->fire('return_requested', $return->toArray()); } catch (\Throwable $e) {}
+        try { (new \App\Services\N8nService())->fire('return_requested', $return->toArray()); } catch (\Throwable $e) { Log::warning('n8n return_requested: ' . $e->getMessage()); }
         return back()->with('success', 'Return request submitted.');
     }
 }

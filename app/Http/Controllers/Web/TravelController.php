@@ -11,6 +11,7 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Cache;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Http;
+use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Str;
 
 /**
@@ -218,8 +219,9 @@ class TravelController extends Controller
                     $cur = $r->json('current_condition.0');
                     return ['city' => $city, 'temp' => (int) ($cur['temp_C'] ?? 0), 'desc' => $cur['weatherDesc'][0]['value'] ?? '', 'live' => true];
                 }
-            } catch (\Throwable) {}
-            // Seasonal fallback (Dec-Feb UK/EU winter heuristic)
+            } catch (\Throwable $e) {
+                Log::warning('weather fetch: ' . $e->getMessage());
+            }
             $cold = in_array((int) now()->format('n'), [11, 12, 1, 2, 3]);
             return ['city' => $city, 'temp' => $cold ? 6 : 16, 'desc' => $cold ? 'Cold' : 'Mild', 'live' => false];
         });

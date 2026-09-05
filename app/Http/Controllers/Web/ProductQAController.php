@@ -5,6 +5,7 @@ namespace App\Http\Controllers\Web;
 use App\Http\Controllers\Controller;
 use App\Models\Ecommerce\ProductQuestion;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Log;
 class ProductQAController extends Controller {
     public function index($productId) {
         return ProductQuestion::where('product_id', $productId)->whereNotNull('answer')->with('user')->latest()->get();
@@ -12,7 +13,7 @@ class ProductQAController extends Controller {
     public function ask(Request $r, $productId) {
         $data = $r->validate(['question'=>'required|string|max:2000']);
         $q = ProductQuestion::create(['product_id'=>$productId, 'user_id'=>auth()->id(), 'question'=>$data['question']]);
-        try { (new \App\Services\N8nService())->fire('product_question_asked', $q->toArray()); } catch (\Throwable $e) {}
+        try { (new \App\Services\N8nService())->fire('product_question_asked', $q->toArray()); } catch (\Throwable $e) { Log::warning('n8n product_question_asked: ' . $e->getMessage()); }
         return back()->with('success', 'Question submitted.');
     }
     public function answer(Request $r, $id) {

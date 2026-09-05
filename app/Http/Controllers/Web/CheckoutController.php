@@ -219,7 +219,9 @@ class CheckoutController extends Controller
             try {
                 $gc = new GiftCardController(app(\App\Services\PaymentService::class));
                 $gc->activateByOrder($order);
-            } catch (\Throwable $e) {}
+            } catch (\Throwable $e) {
+                Log::warning('activate gift card: ' . $e->getMessage());
+            }
         }
         return view('checkout.success', compact('order'));
     }
