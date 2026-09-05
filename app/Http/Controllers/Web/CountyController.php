@@ -351,8 +351,11 @@ class CountyController extends Controller
         }
 
         // Sector background video (institution sync sets this slot)
-        $bgAsset = Cache::remember("resolve:county_sector_video_" . $sector, 21600, fn() => MediaAsset::resolveSlot(County::class, $county->id, 'sector_video_' . $sector));
-        $fourDVideo = $bgAsset?->mp4Url() ?? $bgAsset?->url();
+        $bgAsset = Cache::remember("resolve:county_sector_video_" . $sector, 21600, function () use ($county, $sector) {
+            $a = MediaAsset::resolveSlot(County::class, $county->id, 'sector_video_' . $sector);
+            return $a ? ($a->mp4Url() ?? $a->url()) : null;
+        });
+        $fourDVideo = $bgAsset;
 
         // Per-entity 4D videos: owner_type=SectorEntity, slot=4d_video
         $entityIds = $items->pluck('id');
@@ -484,17 +487,21 @@ class CountyController extends Controller
 
         // Tier 3: This sector's own sector_video asset (mother tile — uploaded in admin)
         if (count($sectorHeroVideos) === 0) {
-            $thisSectorAsset = Cache::remember("resolve:county_sector_video_" . $sector, 21600, fn() => MediaAsset::resolveSlot(County::class, $county->id, 'sector_video_' . $sector));
-            if ($thisSectorAsset && ($url = $thisSectorAsset->mp4Url() ?? $thisSectorAsset->url())) {
-                $sectorHeroVideos[] = $url;
-            }
+            $thisSectorVideo = Cache::remember("resolve:county_sector_video_url_" . $sector, 21600, function () use ($county, $sector) {
+                $a = MediaAsset::resolveSlot(County::class, $county->id, 'sector_video_' . $sector);
+                return $a ? ($a->mp4Url() ?? $a->url()) : null;
+            });
+            if ($thisSectorVideo) $sectorHeroVideos[] = $thisSectorVideo;
         }
 
         // Tier 4: County hero video
         if (count($sectorHeroVideos) === 0) {
-            $countyHeroAsset = Cache::remember("resolve:county_hero_" . $county->id, 21600, fn() => MediaAsset::resolveSlot(County::class, $county->id, 'hero_video'));
-            if ($countyHeroAsset?->mp4Url() ?? $countyHeroAsset?->url()) {
-                $sectorHeroVideos[] = $countyHeroAsset->mp4Url() ?? $countyHeroAsset->url();
+            $countyHeroUrl = Cache::remember("resolve:county_hero_url_" . $county->id, 21600, function () use ($county) {
+                $a = MediaAsset::resolveSlot(County::class, $county->id, 'hero_video');
+                return $a ? ($a->mp4Url() ?? $a->url()) : null;
+            });
+            if ($countyHeroUrl && !in_array($countyHeroUrl, $sectorHeroVideos)) {
+                $sectorHeroVideos[] = $countyHeroUrl;
             }
         }
 
@@ -552,7 +559,10 @@ class CountyController extends Controller
         }
 
         // Poster for the sector hero (county hero poster / first video frame / default)
-        $sectorHeroAsset = Cache::remember("resolve:county_hero_" . $county->id, 21600, fn() => MediaAsset::resolveSlot(County::class, $county->id, 'hero_video'));
+        $sectorHeroPoster = Cache::remember("resolve:county_hero_post_" . $county->id, 21600, function () use ($county) {
+            $a = MediaAsset::resolveSlot(County::class, $county->id, 'hero_video');
+            return $a ? $a->posterUrl() : null;
+        }) ?? media('counties/' . $county->slug . '/hero.jpeg');
         $sectorHeroPoster = $sectorHeroAsset?->posterUrl()
             ?? media('counties/' . $county->slug . '/hero.jpeg');
         // If no poster exists, use the first video URL as poster (browser shows first frame)
@@ -674,7 +684,11 @@ class CountyController extends Controller
 
             // Tier 5: County hero video
             if ($institution->county_id) {
-                $countyHero = Cache::remember("resolve:county_hero_" . $institution->county_id, 21600, fn() => MediaAsset::resolveSlot(County::class, $institution->county_id, 'hero_video'));
+                $countyHeroUrl2 = Cache::remember("resolve:county_hero_url_" . $institution->county_id, 21600, function () use ($institution) {
+                    $a = MediaAsset::resolveSlot(County::class, $institution->county_id, 'hero_video');
+                    return $a ? ($a->mp4Url() ?? $a->url()) : null;
+                });
+                if ($countyHeroUrl2) $fallback[] = $countyHeroUrl2;
                 if ($countyHero && ($url = $countyHero->mp4Url() ?? $countyHero->url())) {
                     $fallback[] = $url;
                 }
