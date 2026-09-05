@@ -689,9 +689,6 @@ class CountyController extends Controller
                     return $a ? ($a->mp4Url() ?? $a->url()) : null;
                 });
                 if ($countyHeroUrl2) $fallback[] = $countyHeroUrl2;
-                if ($countyHero && ($url = $countyHero->mp4Url() ?? $countyHero->url())) {
-                    $fallback[] = $url;
-                }
             }
 
             // Deduplicate and limit
