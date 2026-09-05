@@ -81,7 +81,7 @@ class AnalyticsService
                 if ($rev > 0) return round($rev / 1000, 1);
             }
             // Use estimated with seasonal variation
-            $seasonal = [0.7, 0.8, 0.9, 1.0, 1.1, 1.2, 1.1, 1.0, 0.9, 0.8, 0.7, 0.6];
+            $seasonal = config('kicc.analytics.seasonal_variation', [0.7, 0.8, 0.9, 1.0, 1.1, 1.2, 1.1, 1.0, 0.9, 0.8, 0.7, 0.6]);
             $idx = (now()->subMonths($i)->month - 1) % 12;
             return round(($estimatedMonthlyRevenue / 1000) * ($seasonal[$idx] ?? 0.8), 1);
         });
