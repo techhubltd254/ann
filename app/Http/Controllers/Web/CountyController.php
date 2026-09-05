@@ -116,7 +116,7 @@ class CountyController extends Controller
         $hotelThumbs = $featuredHotels->mapWithKeys(fn($h) => [$h->id => \App\Services\ThumbnailService::for($h, $county->slug)]);
         $productThumbs = $countyProducts->mapWithKeys(fn($p) => [$p->id => \App\Services\ThumbnailService::for($p, $county->slug)]);
 
-        $countyMedia = MediaAsset::resolveSlot(County::class, $county->id, 'hero_video');
+        $countyMedia = Cache::remember("resolve:county_hero_" . $county->id, 21600, fn() => MediaAsset::resolveSlot(County::class, $county->id, 'hero_video'));
 
         // Batched sector video loading — single queries instead of per-sector
         $sectorSlugs = collect($sectorData)->pluck('sector_slug')->unique();
@@ -351,7 +351,7 @@ class CountyController extends Controller
         }
 
         // Sector background video (institution sync sets this slot)
-        $bgAsset = MediaAsset::resolveSlot(County::class, $county->id, 'sector_video_' . $sector);
+        $bgAsset = Cache::remember("resolve:county_sector_video_" . $sector, 21600, fn() => MediaAsset::resolveSlot(County::class, $county->id, 'sector_video_' . $sector));
         $fourDVideo = $bgAsset?->mp4Url() ?? $bgAsset?->url();
 
         // Per-entity 4D videos: owner_type=SectorEntity, slot=4d_video
@@ -484,7 +484,7 @@ class CountyController extends Controller
 
         // Tier 3: This sector's own sector_video asset (mother tile — uploaded in admin)
         if (count($sectorHeroVideos) === 0) {
-            $thisSectorAsset = MediaAsset::resolveSlot(County::class, $county->id, 'sector_video_' . $sector);
+            $thisSectorAsset = Cache::remember("resolve:county_sector_video_" . $sector, 21600, fn() => MediaAsset::resolveSlot(County::class, $county->id, 'sector_video_' . $sector));
             if ($thisSectorAsset && ($url = $thisSectorAsset->mp4Url() ?? $thisSectorAsset->url())) {
                 $sectorHeroVideos[] = $url;
             }
@@ -492,7 +492,7 @@ class CountyController extends Controller
 
         // Tier 4: County hero video
         if (count($sectorHeroVideos) === 0) {
-            $countyHeroAsset = MediaAsset::resolveSlot(County::class, $county->id, 'hero_video');
+            $countyHeroAsset = Cache::remember("resolve:county_hero_" . $county->id, 21600, fn() => MediaAsset::resolveSlot(County::class, $county->id, 'hero_video'));
             if ($countyHeroAsset?->mp4Url() ?? $countyHeroAsset?->url()) {
                 $sectorHeroVideos[] = $countyHeroAsset->mp4Url() ?? $countyHeroAsset->url();
             }
@@ -552,7 +552,8 @@ class CountyController extends Controller
         }
 
         // Poster for the sector hero (county hero poster / first video frame / default)
-        $sectorHeroPoster = \App\Models\MediaAsset::resolveSlot(County::class, $county->id, 'hero_video')?->posterUrl()
+        $sectorHeroAsset = Cache::remember("resolve:county_hero_" . $county->id, 21600, fn() => MediaAsset::resolveSlot(County::class, $county->id, 'hero_video'));
+        $sectorHeroPoster = $sectorHeroAsset?->posterUrl()
             ?? media('counties/' . $county->slug . '/hero.jpeg');
         // If no poster exists, use the first video URL as poster (browser shows first frame)
         if (!$sectorHeroPoster || str_contains($sectorHeroPoster, 'hero.jpeg')) {
@@ -577,7 +578,7 @@ class CountyController extends Controller
         $county = $institution->county;
 
         // Hero video (Tier 3: HLS adaptive preferred, mp4 fallback)
-        $heroAsset = MediaAsset::resolveSlot(CountyInstitution::class, $institution->id, 'hero_video');
+        $heroAsset = Cache::remember("resolve:inst_hero_" . $institution->id, 21600, fn() => MediaAsset::resolveSlot(CountyInstitution::class, $institution->id, 'hero_video'));
         $heroVideo = $heroAsset?->mp4Url() ?? $heroAsset?->url();
         $heroHls = $heroAsset?->derivativeUrl('hls_master');
         $heroPoster = $heroAsset?->posterUrl();
@@ -673,7 +674,7 @@ class CountyController extends Controller
 
             // Tier 5: County hero video
             if ($institution->county_id) {
-                $countyHero = MediaAsset::resolveSlot(County::class, $institution->county_id, 'hero_video');
+                $countyHero = Cache::remember("resolve:county_hero_" . $institution->county_id, 21600, fn() => MediaAsset::resolveSlot(County::class, $institution->county_id, 'hero_video'));
                 if ($countyHero && ($url = $countyHero->mp4Url() ?? $countyHero->url())) {
                     $fallback[] = $url;
                 }
