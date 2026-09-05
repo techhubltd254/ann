@@ -6,7 +6,7 @@ use Illuminate\Database\Eloquent\Model;
 
 class ProductCategory extends Model
 {
-    protected $guarded = [];
+    protected $fillable = ['name', 'slug', 'description', 'parent_id', 'icon', 'image_url', 'sort_order', 'is_active'];
 
     protected $casts = ['is_active' => 'boolean'];
 

@@ -8,7 +8,7 @@ use Illuminate\Database\Eloquent\Model;
 class CountyBulkSlotAllocation extends Model
 {
     protected $table = 'county_bulk_slot_allocations';
-    protected $guarded = [];
+    protected $fillable = ['county_id', 'plan_id', 'total_slots', 'used_slots', 'price_per_slot', 'purchase_date', 'expiry_date'];
     protected $casts = [
         'total_slots' => 'integer', 'used_slots' => 'integer',
         'price_per_slot' => 'float', 'purchase_date' => 'date', 'expiry_date' => 'date',

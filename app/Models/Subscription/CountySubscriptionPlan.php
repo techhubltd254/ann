@@ -8,7 +8,7 @@ use Illuminate\Database\Eloquent\Model;
 class CountySubscriptionPlan extends Model
 {
     protected $table = 'county_subscription_plans';
-    protected $guarded = [];
+    protected $fillable = ['county_id', 'name', 'slug', 'description', 'price', 'max_booths', 'max_products', 'has_analytics', 'has_livestream', 'has_priority_support', 'is_active', 'features', 'sort_order'];
     protected $casts = [
         'price' => 'float', 'max_booths' => 'integer', 'max_products' => 'integer',
         'has_analytics' => 'boolean', 'has_livestream' => 'boolean', 'has_priority_support' => 'boolean',

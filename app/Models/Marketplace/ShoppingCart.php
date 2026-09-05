@@ -7,7 +7,7 @@ use Illuminate\Database\Eloquent\Model;
 
 class ShoppingCart extends Model
 {
-    protected $guarded = [];
+    protected $fillable = ['user_id', 'session_id', 'coupon_code', 'discount_amount', 'notes', 'expires_at'];
 
     protected $appends = ['item_count'];
 

@@ -7,7 +7,7 @@ use Illuminate\Database\Eloquent\Model;
 class TransactionLog extends Model
 {
     public $timestamps = false;
-    protected $guarded = [];
+    protected $fillable = ['payment_intent_id', 'gateway_id', 'type', 'request_payload', 'response_payload', 'status_code', 'duration_ms', 'ip_address'];
     protected $casts = ['duration_ms' => 'integer'];
 
     public function intent() { return $this->belongsTo(PaymentIntent::class); }

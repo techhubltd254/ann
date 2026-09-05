@@ -7,7 +7,7 @@ use Illuminate\Database\Eloquent\Model;
 
 class CartItem extends Model
 {
-    protected $guarded = [];
+    protected $fillable = ['cart_id', 'variant_id', 'quantity', 'unit_price', 'itemable_type', 'itemable_id'];
 
     protected $casts = ['unit_price' => 'float', 'quantity' => 'integer'];
 
