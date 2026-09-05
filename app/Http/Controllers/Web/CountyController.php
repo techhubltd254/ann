@@ -646,19 +646,19 @@ class CountyController extends Controller
                 }
             }
 
-            // Tier 3: Institution's marketplace product videos
+            // Tier 3: Institution's marketplace product videos (cached 6h)
             if ($institution->user_id) {
-                $productVids = \App\Models\Marketplace\Product::where('user_id', $institution->user_id)
-                    ->active()
-                    ->where(function ($q) { $q->whereNotNull('video_url')->orWhereNotNull('videos'); })
-                    ->take(10)->get()
-                    ->flatMap(fn ($p) => array_merge(
-                        $p->video_url ? [$p->video_url] : [],
-                        is_array($p->videos) ? $p->videos : []
-                    ))
-                    ->filter()
-                    ->values()
-                    ->all();
+                $cacheKey = 'inst_product_videos_' . $institution->user_id;
+                $productVids = \Illuminate\Support\Facades\Cache::remember($cacheKey, 21600, function () use ($institution) {
+                    return \App\Models\Marketplace\Product::where('user_id', $institution->user_id)
+                        ->active()
+                        ->whereNotNull('video_url')
+                        ->take(10)
+                        ->pluck('video_url')
+                        ->filter()
+                        ->values()
+                        ->all();
+                });
                 foreach ($productVids as $pv) {
                     $fallback[] = $pv;
                 }
