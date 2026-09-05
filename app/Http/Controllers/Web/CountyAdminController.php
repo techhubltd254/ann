@@ -607,27 +607,38 @@ class CountyAdminController extends Controller
             'SectorEntity' => '📋',
         ];
 
+        // Pre-fetch all entity IDs ONCE (no N+1)
+        $attractions = $county->tourismAttractions()->get(['id', 'name']);
+        $hotels = $county->hotels()->get(['id', 'name']);
+        $products = $county->products()->get(['id', 'name']);
+        $sectorEntities = \App\Models\SectorEntity::where('county_id', $county->id)->get(['id', 'name']);
+
+        $attractionIds = $attractions->pluck('id');
+        $hotelIds = $hotels->pluck('id');
+        $productIds = $products->pluck('id');
+        $sectorEntityIds = $sectorEntities->pluck('id');
+
+        // Single query for all 4D videos across all entity types
         $loadedVideos = \App\Models\MediaAsset::where('slot', '4d_video')
-            ->where(function ($q) use ($county) {
-                $q->where(function ($q2) use ($county) {
-                    $q2->where('owner_type', \App\Models\CountyTourismAttraction::class)
-                       ->whereIn('owner_id', $county->tourismAttractions()->pluck('id'));
-                })->orWhere(function ($q2) use ($county) {
-                    $q2->where('owner_type', \App\Models\CountyHotel::class)
-                       ->whereIn('owner_id', $county->hotels()->pluck('id'));
-                })->orWhere(function ($q2) use ($county) {
-                    $q2->where('owner_type', \App\Models\CountyProduct::class)
-                       ->whereIn('owner_id', $county->products()->pluck('id'));
-                })->orWhere(function ($q2) use ($county) {
-                    $q2->where('owner_type', \App\Models\SectorEntity::class)
-                       ->whereIn('owner_id', \App\Models\SectorEntity::where('county_id', $county->id)->pluck('id'));
-                });
+            ->where(function ($q) use ($attractionIds, $hotelIds, $productIds, $sectorEntityIds) {
+                if ($attractionIds->isNotEmpty()) {
+                    $q->orWhere(fn ($q2) => $q2->where('owner_type', \App\Models\CountyTourismAttraction::class)->whereIn('owner_id', $attractionIds));
+                }
+                if ($hotelIds->isNotEmpty()) {
+                    $q->orWhere(fn ($q2) => $q2->where('owner_type', \App\Models\CountyHotel::class)->whereIn('owner_id', $hotelIds));
+                }
+                if ($productIds->isNotEmpty()) {
+                    $q->orWhere(fn ($q2) => $q2->where('owner_type', \App\Models\CountyProduct::class)->whereIn('owner_id', $productIds));
+                }
+                if ($sectorEntityIds->isNotEmpty()) {
+                    $q->orWhere(fn ($q2) => $q2->where('owner_type', \App\Models\SectorEntity::class)->whereIn('owner_id', $sectorEntityIds));
+                }
             })
             ->get()
             ->keyBy(fn ($a) => $a->owner_type . '-' . $a->owner_id);
 
         // Attractions
-        foreach ($county->tourismAttractions as $e) {
+        foreach ($attractions as $e) {
             $key = \App\Models\CountyTourismAttraction::class . '-' . $e->id;
             $asset = $loadedVideos->get($key);
             $map["attraction-{$e->id}"] = [
@@ -639,7 +650,7 @@ class CountyAdminController extends Controller
             ];
         }
         // Hotels
-        foreach ($county->hotels as $e) {
+        foreach ($hotels as $e) {
             $key = \App\Models\CountyHotel::class . '-' . $e->id;
             $asset = $loadedVideos->get($key);
             $map["hotel-{$e->id}"] = [
@@ -651,7 +662,7 @@ class CountyAdminController extends Controller
             ];
         }
         // Products
-        foreach ($county->products as $e) {
+        foreach ($products as $e) {
             $key = \App\Models\CountyProduct::class . '-' . $e->id;
             $asset = $loadedVideos->get($key);
             $map["product-{$e->id}"] = [
@@ -663,7 +674,7 @@ class CountyAdminController extends Controller
             ];
         }
         // Sector entities (from sectors tab)
-        foreach (\App\Models\SectorEntity::where('county_id', $county->id)->get() as $e) {
+        foreach ($sectorEntities as $e) {
             $key = \App\Models\SectorEntity::class . '-' . $e->id;
             if (!isset($map["attraction-{$e->id}"]) && !isset($map["hotel-{$e->id}"]) && !isset($map["product-{$e->id}"])) {
                 $asset = $loadedVideos->get($key);
