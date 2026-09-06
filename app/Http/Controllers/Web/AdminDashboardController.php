@@ -32,10 +32,12 @@ class AdminDashboardController extends Controller
         $recentOrders = Order::with('items')->latest()->take(5)->get();
         $recentPayments = PaymentIntent::latest()->take(5)->get();
         $counties = County::orderBy('name')->get(['id', 'name', 'slug', 'capital', 'population_2024']);
-        $allProducts = Product::with('county', 'category')->latest()->get();
-        $allUsers = User::latest()->take(20)->get();
-        $allVenues = Venue::all();
-        $allOrders = Order::latest()->take(50)->get();
+        // Tab views use paginated queries — unbounded gets() risk OOM crash
+        $productsPage = Product::with('county', 'category')->latest()->paginate(25);
+        $allProducts = $productsPage->items();
+        $allUsers = User::latest()->paginate(20)->items();
+        $allVenues = Venue::paginate(20)->items();
+        $allOrders = Order::latest()->paginate(50)->items();
 
         $tab = request('tab', 'overview');
 

@@ -52,7 +52,7 @@ class AdminPortalController extends Controller
             abort(403, 'National Government admin access required.');
         }
         $ministries = Ministry::with('agencies')->get();
-        $agencies = Agency::with('ministry')->get();
+        $agencies = Agency::with('ministry')->paginate(50);
         $sectors = Sector::withCount('counties')->orderBy('name')->get();
         $counties = County::all();
         return view('admin.national', compact('ministries', 'agencies', 'sectors', 'counties'));

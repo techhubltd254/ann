@@ -36,7 +36,7 @@ class TradeAgreementController extends Controller
     public function blocShow(string $slug)
     {
         $bloc = TradingBloc::where('slug', $slug)->where('is_active', true)->firstOrFail();
-        $agreements = TradeAgreement::with('bloc')->active()->where('trading_bloc_id', $bloc->id)->latest()->get();
+        $agreements = TradeAgreement::with('bloc')->active()->where('trading_bloc_id', $bloc->id)->latest()->paginate(50);
         return view('trade-agreements.bloc-show', compact('bloc', 'agreements'));
     }
 }

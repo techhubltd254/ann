@@ -43,7 +43,7 @@ class ExhibitorPortalController extends Controller
         $tab = $request->get('tab', 'overview');
 
         $products = Product::with(['category', 'variants', 'county'])
-            ->where('user_id', $user->id)->latest()->get();
+            ->where('user_id', $user->id)->latest()->paginate(50);
 
         $orders = Order::with(['items' => fn ($q) => $q->whereHas('variant.product', fn ($p) => $p->where('user_id', $user->id))])
             ->whereHas('items.variant.product', fn ($p) => $p->where('user_id', $user->id))

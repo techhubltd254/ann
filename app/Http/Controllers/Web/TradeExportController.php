@@ -47,7 +47,7 @@ class TradeExportController extends Controller
                   ->orWhere('title', 'like', "%{$appliedDestination}%");
             });
         }
-        $matches = $query->latest()->get();
+        $matches = $query->latest()->paginate(50);
         $blocs = TradingBloc::where('is_active', true)->orderBy('name')->get();
 
         return view('trade-agreements.eligibility-results', compact('matches', 'appliedCategory', 'appliedDestination', 'blocs'));    }

@@ -9,8 +9,8 @@ use Illuminate\Http\Request;
 class FlashSaleController extends Controller {
     public function index() {
         $active = FlashSale::where('is_active', true)->where('starts_at', '<=', now())->where('ends_at', '>=', now())
-            ->with(['products' => fn($q) => $q->with('images')->where('status','active')])->get();
-        $upcoming = FlashSale::where('starts_at', '>', now())->with('products')->latest('starts_at')->get();
+            ->with(['products' => fn($q) => $q->with('images')->where('status','active')])->paginate(50);
+        $upcoming = FlashSale::where('starts_at', '>', now())->with('products')->latest('starts_at')->paginate(50);
         return view('ecommerce.flash-sales', compact('active','upcoming'));
     }
     public function admin() {

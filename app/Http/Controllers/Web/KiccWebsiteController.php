@@ -71,7 +71,7 @@ class KiccWebsiteController extends Controller
     // ─── JOBS ───
     public function jobs()
     {
-        $jobs = JobListing::where('is_active', true)->where(function ($q) { $q->whereNull('closing_date')->orWhere('closing_date', '>=', now()); })->latest()->get();
+        $jobs = JobListing::where('is_active', true)->where(function ($q) { $q->whereNull('closing_date')->orWhere('closing_date', '>=', now()); })->latest()->paginate(25);
         return view('kicc-website.jobs.index', compact('jobs'));
     }
 

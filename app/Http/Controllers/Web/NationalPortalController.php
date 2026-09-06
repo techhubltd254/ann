@@ -37,7 +37,7 @@ class NationalPortalController extends Controller
         $tab = $request->get('tab', 'overview');
 
         $ministries = Ministry::with('agencies')->orderBy('name')->get();
-        $agencies = Agency::with('ministry')->orderBy('name')->get();
+        $agencies = Agency::with('ministry')->orderBy('name')->paginate(50);
 
         $stats = [
             'ministries' => $ministries->count(),

@@ -72,7 +72,7 @@ class KiccAdminController extends Controller
             ->get()
             ->keyBy('owner_id');
 
-        $counties = County::orderBy('name')->get()->map(function ($c) use ($productCounts, $tradeVolumes, $institutionCounts, $heroAssets) {
+        $counties = County::orderBy('name')->paginate(50)->map(function ($c) use ($productCounts, $tradeVolumes, $institutionCounts, $heroAssets) {
             $c->product_count = $productCounts[$c->id] ?? 0;
             $c->trade_volume = $tradeVolumes[$c->id] ?? 0;
             $c->institution_count = $institutionCounts[$c->id] ?? 0;
@@ -83,16 +83,16 @@ class KiccAdminController extends Controller
             return $c;
         });
 
-        $exhibitors = User::where('account_type', 'exhibitor')->with('county')->get();
+        $exhibitors = User::where('account_type', 'exhibitor')->with('county')->paginate(50);
         $exhCounts = Product::selectRaw('user_id, COUNT(*) as c')->whereIn('user_id', $exhibitors->pluck('id'))
             ->groupBy('user_id')->pluck('c', 'user_id');
         $exhibitors->each(fn ($u) => $u->product_count = $exhCounts[$u->id] ?? 0);
 
-        $ministries = Ministry::with('agencies')->orderBy('name')->get();
-        $orders = Order::with('items')->latest()->take(50)->get();
-        $escrows = EscrowTransaction::with('buyer', 'seller')->latest()->take(50)->get();
-        $users = User::with('roles')->latest()->take(50)->get();
-        $institutions = \App\Models\CountyInstitution::where('is_published', true)->with('county')->orderBy('name')->get();
+        $ministries = Ministry::with('agencies')->orderBy('name')->paginate(50);
+        $orders = Order::with('items')->latest()->paginate(50);
+        $escrows = EscrowTransaction::with('buyer', 'seller')->latest()->paginate(50);
+        $users = User::with('roles')->latest()->paginate(50);
+        $institutions = \App\Models\CountyInstitution::where('is_published', true)->with('county')->orderBy('name')->paginate(50);
         $experienceBookings = ExperienceBooking::with('user', 'destination', 'originCounty')
             ->latest()
             ->take(50)
@@ -127,7 +127,7 @@ class KiccAdminController extends Controller
         $allPlans = \App\Models\SubscriptionPlan::orderBy('sort_order')->get();
 
         // Provider certification queue (pending services across travel providers)
-        $providers = User::where('account_type', 'provider')->get();
+        $providers = User::where('account_type', 'provider')->paginate(50);
         $pendingServices = collect()
             ->merge(\Illuminate\Support\Facades\DB::table('flight_inventory')->where('is_active', 0)->limit(20)->get()->map(fn ($s) => ['table' => 'flight_inventory', 'id' => $s->id, 'label' => 'Flight seat inventory', 'price' => $s->price]))
             ->merge(\Illuminate\Support\Facades\DB::table('hotel_rooms')->where('is_active', 0)->limit(20)->get()->map(fn ($s) => ['table' => 'hotel_rooms', 'id' => $s->id, 'label' => "Room: {$s->name}", 'price' => $s->price_per_night]))

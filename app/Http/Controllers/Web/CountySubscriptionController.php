@@ -21,8 +21,8 @@ class CountySubscriptionController extends Controller
 
         $plan = CountySubscriptionPlan::active()->withCount('subscribers')->get();
         $config = FinancialConfig::firstOrCreate(['county_id' => $county->id]);
-        $allocation = CountyBulkSlotAllocation::where('county_id', $county->id)->get();
-        $subscribers = CountySubscriber::with('user', 'plan')->where('county_id', $county->id)->get();
+        $allocation = CountyBulkSlotAllocation::where('county_id', $county->id)->paginate(50);
+        $subscribers = CountySubscriber::with('user', 'plan')->where('county_id', $county->id)->paginate(50);
         $transactions = WalletTransaction::where('county_id', $county->id)->latest('created_at')->limit(20)->get();
 
         return view('county-subscriptions.index', compact('county', 'plan', 'config', 'allocation', 'subscribers', 'transactions'));

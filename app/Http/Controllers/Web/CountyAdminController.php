@@ -52,23 +52,23 @@ class CountyAdminController extends Controller
         $county = $this->authorizeCounty($slug);
         $tab = $request->get('tab', 'overview');
 
-        // Analytics
-        $products = CountyProduct::where('county_id', $county->id)->get();
-        $attractions = CountyTourismAttraction::where('county_id', $county->id)->get();
-        $hotels = CountyHotel::where('county_id', $county->id)->get();
+        // Analytics — paginate all entity collections to prevent OOM
+        $products = CountyProduct::where('county_id', $county->id)->paginate(50);
+        $attractions = CountyTourismAttraction::where('county_id', $county->id)->paginate(50);
+        $hotels = CountyHotel::where('county_id', $county->id)->paginate(50);
         $sectorImages = $this->sectorImages($county->slug);
         $plans = SubscriptionPlan::where('is_active', true)->orderBy('sort_order')->get();
-        $marketplaceProducts = Product::with(['variants', 'images'])->where('county_id', $county->id)->latest()->get();
-        $ads = Advertisement::where('placement', 'like', "%{$county->slug}%")->latest()->get();
+        $marketplaceProducts = Product::with(['variants', 'images'])->where('county_id', $county->id)->latest()->paginate(50);
+        $ads = Advertisement::where('placement', 'like', "%{$county->slug}%")->latest()->paginate(50);
         $sectors = Sector::where('is_active', true)->orderBy('name')->get();
         $linkedSectors = DB::table('county_sector')->where('county_id', $county->id)->pluck('sector_id');
         $tileSectors = DB::table('county_sector')->where('county_id', $county->id)->where('display_on_tile', 'yes')->pluck('sector_id')->toArray();
         $allSectors = Sector::orderBy('name')->get();
-        $sectorEntities = SectorEntity::where('county_id', $county->id)->limit(100)->get();
+        $sectorEntities = SectorEntity::where('county_id', $county->id)->paginate(100);
         $institutions = \App\Models\CountyInstitution::with('owner', 'sectorEntities')
             ->where('county_id', $county->id)
             ->latest()
-            ->get();
+            ->paginate(50);
 
         // Stats
         $totalOrders = DB::table('order_items')

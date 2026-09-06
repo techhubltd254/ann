@@ -48,10 +48,10 @@ class CountyPortalController extends Controller
         $county = County::withCount('sectors')->findOrFail($user->county_id);
         $tab = $request->get('tab', 'overview');
 
-        $products = Product::where('county_id', $county->id)->with('category', 'variants', 'seller')->get();
+        $products = Product::where('county_id', $county->id)->with('category', 'variants', 'seller')->paginate(50);
         $exhibitors = User::where('account_type', 'exhibitor')->where('county_id', $county->id)
             ->withCount(['products' => fn($q) => $q->where('county_id', $county->id)])
-            ->get();
+            ->paginate(50);
         $orders = Order::whereHas('items', fn($q) => $q->where('county_id', $county->id))
             ->with('items')->latest()->take(50)->get();
         $escrows = EscrowTransaction::where('county_id', $county->id)
