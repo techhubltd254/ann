@@ -30,44 +30,45 @@ use App\Http\Controllers\Web\LiveChatController;
 use App\Http\Controllers\Web\LivestreamController;
 use App\Http\Controllers\Web\Room3dController;
 
+// ── Public page cache middleware (applied to public GET routes) ──
+$publicCache = \App\Http\Middleware\CachePublicResponse::class;
+$noSession = [
+    \Illuminate\Cookie\Middleware\EncryptCookies::class,
+    \Illuminate\Cookie\Middleware\AddQueuedCookiesToResponse::class,
+    \Illuminate\Session\Middleware\StartSession::class,
+    \Illuminate\View\Middleware\ShareErrorsFromSession::class,
+    \Illuminate\Foundation\Http\Middleware\PreventRequestForgery::class,
+];
+
+
 Route::get('/', HomeController::class)->name('home')
-    ->middleware(\App\Http\Middleware\CachePublicResponse::class)
-    ->withoutMiddleware([
-        \Illuminate\Cookie\Middleware\EncryptCookies::class,
-        \Illuminate\Cookie\Middleware\AddQueuedCookiesToResponse::class,
-        \Illuminate\Session\Middleware\StartSession::class,
-        \Illuminate\View\Middleware\ShareErrorsFromSession::class,
-        \Illuminate\Foundation\Http\Middleware\PreventRequestForgery::class,
-    ]);
+    ->middleware($publicCache)
+    ->withoutMiddleware($noSession);
 
 Route::get('/counties', [CountyController::class, 'index'])->name('counties.index')
-    ->middleware(\App\Http\Middleware\CachePublicResponse::class)
-    ->withoutMiddleware([
-        \Illuminate\Cookie\Middleware\EncryptCookies::class,
-        \Illuminate\Cookie\Middleware\AddQueuedCookiesToResponse::class,
-        \Illuminate\Session\Middleware\StartSession::class,
-        \Illuminate\View\Middleware\ShareErrorsFromSession::class,
-        \Illuminate\Foundation\Http\Middleware\PreventRequestForgery::class,
-    ]);
+    ->middleware($publicCache)
+    ->withoutMiddleware($noSession);
 Route::get('/counties/{county}', [CountyController::class, 'show'])->name('counties.show')
-    ->middleware(\App\Http\Middleware\CachePublicResponse::class)
-    ->withoutMiddleware([
-        \Illuminate\Cookie\Middleware\EncryptCookies::class,
-        \Illuminate\Cookie\Middleware\AddQueuedCookiesToResponse::class,
-        \Illuminate\Session\Middleware\StartSession::class,
-        \Illuminate\View\Middleware\ShareErrorsFromSession::class,
-        \Illuminate\Foundation\Http\Middleware\PreventRequestForgery::class,
-    ]);
-Route::get('/counties/{county}/sector/{sector}', [CountyController::class, 'sector'])->name('counties.sector');
-Route::get('/institutions/{institution}', [CountyController::class, 'institution'])->name('counties.institution');
+    ->middleware($publicCache)
+    ->withoutMiddleware($noSession);
+Route::get('/counties/{county}/sector/{sector}', [CountyController::class, 'sector'])->name('counties.sector')
+    ->middleware($publicCache)
+    ->withoutMiddleware($noSession);
+Route::get('/institutions/{institution}', [CountyController::class, 'institution'])->name('counties.institution')
+    ->middleware($publicCache)
+    ->withoutMiddleware($noSession);
 Route::get('/counties/{county}/products/{product}/book', [\App\Http\Controllers\Web\CountyProductBookingController::class, 'show'])->name('county.product.booking');
 Route::post('/counties/{county}/products/{product}/book', [\App\Http\Controllers\Web\CountyProductBookingController::class, 'book'])->name('county.product.booking.store');
 Route::get('/counties/{county}/products/{product}/book/success/{reference}', [\App\Http\Controllers\Web\CountyProductBookingController::class, 'success'])->name('county.product.booking.success');
 
 // Marketplace
 Route::get('/marketplace/compare', [MarketplaceController::class, 'compare'])->name('marketplace.compare');
-Route::get('/marketplace', [MarketplaceController::class, 'index'])->name('marketplace.index');
-Route::get('/marketplace/{slug}', [MarketplaceController::class, 'show'])->name('marketplace.show');
+Route::get('/marketplace', [MarketplaceController::class, 'index'])->name('marketplace.index')
+    ->middleware($publicCache)
+    ->withoutMiddleware($noSession);
+Route::get('/marketplace/{slug}', [MarketplaceController::class, 'show'])->name('marketplace.show')
+    ->middleware($publicCache)
+    ->withoutMiddleware($noSession);
 
 // Ecommerce features
 Route::post('/wishlist/toggle', [WishlistController::class, 'toggle'])->name('wishlist.toggle')->middleware('auth');
@@ -94,7 +95,9 @@ Route::post('/experience/{booking}/remove', [\App\Http\Controllers\Web\Experienc
 Route::get('/experience/counties', [\App\Http\Controllers\Web\ExperienceController::class, 'counties'])->name('experience.counties');
 Route::get('/experience/transport-options', [\App\Http\Controllers\Web\ExperienceController::class, 'transportOptions'])->name('experience.transport-options');
 
-Route::get('/flash-sales', [FlashSaleController::class, 'index'])->name('flash-sales.index');
+Route::get('/flash-sales', [FlashSaleController::class, 'index'])->name('flash-sales.index')
+    ->middleware($publicCache)
+    ->withoutMiddleware($noSession);
 
 Route::get('/gift-cards', [GiftCardController::class, 'index'])->name('gift-cards.index');
 Route::post('/gift-cards/purchase', [GiftCardController::class, 'purchase'])->name('gift-cards.purchase')->middleware('auth');
@@ -129,7 +132,9 @@ Route::get('/checkout/success/{orderNumber}', [CheckoutController::class, 'succe
 Route::post('/api/mpesa/callback', [CheckoutController::class, 'mpesaCallback'])->name('mpesa.callback');
 
 // County subscriptions
-Route::get('/county/{slug}/subscriptions', [CountySubscriptionController::class, 'index'])->name('county.subscriptions');
+Route::get('/county/{slug}/subscriptions', [CountySubscriptionController::class, 'index'])->name('county.subscriptions')
+    ->middleware($publicCache)
+    ->withoutMiddleware($noSession);
 Route::get('/subscriptions', [CountySubscriptionController::class, 'index'])->name('subscriptions.index');
 
 // Packages (blueprint subscription catalogue)
@@ -257,11 +262,15 @@ Route::get('/travel/receipt/{groupRef}', [TravelController::class, 'receipt'])->
 // Platform operations (Advertising, SEO, Logistics)
 Route::get('/operations', [OperationsController::class, 'index'])->name('operations.index');
 
-Route::get('/exhibitions', [ExhibitionController::class, 'index'])->name('exhibitions.index');
+Route::get('/exhibitions', [ExhibitionController::class, 'index'])->name('exhibitions.index')
+    ->middleware($publicCache)
+    ->withoutMiddleware($noSession);
 Route::get('/exhibitions/{slug}', [ExhibitionController::class, 'show'])->name('exhibitions.show');
 
 // ── Live Streams ──
-Route::get('/streams', [\App\Http\Controllers\Web\StreamController::class, 'index'])->name('streams.index');
+Route::get('/streams', [\App\Http\Controllers\Web\StreamController::class, 'index'])->name('streams.index')
+    ->middleware($publicCache)
+    ->withoutMiddleware($noSession);
 Route::get('/streams/admin', [\App\Http\Controllers\Web\StreamController::class, 'adminIndex'])->name('streams.admin')->middleware('auth');
 Route::get('/streams/create', [\App\Http\Controllers\Web\StreamController::class, 'create'])->name('streams.create')->middleware('auth');
 Route::post('/streams', [\App\Http\Controllers\Web\StreamController::class, 'store'])->name('streams.store')->middleware('auth');
