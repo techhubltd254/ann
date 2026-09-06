@@ -17,7 +17,7 @@ class CountyController extends Controller
 {
     public function index()
     {
-        $countyIds = Cache::remember('kicc_counties_index', 21600, fn () => County::orderBy('name')->pluck('id')->all());
+        $countyIds = Cache::remember('kicc_counties_index', config('kicc.cache_ttl.public', 21600), fn () => County::orderBy('name')->pluck('id')->all());
         $counties = County::withCount('sectors')->whereIn('id', $countyIds)->orderBy('name')->get();
 
         // Hero media per county card — YouTube-style play on hover/in-view
@@ -47,7 +47,7 @@ class CountyController extends Controller
         $sectors = $county->sectors;
 
         // Dynamic sector data — count entities per sector across all entity types
-        $sectorEntityCounts = Cache::remember("kicc_county_sector_counts_{$county->id}", 21600, function () use ($county) {
+        $sectorEntityCounts = Cache::remember("kicc_county_sector_counts_{$county->id}", config('kicc.cache_ttl.public', 21600), function () use ($county) {
             return \App\Models\SectorEntity::where('county_id', $county->id)
                 ->where('is_published', true)
                 ->selectRaw('sector_id, count(*) as total')
@@ -99,11 +99,11 @@ class CountyController extends Controller
             }
         }
 
-        $featuredAttractionIds = Cache::remember("kicc_county_attractions_{$county->id}", 21600, fn () => $county->tourismAttractions()->where('is_published', true)->orderBy('name')->take(12)->pluck('id')->all());
-        $featuredHotelIds = Cache::remember("kicc_county_hotels_{$county->id}", 21600, fn () => $county->hotels()->where('is_published', true)->orderByDesc('star_rating')->take(8)->pluck('id')->all());
-        $countyProductIds = Cache::remember("kicc_county_products_{$county->id}", 21600, fn () => $county->products()->where('is_published', true)->whereNotNull('price')->orderByDesc('price')->take(8)->pluck('id')->all());
-        $exhibitionIds = Cache::remember("kicc_county_exhibitions_{$county->id}", 21600, fn () => $county->exhibitions()->where('status', 'published')->orderBy('start_date', 'desc')->take(3)->pluck('id')->all());
-        $linkedSectorIds = Cache::remember("kicc_county_linked_sectors_{$county->id}", 21600, fn () => $county->sectors()->orderBy('name')->pluck('sectors.id')->all());
+        $featuredAttractionIds = Cache::remember("kicc_county_attractions_{$county->id}", config('kicc.cache_ttl.public', 21600), fn () => $county->tourismAttractions()->where('is_published', true)->orderBy('name')->take(12)->pluck('id')->all());
+        $featuredHotelIds = Cache::remember("kicc_county_hotels_{$county->id}", config('kicc.cache_ttl.public', 21600), fn () => $county->hotels()->where('is_published', true)->orderByDesc('star_rating')->take(8)->pluck('id')->all());
+        $countyProductIds = Cache::remember("kicc_county_products_{$county->id}", config('kicc.cache_ttl.public', 21600), fn () => $county->products()->where('is_published', true)->whereNotNull('price')->orderByDesc('price')->take(8)->pluck('id')->all());
+        $exhibitionIds = Cache::remember("kicc_county_exhibitions_{$county->id}", config('kicc.cache_ttl.public', 21600), fn () => $county->exhibitions()->where('status', 'published')->orderBy('start_date', 'desc')->take(3)->pluck('id')->all());
+        $linkedSectorIds = Cache::remember("kicc_county_linked_sectors_{$county->id}", config('kicc.cache_ttl.public', 21600), fn () => $county->sectors()->orderBy('name')->pluck('sectors.id')->all());
 
         $featuredAttractions = $featuredAttractionIds ? $county->tourismAttractions()->whereIn('id', $featuredAttractionIds)->orderBy('name')->get() : collect();
         $featuredHotels = $featuredHotelIds ? $county->hotels()->whereIn('id', $featuredHotelIds)->orderByDesc('star_rating')->get() : collect();
@@ -116,7 +116,7 @@ class CountyController extends Controller
         $hotelThumbs = $featuredHotels->mapWithKeys(fn($h) => [$h->id => \App\Services\ThumbnailService::for($h, $county->slug)]);
         $productThumbs = $countyProducts->mapWithKeys(fn($p) => [$p->id => \App\Services\ThumbnailService::for($p, $county->slug)]);
 
-        $countyMedia = Cache::remember("resolve:county_hero_" . $county->id, 21600, fn() => MediaAsset::resolveSlot(County::class, $county->id, 'hero_video'));
+        $countyMedia = Cache::remember("resolve:county_hero_" . $county->id, config('kicc.cache_ttl.public', 21600), fn() => MediaAsset::resolveSlot(County::class, $county->id, 'hero_video'));
 
         // Batched sector video loading — single queries instead of per-sector
         $sectorSlugs = collect($sectorData)->pluck('sector_slug')->unique();
@@ -127,7 +127,7 @@ class CountyController extends Controller
 
         $cacheKey = "kicc_county_sectors_{$county->id}_v2";
 
-        $cached = Cache::remember($cacheKey, 21600, function () use ($county, $sectorSlugs, $sectorData, &$sectorVideos, &$sectorWebmVideos, &$sectorEntityVideos, &$sectorPitches) {
+        $cached = Cache::remember($cacheKey, config('kicc.cache_ttl.admin', 60), function () use ($county, $sectorSlugs, $sectorData, &$sectorVideos, &$sectorWebmVideos, &$sectorEntityVideos, &$sectorPitches) {
             // Batch load sector video assets
             $slots = $sectorSlugs->map(fn($slug) => 'sector_video_' . $slug);
             $assets = MediaAsset::where('owner_type', County::class)
@@ -302,7 +302,7 @@ class CountyController extends Controller
         }
 
         $listVersion = Cache::get("kicc_sector_version_{$county->id}_{$sectorModel->id}", 1);
-        $entityIdsCache = Cache::remember("kicc_county_sector_items_{$county->id}_{$sectorModel->id}_{$listVersion}_{$page}", 21600, function () use ($county, $sectorIds) {
+        $entityIdsCache = Cache::remember("kicc_county_sector_items_{$county->id}_{$sectorModel->id}_{$listVersion}_{$page}", config('kicc.cache_ttl.public', 21600), function () use ($county, $sectorIds) {
             return SectorEntity::where('county_id', $county->id)
                 ->whereIn('sector_id', $sectorIds)
                 ->where('is_published', true)
@@ -336,7 +336,7 @@ class CountyController extends Controller
         }
 
         // Sector background video (institution sync sets this slot)
-        $bgAsset = Cache::remember("resolve:county_sector_video_" . $sector, 21600, function () use ($county, $sector) {
+        $bgAsset = Cache::remember("resolve:county_sector_video_" . $sector, config('kicc.cache_ttl.public', 21600), function () use ($county, $sector) {
             $a = MediaAsset::resolveSlot(County::class, $county->id, 'sector_video_' . $sector);
             return $a ? ($a->mp4Url() ?? $a->url()) : null;
         });
@@ -472,7 +472,7 @@ class CountyController extends Controller
 
         // Tier 3: This sector's own sector_video asset (mother tile — uploaded in admin)
         if (count($sectorHeroVideos) === 0) {
-            $thisSectorVideo = Cache::remember("resolve:county_sector_video_url_" . $sector, 21600, function () use ($county, $sector) {
+            $thisSectorVideo = Cache::remember("resolve:county_sector_video_url_" . $sector, config('kicc.cache_ttl.public', 21600), function () use ($county, $sector) {
                 $a = MediaAsset::resolveSlot(County::class, $county->id, 'sector_video_' . $sector);
                 return $a ? ($a->mp4Url() ?? $a->url()) : null;
             });
@@ -481,7 +481,7 @@ class CountyController extends Controller
 
         // Tier 4: County hero video
         if (count($sectorHeroVideos) === 0) {
-            $countyHeroUrl = Cache::remember("resolve:county_hero_url_" . $county->id, 21600, function () use ($county) {
+            $countyHeroUrl = Cache::remember("resolve:county_hero_url_" . $county->id, config('kicc.cache_ttl.public', 21600), function () use ($county) {
                 $a = MediaAsset::resolveSlot(County::class, $county->id, 'hero_video');
                 return $a ? ($a->mp4Url() ?? $a->url()) : null;
             });
@@ -544,7 +544,7 @@ class CountyController extends Controller
         }
 
         // Poster for the sector hero (county hero poster / first video frame / default)
-        $sectorHeroPoster = Cache::remember("resolve:county_hero_post_" . $county->id, 21600, function () use ($county) {
+        $sectorHeroPoster = Cache::remember("resolve:county_hero_post_" . $county->id, config('kicc.cache_ttl.public', 21600), function () use ($county) {
             $a = MediaAsset::resolveSlot(County::class, $county->id, 'hero_video');
             return $a ? $a->posterUrl() : null;
         }) ?? media('counties/' . $county->slug . '/hero.jpeg');
@@ -573,7 +573,7 @@ class CountyController extends Controller
         $county = $institution->county;
 
         // Hero video (Tier 3: HLS adaptive preferred, mp4 fallback)
-        $heroAsset = Cache::remember("resolve:inst_hero_" . $institution->id, 21600, fn() => MediaAsset::resolveSlot(CountyInstitution::class, $institution->id, 'hero_video'));
+        $heroAsset = Cache::remember("resolve:inst_hero_" . $institution->id, config('kicc.cache_ttl.public', 21600), fn() => MediaAsset::resolveSlot(CountyInstitution::class, $institution->id, 'hero_video'));
         $heroVideo = $heroAsset?->mp4Url() ?? $heroAsset?->url();
         $heroHls = $heroAsset?->derivativeUrl('hls_master');
         $heroPoster = $heroAsset?->posterUrl();
@@ -643,7 +643,7 @@ class CountyController extends Controller
             // Tier 3: Institution's marketplace product videos (cached 6h)
             if ($institution->user_id) {
                 $cacheKey = 'inst_product_videos_' . $institution->user_id;
-                $productVids = \Illuminate\Support\Facades\Cache::remember($cacheKey, 21600, function () use ($institution) {
+                $productVids = \Illuminate\Support\Facades\Cache::remember($cacheKey, config('kicc.cache_ttl.public', 21600), function () use ($institution) {
                     return \App\Models\Marketplace\Product::where('user_id', $institution->user_id)
                         ->active()
                         ->whereNotNull('video_url')
@@ -667,7 +667,7 @@ class CountyController extends Controller
 
             // Tier 5: County hero video
             if ($institution->county_id) {
-                $countyHeroUrl2 = Cache::remember("resolve:county_hero_url_" . $institution->county_id, 21600, function () use ($institution) {
+                $countyHeroUrl2 = Cache::remember("resolve:county_hero_url_" . $institution->county_id, config('kicc.cache_ttl.public', 21600), function () use ($institution) {
                     $a = MediaAsset::resolveSlot(County::class, $institution->county_id, 'hero_video');
                     return $a ? ($a->mp4Url() ?? $a->url()) : null;
                 });

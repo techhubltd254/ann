@@ -2,6 +2,7 @@
 
 namespace App\Models;
 
+use App\Services\DataAvailabilityService;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Support\Str;
 
@@ -74,6 +75,27 @@ class CountyInstitution extends Model
                 $i->slug = Str::slug($i->name) . '-' . Str::lower(Str::random(4));
             }
             $i->countyId ??= $i->county_id;
+        });
+
+        static::saved(function (self $i) {
+            $dav = app(DataAvailabilityService::class);
+            $dav->bustInstitution($i->id);
+            if ($i->county_id) {
+                $dav->bustCounty($i->county_id);
+                if ($i->relationLoaded('sectorEntities')) {
+                    foreach ($i->sectorEntities as $se) {
+                        $dav->bustSector($i->county_id, $se->sector_id);
+                    }
+                }
+            }
+        });
+
+        static::deleted(function (self $i) {
+            $dav = app(DataAvailabilityService::class);
+            $dav->bustInstitution($i->id);
+            if ($i->county_id) {
+                $dav->bustCounty($i->county_id);
+            }
         });
     }
 }

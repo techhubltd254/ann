@@ -2,7 +2,9 @@
 
 namespace App\Models;
 
+use App\Services\DataAvailabilityService;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Support\Facades\Cache;
 
 class SectorEntity extends Model
 {
@@ -11,4 +13,19 @@ class SectorEntity extends Model
     public function county() { return $this->belongsTo(County::class); }
     public function sector() { return $this->belongsTo(Sector::class); }
     public function entity() { return $this->morphTo(); }
+
+    protected static function booted(): void
+    {
+        $invalidate = function (self $m) {
+            $dav = app(DataAvailabilityService::class);
+            if ($m->county_id) {
+                $dav->bustCounty($m->county_id);
+            }
+            if ($m->county_id && $m->sector_id) {
+                $dav->bustSector($m->county_id, $m->sector_id);
+            }
+        };
+        static::saved(fn (self $m) => $invalidate($m));
+        static::deleted(fn (self $m) => $invalidate($m));
+    }
 }

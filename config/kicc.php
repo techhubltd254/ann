@@ -398,6 +398,20 @@ return [
 
     /*
     |--------------------------------------------------------------------------
+    | Cache TTL (seconds)
+    |--------------------------------------------------------------------------
+    | Short TTL for admin dashboards so CRUD changes appear within minutes;
+    | public pages use 6-hr default. Set a higher value for production with
+    | explicit cache-busting hooks.
+    */
+    'cache_ttl' => [
+        'admin' => 60,
+        'public' => 600,
+        'media' => 3600,
+    ],
+
+    /*
+    |--------------------------------------------------------------------------
     | Analytics
     |--------------------------------------------------------------------------
     */
