@@ -8,7 +8,7 @@ class TransactionLog extends Model
 {
     public $timestamps = false;
     protected $fillable = ['payment_intent_id', 'gateway_id', 'type', 'request_payload', 'response_payload', 'status_code', 'duration_ms', 'ip_address'];
-    protected $casts = ['duration_ms' => 'integer'];
+    protected $casts = ['duration_ms' => 'integer', 'request_payload' => 'json', 'response_payload' => 'json'];
 
     public function intent() { return $this->belongsTo(PaymentIntent::class); }
     public function gateway() { return $this->belongsTo(Gateway::class, 'gateway_id'); }

@@ -4,4 +4,5 @@ use Illuminate\Database\Eloquent\Model;
 class IncidentReport extends Model
 {
     protected $fillable = ['user_id', 'type', 'description', 'county_id', 'location'];
+    protected function casts(): array { return []; }
 }
