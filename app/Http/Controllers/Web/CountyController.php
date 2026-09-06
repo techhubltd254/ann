@@ -266,13 +266,13 @@ class CountyController extends Controller
     public function sector(County $county, string $sector)
     {
         $page = request()->get('page', 1);
-        $sectorModel = $county->sectors()->where('slug', $sector)->first();
+        // Eager-load sectors ONCE at the top — avoids 5+ repeat queries
+        $county->load('sectors');
+        $sectorModel = $county->sectors->firstWhere('slug', $sector);
         if (!$sectorModel) {
-            // Try fuzzy match by partial slug or name
-            $sectorModel = $county->sectors()->where('slug', 'like', $sector . '%')->first();
+            $sectorModel = $county->sectors->first(fn ($s) => str_starts_with($s->slug, $sector));
         }
         if (!$sectorModel) {
-            // Try matching the sector_slug map
             $slugMap = [
                 'agriculture' => ['agriculture', 'farms', 'Agriculture'],
                 'tourism' => ['tourism', 'Tourism'],
@@ -285,7 +285,7 @@ class CountyController extends Controller
             ];
             $aliases = $slugMap[$sector] ?? [];
             foreach ($aliases as $alias) {
-                $sectorModel = $county->sectors()->where('slug', 'like', $alias . '%')->first();
+                $sectorModel = $county->sectors->first(fn ($s) => str_starts_with($s->slug, $alias));
                 if ($sectorModel) break;
             }
         }
@@ -293,33 +293,16 @@ class CountyController extends Controller
 
         // Collect entities from this sector and any alias sectors
         $sectorIds = collect([$sectorModel->id]);
-        $slugMap = [
-            'farms' => ['farms', 'agriculture', 'Agriculture'],
-            'agriculture' => ['farms', 'agriculture', 'Agriculture'],
-            'tourism' => ['tourism', 'Tourism'],
-            'hotels' => ['hotels', 'hospitality', 'Hospitality'],
-            'hospitality' => ['hotels', 'hospitality', 'Hospitality'],
-            'products' => ['products', 'commerce', 'Commerce'],
-            'commerce' => ['products', 'commerce', 'Commerce'],
-            'education' => ['education', 'institutions', 'Education'],
-            'institutions' => ['education', 'institutions', 'Education'],
-            'transport' => ['transport', 'Transport'],
-            'health' => ['health', 'healthcare', 'Healthcare'],
-            'healthcare' => ['health', 'healthcare', 'Healthcare'],
-            'culture' => ['culture', 'Culture'],
-            'industries' => ['industries'],
-            'energy' => ['energy'],
-        ];
         $aliases = $slugMap[$sector] ?? [];
         foreach ($aliases as $alias) {
-            $aliasSector = $county->sectors()->where('slug', 'like', $alias . '%')->first();
+            $aliasSector = $county->sectors->first(fn ($s) => str_starts_with($s->slug, $alias));
             if ($aliasSector && $aliasSector->id !== $sectorModel->id) {
                 $sectorIds->push($aliasSector->id);
             }
         }
 
         $listVersion = Cache::get("kicc_sector_version_{$county->id}_{$sectorModel->id}", 1);
-        $entityIdCache = Cache::remember("kicc_county_sector_items_{$county->id}_{$sectorModel->id}_{$listVersion}_{$page}", 21600, function () use ($county, $sectorIds) {
+        $entityIdsCache = Cache::remember("kicc_county_sector_items_{$county->id}_{$sectorModel->id}_{$listVersion}_{$page}", 21600, function () use ($county, $sectorIds) {
             return SectorEntity::where('county_id', $county->id)
                 ->whereIn('sector_id', $sectorIds)
                 ->where('is_published', true)
@@ -328,8 +311,10 @@ class CountyController extends Controller
                 ->all();
         });
 
+        // Batch-load all items in one query, then paginate in-memory
+        $allItems = SectorEntity::whereIn('id', $entityIdCache ?? [])->get()->keyBy('id');
         $items = new \Illuminate\Pagination\LengthAwarePaginator(
-            collect($entityIdCache ?? [])->map(fn ($id) => SectorEntity::find($id))->filter(),
+            collect($entityIdCache ?? [])->map(fn ($id) => $allItems->get($id))->filter(),
             count($entityIdCache ?? []),
             12,
             $page,
@@ -606,15 +591,13 @@ class CountyController extends Controller
 
             // Tier 2: Sector videos — collect all videos from this institution's sector
             if ($institution->county_id) {
-                $sectorSlugs = $institution->sectorEntities()
-                    ->with('sector')
-                    ->get()
+                $sectorSlugs = $institution->sectorEntities
                     ->pluck('sector.slug')
                     ->map(fn ($slug) => explode('-', $slug)[0])
                     ->unique();
 
                 // 2a: 4D videos from this institution's sector entities
-                $sectorEntityIds = $institution->sectorEntities()->pluck('sector_entities.id');
+                $sectorEntityIds = $institution->sectorEntities->pluck('id');
                 if ($sectorEntityIds->isNotEmpty()) {
                     $fourDAssets = MediaAsset::where('owner_type', SectorEntity::class)
                         ->whereIn('owner_id', $sectorEntityIds)
@@ -626,7 +609,7 @@ class CountyController extends Controller
                 }
 
                 // 2b: Hero videos of other institutions in the same sector
-                $sectorIds = $institution->sectorEntities()->pluck('sector_id');
+                $sectorIds = $institution->sectorEntities->pluck('sector_id');
                 if ($sectorIds->isNotEmpty()) {
                     $peerInstIds = SectorEntity::where('county_id', $institution->county_id)
                         ->whereIn('sector_id', $sectorIds)
@@ -710,8 +693,8 @@ class CountyController extends Controller
                 ->get();
         }
 
-        // Sector entities (mappings)
-        $sectorEntities = $institution->sectorEntities()->with('sector')->get();
+        // Sector entities (mappings) — already eager-loaded
+        $sectorEntities = $institution->sectorEntities;
 
         // Additional videos (institution videos JSON)
         $libraryVideos = $institution->videos ?? [];
