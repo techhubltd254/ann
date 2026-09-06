@@ -144,14 +144,24 @@ class DataAvailabilityService
             $allSectorIds = $allSectorIds->merge($matched)->unique();
         }
 
-        // Entities
+        // Entities — exclude orphans whose parent was hard-deleted
+        $instTypeClasses = [CountyInstitution::class, 'institution'];
+        $liveInstIds = CountyInstitution::where('county_id', $county->id)
+            ->where('is_published', true)
+            ->pluck('id');
+
         $entities = SectorEntity::where('county_id', $county->id)
             ->whereIn('sector_id', $allSectorIds)
             ->where('is_published', true)
+            ->where(function ($q) use ($instTypeClasses, $liveInstIds) {
+                // Non-institution entities pass through; institution entities
+                // must have a live parent CountyInstitution
+                $q->whereNotIn('entity_type', $instTypeClasses)
+                  ->orWhereIn('entity_id', $liveInstIds);
+            })
             ->orderBy('name')
             ->paginate(12, ['*'], 'page', $page);
 
-        // Entity IDs for video lookup
         $entityIds = $entities->pluck('id');
 
         // Batch-load ALL video assets for these entities
