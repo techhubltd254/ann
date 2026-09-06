@@ -363,10 +363,10 @@ Route::get('/intelligence', [\App\Http\Controllers\Web\IntelligenceController::c
 Route::get('/ai/chat', [\App\Http\Controllers\Web\AIController::class, 'chatPage'])->name('ai.chat');
 Route::post('/ai/chat', [\App\Http\Controllers\Web\AIController::class, 'chat'])->name('ai.chat.api')->middleware('throttle:30,1');
 Route::get('/ai/itinerary', [\App\Http\Controllers\Web\AIController::class, 'itineraryPage'])->name('ai.itinerary');
-Route::post('/ai/itinerary', [\App\Http\Controllers\Web\AIController::class, 'itinerary'])->name('ai.itinerary.api');
+Route::post('/ai/itinerary', [\App\Http\Controllers\Web\AIController::class, 'itinerary'])->name('ai.itinerary.api')->middleware('throttle:30,1');
 Route::get('/api/recommendations', [\App\Http\Controllers\Web\AIController::class, 'recommendations'])->name('api.recommendations');
 Route::get('/api/forecast', [\App\Http\Controllers\Web\AIController::class, 'forecast'])->name('api.forecast');
-Route::post('/api/fraud-check', [\App\Http\Controllers\Web\AIController::class, 'fraudCheck'])->name('api.fraud.check');
+Route::post('/api/fraud-check', [\App\Http\Controllers\Web\AIController::class, 'fraudCheck'])->name('api.fraud.check')->middleware('throttle:30,1');
 
 // Layer 2: Dynamic image optimizer — resizes + transcodes any platform image to WebP, caches in R2 (immutable)
 Route::get('/api/optimize-image', \App\Http\Controllers\Web\OptimizeImageController::class)->name('api.optimize-image');
@@ -387,7 +387,7 @@ Route::middleware('auth')->group(function () {
 // Safety & Security
 Route::get('/safety/alerts', [\App\Http\Controllers\Web\SafetyController::class, 'alerts'])->name('safety.alerts');
 Route::get('/safety/report', [\App\Http\Controllers\Web\SafetyController::class, 'reportForm'])->name('safety.report');
-Route::post('/safety/report', [\App\Http\Controllers\Web\SafetyController::class, 'submitReport'])->name('safety.report.submit');
+Route::post('/safety/report', [\App\Http\Controllers\Web\SafetyController::class, 'submitReport'])->name('safety.report.submit')->middleware('throttle:10,1');
 
 // KICC Website (kicc.co.ke functionality)
 Route::get('/national-government', [\App\Http\Controllers\Web\NationalGovernmentController::class, 'index'])->name('national-government.index');
@@ -482,10 +482,10 @@ Route::middleware('auth')->group(function () {
 });
 
 // Reviews & Ratings
-Route::post('/reviews', [\App\Http\Controllers\Web\ReviewController::class, 'store'])->name('review.store');
-Route::post('/reviews/{review}/respond', [\App\Http\Controllers\Web\ReviewController::class, 'updateVendorResponse'])->name('review.respond');
-Route::post('/reviews/product', [\App\Http\Controllers\Web\ReviewController::class, 'storeProduct'])->name('product.review.store');
-Route::post('/reviews/entity', [\App\Http\Controllers\Web\ReviewController::class, 'storeEntity'])->name('entity.review.store');
+Route::post('/reviews', [\App\Http\Controllers\Web\ReviewController::class, 'store'])->name('review.store')->middleware('auth', 'throttle:10,1');
+Route::post('/reviews/{review}/respond', [\App\Http\Controllers\Web\ReviewController::class, 'updateVendorResponse'])->name('review.respond')->middleware('auth', 'throttle:10,1');
+Route::post('/reviews/product', [\App\Http\Controllers\Web\ReviewController::class, 'storeProduct'])->name('product.review.store')->middleware('auth', 'throttle:10,1');
+Route::post('/reviews/entity', [\App\Http\Controllers\Web\ReviewController::class, 'storeEntity'])->name('entity.review.store')->middleware('auth', 'throttle:10,1');
 Route::middleware('auth')->group(function () {
     Route::get('/kicc-admin/reviews', [\App\Http\Controllers\Web\ReviewAdminController::class, 'index'])->name('review.admin.index')->middleware('admin:kicc');
     Route::post('/kicc-admin/reviews/{review}/approve', [\App\Http\Controllers\Web\ReviewAdminController::class, 'approve'])->name('review.admin.approve')->middleware('admin:kicc');

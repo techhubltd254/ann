@@ -161,7 +161,7 @@ Route::get('/unity/manifest', [\App\Http\Controllers\Api\UnityManifestController
 Route::post('/unity/manifest', [\App\Http\Controllers\Api\UnityManifestController::class, 'store'])
     ->middleware('auth:sanctum');
 Route::post('/webhooks/n8n', [\App\Http\Controllers\Api\N8nWebhookController::class, 'handle'])
-    ->middleware('throttle:60,1');
+    ->middleware('throttle:10,1');
 Route::get('/updates/manifest', [\App\Http\Controllers\Api\UpdateManifestController::class, 'show'])
     ->middleware('throttle:300,1');
 
