@@ -8,7 +8,7 @@ use App\Models\Ecommerce\AuctionBid;
 use Illuminate\Http\Request;
 class AuctionController extends Controller {
     public function index() {
-        $active = Auction::scopeActive()->with('product.images','seller')->latest('ends_at')->paginate(20);
+        $active = Auction::active()->with('product.images','seller')->latest('ends_at')->paginate(20);
         return view('ecommerce.auctions.index', compact('active'));
     }
     public function show($id) {
