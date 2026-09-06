@@ -111,15 +111,15 @@ class VideoService
         // Title card
         if ($showTitleCard) {
             $titlePath = $this->generateTitleCard($countyName, count($photos));
-            $this->renderClip($titlePath, $this->clipsDir . '/0000_title.mp4', 3.0, 1.0, 1.15, null);
+            $this->renderClip($titlePath, $this->clipsDir . '/0000_title.mp4', 3.0, config('kicc.video_zooms.zoom_out'), config('kicc.video_zooms.zoom_in'), null);
             $clipIndex++;
         }
 
         // Photo clips
         foreach ($photos as $i => $photo) {
             $label = sprintf('%04d_%s', $i + 1, Str::slug($photo['name']));
-            $zoomStart = ($i % 2 === 0) ? 1.15 : 1.0;
-            $zoomEnd = ($i % 2 === 0) ? 1.0 : 1.15;
+            $zoomStart = ($i % 2 === 0) ? config('kicc.video_zooms.zoom_in') : config('kicc.video_zooms.zoom_out');
+            $zoomEnd = ($i % 2 === 0) ? config('kicc.video_zooms.zoom_out') : config('kicc.video_zooms.zoom_in');
             $text = ($labelStyle !== 'none') ? $photo['name'] : null;
             $this->renderClip(
                 $photo['path'],

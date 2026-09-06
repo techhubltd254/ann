@@ -385,6 +385,19 @@ return [
 
     /*
     |--------------------------------------------------------------------------
+    | Video Showcase Zoom Parameters
+    |--------------------------------------------------------------------------
+    | Ken Burns zoom levels for auto-generated screen showcase videos.
+    | zoom_in  = end zoom for title card, start zoom for odd-indexed photos
+    | zoom_out = start zoom for title card, end zoom for odd-indexed photos
+    */
+    'video_zooms' => [
+        'zoom_in' => 1.15,
+        'zoom_out' => 1.0,
+    ],
+
+    /*
+    |--------------------------------------------------------------------------
     | Analytics
     |--------------------------------------------------------------------------
     */
