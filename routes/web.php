@@ -57,12 +57,18 @@ Route::get('/counties/{county}/sector/{sector}', [CountyController::class, 'sect
 Route::get('/institutions/{institution}', [CountyController::class, 'institution'])->name('counties.institution')
     ->middleware($publicCache)
     ->withoutMiddleware($noSession);
-Route::get('/counties/{county}/products/{product}/book', [\App\Http\Controllers\Web\CountyProductBookingController::class, 'show'])->name('county.product.booking');
+Route::get('/counties/{county}/products/{product}/book', [\App\Http\Controllers\Web\CountyProductBookingController::class, 'show'])->name('county.product.booking')
+    ->middleware($publicCache)
+    ->withoutMiddleware($noSession);
 Route::post('/counties/{county}/products/{product}/book', [\App\Http\Controllers\Web\CountyProductBookingController::class, 'book'])->name('county.product.booking.store');
-Route::get('/counties/{county}/products/{product}/book/success/{reference}', [\App\Http\Controllers\Web\CountyProductBookingController::class, 'success'])->name('county.product.booking.success');
+Route::get('/counties/{county}/products/{product}/book/success/{reference}', [\App\Http\Controllers\Web\CountyProductBookingController::class, 'success'])->name('county.product.booking.success')
+    ->middleware($publicCache)
+    ->withoutMiddleware($noSession);
 
 // Marketplace
-Route::get('/marketplace/compare', [MarketplaceController::class, 'compare'])->name('marketplace.compare');
+Route::get('/marketplace/compare', [MarketplaceController::class, 'compare'])->name('marketplace.compare')
+    ->middleware($publicCache)
+    ->withoutMiddleware($noSession);
 Route::get('/marketplace', [MarketplaceController::class, 'index'])->name('marketplace.index')
     ->middleware($publicCache)
     ->withoutMiddleware($noSession);
@@ -99,15 +105,21 @@ Route::get('/flash-sales', [FlashSaleController::class, 'index'])->name('flash-s
     ->middleware($publicCache)
     ->withoutMiddleware($noSession);
 
-Route::get('/gift-cards', [GiftCardController::class, 'index'])->name('gift-cards.index');
+Route::get('/gift-cards', [GiftCardController::class, 'index'])->name('gift-cards.index')
+    ->middleware($publicCache)
+    ->withoutMiddleware($noSession);
 Route::post('/gift-cards/purchase', [GiftCardController::class, 'purchase'])->name('gift-cards.purchase')->middleware('auth');
 Route::post('/gift-cards/apply', [GiftCardController::class, 'apply'])->name('gift-cards.apply')->middleware('throttle:30,1');
 Route::get('/gift-cards/remove', [GiftCardController::class, 'remove'])->name('gift-cards.remove');
 
-Route::get('/auctions', [AuctionController::class, 'index'])->name('auctions.index');
+Route::get('/auctions', [AuctionController::class, 'index'])->name('auctions.index')
+    ->middleware($publicCache)
+    ->withoutMiddleware($noSession);
 Route::get('/auctions/create', [AuctionController::class, 'create'])->name('auctions.create')->middleware('auth');
 Route::post('/auctions', [AuctionController::class, 'store'])->name('auctions.store')->middleware('auth');
-Route::get('/auctions/{id}', [AuctionController::class, 'show'])->name('auctions.show');
+Route::get('/auctions/{id}', [AuctionController::class, 'show'])->name('auctions.show')
+    ->middleware($publicCache)
+    ->withoutMiddleware($noSession);
 Route::post('/auctions/{id}/bid', [AuctionController::class, 'bid'])->name('auctions.bid')->middleware('auth');
 
 Route::get('/rfq', [RfqController::class, 'index'])->name('rfq.index')->middleware('auth');
@@ -254,18 +266,28 @@ Route::get('/attractions/{id}', [\App\Http\Controllers\Web\AttractionBookingCont
 Route::post('/attractions/{id}/book', [\App\Http\Controllers\Web\AttractionBookingController::class, 'book'])->name('attractions.book');
 
 // Travel & Tourism
-Route::get('/travel', [TravelController::class, 'index'])->name('travel.index');
-Route::get('/travel/flights', [TravelController::class, 'flights'])->name('travel.flights');
+Route::get('/travel', [TravelController::class, 'index'])->name('travel.index')
+    ->middleware($publicCache)
+    ->withoutMiddleware($noSession);
+Route::get('/travel/flights', [TravelController::class, 'flights'])->name('travel.flights')
+    ->middleware($publicCache)
+    ->withoutMiddleware($noSession);
 Route::post('/travel/book', [TravelController::class, 'book'])->name('travel.book');
-Route::get('/travel/receipt/{groupRef}', [TravelController::class, 'receipt'])->name('travel.receipt');
+Route::get('/travel/receipt/{groupRef}', [TravelController::class, 'receipt'])->name('travel.receipt')
+    ->middleware($publicCache)
+    ->withoutMiddleware($noSession);
 
 // Platform operations (Advertising, SEO, Logistics)
-Route::get('/operations', [OperationsController::class, 'index'])->name('operations.index');
+Route::get('/operations', [OperationsController::class, 'index'])->name('operations.index')
+    ->middleware($publicCache)
+    ->withoutMiddleware($noSession);
 
 Route::get('/exhibitions', [ExhibitionController::class, 'index'])->name('exhibitions.index')
     ->middleware($publicCache)
     ->withoutMiddleware($noSession);
-Route::get('/exhibitions/{slug}', [ExhibitionController::class, 'show'])->name('exhibitions.show');
+Route::get('/exhibitions/{slug}', [ExhibitionController::class, 'show'])->name('exhibitions.show')
+    ->middleware($publicCache)
+    ->withoutMiddleware($noSession);
 
 // ── Live Streams ──
 Route::get('/streams', [\App\Http\Controllers\Web\StreamController::class, 'index'])->name('streams.index')
@@ -484,12 +506,16 @@ Route::middleware(['auth', 'admin:kicc'])->group(function () {
 
 
 Route::get('/venues', [ExhibitionController::class, 'venues'])->name('venues.index');
-Route::get('/venues/{venue}', [VenueController::class, 'show'])->name('venues.show');
+Route::get('/venues/{venue}', [VenueController::class, 'show'])->name('venues.show')
+    ->middleware($publicCache)
+    ->withoutMiddleware($noSession);
 Route::post('/venues/{venue}/inquire', [VenueController::class, 'inquire'])->name('venues.inquire');
 
 // Exhibition screen videos
 Route::get('/screens', [ScreenController::class, 'directory'])->name('screens.directory');
-Route::get('/screens/{id}', [ScreenController::class, 'show'])->name('screens.show');
+Route::get('/screens/{id}', [ScreenController::class, 'show'])->name('screens.show')
+    ->middleware($publicCache)
+    ->withoutMiddleware($noSession);
 Route::post('/screens/{id}/advertise', [ScreenController::class, 'advertise'])->name('screens.advertise');
 
 // 3D Exhibition experiences (standalone views)
@@ -501,7 +527,9 @@ Route::view('/exhibition-3d/booth', 'exhibition-3d.booth')->name('exhibition-3d.
 Route::get('/room3d', [Room3dController::class, 'index'])->name('room3d.index');
 Route::get('/room3d/create', [Room3dController::class, 'create'])->name('room3d.create');
 Route::post('/room3d', [Room3dController::class, 'store'])->name('room3d.store');
-Route::get('/room3d/{id}', [Room3dController::class, 'show'])->name('room3d.show');
+Route::get('/room3d/{id}', [Room3dController::class, 'show'])->name('room3d.show')
+    ->middleware($publicCache)
+    ->withoutMiddleware($noSession);
 Route::get('/room3d/{id}/viewer', [Room3dController::class, 'viewer'])->name('room3d.viewer');
 Route::get('/room3d/{id}/api', [Room3dController::class, 'api'])->name('room3d.api');
 
@@ -518,8 +546,12 @@ Route::middleware('auth')->group(function () {
 // Google OAuth
 
 // Livestreams
-Route::get('/livestreams', [LivestreamController::class, 'index'])->name('livestreams.index');
-Route::get('/livestreams/{slug}', [LivestreamController::class, 'show'])->name('livestreams.show');
+Route::get('/livestreams', [LivestreamController::class, 'index'])->name('livestreams.index')
+    ->middleware($publicCache)
+    ->withoutMiddleware($noSession);
+Route::get('/livestreams/{slug}', [LivestreamController::class, 'show'])->name('livestreams.show')
+    ->middleware($publicCache)
+    ->withoutMiddleware($noSession);
 
 // [ADMIN] One-time image optimization trigger
 Route::post('/__admin/optimize-images', function () {
