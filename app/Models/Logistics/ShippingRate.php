@@ -1,2 +1,2 @@
 <?php namespace App\Models\Logistics; use Illuminate\Database\Eloquent\Model;
-class ShippingRate extends Model { protected $table='shipping_rates'; protected $guarded=[]; protected $casts=['rate'=>'float','min_weight'=>'float','max_weight'=>'float']; }
+class ShippingRate extends Model { protected $table='shipping_rates'; protected $fillable=['zone_id','name','type','min_weight','max_weight','min_total','max_total','rate','additional_item_rate','estimated_days_min','estimated_days_max','is_active']; protected $casts=['rate'=>'float','min_weight'=>'float','max_weight'=>'float']; }

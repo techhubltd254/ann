@@ -15,8 +15,10 @@ class MessagingController extends Controller
     public function inbox()
     {
         $conversations = Conversation::with('user', 'vendor', 'messages')
-            ->where('user_id', Auth::id())
-            ->orWhere('vendor_id', Auth::id())
+            ->where(function ($q) {
+                $q->where('user_id', Auth::id())
+                  ->orWhere('vendor_id', Auth::id());
+            })
             ->latest('last_message_at')
             ->paginate(25);
         return view('messaging.inbox', compact('conversations'));
@@ -82,7 +84,9 @@ class MessagingController extends Controller
     public function unreadCount()
     {
         $count = Message::whereHas('conversation', function ($q) {
-            $q->where('vendor_id', Auth::id())->orWhere('user_id', Auth::id());
+            $q->where(function ($q2) {
+                $q2->where('vendor_id', Auth::id())->orWhere('user_id', Auth::id());
+            });
         })->where('user_id', '!=', Auth::id())->where('is_read', false)->count();
         return response()->json(['unread' => $count]);
     }

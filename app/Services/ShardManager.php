@@ -392,6 +392,8 @@ class ShardManager
 
     /* ─── PRIVATE ─── */
 
+    private const SHARDED_TABLES = ['shard_products','shard_orders','shard_order_items','shard_escrow_transactions','shard_bookings','shard_cart_items'];
+
     /**
      * Migrate data for a single partition from one shard to another.
      * Uses INSERT ... SELECT for bulk migration.
@@ -401,11 +403,19 @@ class ShardManager
         $fromConn = "shard_{$fromShard}";
         $toConn = "shard_{$toShard}";
 
-        try {
-            $sql = "INSERT IGNORE INTO `{$toConn}`.`{$table}` SELECT * FROM `{$fromConn}`.`{$table}`
-                    WHERE ABS(CRC32(CONCAT('{$table}', ':', id))) & 1023 = {$partitionId}";
+        // Whitelist table name to prevent SQL injection
+        $allowed = self::SHARDED_TABLES;
+        if (!in_array($table, $allowed, true)) {
+            \Illuminate\Support\Facades\Log::warning("shard: skipping migration for unknown table {$table}");
+            return;
+        }
 
-            DB::connection('mysql')->statement($sql);
+        try {
+            DB::connection('mysql')->statement(
+                'INSERT IGNORE INTO `' . $toConn . '`.`' . $table . '` SELECT * FROM `' . $fromConn . '`.`' . $table . '`
+                 WHERE ABS(CRC32(CONCAT(?, \':\', id))) & 1023 = ?',
+                [$table, $partitionId]
+            );
         } catch (\Throwable $e) {
             // Log but continue — table may not exist on source
         }

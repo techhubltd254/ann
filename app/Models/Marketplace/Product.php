@@ -11,7 +11,13 @@ class Product extends Model
 {
     use SoftDeletes;
 
-    protected $guarded = [];
+    protected $fillable = [
+        'user_id', 'county_id', 'category_id', 'name', 'slug', 'description',
+        'short_description', 'sku', 'barcode', 'unit', 'weight_kg',
+        'length_cm', 'width_cm', 'height_cm', 'is_digital', 'status',
+        'is_featured', 'meta_title', 'meta_description', 'tags', 'warranty_info',
+        'video_url', 'videos', 'video_description',
+    ];
 
     protected $casts = [
         'is_digital' => 'boolean',

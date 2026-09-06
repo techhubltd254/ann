@@ -24,7 +24,7 @@ class AnalyticsService
 
         // Fallback: estimate revenue from products if no real transactions
         $products = Product::where('user_id', $ownerId ?? -1)->with('variants')->get();
-        $estimatedMonthlyRevenue = $products->sum(fn($p) => ($p->variants->min('price') ?? 0) * 12);
+        $estimatedMonthlyRevenue = $products->sum(fn($p) => $p->variants->min('price') ?? 0);
         $estimatedAnnualRevenue = $estimatedMonthlyRevenue * 12;
 
         // Current and previous period revenue from escrow

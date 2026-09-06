@@ -146,6 +146,8 @@ return [
     'cloudflare' => [
         'zone_id' => env('CLOUDFLARE_ZONE_ID'),
         'api_token' => env('CLOUDFLARE_API_TOKEN'),
+        'account_id' => env('CLOUDFLARE_ACCOUNT_ID'),
+        'customer_subdomain' => env('CF_STREAM_CUSTOMER_SUBDOMAIN'),
     ],
 
     'n8n' => [

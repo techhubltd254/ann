@@ -13,8 +13,8 @@ class CloudflareStreamService
 
     public function __construct()
     {
-        $this->accountId = 'c8416e05ed0a3554806be51aac862ec4';
-        $this->token = 'cfat_O5sm7cBn09iAcOrgkassBRO4yNElj1PhBdmh2r4K0f9e27ef';
+        $this->accountId = config('services.cloudflare.account_id', env('CLOUDFLARE_ACCOUNT_ID', ''));
+        $this->token = config('services.cloudflare.api_token', env('CLOUDFLARE_API_TOKEN', ''));
     }
 
     protected function api(string $method, string $path, array $data = []): ?array
@@ -70,17 +70,29 @@ class CloudflareStreamService
 
     public function getHlsUrl(string $uid): ?string
     {
-        return "https://customer-{m}.cloudflarestream.com/{$uid}/manifest/video.m3u8";
+        $subdomain = config('services.cloudflare.customer_subdomain', '');
+        if ($subdomain) {
+            return "https://customer-{$subdomain}.cloudflarestream.com/{$uid}/manifest/video.m3u8";
+        }
+        return null;
     }
 
     public function getThumbnailUrl(string $uid): string
     {
-        return "https://customer-{m}.cloudflarestream.com/{$uid}/thumbnails/thumbnail.jpg";
+        $subdomain = config('services.cloudflare.customer_subdomain', '');
+        if ($subdomain) {
+            return "https://customer-{$subdomain}.cloudflarestream.com/{$uid}/thumbnails/thumbnail.jpg";
+        }
+        return '';
     }
 
     public function getPreviewUrl(string $uid): string
     {
-        return "https://customer-{m}.cloudflarestream.com/{$uid}/thumbnails/thumbnail.gif";
+        $subdomain = config('services.cloudflare.customer_subdomain', '');
+        if ($subdomain) {
+            return "https://customer-{$subdomain}.cloudflarestream.com/{$uid}/thumbnails/thumbnail.gif";
+        }
+        return '';
     }
 
     public function recordLiveStream(LiveStream $stream): ?array
@@ -91,7 +103,7 @@ class CloudflareStreamService
         ]);
         if ($result) {
             $stream->update([
-                'stream_url' => $result['rtmps_url'] ?? $result['rtmps_url'] ?? null,
+                'stream_url' => $result['rtmps_url'] ?? $result['rtmp_url'] ?? null,
                 'playback_url' => $result['playback']['hls'] ?? null,
                 'hls_url' => $result['playback']['hls'] ?? null,
             ]);

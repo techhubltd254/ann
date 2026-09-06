@@ -1,2 +1,2 @@
 <?php namespace App\Models\Advertising; use Illuminate\Database\Eloquent\Model;
-class Campaign extends Model { protected $table='ad_campaigns'; protected $guarded=[]; protected $casts=['is_active'=>'boolean','budget'=>'float','start_date'=>'datetime','end_date'=>'datetime']; }
+class Campaign extends Model { protected $table='ad_campaigns'; protected $fillable=['advertiser_id','name','slug','objective','status','start_date','end_date','daily_budget','total_budget','currency','spent','target_impressions','target_clicks','target_conversions','optimization_goal','is_cpm','is_active']; protected $casts=['is_active'=>'boolean','budget'=>'float','start_date'=>'datetime','end_date'=>'datetime']; }
