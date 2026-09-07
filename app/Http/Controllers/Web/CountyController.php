@@ -335,12 +335,11 @@ class CountyController extends Controller
                 ->toArray();
         }
 
-        // Sector background video (institution sync sets this slot)
-        $bgAsset = Cache::remember("resolve:county_sector_video_" . $sector, config('kicc.cache_ttl.public', 21600), function () use ($county, $sector) {
-            $a = MediaAsset::resolveSlot(County::class, $county->id, 'sector_video_' . $sector);
-            return $a ? ($a->mp4Url() ?? $a->url()) : null;
+        // Sector background video asset (institution sync sets this slot)
+        $bgAsset = Cache::remember("resolve:county_sector_video_asset_" . $sector, config('kicc.cache_ttl.public', 21600), function () use ($county, $sector) {
+            return MediaAsset::resolveSlot(County::class, $county->id, 'sector_video_' . $sector);
         });
-        $fourDVideo = $bgAsset;
+        $fourDVideo = $bgAsset?->mp4Url() ?? $bgAsset?->url();
 
         // Per-entity 4D videos: owner_type=SectorEntity, slot=4d_video
         $entityIds = $items->pluck('id');
