@@ -19,18 +19,18 @@
      @focusin="onHoverEnter()"
      @focusout="onHoverLeave()">
 
-    {{-- Tier 1: poster (visible when tile is inactive, fades out when active) --}}
+    {{-- Tier 1: poster — visible only before video has ever started, fades out permanently once videoReady --}}
     @if($poster)
     <img src="{{ $poster }}" alt="{{ $title }}" loading="lazy"
          class="absolute inset-0 w-full h-full object-cover transition-opacity duration-500"
-         :class="active ? 'opacity-0' : 'opacity-100'"
+         :class="videoReady ? 'opacity-0' : 'opacity-100'"
          onerror="this.style.display='none'">
     @endif
 
-{{-- Tier 2: video always rendered, hidden until active, persists across hovers, never re-created --}}
+{{-- Tier 2: video — once played, stays visible on its last frame; active controls play/pause only --}}
     <video x-ref="video"
            class="absolute inset-0 w-full h-full object-cover transition-opacity duration-300"
-           :class="active && videoReady ? 'opacity-100' : 'opacity-0'"
+           :class="videoReady ? 'opacity-100' : 'opacity-0'"
            muted loop playsinline preload="metadata"
            poster="{{ $poster ?? $hoverLoop ?? $videoUrl ?? '' }}"
            x-on:playing="onVideoPlaying()"

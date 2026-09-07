@@ -40,7 +40,6 @@ function mediaTile() {
             this.active = false;
             if (this.$refs.video) {
                 this.$refs.video.pause();
-                this.$refs.video.currentTime = 0;
             }
         },
         onVideoPlaying() {
@@ -59,7 +58,6 @@ document.addEventListener('media-tile:activate', (e) => {
             tile.active = false;
             if (tile.$refs?.video) {
                 tile.$refs.video.pause();
-                tile.$refs.video.currentTime = 0;
             }
         }
     });
