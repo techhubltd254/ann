@@ -64,6 +64,17 @@ return [
             'cost' => 'api',
         ],
 
+        'video_to_3d' => [
+            'class' => \App\Services\Pipeline\Engines\VideoTo3dEngine::class,
+            'type' => 'local',
+            'enabled' => env('PIPELINE_VIDEO_TO_3D_ENABLED', true),
+            'pipeline' => ['video_to_3d'],
+            'label' => '3D Depth Map Generator',
+            'description' => 'Automatically generates a depth map for 3D parallax display. Uses MiDaS ONNX (if available) or ffmpeg luminance+edge fallback. Works on any video, no GPU required.',
+            'cost' => 'free',
+            'auto_run' => true,
+        ],
+
         'tripo3d' => [
             'class' => \App\Services\Pipeline\Engines\Tripo3dEngine::class,
             'type' => 'api',

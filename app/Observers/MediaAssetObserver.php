@@ -4,9 +4,12 @@ namespace App\Observers;
 
 use App\Jobs\GenerateHlsJob;
 use App\Jobs\MediaDerivativesJob;
+use App\Jobs\RunPipelineJob;
 use App\Models\MediaAsset;
+use App\Models\PipelineJob;
 use Illuminate\Support\Facades\Cache;
 use Illuminate\Support\Facades\Log;
+use Illuminate\Support\Str;
 
 class MediaAssetObserver
 {
@@ -22,6 +25,25 @@ class MediaAssetObserver
             GenerateHlsJob::dispatch($asset->id);
         } catch (\Throwable $e) {
             report($e);
+        }
+
+        // Auto-dispatch 3D depth map generation if the engine is configured for auto-run
+        try {
+            $engineConfig = config('pipeline.engines.video_to_3d');
+            if ($engineConfig && ($engineConfig['enabled'] ?? false) && ($engineConfig['auto_run'] ?? false)) {
+                $job = PipelineJob::create([
+                    'uuid' => (string) Str::uuid(),
+                    'media_asset_id' => $asset->id,
+                    'pipeline' => 'video_to_3d',
+                    'engine' => 'video_to_3d',
+                    'status' => 'queued',
+                    'options' => [],
+                ]);
+                RunPipelineJob::dispatch($job->id)->onQueue('pipeline');
+                Log::info("MediaAssetObserver: dispatched video_to_3d pipeline for asset {$asset->id}");
+            }
+        } catch (\Throwable $e) {
+            Log::warning("MediaAssetObserver: failed to auto-dispatch 3d pipeline for {$asset->id}: " . $e->getMessage());
         }
 
         $this->bustCache($asset);

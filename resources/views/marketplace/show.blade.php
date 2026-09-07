@@ -20,10 +20,13 @@
 
     @if($allVideos->isNotEmpty())
     <div class="space-y-2">
-        <div class="rounded-2xl overflow-hidden bg-black aspect-video relative" id="main-video-wrapper">
-            <video autoplay muted loop playsinline loading="lazy" preload="metadata" class="w-full h-full object-cover" id="product-video-{{ $product->id }}" poster="{{ $product->image_url }}">
-                <source src="{{ $allVideos->first() }}" type="video/mp4">
-            </video>
+        <div class="rounded-2xl overflow-hidden aspect-video relative" id="main-video-wrapper" style="background: transparent; z-index: 1;">
+            <div class="three-video-container absolute inset-0 w-full h-full"
+                 data-video="{{ $allVideos->first() }}"
+                 data-depth=""
+                 data-mode="parallax"
+                 style="background: transparent;">
+            </div>
         </div>
         @if($allVideos->count() > 1)
         <div class="flex gap-2 overflow-x-auto pb-1 scrollbar-hide">

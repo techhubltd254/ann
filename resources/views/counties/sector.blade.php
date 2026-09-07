@@ -50,34 +50,15 @@
 {{--  HERO  --}}
 @php $heroVids = $sectorHeroVideos ?? []; @endphp
 @if(count($heroVids) > 0)
-<div class="relative h-[45vh] md:h-[55vh] overflow-hidden bg-black"
-     x-data="sectorHeroPlayer({
-        videos: {{ Js::from(array_values($heroVids)) }},
-        poster: '{{ $sectorHeroPoster ?? "" }}'
-     })">
-    @php $isImagePoster = $sectorHeroPoster && !str_contains($sectorHeroPoster, '.mp4') && !str_contains($sectorHeroPoster, '.webm'); @endphp
-    @if($isImagePoster)
-    <img src="{{ $sectorHeroPoster }}" alt="{{ $sectorInfo['title'] }}"
-         class="absolute inset-0 w-full h-full object-cover"
-         :class="videoReady ? 'opacity-0' : 'opacity-100'"
-         style="transition: opacity 0.6s ease; z-index:1"
-         loading="lazy" decoding="async"
-         onerror="this.style.display='none'">
-    @endif
-    <video x-ref="sectorHero"
-           autoplay muted loop playsinline preload="metadata"
-           class="absolute inset-0 w-full h-full object-cover"
-           :class="videoReady ? 'opacity-100' : 'opacity-0'"
-           style="transition: opacity 0.6s ease; z-index:2"
-           @playing="videoReady = true"
-           @ended="nextSectorVideo()"
-           poster="{{ $isImagePoster ? $sectorHeroPoster : '' }}">
-        <source :src="currentSrc" type="video/mp4">
-    </video>
-        <source :src="currentSrc" type="video/mp4">
-    </video>
+<div class="relative h-[45vh] md:h-[55vh] overflow-hidden" style="background: transparent; z-index: 1;">
+    <div class="three-video-container absolute inset-0 w-full h-full"
+         data-video="{{ $heroVids[0] ?? '' }}"
+         data-depth=""
+         data-mode="parallax"
+         style="background: transparent;">
+    </div>
     <div class="absolute inset-0 bg-gradient-to-t from-black/70 via-black/20 to-transparent" style="z-index:5"></div>
-        <div class="absolute bottom-0 left-0 right-0 max-w-7xl mx-auto px-5 pb-10" style="z-index:6">
+    <div class="absolute bottom-0 left-0 right-0 max-w-7xl mx-auto px-5 pb-10" style="z-index:6">
         <a href="{{ route('counties.show', $county->slug) }}" class="inline-flex items-center gap-1.5 text-white/60 hover:text-white text-sm mb-3 transition-colors">
             <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 19l-7-7 7-7"/></svg>
             {{ $county->name }} County
@@ -92,9 +73,12 @@
 </div>
 @elseif($fourDVideo)
 <div class="relative h-[45vh] md:h-[55vh] overflow-hidden bg-black">
-    <video autoplay muted loop playsinline loading="lazy" preload="metadata" class="absolute inset-0 w-full h-full object-cover">
-        <source src="{{ $fourDVideo }}" type="video/mp4">
-    </video>
+    <div class="three-video-container absolute inset-0 w-full h-full"
+         data-video="{{ $fourDVideo }}"
+         data-depth=""
+         data-mode="parallax"
+         style="background: transparent;">
+    </div>
     <div class="absolute inset-0 bg-gradient-to-t from-black/70 via-black/20 to-transparent"></div>
     <div class="absolute bottom-0 left-0 right-0 max-w-7xl mx-auto px-5 pb-10">
         <a href="{{ route('counties.show', $county->slug) }}" class="inline-flex items-center gap-1.5 text-white/60 hover:text-white text-sm mb-3 transition-colors">
@@ -239,28 +223,4 @@
 @endsection
 @push('scripts')
 <script>
-function sectorHeroPlayer(config) {
-    return {
-        videos: config.videos || [],
-        currentIndex: 0,
-        videoReady: false,
-        get hasVideos() {
-            return this.videos.length > 0;
-        },
-        get currentSrc() {
-            return this.videos[this.currentIndex] || '';
-        },
-        nextSectorVideo() {
-            if (this.videos.length <= 1) return;
-            this.currentIndex = (this.currentIndex + 1) % this.videos.length;
-            var video = this.$refs.sectorHero;
-            if (video) {
-                video.src = this.currentSrc;
-                video.load();
-                video.play().catch(function(){});
-            }
-        }
-    };
-}
-</script>
 @endpush

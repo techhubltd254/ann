@@ -1,0 +1,171 @@
+# KICC 3D VIDEO PLATFORM — FULL IMPLEMENTATION PLAN
+
+## Architecture Overview
+
+```
+Admin uploads MP4 → MediaAssetObserver → PipelineService
+                                            ↓
+                               ┌───────────────────────┐
+                               │  VideoTo3dEngine       │
+                               │  (config/pipeline.php) │
+                               │                       │
+                               │  1. Download MP4       │
+                               │  2. Extract frames     │
+                               │  3. Run MiDaS depth    │
+                               │  4. Encode depth_video │
+                               │  5. Store as derivative│
+                               │  6. Notify N8n         │
+                               └───────────┬───────────┘
+                                           ↓
+                               MediaDerivative (kind=depth_map)
+                                           ↓
+                    ┌──────────────────────────────────────┐
+                    │  Frontend: Three.js 3D Video Player  │
+                    │                                      │
+                    │  Video texture + depth map texture   │
+                    │  → Subdivided plane (64×64)          │
+                    │  → Vertex displacement from depth    │
+                    │  → Auto-rotation + OrbitControls     │
+                    │  → Always plays, always 3D           │
+                    └──────────────────────────────────────┘
+```
+
+## The 3D Display Modes
+
+| Mode | Geometry | Behavior |
+|------|----------|----------|
+| `parallax` | Plane with vertex displacement | Video + depth map = 3D relief, auto-rotate |
+| `sphere` | SphereGeometry (inner-facing) | 360° video playback |
+| `card` | BoxGeometry with rounded edges | Product card with reflections |
+| `float` | Plane in particle cloud | Video floats in 3D space with particles |
+| `flat` | Regular `<video>` | Standard 2D playback (fallback) |
+
+## Depth Map Quality Tiers
+
+| Tier | Method | Quality | Dependencies | Speed | Default |
+|------|--------|---------|-------------|-------|---------|
+| 1 | MiDaS v3.1 small ONNX | Excellent | Python + onnxruntime | ~1 fps CPU | ✅ Yes |
+| 2 | ffmpeg luminance+sobel | Good | ffmpeg only | ~10 fps | Fallback |
+| 3 | Depth Anything V2 | Best | GPU + 1GB model | ~5 fps GPU | Config |
+| 4 | Tripo3D API | Best 3D mesh | API key | ~2 min | Optional |
+
+## Pipeline Auto-Trigger Flow
+
+```
+1. Admin uploads video → controller stores MediaAsset
+2. MediaAssetObserver::created() fires
+3. Checks: kind='video' AND auto_run === true
+4. Dispatches PipelineJob + RunPipelineJob to 'pipeline' queue
+5. VideoTo3dEngine::run():
+   a. Download MP4 to temp path
+   b. Extract frames at 2fps with ffmpeg
+   c. Run MiDaS on each frame (or ffmpeg fallback)
+   d. Stitch depth frames into depth_video.mp4
+   e. Create MediaDerivative { kind: 'depth_map', variant: '1080p' }
+   f. Update job progress from 0-100%
+6. Frontend polls or listens for webhook
+7. When depth map is ready, page shows 3D mode
+```
+
+## Files to Create (8 files)
+
+| File | Purpose |
+|------|---------|
+| `app/Services/Pipeline/Engines/VideoTo3dEngine.php` | Depth map pipeline engine |
+| `database/migrations/*_add_display_mode_to_media_assets.php` | Add display_mode column |
+| `resources/js/three-video-player.js` | Three.js 3D video player |
+| `resources/js/three-background.js` | Procedural particle background |
+| `resources/js/product-viewer.js` | GLTF product viewer |
+| `resources/views/components/video-3d.blade.php` | Blade component for 3D video |
+| `resources/views/components/video-3d-tab.blade.php` | 3D tab for product detail |
+| `scripts/download-midas.py` | One-time MiDaS model download |
+
+## Files to Modify (12 files)
+
+| File | Change |
+|------|--------|
+| `config/pipeline.php` | Register video_to_3d engine with auto_run |
+| `app/Observers/MediaAssetObserver.php` | Auto-dispatch pipeline on video upload |
+| `app/Models/MediaAsset.php` | Add display_mode to fillable + casts |
+| `app/Models/Marketplace/Product.php` | Add model_url field |
+| `resources/views/components/media-tile.blade.php` | Replace <video> with <x-video-3d> |
+| `resources/views/counties/sector.blade.php` | Replace hero video with <x-video-3d> |
+| `resources/views/counties/show.blade.php` | Replace hero section with <x-video-3d> |
+| `resources/views/marketplace/show.blade.php` | Replace video + add 3D tab |
+| `resources/views/institution-admin/videos.blade.php` | Update video preview |
+| `resources/views/layouts/app.blade.php` | Load three.js scripts |
+| `resources/css/app.css` | Add three-video-container styles |
+| `resources/views/cart/index.blade.php` | Update cart item display |
+
+## Execution Sequence
+
+### Phase 2 (Engine) — items 1-4
+1. Create migration for display_mode
+2. Create VideoTo3dEngine (MiDaS + ffmpeg fallback)
+3. Register in config/pipeline.php with auto_run: true
+4. Update MediaAssetObserver to auto-dispatch
+
+### Phase 1 (Frontend 3D) — items 5-7
+5. Create three-video-player.js
+6. Create video-3d.blade.php component
+7. Replace <video> in all views
+
+### Phase 3 (Background) — item 8
+8. Create three-background.js, attach to #kicc-3d-bg
+
+### Phase 4 (Product 3D) — items 9-10
+9. Create product-viewer.js
+10. Add 3D tab to marketplace show page
+
+## Database Migration
+
+```php
+Schema::table('media_assets', function (Blueprint $table) {
+    $table->string('display_mode', 32)->nullable()->after('slot');
+    // Values: null, 'parallax', 'sphere', 'card', 'float', 'flat'
+});
+// Depth maps stored as MediaDerivative { kind: 'depth_map' }
+```
+
+## Three.js Video Player Behavior
+
+| Where | Mode | Interaction |
+|-------|------|-------------|
+| Hero sections | Parallax (full depth) | Auto-rotate 360°, click to orbit |
+| Media tiles | Parallax (shallow) | Auto-rotate on hover, touch rotation |
+| Product detail | Card (box + reflections) | Full OrbitControls, zoom |
+| Admin preview | Flat | Standard video controls |
+
+**Always-on:** muted, loop, auto-rotate 0.3-0.5 RPM, 3s idle timeout, smooth transitions.
+
+## MiDaS Depth Generation
+
+```bash
+# One-time model download:
+python3 -c "import onnxruntime; onnxruntime.get_model('midas_small.onnx')"
+
+# Per pipeline execution:
+python3 << EOF
+import onnxruntime, cv2, numpy as np
+session = onnxruntime.InferenceSession('/opt/models/midas_small.onnx')
+frames = sorted(glob('/tmp/pipeline/*.jpg'))
+depth_frames = []
+for f in frames:
+    img = cv2.imread(f)
+    resized = cv2.resize(img, (256, 256))
+    normalized = (resized / 255.0 - 0.5) * 2
+    depth = session.run(None, {'input': normalized[None]})[0][0]
+    depth = cv2.resize(depth, (img.shape[1], img.shape[0]))
+    depth = ((depth - depth.min()) / (depth.max() - depth.min()) * 255).astype(np.uint8)
+    depth_frames.append(depth)
+# Encode as video
+out = cv2.VideoWriter('/tmp/pipeline/depth.mp4', cv2.VideoWriter_fourcc(*'mp4v'), 2, (width, height))
+for d in depth_frames: out.write(cv2.cvtColor(d, cv2.COLOR_GRAY2BGR))
+out.release()
+EOF
+```
+
+**Fallback (ffmpeg)** — zero dependencies:
+```
+ffmpeg -i input.mp4 -vf "format=gray,sobel,eq=brightness=0.1:contrast=2.0,gblur=sigma=1.5" depth.mp4
+```

@@ -33,6 +33,8 @@
     <script src="{{ asset('js/theme.js') }}"></script>
     <script defer src="https://cdn.jsdelivr.net/npm/hls.js@1.5.13/dist/hls.min.js"></script>
     <script defer src="{{ asset('js/media-tile.js') }}"></script>
+    <script defer src="{{ asset('js/three-video-player.js') }}"></script>
+    <script defer src="{{ asset('js/three-background.js') }}"></script>
     <link rel="stylesheet" href="{{ asset('css/colors.css') }}">
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -41,6 +43,8 @@
         * { font-family: 'Inter', system-ui, sans-serif; }
         body { background-color: #F9FAFB; color: #111827; scroll-behavior: smooth; }
         #kicc-3d-bg { position: fixed; top: 0; left: 0; width: 100vw; height: 100vh; z-index: 0; pointer-events: none; }
+        .three-video-container { position: relative; z-index: 1; background: transparent; }
+        .three-video-container canvas { display: block; width: 100% !important; height: 100% !important; }
         .scrollbar-hide { scrollbar-width: none; -ms-overflow-style: none; }
         .scrollbar-hide::-webkit-scrollbar { display: none; }
         [x-cloak] { display: none !important; }
@@ -357,6 +361,24 @@
             "three/addons/": "https://cdn.jsdelivr.net/npm/three@0.170.0/examples/jsm/"
         }
     }
+    </script>
+    <script>
+    // Initialize 3D video players on page load
+    document.addEventListener('DOMContentLoaded', () => {
+        document.querySelectorAll('.three-video-container').forEach(el => {
+            const videoUrl = el.dataset.video;
+            const depthUrl = el.dataset.depth || null;
+            const mode = el.dataset.mode || 'parallax';
+            if (videoUrl) {
+                new Kicc3DVideoPlayer({
+                    container: el,
+                    videoUrl: videoUrl,
+                    depthMapUrl: depthUrl,
+                    mode: mode,
+                });
+            }
+        });
+    });
     </script>
 </head>
 <body class="antialiased text-gray-900 bg-[#F9FAFB]">

@@ -10,7 +10,7 @@ use Illuminate\Database\Eloquent\Relations\MorphTo;
 class MediaAsset extends Model
 {
     protected $fillable = [
-        'uuid', 'owner_id', 'owner_type', 'slot', 'disk', 'path', 'original_name',
+        'uuid', 'owner_id', 'owner_type', 'slot', 'display_mode', 'disk', 'path', 'original_name',
         'mime', 'kind', 'size_bytes', 'width', 'height', 'status', 'alt_text', 'metadata',
         'contentType', 'createdAt', 'originalName', 'sizeBytes', 'storageKey',
         'thumbKey', 'uploadedByUserId',
@@ -142,6 +142,16 @@ class MediaAsset extends Model
             ->value('path');
 
         return $splat ? $this->resolve($splat) : null;
+    }
+
+    public function hasDepthMap(): bool
+    {
+        return $this->derivatives()->where('kind', 'depth_map')->exists();
+    }
+
+    public function depthMapUrl(): ?string
+    {
+        return $this->derivativeUrl('depth_map');
     }
 
     protected function resolve(string $path): string
