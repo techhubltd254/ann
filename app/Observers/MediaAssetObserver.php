@@ -51,6 +51,7 @@ class MediaAssetObserver
         $keys = [];
 
         if ($asset->owner_type && $asset->owner_id) {
+            $keys[] = "resolve:{$asset->owner_type}_{$asset->owner_id}_id";
             $keys[] = "resolve:{$asset->owner_type}_{$asset->owner_id}";
         }
 

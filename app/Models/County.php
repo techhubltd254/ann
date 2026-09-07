@@ -33,6 +33,7 @@ class County extends Model
     public function sectors()
     {
         return $this->belongsToMany(Sector::class)
+            ->select('sectors.*')
             ->withPivot('sub_sectors');
     }
 

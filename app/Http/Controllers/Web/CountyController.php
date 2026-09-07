@@ -116,7 +116,8 @@ class CountyController extends Controller
         $hotelThumbs = $featuredHotels->mapWithKeys(fn($h) => [$h->id => \App\Services\ThumbnailService::for($h, $county->slug)]);
         $productThumbs = $countyProducts->mapWithKeys(fn($p) => [$p->id => \App\Services\ThumbnailService::for($p, $county->slug)]);
 
-        $countyMedia = Cache::remember("resolve:county_hero_" . $county->id, config('kicc.cache_ttl.public', 21600), fn() => MediaAsset::resolveSlot(County::class, $county->id, 'hero_video'));
+        $countyMediaId = Cache::remember("resolve:county_hero_id_" . $county->id, config('kicc.cache_ttl.public', 21600), fn() => MediaAsset::resolveSlot(County::class, $county->id, 'hero_video')?->id);
+        $countyMedia = $countyMediaId ? MediaAsset::with('derivatives')->find($countyMediaId) : null;
 
         // Batched sector video loading — single queries instead of per-sector
         $sectorSlugs = collect($sectorData)->pluck('sector_slug')->unique();
@@ -336,9 +337,11 @@ class CountyController extends Controller
         }
 
         // Sector background video asset (institution sync sets this slot)
-        $bgAsset = Cache::remember("resolve:county_sector_video_asset_" . $sector, config('kicc.cache_ttl.public', 21600), function () use ($county, $sector) {
-            return MediaAsset::resolveSlot(County::class, $county->id, 'sector_video_' . $sector);
+        $bgAssetId = Cache::remember("resolve:county_sector_video_asset_id_" . $sector, config('kicc.cache_ttl.public', 21600), function () use ($county, $sector) {
+            $a = MediaAsset::resolveSlot(County::class, $county->id, 'sector_video_' . $sector);
+            return $a?->id;
         });
+        $bgAsset = $bgAssetId ? MediaAsset::with('derivatives')->find($bgAssetId) : null;
         $fourDVideo = $bgAsset?->mp4Url() ?? $bgAsset?->url();
 
         // Per-entity 4D videos: owner_type=SectorEntity, slot=4d_video
@@ -573,7 +576,8 @@ class CountyController extends Controller
         $county = $institution->county;
 
         // Hero video (Tier 3: HLS adaptive preferred, mp4 fallback)
-        $heroAsset = Cache::remember("resolve:inst_hero_" . $institution->id, config('kicc.cache_ttl.public', 21600), fn() => MediaAsset::resolveSlot(CountyInstitution::class, $institution->id, 'hero_video'));
+        $heroAssetId = Cache::remember("resolve:inst_hero_id_" . $institution->id, config('kicc.cache_ttl.public', 21600), fn() => MediaAsset::resolveSlot(CountyInstitution::class, $institution->id, 'hero_video')?->id);
+        $heroAsset = $heroAssetId ? MediaAsset::with('derivatives')->find($heroAssetId) : null;
         $heroVideo = $heroAsset?->mp4Url() ?? $heroAsset?->url();
         $heroHls = $heroAsset?->derivativeUrl('hls_master');
         $heroPoster = $heroAsset?->posterUrl();
