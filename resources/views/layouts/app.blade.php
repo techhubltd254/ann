@@ -30,6 +30,7 @@
     }
     </script>
     <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
     <script src="{{ asset('js/theme.js') }}"></script>
     <script defer src="https://cdn.jsdelivr.net/npm/hls.js@1.5.13/dist/hls.min.js"></script>
     <script defer src="{{ asset('js/media-tile.js') }}"></script>

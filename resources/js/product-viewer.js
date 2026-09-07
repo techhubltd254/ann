@@ -1,96 +1,62 @@
 /**
- * KiccProductViewer — GLTF/GLB 3D product viewer with scroll-driven rotation.
- * Loads on the product detail page when a 3D tab is clicked.
+ * KiccProductViewer — GLTF/GLB 3D product viewer.
+ * Simple pointer-drag rotation, no OrbitControls dependency.
  */
 class KiccProductViewer {
     constructor(containerId, modelUrl, posterUrl) {
-        this.container = document.getElementById(containerId);
+        this.container = typeof containerId === 'string' ? document.getElementById(containerId) : containerId;
         if (!this.container) return;
+        this.modelUrl = modelUrl;
         this._disposed = false;
+        this._isDragging = false;
+        this._prevMouse = { x: 0, y: 0 };
 
-        this._initScene();
-        this._initLights();
-        this._loadModel(modelUrl, posterUrl);
-        this._initControls();
-        this._initResizeObserver();
-        this._animate();
+        if (typeof THREE === 'undefined') {
+            console.warn('THREE not available for product viewer');
+            return;
+        }
+
+        try {
+            this._initScene();
+            this._initLights();
+            this._loadModel();
+            this._initInteraction();
+            this._initResizeObserver();
+            this._animate();
+        } catch (e) {
+            console.warn('Product viewer init failed:', e);
+        }
     }
 
     _initScene() {
+        const w = this.container.clientWidth || 640;
+        const h = this.container.clientHeight || 480;
         this.scene = new THREE.Scene();
-        this.camera = new THREE.PerspectiveCamera(45, this.container.clientWidth / this.container.clientHeight, 0.1, 100);
+        this.camera = new THREE.PerspectiveCamera(45, w / h, 0.1, 100);
         this.camera.position.set(0, 0.5, 4);
-
-        this.renderer = new THREE.WebGLRenderer({
-            antialias: true,
-            alpha: true,
-            powerPreference: 'high-performance',
-        });
-        this.renderer.setSize(this.container.clientWidth, this.container.clientHeight);
+        this.renderer = new THREE.WebGLRenderer({ antialias: true, alpha: true, powerPreference: 'high-performance' });
+        this.renderer.setSize(w, h);
         this.renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
-        this.renderer.toneMapping = THREE.ACESFilmicToneMapping;
+        this.renderer.toneMapping = THREE.ACESFilmicToneMapping || THREE.LinearToneMapping;
         this.renderer.toneMappingExposure = 1.2;
-        this.renderer.outputColorSpace = THREE.SRGBColorSpace;
         this.container.appendChild(this.renderer.domElement);
     }
 
     _initLights() {
-        const ambient = new THREE.AmbientLight(0xffffff, 0.8);
-        this.scene.add(ambient);
-
+        this.scene.add(new THREE.AmbientLight(0xffffff, 0.8));
         const key = new THREE.DirectionalLight(0xffffff, 2.0);
         key.position.set(4, 5, 4);
         this.scene.add(key);
-
         const rim = new THREE.DirectionalLight(0x6366f1, 1.5);
         rim.position.set(-4, -2, -3);
         this.scene.add(rim);
-
         const fill = new THREE.DirectionalLight(0xffcd05, 0.4);
         fill.position.set(0, -3, 2);
         this.scene.add(fill);
     }
 
-    _loadModel(url, posterUrl) {
-        if (!url || !window.THREE) {
-            this._showFallback(posterUrl);
-            return;
-        }
-
-        const loader = new THREE.GLTFLoader();
-        const draco = new THREE.DRACOLoader();
-        draco.setDecoderPath('https://www.gstatic.com/draco/versioned/decoders/1.5.7/');
-        loader.setDRACOLoader(draco);
-
-        loader.load(
-            url,
-            (gltf) => {
-                this.model = gltf.scene;
-                const box = new THREE.Box3().setFromObject(this.model);
-                const center = box.getCenter(new THREE.Vector3());
-                const size = box.getSize(new THREE.Vector3());
-                const maxDim = Math.max(size.x, size.y, size.z);
-                const scale = 2.5 / maxDim;
-                this.model.scale.setScalar(scale);
-                this.model.position.sub(center.multiplyScalar(scale));
-                this.model.traverse((child) => {
-                    if (child.isMesh) {
-                        child.castShadow = true;
-                        child.receiveShadow = true;
-                    }
-                });
-                this.scene.add(this.model);
-            },
-            undefined,
-            (err) => {
-                console.warn('GLTF load failed, showing fallback:', err);
-                this._showFallback(posterUrl);
-            }
-        );
-    }
-
-    _showFallback(posterUrl) {
-        // Fallback: a rotating torus knot with video or image texture
+    _loadModel() {
+        // Fallback: rotating torus knot (works without any model file)
         const geo = new THREE.TorusKnotGeometry(0.8, 0.3, 128, 16);
         const mat = new THREE.MeshStandardMaterial({
             color: 0x6366f1,
@@ -101,59 +67,83 @@ class KiccProductViewer {
         this.model = new THREE.Mesh(geo, mat);
         this.model.position.y = 0.2;
         this.scene.add(this.model);
+
+        // If model URL provided, try to load GLTF
+        if (this.modelUrl && window.GLTFLoader) {
+            const loader = new window.GLTFLoader();
+            loader.load(this.modelUrl, (gltf) => {
+                this.scene.remove(this.model);
+                this.model = gltf.scene;
+                const box = new THREE.Box3().setFromObject(this.model);
+                const center = box.getCenter(new THREE.Vector3());
+                const size = box.getSize(new THREE.Vector3());
+                const maxDim = Math.max(size.x, size.y, size.z);
+                const scale = 2.5 / maxDim;
+                this.model.scale.setScalar(scale);
+                this.model.position.sub(center.multiplyScalar(scale));
+                this.scene.add(this.model);
+            }, undefined, () => {
+                // Keep fallback on error
+            });
+        }
     }
 
-    _initControls() {
-        this.controls = new THREE.OrbitControls(this.camera, this.renderer.domElement);
-        this.controls.enableDamping = true;
-        this.controls.dampingFactor = 0.08;
-        this.controls.minDistance = 1.5;
-        this.controls.maxDistance = 8;
-        this.controls.autoRotate = true;
-        this.controls.autoRotateSpeed = 2.0;
-        this.controls.target.set(0, 0.2, 0);
-
-        // Scroll-driven rotation
-        this._onScroll = () => {
-            const scrollY = window.scrollY;
-            const maxScroll = document.documentElement.scrollHeight - window.innerHeight;
-            const progress = Math.min(scrollY / Math.max(maxScroll, 1), 1);
-            if (this.model) {
-                this.model.rotation.y = progress * Math.PI * 2;
-            }
+    _initInteraction() {
+        const canvas = this.renderer.domElement;
+        const onDown = (e) => {
+            this._isDragging = true;
+            const p = e.touches ? e.touches[0] : e;
+            this._prevMouse = { x: p.clientX, y: p.clientY };
         };
-        window.addEventListener('scroll', this._onScroll, { passive: true });
+        const onMove = (e) => {
+            if (!this._isDragging || !this.model) return;
+            const p = e.touches ? e.touches[0] : e;
+            const dx = p.clientX - this._prevMouse.x;
+            const dy = p.clientY - this._prevMouse.y;
+            this.model.rotation.y += dx * 0.01;
+            this.model.rotation.x += dy * 0.005;
+            this.model.rotation.x = Math.max(-1, Math.min(1, this.model.rotation.x));
+            this._prevMouse = { x: p.clientX, y: p.clientY };
+        };
+        const onUp = () => { this._isDragging = false; };
+        canvas.addEventListener('mousedown', onDown);
+        window.addEventListener('mousemove', onMove);
+        window.addEventListener('mouseup', onUp);
+        canvas.addEventListener('touchstart', onDown, { passive: true });
+        window.addEventListener('touchmove', onMove, { passive: true });
+        window.addEventListener('touchend', onUp);
     }
 
     _initResizeObserver() {
-        this._resizeObserver = new ResizeObserver(() => {
+        this._ro = new ResizeObserver(() => {
+            if (this._disposed) return;
             const w = this.container.clientWidth;
             const h = this.container.clientHeight;
-            this.camera.aspect = w / h;
-            this.camera.updateProjectionMatrix();
-            this.renderer.setSize(w, h);
+            if (w > 0 && h > 0) {
+                this.camera.aspect = w / h;
+                this.camera.updateProjectionMatrix();
+                this.renderer.setSize(w, h);
+            }
         });
-        this._resizeObserver.observe(this.container);
+        this._ro.observe(this.container);
     }
 
     _animate() {
         if (this._disposed) return;
         requestAnimationFrame(() => this._animate());
-        if (this.model && !this.controls.autoRotate) {
-            // Scroll-driven rotation handled in _onScroll
+        if (this.model && !this._isDragging) {
+            this.model.rotation.y += 0.008;
         }
-        this.controls.update();
         this.renderer.render(this.scene, this.camera);
     }
 
     dispose() {
         this._disposed = true;
-        window.removeEventListener('scroll', this._onScroll);
-        if (this._resizeObserver) this._resizeObserver.disconnect();
-        if (this.controls) this.controls.dispose();
+        if (this._ro) this._ro.disconnect();
         if (this.renderer) {
             this.renderer.dispose();
-            this.renderer.domElement.remove();
+            const el = this.renderer.domElement;
+            if (el && el.parentNode) el.parentNode.removeChild(el);
         }
     }
 }
