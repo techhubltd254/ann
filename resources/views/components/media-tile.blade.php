@@ -19,11 +19,11 @@
      @focusin="onHoverEnter()"
      @focusout="onHoverLeave()">
 
-    {{-- Tier 1: poster (always visible behind until video actually plays) --}}
+    {{-- Tier 1: poster (visible when tile is inactive, fades out when active) --}}
     @if($poster)
     <img src="{{ $poster }}" alt="{{ $title }}" loading="lazy"
          class="absolute inset-0 w-full h-full object-cover transition-opacity duration-500"
-         :class="videoReady ? 'opacity-0' : 'opacity-100'"
+         :class="active ? 'opacity-0' : 'opacity-100'"
          onerror="this.style.display='none'">
     @endif
 

@@ -38,7 +38,10 @@ function mediaTile() {
         },
         deactivate() {
             this.active = false;
-            this.videoReady = false;
+            if (this.$refs.video) {
+                this.$refs.video.pause();
+                this.$refs.video.currentTime = 0;
+            }
         },
         onVideoPlaying() {
             this.videoReady = true;
@@ -54,7 +57,10 @@ document.addEventListener('media-tile:activate', (e) => {
         const tile = window.Alpine ? Alpine.$data(el) : null;
         if (tile && tile !== e.detail) {
             tile.active = false;
-            tile.videoReady = false;
+            if (tile.$refs?.video) {
+                tile.$refs.video.pause();
+                tile.$refs.video.currentTime = 0;
+            }
         }
     });
 });
