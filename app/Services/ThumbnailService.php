@@ -157,8 +157,9 @@ class ThumbnailService
                 CURLOPT_TIMEOUT => 3,
                 CURLOPT_RETURNTRANSFER => true,
             ]);
-            $code = (int) curl_getinfo($ch, CURLINFO_RESPONSE_CODE);
+            $code = 0;
             curl_exec($ch);
+            $code = (int) curl_getinfo($ch, CURLINFO_RESPONSE_CODE);
             curl_close($ch);
             return $cache[$url] = ($code >= 200 && $code < 400);
         } catch (\Throwable $e) {

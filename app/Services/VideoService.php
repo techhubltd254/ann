@@ -52,7 +52,9 @@ class VideoService
         }
 
         $clipDur = $this->calcClipDuration(count($images), $targetDur, $preset);
-        $countyName = $screen->county_id ? Str::title($screen->county_id) : 'Kenya';
+        $countyName = $screen->county_id
+            ? (\App\Models\County::find($screen->county_id)?->name ?? 'Kenya')
+            : 'Kenya';
 
         if (!$outputName) {
             $outputName = "auto_{$screenId}.mp4";

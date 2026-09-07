@@ -311,11 +311,11 @@ class CountyController extends Controller
                 ->all();
         });
 
-        // Batch-load all items in one query, then paginate in-memory
-        $allItems = SectorEntity::whereIn('id', $entityIdCache ?? [])->get()->keyBy('id');
+        // Batch-load all items in one query via DataAvailabilityService, then paginate in-memory
+        $allItems = SectorEntity::whereIn('id', $entityIdsCache ?? [])->get()->keyBy('id');
         $items = new \Illuminate\Pagination\LengthAwarePaginator(
-            collect($entityIdCache ?? [])->map(fn ($id) => $allItems->get($id))->filter(),
-            count($entityIdCache ?? []),
+            collect($entityIdsCache ?? [])->map(fn ($id) => $allItems->get($id))->filter(),
+            count($entityIdsCache ?? []),
             12,
             $page,
             ['path' => request()->url(), 'query' => request()->query()]
@@ -543,14 +543,15 @@ class CountyController extends Controller
             }
         }
 
-        // Poster for the sector hero (county hero poster / first video frame / default)
-        $sectorHeroPoster = Cache::remember("resolve:county_hero_post_" . $county->id, config('kicc.cache_ttl.public', 21600), function () use ($county) {
-            $a = MediaAsset::resolveSlot(County::class, $county->id, 'hero_video');
-            return $a ? $a->posterUrl() : null;
-        }) ?? media('counties/' . $county->slug . '/hero.jpeg');
-        $sectorHeroPoster = $sectorHeroAsset?->posterUrl()
+        // Poster for the sector hero
+        // Prefer the sector's own video poster, fall back to county hero poster,
+        // then to the first video in the playlist (browser renders first frame).
+        $sectorHeroPoster = $bgAsset?->posterUrl()
+            ?? Cache::remember("resolve:county_hero_post_" . $county->id, config('kicc.cache_ttl.public', 21600), function () use ($county) {
+                $a = MediaAsset::resolveSlot(County::class, $county->id, 'hero_video');
+                return $a ? $a->posterUrl() : null;
+            })
             ?? media('counties/' . $county->slug . '/hero.jpeg');
-        // If no poster exists, use the first video URL as poster (browser shows first frame)
         if (!$sectorHeroPoster || str_contains($sectorHeroPoster, 'hero.jpeg')) {
             $sectorHeroPoster = $sectorHeroVideos[0] ?? null;
         }

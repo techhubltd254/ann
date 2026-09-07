@@ -224,6 +224,13 @@ class AuthController extends Controller
         $user = User::where('email', strtolower(trim($data['login'])))->first()
             ?? User::where('phone', $data['login'])->first();
 
+        // Rate-limit by IP to prevent enumeration attacks
+        $ipKey = 'login-code-ip:' . $request->ip();
+        RateLimiter::hit($ipKey, 360); // 6 per hour
+        if (RateLimiter::tooManyAttempts($ipKey, 6)) {
+            return back()->withErrors(['login' => 'Too many attempts from this IP. Try again later.']);
+        }
+
         if (!$user || !$user->email) {
             RateLimiter::clear($ipKey);
             return redirect()->route('login.code')->with('message', 'If an account exists, a code has been sent.');

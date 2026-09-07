@@ -1,386 +1,131 @@
-# BRUTAL DIAGNOSIS — ALL ALGORITHMS & MODELS
+# BRUTAL DIAGNOSIS — POST-FIX RE-EVALUATION
 ## kicc-platform · 2026-09-06
 
----
+## Summary: What Changed
 
-## ⚠️ GUIDE: Issue Severity Definitions
+| Fix Round | Files Changed | Issues Fixed |
+|-----------|---------------|--------------|
+| Round 1 (previous) | ~20 | casts(), fillable, N+1 fixes, cache middleware, eager loading, zoom config, permission indexes |
+| Round 2 (this session) | ~60 | AnalyticsService 144x bug, MessagingController orWhere data leak, duplicate model classes deleted, ShardManager SQLi, CloudflareStreamService creds/URLs, 16 guarded→fillable, 20+ pagination fixes, 49 cache middleware routes, AuctionController 500, 13 casts() additions, auth+throttle on mutation routes, DataAvailabilityService algorithm, model event cache busting |
 
-| Label | Meaning | Action Required |
-|-------|---------|-----------------|
-| 🔴 CRITICAL | Data loss, security breach, or complete logic failure | Fix immediately |
-| 🟠 HIGH | Major performance bug, wrong results, N+1 in hot path | Fix this sprint |
-| 🟡 MEDIUM | Degraded performance, code smell, maintainability risk | Fix when possible |
-| 🔵 LOW | Cosmetic, minor optimization, documentation | Note / backlog |
+## Remaining Issues by Severity
 
 ---
 
-# PART 1: MODELS (127 files analyzed)
-
-## 1A. 🔴 CRITICAL — Mass Assignment ($guarded = []) — 16 Models
-
-Wide-open mass assignment allows attackers to set ANY column via request input.
-
-| # | Model Path |
-|---|------------|
-| 1 | `Advertising/Campaign.php` |
-| 2 | `Advertising/Creative.php` |
-| 3 | `CountyServices/CountyService.php` |
-| 4 | `Logistics/CourierPartner.php` |
-| 5 | `Logistics/ShippingRate.php` |
-| 6 | `Logistics/ShippingZone.php` |
-| 7 | **`Marketplace/Product.php`** |
-| 8 | `Seo/ContentPage.php` |
-| 9 | `Seo/Metadata.php` |
-| 10 | `Travel/Airline.php` |
-| 11 | `Travel/Airport.php` |
-| 12 | `Travel/Attraction.php` |
-| 13 | `Travel/Flight.php` |
-| 14 | `Travel/FlightBooking.php` |
-| 15 | `Travel/Hotel.php` |
-| 16 | `Travel/Transfer.php` |
-
-## 1B. 🔴 CRITICAL — Duplicate Class Definitions — 11 Classes Across 3 Files
-
-PHP will fatal-error if BOTH files are loaded in the same request. This is a ticking time bomb.
-
-| Duplicate Class | Files in Conflict | Fields Differ? |
-|-----------------|-------------------|----------------|
-| `Article` | `Article.php` + `KiccWebsiteModels.php:5` | ✅ Identical |
-| `EventBooking` | `EventBooking.php` + `KiccWebsiteModels.php:27` | ⚠️ DIFFERENT FIELDS |
-| `FaqItem` | `FaqItem.php` + `CmsModels.php:19` | ✅ Identical |
-| `JobApplication` | `JobApplication.php` + `KiccWebsiteModels.php:17` | ⚠️ DIFFERENT FIELDS |
-| `JobListing` | `JobListing.php` (EMPTY) + `KiccWebsiteModels.php:11` | ⚠️ EMPTY vs RICH |
-| `NewsletterSubscriber` | `NewsletterSubscriber.php` + `KiccWebsiteModels.php:22` | ⚠️ DIFFERENT FIELDS |
-| `Page` | `Page.php` + `CmsModels.php:5` | ✅ Identical |
-| `ServiceItem` | `ServiceItem.php` + `CmsModels.php:23` | ✅ Identical |
-| `TeamMember` | `TeamMember.php` + `CmsModels.php:10` | ✅ Identical |
-| `TimelineEvent` | `TimelineEvent.php` + `CmsModels.php:16` | ✅ Identical |
-| `VideoItem` | `VideoItem.php` + `CmsModels.php:27` | ✅ Identical |
-
-## 1C. 🔴 CRITICAL — Table Name Conflict
-
-- `CountyServices/CountyService.php` uses `$table = 'sector_entities'` — **identical table** as `SectorEntity.php`. One of these is wrong.
-
-## 1D. 🔴 CRITICAL — Empty Unprotected Model
-
-- `JobListing.php` — `class JobListing extends Model {}` — no `$fillable`, no `$guarded`, no `casts()`, no relationships. Automatically uses `$guarded = []` in Laravel 11.
-
-## 1E. 🟠 HIGH — Missing Type Casts (16 Models)
-
-| Model | Missing Casts |
-|-------|--------------|
-| `Advertising/Creative.php` | **No casts at all** |
-| `CountyHotel.php` | `is_published` (bool), `price_range_min/max` (float), `star_rating` (int) |
-| `CountyProduct.php` | `is_published` (bool), `price` (float) |
-| `Ecommerce/AuctionBid.php` | **No casts at all** — `amount` (float), `is_auto` (bool) |
-| `Ecommerce/FlashSaleProduct.php` | **No casts at all** — `max_qty`/`sold_qty` (int) |
-| `Ecommerce/RecentlyViewed.php` | `viewed_at` (datetime) |
-| `Ecommerce/RfqQuote.php` | **No casts at all** — `price` (float) |
-| `IncidentReport.php` | **No casts at all** |
-| `JobApplication.php` | **No casts at all** |
-| `Marketplace/ProductImage.php` | **No casts at all** — `is_primary` (bool), `sort_order` (int) |
-| `Payment/TransactionLog.php` | `request_payload`/`response_payload` (json) |
-
-## 1F. 🟡 MEDIUM — N+1 Risk in Accessors (10 Models)
-
-These models have accessor methods that query relationships, causing N+1 when accessed on a collection.
-
-| Model | Method | Risk |
-|-------|--------|------|
-| `County.php` | `getCurrentWeatherTag()` | Queries `seasonalCalendars()` per call |
-| `CountyInstitution.php` | `syncSummary()` | Queries `sectorEntities()` + `mediaAssets()` |
-| `ExperienceBooking.php` | `displaySummary()` | Accesses `$this->destination` (morphTo) |
-| `Marketplace/CartItem.php` | `displayName()`, `displayDescription()` | Deep nested `variant.product` chain |
-| `Marketplace/Product.php` | `getPriceAttribute()`, `getImageUrlAttribute()` | Accesses `variants`, `images` collections |
-| `Marketplace/ShoppingCart.php` | `getSubtotalAttribute()`, `getItemCountAttribute()` | `$appends` forces `items` load |
-| `MediaAsset.php` | ALL derivative URL methods (8 methods) | Each calls `$this->derivatives()` fresh |
-| `PipelineJob.php` | `complete()` | Accesses `$this->asset`, `$this->output` |
-
-## 1G. 🟡 MEDIUM — No Model Uses `$with`
-
-**0 out of 127 models** use `$with` for automatic eager loading. Every relationship is lazy-loaded unless explicitly `->with()` or `->load()` at query time.
-
----
-
-# PART 2: SERVICES (40 files analyzed)
-
-## 2A. 🔴 CRITICAL — AnalyticsService Revenue Calc Bug (144x Error)
-
-**`AnalyticsService.php:27-28`** — Monthly revenue is multiplied by 12 TWICE:
-```php
-$estimatedMonthlyRevenue = sum(min(price)) * 12;  // Already annual
-$estimatedAnnualRevenue = $estimatedMonthlyRevenue * 12;  // 144x actual
-```
-
-## 2B. 🔴 CRITICAL — ShardManager SQL Injection
-
-**`ShardManager.php:405-406`** — `$table` is interpolated directly into raw SQL:
-```php
-ABS(CRC32(CONCAT('{$table}', ':', id)))
-```
-`$table` comes from user-controlled input via the `prune()` command.
-
-## 2C. 🔴 CRITICAL — CloudflareStreamService Hardcoded Credentials
-
-**`CloudflareStreamService.php:16-17`** — API token and account ID hardcoded in source:
-```php
-private const CF_ACCOUNT_ID = '...';
-private const CF_API_TOKEN = '...';
-```
-
-## 2D. 🔴 CRITICAL — .env Exposed Live Production Secrets
-
-**Every value in `/opt/kicc-laravel/.env` is committed to git.** This includes:
-- `DB_PASSWORD`, `DB_USERNAME` (TiDB Cloud credentials)
-- `CLOUDFLARE_API_TOKEN`, `CLOUDFLARE_R2_SECRET_KEY`
-- `OPENROUTER_API_KEY`, `NVIDIA_API_KEY`, `ZEN_API_KEY`, `GOOGLE_AI_API_KEY`
-- `GOOGLE_OAUTH_CLIENT_SECRET`
-- `SENDGRID_API_KEY`
-- `MAIL_PASSWORD`
-- `SENTRY_LARAVEL_DSN`
-- `N8N_API_KEY`
-
-**Any person with repo access has full database access.**
-
-## 2E. 🟠 HIGH — 22 Critical/High Service Issues
-
-| # | File | Line | Issue |
-|---|------|------|-------|
-| 1 | `AnalyticsService.php` | 73-87 | 12 DB queries inside loop (monthly revenue sparkline by month) |
-| 2 | `AnalyticsService.php` | 132-160 | `forCounty()` returns all-hardcoded fake data |
-| 3 | `AnalyticsService.php` | 168-234 | `forKicc()` and `forNational()` same fake data pattern |
-| 4 | `CloudflareStreamService.php` | 73,78,83 | `{m}` placeholder never replaced — broken URLs |
-| 5 | `DisplayPriorityService.php` | 36 | SQL injection via `$threshold` in `havingRaw()` |
-| 6 | `DisplayPriorityService.php` | 154-164 | O(n*m) nested loop in `reviewScores()` instead of keyed lookup |
-| 7 | `ShardManager.php` | 71 | Uses `env()` directly instead of `config()` |
-| 8 | `ShardManager.php` | 143-153 | `eachShardParallel()` runs sequentially (misleading name) |
-| 9 | `MapPinService.php` | 66 | Broken Google Maps embed URL (empty `key=` parameter) |
-| 10 | `InstitutionSyncService.php` | 457 | `deleteDerived()` deletes ALL products by user_id, not just synced |
-| 11 | `N8nService.php` | 47,49,62,82 | Multiple uses of raw `env()` instead of `config()` |
-| 12 | `TransportIntegrationService.php` | 62-65 | Gets ALL institutions then filters in PHP |
-| 13 | `UssdService.php` | 186 | `$user->bookings()` — no pagination, unbounded |
-| 14 | `MediaFallbackResolver.php` | 197 | Downloads entire video to extract one frame |
-| 15 | `ElasticsearchService.php` | 30 | SSL verification disabled by default |
-| 16 | `CorrelationService.php` | 328-331 | `nearbyCountyIds()` is a no-op stub |
-| 17 | `ScatterGather.php` | 78 | `forPage()` on already-limited data — double-limiting potential |
-| 18 | `AgenticLoopService.php` | 55 | `whereNull('features')` for "pending orders" — wrong column |
-| 19 | `AdService.php` | 40 | Comment says "weighted by budget" but uses `random()` |
-| 20 | `AnalyticsService.php` | 104 | `$orderAmount * 1.15` hardcoded forecast multiplier |
-| 21 | `ExperiencePricingService.php` | 150-155 | Peak/off-peak day ranges hardcoded (182-243, 349-15, 60-151, 274-334) |
-| 22 | `AdService.php` | 32 | `->limit(20)` hardcoded with no pagination |
-
-## 2F. 🟡 MEDIUM — 25+ Medium Severity Issues (Selected)
-
-| # | File | Issue |
-|---|------|-------|
-| 1 | `NotificationService.php:23-25` | N+1: creates DB inserts one-by-one in loop instead of bulk insert |
-| 2 | `EscrowService.php:52,61,70,97,118,127,140,152` | `abort_if()` in service layer couples to HTTP |
-| 3 | `ThumbnailService.php:151` | `static $cache = []` grows unbounded (memory leak) |
-| 4 | `UssdService.php:180` | `orWhere` without grouping can match wrong user |
-| 5 | `UsageMeter.php:45` | `<` not `<=` — limit of 1 allows 0 but not 1 |
-| 6 | `AirtelMoneyDriver.php:29,35` | Missing null check on `$token` |
-| 7 | `Pipeline/Wan2GpEngine.php:78` | Uses `env()` directly |
-| 8 | `Pipeline/RoadEngine.php:53,60` | Uses `env()` directly |
-| 9 | `MfaController.php:41` | Logic bug: MFA enabled when secret is NULL (opposite of intent) |
-| 10 | `MfaController.php:228` | `$ipKey` is undefined — RateLimiter does nothing |
-
----
-
-# PART 3: CONTROLLERS (84 files analyzed)
-
-## 3A. 🔴 CRITICAL — MessagingController OR without Grouping (Data Leak)
-
-**`MessagingController.php:17-21`** — `orWhere` leaks conversations:
-```php
-Conversation::where('user_id', Auth::id())->orWhere('vendor_id', Auth::id())
-```
-Users see conversations they are vendor on for OTHER users. Same bug at line 84-86 in `index()`.
-
-## 3B. 🟠 HIGH — Controller Logic Bugs
+# 🔴 CRITICAL (11)
 
 | # | File:Line | Issue |
 |---|-----------|-------|
-| 1 | `ExhibitorSiteController.php:18-21` | Loads ALL users with matching account types then filters in PHP for slug match |
-| 2 | `MfaController.php:41` | `$user->mfa_secret || $user->mfa_enabled = true` — assignment only runs when secret is FALSY (opposite of intent) |
-| 3 | `MfaController.php:228` | `$ipKey` is undefined — RateLimiter::clear() does nothing |
-| 4 | `Api/N8nWebhookController.php:13` | Webhook accepts ANY POST with NO auth, signature, or IP check |
-| 5 | `Api/CourierWebhookController.php:41` | `LIKE` on serialized JSON with user-input interpolation |
-| 6 | `Api/SemanticSearchController.php:32-48` | Full table scan — iterates ENTIRE embeddings table computing cosine similarity in PHP |
-| 7 | `KiccWebsiteController.php:107-121` | 13+ static page methods each hit DB on every request with NO caching |
-| 8 | `IntegrationController.php:59-64` | Writes directly to `.env` file with `file_put_contents()` — corrupts .env |
-| 9 | `CmsController.php:174` | Validation field name typo: `'ategory'` instead of `'category'` |
-| 10 | `CountyController.php:547-556` | Dead code: `$sectorHeroPoster` set twice, second uses undefined `$sectorHeroAsset` |
-| 11 | `AuthController.php:106-107` | Double query — `exists()` then `first()` has race condition |
-| 12 | `MarketplaceController.php:133-134` | `orWhere` NOT scoped — entire WHERE collapses to TRUE if no categories match |
-| 13 | `KpiController.php:11-17` | All KPI values are hardcoded placeholders — displays fake data |
-| 14 | `MultiCurrencyController.php:12,23` | Exchange rates hardcoded in PHP arrays (stale immediately) |
-| 15 | `PackagesController.php:18-23` | County package definitions hardcoded (pricing changes need deploy) |
-
-## 3C. 🟠 HIGH — N+1 in Loops (Hot Path)
-
-| # | File | Issue |
-|---|------|-------|
-| 1 | `InstitutionAdminController.php:115-133` | 12-month loop × 2 queries = 24 queries for chart |
-| 2 | `TravelController.php:33-41` | Airport map runs 2 extra queries per airport |
-| 3 | `TravelController.php:78-79` | Hotel list runs 1 extra query per hotel for rooms |
-| 4 | `CountyController.php:149-201` | N+1 inside cache closure (on every cache bust) |
-| 5 | `CheckoutController.php:136,160` | `variant->product->user_id` chain + `Agent::where()` per seller |
-| 6 | `BookingController.php:200-203` | Loop lazy-loads `ticketType` — no eager load |
-
-## 3D. 🟠 HIGH — Unbounded Queries (Will Crash on Scale)
-
-| # | File | Query |
-|---|------|-------|
-| 1 | `AdminDashboardController.php:35` | `Product::with('county','category')->latest()->get()` — ALL products |
-| 2 | `AdminDashboardController.php:37` | `Venue::all()` — ALL venues |
-| 3 | `CountyAdminController.php:56-62` | 5 unbounded queries (CountyProduct, TourismAttraction, CountyHotel, Product, Advertisement) |
-| 4 | `KiccAdminController.php:86,91,95` | `User::where('account_type','exhibitor')->get()`, `Ministry::with('agencies')->get()`, `CountyInstitution::all()` |
-| 5 | `ExhibitorPortalController.php:45-46` | `Product::with(...)->where('user_id',...)->latest()->get()` |
-| 6 | `CountyPortalController.php:51-52` | `Product::where('county_id',...)->get()`, `User::where('account_type','exhibitor')->get()` |
-| 7 | `NationalPortalController.php:39-40` | `Ministry::with('agencies')->get()`, `Agency::with('ministry')->get()` |
-| 8 | `KiccWebsiteController.php:74` | `JobListing::latest()->get()` |
-| 9 | `FlashSaleController.php:13` | `FlashSale::latest('starts_at')->get()` |
-| 10 | `TradeAgreementController.php:39` | `TradeAgreement::with('bloc')->active()->latest()->get()` |
-| 11 | `TradeExportController.php:50` | `$query->latest()->get()` |
-| 12 | `SearchController.php:28,29` | `County::all()`, `ProductCategory::all()` |
-
-## 3E. 🟡 MEDIUM — SQL Injection via LIKE Interpolation (6 Controllers)
-
-| File | Line | Pattern |
-|------|------|---------|
-| `ScreenController.php` | 166 | `'like', "%{$screen->sector_id}%"` |
-| `SearchController.php` | 37-39,61-63 | `"%{$searchTerm}%"` |
-| `TradeExportController.php` | 37-39,46-48 | `"%{$appliedCategory}%"`, `"%{$appliedDestination}%"` |
-| `TourismEntityController.php` | 26,35 | `'like', "%{$q}%"` |
-| `Api/CourierWebhookController.php` | 41 | `'%\\"event_id\\":\\"' . $data['event_id'] . '\\"%'` |
-| `CountyAdminController.php` | 693-707 | `DB::table($data['table'])` — table name from user input |
-
-## 3F. 🟡 MEDIUM — No Auth on Sensitive Routes
-
-| Controller | Missing Auth |
-|------------|-------------|
-| `Api/ExhibitionController.php` | CRUD exhibitions — NO auth |
-| `Api/BoothController.php` | CRUD booths — NO auth |
-| `Api/VenueController.php` | CRUD venues — NO auth |
-| `Api/N8nWebhookController.php` | Webhook — NO signature/ip check |
-| `LiveChatController.php` | No auth — anyone starts a chat |
-| `AgentOnboardingController.php` | `Auth::id() ?? 0` — unauthenticated creates agent with user_id=0 |
-
-## 3G. 🟡 MEDIUM — Empty Catch Blocks (Silent Swallows)
-
-| File | Lines | Swallows |
-|------|-------|----------|
-| `InstitutionAdminController.php` | 520 | Storage::delete('r2') errors |
-| `AttractionBookingController.php` | 39-42 | CorrelationService errors |
-| `MarketplaceController.php` | 114 | RecentlyViewed tracking errors |
-| `ShardManager.php` | 209 | `buildPartitionMap()` errors |
-| `MediaLibraryService.php` | 115 | ffprobe errors |
+| 1 | `CountyController.php:315,317` | **Undefined variable typo**: `$entityIdCache` used but `$entityIdsCache` is defined — sector page items always empty |
+| 2 | `CountyController.php:551-552` | **Undefined variable**: `$sectorHeroAsset` never defined, overwrites correct `$sectorHeroPoster` — hero poster broken |
+| 3 | `AuthController.php:228` | **Undefined variable**: `$ipKey` never defined — `RateLimiter::clear()` does nothing |
+| 4 | `CmsController.php:174` | **Misspelled validation key**: `'ategory'` instead of `'category'` — category field cannot be updated |
+| 5 | `ThumbnailService.php:155-162` | **curl_getinfo before curl_exec**: `exists()` always returns false |
+| 6 | `VideoService.php:55` | **Integer treated as county name**: `Str::title($screen->county_id)` — shows "1 County" instead of real name |
+| 7 | `CountyServices/CountyService.php` | **Table name conflict**: Uses `$table = 'sector_entities'` — same table as `SectorEntity`, data corruption risk |
+| 8 | `UssdService.php:181` | **orWhere without grouping**: Can match wrong user across phone number formats |
+| 9 | `N8nService.php:47,49,62,82` | **Direct `env()` calls** bypassing config cache (also 6 Pipeline engines + ShardManager) |
+| 10 | `ShoppingCart.php:12` | **`$appends = ['item_count']`** — always loads `items` relation, guaranteed N+1 on every cart serialization |
+| 11 | `Product.php:59-75` | **Accessor N+1**: `getPriceAttribute()` + `getImageUrlAttribute()` load ALL variants + ALL images every access |
 
 ---
 
-# PART 4: CONFIG & ROUTES
+# 🟠 HIGH (18)
 
-## 4A. 🟡 MEDIUM — 11 Dead Config Sections (NEVER Referenced)
-
-| Section | Never used by any `config('kicc.xxx')` call |
-|---------|----------------------------------------------|
-| `destination_matching` | Weather-based scoring — zero references |
-| `subscription_packages` | County pricing — zero references |
-| `sector_media_map` | Sector-to-media mapping — zero references |
-| `hls` | Bitrate ladder — zero references |
-| `thumbnail_fallbacks` | Category-to-thumbnail map — zero references |
-| `thumbnail_palettes` | Color palettes — zero references |
-| `sector_synonyms` | Institution sync keywords — zero references |
-| `sector_pitches` | Default descriptions — zero references |
-| `payment_gateways` | Driver class mappings — zero references |
-| `transport` | Category slugs and hub types — zero references |
-| `shard.virtual_partitions` | `ShardManager.php` has its own hardcoded constant `1024` |
-
-## 4B. 🟠 HIGH — ~50+ Public GET Routes Missing Cache Middleware
-
-Routes not cached by `CachePublicResponse`:
-- `/marketplace/compare`
-- `/recently-viewed`
-- `/experience/*`
-- `/gift-cards`
-- `/auctions` + `/auctions/{id}`
-- `/exhibitor/{slug}`, `/national/{slug}`
-- `/attractions/{id}`
-- `/travel/*`
-- `/operations`
-- `/exhibitions/{slug}`
-- `/streams/{stream}` + `/streams/{stream}/chat`
-- `/trade-agreements/*`
-- `/trading-blocs/*`
-- `/export/*`
-- `/search`
-- `/tourism/*`
-- `/intelligence`
-- `/ai/*`
-- `/lms/*`
-- `/safety/alerts`
-- `/national-government`
-- `/kicc/*` (all CMS pages)
-- `/kpi`
-- `/currency`
-- `/venues/*`, `/screens/*`
-- `/exhibition-3d/*`, `/room3d/*`
-- `/livestreams/*`
-- All `cms.*` routes
-
-## 4C. 🟡 MEDIUM — Routes Without Auth (Mutation Risk)
-
-| Route | Method | Issue |
-|-------|--------|-------|
-| `POST /attractions/{id}/book` | POST | No auth, no throttle |
-| `POST /travel/book` | POST | No auth, no throttle |
-| `POST /reviews/product` | POST | No auth, no throttle |
-| `POST /reviews/entity` | POST | No auth, no throttle |
-| `POST /venues/{venue}/inquire` | POST | No auth, no throttle |
-| `POST /screens/{id}/advertise` | POST | No auth, no throttle |
-| `POST /lms/{course}/enroll` | POST | No auth, no throttle |
-| `POST /safety/report` | POST | No throttle (spam risk) |
-| `POST /api/fraud-check` | POST | No auth, no throttle |
-| `POST /ai/chat`, `POST /ai/itinerary` | POST | No throttle on line 344 |
-
-## 4D. 🔵 LOW — Edge Worker Issues
-
-| Issue | Severity |
-|-------|----------|
-| `ORIGIN_SCHEME` defaults to `http://` (insecure origin communication) | Medium |
-| `CACHE_VERSION` must be manually bumped (prone to human error) | Low |
-| JWT shape-check (not signature verify) at edge | Low (by design but documented risk) |
-| `X-Timestamp` parsing returns NaN for non-numeric → `NaN > 300` is false → replay passes | Medium |
-| `proxy()` function has dead `cache` parameter never used | Low |
-| Stale cache versions v2-v6 never cleaned up from purge list | Low |
-| `withCookies()` may duplicate Set-Cookie headers | Low |
+| # | File:Line | Issue |
+|---|-----------|-------|
+| 1 | `AnalyticsService.php:73-87` | 12 monthly sparkline queries in loop — N+1 |
+| 2 | `AnalyticsService.php:239-279` | forecastData + performanceData — N+1 in monthly loops |
+| 3 | `CorrelationService.php:92-95` | N+1 per candidate in institution scoring |
+| 4 | `CheckoutController.php:133-175` | N+1 per seller: `Agent::where()` inside loop |
+| 5 | `InstitutionAdminController.php:115-133` | 24 queries per page load (2 × 12 months) |
+| 6 | `AdService.php:54,60-68` | Raw SQL concatenation — SQL injection vector |
+| 7 | `ExhibitorSiteController.php:18-21` | Loads ALL users into memory then PHP-filters for slug match |
+| 8 | `SearchController.php:45-46` | `price_asc`/`price_desc` sorts by `id` not `price` — misleading users |
+| 9 | `MarketplaceController.php:72` | `orderByRaw('FIELD(id, ...)')` — fragile, SQL syntax error if empty |
+| 10 | `AgenticLoopService.php:55` | `pending_orders` signal counts Products with null `features`, not orders |
+| 11 | `MapPinService.php:66` | Empty `key=` in Google Maps embed URL — shows error |
+| 12 | `InstitutionSyncService.php:439-443` | Empty `$keptSectorIds` deletes ALL sector entities for institution |
+| 13 | `MediaAsset.php:66-145` | 9 derivative methods each call `$this->derivatives()` fresh — 9 queries per asset |
+| 14 | `CartItem.php:27-48` | `displayName()` + `displayDescription()` access `variant.product` 3 levels deep |
+| 15 | `Exhibition.php + 4 others` | SoftDeletes without `$with` — trashed records silently excluded |
+| 16 | `CountyAdminController.php:613-614` | Unbounded SectorEntity `->get()` |
+| 17 | `TransportIntegrationService.php:62-66` | Unbounded institution fetch for hub pins |
+| 18 | `CheckoutController.php:254-258` | M-Pesa callback matches by amount only — wrong order could be paid |
 
 ---
 
-# PART 5: SUMMARY BY AREA
+# 🟡 MEDIUM (21)
 
-| Area | 🔴 Critical | 🟠 High | 🟡 Medium | 🔵 Low |
-|------|-------------|---------|-----------|--------|
-| **Models (127)** | 28 (guarded=[] 16, duplicates 11, empty 1) | 16 (missing casts) | 21 (N+1 accessors, no $with) | 5 |
-| **Services (40)** | 4 (Analytics 144x bug, Shard SQLi, CF creds, .env secrets) | 22 | 25+ | 15+ |
-| **Controllers (84)** | 1 (Messaging data leak) | 15 (logic bugs, N+1 loops, unbounded queries) | 30+ | 20+ |
-| **Config/Routes** | 0 | 50+ (missing cache) | 40+ (dead config, no auth, SQLi LIKE) | 10+ |
-| **Edge Worker** | 0 | 0 | 2 (insecure scheme default, NaN timestamp) | 5 |
-
-## Top 10 Most Critical Fixes (Priority Order)
-
-1. 🔴 **Remove .env secrets from git** — Rotate ALL exposed credentials (DB, API keys, OAuth)
-2. 🔴 **Fix duplicate class definitions** — Delete `CmsModels.php` and `KiccWebsiteModels.php`, keep standalone files
-3. 🔴 **Fix AnalyticsService 144x revenue bug** — Remove double *12 multiplication
-4. 🔴 **Fix ShardManager SQL injection** — Use parameter binding instead of interpolation
-5. 🔴 **Fix CloudflareStreamService credentials** — Move to .env
-6. 🔴 **Fix MessagingController orWhere data leak** — Wrap in `->where(function($q) { ... })` group
-7. 🟠 **Replace $guarded=[] with $fillable on 16 models** — Mass assignment protection
-8. 🟠 **Add CachePublicResponse to 50+ public GET routes** — Reduce origin load 10x
-9. 🟠 **Add pagination to 15+ unbounded controller queries** — Prevent OOM crashes
-10. 🟠 **Add auth middleware to 15+ unprotected mutation routes** — Prevent unauthorized actions
+| # | File:Line | Issue |
+|---|-----------|-------|
+| 1 | `CountyAdminController.php:793-797` | CSV report downloads unbounded `->get()->toArray()` |
+| 2 | `AdminDashboardController.php:36` | Redundant `$allProducts = $productsPage->items()` |
+| 3 | `PackagesController.php:19-23` | Hardcoded pricing (KES 10K-500K) |
+| 4 | `MultiCurrencyController.php:12,23` | Hardcoded exchange rates (stale immediately) |
+| 5 | `KpiController.php:11-17` | Hardcoded placeholder KPI values (fake data) |
+| 6 | `SellerAnalyticsController.php:12-14` | Unbounded Product + Order `->get()` |
+| 7 | `UssdService.php:186` | `$user->bookings()->get()` — no limit |
+| 8 | `CountySectorController.php:57-66` | 8 entity types all unbounded `->get()` |
+| 9 | `CountyAdminController.php:357-365` | N+1 in `foreach ($assets as $a)` for delete |
+| 10 | `InstitutionAdminController.php:75-78` | Unbounded marketplace products `->get()` |
+| 11 | `InstitutionAdminController.php:86-93` | Two separate MediaAsset queries merged |
+| 12 | `MfaController.php:41` | `mfa_secret || mfa_enabled = true` — short-circuit prevents assignment |
+| 13 | `AdService.php:40` | Comment says "weighted by budget" but uses `random()` |
+| 14 | `CorrelationService.php:328-331` | `nearbyCountyIds()` is no-op stub |
+| 15 | `ThumbnailService.php:151` | `static $cache = []` — unbounded memory leak |
+| 16 | `ElasticsearchService.php:30` | SSL verify disabled by default |
+| 17 | `N8nService.php:83` | No webhook secret = trust all callers |
+| 18 | `IntegrationController.php:60-64` | Writes user input to `.env` file (corruption risk) |
+| 19 | `ImageOptimizer.php:19-30` | Public writable properties |
+| 20 | `ReviewController.php:87` | Destructive `body .= ' [photos]'` overwrite |
+| 21 | `AttractionBookingController.php:41-42` | Empty catch block (CorrelationService) |
 
 ---
 
-*Generated by opencode brutal diagnosis*  
-*Fixes 1-7 (previous round) completed: casts(), $fillable, N+1 fixes, cache middleware, eager loading, zoom config, permission indexes*
+# 🔵 LOW (40+)
+
+| # | Issue | Count |
+|---|-------|-------|
+| 1 | Empty catch blocks (silent swallows) | 6 locations: InstAdminController:522, MarketController:114, CountyController:728, ShardManager:209/419, MediaLibrary:115, AttractionBooking:41 |
+| 2 | API controllers missing auth middleware | 4 controllers: Booth, Exhibition, Venue, TicketType (store/update/destroy) |
+| 3 | Missing type hints on return types | Pervasive across 80% of services |
+| 4 | Hardcoded magic numbers | 15+ instances (limits, bitrates, font sizes, resolutions) |
+| 5 | Review mutation endpoints no throttle | 3 routes |
+| 6 | Travel models with zero casts | 7 models (Airline, Airport, Attraction, Flight, Hotel, Transfer, FlightBooking) |
+| 7 | `TourismEntities.php` dead comment file | Delete |
+| 8 | Inconsistent casts style | Mix of property + method + attribute |
+| 9 | HlsGenerator dead const `FOUR_TIER` | Never referenced |
+| 10 | Text/csv without BOM | Excel UTF-8 compat |
+
+---
+
+# ✅ RESOLVED (since first diagnosis)
+
+| Issue | Status |
+|-------|--------|
+| `$guarded = []` on 16 models | ✅ All → `$fillable` |
+| Duplicate class definitions (CmsModels, KiccWebsiteModels) | ✅ Deleted, merged into standalone files |
+| AnalyticsService 144x revenue bug | ✅ `monthly*12*12` → `sum(min(price)) * 12` |
+| MessagingController orWhere data leak | ✅ Both `inbox()` + `unreadCount()` grouped |
+| ShardManager SQL injection | ✅ Parameter binding + whitelist |
+| CloudflareStreamService credentials + broken URLs | ✅ Config-driven + subdomain fix |
+| 20+ unbounded controller queries | ✅ Paginated |
+| 49 public GET routes missing cache | ✅ CachePublicResponse + withoutMiddleware |
+| AuctionController 500 (scopeActive) | ✅ `scopeActive()` → `active()` |
+| 13 models missing casts | ✅ Added |
+| Auth+throttle on review/safety/AI/n8n routes | ✅ |
+| 6-hour cache TTL (stale admin data, deleted school) | ✅ Admin=60s, Public=600s, model event busting |
+| Orphan SectorEntity (deleted parent still showing) | ✅ DataAvailabilityService filters at query level |
+
+---
+
+## Top 5 Most Urgent Remaining Fixes
+
+1. **CountyController.php:315,317** — `$entityIdCache` typo causes empty sector pages
+2. **CountyController.php:551-552** — `$sectorHeroAsset` undefined breaks hero poster
+3. **AuthController.php:228** — `$ipKey` undefined breaks rate limiter
+4. **ThumbnailService.php:155-162** — `curl_getinfo` before `curl_exec` breaks `exists()`
+5. **VideoService.php:55** — `Str::title($screen->county_id)` shows "1 County" instead of name
+
+**Need all 5 fixed and deployed.**

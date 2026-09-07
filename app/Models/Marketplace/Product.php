@@ -11,6 +11,8 @@ class Product extends Model
 {
     use SoftDeletes;
 
+    protected $with = ['variants', 'images'];
+
     protected $fillable = [
         'user_id', 'county_id', 'category_id', 'name', 'slug', 'description',
         'short_description', 'sku', 'barcode', 'unit', 'weight_kg',
