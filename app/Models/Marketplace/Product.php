@@ -18,7 +18,7 @@ class Product extends Model
         'short_description', 'sku', 'barcode', 'unit', 'weight_kg',
         'length_cm', 'width_cm', 'height_cm', 'is_digital', 'status',
         'is_featured', 'meta_title', 'meta_description', 'tags', 'warranty_info',
-        'video_url', 'videos', 'video_description',
+        'video_url', 'videos', 'video_description', 'model_url',
     ];
 
     protected $casts = [
@@ -74,5 +74,10 @@ class Product extends Model
         } catch (\Throwable $e) {
             return \App\Services\ThumbnailService::placeholder($this->name, $this->category?->name);
         }
+    }
+
+    public function hasModel(): bool
+    {
+        return !empty($this->model_url);
     }
 }

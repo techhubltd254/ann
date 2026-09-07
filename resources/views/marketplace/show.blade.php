@@ -20,14 +20,26 @@
 
     @if($allVideos->isNotEmpty())
     <div class="space-y-2">
-        <div class="rounded-2xl overflow-hidden aspect-video relative" id="main-video-wrapper" style="background: transparent; z-index: 1;">
-            <div class="three-video-container absolute inset-0 w-full h-full"
-                 data-video="{{ $allVideos->first() }}"
-                 data-depth=""
-                 data-mode="parallax"
-                 style="background: transparent;">
-            </div>
-        </div>
+<div class="rounded-2xl overflow-hidden aspect-video relative" id="main-video-wrapper" style="background: transparent; z-index: 1;">
+    {{-- Tab bar for switching between video and 3D --}}
+    @if($product->hasModel())
+    <div class="absolute top-3 left-3 z-30 flex gap-1.5">
+        <button onclick="switchMediaTab('video')" id="tab-video-btn" class="px-3 py-1.5 rounded-full text-[10px] font-bold transition-all bg-white/90 text-gray-800 shadow-sm">Video</button>
+        <button onclick="switchMediaTab('model')" id="tab-model-btn" class="px-3 py-1.5 rounded-full text-[10px] font-bold transition-all bg-white/20 text-white/80 hover:bg-white/40">3D Model</button>
+    </div>
+    @endif
+    <div id="media-video" class="w-full h-full three-video-container"
+         data-video="{{ $allVideos->first() }}"
+         data-depth=""
+         data-mode="parallax"
+         style="background: transparent;">
+    </div>
+    @if($product->hasModel())
+    <div id="media-model" class="w-full h-full absolute inset-0" style="display:none;">
+        <div id="product-viewer-container" class="w-full h-full"></div>
+    </div>
+    @endif
+</div>
         @if($allVideos->count() > 1)
         <div class="flex gap-2 overflow-x-auto pb-1 scrollbar-hide">
             @foreach($allVideos as $v)
@@ -304,55 +316,85 @@
     </div>
     @endif
 
-    @push('scripts')
-    <script>
-    function correlationLoader(type, id) {
-        return {
-            loading: false,
-            loaded: false,
-            html: '',
-            loadMore() {
-                this.loading = true;
-                fetch('/api/correlations/' + type + '/' + id)
-                    .then(r => r.json())
-                    .then(data => {
-                        this.html = this.renderMore(data);
-                        this.loaded = true;
-                        this.loading = false;
-                    })
-                    .catch(() => { this.loading = false; });
-            },
-            renderMore(data) {
-                var h = '';
-                if (data.places_to_visit && data.places_to_visit.length > 0) {
-                    h += '<div class="mb-6"><h4 class="text-sm font-bold text-gray-900 mb-3"> More Places</h4><div class="grid grid-cols-2 md:grid-cols-4 gap-4">';
-                    data.places_to_visit.forEach(function(r) {
-                        h += '<a href="/counties/institution/' + r.slug + '" class="bg-white border border-gray-200 rounded-xl p-3 hover:border-amber-300 transition-all"><div class="font-bold text-sm">' + r.name + '</div><div class="text-xs text-gray-500">' + (r.distance_km || '') + ' km · ' + (r.type_label || '') + '</div></a>';
-                    });
-                    h += '</div></div>';
-                }
-                if (data.places_to_stay && data.places_to_stay.length > 0) {
-                    h += '<div class="mb-6"><h4 class="text-sm font-bold text-gray-900 mb-3"> More Places to Stay</h4><div class="grid grid-cols-2 md:grid-cols-3 gap-4">';
-                    data.places_to_stay.forEach(function(r) {
-                        h += '<a href="/counties/institution/' + r.slug + '" class="bg-white border border-gray-200 rounded-xl p-3 hover:border-amber-300 transition-all"><div class="font-bold text-sm">' + r.name + '</div><div class="text-xs text-gray-500">' + (r.distance_km || '') + ' km</div></a>';
-                    });
-                    h += '</div></div>';
-                }
-                if (data.transport && data.transport.length > 0) {
-                    h += '<div><h4 class="text-sm font-bold text-gray-900 mb-3"> More Transport</h4><div class="grid grid-cols-2 md:grid-cols-4 gap-4">';
-                    data.transport.forEach(function(t) {
-                        var priceHtml = '';
-                        if (t.price) priceHtml = '<div class="font-bold text-amber-600 text-sm">KES ' + t.price.toLocaleString() + '</div>';
-                        h += '<div class="bg-white border border-gray-200 rounded-xl p-3"><div class="font-bold text-sm">' + t.name + '</div>' + priceHtml + '<div class="text-xs text-gray-500">' + (t.type_label || '') + '</div></div>';
-                    });
-                    h += '</div></div>';
-                }
-                return h;
+@push('scripts')
+<script>
+function correlationLoader(type, id) {
+    return {
+        loading: false,
+        loaded: false,
+        html: '',
+        loadMore() {
+            this.loading = true;
+            fetch('/api/correlations/' + type + '/' + id)
+                .then(r => r.json())
+                .then(data => {
+                    this.html = this.renderMore(data);
+                    this.loaded = true;
+                    this.loading = false;
+                })
+                .catch(() => { this.loading = false; });
+        },
+        renderMore(data) {
+            var h = '';
+            if (data.places_to_visit && data.places_to_visit.length > 0) {
+                h += '<div class="mb-6"><h4 class="text-sm font-bold text-gray-900 mb-3"> More Places</h4><div class="grid grid-cols-2 md:grid-cols-4 gap-4">';
+                data.places_to_visit.forEach(function(r) {
+                    h += '<a href="/counties/institution/' + r.slug + '" class="bg-white border border-gray-200 rounded-xl p-3 hover:border-amber-300 transition-all"><div class="font-bold text-sm">' + r.name + '</div><div class="text-xs text-gray-500">' + (r.distance_km || '') + ' km · ' + (r.type_label || '') + '</div></a>';
+                });
+                h += '</div></div>';
             }
-        };
+            if (data.places_to_stay && data.places_to_stay.length > 0) {
+                h += '<div class="mb-6"><h4 class="text-sm font-bold text-gray-900 mb-3"> More Places to Stay</h4><div class="grid grid-cols-2 md:grid-cols-3 gap-4">';
+                data.places_to_stay.forEach(function(r) {
+                    h += '<a href="/counties/institution/' + r.slug + '" class="bg-white border border-gray-200 rounded-xl p-3 hover:border-amber-300 transition-all"><div class="font-bold text-sm">' + r.name + '</div><div class="text-xs text-gray-500">' + (r.distance_km || '') + ' km</div></a>';
+                });
+                h += '</div></div>';
+            }
+            if (data.transport && data.transport.length > 0) {
+                h += '<div><h4 class="text-sm font-bold text-gray-900 mb-3"> More Transport</h4><div class="grid grid-cols-2 md:grid-cols-4 gap-4">';
+                data.transport.forEach(function(t) {
+                    var priceHtml = '';
+                    if (t.price) priceHtml = '<div class="font-bold text-amber-600 text-sm">KES ' + t.price.toLocaleString() + '</div>';
+                    h += '<div class="bg-white border border-gray-200 rounded-xl p-3"><div class="font-bold text-sm">' + t.name + '</div>' + priceHtml + '<div class="text-xs text-gray-500">' + (t.type_label || '') + '</div></div>';
+                });
+                h += '</div></div>';
+            }
+            return h;
+        }
+    };
+}
+
+function switchMediaTab(tab) {
+    var video = document.getElementById('media-video');
+    var model = document.getElementById('media-model');
+    var videoBtn = document.getElementById('tab-video-btn');
+    var modelBtn = document.getElementById('tab-model-btn');
+    if (tab === 'video') {
+        video.style.display = '';
+        model.style.display = 'none';
+        videoBtn.classList.remove('bg-white/20', 'text-white/80');
+        videoBtn.classList.add('bg-white/90', 'text-gray-800');
+        modelBtn.classList.remove('bg-white/90', 'text-gray-800');
+        modelBtn.classList.add('bg-white/20', 'text-white/80');
+    } else {
+        video.style.display = 'none';
+        model.style.display = '';
+        modelBtn.classList.remove('bg-white/20', 'text-white/80');
+        modelBtn.classList.add('bg-white/90', 'text-gray-800');
+        videoBtn.classList.remove('bg-white/90', 'text-gray-800');
+        videoBtn.classList.add('bg-white/20', 'text-white/80');
+        // Initialize product viewer if not already done
+        if (!window._productViewer && document.getElementById('product-viewer-container')) {
+            window._productViewer = new KiccProductViewer(
+                'product-viewer-container',
+                '{{ $product->model_url ?? "" }}',
+                '{{ $product->image_url ?? "" }}'
+            );
+        }
     }
-    </script>
-    @endpush
+}
+</script>
+@endpush
 
     {{--  REVIEWS  --}}
     <div class="mt-20 grid grid-cols-1 lg:grid-cols-2 gap-6">
