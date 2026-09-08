@@ -4,15 +4,12 @@ function mediaTile() {
         videoReady: false,
         hoverTimer: null,
         observer: null,
-        _video: null,
         mounted() {
-            this._video = this.$el.querySelector('video');
             if (window.matchMedia('(max-width: 1024px)').matches) {
                 this.observer = new IntersectionObserver((entries) => {
                     entries.forEach((entry) => {
                         if (entry.isIntersecting && entry.intersectionRatio > 0.55) {
                             this.activate();
-                            this.tryPlay();
                         } else {
                             this.deactivate();
                         }
@@ -27,10 +24,7 @@ function mediaTile() {
         },
         onHoverEnter() {
             if (this.hoverTimer) clearTimeout(this.hoverTimer);
-            this.tryPlay();
-            this.hoverTimer = setTimeout(() => {
-                this.activate();
-            }, 300);
+            this.activate();
         },
         onHoverLeave() {
             if (this.hoverTimer) clearTimeout(this.hoverTimer);
@@ -42,16 +36,6 @@ function mediaTile() {
         },
         deactivate() {
             this.active = false;
-            if (this._video) this._video.pause();
-        },
-        tryPlay() {
-            if (this._video) {
-                this._video.play().catch(() => {
-                    setTimeout(() => {
-                        if (this._video) this._video.play().catch(() => {});
-                    }, 500);
-                });
-            }
         },
         onVideoPlaying() {
             this.videoReady = true;
@@ -67,7 +51,5 @@ document.addEventListener('media-tile:activate', (e) => {
         const tile = window.Alpine ? Alpine.$data(el) : null;
         if (tile === e.detail) return;
         if (tile) tile.active = false;
-        const video = el.querySelector('video');
-        if (video) video.pause();
     });
 });
