@@ -26,10 +26,11 @@ function mediaTile() {
         onHoverEnter() {
             if (window.matchMedia('(min-width: 1025px)').matches) {
                 if (this.hoverTimer) clearTimeout(this.hoverTimer);
+                // Play immediately in user gesture context, activate visually after delay
+                this.tryPlay();
                 this.hoverTimer = setTimeout(() => {
                     this.activate();
-                    this.tryPlay();
-                }, 250);
+                }, 300);
             }
         },
         onHoverLeave() {
