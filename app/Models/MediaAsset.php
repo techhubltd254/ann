@@ -90,7 +90,12 @@ class MediaAsset extends Model
 
     public function mp4Url(): ?string
     {
-        return $this->derivativeUrl('video_mp4');
+        $url = $this->derivativeUrl('video_mp4');
+        if ($url) return $url;
+        // Fallback: use the raw asset path directly when no derivative exists
+        $direct = $this->url();
+        if ($direct && str_contains($this->mime ?? '', 'mp4')) return $direct;
+        return null;
     }
 
     public function thumbnailUrl(): ?string
