@@ -26,13 +26,11 @@ function mediaTile() {
             if (this.hoverTimer) clearTimeout(this.hoverTimer);
         },
         onHoverEnter() {
-            if (window.matchMedia('(min-width: 1025px)').matches) {
-                if (this.hoverTimer) clearTimeout(this.hoverTimer);
-                this.tryPlay();
-                this.hoverTimer = setTimeout(() => {
-                    this.activate();
-                }, 300);
-            }
+            if (this.hoverTimer) clearTimeout(this.hoverTimer);
+            this.tryPlay();
+            this.hoverTimer = setTimeout(() => {
+                this.activate();
+            }, 300);
         },
         onHoverLeave() {
             if (this.hoverTimer) clearTimeout(this.hoverTimer);
