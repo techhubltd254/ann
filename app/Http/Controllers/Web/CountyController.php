@@ -267,69 +267,48 @@ class CountyController extends Controller
         ));
     }
 
-    public function sector(County $county, string $sector)
+        public function sector(County $county, string $sector)
     {
         $page = request()->get('page', 1);
-        // Eager-load sectors ONCE at the top — avoids 5+ repeat queries
         $county->load('sectors');
-        $sectorModel = $county->sectors->firstWhere('slug', $sector);
-        if (!$sectorModel) {
-            $sectorModel = $county->sectors->first(fn ($s) => str_starts_with($s->slug, $sector));
-        }
-        if (!$sectorModel) {
-            $slugMap = [
-                'agriculture' => ['agriculture', 'farms', 'Agriculture'],
-                'tourism' => ['tourism', 'Tourism'],
-                'hospitality' => ['hotels', 'hospitality', 'Hospitality'],
-                'commerce' => ['products', 'commerce', 'Commerce'],
-                'education' => ['institutions', 'education', 'Education'],
-                'transport' => ['transport', 'Transport'],
-                'healthcare' => ['health', 'healthcare', 'Healthcare'],
-                'culture' => ['culture', 'Culture'],
-            ];
-            $aliases = $slugMap[$sector] ?? [];
-            foreach ($aliases as $alias) {
-                $sectorModel = $county->sectors->first(fn ($s) => str_starts_with($s->slug, $alias));
-                if ($sectorModel) break;
-            }
-        }
+
+        $resolver = app(\App\Services\SectorMediaResolver::class);
+        $sectorModel = $resolver->resolveSector($county, $sector);
         if (!$sectorModel) abort(404, "Sector not found for {$county->name}");
 
-        // Collect entities from this sector and any alias sectors
-        $sectorIds = collect([$sectorModel->id]);
-        $aliases = $slugMap[$sector] ?? [];
-        foreach ($aliases as $alias) {
-            $aliasSector = $county->sectors->first(fn ($s) => str_starts_with($s->slug, $alias));
-            if ($aliasSector && $aliasSector->id !== $sectorModel->id) {
-                $sectorIds->push($aliasSector->id);
-            }
-        }
+        $allSectorIds = $resolver->resolveAliasSectorIds($county, $sectorModel);
+
+        $liveInstIds = \App\Models\CountyInstitution::where('county_id', $county->id)
+            ->where('is_published', true)->pluck('id');
+        $instTypes = [\App\Models\CountyInstitution::class, \App\Services\InstitutionSyncService::ENTITY_TYPE];
 
         $listVersion = Cache::get("kicc_sector_version_{$county->id}_{$sectorModel->id}", 1);
-        $entityIdsCache = Cache::remember("kicc_county_sector_items_{$county->id}_{$sectorModel->id}_{$listVersion}_{$page}", config('kicc.cache_ttl.public', 21600), function () use ($county, $sectorIds) {
-            return SectorEntity::where('county_id', $county->id)
-                ->whereIn('sector_id', $sectorIds)
+        $entityIdCache = Cache::remember("kicc_county_sector_items_{$county->id}_{$sectorModel->id}_{$listVersion}_{$page}", config('kicc.cache_ttl.public', 21600), function () use ($county, $allSectorIds, $instTypes, $liveInstIds) {
+            return \App\Models\SectorEntity::where('county_id', $county->id)
+                ->whereIn('sector_id', $allSectorIds)
                 ->where('is_published', true)
+                ->where(function ($q) use ($instTypes, $liveInstIds) {
+                    $q->whereNotIn('entity_type', $instTypes)
+                      ->orWhereIn('entity_id', $liveInstIds);
+                })
                 ->orderBy('name')
                 ->pluck('id')
                 ->all();
         });
 
-        // Batch-load all items in one query via DataAvailabilityService, then paginate in-memory
-        $allItems = SectorEntity::whereIn('id', $entityIdsCache ?? [])->get()->keyBy('id');
+        $allItems = \App\Models\SectorEntity::whereIn('id', $entityIdCache ?? [])->get()->keyBy('id');
         $items = new \Illuminate\Pagination\LengthAwarePaginator(
-            collect($entityIdsCache ?? [])->map(fn ($id) => $allItems->get($id))->filter(),
-            count($entityIdsCache ?? []),
+            collect($entityIdCache ?? [])->map(fn ($id) => $allItems->get($id))->filter(),
+            count($entityIdCache ?? []),
             12,
             $page,
             ['path' => request()->url(), 'query' => request()->query()]
         );
 
-        // Count marketplace products for institution entities
-        $institutionIds = $items->whereIn('entity_type', [\App\Models\CountyInstitution::class, \App\Services\InstitutionSyncService::ENTITY_TYPE])->pluck('entity_id')->unique();
+        $instIdsForCount = $items->whereIn('entity_type', $instTypes)->pluck('entity_id')->unique();
         $productCounts = [];
-        if ($institutionIds->isNotEmpty()) {
-            $productCounts = \App\Models\Marketplace\Product::whereIn('user_id', \App\Models\CountyInstitution::whereIn('id', $institutionIds)->pluck('user_id'))
+        if ($instIdsForCount->isNotEmpty()) {
+            $productCounts = \App\Models\Marketplace\Product::whereIn('user_id', \App\Models\CountyInstitution::whereIn('id', $instIdsForCount)->pluck('user_id'))
                 ->active()
                 ->selectRaw('user_id, count(*) as count')
                 ->groupBy('user_id')
@@ -339,237 +318,50 @@ class CountyController extends Controller
                 ->toArray();
         }
 
-        // Sector background video asset (institution sync sets this slot)
-        $bgAssetId = Cache::remember("resolve:county_sector_video_asset_id_" . $sector, config('kicc.cache_ttl.public', 21600), function () use ($county, $sector) {
-            $a = MediaAsset::resolveSlot(County::class, $county->id, 'sector_video_' . $sector);
-            return $a?->id;
-        });
-        $bgAsset = $bgAssetId ? MediaAsset::with('derivatives')->find($bgAssetId) : null;
-        $fourDVideo = $bgAsset?->mp4Url() ?? $bgAsset?->url();
+        $media = $resolver->resolve($county, $sector, $entityIdCache ?? []);
+        $entityVideos = $media['entity_videos'];
+        $entityPosters = $media['entity_posters'];
+        $entityHoverLoops = $media['entity_hover_loops'];
+        $entitySplats = $media['entity_splats'];
+        $institutionHeroVideos = $media['institution_hero_videos'];
+        $sectorHeroVideos = $media['hero_playlist'];
+        $sectorHeroPoster = $media['hero_poster'];
+        $fourDVideo = $media['hero_video_url'];
 
-        // Per-entity videos: batch load ALL videos for ALL entity types in this sector
-        $entityIds = $items->pluck('id');
-        $entityVideos = [];
-        $entityPosters = [];
-        $entityHoverLoops = [];
-        $entitySplats = [];
-        if ($entityIds->isNotEmpty()) {
-            $entityTypeMap = [
-                \App\Models\SectorEntity::class => '4d_video',
-                \App\Models\CountyInstitution::class => 'hero_video',
-                \App\Models\CountyTourismAttraction::class => '4d_video',
-                \App\Models\CountyHotel::class => '4d_video',
-                \App\Models\CountyProduct::class => '4d_video',
-            ];
-            $ownerSq = []; $ownerBinds = [];
-            foreach ($items as $e) {
-                $slot = $entityTypeMap[$e->entity_type] ?? null;
-                if ($slot) {
-                    $ownerSq[] = '(owner_type = ? AND owner_id = ? AND slot = ?)';
-                    $ownerBinds[] = $e->entity_type;
-                    $ownerBinds[] = $e->entity_id;
-                    $ownerBinds[] = $slot;
-                }
-            }
-            if (!empty($ownerSq)) {
-                $assets = MediaAsset::whereRaw(implode(' OR ', $ownerSq), $ownerBinds)
-                    ->with('derivatives')
-                    ->get()
-                    ->groupBy(fn ($a) => $a->owner_type . '-' . $a->owner_id);
-                foreach ($items as $e) {
-                    $a = $assets->get($e->entity_type . '-' . $e->entity_id)?->first();
-                    if ($a) {
-                        $entityVideos[$e->id] = $a->mp4Url() ?? $a->url();
-                        $entityPosters[$e->id] = $a->posterUrl();
-                        $entityHoverLoops[$e->id] = $a->hoverLoopUrl();
-                        $entitySplats[$e->id] = $a->splatUrl();
-                    }
-                }
-            }
-        }
-
-        // Institution hero videos: load for SectorEntity items that are institutions
-        $institutionIds = $items->whereIn('entity_type', [\App\Models\CountyInstitution::class, \App\Services\InstitutionSyncService::ENTITY_TYPE])->pluck('entity_id')->unique();
-        $institutionHeroVideos = [];
-        $institutionHeroPosters = [];
-        $institutionHeroLoops = [];
-        if ($institutionIds->isNotEmpty()) {
-            $heroAssets = MediaAsset::where('owner_type', \App\Models\CountyInstitution::class)
-                ->whereIn('owner_id', $institutionIds)
-                ->where('slot', 'hero_video')
-                ->with('derivatives')
-                ->get()
-                ->keyBy('owner_id');
-            foreach ($items as $e) {
-                $isInst = in_array($e->entity_type, [\App\Models\CountyInstitution::class, \App\Services\InstitutionSyncService::ENTITY_TYPE]);
-                if ($isInst && isset($heroAssets[$e->entity_id])) {
-                    $a = $heroAssets[$e->entity_id];
-                    $institutionHeroVideos[$e->id] = $a->mp4Url() ?? $a->url();
-                    $institutionHeroPosters[$e->id] = $a->posterUrl();
-                    $institutionHeroLoops[$e->id] = $a->hoverLoopUrl();
-                }
-            }
-        }
-
-        // Product video fallback: batch load ALL product videos for ALL institutions in this sector
-        // Reused for both entity card heroes ($institutionHeroVideos) and hero playlist ($sectorHeroVideos)
-        $institutionProductVideos = [];
-        $instUserIds = \App\Models\CountyInstitution::whereIn('id', $institutionIds)->pluck('user_id', 'id');
-        if ($instUserIds->isNotEmpty()) {
-            $productRows = \App\Models\Marketplace\Product::whereIn('user_id', $instUserIds->filter())
-                ->active()
-                ->whereNotNull('video_url')
-                ->get(['user_id', 'video_url']);
-            foreach ($productRows as $pr) {
-                $instId = $instUserIds->search($pr->user_id);
-                if ($instId && $pr->video_url) {
-                    $institutionProductVideos[$instId][] = $pr->video_url;
-                }
-            }
-        }
-
-        // Assign first product video to entity cards that have no hero
+        $fallbackResolver = app(\App\Services\MediaFallbackResolver::class);
         foreach ($items as $e) {
-            $isInst = in_array($e->entity_type, [\App\Models\CountyInstitution::class, \App\Services\InstitutionSyncService::ENTITY_TYPE]);
-            if (!$isInst || !empty($institutionHeroVideos[$e->id])) continue;
-            $vids = $institutionProductVideos[$e->entity_id] ?? [];
-            if (!empty($vids)) {
-                $institutionHeroVideos[$e->id] = $vids[0];
+            if (empty($entityPosters[$e->id]) && !empty($entityVideos[$e->id])) {
+                $frame = $fallbackResolver->extractFrame($entityVideos[$e->id]);
+                if ($frame) $entityPosters[$e->id] = $frame;
             }
-        }
-
-        // Fill missing posters by extracting frame from video URL
-        // This ensures the tile shows the video's first frame, not a blue background
-        $resolver = app(\App\Services\MediaFallbackResolver::class);
-        foreach ($items as $e) {
-            $hasPoster = !empty($entityPosters[$e->id]);
-            $hasVideo = !empty($entityVideos[$e->id]);
-            if ($hasPoster || !$hasVideo) continue;
-            $frame = $resolver->extractFrame($entityVideos[$e->id]);
-            if ($frame) $entityPosters[$e->id] = $frame;
         }
         foreach ($items as $e) {
-            $hasPoster = !empty($institutionHeroPosters[$e->id]);
-            $hasVideo = !empty($institutionHeroVideos[$e->id]);
-            if ($hasPoster || !$hasVideo) continue;
-            $frame = $resolver->extractFrame($institutionHeroVideos[$e->id]);
-            if ($frame) $institutionHeroPosters[$e->id] = $frame;
+            if (empty($institutionHeroVideos[$e->id]) && !empty($entityVideos[$e->id])) {
+                $institutionHeroVideos[$e->id] = $entityVideos[$e->id];
+            }
         }
 
         $info = [
-            'tourism' => ['title' => 'Tourism & Attractions', 'icon' => '🏖️', 'desc' => 'Discover attractions and cultural sites.'],
-            'hotels' => ['title' => 'Hospitality & Hotels', 'icon' => '🏨', 'desc' => 'Hotels and accommodation.'],
-            'products' => ['title' => 'Commerce & End Products', 'icon' => '🛒', 'desc' => 'Bookable county end products and marketplace goods.'],
-            'institutions' => ['title' => 'Education & Institutions', 'icon' => '🎓', 'desc' => 'Schools and training centers.'],
-            'farms' => ['title' => 'Agriculture & Farms', 'icon' => '🌾', 'desc' => 'Farms and agribusiness.'],
-            'transport' => ['title' => 'Transport & Logistics', 'icon' => '🚢', 'desc' => 'Transport hubs and logistics.'],
-            'health' => ['title' => 'Healthcare', 'icon' => '🏥', 'desc' => 'Hospitals and clinics.'],
-            'culture' => ['title' => 'Culture & Heritage', 'icon' => '🎭', 'desc' => 'Cultural sites and traditions.'],
-            'agriculture' => ['title' => 'Agriculture', 'icon' => '🌱', 'desc' => 'Agriculture and farming.'],
+            'tourism' => ['title' => 'Tourism & Attractions', 'icon' => '', 'desc' => 'Discover attractions and cultural sites.'],
+            'hotels' => ['title' => 'Hospitality & Hotels', 'icon' => '', 'desc' => 'Hotels and accommodation.'],
+            'products' => ['title' => 'Commerce & End Products', 'icon' => '', 'desc' => 'Bookable county end products and marketplace goods.'],
+            'institutions' => ['title' => 'Education & Institutions', 'icon' => '', 'desc' => 'Schools and training centers.'],
+            'farms' => ['title' => 'Agriculture & Farms', 'icon' => '', 'desc' => 'Farms and agribusiness.'],
+            'transport' => ['title' => 'Transport & Logistics', 'icon' => '', 'desc' => 'Transport hubs and logistics.'],
+            'health' => ['title' => 'Healthcare', 'icon' => '', 'desc' => 'Hospitals and clinics.'],
+            'culture' => ['title' => 'Culture & Heritage', 'icon' => '', 'desc' => 'Cultural sites and traditions.'],
+            'agriculture' => ['title' => 'Agriculture', 'icon' => '', 'desc' => 'Agriculture and farming.'],
         ];
+        $sectorInfo = $info[$sector] ?? ['title' => $sectorModel->name, 'icon' => '', 'desc' => "{$sectorModel->name} in {$county->name} County."];
 
-        $sectorInfo = $info[$sector] ?? ['title' => $sectorModel->name, 'icon' => '📋', 'desc' => "{$sectorModel->name} in {$county->name} County."];
-
-        // Collect all entity videos into a flat playlist for the hero cycling
-        $sectorHeroVideos = [];
-        $seenMap = [];
-        foreach ($items as $e) {
-            $vid = $entityVideos[$e->id] ?? $institutionHeroVideos[$e->id] ?? null;
-            if ($vid && !isset($seenMap[$vid])) {
-                $sectorHeroVideos[] = $vid;
-                $seenMap[$vid] = true;
-            }
-        }
-
-        // Tier 2: Add product videos from institutions in this sector
-        foreach ($items as $e) {
-            $isInst = in_array($e->entity_type, [\App\Models\CountyInstitution::class, \App\Services\InstitutionSyncService::ENTITY_TYPE]);
-            if (!$isInst) continue;
-            $vids = $institutionProductVideos[$e->entity_id] ?? [];
-            foreach ($vids as $pv) {
-                if (!isset($seenMap[$pv])) {
-                    $sectorHeroVideos[] = $pv;
-                    $seenMap[$pv] = true;
-                }
-            }
-        }
-
-        // Tier 3: This sector's own sector_video asset (mother tile)
-        if (count($sectorHeroVideos) === 0) {
-            $thisSectorVideo = Cache::remember("resolve:county_sector_video_url_" . $sector, config('kicc.cache_ttl.public', 21600), function () use ($county, $sector) {
-                $a = MediaAsset::resolveSlot(County::class, $county->id, 'sector_video_' . $sector);
-                return $a ? ($a->mp4Url() ?? $a->url()) : null;
-            });
-            if ($thisSectorVideo && !isset($seenMap[$thisSectorVideo])) {
-                $sectorHeroVideos[] = $thisSectorVideo;
-                $seenMap[$thisSectorVideo] = true;
-            }
-        }
-
-        // Tier 4: Videos from alias sectors (subsectors like 'hotels' for 'hospitality')
-        if (count($sectorHeroVideos) === 0) {
-            $aliasMap = [
-                'agriculture' => ['farms'], 'tourism' => [], 'hospitality' => ['hotels'],
-                'commerce' => ['products'], 'education' => ['institutions'],
-                'healthcare' => ['health'], 'health' => ['healthcare'],
-                'institutions' => ['education'], 'farms' => ['agriculture'],
-                'products' => ['commerce'], 'hotels' => ['hospitality'],
-            ];
-            $lookup = $sectorModel->slug;
-            $aliases = $aliasMap[$lookup] ?? [];
-            foreach ($aliases as $alias) {
-                $aliasSector = $county->sectors->first(fn ($s) => str_starts_with($s->slug, $alias));
-                if (!$aliasSector) continue;
-                $aliasVid = Cache::remember("resolve:county_sector_video_url_" . $alias, config('kicc.cache_ttl.public', 21600), function () use ($county, $alias) {
-                    $a = MediaAsset::resolveSlot(County::class, $county->id, 'sector_video_' . $alias);
-                    return $a ? ($a->mp4Url() ?? $a->url()) : null;
-                });
-                if ($aliasVid && !isset($seenMap[$aliasVid])) {
-                    $sectorHeroVideos[] = $aliasVid;
-                    $seenMap[$aliasVid] = true;
-                }
-            }
-        }
-
-        // Tier 5: County hero video
-        if (count($sectorHeroVideos) === 0) {
-            $countyHeroUrl = Cache::remember("resolve:county_hero_url_" . $county->id, config('kicc.cache_ttl.public', 21600), function () use ($county) {
-                $a = MediaAsset::resolveSlot(County::class, $county->id, 'hero_video');
-                return $a ? ($a->mp4Url() ?? $a->url()) : null;
-            });
-            if ($countyHeroUrl && !isset($seenMap[$countyHeroUrl])) {
-                $sectorHeroVideos[] = $countyHeroUrl;
-                $seenMap[$countyHeroUrl] = true;
-            }
-        }
-
-        // Tier 6: Other sector videos (only when absolutely nothing else exists)
-        if (count($sectorHeroVideos) === 0) {
-            $otherSectorVideos = MediaAsset::where('owner_type', County::class)
-                ->where('owner_id', $county->id)
-                ->where('slot', 'like', 'sector_video_%')
-                ->get();
-            foreach ($otherSectorVideos as $sv) {
-                $url = $sv->mp4Url() ?? $sv->url();
-                if ($url && !isset($seenMap[$url])) {
-                    $sectorHeroVideos[] = $url;
-                    $seenMap[$url] = true;
-                }
-            }
-        }
-
-        $services = collect();
-
-        // Review scores for entity cards (seeded online reviews + real entity reviews)
         $entityIdsList = $items->pluck('id');
         $entityReviewScores = [];
         if ($entityIdsList->isNotEmpty()) {
-            $seeds = \App\Models\ReviewSeed::where('owner_type', SectorEntity::class)
+            $seeds = \App\Models\ReviewSeed::where('owner_type', \App\Models\SectorEntity::class)
                 ->whereIn('owner_id', $entityIdsList)->get()->keyBy('owner_id');
             $real = \App\Models\SectorEntityReview::whereIn('sector_entity_id', $entityIdsList)
                 ->selectRaw('sector_entity_id, AVG(rating) as avg_r, COUNT(*) as cnt')
                 ->groupBy('sector_entity_id')->get()->keyBy('sector_entity_id');
-            // Institution seeds also count — entities that are institutions inherit their seed
             $instEntityIds = $items->whereIn('entity_type', [CountyInstitution::class, InstitutionSyncService::ENTITY_TYPE])
                 ->pluck('entity_id')->unique();
             $instSeeds = $instEntityIds->isNotEmpty()
@@ -597,28 +389,15 @@ class CountyController extends Controller
             }
         }
 
-        // Poster for the sector hero
-        // Prefer the sector's own video poster, fall back to county hero poster,
-        // then to the first video in the playlist (browser renders first frame).
-        $sectorHeroPoster = $bgAsset?->posterUrl()
-            ?? Cache::remember("resolve:county_hero_post_" . $county->id, config('kicc.cache_ttl.public', 21600), function () use ($county) {
-                $a = MediaAsset::resolveSlot(County::class, $county->id, 'hero_video');
-                return $a ? $a->posterUrl() : null;
-            })
-            ?? media('counties/' . $county->slug . '/hero.jpeg');
-        if (!$sectorHeroPoster || str_contains($sectorHeroPoster, 'hero.jpeg')) {
-            $sectorHeroPoster = $sectorHeroVideos[0] ?? null;
-        }
+        $services = collect();
 
         return view('counties.sector', compact(
             'county', 'items', 'sector', 'sectorInfo', 'sectorModel',
             'fourDVideo', 'entityVideos', 'entityPosters', 'entityHoverLoops', 'entitySplats',
-            'institutionHeroVideos', 'institutionHeroPosters', 'institutionHeroLoops', 'productCounts',
-            'sectorHeroVideos', 'sectorHeroPoster', 'services', 'entityReviewScores'
-        ));
-    }
-
-    public function institution(string $slug)
+            'institutionHeroVideos', 'productCounts',
+            'sectorHeroVideos', 'sectorHeroPoster', 'entityReviewScores', 'services'
+        ))->with(['institutionHeroPosters' => $entityPosters, 'institutionHeroLoops' => $entityHoverLoops]);
+    }public function institution(string $slug)
     {
         $institution = CountyInstitution::where('slug', $slug)
             ->where('is_published', true)
