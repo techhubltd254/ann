@@ -236,7 +236,12 @@ class SectorMediaResolver
         $seen = [];
         $list = [];
 
-        $add = fn ($url) => $url && !isset($seen[$url]) ? ($seen[$url] = true) && ($list[] = $url) : null;
+        $add = function ($url) use (&$list, &$seen) {
+            if ($url && !isset($seen[$url])) {
+                $seen[$url] = true;
+                $list[] = $url;
+            }
+        };
 
         // Tier 1: entity videos + institution heroes
         foreach ($entities as $e) {
