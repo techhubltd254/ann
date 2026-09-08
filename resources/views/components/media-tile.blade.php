@@ -10,7 +10,7 @@
     'badge' => null,
     'href' => '#',
     'aspect' => 'aspect-video',
-    'displayMode' => null, // parallax, sphere, card, float, flat
+    'displayMode' => null,
 ])
 
 <div class="group relative {{ $aspect }} bg-[#0B1E57] overflow-hidden rounded-xl"
@@ -20,16 +20,6 @@
      @focusin="onHoverEnter()"
      @focusout="onHoverLeave()">
 
-    @if($displayMode && $displayMode !== 'flat')
-    {{-- Three.js 3D video player tile --}}
-    <div class="three-video-container absolute inset-0 w-full h-full"
-         data-video="{{ $videoUrl ?? $hoverLoop ?? '' }}"
-         data-depth=""
-         data-mode="{{ $displayMode }}"
-         style="background: transparent;">
-    </div>
-    @else
-    {{-- Standard poster + video tile --}}
     @if($poster)
     <img src="{{ $poster }}" alt="{{ $title }}" loading="lazy"
          class="absolute inset-0 w-full h-full object-cover transition-opacity duration-500"
@@ -50,7 +40,6 @@
         <source src="{{ $videoUrl }}" type="video/mp4">
         @endif
     </video>
-    @endif
 
     <div class="absolute inset-0 bg-gradient-to-t from-black/60 via-transparent to-transparent pointer-events-none"></div>
 
@@ -78,5 +67,13 @@
 
     @if($href && $href !== '#')
     <a href="{{ $href }}" class="absolute inset-0 z-20" aria-label="{{ $title }}"></a>
+    @endif
+
+    {{-- 3D overlay — invisible, activated by JS if THREE is available --}}
+    @if($displayMode && $displayMode !== 'flat')
+    <div class="three-video-overlay absolute inset-0 z-30" style="display:none"
+         data-video="{{ $videoUrl ?? $hoverLoop ?? '' }}"
+         data-mode="{{ $displayMode }}">
+    </div>
     @endif
 </div>

@@ -363,24 +363,41 @@
         }
     }
     </script>
-    <script>
+<script>
     // Initialize 3D video players on page load
     document.addEventListener('DOMContentLoaded', () => {
+        // Standalone 3D containers (hero, product pages)
         document.querySelectorAll('.three-video-container').forEach(el => {
             const videoUrl = el.dataset.video;
             const depthUrl = el.dataset.depth || null;
             const mode = el.dataset.mode || 'parallax';
-            if (videoUrl) {
-                new Kicc3DVideoPlayer({
-                    container: el,
-                    videoUrl: videoUrl,
-                    depthMapUrl: depthUrl,
-                    mode: mode,
-                });
+            if (videoUrl && typeof Kicc3DVideoPlayer !== 'undefined') {
+                try {
+                    new Kicc3DVideoPlayer({ container: el, videoUrl, depthMapUrl: depthUrl, mode });
+                } catch (e) {}
             }
         });
+        // 3D overlays on top of existing video elements (media-tile, hero)
+        // On success, hide the underlying video and show the overlay
+        document.querySelectorAll('.three-video-overlay').forEach(el => {
+            const videoUrl = el.dataset.video;
+            const mode = el.dataset.mode || 'parallax';
+            if (!videoUrl || typeof Kicc3DVideoPlayer === 'undefined') return;
+            try {
+                const player = new Kicc3DVideoPlayer({ container: el, videoUrl, depthMapUrl: null, mode });
+                if (player && player.renderer) {
+                    el.style.display = '';
+                    // Hide the sibling video element
+                    const parent = el.parentElement;
+                    if (parent) {
+                        const video = parent.querySelector('video');
+                        if (video) video.style.display = 'none';
+                    }
+                }
+            } catch (e) {}
+        });
     });
-    </script>
+</script>
 </head>
 <body class="antialiased text-gray-900 bg-[#F9FAFB]">
     <a href="#main-content" class="skip-link" aria-label="Skip to main content">Skip to main content</a>
