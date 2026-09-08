@@ -94,7 +94,10 @@ class MediaAsset extends Model
         if ($url) return $url;
         // Fallback: use the raw asset path directly when no derivative exists
         $direct = $this->url();
-        if ($direct && str_contains($this->mime ?? '', 'mp4')) return $direct;
+        if ($direct) {
+            $ext = strtolower(pathinfo($this->path ?? '', PATHINFO_EXTENSION));
+            if (str_contains($this->mime ?? '', 'mp4') || $ext === 'mp4') return $direct;
+        }
         return null;
     }
 
@@ -124,7 +127,11 @@ class MediaAsset extends Model
             ->orderBy('variant')
             ->value('path');
 
-        return $poster ? $this->resolve($poster) : null;
+        if ($poster) return $this->resolve($poster);
+        // Fallback: use first frame of the video URL by using the video itself as poster
+        $mp4 = $this->mp4Url();
+        if ($mp4) return $mp4;
+        return null;
     }
 
     /** Tier 2: 3s low-bitrate hover/in-view loop */
@@ -135,7 +142,8 @@ class MediaAsset extends Model
             ->orderBy('variant')
             ->value('path');
 
-        return $loop ? $this->resolve($loop) : null;
+        if ($loop) return $this->resolve($loop);
+        return $this->mp4Url();
     }
 
     /** Tier 3: interactive 4D Gaussian splat (detail page only) */
