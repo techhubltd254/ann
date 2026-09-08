@@ -26,6 +26,14 @@
 <div class="pt-20">
     {{-- HERO --}}
     <div class="relative min-h-[70vh] md:min-h-[85vh] overflow-hidden">
+        {{-- 3D Waving County Flag background --}}
+        @if(isset($countyFlagUri) && $countyFlagUri)
+        <div id="county-flag-stage"
+             data-flag="{{ $countyFlagUri }}"
+             class="absolute inset-0 w-full h-full opacity-20"
+             style="z-index:0; pointer-events:none;">
+        </div>
+        @endif
         @php
             $heroPoster = $countyMedia?->posterUrl() ?? media('counties/' . $county->slug . '/hero.jpeg');
             $heroPosterImg = $countyMedia?->thumbnailUrl() ?? media('counties/' . $county->slug . '/hero.jpeg');
@@ -355,5 +363,19 @@ function heroFallbackPlayer(config) {
         }
     };
 }
+</script>
+<script defer src="{{ asset('js/waving-flag.js') }}"></script>
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+    var flagContainer = document.getElementById('county-flag-stage');
+    if (flagContainer && typeof KiccWavingFlag !== 'undefined') {
+        var dataUri = flagContainer.dataset.flag;
+        if (dataUri) {
+            try {
+                new KiccWavingFlag({ container: flagContainer, flagDataUri: dataUri });
+            } catch(e) {}
+        }
+    }
+});
 </script>
 @endpush

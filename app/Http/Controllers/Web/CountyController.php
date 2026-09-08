@@ -241,6 +241,9 @@ class CountyController extends Controller
 
         $mapPins = app(\App\Services\MapPinService::class)->countyPins($county);
 
+        // County flag data for 3D waving flag
+        $countyFlagUri = app(\App\Services\CountyFlagService::class)->forCounty($county)['flag_data_uri'];
+
         // Build sector→pins mapping: which institutions belong to which sector
         $sectorPins = [];
         foreach ($sectorData as $name => $s) {
@@ -260,7 +263,7 @@ class CountyController extends Controller
             'featuredAttractions', 'featuredHotels', 'countyProducts',
             'exhibitions', 'linkedSectors', 'countyMedia', 'countyHeroFallback', 'sectorVideos', 'sectorWebmVideos',
             'sectorEntityVideos', 'sectorPitches', 'sectorTilePosters', 'attractionThumbs', 'hotelThumbs', 'productThumbs',
-            'mapPins', 'sectorPins'
+            'mapPins', 'sectorPins', 'countyFlagUri'
         ));
     }
 
