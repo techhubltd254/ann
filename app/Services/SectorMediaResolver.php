@@ -55,7 +55,13 @@ class SectorMediaResolver
         foreach ($entities as $e) {
             $key = $e->entity_type . '-' . $e->entity_id;
             $assets = $mediaMap->get($key);
-            $asset = $assets?->first();
+            if (!$assets || $assets->isEmpty()) continue;
+            // Prefer hero_video over 4d_video, prefer assets with playable derivatives
+            $asset = $assets->sortByDesc(fn ($a) => match ($a->slot) {
+                'hero_video' => 2,
+                '4d_video' => 1,
+                default => 0,
+            })->first(fn ($a) => $this->bestVideoUrl($a) !== null) ?? $assets->first();
             if ($asset) {
                 $entityVideos[$e->id] = $this->bestVideoUrl($asset);
                 $entityPosters[$e->id] = $this->bestPosterUrl($asset);

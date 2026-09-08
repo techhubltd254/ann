@@ -4,7 +4,9 @@ function mediaTile() {
         videoReady: false,
         hoverTimer: null,
         observer: null,
+        _video: null,
         mounted() {
+            this._video = this.$el.querySelector('video');
             if (window.matchMedia('(max-width: 1024px)').matches) {
                 this.observer = new IntersectionObserver((entries) => {
                     entries.forEach((entry) => {
@@ -26,7 +28,6 @@ function mediaTile() {
         onHoverEnter() {
             if (window.matchMedia('(min-width: 1025px)').matches) {
                 if (this.hoverTimer) clearTimeout(this.hoverTimer);
-                // Play immediately in user gesture context, activate visually after delay
                 this.tryPlay();
                 this.hoverTimer = setTimeout(() => {
                     this.activate();
@@ -43,15 +44,13 @@ function mediaTile() {
         },
         deactivate() {
             this.active = false;
-            if (this.$refs.video) {
-                this.$refs.video.pause();
-            }
+            if (this._video) this._video.pause();
         },
         tryPlay() {
-            if (this.$refs.video) {
-                this.$refs.video.play().catch(() => {
+            if (this._video) {
+                this._video.play().catch(() => {
                     setTimeout(() => {
-                        if (this.$refs.video) this.$refs.video.play().catch(() => {});
+                        if (this._video) this._video.play().catch(() => {});
                     }, 500);
                 });
             }
