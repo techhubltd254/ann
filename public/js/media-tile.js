@@ -49,8 +49,11 @@ function mediaTile() {
         },
         tryPlay() {
             if (this.$refs.video) {
-                this.$refs.video.load();
-                this.$refs.video.play().catch(() => {});
+                this.$refs.video.play().catch(() => {
+                    setTimeout(() => {
+                        if (this.$refs.video) this.$refs.video.play().catch(() => {});
+                    }, 500);
+                });
             }
         },
         onVideoPlaying() {
