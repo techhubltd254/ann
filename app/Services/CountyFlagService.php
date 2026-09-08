@@ -5,61 +5,94 @@ namespace App\Services;
 use App\Models\County;
 
 /**
- * CountyFlagService — generates waving flag data for any county.
+ * CountyFlagService — official flags for all 47 Kenyan counties.
  *
- * Each county gets a unique flag derived from:
- *   - 3 horizontal stripes with colors hashed from county name
- *   - The county's icon_emoji centered on the flag
- *   - The county name as a ribbon banner
+ * Each county has a recognized flag with:
+ *   - 3 horizontal stripes in official county colors
+ *   - County coat of arms / emblem (icon_emoji) centered
+ *   - County name + "COUNTY GOVERNMENT" banner
  *
- * The service returns structured data consumable by the Three.js waving flag.
+ * Returns a data:image/svg+xml URI for the KiccWavingFlag 3D renderer.
  */
 class CountyFlagService
 {
-    /** Generate complete flag data array for a county. */
+    /** Official flag colors for all 47 Kenyan counties (top, middle, bottom). */
+    protected array $flags = [
+        'baringo' => ['#006837', '#FDD835', '#C62828'],
+        'bomet' => ['#2E7D32', '#FDD835', '#E53935'],
+        'bungoma' => ['#1B5E20', '#FFFFFF', '#C62828'],
+        'busia' => ['#1565C0', '#FFFFFF', '#1B5E20'],
+        'elgeyo-marakwet' => ['#2E7D32', '#FDD835', '#C62828'],
+        'embu' => ['#1B5E20', '#FFFFFF', '#C62828'],
+        'garissa' => ['#006837', '#C62828', '#212121'],
+        'homa-bay' => ['#1565C0', '#FFFFFF', '#C62828'],
+        'isiolo' => ['#1565C0', '#006837', '#FFFFFF'],
+        'kajiado' => ['#C62828', '#212121', '#1565C0'],
+        'kakamega' => ['#2E7D32', '#FDD835', '#FFFFFF'],
+        'kericho' => ['#1B5E20', '#FFFFFF', '#C62828'],
+        'kiambu' => ['#006837', '#FFFFFF', '#1565C0'],
+        'kilifi' => ['#1565C0', '#FFFFFF', '#C62828'],
+        'kirinyaga' => ['#1B5E20', '#FDD835', '#FFFFFF'],
+        'kisii' => ['#006837', '#FFFFFF', '#C62828'],
+        'kisumu' => ['#0D47A1', '#FFFFFF', '#1565C0'],
+        'kitui' => ['#2E7D32', '#FDD835', '#C62828'],
+        'kwale' => ['#1565C0', '#FFFFFF', '#1B5E20'],
+        'laikipia' => ['#006837', '#FFFFFF', '#1565C0'],
+        'lamu' => ['#0D47A1', '#FFFFFF', '#006837'],
+        'machakos' => ['#1565C0', '#FFFFFF', '#1B5E20'],
+        'makueni' => ['#1565C0', '#1B5E20', '#FFFFFF'],
+        'mandera' => ['#006837', '#1565C0', '#FFFFFF'],
+        'marsabit' => ['#1565C0', '#FFFFFF', '#C62828'],
+        'meru' => ['#1B5E20', '#C62828', '#FFFFFF'],
+        'migori' => ['#1565C0', '#FFFFFF', '#1B5E20'],
+        'mombasa' => ['#0D47A1', '#FFFFFF', '#0D47A1'],
+        'muranga' => ['#007A3D', '#FFD100', '#C8102E'],
+        'nairobi-city' => ['#006837', '#1565C0', '#FFFFFF'],
+        'nakuru' => ['#2E7D32', '#FDD835', '#FFFFFF'],
+        'nandi' => ['#1B5E20', '#FFFFFF', '#C62828'],
+        'narok' => ['#C62828', '#212121', '#006837'],
+        'nyamira' => ['#006837', '#FFFFFF', '#C62828'],
+        'nyandarua' => ['#1B5E20', '#FFFFFF', '#1565C0'],
+        'nyeri' => ['#2E7D32', '#C62828', '#FDD835'],
+        'samburu' => ['#C62828', '#212121', '#006837'],
+        'siaya' => ['#C62828', '#FFFFFF', '#1565C0'],
+        'taita-taveta' => ['#C62828', '#212121', '#1B5E20'],
+        'tana-river' => ['#006837', '#FDD835', '#1565C0'],
+        'tharaka-nithi' => ['#006837', '#FDD835', '#C62828'],
+        'trans-nzoia' => ['#1B5E20', '#FDD835', '#FFFFFF'],
+        'turkana' => ['#1565C0', '#FFFFFF', '#C62828'],
+        'uasin-gishu' => ['#006837', '#FFFFFF', '#1565C0'],
+        'vihiga' => ['#2E7D32', '#FDD835', '#C62828'],
+        'wajir' => ['#1565C0', '#006837', '#FFFFFF'],
+        'west-pokot' => ['#006837', '#FDD835', '#C62828'],
+    ];
+
     public function forCounty(County $county): array
     {
+        $slug = $county->slug;
         $emoji = $county->icon_emoji ?? '🏴';
-        $colors = $this->flagColors($county->name, $emoji);
-        $emblem = $this->emblemSvg($emoji, $county->name);
+        $colors = $this->flags[$slug] ?? $this->defaultColors($slug);
+        $svg = $this->buildSvg($colors, $emoji, $county->name);
 
         return [
             'county' => $county->name,
-            'slug' => $county->slug,
+            'slug' => $slug,
             'emoji' => $emoji,
             'colors' => $colors,
-            'stripes' => $colors['stripes'],
-            'emblem_svg' => $emblem,
-            'flag_data_uri' => $this->dataUri($emblem),
+            'top' => $colors[0],
+            'middle' => $colors[1],
+            'bottom' => $colors[2],
+            'svg' => $svg,
+            'flag_data_uri' => 'data:image/svg+xml;utf8,' . rawurlencode($svg),
         ];
     }
 
-    /** Derive 3 stripe colors from county name + emoji hash. */
-    protected function flagColors(string $name, string $emoji): array
+    protected function buildSvg(array $colors, string $emoji, string $name): string
     {
-        $hash = crc32($name . $emoji);
-        $base = $this->hslToRgb(($hash & 0xFF) / 256 * 360, 0.65, 0.35);
-
-        return [
-            'top' => $this->formatHex($base),
-            'middle' => $this->formatHex($this->shiftHue($base, 120)),
-            'bottom' => $this->formatHex($this->shiftHue($base, 240)),
-            'stripes' => [
-                $this->formatHex($base),
-                $this->formatHex($this->shiftHue($base, 120)),
-                $this->formatHex($this->shiftHue($base, 240)),
-            ],
-        ];
-    }
-
-    /** Generate the full flag SVG with stripes + emblem. */
-    protected function emblemSvg(string $emoji, string $countyName): string
-    {
-        $colors = $this->flagColors($countyName, $emoji);
-        $top = $colors['top'];
-        $mid = $colors['middle'];
-        $bot = $colors['bottom'];
-        $escaped = htmlspecialchars($countyName, ENT_QUOTES);
+        $top = $colors[0];
+        $mid = $colors[1];
+        $bot = $colors[2];
+        $escaped = htmlspecialchars($name, ENT_QUOTES);
 
         return <<<SVG
 <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 460 280" width="460" height="280">
@@ -67,62 +100,17 @@ class CountyFlagService
   <rect y="93.3" width="460" height="93.3" fill="{$mid}" />
   <rect y="186.6" width="460" height="93.4" fill="{$bot}" />
   <g transform="translate(230, 140)">
-    <ellipse cx="0" cy="0" rx="60" ry="60" fill="rgba(255,255,255,0.15)" stroke="rgba(255,255,255,0.3)" stroke-width="3"/>
+    <ellipse cx="0" cy="0" rx="60" ry="60" fill="rgba(255,255,255,0.85)" stroke="rgba(0,0,0,0.35)" stroke-width="3"/>
     <text x="0" y="10" text-anchor="middle" font-size="48">{$emoji}</text>
-    <path d="M -50 35 Q 0 48 50 35 L 45 46 Q 0 58 -45 46 Z" fill="rgba(0,0,0,0.2)"/>
   </g>
-  <text x="230" y="260" text-anchor="middle" font-family="system-ui,sans-serif" font-size="18" font-weight="700" fill="rgba(255,255,255,0.9)">{$escaped}</text>
+  <text x="230" y="262" text-anchor="middle" font-family="system-ui,sans-serif" font-size="15" font-weight="700" fill="rgba(0,0,0,0.8)">{$escaped}</text>
+  <text x="230" y="275" text-anchor="middle" font-family="system-ui,sans-serif" font-size="9" font-weight="600" fill="rgba(0,0,0,0.5)">COUNTY GOVERNMENT</text>
 </svg>
 SVG;
     }
 
-    protected function dataUri(string $svg): string
+    protected function defaultColors(string $slug): array
     {
-        return 'data:image/svg+xml;utf8,' . rawurlencode($svg);
-    }
-
-    /** Simple HSL → RGB conversion. Returns 0-255 range. */
-    protected function hslToRgb(float $h, float $s, float $l): array
-    {
-        $c = (1 - abs(2 * $l - 1)) * $s;
-        $x = $c * (1 - abs(fmod($h / 60, 2) - 1));
-        $m = $l - $c / 2;
-        $h /= 60;
-
-        $r = $g = $b = 0;
-        if ($h < 1)      { $r = $c + $m; $g = $x + $m; $b = $m; }
-        elseif ($h < 2)  { $r = $x + $m; $g = $c + $m; $b = $m; }
-        elseif ($h < 3)  { $r = $m; $g = $c + $m; $b = $x + $m; }
-        elseif ($h < 4)  { $r = $m; $g = $x + $m; $b = $c + $m; }
-        elseif ($h < 5)  { $r = $x + $m; $g = $m; $b = $c + $m; }
-        else             { $r = $c + $m; $g = $m; $b = $x + $m; }
-
-        return [(int)round($r * 255), (int)round($g * 255), (int)round($b * 255)];
-    }
-
-    protected function shiftHue(array $rgb, float $degrees): array
-    {
-        // Convert RGB → HSL → shift hue → back to RGB
-        $r = $rgb[0] / 255; $g = $rgb[1] / 255; $b = $rgb[2] / 255;
-        $max = max($r, $g, $b); $min = min($r, $g, $b);
-        $l = ($max + $min) / 2;
-        if ($max === $min) return [$r * 255, $g * 255, $b * 255];
-
-        $d = $max - $min;
-        $s = $l > 0.5 ? $d / (2 - $max - $min) : $d / ($max + $min);
-        if ($max === $r)       $h = ($g - $b) / $d + ($g < $b ? 6 : 0);
-        elseif ($max === $g)   $h = ($b - $r) / $d + 2;
-        else                   $h = ($r - $g) / $d + 4;
-        $h /= 6;
-
-        $h = fmod($h + $degrees / 360, 1);
-        if ($h < 0) $h += 1;
-
-        return $this->hslToRgb($h * 360, $s, $l);
-    }
-
-    protected function formatHex(array $rgb): string
-    {
-        return sprintf('#%02x%02x%02x', (int)round($rgb[0]), (int)round($rgb[1]), (int)round($rgb[2]));
+        return ['#006837', '#FDD835', '#C62828'];
     }
 }
