@@ -10,6 +10,7 @@ function mediaTile() {
                     entries.forEach((entry) => {
                         if (entry.isIntersecting && entry.intersectionRatio > 0.55) {
                             this.activate();
+                            this.tryPlay();
                         } else {
                             this.deactivate();
                         }
@@ -25,7 +26,10 @@ function mediaTile() {
         onHoverEnter() {
             if (window.matchMedia('(min-width: 1025px)').matches) {
                 if (this.hoverTimer) clearTimeout(this.hoverTimer);
-                this.hoverTimer = setTimeout(() => this.activate(), 250);
+                this.hoverTimer = setTimeout(() => {
+                    this.activate();
+                    this.tryPlay();
+                }, 250);
             }
         },
         onHoverLeave() {
@@ -42,6 +46,12 @@ function mediaTile() {
                 this.$refs.video.pause();
             }
         },
+        tryPlay() {
+            if (this.$refs.video) {
+                this.$refs.video.load();
+                this.$refs.video.play().catch(() => {});
+            }
+        },
         onVideoPlaying() {
             this.videoReady = true;
         },
@@ -54,11 +64,9 @@ function mediaTile() {
 document.addEventListener('media-tile:activate', (e) => {
     document.querySelectorAll('[x-data="mediaTile()"]').forEach((el) => {
         const tile = window.Alpine ? Alpine.$data(el) : null;
-        if (tile && tile !== e.detail) {
-            tile.active = false;
-            if (tile.$refs?.video) {
-                tile.$refs.video.pause();
-            }
-        }
+        if (tile === e.detail) return;
+        if (tile) tile.active = false;
+        const video = el.querySelector('video');
+        if (video) video.pause();
     });
 });

@@ -30,10 +30,9 @@
     <video x-ref="video"
            class="absolute inset-0 w-full h-full object-cover transition-opacity duration-300"
            :class="videoReady ? 'opacity-100' : 'opacity-0'"
-           muted loop playsinline preload="metadata"
+           muted loop playsinline preload="auto"
            poster="{{ $poster ?? $hoverLoop ?? $videoUrl ?? '' }}"
-           x-on:playing="onVideoPlaying()"
-           x-effect="if (active) { if (!videoReady) { resetVideoReady(); } $refs.video.play().catch(()=>{}); } else { if (videoReady) { $refs.video.pause(); } }">
+           x-on:playing="onVideoPlaying()">
         @if($hoverLoop)
         <source src="{{ $hoverLoop }}" type="video/mp4">
         @elseif($videoUrl)
