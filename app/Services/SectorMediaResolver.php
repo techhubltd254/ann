@@ -53,8 +53,9 @@ class SectorMediaResolver
         $entitySplats = [];
 
         foreach ($entities as $e) {
-            $key = $this->mediaKey($e);
-            $asset = $mediaMap[$key] ?? null;
+            $key = $e->entity_type . '-' . $e->entity_id;
+            $assets = $mediaMap->get($key);
+            $asset = $assets?->first();
             if ($asset) {
                 $entityVideos[$e->id] = $this->bestVideoUrl($asset);
                 $entityPosters[$e->id] = $this->bestPosterUrl($asset);
@@ -175,7 +176,7 @@ class SectorMediaResolver
         return MediaAsset::whereRaw(implode(' OR ', $conditions), $bindings)
             ->with('derivatives')
             ->get()
-            ->keyBy(fn ($a) => $a->owner_type . '-' . $a->owner_id . '-' . $a->slot);
+            ->groupBy(fn ($a) => $a->owner_type . '-' . $a->owner_id);
     }
 
     protected function loadInstitutionHeroVideos($entities): array
@@ -330,11 +331,6 @@ class SectorMediaResolver
     protected function bestHoverLoopUrl(MediaAsset $asset): ?string
     {
         return $asset->hoverLoopUrl();
-    }
-
-    protected function mediaKey($entity): string
-    {
-        return $entity->entity_type . '-' . $entity->entity_id . '-';
     }
 
     protected function emptyResult(): array
