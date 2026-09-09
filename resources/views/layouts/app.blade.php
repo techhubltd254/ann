@@ -30,12 +30,9 @@
     }
     </script>
     <script src="https://cdn.tailwindcss.com"></script>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
     <script src="{{ asset('js/theme.js') }}"></script>
     <script defer src="https://cdn.jsdelivr.net/npm/hls.js@1.5.13/dist/hls.min.js"></script>
     <script defer src="{{ asset('js/media-tile.js') }}"></script>
-    <script defer src="{{ asset('js/three-video-player.js') }}"></script>
-    <script defer src="{{ asset('js/three-background.js') }}"></script>
     <link rel="stylesheet" href="{{ asset('css/colors.css') }}">
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -355,48 +352,36 @@
         }
     </style>
     @stack('styles')
-    <script type="importmap">
-    {
-        "imports": {
-            "three": "https://cdn.jsdelivr.net/npm/three@0.170.0/build/three.module.js",
-            "three/addons/": "https://cdn.jsdelivr.net/npm/three@0.170.0/examples/jsm/"
-        }
-    }
-    </script>
 <script>
-    // Initialize 3D video players on page load
-    document.addEventListener('DOMContentLoaded', () => {
-        // Standalone 3D containers (hero, product pages)
-        document.querySelectorAll('.three-video-container').forEach(el => {
-            const videoUrl = el.dataset.video;
-            const depthUrl = el.dataset.depth || null;
-            const mode = el.dataset.mode || 'parallax';
-            if (videoUrl && typeof Kicc3DVideoPlayer !== 'undefined') {
-                try {
-                    new Kicc3DVideoPlayer({ container: el, videoUrl, depthMapUrl: depthUrl, mode });
-                } catch (e) {}
-            }
+document.addEventListener('DOMContentLoaded', function() {
+    // 3D is opt-in — only runs on pages with actual 3D elements.
+    // This keeps THREE.js + WebGL off pages that don't need it,
+    // which was blocking Alpine initialization and breaking video playback.
+    var needs3d = document.querySelector('.three-video-container, .three-video-overlay');
+    if (!needs3d) return;
+
+    var script = document.createElement('script');
+    script.src = 'https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js';
+    script.onload = function() {
+        // Load the 3D player + background scripts after THREE is ready
+        ['three-video-player.js', 'three-background.js'].forEach(function(file) {
+            var s = document.createElement('script');
+            s.src = '/js/' + file;
+            s.defer = false;
+            document.body.appendChild(s);
         });
-        // 3D overlays on top of existing video elements (media-tile, hero)
-        // On success, hide the underlying video and show the overlay
-        document.querySelectorAll('.three-video-overlay').forEach(el => {
-            const videoUrl = el.dataset.video;
-            const mode = el.dataset.mode || 'parallax';
-            if (!videoUrl || typeof Kicc3DVideoPlayer === 'undefined') return;
-            try {
-                const player = new Kicc3DVideoPlayer({ container: el, videoUrl, depthMapUrl: null, mode });
-                if (player && player.renderer) {
-                    el.style.display = '';
-                    // Hide the sibling video element
-                    const parent = el.parentElement;
-                    if (parent) {
-                        const video = parent.querySelector('video');
-                        if (video) video.style.display = 'none';
-                    }
+        // Small delay for scripts to parse, then init 3D elements
+        setTimeout(function() {
+            document.querySelectorAll('.three-video-container').forEach(function(el) {
+                var videoUrl = el.dataset.video;
+                if (videoUrl && window.Kicc3DVideoPlayer) {
+                    try { new window.Kicc3DVideoPlayer({ container: el, videoUrl: videoUrl }); } catch(e) {}
                 }
-            } catch (e) {}
-        });
-    });
+            });
+        }, 500);
+    };
+    document.head.appendChild(script);
+});
 </script>
 </head>
 <body class="antialiased text-gray-900 bg-[#F9FAFB]">
