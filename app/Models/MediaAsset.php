@@ -127,11 +127,7 @@ class MediaAsset extends Model
             ->orderBy('variant')
             ->value('path');
 
-        if ($poster) return $this->resolve($poster);
-        // Fallback: use first frame of the video URL by using the video itself as poster
-        $mp4 = $this->mp4Url();
-        if ($mp4) return $mp4;
-        return null;
+        return $poster ? $this->resolve($poster) : null;
     }
 
     /** Tier 2: 3s low-bitrate hover/in-view loop */
