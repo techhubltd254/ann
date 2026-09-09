@@ -24,7 +24,7 @@ function mediaTile() {
         },
         onHoverEnter() {
             if (this.hoverTimer) clearTimeout(this.hoverTimer);
-            this.hoverTimer = setTimeout(() => this.activate(), 250);
+            this.activate();
         },
         onHoverLeave() {
             if (this.hoverTimer) clearTimeout(this.hoverTimer);
