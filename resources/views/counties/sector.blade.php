@@ -65,7 +65,7 @@
          onerror="this.style.display='none'">
     @endif
     <video x-ref="sectorHero"
-           autoplay muted loop playsinline preload="metadata"
+           autoplay muted loop playsinline preload="auto"
            class="absolute inset-0 w-full h-full object-cover"
            :class="videoReady ? 'opacity-100' : 'opacity-0'"
            style="transition: opacity 0.6s ease; z-index:2"
@@ -73,6 +73,7 @@
            @ended="nextSectorVideo()"
            poster="{{ $isImagePoster ? $sectorHeroPoster : '' }}">
         <source :src="currentSrc" type="video/mp4">
+        <source src="{{ $heroVids[0] ?? '' }}" type="video/mp4">
     </video>
     <div class="absolute inset-0 bg-gradient-to-t from-black/70 via-black/20 to-transparent" style="z-index:5"></div>
     <div class="absolute bottom-0 left-0 right-0 max-w-7xl mx-auto px-5 pb-10" style="z-index:6">
