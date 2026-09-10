@@ -211,6 +211,9 @@ Route::get('/national-admin/agencies/{agency}/delete', [\App\Http\Controllers\We
     Route::post('/county-admin/{slug}/pro/housing', [\App\Http\Controllers\Web\CountyAdminController::class, 'storeHousingProject'])->name('county.admin.housing.store');
     Route::post('/county-admin/{slug}/pro/drone', [\App\Http\Controllers\Web\CountyAdminController::class, 'storeDroneSequence'])->name('county.admin.drone.store');
     Route::post('/county-admin/{slug}/pro/floor-plan', [\App\Http\Controllers\Web\CountyAdminController::class, 'storeFloorPlan'])->name('county.admin.floor.store');
+    // Virtual Expo — P3: Consent Forms, Voice Notes
+    Route::post('/county-admin/{slug}/pro/consent', [\App\Http\Controllers\Web\CountyAdminController::class, 'storeConsentForm'])->name('county.admin.consent.store');
+    Route::post('/county-admin/{slug}/pro/voice-note', [\App\Http\Controllers\Web\CountyAdminController::class, 'storeVoiceNote'])->name('county.admin.voice.store');
     Route::post('/county-admin/{slug}/pro/hero-video', [\App\Http\Controllers\Web\CountyAdminController::class, 'uploadHeroVideo'])->name('county.admin.hero.upload');
     Route::post('/county-admin/{slug}/pro/hero-video/delete', [\App\Http\Controllers\Web\CountyAdminController::class, 'deleteHeroVideo'])->name('county.admin.hero.delete');
     Route::post('/county-admin/{slug}/pro/entity', [\App\Http\Controllers\Web\CountyAdminController::class, 'addEntity'])->name('county.admin.entity');

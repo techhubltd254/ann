@@ -253,9 +253,13 @@
             --kicc-navy-light: #1a3070;
             --kicc-red: #901C1E;
             --kicc-red-light: #b71c1c;
+            --kicc-crimson: #A6192E;
+            --kicc-crimson-dark: #7A1122;
             --kicc-gold: #FFCD05;
+            --kicc-gold-soft: #FFD966;
             --kicc-gold-light: #ffe44d;
             --kicc-dark: #0A1024;
+            --kicc-ivory: #FAF7F2;
             --kicc-text: #5A6480;
             --kicc-text-light: #8a94a6;
             --kicc-bg: #F9FAFB;

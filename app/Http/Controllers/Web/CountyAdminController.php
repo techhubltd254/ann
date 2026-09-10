@@ -119,6 +119,8 @@ class CountyAdminController extends Controller
             ['label' => 'Flythroughs', 'tab' => 'flythroughs', 'icon' => 'M13 10V3L4 14h7v7l9-11h-7z'],
             ['label' => 'Drone Seq', 'tab' => 'drone', 'icon' => 'M3 15a4 4 0 004 4h9a5 5 0 10-.1-9.999 5.002 5.002 0 10-9.78 2.096A4.001 4.001 0 003 15z'],
             ['label' => 'Floor Plans', 'tab' => 'floors', 'icon' => 'M19 21V5a2 2 0 00-2-2H7a2 2 0 00-2 2v16m14 0h2m-2 0h-5m-9 0H3m2 0h5M9 7h1m-1 4h1m4-4h1m-1 4h1m-5 10v-5a1 1 0 011-1h2a1 1 0 011 1v5m-4 0h4'],
+            ['label' => 'Consent Forms', 'tab' => 'consent', 'icon' => 'M9 12l2 2 4-4m5.618-4.016A11.955 11.955 0 0112 2.944a11.955 11.955 0 01-8.618 3.04A12.02 12.02 0 003 9c0 5.591 3.824 10.29 9 11.622 5.176-1.332 9-6.03 9-11.622 0-1.042-.133-2.052-.382-3.016z'],
+            ['label' => 'Voice Notes', 'tab' => 'voice', 'icon' => 'M19 11a7 7 0 01-7 7m0 0a7 7 0 01-7-7m7 7v4m0 0H8m4 0h4m-4-8a3 3 0 01-3-3V5a3 3 0 116 0v6a3 3 0 01-3 3z'],
         ];
 
         $analytics = app(\App\Services\AnalyticsService::class)->forCounty($county);
@@ -140,6 +142,13 @@ class CountyAdminController extends Controller
             ->with('droneVideo', 'audioOverlay')->latest()->get();
         $presidentialAudios = \App\Models\PresidentialAudio::latest()->get();
         $floorPlans = \App\Models\FloorPlan::with('exhibition', 'venue')->latest()->get();
+        // P3 data
+        $consentForms = \App\Models\ConsentForm::where(function ($q) use ($county) {
+            $q->where('entity_type', \App\Models\County::class)->where('entity_id', $county->id);
+        })->with('records')->latest()->get();
+        $voiceNotes = \App\Models\VoiceNote::where(function ($q) use ($county) {
+            $q->where('entity_type', \App\Models\County::class)->where('entity_id', $county->id);
+        })->with('audioAsset', 'segments')->latest()->get();
 
         return view('dashboards.county-admin', compact(
             'county', 'tab', 'navItems', 'stats', 'products', 'attractions',
@@ -147,6 +156,7 @@ class CountyAdminController extends Controller
             'sectors', 'linkedSectors', 'tileSectors', 'allSectors', 'sectorEntities',
             'institutions', 'traderSpotlights', 'screens', 'screenGroups', 'liveFeeds', 'verifiedTraders',
             'housingProjects', 'droneSequences', 'presidentialAudios', 'floorPlans',
+            'consentForms', 'voiceNotes',
         ) + ['video4dMap' => $this->video4dMap($county), 'analytics' => $analytics]);
     }
 
@@ -954,5 +964,42 @@ class CountyAdminController extends Controller
         ]);
         \App\Services\N8nService::fire('floor_plan_uploaded', ['county' => $county->slug, 'name' => $data['name']]);
         return back()->with('success', 'Floor plan created.');
+    }
+
+    /* ─── P3: CONSENT FORMS ─── */
+    public function storeConsentForm(Request $request, string $slug)
+    {
+        $county = $this->authorizeCounty($slug);
+        $data = $request->validate([
+            'title' => 'required|string|max:255',
+            'language' => 'required|in:en,sw,en-sw',
+            'content_en' => 'nullable|string|max:50000',
+            'content_sw' => 'nullable|string|max:50000',
+        ]);
+        \App\Models\ConsentForm::create($data + [
+            'entity_type' => \App\Models\County::class,
+            'entity_id' => $county->id,
+        ]);
+        \App\Services\N8nService::fire('consent_signed', ['county' => $county->slug, 'title' => $data['title']]);
+        return back()->with('success', 'Consent form created.');
+    }
+
+    /* ─── P3: VOICE NOTES ─── */
+    public function storeVoiceNote(Request $request, string $slug)
+    {
+        $county = $this->authorizeCounty($slug);
+        $data = $request->validate([
+            'title' => 'required|string|max:255',
+            'voice_type' => 'required|in:citizen,patient,health-worker,beneficiary',
+            'transcript' => 'nullable|string|max:50000',
+            'is_published' => 'nullable|boolean',
+        ]);
+        \App\Models\VoiceNote::create($data + [
+            'entity_type' => \App\Models\County::class,
+            'entity_id' => $county->id,
+            'transcribed_at' => !empty($data['transcript']) ? now() : null,
+        ]);
+        \App\Services\N8nService::fire('voice_note_recorded', ['county' => $county->slug, 'title' => $data['title']]);
+        return back()->with('success', 'Voice note recorded.');
     }
 }

@@ -1007,6 +1007,78 @@
                 </div>
             </div>
 
+
+            {{-- VIRTUAL EXPO: Consent Forms --}}
+            @elseif($tab === 'consent')
+            <div class="space-y-6">
+                <div class="flex items-center justify-between">
+                    <div><h1 class="text-xl font-bold text-white">Consent Forms</h1><p class="text-zinc-500 text-sm">Bilingual media & data consent waivers for {{ $county->name }}</p></div>
+                </div>
+                <div class="glass-card rounded-2xl p-5">
+                    <form method="POST" action="{{ route('county.admin.consent.store', $county->slug) }}">
+                        @csrf
+                        <h3 class="text-sm font-bold text-white mb-4">Create Consent Form</h3>
+                        <div class="grid md:grid-cols-2 gap-4 mb-4">
+                            <div><label class="text-[10px] font-bold text-zinc-400 uppercase block mb-1">Title *</label><input name="title" required class="w-full bg-white/5 border border-white/10 rounded-xl px-3 py-2 text-sm text-white"></div>
+                            <div><label class="text-[10px] font-bold text-zinc-400 uppercase block mb-1">Language</label><select name="language" class="w-full bg-white/5 border border-white/10 rounded-xl px-3 py-2 text-sm text-white"><option value="en">English</option><option value="sw">Swahili</option><option value="en-sw">Bilingual</option></select></div>
+                        </div>
+                        <div class="mb-4"><label class="text-[10px] font-bold text-zinc-400 uppercase block mb-1">English Content</label><textarea name="content_en" rows="4" class="w-full bg-white/5 border border-white/10 rounded-xl px-3 py-2 text-sm text-white" placeholder="I consent to the use of my voice and image..."></textarea></div>
+                        <div class="mb-4"><label class="text-[10px] font-bold text-zinc-400 uppercase block mb-1">Swahili Content</label><textarea name="content_sw" rows="4" class="w-full bg-white/5 border border-white/10 rounded-xl px-3 py-2 text-sm text-white" placeholder="Nakubali matumizi ya sauti na picha yangu..."></textarea></div>
+                        <button class="btn-primary">Create Consent Form</button>
+                    </form>
+                </div>
+                <div class="grid md:grid-cols-2 gap-4">
+                    @foreach($consentForms as $cf)
+                    <div class="glass-card rounded-2xl p-4">
+                        <div class="flex items-center justify-between mb-2">
+                            <span class="font-bold text-sm text-zinc-200">{{ $cf->title }}</span>
+                            <span class="text-[10px] px-2 py-0.5 rounded-full {{ $cf->is_active ? 'bg-emerald-500/10 text-emerald-400' : 'bg-zinc-500/10 text-zinc-500' }}">{{ $cf->is_active ? 'Active' : 'Inactive' }}</span>
+                        </div>
+                        <div class="text-[11px] text-zinc-500 space-y-1">
+                            <div>Language: {{ strtoupper($cf->language) }}</div>
+                            <div>Signed: {{ $cf->signed_count }} times</div>
+                        </div>
+                    </div>
+                    @endforeach
+                </div>
+            </div>
+
+            {{-- VIRTUAL EXPO: Voice Notes --}}
+            @elseif($tab === 'voice')
+            <div class="space-y-6">
+                <div class="flex items-center justify-between">
+                    <div><h1 class="text-xl font-bold text-white">Voice Notes</h1><p class="text-zinc-500 text-sm">Citizen, patient, and beneficiary audio testimonies for {{ $county->name }}</p></div>
+                </div>
+                <div class="glass-card rounded-2xl p-5">
+                    <form method="POST" action="{{ route('county.admin.voice.store', $county->slug) }}">
+                        @csrf
+                        <h3 class="text-sm font-bold text-white mb-4">Record Voice Note</h3>
+                        <div class="grid md:grid-cols-3 gap-4 mb-4">
+                            <div><label class="text-[10px] font-bold text-zinc-400 uppercase block mb-1">Title *</label><input name="title" required class="w-full bg-white/5 border border-white/10 rounded-xl px-3 py-2 text-sm text-white"></div>
+                            <div><label class="text-[10px] font-bold text-zinc-400 uppercase block mb-1">Type</label><select name="voice_type" class="w-full bg-white/5 border border-white/10 rounded-xl px-3 py-2 text-sm text-white"><option>citizen</option><option>patient</option><option>health-worker</option><option>beneficiary</option></select></div>
+                            <div><label class="text-[10px] font-bold text-zinc-400 uppercase block mb-1">Published</label><select name="is_published" class="w-full bg-white/5 border border-white/10 rounded-xl px-3 py-2 text-sm text-white"><option value="0">Draft</option><option value="1">Publish</option></select></div>
+                        </div>
+                        <div class="mb-4"><label class="text-[10px] font-bold text-zinc-400 uppercase block mb-1">Transcript</label><textarea name="transcript" rows="4" class="w-full bg-white/5 border border-white/10 rounded-xl px-3 py-2 text-sm text-white"></textarea></div>
+                        <button class="btn-primary">Save Voice Note</button>
+                    </form>
+                </div>
+                <div class="grid md:grid-cols-2 gap-4">
+                    @foreach($voiceNotes as $vn)
+                    <div class="glass-card rounded-2xl p-4">
+                        <div class="flex items-center justify-between mb-2">
+                            <span class="font-bold text-sm text-zinc-200">{{ $vn->title }}</span>
+                            <span class="text-[10px] px-2 py-0.5 rounded-full {{ $vn->is_published ? 'bg-emerald-500/10 text-emerald-400' : 'bg-amber-500/10 text-amber-400' }}">{{ $vn->is_published ? 'Published' : 'Draft' }}</span>
+                        </div>
+                        <div class="text-[11px] text-zinc-500 space-y-1">
+                            <div>Type: {{ $vn->voice_type }}</div>
+                            @if($vn->transcript)<div class="text-zinc-400 line-clamp-2">{{ $vn->transcript }}</div>@endif
+                            @if($vn->segments->count())<div>Segments: {{ $vn->segments->count() }}</div>@endif
+                        </div>
+                    </div>
+                    @endforeach
+                </div>
+            </div>
+
             @endif
         </main>
 
