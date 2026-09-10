@@ -25,6 +25,7 @@ class Product extends Model
         'is_digital' => 'boolean',
         'is_featured' => 'boolean',
         'tags' => 'array',
+        'videos' => 'array',
         'weight_kg' => 'float',
     ];
 
