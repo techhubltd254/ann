@@ -327,6 +327,18 @@ class CountyController extends Controller
         $sectorHeroVideos = $media['hero_playlist'];
         $sectorHeroPoster = $media['hero_poster'];
         $fourDVideo = $media['hero_video_url'];
+        $institutionProductVideos = $media['institution_product_videos'];
+
+        // Fallback: assign product video to entity tiles that have no hero/4d video
+        foreach ($items as $e) {
+            if (!empty($entityVideos[$e->id]) || !empty($institutionHeroVideos[$e->id])) continue;
+            $isInst = in_array($e->entity_type, [\App\Models\CountyInstitution::class, \App\Services\InstitutionSyncService::ENTITY_TYPE]);
+            if (!$isInst) continue;
+            $pVids = $institutionProductVideos[$e->entity_id] ?? [];
+            if (!empty($pVids)) {
+                $entityVideos[$e->id] = $pVids[0];
+            }
+        }
 
         $fallbackResolver = app(\App\Services\MediaFallbackResolver::class);
         foreach ($items as $e) {
