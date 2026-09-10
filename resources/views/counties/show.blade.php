@@ -146,24 +146,37 @@
                 @endphp
                 <a href="{{ route('counties.sector', [$county->slug, $s['route']]) }}"
                    class="group bg-white border border-gray-200 hover:border-kicc-gold/40 rounded-2xl overflow-hidden transition-all block card-hover"
-                   @mouseenter="const v = $el.querySelector('video'); if(v) { v.play().catch(()=>{}); }"
-                   @mouseleave="const v = $el.querySelector('video'); if(v) { v.pause(); }"
+                   x-data="mediaTile()"
+                   @mouseenter="onHoverEnter()"
+                   @mouseleave="onHoverLeave()"
                    data-tilt="6" data-reveal data-reveal-delay="{{ $loop->index * 80 }}">
                     <div class="aspect-[4/3] overflow-hidden relative {{ $hasVideo ? 'bg-[#0B1E57]' : 'bg-gradient-to-br from-[#0A1024] to-[#1a1a2e]' }}">
                         @if($firstVideo)
-                        <video muted loop playsinline preload="metadata"
-                               class="absolute inset-0 w-full h-full object-cover"
+                        <video x-ref="video" muted loop playsinline preload="auto"
+                               class="absolute inset-0 w-full h-full object-cover transition-opacity duration-500"
+                               :class="videoReady ? 'opacity-100' : 'opacity-0'"
                                poster="{{ $sectorTilePoster ?? ($sectorTilePosters[$s['sector_slug']] ?? '') }}"
-                               onerror="this.style.display='none'">
+                               @playing="onVideoPlaying()"
+                               x-effect="if (active) { $refs.video.play().catch(()=>{}); } else { $refs.video.pause(); }">
                             <source src="{{ $firstVideo }}" type="video/mp4">
                         </video>
+                        <img src="{{ $sectorTilePoster ?? ($sectorTilePosters[$s['sector_slug']] ?? '') }}" alt="{{ $name }}"
+                             loading="lazy" class="absolute inset-0 w-full h-full object-cover transition-opacity duration-500"
+                             :class="videoReady ? 'opacity-0' : 'opacity-100'"
+                             onerror="this.style.display='none'">
                         @elseif($sectorVideo)
-                        <video muted loop playsinline preload="metadata"
-                               class="absolute inset-0 w-full h-full object-cover"
+                        <video x-ref="video" muted loop playsinline preload="auto"
+                               class="absolute inset-0 w-full h-full object-cover transition-opacity duration-500"
+                               :class="videoReady ? 'opacity-100' : 'opacity-0'"
                                poster="{{ $sectorTilePoster ?? ($sectorTilePosters[$s['sector_slug']] ?? $sectorVideo) }}"
-                               onerror="this.style.display='none'">
+                               @playing="onVideoPlaying()"
+                               x-effect="if (active) { $refs.video.play().catch(()=>{}); } else { $refs.video.pause(); }">
                             <source src="{{ $sectorVideo }}" type="video/mp4">
                         </video>
+                        <img src="{{ $sectorTilePoster ?? ($sectorTilePosters[$s['sector_slug']] ?? $sectorVideo) }}" alt="{{ $name }}"
+                             loading="lazy" class="absolute inset-0 w-full h-full object-cover transition-opacity duration-500"
+                             :class="videoReady ? 'opacity-0' : 'opacity-100'"
+                             onerror="this.style.display='none'">
                         @else
                         <div class="absolute inset-0 bg-gradient-to-br from-[#0A1024] to-[#1a1a2e] flex items-center justify-center">
                             <span class="text-white/20 text-5xl">{{ $s['icon'] ?? '' }}</span>
