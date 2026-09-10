@@ -207,6 +207,10 @@ Route::get('/national-admin/agencies/{agency}/delete', [\App\Http\Controllers\We
     Route::post('/county-admin/{slug}/pro/trade-hub', [\App\Http\Controllers\Web\CountyAdminController::class, 'updateTradeHub'])->name('county.admin.trade.hub');
     Route::post('/county-admin/{slug}/pro/spotlight', [\App\Http\Controllers\Web\CountyAdminController::class, 'storeTraderSpotlight'])->name('county.admin.spotlight.store');
     Route::post('/county-admin/{slug}/pro/broadcast', [\App\Http\Controllers\Web\CountyAdminController::class, 'updateBroadcast'])->name('county.admin.broadcast');
+    // Virtual Expo — P2: Flythroughs, Drones, Floor Plans
+    Route::post('/county-admin/{slug}/pro/housing', [\App\Http\Controllers\Web\CountyAdminController::class, 'storeHousingProject'])->name('county.admin.housing.store');
+    Route::post('/county-admin/{slug}/pro/drone', [\App\Http\Controllers\Web\CountyAdminController::class, 'storeDroneSequence'])->name('county.admin.drone.store');
+    Route::post('/county-admin/{slug}/pro/floor-plan', [\App\Http\Controllers\Web\CountyAdminController::class, 'storeFloorPlan'])->name('county.admin.floor.store');
     Route::post('/county-admin/{slug}/pro/hero-video', [\App\Http\Controllers\Web\CountyAdminController::class, 'uploadHeroVideo'])->name('county.admin.hero.upload');
     Route::post('/county-admin/{slug}/pro/hero-video/delete', [\App\Http\Controllers\Web\CountyAdminController::class, 'deleteHeroVideo'])->name('county.admin.hero.delete');
     Route::post('/county-admin/{slug}/pro/entity', [\App\Http\Controllers\Web\CountyAdminController::class, 'addEntity'])->name('county.admin.entity');

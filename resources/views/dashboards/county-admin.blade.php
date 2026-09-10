@@ -889,6 +889,124 @@
                     </tbody>
                 </table>
             </div>
+
+            {{-- VIRTUAL EXPO: Housing Flythroughs --}}
+            @elseif($tab === 'flythroughs')
+            <div class="space-y-6">
+                <div class="flex items-center justify-between">
+                    <div><h1 class="text-xl font-bold text-white">Housing Flythroughs</h1><p class="text-zinc-500 text-sm">4D render flythroughs for housing projects in {{ $county->name }}</p></div>
+                </div>
+                <div class="glass-card rounded-2xl p-5">
+                    <form method="POST" action="{{ route('county.admin.housing.store', $county->slug) }}">
+                        @csrf
+                        <h3 class="text-sm font-bold text-white mb-4">Add Housing Project</h3>
+                        <div class="grid md:grid-cols-3 gap-4 mb-6">
+                            <div><label class="text-[10px] font-bold text-zinc-400 uppercase block mb-1">Project Name *</label><input name="name" required class="w-full bg-white/5 border border-white/10 rounded-xl px-3 py-2 text-sm text-white"></div>
+                            <div><label class="text-[10px] font-bold text-zinc-400 uppercase block mb-1">Location</label><input name="location" class="w-full bg-white/5 border border-white/10 rounded-xl px-3 py-2 text-sm text-white"></div>
+                            <div><label class="text-[10px] font-bold text-zinc-400 uppercase block mb-1">Type</label><select name="project_type" class="w-full bg-white/5 border border-white/10 rounded-xl px-3 py-2 text-sm text-white"><option>affordable</option><option>social</option><option>market-rate</option></select></div>
+                            <div><label class="text-[10px] font-bold text-zinc-400 uppercase block mb-1">Total Units</label><input name="total_units" type="number" class="w-full bg-white/5 border border-white/10 rounded-xl px-3 py-2 text-sm text-white"></div>
+                            <div><label class="text-[10px] font-bold text-zinc-400 uppercase block mb-1">Completed Units</label><input name="completed_units" type="number" class="w-full bg-white/5 border border-white/10 rounded-xl px-3 py-2 text-sm text-white"></div>
+                        </div>
+                        <div class="mb-4"><label class="text-[10px] font-bold text-zinc-400 uppercase block mb-1">Description</label><textarea name="description" rows="2" class="w-full bg-white/5 border border-white/10 rounded-xl px-3 py-2 text-sm text-white"></textarea></div>
+                        <button class="btn-primary">Create Project</button>
+                    </form>
+                </div>
+                <div class="grid md:grid-cols-2 gap-4">
+                    @foreach($housingProjects as $hp)
+                    <div class="glass-card rounded-2xl p-4">
+                        <div class="flex items-center justify-between mb-2">
+                            <span class="font-bold text-sm text-zinc-200">{{ $hp->name }}</span>
+                            <span class="text-[10px] px-2 py-0.5 rounded-full {{ $hp->is_published ? 'bg-emerald-500/10 text-emerald-400' : 'bg-zinc-500/10 text-zinc-500' }}">{{ $hp->is_published ? 'Live' : 'Draft' }}</span>
+                        </div>
+                        <div class="text-[11px] text-zinc-500">Type: {{ $hp->project_type }} | Units: {{ $hp->completed_units ?? 0 }}/{{ $hp->total_units ?? '?' }}</div>
+                        @if($hp->flythroughVideo)<div class="text-[11px] text-indigo-400 mt-1">Flythrough video attached</div>@endif
+                    </div>
+                    @endforeach
+                </div>
+            </div>
+
+            {{-- VIRTUAL EXPO: Drone Sequences --}}
+            @elseif($tab === 'drone')
+            <div class="space-y-6">
+                <div class="flex items-center justify-between">
+                    <div><h1 class="text-xl font-bold text-white">Drone Sequences</h1><p class="text-zinc-500 text-sm">Drone overview footage layered with presidential audio for {{ $county->name }}</p></div>
+                </div>
+                <div class="glass-card rounded-2xl p-5">
+                    <form method="POST" action="{{ route('county.admin.drone.store', $county->slug) }}">
+                        @csrf
+                        <h3 class="text-sm font-bold text-white mb-4">Add Drone Sequence</h3>
+                        <div class="grid md:grid-cols-3 gap-4 mb-6">
+                            <div><label class="text-[10px] font-bold text-zinc-400 uppercase block mb-1">Name *</label><input name="name" required class="w-full bg-white/5 border border-white/10 rounded-xl px-3 py-2 text-sm text-white"></div>
+                            <div><label class="text-[10px] font-bold text-zinc-400 uppercase block mb-1">Location</label><input name="location" class="w-full bg-white/5 border border-white/10 rounded-xl px-3 py-2 text-sm text-white"></div>
+                            <div><label class="text-[10px] font-bold text-zinc-400 uppercase block mb-1">Audio Overlay (Presidential)</label>
+                                <select name="audio_overlay_id" class="w-full bg-white/5 border border-white/10 rounded-xl px-3 py-2 text-sm text-white">
+                                    <option value="">None</option>
+                                    @foreach($presidentialAudios as $pa)
+                                    <option value="{{ $pa->id }}">{{ $pa->title }} — {{ $pa->speaker }}</option>
+                                    @endforeach
+                                </select>
+                            </div>
+                        </div>
+                        <button class="btn-primary">Create Sequence</button>
+                    </form>
+                </div>
+                <div class="grid md:grid-cols-2 gap-4">
+                    @foreach($droneSequences as $ds)
+                    <div class="glass-card rounded-2xl p-4">
+                        <div class="font-bold text-sm text-zinc-200">{{ $ds->name }}</div>
+                        <div class="text-[11px] text-zinc-500">Location: {{ $ds->location }}</div>
+                        @if($ds->audioOverlay)<div class="text-[11px] text-amber-400 mt-1">Audio: {{ $ds->audioOverlay->title }}</div>@endif
+                    </div>
+                    @endforeach
+                </div>
+            </div>
+
+            {{-- VIRTUAL EXPO: Floor Plans --}}
+            @elseif($tab === 'floors')
+            <div class="space-y-6">
+                <div class="flex items-center justify-between">
+                    <div><h1 class="text-xl font-bold text-white">Floor Plans</h1><p class="text-zinc-500 text-sm">Manage exhibition floor plans with booth spatial positioning</p></div>
+                </div>
+                <div class="glass-card rounded-2xl p-5">
+                    <form method="POST" action="{{ route('county.admin.floor.store', $county->slug) }}">
+                        @csrf
+                        <h3 class="text-sm font-bold text-white mb-4">Create Floor Plan</h3>
+                        <div class="grid md:grid-cols-3 gap-4 mb-4">
+                            <div><label class="text-[10px] font-bold text-zinc-400 uppercase block mb-1">Name *</label><input name="name" required class="w-full bg-white/5 border border-white/10 rounded-xl px-3 py-2 text-sm text-white"></div>
+                            <div><label class="text-[10px] font-bold text-zinc-400 uppercase block mb-1">Exhibition</label>
+                                <select name="exhibition_id" class="w-full bg-white/5 border border-white/10 rounded-xl px-3 py-2 text-sm text-white">
+                                    <option value="">None</option>
+                                    @foreach(\App\Models\Exhibition::where('status','published')->orderBy('start_date','desc')->get() as $ex)
+                                    <option value="{{ $ex->id }}">{{ $ex->name }}</option>
+                                    @endforeach
+                                </select>
+                            </div>
+                            <div><label class="text-[10px] font-bold text-zinc-400 uppercase block mb-1">Venue</label>
+                                <select name="venue_id" class="w-full bg-white/5 border border-white/10 rounded-xl px-3 py-2 text-sm text-white">
+                                    <option value="">None</option>
+                                    @foreach(\App\Models\Venue::where('is_active',true)->get() as $v)
+                                    <option value="{{ $v->id }}">{{ $v->name }}</option>
+                                    @endforeach
+                                </select>
+                            </div>
+                        </div>
+                        <div class="mb-4"><label class="text-[10px] font-bold text-zinc-400 uppercase block mb-1">Layout Data (JSON)</label><textarea name="layout_json" rows="5" placeholder='{"width":1200,"height":800,"booths":[]}' class="w-full bg-white/5 border border-white/10 rounded-xl px-3 py-2 text-sm text-white font-mono"></textarea></div>
+                        <button class="btn-primary">Create Floor Plan</button>
+                    </form>
+                </div>
+                <div class="grid md:grid-cols-2 gap-4">
+                    @foreach($floorPlans as $fp)
+                    <div class="glass-card rounded-2xl p-4">
+                        <div class="font-bold text-sm text-zinc-200">{{ $fp->name }}</div>
+                        <div class="text-[11px] text-zinc-500">
+                            @if($fp->exhibition) Exhibition: {{ $fp->exhibition->name }} @endif
+                            @if($fp->venue) | Venue: {{ $fp->venue->name }} @endif
+                        </div>
+                    </div>
+                    @endforeach
+                </div>
+            </div>
+
             @endif
         </main>
 

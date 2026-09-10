@@ -116,6 +116,9 @@ class CountyAdminController extends Controller
             ['label' => 'Trade Hub', 'tab' => 'trade_hub', 'icon' => 'M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0z'],
             ['label' => 'Trader Spotlights', 'tab' => 'traders', 'icon' => 'M11 5.882V19.24a1.76 1.76 0 01-3.417.592l-2.147-6.15M18 13a3 3 0 100-6M5.436 13.683A4.001 4.001 0 017 6h1.832c4.1 0 7.625-1.234 9.168-3v14c-1.543-1.766-5.067-3-9.168-3H7a3.988 3.988 0 01-1.564-.317z'],
             ['label' => 'Broadcast', 'tab' => 'broadcast', 'icon' => 'M15 10l4.553-2.276A1 1 0 0121 8.618v6.764a1 1 0 01-1.447.894L15 14M5 18h8a2 2 0 002-2V8a2 2 0 00-2-2H5a2 2 0 00-2 2v8a2 2 0 002 2z'],
+            ['label' => 'Flythroughs', 'tab' => 'flythroughs', 'icon' => 'M13 10V3L4 14h7v7l9-11h-7z'],
+            ['label' => 'Drone Seq', 'tab' => 'drone', 'icon' => 'M3 15a4 4 0 004 4h9a5 5 0 10-.1-9.999 5.002 5.002 0 10-9.78 2.096A4.001 4.001 0 003 15z'],
+            ['label' => 'Floor Plans', 'tab' => 'floors', 'icon' => 'M19 21V5a2 2 0 00-2-2H7a2 2 0 00-2 2v16m14 0h2m-2 0h-5m-9 0H3m2 0h5M9 7h1m-1 4h1m4-4h1m-1 4h1m-5 10v-5a1 1 0 011-1h2a1 1 0 011 1v5m-4 0h4'],
         ];
 
         $analytics = app(\App\Services\AnalyticsService::class)->forCounty($county);
@@ -130,12 +133,20 @@ class CountyAdminController extends Controller
             ->latest()->take(20)->get();
         $verifiedTraders = \App\Models\CountyInstitution::where('county_id', $county->id)
             ->where('is_verified_trader', true)->count();
+        // P2 data
+        $housingProjects = \App\Models\HousingProject::where('county_id', $county->id)
+            ->with('flythroughVideo')->latest()->get();
+        $droneSequences = \App\Models\DroneSequence::where('county_id', $county->id)
+            ->with('droneVideo', 'audioOverlay')->latest()->get();
+        $presidentialAudios = \App\Models\PresidentialAudio::latest()->get();
+        $floorPlans = \App\Models\FloorPlan::with('exhibition', 'venue')->latest()->get();
 
         return view('dashboards.county-admin', compact(
             'county', 'tab', 'navItems', 'stats', 'products', 'attractions',
             'hotels', 'sectorImages', 'plans', 'marketplaceProducts', 'ads',
             'sectors', 'linkedSectors', 'tileSectors', 'allSectors', 'sectorEntities',
             'institutions', 'traderSpotlights', 'screens', 'screenGroups', 'liveFeeds', 'verifiedTraders',
+            'housingProjects', 'droneSequences', 'presidentialAudios', 'floorPlans',
         ) + ['video4dMap' => $this->video4dMap($county), 'analytics' => $analytics]);
     }
 
@@ -891,5 +902,57 @@ class CountyAdminController extends Controller
             ]);
         }
         return back()->with('success', 'Broadcast schedule updated.');
+    }
+
+    /* ─── VIRTUAL EXHIBITION: HOUSING FLYTHROUGHS ─── */
+    public function storeHousingProject(Request $request, string $slug)
+    {
+        $county = $this->authorizeCounty($slug);
+        $data = $request->validate([
+            'name' => 'required|string|max:255',
+            'location' => 'nullable|string|max:255',
+            'project_type' => 'nullable|in:affordable,social,market-rate',
+            'total_units' => 'nullable|integer|min:0',
+            'completed_units' => 'nullable|integer|min:0',
+            'description' => 'nullable|string|max:5000',
+        ]);
+        \App\Models\HousingProject::create($data + ['county_id' => $county->id]);
+        return back()->with('success', 'Housing project created.');
+    }
+
+    /* ─── VIRTUAL EXHIBITION: DRONE SEQUENCES ─── */
+    public function storeDroneSequence(Request $request, string $slug)
+    {
+        $county = $this->authorizeCounty($slug);
+        $data = $request->validate([
+            'name' => 'required|string|max:255',
+            'location' => 'nullable|string|max:255',
+            'audio_overlay_id' => 'nullable|integer|exists:presidential_audios,id',
+        ]);
+        \App\Models\DroneSequence::create($data + ['county_id' => $county->id]);
+        \App\Services\N8nService::fire('drone_sequence_composed', ['county' => $county->slug, 'name' => $data['name']]);
+        return back()->with('success', 'Drone sequence created.');
+    }
+
+    /* ─── VIRTUAL EXHIBITION: FLOOR PLANS ─── */
+    public function storeFloorPlan(Request $request, string $slug)
+    {
+        $county = $this->authorizeCounty($slug);
+        $data = $request->validate([
+            'name' => 'required|string|max:255',
+            'exhibition_id' => 'nullable|integer|exists:exhibitions,id',
+            'venue_id' => 'nullable|integer|exists:venues,id',
+            'image_url' => 'nullable|url|max:500',
+            'layout_json' => 'nullable|string',
+        ]);
+        \App\Models\FloorPlan::create([
+            'name' => $data['name'],
+            'exhibition_id' => $data['exhibition_id'] ?? null,
+            'venue_id' => $data['venue_id'] ?? null,
+            'image_url' => $data['image_url'] ?? null,
+            'layout_data' => !empty($data['layout_json']) ? json_decode($data['layout_json'], true) : null,
+        ]);
+        \App\Services\N8nService::fire('floor_plan_uploaded', ['county' => $county->slug, 'name' => $data['name']]);
+        return back()->with('success', 'Floor plan created.');
     }
 }
