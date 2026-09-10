@@ -1,8 +1,9 @@
 /**
- * YouTube-style single-active media tile (Tier 1 poster -> Tier 2 hover/in-view loop)
- * Desktop: plays when hovered (250ms delay).
- * Mobile: plays when centered in the viewport (IntersectionObserver).
- * Only ONE tile plays at a time across the page.
+ * Media tile — plays video on hover (desktop) or when centered in viewport (all widths).
+ * Play() is called SYNCHRONOUSLY in the user gesture handler so the browser
+ * does not reject it per autoplay policy. The visual activation is delayed
+ * by 150ms to prevent accidental flicker on rapid mouse passes.
+ * Only ONE tile plays at a time (single-active constraint).
  */
 function mediaTile() {
     return {
@@ -11,32 +12,42 @@ function mediaTile() {
         hoverTimer: null,
         observer: null,
         mounted() {
-            if (window.matchMedia('(max-width: 1024px)').matches) {
-                this.observer = new IntersectionObserver((entries) => {
-                    entries.forEach((entry) => {
-                        if (entry.isIntersecting && entry.intersectionRatio > 0.55) {
-                            this.activate();
-                        } else {
-                            this.deactivate();
-                        }
-                    });
-                }, { threshold: [0.55] });
-                this.observer.observe(this.$el);
-            }
+            this.observer = new IntersectionObserver((entries) => {
+                entries.forEach((entry) => {
+                    if (entry.isIntersecting && entry.intersectionRatio > 0.55) {
+                        this.startVideo();
+                        this.activate();
+                    } else {
+                        this.pauseVideo();
+                        this.deactivate();
+                    }
+                });
+            }, { threshold: [0.55] });
+            this.observer.observe(this.$el);
         },
         destroyed() {
             if (this.observer) this.observer.disconnect();
             if (this.hoverTimer) clearTimeout(this.hoverTimer);
         },
         onHoverEnter() {
-            if (window.matchMedia('(min-width: 1025px)').matches) {
-                if (this.hoverTimer) clearTimeout(this.hoverTimer);
-                this.hoverTimer = setTimeout(() => this.activate(), 250);
-            }
+            if (this.hoverTimer) clearTimeout(this.hoverTimer);
+            // Play immediately in the mouseenter user gesture — browser allows it.
+            // Then delay the visual activation to prevent flicker.
+            this.startVideo();
+            this.hoverTimer = setTimeout(() => this.activate(), 150);
         },
         onHoverLeave() {
             if (this.hoverTimer) clearTimeout(this.hoverTimer);
+            this.pauseVideo();
             this.deactivate();
+        },
+        startVideo() {
+            const v = this.$el.querySelector('video');
+            if (v) v.play().catch(() => {});
+        },
+        pauseVideo() {
+            const v = this.$el.querySelector('video');
+            if (v) v.pause();
         },
         activate() {
             this.active = true;
@@ -53,7 +64,10 @@ function mediaTile() {
 
 document.addEventListener('media-tile:activate', (e) => {
     document.querySelectorAll('[x-data="mediaTile()"]').forEach((el) => {
+        if (e.detail && el === e.detail.$el) return;
         const tile = window.Alpine ? Alpine.$data(el) : null;
-        if (tile && tile !== e.detail) tile.active = false;
+        if (tile) tile.active = false;
+        const v = el.querySelector('video');
+        if (v) v.pause();
     });
 });

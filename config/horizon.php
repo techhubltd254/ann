@@ -217,13 +217,28 @@ return [
             'queue' => ['video'],
             'balance' => 'auto',
             'autoScalingStrategy' => 'time',
-            'maxProcesses' => 2,
+            'maxProcesses' => 3,
             'maxTime' => 0,
             'maxJobs' => 0,
             'memory' => 1024,
             'tries' => 2,
             'timeout' => 3600,
             'nice' => 10,
+        ],
+
+        // Institution sync pipeline — triggered by admin saves, runs fast.
+        'sync-supervisor' => [
+            'connection' => 'redis',
+            'queue' => ['sync'],
+            'balance' => 'auto',
+            'autoScalingStrategy' => 'time',
+            'maxProcesses' => 1,
+            'maxTime' => 0,
+            'maxJobs' => 0,
+            'memory' => 256,
+            'tries' => 3,
+            'timeout' => 600,
+            'nice' => 0,
         ],
     ],
 
@@ -235,7 +250,12 @@ return [
                 'balanceCooldown' => 3,
             ],
             'video-supervisor' => [
-                'maxProcesses' => 2,
+                'maxProcesses' => 3,
+                'balanceMaxShift' => 1,
+                'balanceCooldown' => 3,
+            ],
+            'sync-supervisor' => [
+                'maxProcesses' => 1,
                 'balanceMaxShift' => 1,
                 'balanceCooldown' => 3,
             ],

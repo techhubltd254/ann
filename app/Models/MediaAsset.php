@@ -56,8 +56,15 @@ class MediaAsset extends Model
     public function url(?string $variant = null): string
     {
         $path = $variant ? str_replace('/originals/', '/', $this->path) : $this->path;
-        $media = media_url();
 
+        // Serve R2 video assets directly through the edge worker
+        // for zero VPS load and Cloudflare edge caching.
+        if ($this->disk === 'r2' && $this->kind === 'video') {
+            $base = rtrim(config('app.url'), '/');
+            return $base . '/media/video/' . ltrim($path, '/');
+        }
+
+        $media = media_url();
         return $media . '/' . ltrim($path, '/');
     }
 

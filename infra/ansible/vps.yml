@@ -1,0 +1,142 @@
+---
+# KICC Platform — VPS Configuration Playbook
+# Applies to: DigitalOcean droplet (167.172.62.234, 4GB/2CPU/80GB)
+# Usage: ansible-playbook -i infra/ansible/inventory.ini infra/ansible/vps.yml
+- name: KICC Platform VPS Configuration
+  hosts: kicc-vps
+  become: yes
+  vars:
+    php_version: "8.4"
+    php_memory_limit: "1024M"
+    php_upload_max_filesize: "2048M"
+    php_post_max_size: "2048M"
+    php_max_execution_time: "600"
+    php_max_input_time: "600"
+    pm_max_children: 10
+    pm_start_servers: 4
+    pm_min_spare_servers: 2
+    pm_max_spare_servers: 6
+    nginx_client_max_body_size: "2048M"
+    nginx_proxy_buffering: "off"
+    nginx_proxy_buffer_size: "128k"
+    nginx_proxy_buffers: "4 256k"
+    nginx_proxy_busy_buffers_size: "256k"
+    app_dir: "/opt/kicc-laravel"
+    deploy_dir: "/opt/deploy-webhook"
+
+  tasks:
+    - name: Install required packages
+      apt:
+        name:
+          - nginx
+          - php{{ php_version }}-fpm
+          - php{{ php_version }}-cli
+          - php{{ php_version }}-mbstring
+          - php{{ php_version }}-xml
+          - php{{ php_version }}-curl
+          - php{{ php_version }}-redis
+          - php{{ php_version }}-mysql
+          - redis-server
+          - supervisor
+          - python3
+          - python3-pip
+          - htop
+          - iotop
+        state: present
+        update_cache: yes
+
+    - name: Configure PHP-FPM pool settings
+      lineinfile:
+        path: "/etc/php/{{ php_version }}/fpm/pool.d/www.conf"
+        regexp: "^{{ item.key }} ="
+        line: "{{ item.key }} = {{ item.value }}"
+        state: present
+      notify: restart php-fpm
+      loop:
+        - { key: "pm.max_children", value: "{{ pm_max_children }}" }
+        - { key: "pm.start_servers", value: "{{ pm_start_servers }}" }
+        - { key: "pm.min_spare_servers", value: "{{ pm_min_spare_servers }}" }
+        - { key: "pm.max_spare_servers", value: "{{ pm_max_spare_servers }}" }
+        - { key: "pm.max_requests", value: "500" }
+
+    - name: Configure PHP upload limits
+      lineinfile:
+        path: "/etc/php/{{ php_version }}/fpm/php.ini"
+        regexp: "^{{ item.key }} ="
+        line: "{{ item.key }} = {{ item.value }}"
+        state: present
+      notify: restart php-fpm
+      loop:
+        - { key: "upload_max_filesize", value: "{{ php_upload_max_filesize }}" }
+        - { key: "post_max_size", value: "{{ php_post_max_size }}" }
+        - { key: "max_execution_time", value: "{{ php_max_execution_time }}" }
+        - { key: "max_input_time", value: "{{ php_max_input_time }}" }
+        - { key: "memory_limit", value: "{{ php_memory_limit }}" }
+
+    - name: Configure PHP CLI limits
+      lineinfile:
+        path: "/etc/php/{{ php_version }}/cli/php.ini"
+        regexp: "^{{ item.key }} ="
+        line: "{{ item.key }} = {{ item.value }}"
+        state: present
+      loop:
+        - { key: "memory_limit", value: "{{ php_memory_limit }}" }
+        - { key: "max_execution_time", value: "{{ php_max_execution_time }}" }
+
+    - name: Configure Nginx client_max_body_size
+      lineinfile:
+        path: /etc/nginx/nginx.conf
+        regexp: "client_max_body_size"
+        line: "    client_max_body_size {{ nginx_client_max_body_size }};"
+        state: present
+      notify: restart nginx
+
+    - name: Configure Nginx proxy_buffering for video
+      lineinfile:
+        path: /etc/nginx/nginx.conf
+        regexp: "proxy_buffering"
+        line: "    proxy_buffering {{ nginx_proxy_buffering }};"
+        state: present
+      notify: restart nginx
+
+    - name: Set Nginx proxy buffer sizes
+      blockinfile:
+        path: /etc/nginx/nginx.conf
+        marker: "    # {mark} KICC PROXY BUFFER SIZE"
+        block: |
+          proxy_buffer_size {{ nginx_proxy_buffer_size }};
+          proxy_buffers {{ nginx_proxy_buffers }};
+          proxy_busy_buffers_size {{ nginx_proxy_busy_buffers_size }};
+        insertafter: "proxy_buffering"
+      notify: restart nginx
+
+    - name: Ensure Horizon worker is running
+      systemd:
+        name: kicc-horizon
+        state: restarted
+        daemon_reload: yes
+        enabled: yes
+
+    - name: Verify Horizon queue workers
+      shell: |
+        php {{ app_dir }}/artisan horizon:status 2>/dev/null || php {{ app_dir }}/artisan horizon 2>/dev/null &
+
+    - name: Check disk space
+      shell: df -h /
+      register: disk_info
+
+    - name: Warn if disk usage > 80%
+      debug:
+        msg: "⚠ DISK WARNING: {{ disk_info.stdout_lines[1] }}"
+      when: disk_info.stdout.find('8') != -1
+
+  handlers:
+    - name: restart php-fpm
+      systemd:
+        name: php{{ php_version }}-fpm
+        state: restarted
+
+    - name: restart nginx
+      systemd:
+        name: nginx
+        state: restarted

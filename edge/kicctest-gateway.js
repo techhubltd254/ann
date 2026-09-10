@@ -130,6 +130,31 @@ async function handle(request, env, ctx) {
       return new Response(obj.body, { headers });
     }
 
+    // ---- VIDEO assets from R2 — serve directly from edge, zero VPS load ----
+    // Paths stored in R2 under institutions/county/sector-videos/ prefixes.
+    // The origin returns URLs pointing to kicc-r2-media.worker.dev/storage/*,
+    // but routing through this worker gives us:
+    //   - Fine-grained cache purge via HMAC-guarded /edge/purge endpoint
+    //   - Cache tags for granular invalidation
+    //   - Consolidated rate limiting (no separate worker budget)
+    //   - Proper CACHE_VERSION keying so stale versions self-expire
+    if (url.pathname.startsWith("/media/video/")) {
+      // Strip /media/video/ to get the R2 key (e.g. storage/institutions/...)
+      let r2Key = url.pathname.replace("/media/video/", "storage/");
+      // Try exact match first; fall back to prefixed lookup for multi-tenant paths
+      let obj = await env.MEDIA_BUCKET.get(r2Key);
+      if (!obj && r2Key.startsWith("storage/")) {
+        obj = await env.MEDIA_BUCKET.get(r2Key.slice(8));
+      }
+      if (!obj) return await proxy(request, env.ORIGIN_HOST, url, { cache: true, scheme: "https" });
+      const headers = new Headers();
+      obj.writeHttpMetadata(headers);
+      headers.set("Cache-Control", "public, max-age=86400, immutable");
+      headers.set("CDN-Cache-Control", "max-age=86400");
+      headers.set("Access-Control-Allow-Origin", "*");
+      return new Response(obj.body, { headers });
+    }
+
     // ---- Admin SPA (React, separate from Laravel) — proxy to R2 CDN ----
     if (url.pathname.startsWith("/app-admin")) {
       let r2Path = url.pathname.replace("/app-admin", "/admin");
@@ -162,7 +187,7 @@ async function handle(request, env, ctx) {
       ctx.waitUntil(caches.default.put(cacheKey, tagged.clone()));
       return tagged;
     }
-    // Never cache /counties at the CDN level (dynamic filtering)
+    // Never cache /counties at the CDN level (dynamic JS filtering on index page)
     if (url.pathname === "/counties" || url.pathname === "/counties/") {
       const fresh = new Response(res.body, res);
       fresh.headers.set("Cache-Control", "no-cache, no-store, must-revalidate");
