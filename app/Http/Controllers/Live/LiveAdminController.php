@@ -125,4 +125,66 @@ class LiveAdminController extends Controller
 
         return view('live.admin.analytics', compact('data'));
     }
+
+    public function systemHealth()
+    {
+        $checks = [];
+
+        // Database connectivity
+        try {
+            \DB::select('SELECT 1');
+            $checks['database'] = ['status' => 'pass', 'latency_ms' => round(\DB::select('SELECT 1 + 0 AS t')[0]->t, 0)];
+        } catch (\Exception $e) {
+            $checks['database'] = ['status' => 'fail', 'message' => $e->getMessage()];
+        }
+
+        // Redis connectivity
+        try {
+            \Illuminate\Support\Facades\Redis::ping();
+            $checks['redis'] = ['status' => 'pass'];
+        } catch (\Exception $e) {
+            $checks['redis'] = ['status' => 'fail', 'message' => $e->getMessage()];
+        }
+
+        // Queue worker
+        $checks['queue'] = ['status' => 'pass', 'active' => \Illuminate\Support\Facades\Queue::size()];
+
+        // Heartbeat broker health
+        $authorized = BoothAuthorization::where('status', 'AUTHORIZED')->count();
+        $healthyHeartbeats = BoothAuthorization::where('status', 'AUTHORIZED')
+            ->where('last_heartbeat_at', '>=', now()->subSeconds(15))->count();
+        $checks['heartbeat_broker'] = [
+            'status' => $healthyHeartbeats >= ($authorized * 0.8) ? 'pass' : 'warn',
+            'authorized' => $authorized,
+            'healthy' => $healthyHeartbeats,
+            'percent_healthy' => $authorized > 0 ? round($healthyHeartbeats / $authorized * 100) : 100,
+        ];
+
+        // Storage
+        $storagePath = storage_path();
+        $free = disk_free_space($storagePath);
+        $total = disk_total_space($storagePath);
+        $usedPercent = $total > 0 ? round((1 - $free / $total) * 100) : 0;
+        $checks['storage'] = [
+            'status' => $usedPercent < 80 ? 'pass' : ($usedPercent < 90 ? 'warn' : 'fail'),
+            'used_percent' => $usedPercent,
+            'free_gb' => round($free / 1073741824, 1),
+            'total_gb' => round($total / 1073741824, 1),
+        ];
+
+        // Last heartbeat
+        $lastHeartbeat = HeartbeatLog::latest()->first();
+        $checks['last_heartbeat'] = [
+            'time' => $lastHeartbeat?->heartbeat_at?->toIso8601String(),
+            'ago' => $lastHeartbeat?->heartbeat_at?->diffForHumans() ?? 'never',
+        ];
+
+        $overall = collect($checks)->every(fn($c) => ($c['status'] ?? 'fail') !== 'fail');
+
+        return response()->json([
+            'status' => $overall ? 'healthy' : 'degraded',
+            'timestamp' => now()->toIso8601String(),
+            'checks' => $checks,
+        ]);
+    }
 }

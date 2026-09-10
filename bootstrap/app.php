@@ -35,9 +35,14 @@ return Application::configure(basePath: dirname(__DIR__))
         $middleware->api(prepend: [
             \App\Http\Middleware\AgenticSEO::class,
             'throttle:api',
+            \App\Http\Middleware\ThrottleApi::class,
         ]);
         $middleware->alias([
             'admin' => \App\Http\Middleware\AdminMiddleware::class,
+            'security.headers' => \App\Http\Middleware\SecurityHeaders::class,
+            'throttle.api' => \App\Http\Middleware\ThrottleApi::class,
+            'ip.whitelist' => \App\Http\Middleware\IpWhitelistAdmin::class,
+            'exhibitor' => \App\Http\Middleware\ExhibitorMiddleware::class,
         ]);
 
         // When an authenticated user hits a guest-only page (login/register),

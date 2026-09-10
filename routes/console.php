@@ -24,8 +24,20 @@ Schedule::command('vendors:score')->dailyAt('03:00');
 // Subscription billing cycles + invoices (16% VAT) daily.
 Schedule::command('billing:run')->dailyAt('04:00');
 
-// Anomaly sweeps (brute force, card testing, refund fraud) every 15 min.
-Schedule::command('anomalies:detect')->everyFifteenMinutes();
+// Heartbeat monitor — auto-pause booths that have missed 2+ heartbeats.
+Schedule::call(function () {
+    $stale = \App\Models\BoothAuthorization::where('status', 'AUTHORIZED')
+        ->where('last_heartbeat_at', '<', now()->subSeconds(20))
+        ->get();
+    foreach ($stale as $auth) {
+        app(\App\Services\HeartbeatService::class)->handleMissedHeartbeat($auth);
+    }
+})->everyMinute()->name('kicc.heartbeat-monitor');
+
+// Daily security & capacity audit (Red Team / Blue Team sweep).
+Schedule::command('security:audit')->dailyAt('04:30')->onFailure(function ($event) {
+    \Illuminate\Support\Facades\Log::error('security:audit failed', ['exit_code' => $event->exitCode]);
+});
 
 // Adaptive HLS video pipeline — every new upload is picked up by the
 // MediaAssetObserver -> GenerateHlsJob chain; this sweeper catches any

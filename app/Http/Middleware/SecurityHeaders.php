@@ -1,44 +1,46 @@
 <?php
-
 namespace App\Http\Middleware;
 
 use Closure;
 use Illuminate\Http\Request;
-use Symfony\Component\HttpFoundation\Response;
+use Illuminate\Support\Facades\Log;
 
 class SecurityHeaders
 {
-    public function handle(Request $request, Closure $next): Response
+    public function handle(Request $request, Closure $next)
     {
         $response = $next($request);
 
-        $response->headers->set('X-Frame-Options', 'DENY');
-        $response->headers->set('X-Content-Type-Options', 'nosniff');
-        $response->headers->set('Referrer-Policy', 'strict-origin-when-cross-origin');
-        $response->headers->set('Permissions-Policy', 'camera=(), microphone=(), geolocation=(), interest-cohort=()');
-        $response->headers->set('X-XSS-Protection', '1; mode=block');
-        $response->headers->remove('X-Powered-By');
-
-        // Content-Security-Policy. Kept permissive on purpose: Blade views load
-        // Tailwind from cdn.tailwindcss.com (requires inline styles + unsafe-eval
-        // in dev), hls.js from cdn.jsdelivr.net, and Google Fonts; the admin SPA
-        // bundles via Vite ('self'). Tighten later once CDN scripts are bundled.
-        $response->headers->set(
-            'Content-Security-Policy',
-            "default-src 'self'; "
-            . "script-src 'self' 'unsafe-inline' 'unsafe-eval' https://cdn.tailwindcss.com https://cdnjs.cloudflare.com https://cdn.jsdelivr.net; "
-            . "style-src 'self' 'unsafe-inline' https://fonts.googleapis.com https://cdn.tailwindcss.com; "
-            . "font-src 'self' data: https://fonts.gstatic.com; "
-            . "img-src 'self' data: blob: https:; "
-            . "media-src 'self' https:; "
-            . "connect-src 'self' https:; "
-            . "frame-ancestors 'none'; "
-            . "base-uri 'self'; "
-            . "form-action 'self'"
+        // Content Security Policy — allow our CDN, fonts, and inline styles for Alpine/GSAP
+        $response->headers->set('Content-Security-Policy',
+            "default-src 'self' *.cloudflarestream.com cloudflarestream.com *.workers.dev kicctest.org *.kicctest.org; " .
+            "script-src 'self' 'unsafe-inline' 'unsafe-eval' cdn.tailwindcss.com cdn.jsdelivr.net unpkg.com; " .
+            "style-src 'self' 'unsafe-inline' cdn.tailwindcss.com fonts.googleapis.com; " .
+            "font-src 'self' fonts.gstatic.com data:; " .
+            "img-src 'self' data: blob: *.cloudflarestream.com *.workers.dev *.r2.cloudflarestorage.com; " .
+            "media-src 'self' blob: data: *.cloudflarestream.com *.workers.dev *.r2.cloudflarestorage.com; " .
+            "connect-src 'self' kicctest.org *.kicctest.org *.cloudflarestream.com cloudflarestream.com *.workers.dev wss://* ws://*; " .
+            "frame-ancestors 'self'; " .
+            "base-uri 'self'; " .
+            "form-action 'self'"
         );
 
-        if ($request->isSecure() || app()->environment('production')) {
-            $response->headers->set('Strict-Transport-Security', 'max-age=31536000; includeSubDomains; preload');
+        // HSTS — force HTTPS
+        $response->headers->set('Strict-Transport-Security', 'max-age=31536000; includeSubDomains; preload');
+
+        // Frame protect
+        $response->headers->set('X-Frame-Options', 'SAMEORIGIN');
+        $response->headers->set('X-Content-Type-Options', 'nosniff');
+        $response->headers->set('Referrer-Policy', 'strict-origin-when-cross-origin');
+        $response->headers->set('X-XSS-Protection', '1; mode=block');
+        $response->headers->set('Permissions-Policy', 'camera=(self), microphone=(self), geolocation=self');
+        $response->headers->set('Cross-Origin-Opener-Policy', 'same-origin');
+        $response->headers->set('Cross-Origin-Resource-Policy', 'same-site');
+
+        // Cache control for sensitive endpoints
+        if ($request->is('api/*') || $request->is('kicc-live/admin/*') || $request->is('kicc-live/studio/*')) {
+            $response->headers->set('Cache-Control', 'no-store, no-cache, must-revalidate, max-age=0');
+            $response->headers->set('Pragma', 'no-cache');
         }
 
         return $response;

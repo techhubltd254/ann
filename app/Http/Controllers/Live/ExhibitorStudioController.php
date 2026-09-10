@@ -111,4 +111,17 @@ class ExhibitorStudioController extends Controller
         $booth->update($validated);
         return redirect()->back()->with('success', 'Booth updated.');
     }
+
+    public function signedStreamUrl(Booth $booth)
+    {
+        if (!$booth->user_id === auth()->id()) {
+            return response()->json(['error' => 'Unauthorized'], 403);
+        }
+        $stream = LiveStream::where('booth_id', $booth->id)->where('isLive', true)->first();
+        if (!$stream || !$stream->cloudflare_uid) {
+            return response()->json(['error' => 'No active stream'], 404);
+        }
+        $signed = app(\App\Services\SignedUrlService::class)->signStreamManifest($stream->cloudflare_uid);
+        return response()->json(['signed_url' => $signed, 'expires_in' => 900]);
+    }
 }
