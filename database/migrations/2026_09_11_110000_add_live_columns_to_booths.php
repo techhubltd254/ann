@@ -14,58 +14,51 @@ return new class extends Migration {
                 $table->string('slug', 255)->unique()->nullable()->after('name');
             }
             if (!Schema::hasColumn('booths', 'thumbnail')) {
-                $table->string('thumbnail', 500)->nullable()->after('images');
+                $table->string('thumbnail', 500)->nullable();
             }
             if (!Schema::hasColumn('booths', 'stream_status')) {
-                $table->string('stream_status', 20)->default('offline')->after('status');
+                $table->string('stream_status', 20)->default('offline');
             }
             if (!Schema::hasColumn('booths', 'gps_lat')) {
-                $table->decimal('gps_lat', 10, 7)->nullable()->after('virtual_tour_url');
+                $table->decimal('gps_lat', 10, 7)->nullable();
             }
             if (!Schema::hasColumn('booths', 'gps_lng')) {
-                $table->decimal('gps_lng', 10, 7)->nullable()->after('gps_lat');
+                $table->decimal('gps_lng', 10, 7)->nullable();
             }
             if (!Schema::hasColumn('booths', 'physical_address')) {
-                $table->string('physical_address', 500)->nullable()->after('gps_lng');
+                $table->string('physical_address', 500)->nullable();
             }
             if (!Schema::hasColumn('booths', 'contact_phone')) {
-                $table->string('contact_phone', 20)->nullable()->after('contact_email');
+                $table->string('contact_phone', 20)->nullable();
             }
             if (!Schema::hasColumn('booths', 'whatsapp')) {
-                $table->string('whatsapp', 20)->nullable()->after('contact_phone');
+                $table->string('whatsapp', 20)->nullable();
             }
             if (!Schema::hasColumn('booths', 'social_links')) {
-                $table->json('social_links')->nullable()->after('whatsapp');
+                $table->json('social_links')->nullable();
             }
             if (!Schema::hasColumn('booths', 'collateral')) {
-                $table->json('collateral')->nullable()->after('social_links');
+                $table->json('collateral')->nullable();
             }
             if (!Schema::hasColumn('booths', 'meeting_slots')) {
-                $table->json('meeting_slots')->nullable()->after('collateral');
-            }
-            if (!Schema::hasColumn('booths', 'exhibition_id')) {
-                $table->foreignId('exhibition_id')->nullable()->constrained()->nullOnDelete()->after('id');
-            }
-            if (!Schema::hasColumn('booths', 'county_id')) {
-                $table->foreignId('county_id')->nullable()->constrained()->nullOnDelete()->after('exhibition_id');
+                $table->json('meeting_slots')->nullable();
             }
             if (!Schema::hasColumn('booths', 'max_viewers')) {
-                $table->integer('max_viewers')->nullable()->after('meeting_slots');
+                $table->integer('max_viewers')->nullable();
             }
             if (!Schema::hasColumn('booths', 'gallery')) {
-                $table->json('gallery')->nullable()->after('thumbnail');
+                $table->json('gallery')->nullable();
             }
             if (!Schema::hasColumn('booths', 'meta')) {
-                $table->json('meta')->nullable()->after('max_viewers');
+                $table->json('meta')->nullable();
             }
             if (!Schema::hasColumn('booths', 'tagline')) {
-                $table->string('tagline', 500)->nullable()->after('description');
+                $table->string('tagline', 500)->nullable();
             }
         });
     }
 
     public function down(): void
     {
-        // No down — adding columns only
     }
 };

@@ -70,11 +70,16 @@ class LivePlatformServiceProvider extends ServiceProvider
 
         // Public live routes (viewer-facing)
         Route::middleware('web')
-            ->prefix('live')
-            ->name('live.')
             ->group(function () {
-                Route::get('/{booth}', [\App\Http\Controllers\Live\LiveViewController::class, 'show'])->name('show');
-                Route::get('/{booth}/chat', [\App\Http\Controllers\Live\LiveViewController::class, 'chat'])->name('chat');
+                // National Exhibition routes
+                Route::get('/national-exhibition', [\App\Http\Controllers\Live\NationalExhibitionController::class, 'index'])->name('national.index');
+                Route::get('/national-exhibition/{slug}', [\App\Http\Controllers\Live\NationalExhibitionController::class, 'show'])->name('national.show');
+
+                // Booth viewer routes
+                Route::prefix('live')->name('live.')->group(function () {
+                    Route::get('/{booth}', [\App\Http\Controllers\Live\LiveViewController::class, 'show'])->name('show');
+                    Route::get('/{booth}/chat', [\App\Http\Controllers\Live\LiveViewController::class, 'chat'])->name('chat');
+                });
             });
 
         // API routes for heartbeat + data

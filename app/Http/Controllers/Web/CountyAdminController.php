@@ -121,6 +121,7 @@ class CountyAdminController extends Controller
             ['label' => 'Floor Plans', 'tab' => 'floors', 'icon' => 'M19 21V5a2 2 0 00-2-2H7a2 2 0 00-2 2v16m14 0h2m-2 0h-5m-9 0H3m2 0h5M9 7h1m-1 4h1m4-4h1m-1 4h1m-5 10v-5a1 1 0 011-1h2a1 1 0 011 1v5m-4 0h4'],
             ['label' => 'Consent Forms', 'tab' => 'consent', 'icon' => 'M9 12l2 2 4-4m5.618-4.016A11.955 11.955 0 0112 2.944a11.955 11.955 0 01-8.618 3.04A12.02 12.02 0 003 9c0 5.591 3.824 10.29 9 11.622 5.176-1.332 9-6.03 9-11.622 0-1.042-.133-2.052-.382-3.016z'],
             ['label' => 'Voice Notes', 'tab' => 'voice', 'icon' => 'M19 11a7 7 0 01-7 7m0 0a7 7 0 01-7-7m7 7v4m0 0H8m4 0h4m-4-8a3 3 0 01-3-3V5a3 3 0 116 0v6a3 3 0 01-3 3z'],
+            ['label' => 'Landmarks', 'tab' => 'landmarks', 'icon' => 'M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z'],
         ];
 
         $analytics = app(\App\Services\AnalyticsService::class)->forCounty($county);
@@ -149,6 +150,10 @@ class CountyAdminController extends Controller
         $voiceNotes = \App\Models\VoiceNote::where(function ($q) use ($county) {
             $q->where('entity_type', \App\Models\County::class)->where('entity_id', $county->id);
         })->with('audioAsset', 'segments')->latest()->get();
+        // P4 data
+        $landmarks = \App\Models\Landmark::where('county_id', $county->id)->latest()->get();
+        $broadcastSchedules = \App\Models\BroadcastSchedule::where('is_active', true)
+            ->orderBy('sort_order')->latest()->take(50)->get();
 
         return view('dashboards.county-admin', compact(
             'county', 'tab', 'navItems', 'stats', 'products', 'attractions',
@@ -157,6 +162,7 @@ class CountyAdminController extends Controller
             'institutions', 'traderSpotlights', 'screens', 'screenGroups', 'liveFeeds', 'verifiedTraders',
             'housingProjects', 'droneSequences', 'presidentialAudios', 'floorPlans',
             'consentForms', 'voiceNotes',
+            'landmarks', 'broadcastSchedules',
         ) + ['video4dMap' => $this->video4dMap($county), 'analytics' => $analytics]);
     }
 
@@ -1001,5 +1007,20 @@ class CountyAdminController extends Controller
         ]);
         \App\Services\N8nService::fire('voice_note_recorded', ['county' => $county->slug, 'title' => $data['title']]);
         return back()->with('success', 'Voice note recorded.');
+    }
+
+    /* ─── P4: LANDMARKS ─── */
+    public function storeLandmark(Request $request, string $slug)
+    {
+        $county = $this->authorizeCounty($slug);
+        $data = $request->validate([
+            'name' => 'required|string|max:255',
+            'latitude' => 'required|numeric',
+            'longitude' => 'required|numeric',
+            'landmark_type' => 'nullable|string|max:32',
+            'description' => 'nullable|string|max:2000',
+        ]);
+        \App\Models\Landmark::create($data + ['county_id' => $county->id]);
+        return back()->with('success', 'Landmark created.');
     }
 }

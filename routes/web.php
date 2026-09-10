@@ -214,6 +214,8 @@ Route::get('/national-admin/agencies/{agency}/delete', [\App\Http\Controllers\We
     // Virtual Expo — P3: Consent Forms, Voice Notes
     Route::post('/county-admin/{slug}/pro/consent', [\App\Http\Controllers\Web\CountyAdminController::class, 'storeConsentForm'])->name('county.admin.consent.store');
     Route::post('/county-admin/{slug}/pro/voice-note', [\App\Http\Controllers\Web\CountyAdminController::class, 'storeVoiceNote'])->name('county.admin.voice.store');
+    // Virtual Expo — P4: Landmarks
+    Route::post('/county-admin/{slug}/pro/landmark', [\App\Http\Controllers\Web\CountyAdminController::class, 'storeLandmark'])->name('county.admin.landmark.store');
     Route::post('/county-admin/{slug}/pro/hero-video', [\App\Http\Controllers\Web\CountyAdminController::class, 'uploadHeroVideo'])->name('county.admin.hero.upload');
     Route::post('/county-admin/{slug}/pro/hero-video/delete', [\App\Http\Controllers\Web\CountyAdminController::class, 'deleteHeroVideo'])->name('county.admin.hero.delete');
     Route::post('/county-admin/{slug}/pro/entity', [\App\Http\Controllers\Web\CountyAdminController::class, 'addEntity'])->name('county.admin.entity');

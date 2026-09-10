@@ -6,6 +6,9 @@ use App\Models\County;
 use App\Models\CountyInstitution;
 use App\Models\CountyTourismAttraction;
 use App\Models\CountyHotel;
+use App\Models\Booth;
+use App\Models\Exhibition;
+use App\Models\HousingProject;
 use App\Models\Marketplace\Product;
 
 /**
@@ -69,6 +72,18 @@ class MapPinService
     }
 
     /**
+     * Get Google Maps directions URL between two entities or coordinate arrays.
+     */
+    public function directionsUrl($from, $to): ?string
+    {
+        $a = is_array($from) ? $from : $this->resolveCoordinates($from);
+        $b = is_array($to) ? $to : $this->resolveCoordinates($to);
+        if (!$a || !$b) return null;
+
+        return "https://www.google.com/maps/dir/?api=1&origin={$a['lat']},{$a['lng']}&destination={$b['lat']},{$b['lng']}";
+    }
+
+    /**
      * Resolve coordinates from any entity type.
      */
     public function resolveCoordinates($entity): ?array
@@ -90,10 +105,20 @@ class MapPinService
             $lat = $entity->latitude;
             $lng = $entity->longitude;
         } elseif ($entity instanceof Product) {
-            // Fall back to county centroid
             if ($entity->county) {
                 return $this->resolveCoordinates($entity->county);
             }
+        } elseif ($entity instanceof Booth) {
+            if ($entity->exhibition?->county) {
+                return $this->resolveCoordinates($entity->exhibition->county);
+            }
+        } elseif ($entity instanceof Exhibition) {
+            if ($entity->county) {
+                return $this->resolveCoordinates($entity->county);
+            }
+        } elseif ($entity instanceof HousingProject) {
+            $lat = $entity->latitude;
+            $lng = $entity->longitude;
         } elseif (is_object($entity)) {
             // Generic fallback: try common property names
             $lat = $entity->lat ?? $entity->latitude ?? $entity->lat ?? null;

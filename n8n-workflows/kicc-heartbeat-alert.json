@@ -1,0 +1,10 @@
+{
+  "name": "KICC - Heartbeat Alert to Super Admin",
+  "nodes": [
+    {"name": "Webhook Trigger", "type": "n8n-nodes-base.webhook", "position": [250,300], "parameters": {"path": "kicc-heartbeat-alert", "options": {"rawBody": true}}},
+    {"name": "Check Missed Beats", "type": "n8n-nodes-base.if", "position": [450,300], "parameters": {"conditions": [{"id": "condition1", "leftValue": "={{ $json.missed_heartbeats }}", "rightValue": 2, "type": "number", "operator": {"greaterEqual": true}}]}},
+    {"name": "Send SMS Alert", "type": "n8n-nodes-base.httpRequest", "position": [650,200], "parameters": {"method": "POST", "url": "={{ $env.AFRICAS_TALKING_API_URL }}/version1/messaging", "authentication": "genericCredentialType", "genericAuthType": "httpHeaderAuth", "sendBody": true, "bodyParameters": {"parameters": [{"name": "username", "value": "={{ $env.AFRICAS_TALKING_USERNAME }}"}, {"name": "to", "value": "={{ $json.admin_phone || '+254728066733' }}"}, {"name": "message", "value": "KICC ALERT: Booth {{ $json.booth_name }} missed {{ $json.missed_heartbeats }} heartbeats. Auto-paused."}]}}},
+    {"name": "Email Super Admin", "type": "n8n-nodes-base.emailSend", "position": [650,400], "parameters": {"fromEmail": "noreply@kicc.co.ke", "toEmail": "techhubltd254@gmail.com", "subject": "KICC LIVE: Heartbeat Alert - {{ $json.booth_name }}", "text": "Booth {{ $json.booth_name }} (ID: {{ $json.booth_id }}) has missed {{ $json.missed_heartbeats }} heartbeats. Stream auto-paused at {{ $json.timestamp }}."}}
+  ],
+  "connections": {"Webhook Trigger": {"main": [[{"node": "Check Missed Beats", "type": "main", "index": 0}]]}, "Check Missed Beats": {"main": [[{"node": "Send SMS Alert", "type": "main", "index": 0}], [{"node": "Email Super Admin", "type": "main", "index": 0}]]}}
+}

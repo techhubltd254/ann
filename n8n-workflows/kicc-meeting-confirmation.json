@@ -1,0 +1,10 @@
+{
+  "name": "KICC - Meeting Booking Confirmation",
+  "nodes": [
+    {"name": "Webhook Trigger", "type": "n8n-nodes-base.webhook", "position": [250,300], "parameters": {"path": "kicc-meeting-booked", "options": {"rawBody": true}}},
+    {"name": "Send SMS to Visitor", "type": "n8n-nodes-base.httpRequest", "position": [450,200], "parameters": {"method": "POST", "url": "={{ $env.AFRICAS_TALKING_API_URL }}/version1/messaging", "sendBody": true, "bodyParameters": {"parameters": [{"name": "username", "value": "={{ $env.AFRICAS_TALKING_USERNAME }}"}, {"name": "to", "value": "={{ $json.visitor_phone }}"}, {"name": "message", "value": "KICC: Meeting confirmed with {{ $json.exhibitor_name }} on {{ $json.slot_start }}. Ref: {{ $json.booking_id }}. Reply STOP to opt out."}]}}},
+    {"name": "Send Email Confirmation", "type": "n8n-nodes-base.emailSend", "position": [450,400], "parameters": {"fromEmail": "bookings@kicc.co.ke", "toEmail": "={{ $json.visitor_email }}", "subject": "Meeting Confirmed - KICC Exhibition", "text": "Dear {{ $json.visitor_name }}, your meeting with {{ $json.exhibitor_name }} is confirmed for {{ $json.slot_start }}. Location: {{ $json.booth_location }}. Add to calendar: {{ $env.APP_URL }}/meeting/{{ $json.calendar_token }}"}},
+    {"name": "Notify Exhibitor", "type": "n8n-nodes-base.emailSend", "position": [650,300], "parameters": {"fromEmail": "bookings@kicc.co.ke", "toEmail": "={{ $json.exhibitor_email }}", "subject": "New Meeting Booking - {{ $json.booth_name }}", "text": "{{ $json.visitor_name }} ({{ $json.visitor_email }}) has booked a meeting for {{ $json.slot_start }}. Phone: {{ $json.visitor_phone }}. Notes: {{ $json.notes }}"}}
+  ],
+  "connections": {"Webhook Trigger": {"main": [[{"node": "Send SMS to Visitor", "type": "main", "index": 0}], [{"node": "Send Email Confirmation", "type": "main", "index": 0}]]}, "Send SMS to Visitor": {"main": [[{"node": "Notify Exhibitor", "type": "main", "index": 0}]]}}
+}

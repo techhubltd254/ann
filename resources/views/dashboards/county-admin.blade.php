@@ -1079,6 +1079,44 @@
                 </div>
             </div>
 
+
+            {{-- VIRTUAL EXPO: Landmarks --}}
+            @elseif($tab === 'landmarks')
+            <div class="space-y-6">
+                <div class="flex items-center justify-between">
+                    <div><h1 class="text-xl font-bold text-white">Landmarks & Navigation</h1><p class="text-zinc-500 text-sm">GPS waypoints for projects across {{ $county->name }}</p></div>
+                </div>
+                <div class="glass-card rounded-2xl p-5">
+                    <form method="POST" action="{{ route('county.admin.landmark.store', $county->slug) }}">
+                        @csrf
+                        <h3 class="text-sm font-bold text-white mb-4">Add Landmark</h3>
+                        <div class="grid md:grid-cols-3 gap-4 mb-4">
+                            <div><label class="text-[10px] font-bold text-zinc-400 uppercase block mb-1">Name *</label><input name="name" required class="w-full bg-white/5 border border-white/10 rounded-xl px-3 py-2 text-sm text-white"></div>
+                            <div><label class="text-[10px] font-bold text-zinc-400 uppercase block mb-1">Latitude *</label><input name="latitude" type="number" step="any" required class="w-full bg-white/5 border border-white/10 rounded-xl px-3 py-2 text-sm text-white"></div>
+                            <div><label class="text-[10px] font-bold text-zinc-400 uppercase block mb-1">Longitude *</label><input name="longitude" type="number" step="any" required class="w-full bg-white/5 border border-white/10 rounded-xl px-3 py-2 text-sm text-white"></div>
+                            <div><label class="text-[10px] font-bold text-zinc-400 uppercase block mb-1">Type</label><select name="landmark_type" class="w-full bg-white/5 border border-white/10 rounded-xl px-3 py-2 text-sm text-white"><option>monument</option><option>project_site</option><option>hospital</option><option>school</option><option>market</option><option>road</option><option>housing</option></select></div>
+                            <div class="md:col-span-2"><label class="text-[10px] font-bold text-zinc-400 uppercase block mb-1">Description</label><input name="description" class="w-full bg-white/5 border border-white/10 rounded-xl px-3 py-2 text-sm text-white"></div>
+                        </div>
+                        <button class="btn-primary">Add Landmark</button>
+                    </form>
+                </div>
+                <div class="overflow-x-auto">
+                    <table class="w-full text-xs">
+                        <thead><tr class="text-zinc-500 border-b border-white/5"><th class="text-left py-3 font-semibold">Name</th><th class="text-left py-3 font-semibold">Type</th><th class="text-left py-3 font-semibold">Coordinates</th><th class="text-left py-3 font-semibold">Map</th></tr></thead>
+                        <tbody class="divide-y divide-white/5">
+                        @foreach($landmarks as $l)
+                        <tr class="hover:bg-white/5 transition">
+                            <td class="py-3 font-medium text-zinc-200">{{ $l->name }}</td>
+                            <td class="py-3"><span class="text-[10px] px-2 py-0.5 rounded-full bg-indigo-500/10 text-indigo-400">{{ $l->landmark_type }}</span></td>
+                            <td class="py-3 text-zinc-500">{{ number_format($l->latitude, 6) }}, {{ number_format($l->longitude, 6) }}</td>
+                            <td class="py-3"><a href="https://www.google.com/maps?q={{ $l->latitude }},{{ $l->longitude }}" target="_blank" class="text-indigo-400 hover:text-indigo-300">View Map</a></td>
+                        </tr>
+                        @endforeach
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+
             @endif
         </main>
 

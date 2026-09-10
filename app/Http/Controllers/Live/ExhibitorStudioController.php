@@ -5,6 +5,8 @@ use App\Http\Controllers\Controller;
 use App\Models\Booth;
 use App\Models\BoothAuthorization;
 use App\Models\ExhibitorStudioSession;
+use App\Models\LiveStream;
+use App\Services\CloudflareStreamService;
 use App\Services\HeartbeatService;
 use Illuminate\Http\Request;
 use Illuminate\Support\Str;
@@ -12,17 +14,18 @@ use Illuminate\Support\Str;
 class ExhibitorStudioController extends Controller
 {
     protected HeartbeatService $heartbeat;
+    protected CloudflareStreamService $cloudflare;
 
-    public function __construct(HeartbeatService $heartbeat)
+    public function __construct(HeartbeatService $heartbeat, CloudflareStreamService $cloudflare)
     {
         $this->heartbeat = $heartbeat;
+        $this->cloudflare = $cloudflare;
         $this->middleware('auth');
     }
 
     public function index(Booth $booth)
     {
         $auth = $booth->authorization;
-
         if (!$auth || $auth->status !== 'AUTHORIZED') {
             return view('live.exhibitor.lockout', ['booth' => $booth, 'reason' => 'unauthorized']);
         }
@@ -39,7 +42,8 @@ class ExhibitorStudioController extends Controller
             ]
         );
 
-        return view('live.exhibitor.studio', compact('booth', 'auth', 'session'));
+        $activeStream = LiveStream::where('booth_id', $booth->id)->where('isLive', true)->latest()->first();
+        return view('live.exhibitor.studio', compact('booth', 'auth', 'session', 'activeStream'));
     }
 
     public function goLive(Booth $booth, Request $request)
@@ -49,27 +53,45 @@ class ExhibitorStudioController extends Controller
             return response()->json(['error' => 'Not authorized'], 403);
         }
 
-        $session = ExhibitorStudioSession::where('booth_id', $booth->id)
-            ->where('user_id', auth()->id())
-            ->first();
-
-        if ($session) {
-            $session->setStreamStatus('live');
+        // Create Cloudflare Stream live input
+        $liveInput = $this->cloudflare->createLiveInput($booth->name . ' - ' . now()->toDayDateTimeString());
+        if (!$liveInput || !isset($liveInput['uid'])) {
+            return response()->json(['error' => 'Failed to create live stream input'], 500);
         }
 
+        $stream = LiveStream::create([
+            'booth_id' => $booth->id,
+            'user_id' => auth()->id(),
+            'title' => $booth->name . ' Live',
+            'stream_url' => $liveInput['rtmps']['url'] ?? $liveInput['rtmp']['url'] ?? null,
+            'stream_key' => $liveInput['rtmps']['streamKey'] ?? $liveInput['rtmp']['streamKey'] ?? null,
+            'hls_url' => $liveInput['preview'] ?? $this->cloudflare->getHlsUrl($liveInput['uid']),
+            'playback_url' => $liveInput['uid'] ? "https://cloudflarestream.com/{$liveInput['uid']}/manifest/video.m3u8" : null,
+            'cloudflare_uid' => $liveInput['uid'],
+            'isLive' => true,
+            'started_at' => now(),
+        ]);
+
+        $session = ExhibitorStudioSession::where('booth_id', $booth->id)
+            ->where('user_id', auth()->id())->first();
+        if ($session) $session->setStreamStatus('live');
         $booth->update(['stream_status' => 'live']);
 
-        return response()->json(['status' => 'live', 'booth_id' => $booth->id]);
+        return response()->json([
+            'status' => 'live',
+            'booth_id' => $booth->id,
+            'stream_id' => $stream->id,
+            'rtmp_url' => $stream->stream_url,
+            'stream_key' => $stream->stream_key,
+            'hls_url' => $stream->hls_url,
+        ]);
     }
 
     public function endStream(Booth $booth)
     {
-        ExhibitorStudioSession::where('booth_id', $booth->id)
-            ->where('user_id', auth()->id())
-            ->update(['stream_status' => 'offline']);
-
+        LiveStream::where('booth_id', $booth->id)->where('isLive', true)->update(['isLive' => false, 'ended_at' => now()]);
+        ExhibitorStudioSession::where('booth_id', $booth->id)->where('user_id', auth()->id())->update(['stream_status' => 'offline']);
         $booth->update(['stream_status' => 'offline']);
-
         return response()->json(['status' => 'offline']);
     }
 
@@ -86,9 +108,7 @@ class ExhibitorStudioController extends Controller
             'physical_address' => 'sometimes|string|max:500',
             'meeting_slots' => 'sometimes|json',
         ]);
-
         $booth->update($validated);
-
         return redirect()->back()->with('success', 'Booth updated.');
     }
 }

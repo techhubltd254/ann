@@ -90,6 +90,10 @@
     </div>
 
     <div class="max-w-7xl mx-auto px-5">
+        
+        {{-- Live Booth Widget --}}
+        <x-live-booths-widget :county-slug="$county->slug" />
+
         {{-- Quick actions bar --}}
         <div class="flex flex-wrap items-center justify-between gap-3 mb-10 mt-6">
             <div class="flex items-center gap-2">

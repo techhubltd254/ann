@@ -1,0 +1,10 @@
+{
+  "name": "KICC - Schedule Auto-Authorization",
+  "nodes": [
+    {"name": "Schedule Trigger", "type": "n8n-nodes-base.scheduleTrigger", "position": [250,300], "parameters": {"rule": {"interval": [{"field": "cron", "expression": "*/5 * * * *"}]}}},
+    {"name": "Fetch Scheduled Events", "type": "n8n-nodes-base.httpRequest", "position": [450,300], "parameters": {"method": "GET", "url": "={{ $env.APP_URL }}/api/live/booths/active", "authentication": "genericCredentialType", "genericAuthType": "httpHeaderAuth"}},
+    {"name": "Authorize Booths by Schedule", "type": "n8n-nodes-base.httpRequest", "position": [650,300], "parameters": {"method": "POST", "url": "={{ $env.APP_URL }}/kicc-live/admin/booths/{{ $json.id }}/authorize", "sendBody": true, "bodyParameters": {"parameters": [{"name": "_token", "value": "={{ $env.KICC_CSRF_TOKEN }}"}]}}},
+    {"name": "Log Audit", "type": "n8n-nodes-base.log", "position": [850,300], "parameters": {"message": "Scheduled authorization completed for {{ $json.name }}"}}
+  ],
+  "connections": {"Schedule Trigger": {"main": [[{"node": "Fetch Scheduled Events", "type": "main", "index": 0}]]}, "Fetch Scheduled Events": {"main": [[{"node": "Authorize Booths by Schedule", "type": "main", "index": 0}]]}, "Authorize Booths by Schedule": {"main": [[{"node": "Log Audit", "type": "main", "index": 0}]]}}
+}
