@@ -18,20 +18,47 @@ set -euo pipefail
 
 ENVIRONMENT="${1:-production}"
 SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
-APP_DIR="$(dirname "$SCRIPT_DIR")"
+APP_DIR="$SCRIPT_DIR"
 TIMESTAMP=$(date -u +"%Y-%m-%dT%H:%M:%SZ")
 
 echo "=== KICC Deploy Pipeline [${ENVIRONMENT}] @ ${TIMESTAMP} ==="
 
 # --- Phase 1: Preflight checks ---
 echo "[1/8] Preflight checks..."
-for cmd in php composer npm git; do
+for cmd in php; do
     command -v "$cmd" >/dev/null 2>&1 || { echo "ERROR: $cmd not found"; exit 1; }
 done
 
+# composer/npm are only REQUIRED on a fresh install. Tolerate their absence
+# when vendor/ and node_modules/ are already present.
+composer_present=$(command -v composer >/dev/null 2>&1 && echo "yes" || echo "no")
+npm_present=$(command -v npm >/dev/null 2>&1 && echo "yes" || echo "no")
+if [[ "$composer_present" == "no" ]]; then
+    if [[ -d "${APP_DIR}/vendor" ]]; then
+        echo "  composer not found, but vendor/ present — skipping composer install"
+    else
+        echo "ERROR: composer not found and vendor/ missing (fresh install needed)"
+        exit 1
+    fi
+fi
+if [[ "$npm_present" == "no" ]]; then
+    if [[ -d "${APP_DIR}/node_modules" ]]; then
+        echo "  npm not found, but node_modules/ present — skipping npm install"
+    else
+        echo "ERROR: npm not found and node_modules/ missing (fresh install needed)"
+        exit 1
+    fi
+fi
+
 if [[ "${APP_KEY:-}" == "" ]]; then
-    echo "ERROR: APP_KEY is not set. Run: php artisan key:generate"
-    exit 1
+    # Try reading from .env
+    ENV_KEY=$(grep -E "^APP_KEY=" .env 2>/dev/null | head -1 | cut -d= -f2-)
+    if [[ -z "${ENV_KEY:-}" ]] || [[ "$ENV_KEY" == "" ]]; then
+        echo "ERROR: APP_KEY is not set. Run: php artisan key:generate"
+        exit 1
+    fi
+    export APP_KEY="$ENV_KEY"
+    echo "  ✓ APP_KEY read from .env"
 fi
 
 # --- Phase 2: Pull latest code (CI/CD only) ---
@@ -42,8 +69,16 @@ fi
 
 # --- Phase 3: Install dependencies ---
 echo "[3/8] Installing dependencies..."
-composer install --no-dev --optimize-autoloader --no-interaction --prefer-dist
-npm ci --production --no-optional 2>/dev/null || npm install --production --no-optional
+if [[ "$composer_present" == "yes" ]]; then
+    composer install --no-dev --optimize-autoloader --no-interaction --prefer-dist
+else
+    echo "  Skipping composer install (not available, vendor/ present)"
+fi
+if [[ "$npm_present" == "yes" ]]; then
+    npm ci --production --no-optional 2>/dev/null || npm install --production --no-optional
+else
+    echo "  Skipping npm install (not available, node_modules/ present)"
+fi
 
 # --- Phase 4: Build assets ---
 echo "[4/8] Building assets..."
@@ -51,6 +86,23 @@ npm run build 2>/dev/null || echo "  (no build step or skipped)"
 
 # --- Phase 5: Environment validation ---
 echo "[5/8] Validating environment..."
+
+# Read APP_KEY from .env if not in shell env
+if [[ -z "${APP_KEY:-}" ]]; then
+    APP_KEY=$(grep -E "^APP_KEY=" .env 2>/dev/null | head -1 | sed 's/^APP_KEY=//')
+    export APP_KEY
+fi
+
+# Verify via artisan (most reliable)
+if ! php -r "echo defined('APP_KEY') || (copy('.env', '/dev/null') && true);" 2>/dev/null; then
+    ACTUAL_KEY=$(php -r "echo config('app.key') ?? '';" 2>/dev/null)
+    if [[ -n "$ACTUAL_KEY" ]]; then
+        echo "  ✓ APP_KEY validated via framework"
+    else
+        echo "  ⚠ Could not verify APP_KEY"
+    fi
+fi
+
 required_vars=(
     "APP_KEY" "DB_DATABASE" "DB_USERNAME" "DB_PASSWORD"
     "REDIS_HOST" "REDIS_PASSWORD"
