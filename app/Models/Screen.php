@@ -16,6 +16,7 @@ class Screen extends Model
         'id', 'label', 'location', 'county_id', 'sector_id',
         'target_duration_sec', 'min_images', 'max_images',
         'refresh_interval_min', 'active',
+        'group_id', 'live_feed_id', 'is_touch', 'terminal_type',
     ];
 
     protected function casts(): array
@@ -26,7 +27,18 @@ class Screen extends Model
             'max_images' => 'integer',
             'refresh_interval_min' => 'integer',
             'active' => 'boolean',
+            'is_touch' => 'boolean',
         ];
+    }
+
+    public function group()
+    {
+        return $this->belongsTo(ScreenGroup::class, 'group_id');
+    }
+
+    public function liveFeed()
+    {
+        return $this->belongsTo(LiveStream::class, 'live_feed_id');
     }
 
     public function getVideoPathAttribute(): string

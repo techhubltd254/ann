@@ -11,6 +11,10 @@ class Booth extends Model
         'description', 'amenities', 'price', 'discount_price',
         'max_quantity', 'booked_quantity', 'location_hint',
         'dimensions', 'images', 'status',
+        'contact_name', 'contact_mobile', 'contact_whatsapp', 'contact_email', 'department_lead',
+        'trader_type', 'is_verified_trader', 'spotlight_video_id',
+        'floor_plan_id', 'position_x', 'position_y', 'position_z',
+        'virtual_tour_url', 'interactive_assets',
     ];
 
     protected function casts(): array
@@ -21,6 +25,8 @@ class Booth extends Model
             'amenities' => 'array',
             'dimensions' => 'array',
             'images' => 'array',
+            'interactive_assets' => 'array',
+            'is_verified_trader' => 'boolean',
         ];
     }
 

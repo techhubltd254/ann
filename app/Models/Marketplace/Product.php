@@ -19,6 +19,8 @@ class Product extends Model
         'length_cm', 'width_cm', 'height_cm', 'is_digital', 'status',
         'is_featured', 'meta_title', 'meta_description', 'tags', 'warranty_info',
         'video_url', 'videos', 'video_description', 'model_url',
+        'moq', 'fob_price', 'incoterm', 'hs_code', 'export_readiness',
+        'certifications', 'trade_enquiry_email', 'is_spotlight_product',
     ];
 
     protected $casts = [
@@ -27,6 +29,11 @@ class Product extends Model
         'tags' => 'array',
         'videos' => 'array',
         'weight_kg' => 'float',
+        'fob_price' => 'decimal:2',
+        'export_readiness' => 'boolean',
+        'certifications' => 'json',
+        'is_spotlight_product' => 'boolean',
+        'moq' => 'integer',
     ];
 
     public function getVideosAttribute($value): array

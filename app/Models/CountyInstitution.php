@@ -14,6 +14,7 @@ class CountyInstitution extends Model
         'student_count', 'is_published', 'slug', 'user_id', 'logo_url', 'cover_image_url',
         'headquarters', 'founded_year', 'lat', 'lng', 'social_links', 'story',
         'production_chain', 'sector_mappings', 'products', 'videos', 'synced_at',
+        'is_verified_trader', 'trader_type', 'spotlight_video_id', 'whatsapp', 'department_leads',
     ];
 
     protected function casts(): array
@@ -29,6 +30,8 @@ class CountyInstitution extends Model
             'lat' => 'decimal:6',
             'lng' => 'decimal:6',
             'synced_at' => 'datetime',
+            'is_verified_trader' => 'boolean',
+            'department_leads' => 'array',
         ];
     }
 

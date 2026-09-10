@@ -16,6 +16,10 @@ class County extends Model
         'tagline', 'description', 'tourism_highlights',
         'warmest_month', 'coolest_month', 'rainy_season', 'dry_season',
         'slug', 'weather_tags', 'is_active',
+        'contact_commissioner_name', 'contact_commissioner_phone',
+        'contact_governor_phone', 'contact_investment_desk_email',
+        'whatsapp_business', 'trade_volume_ksh', 'top_export_products',
+        'investment_opportunities',
     ];
 
     protected function casts(): array
@@ -27,6 +31,9 @@ class County extends Model
             'is_active' => 'boolean',
             'latitude' => 'decimal:6',
             'longitude' => 'decimal:6',
+            'trade_volume_ksh' => 'decimal:2',
+            'top_export_products' => 'array',
+            'investment_opportunities' => 'array',
         ];
     }
 

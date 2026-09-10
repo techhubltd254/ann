@@ -17,6 +17,8 @@ class LiveStream extends Model
             'viewer_count' => 'integer',
             'started_at' => 'datetime',
             'ended_at' => 'datetime',
+            'scheduled_start_at' => 'datetime',
+            'scheduled_end_at' => 'datetime',
         ];
     }
 
