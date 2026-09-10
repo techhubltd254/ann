@@ -759,6 +759,119 @@
             @elseif($tab === 'analytics')
             @include('dashboards.analytics-tab', ['analytics' => $analytics ?? []])
 
+            @elseif($tab === 'trade_hub')
+            <div class="space-y-6">
+                <div class="flex items-center justify-between">
+                    <div><h1 class="text-xl font-bold text-white">Trade Hub</h1><p class="text-zinc-500 text-sm">County trade contacts, exports, and investment opportunities</p></div>
+                </div>
+                <div class="glass-card rounded-2xl p-5">
+                    <form method="POST" action="{{ route('county.admin.trade.hub', $county->slug) }}">
+                        @csrf
+                        <h3 class="text-sm font-bold text-white mb-4">Contact Information</h3>
+                        <div class="grid md:grid-cols-3 gap-4 mb-6">
+                            <div><label class="text-[10px] font-bold text-zinc-400 uppercase block mb-1">Commissioner Name</label><input name="contact_commissioner_name" value="{{ $county->contact_commissioner_name }}" class="w-full bg-white/5 border border-white/10 rounded-xl px-3 py-2 text-sm text-white"></div>
+                            <div><label class="text-[10px] font-bold text-zinc-400 uppercase block mb-1">Commissioner Phone</label><input name="contact_commissioner_phone" value="{{ $county->contact_commissioner_phone }}" class="w-full bg-white/5 border border-white/10 rounded-xl px-3 py-2 text-sm text-white"></div>
+                            <div><label class="text-[10px] font-bold text-zinc-400 uppercase block mb-1">Governor Office Phone</label><input name="contact_governor_phone" value="{{ $county->contact_governor_phone }}" class="w-full bg-white/5 border border-white/10 rounded-xl px-3 py-2 text-sm text-white"></div>
+                            <div><label class="text-[10px] font-bold text-zinc-400 uppercase block mb-1">Investment Desk Email</label><input name="contact_investment_desk_email" value="{{ $county->contact_investment_desk_email }}" class="w-full bg-white/5 border border-white/10 rounded-xl px-3 py-2 text-sm text-white"></div>
+                            <div><label class="text-[10px] font-bold text-zinc-400 uppercase block mb-1">WhatsApp Business</label><input name="whatsapp_business" value="{{ $county->whatsapp_business }}" class="w-full bg-white/5 border border-white/10 rounded-xl px-3 py-2 text-sm text-white"></div>
+                        </div>
+                        <h3 class="text-sm font-bold text-white mb-4">Trade Information</h3>
+                        <div class="grid md:grid-cols-2 gap-4 mb-6">
+                            <div><label class="text-[10px] font-bold text-zinc-400 uppercase block mb-1">Trade Volume (KES)</label><input name="trade_volume_ksh" type="number" value="{{ $county->trade_volume_ksh }}" class="w-full bg-white/5 border border-white/10 rounded-xl px-3 py-2 text-sm text-white"></div>
+                            <div><label class="text-[10px] font-bold text-zinc-400 uppercase block mb-1">Top Export Products (comma-separated)</label><input name="top_export_products" value="{{ is_array($county->top_export_products) ? implode(', ', $county->top_export_products) : '' }}" class="w-full bg-white/5 border border-white/10 rounded-xl px-3 py-2 text-sm text-white"></div>
+                            <div class="md:col-span-2"><label class="text-[10px] font-bold text-zinc-400 uppercase block mb-1">Investment Opportunities (comma-separated)</label><input name="investment_opportunities" value="{{ is_array($county->investment_opportunities) ? implode(', ', $county->investment_opportunities) : '' }}" class="w-full bg-white/5 border border-white/10 rounded-xl px-3 py-2 text-sm text-white"></div>
+                        </div>
+                        <button class="btn-primary">Save Trade Hub</button>
+                    </form>
+                </div>
+            </div>
+
+            @elseif($tab === 'traders')
+            <div class="space-y-6">
+                <div class="flex items-center justify-between">
+                    <div><h1 class="text-xl font-bold text-white">Trader Spotlights</h1><p class="text-zinc-500 text-sm">{{ $verifiedTraders }} verified traders in {{ $county->name }}</p></div>
+                </div>
+                <div class="glass-card rounded-2xl p-5">
+                    <form method="POST" action="{{ route('county.admin.spotlight.store', $county->slug) }}">
+                        @csrf
+                        <h3 class="text-sm font-bold text-white mb-4">Add Trader Spotlight</h3>
+                        <div class="grid md:grid-cols-3 gap-4 mb-4">
+                            <div><label class="text-[10px] font-bold text-zinc-400 uppercase block mb-1">Name *</label><input name="name" required class="w-full bg-white/5 border border-white/10 rounded-xl px-3 py-2 text-sm text-white"></div>
+                            <div><label class="text-[10px] font-bold text-zinc-400 uppercase block mb-1">Type</label><select name="trader_type" class="w-full bg-white/5 border border-white/10 rounded-xl px-3 py-2 text-sm text-white"><option>trader</option><option>sacco</option><option>cooperative</option><option>farmer</option></select></div>
+                            <div><label class="text-[10px] font-bold text-zinc-400 uppercase block mb-1">Verified</label><select name="is_verified" class="w-full bg-white/5 border border-white/10 rounded-xl px-3 py-2 text-sm text-white"><option value="0">Pending</option><option value="1">Verified</option></select></div>
+                            <div><label class="text-[10px] font-bold text-zinc-400 uppercase block mb-1">Contact Name</label><input name="contact_name" class="w-full bg-white/5 border border-white/10 rounded-xl px-3 py-2 text-sm text-white"></div>
+                            <div><label class="text-[10px] font-bold text-zinc-400 uppercase block mb-1">Mobile</label><input name="contact_mobile" class="w-full bg-white/5 border border-white/10 rounded-xl px-3 py-2 text-sm text-white"></div>
+                            <div><label class="text-[10px] font-bold text-zinc-400 uppercase block mb-1">WhatsApp</label><input name="contact_whatsapp" class="w-full bg-white/5 border border-white/10 rounded-xl px-3 py-2 text-sm text-white"></div>
+                            <div><label class="text-[10px] font-bold text-zinc-400 uppercase block mb-1">Email</label><input name="contact_email" class="w-full bg-white/5 border border-white/10 rounded-xl px-3 py-2 text-sm text-white"></div>
+                            <div class="md:col-span-3"><label class="text-[10px] font-bold text-zinc-400 uppercase block mb-1">Description</label><textarea name="description" rows="2" class="w-full bg-white/5 border border-white/10 rounded-xl px-3 py-2 text-sm text-white"></textarea></div>
+                        </div>
+                        <button class="btn-primary">Add Spotlight</button>
+                    </form>
+                </div>
+                <div class="grid md:grid-cols-2 gap-4">
+                    @foreach($traderSpotlights as $ts)
+                    <div class="glass-card rounded-2xl p-4">
+                        <div class="flex items-center justify-between mb-2">
+                            <span class="font-bold text-sm text-zinc-200">{{ $ts->name }}</span>
+                            <span class="text-[10px] px-2 py-0.5 rounded-full {{ $ts->is_verified ? 'bg-emerald-500/10 text-emerald-400' : 'bg-amber-500/10 text-amber-400' }}">{{ $ts->is_verified ? 'Verified' : 'Pending' }}</span>
+                        </div>
+                        <div class="text-[11px] text-zinc-500 space-y-1">
+                            @if($ts->contact_mobile)<div>Mobile: {{ $ts->contact_mobile }}</div>@endif
+                            @if($ts->contact_whatsapp)<div>WhatsApp: {{ $ts->contact_whatsapp }}</div>@endif
+                        </div>
+                    </div>
+                    @endforeach
+                </div>
+            </div>
+
+            @elseif($tab === 'broadcast')
+            <div class="space-y-6">
+                <div class="flex items-center justify-between">
+                    <div><h1 class="text-xl font-bold text-white">Broadcast Schedule</h1><p class="text-zinc-500 text-sm">Assign live feeds to screens across {{ $county->name }}</p></div>
+                </div>
+                <div class="glass-card rounded-2xl p-5">
+                    <form method="POST" action="{{ route('county.admin.broadcast', $county->slug) }}">
+                        @csrf
+                        <h3 class="text-sm font-bold text-white mb-4">Assign Live Feed to Screen</h3>
+                        <div class="grid md:grid-cols-3 gap-4 mb-6">
+                            <div><label class="text-[10px] font-bold text-zinc-400 uppercase block mb-1">Screen</label>
+                                <select name="screen_id" class="w-full bg-white/5 border border-white/10 rounded-xl px-3 py-2 text-sm text-white" required>
+                                    <option value="">Select screen...</option>
+                                    @foreach($screens as $s)
+                                    <option value="{{ $s->id }}">{{ $s->label }} — {{ $s->location }}</option>
+                                    @endforeach
+                                </select>
+                            </div>
+                            <div><label class="text-[10px] font-bold text-zinc-400 uppercase block mb-1">Live Feed</label>
+                                <select name="live_feed_id" class="w-full bg-white/5 border border-white/10 rounded-xl px-3 py-2 text-sm text-white">
+                                    <option value="">No live feed</option>
+                                    @foreach($liveFeeds as $lf)
+                                    <option value="{{ $lf->id }}">{{ $lf->name }} ({{ $lf->status }})</option>
+                                    @endforeach
+                                </select>
+                            </div>
+                        </div>
+                        <button class="btn-primary">Update Broadcast</button>
+                    </form>
+                </div>
+                <h3 class="text-sm font-bold text-white mt-6 mb-3">Screen Status</h3>
+                <div class="overflow-x-auto">
+                    <table class="w-full text-xs">
+                        <thead><tr class="text-zinc-500 border-b border-white/5"><th class="text-left py-3 font-semibold">Screen</th><th class="text-left py-3 font-semibold">Location</th><th class="text-left py-3 font-semibold">Live Feed</th><th class="text-left py-3 font-semibold">Touch</th></tr></thead>
+                        <tbody class="divide-y divide-white/5">
+                        @foreach($screens as $s)
+                        <tr class="hover:bg-white/5 transition">
+                            <td class="py-3 font-medium text-zinc-200">{{ $s->label }}</td>
+                            <td class="py-3 text-zinc-500">{{ $s->location }}</td>
+                            <td class="py-3"><span class="text-[10px] px-2 py-0.5 rounded-full {{ $s->live_feed_id ? 'bg-emerald-500/10 text-emerald-400' : 'bg-zinc-500/10 text-zinc-500' }}">{{ $s->live_feed_id ? 'Active' : 'Idle' }}</span></td>
+                            <td class="py-3 text-zinc-500">{{ $s->is_touch ? 'Touch' : 'Display' }}</td>
+                        </tr>
+                        @endforeach
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+
             @elseif(in_array($tab, ['attractions_list']))
             <div class="glass-card rounded-2xl p-6">
                 <h2 class="text-sm font-bold text-white mb-4">Attractions & Sites ({{ $attractions->count() }})</h2>

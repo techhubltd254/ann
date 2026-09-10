@@ -112,15 +112,30 @@ class CountyAdminController extends Controller
             ['label' => 'Packages', 'tab' => 'packages', 'icon' => 'M3 3h2l.4 2M7 13h10l4-8H5.4M7 13L5.4 5M7 13l-2.293 2.293c-.63.63-.184 1.707.707 1.707H17m0 0a2 2 0 100 4 2 2 0 000-4zm-8 2a2 2 0 11-4 0 2 2 0 014 0z'],
             ['label' => 'Reports', 'tab' => 'reports', 'icon' => 'M9 17v-2m3 2v-4m3 4v-6m2 10H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z'],
             ['label' => 'Analytics', 'tab' => 'analytics', 'icon' => 'M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z'],
+            // Virtual Exhibition tabs
+            ['label' => 'Trade Hub', 'tab' => 'trade_hub', 'icon' => 'M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0z'],
+            ['label' => 'Trader Spotlights', 'tab' => 'traders', 'icon' => 'M11 5.882V19.24a1.76 1.76 0 01-3.417.592l-2.147-6.15M18 13a3 3 0 100-6M5.436 13.683A4.001 4.001 0 017 6h1.832c4.1 0 7.625-1.234 9.168-3v14c-1.543-1.766-5.067-3-9.168-3H7a3.988 3.988 0 01-1.564-.317z'],
+            ['label' => 'Broadcast', 'tab' => 'broadcast', 'icon' => 'M15 10l4.553-2.276A1 1 0 0121 8.618v6.764a1 1 0 01-1.447.894L15 14M5 18h8a2 2 0 002-2V8a2 2 0 00-2-2H5a2 2 0 00-2 2v8a2 2 0 002 2z'],
         ];
 
         $analytics = app(\App\Services\AnalyticsService::class)->forCounty($county);
+
+        // ── Virtual Exhibition data ──
+        $traderSpotlights = \App\Models\TraderSpotlight::where('county_id', $county->id)
+            ->with('spotlightVideo')->latest()->get();
+        $screens = \App\Models\Screen::where('county_id', $county->id)
+            ->orderBy('label')->get();
+        $screenGroups = \App\Models\ScreenGroup::where('county_id', $county->id)->get();
+        $liveFeeds = \App\Models\LiveStream::where('county_id', $county->id)
+            ->latest()->take(20)->get();
+        $verifiedTraders = \App\Models\CountyInstitution::where('county_id', $county->id)
+            ->where('is_verified_trader', true)->count();
 
         return view('dashboards.county-admin', compact(
             'county', 'tab', 'navItems', 'stats', 'products', 'attractions',
             'hotels', 'sectorImages', 'plans', 'marketplaceProducts', 'ads',
             'sectors', 'linkedSectors', 'tileSectors', 'allSectors', 'sectorEntities',
-            'institutions',
+            'institutions', 'traderSpotlights', 'screens', 'screenGroups', 'liveFeeds', 'verifiedTraders',
         ) + ['video4dMap' => $this->video4dMap($county), 'analytics' => $analytics]);
     }
 
@@ -806,5 +821,75 @@ class CountyAdminController extends Controller
             'Content-Type' => 'text/csv',
             'Content-Disposition' => "attachment; filename=\"{$county->slug}_{$type}_report.csv\"",
         ]);
+    }
+
+    /* ─── VIRTUAL EXHIBITION: TRADE HUB ─── */
+    public function updateTradeHub(Request $request, string $slug)
+    {
+        $county = $this->authorizeCounty($slug);
+        $data = $request->validate([
+            'contact_commissioner_name' => 'nullable|string|max:255',
+            'contact_commissioner_phone' => 'nullable|string|max:50',
+            'contact_governor_phone' => 'nullable|string|max:50',
+            'contact_investment_desk_email' => 'nullable|email|max:255',
+            'whatsapp_business' => 'nullable|string|max:50',
+            'trade_volume_ksh' => 'nullable|numeric',
+            'top_export_products' => 'nullable|string',
+            'investment_opportunities' => 'nullable|string',
+        ]);
+        $data['top_export_products'] = !empty($data['top_export_products'])
+            ? array_map('trim', explode(',', $data['top_export_products'])) : null;
+        $data['investment_opportunities'] = !empty($data['investment_opportunities'])
+            ? array_map('trim', explode(',', $data['investment_opportunities'])) : null;
+        $county->update($data);
+        return back()->with('success', 'Trade hub updated.');
+    }
+
+    /* ─── VIRTUAL EXHIBITION: TRADER SPOTLIGHTS ─── */
+    public function storeTraderSpotlight(Request $request, string $slug)
+    {
+        $county = $this->authorizeCounty($slug);
+        $data = $request->validate([
+            'name' => 'required|string|max:255',
+            'trader_type' => 'required|in:trader,sacco,cooperative,farmer',
+            'contact_name' => 'nullable|string|max:255',
+            'contact_mobile' => 'nullable|string|max:50',
+            'contact_whatsapp' => 'nullable|string|max:50',
+            'contact_email' => 'nullable|email|max:255',
+            'department_lead' => 'nullable|string|max:255',
+            'description' => 'nullable|string|max:5000',
+            'is_verified' => 'nullable|boolean',
+        ]);
+
+        \App\Models\TraderSpotlight::create($data + [
+            'county_id' => $county->id,
+            'is_published' => true,
+        ]);
+
+        \App\Services\N8nService::fire('trader_spotlight_created', ['county' => $county->slug, 'name' => $data['name']]);
+        return back()->with('success', 'Trader spotlight created.');
+    }
+
+    /* ─── VIRTUAL EXHIBITION: BROADCAST SCHEDULE ─── */
+    public function updateBroadcast(Request $request, string $slug)
+    {
+        $county = $this->authorizeCounty($slug);
+        $data = $request->validate([
+            'screen_id' => 'required|string|exists:screens,id',
+            'live_feed_id' => 'nullable|integer|exists:live_streams,id',
+            'playlist_json' => 'nullable|string',
+        ]);
+
+        $screen = \App\Models\Screen::findOrFail($data['screen_id']);
+        $screen->update(['live_feed_id' => $data['live_feed_id']]);
+
+        if ($data['live_feed_id']) {
+            \App\Services\N8nService::fire('broadcast_scheduled', [
+                'county' => $county->slug,
+                'screen' => $screen->label,
+                'feed_id' => $data['live_feed_id'],
+            ]);
+        }
+        return back()->with('success', 'Broadcast schedule updated.');
     }
 }

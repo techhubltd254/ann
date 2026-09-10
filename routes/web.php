@@ -204,6 +204,9 @@ Route::get('/national-admin/agencies/{agency}/delete', [\App\Http\Controllers\We
     Route::post('/county-admin/{slug}/pro/details', [\App\Http\Controllers\Web\CountyAdminController::class, 'updateDetails'])->name('county.admin.details');
     Route::post('/county-admin/{slug}/pro/sector', [\App\Http\Controllers\Web\CountyAdminController::class, 'toggleSector'])->name('county.admin.sector');
     Route::post('/county-admin/{slug}/pro/sector/tile', [\App\Http\Controllers\Web\CountyAdminController::class, 'toggleTileSector'])->name('county.admin.sector.tile');
+    Route::post('/county-admin/{slug}/pro/trade-hub', [\App\Http\Controllers\Web\CountyAdminController::class, 'updateTradeHub'])->name('county.admin.trade.hub');
+    Route::post('/county-admin/{slug}/pro/spotlight', [\App\Http\Controllers\Web\CountyAdminController::class, 'storeTraderSpotlight'])->name('county.admin.spotlight.store');
+    Route::post('/county-admin/{slug}/pro/broadcast', [\App\Http\Controllers\Web\CountyAdminController::class, 'updateBroadcast'])->name('county.admin.broadcast');
     Route::post('/county-admin/{slug}/pro/hero-video', [\App\Http\Controllers\Web\CountyAdminController::class, 'uploadHeroVideo'])->name('county.admin.hero.upload');
     Route::post('/county-admin/{slug}/pro/hero-video/delete', [\App\Http\Controllers\Web\CountyAdminController::class, 'deleteHeroVideo'])->name('county.admin.hero.delete');
     Route::post('/county-admin/{slug}/pro/entity', [\App\Http\Controllers\Web\CountyAdminController::class, 'addEntity'])->name('county.admin.entity');
