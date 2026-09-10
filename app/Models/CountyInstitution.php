@@ -2,6 +2,7 @@
 
 namespace App\Models;
 
+use App\Jobs\SyncInstitutionJob;
 use App\Services\DataAvailabilityService;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Support\Str;
@@ -78,6 +79,7 @@ class CountyInstitution extends Model
         });
 
         static::saved(function (self $i) {
+            if ($i->syncing) return;
             $dav = app(DataAvailabilityService::class);
             $dav->bustInstitution($i->id);
             if ($i->county_id) {
@@ -87,6 +89,8 @@ class CountyInstitution extends Model
                         $dav->bustSector($i->county_id, $se->sector_id);
                     }
                 }
+                SyncInstitutionJob::dispatch($i->id)
+                    ->onQueue('sync');
             }
         });
 
@@ -98,4 +102,6 @@ class CountyInstitution extends Model
             }
         });
     }
+
+    public bool $syncing = false;
 }

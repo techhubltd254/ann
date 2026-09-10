@@ -85,7 +85,9 @@ class InstitutionSyncService
             // 7. Cleanup stale derived data when mappings/products removed
             $this->cleanup($institution, $county);
 
+            $institution->syncing = true;
             $institution->forceFill(['synced_at' => now()])->save();
+            $institution->syncing = false;
         });
 
         try {
@@ -106,6 +108,9 @@ class InstitutionSyncService
     protected function bustCountyCache(County $county): void
     {
         try {
+            $county->loadMissing('sectors');
+            $allSectorIds = $county->sectors->pluck('id');
+
             foreach ([
                 "kicc_county_sector_counts_{$county->id}",
                 "kicc_county_attractions_{$county->id}",
@@ -119,10 +124,18 @@ class InstitutionSyncService
             ] as $key) {
                 \Illuminate\Support\Facades\Cache::forget($key);
             }
-            // Bump per-sector list versions — sector item caches (any page depth) become stale atomically
-            $sectors = $county->sectors()->pluck('id');
-            foreach ($sectors as $sid) {
+
+            // Bump version for ALL sectors + their aliases so entity lists
+            // (kicc_county_sector_items_{country}_{sector}_{version}_{page})
+            // are recomputed on next request.
+            foreach ($allSectorIds as $sid) {
                 \Illuminate\Support\Facades\Cache::increment("kicc_sector_version_{$county->id}_{$sid}");
+            }
+
+            // Also forget any dav:* keys used by DataAvailabilityService
+            \Illuminate\Support\Facades\Cache::forget("dav:county:{$county->id}");
+            foreach ($allSectorIds as $sid) {
+                \Illuminate\Support\Facades\Cache::forget("dav:sector:{$county->id}:{$sid}");
             }
         } catch (\Throwable $e) {
             Log::warning('Cache bust failed: ' . $e->getMessage());

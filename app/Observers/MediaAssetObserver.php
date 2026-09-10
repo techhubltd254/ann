@@ -5,6 +5,8 @@ namespace App\Observers;
 use App\Jobs\GenerateHlsJob;
 use App\Jobs\MediaDerivativesJob;
 use App\Jobs\RunPipelineJob;
+use App\Jobs\SyncInstitutionJob;
+use App\Models\CountyInstitution;
 use App\Models\MediaAsset;
 use App\Models\PipelineJob;
 use Illuminate\Support\Facades\Cache;
@@ -47,6 +49,11 @@ class MediaAssetObserver
         }
 
         $this->bustCache($asset);
+
+        // Trigger institution sync when a video is uploaded for an institution
+        if ($asset->owner_type === CountyInstitution::class && $asset->owner_id) {
+            SyncInstitutionJob::dispatch($asset->owner_id)->onQueue('sync');
+        }
     }
 
     public function updated(MediaAsset $asset): void
