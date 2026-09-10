@@ -36,6 +36,18 @@ class N8nService
         'institution_deleted', 'product_created', 'product_updated',
         'product_deleted', 'county_product_created', 'county_product_updated',
         'county_product_deleted', 'institution_hero_uploaded',
+
+        // ── Virtual Exhibition Platform events ──
+        'trader_spotlight_created', 'trader_verified', 'spotlight_video_attached',
+        'voice_note_recorded', 'voice_note_transcribed', 'voice_note_published',
+        'drone_footage_uploaded', 'drone_sequence_composed', 'presidential_audio_layered',
+        'broadcast_scheduled', 'broadcast_started', 'broadcast_ended', 'playlist_updated',
+        'screen_group_created', 'live_feed_distributed', 'screen_stream_started',
+        'terminal_activated', 'virtual_tour_started',
+        'floor_plan_uploaded', 'booth_positioned', 'layout_published',
+        'consent_signed', 'waiver_collected', 'media_release_accepted',
+        'audio_mining_started', 'speech_extracted', 'transcript_ready', 'broll_synchronized',
+        'flythrough_rendered', 'beneficiary_audio_attached',
     ];
 
     /** Fire an n8n webhook for the given event with its payload. */
