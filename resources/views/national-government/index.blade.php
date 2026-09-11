@@ -48,22 +48,22 @@
         </div>
 
         <div class="grid sm:grid-cols-2 lg:grid-cols-3 gap-5">
-            @forelse($ministries as $m)
-            <a href="{{ route('national.site', $m->slug) }}" class="card-kicc p-5 hover:shadow-lg transition-all group">
+@forelse($ministries as $m)
+            <a href="{{ route('national.site', $m['slug']) }}" class="card-kicc p-5 hover:shadow-lg transition-all group">
                 <div class="flex items-center gap-4 mb-3">
-                    <div class="w-12 h-12 rounded-xl flex items-center justify-center text-white font-black text-sm" style="background: {{ $m->color ?: '#A6192E' }}">{{ $m->code ?? substr($m->name, 0, 3) }}</div>
+                    <div class="w-12 h-12 rounded-xl flex items-center justify-center text-white font-black text-sm" style="background: {{ $m['color'] ?: '#A6192E' }}">{{ $m['code'] ?? substr($m['name'], 0, 3) }}</div>
                     <div class="flex-1 min-w-0">
-                        <h3 class="font-bold text-sm truncate" style="color: var(--kicc-navy);">{{ $m->name }}</h3>
-                        <span class="text-xs" style="color: var(--kicc-text-light);">{{ $m->agencies->count() }} {{ Str::plural('agency', $m->agencies->count()) }}</span>
+                        <h3 class="font-bold text-sm truncate" style="color: var(--kicc-navy);">{{ $m['name'] }}</h3>
+                        <span class="text-xs" style="color: var(--kicc-text-light);">{{ count($m['agencies']) }} {{ Str::plural('agency', count($m['agencies'])) }}</span>
                     </div>
                 </div>
-                @if($m->description)<p class="text-sm" style="color: var(--kicc-text);">{{ Str::limit($m->description, 100) }}</p>@endif
-                @if($m->agencies->isNotEmpty())
+                @if($m['description'])<p class="text-sm" style="color: var(--kicc-text);">{{ Str::limit($m['description'], 100) }}</p>@endif
+                @if(!empty($m['agencies']))
                 <div class="mt-3 pt-3" style="border-top: 1px solid var(--kicc-border);">
-                    @foreach($m->agencies->take(3) as $a)
-                    <div class="text-xs" style="color: var(--kicc-text-light);">· {{ $a->name }}</div>
+                    @foreach(array_slice($m['agencies'], 0, 3) as $a)
+                    <div class="text-xs" style="color: var(--kicc-text-light);">· {{ $a['name'] }}</div>
                     @endforeach
-                    @if($m->agencies->count() > 3)<div class="text-xs font-semibold mt-1" style="color: var(--kicc-crimson);">+{{ $m->agencies->count() - 3 }} more</div>@endif
+                    @if(count($m['agencies']) > 3)<div class="text-xs font-semibold mt-1" style="color: var(--kicc-crimson);">+{{ count($m['agencies']) - 3 }} more</div>@endif
                 </div>
                 @endif
             </a>
@@ -75,14 +75,14 @@
             @endforelse
         </div>
 
-        @if($agencies->isNotEmpty())
+        @if(!empty($agencies))
         <div class="mt-12">
             <h2 class="text-xl font-bold mb-4" style="color: var(--kicc-navy);">All Agencies ({{ $stats['agencies'] }})</h2>
             <div class="grid sm:grid-cols-2 lg:grid-cols-4 gap-3">
                 @foreach($agencies as $a)
                 <div class="card-kicc p-3">
-                    <div class="font-semibold text-sm" style="color: var(--kicc-navy);">{{ $a->name }}</div>
-                    <div class="text-xs mt-1" style="color: var(--kicc-text-light);">{{ $a->ministry?->name }}</div>
+                    <div class="font-semibold text-sm" style="color: var(--kicc-navy);">{{ $a['name'] }}</div>
+                    <div class="text-xs mt-1" style="color: var(--kicc-text-light);">{{ $a['ministry_name'] }}</div>
                 </div>
                 @endforeach
             </div>
