@@ -160,8 +160,7 @@
                                class="absolute inset-0 w-full h-full object-cover transition-opacity duration-500"
                                :class="videoReady ? 'opacity-100' : 'opacity-0'"
                                poster="{{ $sectorTilePoster ?? ($sectorTilePosters[$s['sector_slug']] ?? '') }}"
-                               @playing="onVideoPlaying()"
-                               x-effect="if (active) { $refs.video.play().catch(()=>{}); } else { $refs.video.pause(); }">
+                               @playing="onVideoPlaying()">
                             <source src="{{ $firstVideo }}" type="video/mp4">
                         </video>
                         <img src="{{ $sectorTilePoster ?? ($sectorTilePosters[$s['sector_slug']] ?? '') }}" alt="{{ $name }}"
@@ -173,8 +172,7 @@
                                class="absolute inset-0 w-full h-full object-cover transition-opacity duration-500"
                                :class="videoReady ? 'opacity-100' : 'opacity-0'"
                                poster="{{ $sectorTilePoster ?? ($sectorTilePosters[$s['sector_slug']] ?? $sectorVideo) }}"
-                               @playing="onVideoPlaying()"
-                               x-effect="if (active) { $refs.video.play().catch(()=>{}); } else { $refs.video.pause(); }">
+                               @playing="onVideoPlaying()">
                             <source src="{{ $sectorVideo }}" type="video/mp4">
                         </video>
                         <img src="{{ $sectorTilePoster ?? ($sectorTilePosters[$s['sector_slug']] ?? $sectorVideo) }}" alt="{{ $name }}"
