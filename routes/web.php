@@ -603,6 +603,14 @@ Route::get('/sitemap.xml', function () {
 
 Route::get('/favicon.ico', fn() => response()->file(public_path('favicon.ico'), ['Content-Type' => 'image/x-icon']));
 
+// Screen Broadcast Control — videographer panel for routing live streams to screens
+Route::middleware(['auth', 'verified'])->prefix('broadcast')->name('live.screens.')->group(function () {
+    Route::get('/', [\App\Http\Controllers\Live\ScreenBroadcastController::class, 'index'])->name('broadcast');
+    Route::post('/route', [\App\Http\Controllers\Live\ScreenBroadcastController::class, 'routeToScreen'])->name('route');
+    Route::post('/route-all', [\App\Http\Controllers\Live\ScreenBroadcastController::class, 'routeToAll'])->name('route-all');
+    Route::post('/route-venue', [\App\Http\Controllers\Live\ScreenBroadcastController::class, 'routeToScreenByName'])->name('route-venue');
+});
+
 // Murang'a County Admin SPA (dark mode command center)
 Route::get('/muranga-admin/{path?}', function () {
     return response()->file(public_path('muranga-admin/index.html'));

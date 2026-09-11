@@ -20,15 +20,22 @@ class NationalGovernmentController extends Controller
         ];
 
         // Hero video: national hero_video MediaAsset or first live booth stream
-        $heroAsset = MediaAsset::resolveSlot(\App\Models\County::class, 0, 'national_hero_video');
-        $heroVid = $heroAsset?->mp4Url() ?? null;
+        // Hero video: national hero video slot
+        $heroVid = null;
+        try {
+            $heroAsset = MediaAsset::resolveSlot(\App\Models\County::class, 0, 'national_hero_video');
+            $heroVid = $heroAsset?->mp4Url() ?? null;
+        } catch (\Throwable $e) {
+            // Silently fall back
+        }
 
-        $liveBooths = LiveStream::where('isLive', true)->with('booth')->get()->map(function ($s) {
-            return $s->booth?->name ? media_url() . '/streams/' . $s->id . '.m3u8' : null;
-        })->filter()->values();
+        $heroPoster = '';
+        try {
+            $heroPoster = media('kicc/national-hero.jpeg');
+        } catch (\Throwable $e) {
+            $heroPoster = '';
+        }
 
-        $heroPoster = media('kicc/national-hero.jpeg');
-
-        return view('national-government.index', compact('ministries', 'agencies', 'stats', 'heroVid', 'heroPoster', 'liveBooths'));
+        return view('national-government.index', compact('ministries', 'agencies', 'stats', 'heroVid', 'heroPoster'));
     }
 }
