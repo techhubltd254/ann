@@ -138,6 +138,21 @@ async function handle(request, env, ctx) {
     //   - Cache tags for granular invalidation
     //   - Consolidated rate limiting (no separate worker budget)
     //   - Proper CACHE_VERSION keying so stale versions self-expire
+    //   - Byte-range support (206 Partial Content) for video seeking + HLS
+    // CORS preflight for cross-origin video playback (hls.js, video.js)
+    if (request.method === "OPTIONS" && url.pathname.startsWith("/media/video/")) {
+      return new Response(null, {
+        status: 204,
+        headers: {
+          "Access-Control-Allow-Origin": "*",
+          "Access-Control-Allow-Methods": "GET, HEAD, OPTIONS",
+          "Access-Control-Allow-Headers": "Content-Type, Range, Origin",
+          "Access-Control-Expose-Headers": "Content-Type, Content-Length, Content-Range, Accept-Ranges",
+          "Access-Control-Max-Age": "86400",
+        },
+      });
+    }
+
     if (url.pathname.startsWith("/media/video/")) {
       // Strip /media/video/ to get the R2 key (e.g. storage/institutions/...)
       let r2Key = url.pathname.replace("/media/video/", "storage/");
@@ -152,6 +167,26 @@ async function handle(request, env, ctx) {
       headers.set("Cache-Control", "public, max-age=86400, immutable");
       headers.set("CDN-Cache-Control", "max-age=86400");
       headers.set("Access-Control-Allow-Origin", "*");
+      headers.set("Access-Control-Allow-Methods", "GET, HEAD, OPTIONS");
+      headers.set("Access-Control-Allow-Headers", "Content-Type, Range, Origin");
+      headers.set("Access-Control-Expose-Headers", "Content-Type, Content-Length, Content-Range, Accept-Ranges");
+      headers.set("Accept-Ranges", "bytes");
+      // Handle byte-range requests for video seeking/HLS
+      const rangeHeader = request.headers.get("Range");
+      if (rangeHeader) {
+        const range = parseRange(rangeHeader);
+        if (range) {
+          const end = range.length !== undefined
+            ? range.offset + range.length - 1
+            : (range.suffix !== undefined
+              ? Math.min(obj.size - 1, range.suffix - 1)
+              : obj.size - 1);
+          const start = range.offset ?? (range.suffix !== undefined ? obj.size - range.suffix : 0);
+          headers.set("Content-Range", `bytes ${start}-${end}/${obj.size}`);
+          headers.set("Content-Length", String(end - start + 1));
+          return new Response(obj.body, { status: 206, headers });
+        }
+      }
       return new Response(obj.body, { headers });
     }
 
@@ -299,4 +334,19 @@ async function verifyHmac(request, secret) {
   const mac = await crypto.subtle.sign("HMAC", key, new TextEncoder().encode(`${ts}.${body}`));
   const hex = [...new Uint8Array(mac)].map((b) => b.toString(16).padStart(2, "0")).join("");
   return hex === sig.replace(/^sha256=/, "");
+}
+
+// Parse an HTTP Range header into an R2 range option object
+function parseRange(rangeHeader) {
+  if (!rangeHeader) return null;
+  const m = rangeHeader.match(/bytes=(\d*)-(\d*)/);
+  if (!m) return null;
+  const start = m[1] === "" ? undefined : Number(m[1]);
+  const end = m[2] === "" ? undefined : Number(m[2]);
+  if (start === undefined && end === undefined) return null;
+  if (start !== undefined && end !== undefined) {
+    return { offset: start, length: end - start + 1 };
+  }
+  if (start !== undefined) return { offset: start };
+  return { suffix: end };
 }
