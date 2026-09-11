@@ -7,6 +7,7 @@ use App\Models\MeetingBooking;
 use App\Models\FavouriteBooth;
 use App\Services\HeartbeatService;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Cache;
 use Illuminate\Support\Str;
 
 class HeartbeatController extends Controller
@@ -94,18 +95,20 @@ class HeartbeatController extends Controller
 
     public function activeBooths()
     {
-        $booths = Booth::with('authorization', 'liveStreams')
-            ->where('stream_status', 'live')
-            ->whereHas('authorization', fn($q) => $q->where('status', 'AUTHORIZED'))
-            ->get()
-            ->map(fn($b) => [
-                'id' => $b->id,
-                'name' => $b->name,
-                'slug' => $b->slug,
-                'thumbnail' => $b->thumbnail,
-                'stream_url' => $b->liveStreams->first()?->hls_url,
-                'viewer_count' => $b->liveStreams->first()?->viewer_count ?? 0,
-            ]);
+        $booths = Cache::remember('live_active_booths', 30, function () {
+            return Booth::with('authorization', 'liveStreams')
+                ->where('stream_status', 'live')
+                ->whereHas('authorization', fn($q) => $q->where('status', 'AUTHORIZED'))
+                ->get()
+                ->map(fn($b) => [
+                    'id' => $b->id,
+                    'name' => $b->name,
+                    'slug' => $b->slug,
+                    'thumbnail' => $b->thumbnail,
+                    'stream_url' => $b->liveStreams->first()?->hls_url,
+                    'viewer_count' => $b->liveStreams->first()?->viewer_count ?? 0,
+                ]);
+        });
 
         return response()->json($booths);
     }

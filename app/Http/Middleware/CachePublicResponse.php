@@ -47,8 +47,11 @@ class CachePublicResponse
         }
 
         if ($response->isSuccessful()) {
+            // Force-override any existing cache headers
+            $response->headers->remove('Cache-Control');
             $response->headers->set('Cache-Control', "public, s-maxage={$cacheSecs}, stale-while-revalidate=" . ($cacheSecs * 10));
             $response->headers->set('CDN-Cache-Control', "max-age={$cacheSecs}");
+            $response->headers->set('X-Kicc-Cache', 'enabled');
         }
 
         return $response;
