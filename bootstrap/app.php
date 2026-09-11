@@ -27,10 +27,16 @@ return Application::configure(basePath: dirname(__DIR__))
         ]);
         $middleware->append(\App\Http\Middleware\SecurityHeaders::class);
         $middleware->append(\App\Http\Middleware\OptimizeUploadedImages::class);
-        $middleware->append(\App\Http\Middleware\CachePublicResponse::class);
+        $middleware->web(prepend: [
+            \App\Http\Middleware\CachePublicResponse::class,
+        ]);
         $middleware->web(append: [
             \App\Http\Middleware\HandleInertiaRequests::class,
             'throttle:60,1',
+        ]);
+        $middleware->priority([
+            \App\Http\Middleware\CachePublicResponse::class,
+            \Illuminate\Session\Middleware\StartSession::class,
         ]);
         $middleware->api(prepend: [
             \App\Http\Middleware\AgenticSEO::class,

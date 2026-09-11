@@ -46,9 +46,11 @@ function liveBooths() {
                 .then(r => r.json())
                 .then(data => {
                     // Filter by current county
-                    const countySlug = '{{ $countySlug ?? request()->route("county")?->slug ?? "" }}';
+                    const countySlug = '{{ $countySlug ?? '' }}';
+const routeCounty = '{{ request()->route("county") ? (is_string(request()->route("county")) ? request()->route("county") : request()->route("county")->slug) : "" }}';
+const filterSlug = countySlug || routeCounty || '';
                     this.booths = data.filter(b => {
-                        return b.name && (!countySlug || b.name.toLowerCase().includes(countySlug.replace('-', ' ')));
+                        return b.name && (!filterSlug || b.name.toLowerCase().includes(filterSlug.replace('-', ' ')));
                     });
                     this.liveCount = this.booths.length;
                     this.loading = false;
