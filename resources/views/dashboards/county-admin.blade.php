@@ -103,7 +103,15 @@
                     <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16"/></svg>
                 </button>
                 <div class="flex items-center gap-2 text-xs text-zinc-500">
+                    @if(Auth::user()?->hasRole('national_admin'))
+                    <select onchange="window.location.href='/county-admin/'+this.value+'/pro'" class="bg-white/5 border border-white/10 text-zinc-200 rounded-lg px-2 py-1 text-xs font-medium">
+                        @foreach($allCounties as $c)
+                        <option value="{{ $c->slug }}" {{ $c->slug === $county->slug ? 'selected' : '' }}>{{ $c->name }}</option>
+                        @endforeach
+                    </select>
+                    @else
                     <span>{{ $county->name }}</span>
+                    @endif
                     <span>/</span>
                     <span class="text-indigo-400 font-medium" x-text="tab.charAt(0).toUpperCase()+tab.slice(1).replace(/_/g,' ')"></span>
                 </div>

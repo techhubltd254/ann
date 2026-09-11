@@ -55,9 +55,9 @@ class LoginRedirectService
             return redirect()->route('dashboard.county');
         }
 
-        // National admin
+        // National admin — full county admin dashboard (Murang'a by default)
         if ($user->hasRole('national_admin')) {
-            return redirect()->route('national.admin');
+            return redirect()->route('county.admin.pro', 'muranga');
         }
 
         // Exhibitor — private portal

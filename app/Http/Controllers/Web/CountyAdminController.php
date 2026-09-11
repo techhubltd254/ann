@@ -38,6 +38,7 @@ class CountyAdminController extends Controller
         $user = Auth::user();
         $county = County::where('slug', $slug)->firstOrFail();
         $allowed = $user->hasRole('kicc_admin')
+            || $user->hasRole('national_admin')
             || ($user->county_id == $county->id)
             || ($user->hasRole('county_admin') && $user->county_id == $county->id);
         abort_unless($allowed, 403, 'You do not have access to this county.');
@@ -47,8 +48,6 @@ class CountyAdminController extends Controller
     public function dashboard(string $slug, Request $request)
     {
         $user = Auth::user();
-        $county = County::where('slug', $slug)->firstOrFail();
-        abort_if(!$user->isAdmin() && $user->county_id !== $county->id, 403);
         $county = $this->authorizeCounty($slug);
         $tab = $request->get('tab', 'overview');
 
@@ -155,6 +154,9 @@ class CountyAdminController extends Controller
         $broadcastSchedules = \App\Models\BroadcastSchedule::where('is_active', true)
             ->orderBy('sort_order')->latest()->take(50)->get();
 
+        // All counties for national admin switcher
+        $allCounties = County::orderBy('name')->get(['slug', 'name']);
+
         return view('dashboards.county-admin', compact(
             'county', 'tab', 'navItems', 'stats', 'products', 'attractions',
             'hotels', 'sectorImages', 'plans', 'marketplaceProducts', 'ads',
@@ -162,7 +164,7 @@ class CountyAdminController extends Controller
             'institutions', 'traderSpotlights', 'screens', 'screenGroups', 'liveFeeds', 'verifiedTraders',
             'housingProjects', 'droneSequences', 'presidentialAudios', 'floorPlans',
             'consentForms', 'voiceNotes',
-            'landmarks', 'broadcastSchedules',
+            'landmarks', 'broadcastSchedules', 'allCounties',
         ) + ['video4dMap' => $this->video4dMap($county), 'analytics' => $analytics]);
     }
 
