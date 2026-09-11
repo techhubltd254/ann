@@ -6,35 +6,38 @@ use App\Http\Controllers\Controller;
 use App\Models\Agency;
 use App\Models\Ministry;
 use App\Models\MediaAsset;
-use App\Models\LiveStream;
+use Illuminate\Support\Facades\Cache;
 
 class NationalGovernmentController extends Controller
 {
+    const CACHE_TTL = 3600; // 1 hour
+
     public function index()
     {
-        $ministries = Ministry::with('agencies')->where('is_active', true)->orderBy('name')->get();
-        $agencies = Agency::with('ministry')->where('is_active', true)->orderBy('name')->get();
-        $stats = [
-            'ministries' => $ministries->count(),
-            'agencies' => $agencies->count(),
-        ];
+        $stats = Cache::remember('ng_stats', self::CACHE_TTL, fn() => [
+            'ministries' => Ministry::where('is_active', true)->count(),
+            'agencies' => Agency::where('is_active', true)->count(),
+        ]);
 
-        // Hero video: national hero_video MediaAsset or first live booth stream
-        // Hero video: national hero video slot
-        $heroVid = null;
-        try {
-            $heroAsset = MediaAsset::resolveSlot(\App\Models\County::class, 0, 'national_hero_video');
-            $heroVid = $heroAsset?->mp4Url() ?? null;
-        } catch (\Throwable $e) {
-            // Silently fall back
-        }
+        $ministries = Cache::remember('ng_ministries', self::CACHE_TTL, fn() =>
+            Ministry::with('agencies')->where('is_active', true)->orderBy('name')->get()
+        );
+
+        $agencies = Cache::remember('ng_agencies', self::CACHE_TTL, fn() =>
+            Agency::with('ministry')->where('is_active', true)->orderBy('name')->get()
+        );
+
+        $heroVid = Cache::remember('ng_hero', 900, function () {
+            try {
+                $asset = MediaAsset::resolveSlot(\App\Models\County::class, 0, 'national_hero_video');
+                return $asset?->mp4Url() ?? null;
+            } catch (\Throwable) {
+                return null;
+            }
+        });
 
         $heroPoster = '';
-        try {
-            $heroPoster = media('kicc/national-hero.jpeg');
-        } catch (\Throwable $e) {
-            $heroPoster = '';
-        }
+        try { $heroPoster = media('kicc/national-hero.jpeg'); } catch (\Throwable) {}
 
         return view('national-government.index', compact('ministries', 'agencies', 'stats', 'heroVid', 'heroPoster'));
     }
