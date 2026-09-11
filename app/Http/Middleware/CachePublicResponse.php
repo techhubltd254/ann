@@ -1,106 +1,56 @@
 <?php
-
 namespace App\Http\Middleware;
 
 use Closure;
 use Illuminate\Http\Request;
-use Illuminate\Support\Facades\Cache;
-use Illuminate\Support\Facades\Log;
-use Symfony\Component\HttpFoundation\Response;
 
 class CachePublicResponse
 {
-    /**
-     * Cache full GET/HEAD responses for anonymous visitors to cut
-     * per-request DB + render cost on heavy public pages and read-only
-     * API endpoints. Responses are cached in Redis keyed by method+path.
-     *
-     * - Only GET/HEAD requests are cached.
-     * - Requests with an existing session cookie (logged-in/sessioned
-     *   users) pass straight through so their data is never served stale.
-     * - Cached responses never carry a Set-Cookie header; anonymous
-     *   visitors simply don't get a session cookie, which is fine for
-     *   public catalog browsing (forms/auth still hit the live path).
-     */
-    public function handle(Request $request, Closure $next): Response
+    private array $cacheablePaths = [
+        '/national-government',
+        '/national-exhibition',
+        '/counties',
+        '/marketplace',
+    ];
+
+    public function handle(Request $request, Closure $next)
     {
-        if (! $request->isMethod('GET') && ! $request->isMethod('HEAD')) {
-            return $next($request);
-        }
+        $response = $next($request);
 
-        if ($request->user() || $request->cookies->has(session()->getName())) {
-            return $next($request);
-        }
-
-        $ttl = (int) config('response_cache.ttl', 60);
-        $key = 'resp:' . sha1($request->method() . '|' . $request->fullUrl());
-
-        $cached = Cache::get($key);
-        if ($cached !== null) {
-            $response = new Response($cached['content'] ?? '', $cached['status'] ?? 200);
-            $response->headers->set('Content-Type', $cached['content_type'] ?? 'text/html; charset=UTF-8');
-            $response->headers->set('X-Cache', 'HIT');
-            $this->publicHeaders($response);
-
+        if ($request->method() !== 'GET') {
             return $response;
         }
 
-        $response = $next($request);
+        $path = $request->path();
 
-        if ($this->cacheable($response)) {
-            try {
-                Cache::put($key, [
-                    'content' => $response->getContent(),
-                    'status' => $response->getStatusCode(),
-                    'content_type' => $response->headers->get('Content-Type') ?? 'text/html; charset=UTF-8',
-                ], $ttl);
-                $response->headers->set('X-Cache', 'MISS');
-                $this->publicHeaders($response);
-            } catch (\Throwable $e) {
-                Log::warning('response_cache_store_failed: ' . $e->getMessage());
+        // Default: short cache for dynamic content
+        $cacheSecs = 60; // 1 minute default
+
+        // Long cache for static-like pages
+        foreach ($this->cacheablePaths as $prefix) {
+            if (str_starts_with($path, ltrim($prefix, '/'))) {
+                $cacheSecs = 600; // 10 minutes for national-gov, counties, etc.
+                break;
             }
         }
 
+        // API responses
+        if (str_starts_with($path, 'api/live')) {
+            $cacheSecs = 30; // 30 seconds for live API
+        }
+
+        // Don't cache auth or mutation endpoints
+        if (str_starts_with($path, 'login') || str_starts_with($path, 'register') ||
+            str_starts_with($path, 'cart') || str_starts_with($path, 'checkout') ||
+            str_starts_with($path, 'kicc-live/admin') || str_starts_with($path, 'broadcast')) {
+            return $response;
+        }
+
+        if ($response->isSuccessful()) {
+            $response->headers->set('Cache-Control', "public, s-maxage={$cacheSecs}, stale-while-revalidate=" . ($cacheSecs * 10));
+            $response->headers->set('CDN-Cache-Control', "max-age={$cacheSecs}");
+        }
+
         return $response;
-    }
-
-    /**
-     * Mark the response cacheable at the CDN/edge layer. The explicit
-     * Cache-Control lets Cloudflare hold public GET responses at the edge
-     * and keeps the origin (and its session/Redis/DB work) completely out
-     * of the guest request path. s-maxage mirrors the Redis TTL so the
-     * edge and origin expire together; max-age lets browsers reuse it.
-     */
-    protected function publicHeaders(Response $response): void
-    {
-        $ttl = (int) config('response_cache.ttl', 60);
-
-        $response->headers->set('Cache-Control', sprintf(
-            'public, max-age=%d, s-maxage=%d',
-            $ttl,
-            $ttl
-        ));
-        $response->headers->remove('Set-Cookie');
-        $response->headers->remove('XSRF-TOKEN');
-    }
-
-    protected function cacheable(Response $response): bool
-    {
-        if (! $response->isSuccessful()) {
-            return false;
-        }
-
-        // Binary image responses (the optimize-image pipeline) must keep their
-        // own immutable Cache-Control — never override or cache them here.
-        $ct = $response->headers->get('Content-Type') ?? '';
-        if (str_starts_with($ct, 'image/')) {
-            return false;
-        }
-
-        // Responses that must deliver a session cookie (e.g. the first
-        // request that boots a session) are safe to cache — we store only
-        // the content/status/type, never cookies, and the live response
-        // keeps its own Set-Cookie so the visitor still gets a session.
-        return true;
     }
 }
