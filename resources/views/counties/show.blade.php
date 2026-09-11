@@ -241,6 +241,9 @@
                         <div class="font-bold text-gray-900 text-sm">{{ $a->name }}</div>
                         @if($a->entry_fee)<div class="text-kicc-gold text-xs mt-1 font-bold">KES {{ number_format($a->entry_fee) }}</div>@endif
                     </div>
+                    <div class="px-4 pb-4">
+                        <a href="{{ route('attractions.show', $a->id) }}#book" class="block text-center text-xs font-bold text-white bg-kicc-gold hover:bg-yellow-600 rounded-lg py-2 transition-colors">Book a visit</a>
+                    </div>
                 </a>
                 @endforeach
             </div>
@@ -274,6 +277,7 @@
                             <span class="text-[10px] font-bold text-[#0B1E57] uppercase tracking-wider">{{ $h->category }}</span>
                             <span class="text-amber-400 text-xs">{{ $stars }}</span>
                         </div>
+                        <a href="{{ route('counties.sector', [$county->slug, 'hotels']) }}" class="inline-block text-xs font-bold text-kicc-gold hover:underline mt-2">Check availability →</a>
                     </div>
                 </div>
                 @endforeach
@@ -337,10 +341,13 @@
             </div>
             <div class="grid grid-cols-2 md:grid-cols-3 gap-4">
                 @foreach($exhibitions as $ex)
-                <a href="{{ route('exhibitions.show', $ex->slug) }}" class="bg-white border border-gray-200 rounded-2xl p-5 card-hover hover:border-kicc-gold/40 transition-all">
-                    <div class="font-bold text-gray-900 text-sm">{{ $ex->name }}</div>
-                    <div class="text-gray-400 text-xs mt-1">{{ $ex->start_date?->format('M d') }} – {{ $ex->end_date?->format('M d, Y') }}</div>
-                </a>
+                <div class="bg-white border border-gray-200 rounded-2xl p-5 hover:border-kicc-gold/40 hover:shadow-md transition-all group">
+                    <a href="{{ route('exhibitions.show', $ex->slug) }}" class="block">
+                        <div class="font-bold text-gray-900 text-sm group-hover:text-kicc-gold transition-colors">{{ $ex->name }}</div>
+                        <div class="text-gray-400 text-xs mt-1">{{ $ex->start_date?->format('M d') }} – {{ $ex->end_date?->format('M d, Y') }}</div>
+                    </a>
+                    <a href="{{ route('exhibitions.show', $ex->slug) }}#book" class="inline-block text-xs font-bold text-white bg-kicc-gold hover:bg-yellow-600 rounded-lg py-1.5 px-3 mt-3 transition-colors">Book booth</a>
+                </div>
                 @endforeach
             </div>
         </div>
