@@ -46,6 +46,7 @@
         .scrollbar-hide { scrollbar-width: none; -ms-overflow-style: none; }
         .scrollbar-hide::-webkit-scrollbar { display: none; }
         [x-cloak] { display: none !important; }
+        @keyframes pulse-live { 0%, 100% { opacity: 1; } 50% { opacity: 0.7; } }
 
         /*  NEWS TICKER (CNN-style county description crawl)  */
         .ticker-track {
@@ -414,6 +415,9 @@ document.addEventListener('DOMContentLoaded', function() {
                 <a href="{{ route('exhibitions.index') }}" class="px-3.5 py-2 text-sm font-semibold rounded-lg transition-all {{ request()->routeIs('exhibitions.*') ? 'bg-[#901C1E] text-white' : 'text-[#901C1E] hover:text-[#FFCD05] hover:bg-gray-100' }}">Exhibitions</a>
                 <a href="{{ route('venues.index') }}" class="px-3.5 py-2 text-sm font-semibold rounded-lg transition-all {{ request()->routeIs('venues.*') ? 'bg-[#901C1E] text-white' : 'text-[#901C1E] hover:text-[#FFCD05] hover:bg-gray-100' }}">Venues</a>
                 <a href="{{ route('streams.index') }}" class="px-3.5 py-2 text-sm font-semibold rounded-lg transition-all {{ request()->routeIs('streams.*') ? 'bg-[#901C1E] text-white' : 'text-[#901C1E] hover:text-[#FFCD05] hover:bg-gray-100' }}">Live Events</a>
+                <a href="{{ route('national.index') }}" class="px-3.5 py-1.5 text-sm font-bold rounded-lg transition-all inline-flex items-center gap-1.5" style="background: #DC2626; color: white; animation: pulse-live 2s infinite;">
+                    <span class="w-2 h-2 rounded-full bg-white"></span> LIVE
+                </a>
                 <a href="{{ route('screens.directory') }}" class="px-3.5 py-2 text-sm font-semibold rounded-lg transition-all {{ request()->routeIs('screens.*') ? 'bg-[#901C1E] text-white' : 'text-[#901C1E] hover:text-[#FFCD05] hover:bg-gray-100' }}">Screens</a>
                 <a href="{{ route('packages.index') }}" class="px-3.5 py-2 text-sm font-semibold rounded-lg transition-all {{ request()->routeIs('packages.*') ? 'bg-[#901C1E] text-white' : 'text-[#901C1E] hover:text-[#FFCD05] hover:bg-gray-100' }}">Packages</a>
             </nav>
@@ -457,6 +461,9 @@ document.addEventListener('DOMContentLoaded', function() {
             <a href="{{ route('exhibitions.index') }}" class="text-left px-4 py-3 text-sm font-semibold text-gray-600 hover:text-gray-900 hover:bg-gray-100 rounded-lg">Exhibitions</a>
             <a href="{{ route('venues.index') }}" class="text-left px-4 py-3 text-sm font-semibold text-gray-600 hover:text-gray-900 hover:bg-gray-100 rounded-lg">Venues</a>
             <a href="{{ route('streams.index') }}" class="text-left px-4 py-3 text-sm font-semibold text-gray-600 hover:text-gray-900 hover:bg-gray-100 rounded-lg">Live Events</a>
+            <a href="{{ route('national.index') }}" class="text-left px-4 py-3 text-sm font-semibold inline-flex items-center gap-2 text-red-600 hover:bg-red-50 rounded-lg">
+                <span class="w-2 h-2 rounded-full bg-red-500 animate-pulse"></span> LIVE
+            </a>
             <a href="{{ route('screens.directory') }}" class="text-left px-4 py-3 text-sm font-semibold text-gray-600 hover:text-gray-900 hover:bg-gray-100 rounded-lg">Screens</a>
             <a href="{{ route('marketplace.index') }}" class="text-left px-4 py-3 text-sm font-semibold text-gray-600 hover:text-gray-900 hover:bg-gray-100 rounded-lg">Marketplace</a>
             @auth

@@ -84,7 +84,16 @@ class LivePlatformServiceProvider extends ServiceProvider
                 Route::middleware('admin:kicc')->post('/', [\App\Http\Controllers\Live\BoothController::class, 'store'])->name('store');
             });
 
-        // Public viewer routes — CSRF protected, rate-limited
+        // Screen Broadcast Control — videographer panel
+Route::middleware(['web', 'auth', 'verified', 'security.headers'])
+    ->prefix('broadcast')
+    ->name('live.screens.')
+    ->group(function () {
+        Route::get('/', [\App\Http\Controllers\Live\ScreenBroadcastController::class, 'index'])->name('broadcast');
+        Route::post('/route', [\App\Http\Controllers\Live\ScreenBroadcastController::class, 'routeToScreen'])->name('route');
+        Route::post('/route-all', [\App\Http\Controllers\Live\ScreenBroadcastController::class, 'routeToAll'])->name('route-all');
+        Route::post('/route-venue', [\App\Http\Controllers\Live\ScreenBroadcastController::class, 'routeToScreenByName'])->name('route-venue');
+    });
         Route::middleware(['web', 'security.headers'])
             ->group(function () {
                 Route::get('/national-exhibition', [\App\Http\Controllers\Live\NationalExhibitionController::class, 'index'])->name('national.index');
