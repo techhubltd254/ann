@@ -146,7 +146,7 @@
                    @mouseenter="onHoverEnter()"
                    @mouseleave="onHoverLeave()"
                    data-tilt="6" data-reveal data-reveal-delay="{{ $loop->index * 80 }}">
-                    <div class="aspect-[4/3] overflow-hidden relative {{ $hasVideo ? 'bg-[#0B1E57]' : 'bg-gradient-to-br from-[#0A1024] to-[#1a1a2e]' }}">
+<div class="aspect-[4/3] overflow-hidden relative {{ $hasVideo ? 'bg-blue-900/80' : 'bg-gradient-to-br from-[#0A1024] to-[#1a1a2e]' }}">
                         @if($hasVideo)
                         <video x-ref="video" muted loop playsinline preload="auto"
                                class="absolute inset-0 w-full h-full object-cover transition-opacity duration-500"
@@ -158,7 +158,7 @@
                          <img src="{{ $sectorTilePoster ?? '' }}" alt="{{ $name }}"
                              loading="lazy" class="absolute inset-0 w-full h-full object-cover transition-opacity duration-500"
                              :class="videoReady ? 'opacity-0' : 'opacity-100'"
-onerror="this.style.display='none'">
+ onerror="this.remove()">
                         <div class="absolute inset-0 bg-gradient-to-t from-black/60 via-black/10 to-black/30 pointer-events-none"></div>
                         @else
                         <div class="absolute inset-0 bg-gradient-to-br from-[#0A1024] to-[#1a1a2e]"></div>

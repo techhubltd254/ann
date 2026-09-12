@@ -157,7 +157,7 @@ Route::middleware('auth')->group(function () {
     // Portal selector (choose KICC/National/County/Exhibitor admin)
     Route::get('/portal', [AdminPortalController::class, 'selector'])->name('admin.portal');
     // National Government Admin — ministries & agencies
-    Route::get('/admin/national', [AdminPortalController::class, 'national'])->name('admin.national');
+    Route::get('/admin/national', fn() => redirect()->route('national.admin.v2.dashboard'))->name('admin.national');
     // County Admin — scoped to own county
     Route::get('/admin/county', [AdminPortalController::class, 'county'])->name('admin.county');
     // Dashboards (legacy)
