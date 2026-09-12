@@ -31,7 +31,7 @@
     <img src="{{ $poster }}" alt="{{ $title }}" loading="lazy"
          class="absolute inset-0 w-full h-full object-cover transition-opacity duration-300"
          :class="videoReady ? 'opacity-0' : 'opacity-100'"
-         onerror="this.style.display='none'">
+         onerror="this.remove()">
     @endif
 
     {{-- Video: plays on hover, pauses on leave --}}

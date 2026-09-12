@@ -275,7 +275,7 @@
                     <div class="h-36 bg-gray-100 flex items-center justify-center overflow-hidden relative">
                         @php $firstVideo = is_array($p->videos) ? ($p->videos[0] ?? null) : $p->video_url; @endphp
                         @if($firstVideo)
-                        <video autoplay muted loop playsinline preload="auto" class="absolute inset-0 w-full h-full object-cover" onerror="this.style.display='none'">
+                        <video autoplay muted loop playsinline preload="auto" class="absolute inset-0 w-full h-full object-cover" onerror="this.remove()">
                             <source src="{{ $firstVideo }}" type="video/mp4">
                         </video>
                         @elseif($p->image_url || ($productThumbs[$p->id] ?? null))

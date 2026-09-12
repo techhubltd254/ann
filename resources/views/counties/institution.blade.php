@@ -57,9 +57,9 @@
              :class="videoReady ? 'opacity-0' : 'opacity-100'"
              style="transition: opacity 0.6s ease; z-index:1"
              loading="lazy" decoding="async"
-             onerror="this.style.display='none'">
-        @endif
-        <video x-ref="fallbackVideo"
+onerror="this.remove()">
+         @endif
+         <video x-ref="fallbackVideo"
                autoplay muted loop playsinline preload="metadata"
                class="absolute inset-0 w-full h-full object-cover"
                :class="videoReady ? 'opacity-100' : 'opacity-0'"
@@ -166,8 +166,8 @@
                         <a href="{{ route('marketplace.show', $product->slug) }}" class="group bg-[#F9FAFB] rounded-2xl overflow-hidden border border-gray-200 hover:border-[#FFCD05]/30 transition-all card-hover">
                             <div class="aspect-square overflow-hidden bg-white relative">
                                 @if($vid)
-                                <video autoplay muted loop playsinline preload="metadata" class="absolute inset-0 w-full h-full object-cover group-hover:scale-105 transition-transform duration-500"
-                                       onerror="this.style.display='none'">
+                                <video autoplay muted loop playsinline preload="auto" class="absolute inset-0 w-full h-full object-cover group-hover:scale-105 transition-transform duration-500"
+                                       onerror="this.remove()">
                                     <source src="{{ $vid }}" type="video/mp4">
                                 </video>
                                 @endif
