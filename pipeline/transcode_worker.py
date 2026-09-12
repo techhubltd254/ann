@@ -39,7 +39,7 @@ from dataclasses import dataclass
 import boto3
 import redis
 
-REDIS_URL = os.environ.get("REDIS_URL", "redis://localhost:6379/0")
+REDIS_URL = os.environ.get("REDIS_URL", "redis://127.0.0.1:6379/0?socket_timeout=10&socket_connect_timeout=10")
 S3_ENDPOINT = os.environ["S3_ENDPOINT"]
 S3_KEY = os.environ["S3_KEY"]
 S3_SECRET = os.environ["S3_SECRET"]
@@ -129,19 +129,25 @@ def transcode(src: str, outdir: str, job: Job) -> dict:
 
 
 def run() -> None:
-    r = redis.Redis.from_url(REDIS_URL, decode_responses=True)
+    r = redis.Redis.from_url(REDIS_URL, decode_responses=True, socket_timeout=15, socket_connect_timeout=10)
     s3 = boto3.client("s3", endpoint_url=S3_ENDPOINT,
                       aws_access_key_id=S3_KEY, aws_secret_access_key=S3_SECRET)
     try:
         r.xgroup_create(STREAM, GROUP, id="0", mkstream=True)
-    except redis.ResponseError:
-        pass  # group exists
+    except (redis.ResponseError, redis.TimeoutError, Exception):
+        pass  # group exists or timeout (non-critical)
 
     log("info", "transcode worker online", consumer=CONSUMER)
     while True:
         # Reclaim stalled jobs (idle > 10 min), then block for new ones
-        for stream, entries in r.xautoclaim(STREAM, GROUP, CONSUMER, min_idle_time=600_000, start_id="0-0", count=1)[1:2]:
-            pass
+        try:
+            claimed = r.xautoclaim(STREAM, GROUP, CONSUMER, min_idle_time=600_000, start_id="0-0", count=1)
+            if claimed:
+                claimed_id, claimed_entries, claimed_next = claimed
+                if claimed_entries:
+                    log("info", "reclaimed stalled jobs", count=len(claimed_entries))
+        except Exception as e:
+            log("warning", "xautoclaim failed (non-critical)", error=str(e))
         msgs = r.xreadgroup(GROUP, CONSUMER, {STREAM: ">"}, count=1, block=5000)
         if not msgs:
             continue
