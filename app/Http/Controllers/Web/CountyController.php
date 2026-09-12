@@ -122,16 +122,24 @@ class CountyController extends Controller
         // Batched sector video loading — single queries instead of per-sector
         $sectorSlugs = collect($sectorData)->pluck('sector_slug')->unique();
 $sectorVideos = [];
-$sectorVideoHoverLoops = [];
-$sectorWebmVideos = [];
+        $sectorVideoHoverLoops = [];
+        $sectorWebmVideos = [];
         $sectorEntityVideos = [];
         $sectorPitches = [];
+        // Fallback map: surface slug -> actual DB slot name (sector_video_{slug})
+        $slotAliases = [
+            'hotels' => 'hospitality',
+            'farms' => 'agriculture',
+            'products' => 'commerce',
+            'institutions' => 'education',
+            'transport' => 'industry',
+        ];
 
         $cacheKey = "kicc_county_sectors_{$county->id}_v2";
 
-        $cached = Cache::remember($cacheKey, config('kicc.cache_ttl.admin', 60), function () use ($county, $sectorSlugs, $sectorData, &$sectorVideos, &$sectorWebmVideos, &$sectorEntityVideos, &$sectorPitches) {
+        $cached = Cache::remember($cacheKey, config('kicc.cache_ttl.admin', 60), function () use ($county, $sectorSlugs, $sectorData, $slotAliases, &$sectorVideos, &$sectorVideoHoverLoops, &$sectorWebmVideos, &$sectorEntityVideos, &$sectorPitches) {
             // Batch load sector video assets
-            $slots = $sectorSlugs->map(fn($slug) => 'sector_video_' . $slug);
+            $slots = $sectorSlugs->map(fn($slug) => 'sector_video_' . ($slotAliases[$slug] ?? $slug));
             $assets = MediaAsset::where('owner_type', County::class)
                 ->where('owner_id', $county->id)
                 ->whereIn('slot', $slots)
@@ -141,7 +149,7 @@ $sectorWebmVideos = [];
                 ->keyBy('slot');
 
             foreach ($sectorData as $name => $s) {
-                $slot = 'sector_video_' . $s['sector_slug'];
+                $slot = 'sector_video_' . ($slotAliases[$s['sector_slug']] ?? $s['sector_slug']);
                 $asset = $assets->get($slot);
                 $sectorVideos[$s['sector_slug']] = $asset?->mp4Url();
                 $sectorVideoHoverLoops[$s['sector_slug']] = $asset?->hoverLoopUrl();
@@ -412,7 +420,9 @@ $sectorWebmVideos = [];
             'institutionHeroVideos', 'productCounts',
             'sectorHeroVideos', 'sectorHeroPoster', 'entityReviewScores', 'services'
         ))->with(['institutionHeroPosters' => $entityPosters, 'institutionHeroLoops' => $entityHoverLoops]);
-    }public function institution(string $slug)
+    }
+
+    public function institution(string $slug)
     {
         $institution = CountyInstitution::where('slug', $slug)
             ->where('is_published', true)
@@ -420,6 +430,8 @@ $sectorWebmVideos = [];
             ->firstOrFail();
 
         $county = $institution->county;
+
+        $slotAliases = ['hotels' => 'hospitality', 'farms' => 'agriculture', 'products' => 'commerce', 'institutions' => 'education', 'transport' => 'industry'];
 
         // Hero video (Tier 3: HLS adaptive preferred, mp4 fallback)
         $heroAssetId = Cache::remember("resolve:inst_hero_id_" . $institution->id, config('kicc.cache_ttl.public', 21600), fn() => MediaAsset::resolveSlot(CountyInstitution::class, $institution->id, 'hero_video')?->id);
@@ -482,7 +494,7 @@ $sectorWebmVideos = [];
                 foreach ($sectorSlugs as $slug) {
                     $asset = MediaAsset::where('owner_type', County::class)
                         ->where('owner_id', $institution->county_id)
-                        ->where('slot', 'sector_video_' . $slug)
+                        ->where('slot', 'sector_video_' . ($slotAliases[$slug] ?? $slug))
                         ->first();
                     if ($asset && ($url = $asset->mp4Url() ?? $asset->url())) {
                         $fallback[] = $url;
