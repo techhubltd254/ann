@@ -39,7 +39,7 @@
         <x-live-booths-widget county-slug="national" />
     </div>
 
-    {{-- Ministries section --}}
+    {{-- Ministries section with hover tiles --}}
     <div id="ministries" class="max-w-7xl mx-auto px-5 py-12">
         <div class="flex items-center gap-3 mb-8">
             <span class="h-px w-8" style="background: var(--kicc-gold);"></span>
@@ -48,25 +48,55 @@
         </div>
 
         <div class="grid sm:grid-cols-2 lg:grid-cols-3 gap-5">
-@forelse($ministries as $m)
-            <a href="{{ route('national.site', $m['slug']) }}" class="card-kicc p-5 hover:shadow-lg transition-all group">
-                <div class="flex items-center gap-4 mb-3">
-                    <div class="w-12 h-12 rounded-xl flex items-center justify-center text-white font-black text-sm" style="background: {{ $m['color'] ?: '#A6192E' }}">{{ $m['code'] ?? substr($m['name'], 0, 3) }}</div>
-                    <div class="flex-1 min-w-0">
-                        <h3 class="font-bold text-sm truncate" style="color: var(--kicc-navy);">{{ $m['name'] }}</h3>
-                        <span class="text-xs" style="color: var(--kicc-text-light);">{{ count($m['agencies']) }} {{ Str::plural('agency', count($m['agencies'])) }}</span>
+            @forelse($ministries as $idx => $m)
+            @php
+                $tileHover = $tileHoverLoops[$m['slug']] ?? ($tileHoverLoops[$idx % count($tileHoverLoops)] ?? null);
+                $tileLoop = $tileHover ?? null;
+            @endphp
+            <div class="group bg-white rounded-2xl overflow-hidden border border-gray-200 hover:border-[#FFCD05]/40 transition-all card-hover"
+                 x-data="mediaTile()"
+                 @mouseenter="onHoverEnter()"
+                 @mouseleave="onHoverLeave()">
+                <a href="{{ route('national.site', $m['slug']) }}" class="block">
+                    <div class="aspect-[4/3] overflow-hidden relative bg-[#0B1E57]">
+                        {{-- Video hover --}}
+                        @if($tileLoop)
+                        <video x-ref="video" muted loop playsinline preload="auto"
+                               class="absolute inset-0 w-full h-full object-cover transition-opacity duration-300"
+                               :class="videoReady ? 'opacity-100' : 'opacity-0'"
+                               @playing="onVideoPlaying()">
+                            <source src="{{ $tileLoop }}" type="video/mp4">
+                        </video>
+                        <div class="absolute inset-0 flex items-center justify-center transition-opacity duration-300"
+                             style="background: {{ $m['color'] ?: '#A6192E' }}"
+                             :class="videoReady ? 'opacity-0' : 'opacity-100'">
+                            <span class="text-white/80 text-5xl font-black">{{ $m['code'] ?? substr($m['name'], 0, 2) }}</span>
+                        </div>
+                        @else
+                        <div class="absolute inset-0 flex items-center justify-center" style="background: {{ $m['color'] ?: '#A6192E' }}">
+                            <span class="text-white/80 text-5xl font-black">{{ $m['code'] ?? substr($m['name'], 0, 2) }}</span>
+                        </div>
+                        @endif
+                        <div class="absolute inset-0 bg-gradient-to-t from-black/60 via-black/10 to-transparent pointer-events-none"></div>
                     </div>
-                </div>
-                @if($m['description'])<p class="text-sm" style="color: var(--kicc-text);">{{ Str::limit($m['description'], 100) }}</p>@endif
-                @if(!empty($m['agencies']))
-                <div class="mt-3 pt-3" style="border-top: 1px solid var(--kicc-border);">
-                    @foreach(array_slice($m['agencies'], 0, 3) as $a)
-                    <div class="text-xs" style="color: var(--kicc-text-light);">· {{ $a['name'] }}</div>
-                    @endforeach
-                    @if(count($m['agencies']) > 3)<div class="text-xs font-semibold mt-1" style="color: var(--kicc-crimson);">+{{ count($m['agencies']) - 3 }} more</div>@endif
-                </div>
-                @endif
-            </a>
+                    <div class="p-4">
+                        <div class="flex items-center gap-3 mb-2">
+                            <h3 class="font-bold text-sm" style="color: var(--kicc-navy);">{{ $m['name'] }}</h3>
+                        </div>
+                        @if($m['description'])<p class="text-xs" style="color: var(--kicc-text);">{{ Str::limit($m['description'], 100) }}</p>@endif
+                        @if($m['agencies'])
+                        <div class="mt-2 flex flex-wrap gap-1">
+                            @foreach(array_slice($m['agencies'], 0, 3) as $a)
+                            <span class="text-[10px] px-1.5 py-0.5 rounded-full" style="background: var(--kicc-bg-alt); color: var(--kicc-text-light);">{{ $a['name'] }}</span>
+                            @endforeach
+                            @if(count($m['agencies']) > 3)
+                            <span class="text-[10px] px-1.5 py-0.5 rounded-full font-semibold" style="color: var(--kicc-crimson);">+{{ count($m['agencies']) - 3 }}</span>
+                            @endif
+                        </div>
+                        @endif
+                    </div>
+                </a>
+            </div>
             @empty
             <div class="col-span-3 text-center py-16" style="color: var(--kicc-text-light);">
                 <div class="text-4xl mb-3">🏛️</div>
