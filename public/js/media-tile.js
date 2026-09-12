@@ -1,39 +1,60 @@
 /**
- * Unified media tile — plays video on hover (desktop) or when in viewport (mobile).
- * Video play() is called directly via DOM querySelector inside mouseenter handler,
- * so it's always within the browser's user gesture context.
- *
- * x-effect only handles pause — play is done directly for reliability.
+ * mediaTile — hover-to-play video tile.
+ * Uses direct DOM querySelector (safe across Alpine versions).
+ * Retries play() with load() if autoplay is rejected.
+ * Preloads video on scroll-into-view for instant playback.
  */
 function mediaTile() {
     return {
         active: false,
         videoReady: false,
-
         _el: null,
+        _videoEl: null,
 
-        mounted() { this._el = this.$el; },
+        mounted() {
+            this._el = this.$el;
+            this._videoEl = this._el.querySelector('video');
+            // Preload video when tile scrolls into view
+            if (this._videoEl && 'IntersectionObserver' in window) {
+                const obs = new IntersectionObserver((entries) => {
+                    if (entries[0].isIntersecting) {
+                        this._videoEl.preload = 'auto';
+                        this._videoEl.load();
+                        obs.disconnect();
+                    }
+                }, { rootMargin: '200px' });
+                obs.observe(this._el);
+            }
+        },
 
         onHoverEnter() {
-            const v = this._el.querySelector('video');
-            if (v) {
-                v.muted = true;
-                v.play().catch(() => {
-                    // If first play fails, reload source and retry once
-                    v.load();
-                    setTimeout(() => v.play().catch(() => {}), 200);
-                });
-            }
+            const v = this._videoEl;
+            if (!v) return;
+            v.muted = true;
+            this._playWithRetry(v, 3);
             this.active = true;
         },
 
         onHoverLeave() {
             this.active = false;
-            const v = this._el.querySelector('video');
+            const v = this._videoEl;
             if (v) v.pause();
         },
 
-        onVideoPlaying() { this.videoReady = true; },
-        resetVideoReady() { this.videoReady = false; },
+        onVideoPlaying() {
+            this.videoReady = true;
+        },
+
+        resetVideoReady() {
+            this.videoReady = false;
+        },
+
+        _playWithRetry(v, attempts) {
+            if (attempts <= 0) return;
+            v.play().catch(() => {
+                v.load();
+                setTimeout(() => this._playWithRetry(v, attempts - 1), 300);
+            });
+        },
     };
 }
