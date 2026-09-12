@@ -176,7 +176,19 @@
                     <p class="text-gray-500 text-xs leading-relaxed line-clamp-2 mt-1">{{ $e->description }}</p>
                     @endif
                     <div class="flex items-center gap-3 mt-2 text-[11px] text-gray-400">
-                        @if($e->location)<span class="truncate">{{ $e->location }}</span>@endif
+                        @if($e->location)
+                        <a href="https://www.google.com/maps/search/?api=1&query={{ urlencode($e->location) }}" target="_blank" rel="noopener"
+                           class="truncate hover:text-[#901C1E] transition-colors flex items-center gap-1">
+                            <svg class="w-3 h-3 shrink-0" fill="currentColor" viewBox="0 0 24 24"><path d="M12 2C8.13 2 5 5.13 5 9c0 5.73 7 13 7 13s7-7.27 7-13c0-3.87-3.13-7-7-7zm0 9.5c-1.38 0-2.5-1.12-2.5-2.5s1.12-2.5 2.5-2.5S14.5 7.62 14.5 9s-1.12 2.5-2.5 2.5z"/></svg>
+                            <span>{{ $e->location }}</span>
+                        </a>
+                        @else
+                        <a href="https://www.google.com/maps/search/?api=1&query={{ urlencode($e->name . ', ' . $county->name) }}" target="_blank" rel="noopener"
+                           class="text-[#5A6480] hover:text-[#901C1E] transition-colors flex items-center gap-1">
+                            <svg class="w-3 h-3 shrink-0" fill="currentColor" viewBox="0 0 24 24"><path d="M12 2C8.13 2 5 5.13 5 9c0 5.73 7 13 7 13s7-7.27 7-13c0-3.87-3.13-7-7-7zm0 9.5c-1.38 0-2.5-1.12-2.5-2.5s1.12-2.5 2.5-2.5S14.5 7.62 14.5 9s-1.12 2.5-2.5 2.5z"/></svg>
+                            View on Map
+                        </a>
+                        @endif
                         @if(!empty($e->contact))<span>{{ $e->contact }}</span>@endif
                     </div>
                     <div class="mt-3 flex items-center justify-between">

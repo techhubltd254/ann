@@ -100,7 +100,22 @@
                 @if($exhibition->venue)
                 <div class="bg-white rounded-2xl p-6 border border-gray-200" data-reveal>
                     <h3 class="font-bold text-gray-900 mb-3 text-sm uppercase tracking-wider">Venue</h3>
-                    <a href="{{ route('venues.show', $exhibition->venue->slug) }}" class="text-kicc-gold hover:underline font-bold">{{ $exhibition->venue->name }}</a>
+                    <div class="flex items-center gap-2">
+                        <a href="{{ route('venues.show', $exhibition->venue->slug) }}" class="text-kicc-gold hover:underline font-bold">{{ $exhibition->venue->name }}</a>
+                        @if($exhibition->venue->latitude && $exhibition->venue->longitude)
+                        <a href="https://www.google.com/maps/search/?api=1&query={{ $exhibition->venue->latitude }},{{ $exhibition->venue->longitude }}" target="_blank" rel="noopener"
+                           class="inline-flex items-center gap-1 text-[10px] text-[#5A6480] hover:text-[#901C1E] transition-colors" title="View on Google Maps">
+                            <svg class="w-3 h-3" fill="currentColor" viewBox="0 0 24 24"><path d="M12 2C8.13 2 5 5.13 5 9c0 5.73 7 13 7 13s7-7.27 7-13c0-3.87-3.13-7-7-7zm0 9.5c-1.38 0-2.5-1.12-2.5-2.5s1.12-2.5 2.5-2.5S14.5 7.62 14.5 9s-1.12 2.5-2.5 2.5z"/></svg>
+                            Map
+                        </a>
+                        @else
+                        <a href="https://www.google.com/maps/search/?api=1&query={{ urlencode($exhibition->venue->name . ', ' . ($exhibition->venue->city ?? '')) }}" target="_blank" rel="noopener"
+                           class="inline-flex items-center gap-1 text-[10px] text-[#5A6480] hover:text-[#901C1E] transition-colors" title="Search on Google Maps">
+                            <svg class="w-3 h-3" fill="currentColor" viewBox="0 0 24 24"><path d="M12 2C8.13 2 5 5.13 5 9c0 5.73 7 13 7 13s7-7.27 7-13c0-3.87-3.13-7-7-7zm0 9.5c-1.38 0-2.5-1.12-2.5-2.5s1.12-2.5 2.5-2.5S14.5 7.62 14.5 9s-1.12 2.5-2.5 2.5z"/></svg>
+                            Map
+                        </a>
+                        @endif
+                    </div>
                     @if($exhibition->venue->city)<p class="text-xs text-[#5A6480] mt-1">{{ $exhibition->venue->city }}</p>@endif
                 </div>
                 @endif

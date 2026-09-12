@@ -73,6 +73,15 @@
                         @endforeach
                     </div>
                     @endif
+                    <div class="mt-2 flex justify-center gap-2">
+                        <a href="https://www.google.com/maps/search/?api=1&query={{ $c->latitude }},{{ $c->longitude }}" target="_blank" rel="noopener"
+                           class="inline-flex items-center gap-1 text-[10px] text-[#5A6480] hover:text-[#901C1E] transition-colors" title="View on Google Maps">
+                            <svg class="w-3 h-3" fill="currentColor" viewBox="0 0 24 24"><path d="M12 2C8.13 2 5 5.13 5 9c0 5.73 7 13 7 13s7-7.27 7-13c0-3.87-3.13-7-7-7zm0 9.5c-1.38 0-2.5-1.12-2.5-2.5s1.12-2.5 2.5-2.5S14.5 7.62 14.5 9s-1.12 2.5-2.5 2.5z"/></svg>
+                            Map
+                        </a>
+                        <span class="text-[10px] text-gray-300">|</span>
+                        <a href="{{ route('counties.show', $c->slug) }}" class="inline-flex items-center gap-1 text-[10px] text-[#5A6480] hover:text-kicc-gold transition-colors">Explore</a>
+                    </div>
                 </div>
             </a>
             @endforeach

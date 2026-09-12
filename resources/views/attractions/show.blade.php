@@ -27,7 +27,18 @@
             <h1 class="text-4xl font-black text-gray-900" data-split>{{ $attraction->name }}</h1>
             <div class="flex flex-wrap items-center gap-3 mt-2">
                 <span class="text-[#0B1E57] text-xs font-bold uppercase tracking-widest">{{ $attraction->category ?? 'Attraction' }}</span>
-                @if($attraction->location)<span class="text-gray-500 text-sm"> {{ $attraction->location }}</span>@endif
+                @if($attraction->latitude && $attraction->longitude)
+                <a href="https://www.google.com/maps/search/?api=1&query={{ $attraction->latitude }},{{ $attraction->longitude }}" target="_blank" rel="noopener"
+                   class="inline-flex items-center gap-1 text-sm text-gray-500 hover:text-[#901C1E] transition-colors">
+                    <svg class="w-3.5 h-3.5" fill="currentColor" viewBox="0 0 24 24"><path d="M12 2C8.13 2 5 5.13 5 9c0 5.73 7 13 7 13s7-7.27 7-13c0-3.87-3.13-7-7-7zm0 9.5c-1.38 0-2.5-1.12-2.5-2.5s1.12-2.5 2.5-2.5S14.5 7.62 14.5 9s-1.12 2.5-2.5 2.5z"/></svg>
+                    {{ $attraction->location ?? 'View on Map' }}
+                </a>
+                @elseif($attraction->location)
+                <span class="text-gray-500 text-sm flex items-center gap-1">
+                    <svg class="w-3.5 h-3.5" fill="currentColor" viewBox="0 0 24 24"><path d="M12 2C8.13 2 5 5.13 5 9c0 5.73 7 13 7 13s7-7.27 7-13c0-3.87-3.13-7-7-7zm0 9.5c-1.38 0-2.5-1.12-2.5-2.5s1.12-2.5 2.5-2.5S14.5 7.62 14.5 9s-1.12 2.5-2.5 2.5z"/></svg>
+                    <a href="https://www.google.com/maps/search/?api=1&query={{ urlencode($attraction->location) }}" target="_blank" rel="noopener" class="hover:text-[#901C1E] transition-colors">{{ $attraction->location }}</a>
+                </span>
+                @endif
                 @if($attraction->opening_hours)<span class="text-gray-500 text-sm"> {{ $attraction->opening_hours }}</span>@endif
             </div>
         </div>
