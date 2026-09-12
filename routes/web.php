@@ -11,6 +11,7 @@ use App\Http\Controllers\Web\DashboardV2Controller;
 use App\Http\Controllers\Web\ExhibitionController;
 use App\Http\Controllers\Web\HomeController;
 use App\Http\Controllers\Web\MarketplaceController;
+use App\Http\Controllers\Web\MediaProxyController;
 use App\Http\Controllers\Web\OperationsController;
 use App\Http\Controllers\Web\ScreenController;
 require __DIR__.'/auth.php';
@@ -624,6 +625,10 @@ Route::middleware(['auth', 'verified'])->prefix('broadcast')->name('live.screens
     Route::post('/route-all', [\App\Http\Controllers\Live\ScreenBroadcastController::class, 'routeToAll'])->name('route-all');
     Route::post('/route-venue', [\App\Http\Controllers\Live\ScreenBroadcastController::class, 'routeToScreenByName'])->name('route-venue');
 });
+
+// Media proxy — serves R2 files directly through Laravel (fallback when worker is unavailable)
+Route::get('/media/video/{path}', [MediaProxyController::class, 'video'])->where('path', '.*');
+Route::get('/media/derivatives/{path}', [MediaProxyController::class, 'derivative'])->where('path', '.*');
 
 // Murang'a County Admin SPA (dark mode command center)
 Route::get('/muranga-admin/{path?}', function () {
