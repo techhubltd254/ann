@@ -42,24 +42,29 @@ class NationalGovernmentController extends Controller
         $heroPoster = '';
         try { $heroPoster = media('kicc/national-hero.jpeg'); } catch (\Throwable) {}
 
-        // Tile hover loops: fetch hover loops from existing county sector videos as backgrounds
+        // Tile hover loops + posters: fetch from existing county sector videos
         $tileHoverLoops = Cache::remember('ng_tile_hovers', 3600, function () {
-            $hovers = MediaAsset::where('kind', 'video')
+            $assets = MediaAsset::where('kind', 'video')
                 ->where('slot', 'like', 'sector_video_%')
                 ->ready()
-                ->with(['derivatives' => fn($q) => $q->where('kind', 'hover_loop')])
-                ->get()
-                ->map(fn($a) => $a->hoverLoopUrl())
-                ->filter()
-                ->values()
-                ->toArray();
-            // Ensure at least 6 loops for variety
-            while (count($hovers) < 6 && count($hovers) > 0) {
-                $hovers = array_merge($hovers, $hovers);
-            }
+                ->with(['derivatives' => fn($q) => $q->whereIn('kind', ['hover_loop', 'poster'])])
+                ->get();
+            $hovers = $assets->map(fn($a) => $a->hoverLoopUrl())->filter()->values()->toArray();
+            while (count($hovers) < 6 && count($hovers) > 0) $hovers = array_merge($hovers, $hovers);
             return $hovers;
         });
 
-        return view('national-government.index', compact('ministries', 'agencies', 'stats', 'heroVid', 'heroPoster', 'tileHoverLoops'));
+        $tilePosters = Cache::remember('ng_tile_posters', 3600, function () {
+            $assets = MediaAsset::where('kind', 'video')
+                ->where('slot', 'like', 'sector_video_%')
+                ->ready()
+                ->with(['derivatives' => fn($q) => $q->where('kind', 'poster')])
+                ->get();
+            $posters = $assets->map(fn($a) => $a->posterUrl())->filter()->values()->toArray();
+            while (count($posters) < 6 && count($posters) > 0) $posters = array_merge($posters, $posters);
+            return $posters;
+        });
+
+        return view('national-government.index', compact('ministries', 'agencies', 'stats', 'heroVid', 'heroPoster', 'tileHoverLoops', 'tilePosters'));
     }
 }

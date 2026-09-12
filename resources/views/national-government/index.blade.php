@@ -50,34 +50,35 @@
         <div class="grid sm:grid-cols-2 lg:grid-cols-3 gap-5">
             @forelse($ministries as $idx => $m)
             @php
-                $tileHover = $tileHoverLoops[$m['slug']] ?? ($tileHoverLoops[$idx % count($tileHoverLoops)] ?? null);
-                $tileLoop = $tileHover ?? null;
+                $tileHover = $tileHoverLoops[$idx % count($tileHoverLoops)] ?? null;
+                $tilePoster = $tilePosters[$idx % count($tilePosters)] ?? null;
             @endphp
             <div class="group bg-white rounded-2xl overflow-hidden border border-gray-200 hover:border-[#FFCD05]/40 transition-all card-hover"
                  x-data="mediaTile()"
                  @mouseenter="onHoverEnter()"
                  @mouseleave="onHoverLeave()">
                 <a href="{{ route('national.site', $m['slug']) }}" class="block">
-                    <div class="aspect-[4/3] overflow-hidden relative bg-[#0B1E57]">
-                        {{-- Video hover --}}
-                        @if($tileLoop)
+                    <div class="aspect-[4/3] overflow-hidden relative {{ $tileHover ? 'bg-[#0B1E57]' : 'bg-gradient-to-br from-[#0A1024] to-[#1a1a2e]' }}">
+                        @if($tileHover)
                         <video x-ref="video" muted loop playsinline preload="auto"
-                               class="absolute inset-0 w-full h-full object-cover transition-opacity duration-300"
+                               class="absolute inset-0 w-full h-full object-cover transition-opacity duration-500"
                                :class="videoReady ? 'opacity-100' : 'opacity-0'"
+                               poster="{{ $tilePoster ?? '' }}"
                                @playing="onVideoPlaying()">
-                            <source src="{{ $tileLoop }}" type="video/mp4">
+                            <source src="{{ $tileHover }}" type="video/mp4">
                         </video>
-                        <div class="absolute inset-0 flex items-center justify-center transition-opacity duration-300"
-                             style="background: {{ $m['color'] ?: '#A6192E' }}"
-                             :class="videoReady ? 'opacity-0' : 'opacity-100'">
-                            <span class="text-white/80 text-5xl font-black">{{ $m['code'] ?? substr($m['name'], 0, 2) }}</span>
-                        </div>
+                        <img src="{{ $tilePoster ?? '' }}" alt="{{ $m['name'] }}" loading="lazy"
+                             class="absolute inset-0 w-full h-full object-cover transition-opacity duration-500"
+                             :class="videoReady ? 'opacity-0' : 'opacity-100'"
+                             onerror="this.style.display='none'">
                         @else
-                        <div class="absolute inset-0 flex items-center justify-center" style="background: {{ $m['color'] ?: '#A6192E' }}">
-                            <span class="text-white/80 text-5xl font-black">{{ $m['code'] ?? substr($m['name'], 0, 2) }}</span>
+                        <div class="absolute inset-0 flex items-center justify-center">
+                            <span class="text-white/20 text-5xl font-black">{{ $m['code'] ?? substr($m['name'], 0, 2) }}</span>
                         </div>
                         @endif
+                        @if($tileHover)
                         <div class="absolute inset-0 bg-gradient-to-t from-black/60 via-black/10 to-transparent pointer-events-none"></div>
+                        @endif
                     </div>
                     <div class="p-4">
                         <div class="flex items-center gap-3 mb-2">
