@@ -116,16 +116,20 @@ class EnrichInstitutionContacts extends Command
         if (!$html) return null;
 
         $contacts = [];
+        $excludeDomains = ['google.com', 'youtube.com', 'facebook.com', 'twitter.com', 'instagram.com', 'linkedin.com', 'youtu.be'];
 
-        // Extract phone numbers (Kenyan: +254... or 0...)
+        // Extract phone numbers (Kenyan: +254 or 0 prefix, 7/1 followed by 8 digits)
         if (preg_match_all('/(?:\+254|0)[17]\d{8}/', $html, $m)) {
             $contacts['phone'] = $m[0][0];
         }
 
         // Extract email addresses
         if (preg_match_all('/[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}/', $html, $m)) {
-            // Filter out common non-institution emails
-            $filtered = array_filter($m[0], fn($e) => !str_contains($e, 'example.com') && !str_contains($e, 'google.com'));
+            $filtered = array_filter($m[0], fn($e) =>
+                !str_contains($e, 'example.com') &&
+                !str_contains($e, '@google') &&
+                !str_contains($e, '@gmail')
+            );
             if (!empty($filtered)) {
                 $contacts['email'] = array_values($filtered)[0];
             }
@@ -133,13 +137,12 @@ class EnrichInstitutionContacts extends Command
 
         // Extract website URLs
         if (preg_match_all('/https?:\/\/(?:www\.)?[a-zA-Z0-9-]+\.[a-zA-Z]{2,}(?:\/[^\s"<]*)?/', $html, $m)) {
-            $filtered = array_filter($m[0], fn($u) =>
-                !str_contains($u, 'google.com') &&
-                !str_contains($u, 'youtube.com') &&
-                !str_contains($u, 'facebook.com') &&
-                !str_contains($u, 'twitter.com') &&
-                !str_contains($u, 'instagram.com')
-            );
+            $filtered = array_filter($m[0], fn($u) => {
+                foreach ($excludeDomains as $d) {
+                    if (str_contains($u, $d)) return false;
+                }
+                return true;
+            });
             if (!empty($filtered)) {
                 $contacts['website'] = array_values($filtered)[0];
             }
