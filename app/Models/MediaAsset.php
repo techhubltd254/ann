@@ -45,7 +45,7 @@ class MediaAsset extends Model
 
     public function derivatives(): HasMany
     {
-        return $this->hasMany(MediaDerivative::class);
+        return $this->hasMany(MediaDerivative::class)->orderBy('variant');
     }
 
     public function pipelineJobs(): HasMany
@@ -70,24 +70,19 @@ class MediaAsset extends Model
 
     public function bestVideoUrl(): ?string
     {
-        $preferred = $this->derivatives()
-            ->whereIn('kind', ['video_webm', 'video_mp4'])
-            ->orderByRaw("FIELD(kind, 'video_webm', 'video_mp4')")
-            ->value('path');
-
-        return $preferred ? $this->resolve($preferred) : null;
+        $webm = $this->derivatives->firstWhere('kind', 'video_webm');
+        if ($webm) return $this->resolve($webm->path);
+        $mp4 = $this->derivatives->firstWhere('kind', 'video_mp4');
+        if ($mp4) return $this->resolve($mp4->path);
+        return null;
     }
 
     public function derivativeUrl(string $kind, ?string $variant = null): ?string
     {
-        $query = $this->derivatives()->where('kind', $kind);
-        if ($variant) {
-            $query->where('variant', $variant);
-        }
-
-        $path = $query->value('path');
-
-        return $path ? $this->resolve($path) : null;
+        $derivative = $variant === null
+            ? $this->derivatives->firstWhere('kind', $kind)
+            : $this->derivatives->first(fn($d) => $d->kind === $kind && $d->variant === $variant);
+        return $derivative ? $this->resolve($derivative->path) : null;
     }
 
     public function webmUrl(): ?string
@@ -110,59 +105,44 @@ class MediaAsset extends Model
 
     public function thumbnailUrl(): ?string
     {
-        $thumb = $this->derivatives()->where('kind', 'thumb')->value('path')
-            ?? $this->derivatives()->where('kind', 'webp')->value('path');
-
-        return $thumb ? $this->resolve($thumb) : null;
+        $thumb = $this->derivatives->firstWhere('kind', 'thumb');
+        if ($thumb) return $this->resolve($thumb->path);
+        $webp = $this->derivatives->firstWhere('kind', 'webp');
+        if ($webp) return $this->resolve($webp->path);
+        return null;
     }
 
     public function glbUrl(): ?string
     {
-        $glb = $this->derivatives()
-            ->where('kind', 'model_glb')
-            ->orderBy('variant')
-            ->value('path');
-
-        return $glb ? $this->resolve($glb) : null;
+        $glb = $this->derivatives->firstWhere('kind', 'model_glb');
+        return $glb ? $this->resolve($glb->path) : null;
     }
 
     /** Tier 1: ultra-light WebP poster frame for grid cards */
     public function posterUrl(): ?string
     {
-        $poster = $this->derivatives()
-            ->where('kind', 'poster')
-            ->orderBy('variant')
-            ->value('path');
-
-        return $poster ? $this->resolve($poster) : null;
+        $poster = $this->derivatives->firstWhere('kind', 'poster');
+        return $poster ? $this->resolve($poster->path) : null;
     }
 
     /** Tier 2: 3s low-bitrate hover/in-view loop */
     public function hoverLoopUrl(): ?string
     {
-        $loop = $this->derivatives()
-            ->where('kind', 'hover_loop')
-            ->orderBy('variant')
-            ->value('path');
-
-        if ($loop) return $this->resolve($loop);
+        $loop = $this->derivatives->firstWhere('kind', 'hover_loop');
+        if ($loop) return $this->resolve($loop->path);
         return $this->mp4Url();
     }
 
     /** Tier 3: interactive 4D Gaussian splat (detail page only) */
     public function splatUrl(): ?string
     {
-        $splat = $this->derivatives()
-            ->where('kind', 'model_splat')
-            ->orderBy('variant')
-            ->value('path');
-
-        return $splat ? $this->resolve($splat) : null;
+        $splat = $this->derivatives->firstWhere('kind', 'model_splat');
+        return $splat ? $this->resolve($splat->path) : null;
     }
 
     public function hasDepthMap(): bool
     {
-        return $this->derivatives()->where('kind', 'depth_map')->exists();
+        return $this->derivatives->contains('kind', 'depth_map');
     }
 
     public function depthMapUrl(): ?string

@@ -103,8 +103,10 @@ if (!function_exists('image_blur')) {
     {
         if (!$sourceUrl) return null;
         try {
-            $v = \App\Models\ImageVariant::where('source_hash', md5($sourceUrl))->latest('id')->first();
-            return $v?->blur;
+            $hash = md5($sourceUrl);
+            return \Illuminate\Support\Facades\Cache::remember("iblur:{$hash}", 86400, fn() =>
+                \App\Models\ImageVariant::where('source_hash', $hash)->value('blur')
+            );
         } catch (\Throwable) {
             return null;
         }

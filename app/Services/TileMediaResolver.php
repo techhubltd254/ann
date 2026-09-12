@@ -9,6 +9,7 @@ use App\Models\MediaAsset;
 use App\Models\Ministry;
 use App\Models\Sector;
 use App\Models\SectorEntity;
+use Illuminate\Support\Facades\Cache;
 
 /**
  * TileMediaResolver — Universal 5-level fallback pipeline for tile hover videos.
@@ -56,6 +57,57 @@ class TileMediaResolver
         if ($asset) return $this->makeResult($asset, 5);
 
         return $this->emptyResult();
+    }
+
+    /**
+     * Batch-resolve tile media for ALL county sectors in 3 total queries.
+     * Each per-sector call to forCountySector() fires up to 5 queries —
+     * this replaces 40+ queries with 3.
+     */
+    public function forAllCountySectors(County $county, array $sectorData): array
+    {
+        $cacheKey = "tile_media_{$county->id}";
+        return Cache::remember($cacheKey, config('kicc.cache_ttl.public', 21600), function () use ($county, $sectorData) {
+            $slugs = array_map(fn($s) => $this->slotAliases[$s['sector_slug']] ?? $s['sector_slug'], $sectorData);
+
+            // 1-load all sector_video_{slug} assets in ONE query
+            $slotNames = array_map(fn($slug) => "sector_video_{$slug}", $slugs);
+            $sectorAssets = MediaAsset::where('owner_type', County::class)
+                ->where('owner_id', $county->id)
+                ->whereIn('slot', $slotNames)
+                ->ready()
+                ->with('derivatives')
+                ->get()
+                ->keyBy('slot');
+
+            // 2-load the county flag video once (shared by all sectors)
+            $countyFlag = MediaAsset::resolveSlot(County::class, $county->id, 'county_flag_video');
+
+            // 3-load the national flag video once (shared by all sectors)
+            $nationalFlag = MediaAsset::resolveSlot(County::class, 0, 'national_flag_video');
+
+            $result = [];
+            foreach ($sectorData as $name => $s) {
+                $slug = $this->slotAliases[$s['sector_slug']] ?? $s['sector_slug'];
+                $asset = $sectorAssets->get("sector_video_{$slug}");
+
+                if (!$asset) {
+                    $asset = $this->randomEntityVideo($county, $s['sector_slug']);
+                }
+                if (!$asset && $countyFlag) {
+                    $asset = $countyFlag;
+                }
+                if (!$asset && $nationalFlag) {
+                    $asset = $nationalFlag;
+                }
+
+                $result[$s['sector_slug']] = $asset
+                    ? $this->makeResult($asset, 1)
+                    : $this->emptyResult();
+            }
+
+            return $result;
+        });
     }
 
     /**

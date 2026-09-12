@@ -119,12 +119,11 @@ class CountyController extends Controller
         $countyMediaId = Cache::remember("resolve:county_hero_id_" . $county->id, config('kicc.cache_ttl.public', 21600), fn() => MediaAsset::resolveSlot(County::class, $county->id, 'hero_video')?->id);
         $countyMedia = $countyMediaId ? MediaAsset::with('derivatives')->find($countyMediaId) : null;
 
-        // Sector tile media — unified 5-level fallback via TileMediaResolver
-        $tileMedia = [];
-        $sectorPitches = [];
+        // Sector tile media — unified 5-level fallback via TileMediaResolver (batched: 3 queries total)
         $tileResolver = app(\App\Services\TileMediaResolver::class);
+        $tileMedia = $tileResolver->forAllCountySectors($county, $sectorData);
+        $sectorPitches = [];
         foreach ($sectorData as $name => $s) {
-            $tileMedia[$s['sector_slug']] = $tileResolver->forCountySector($county, $s['sector_slug']);
             $sectorPitches[$s['sector_slug']] = SectorPitchService::generate($county, $s['sector_slug'], $s);
         }
 
@@ -141,18 +140,21 @@ class CountyController extends Controller
         $countyFlagUri = app(\App\Services\CountyFlagService::class)->forCounty($county)['flag_data_uri'];
 
         // Build sector→pins mapping: which institutions belong to which sector
-        $sectorPins = [];
-        foreach ($sectorData as $name => $s) {
-            $sectorModel = $county->sectors()->where('slug', 'like', $s['sector_slug'] . '%')->first();
-            if (!$sectorModel) continue;
-            $instIds = \App\Models\SectorEntity::where('county_id', $county->id)
-                ->where('sector_id', $sectorModel->id)
-                ->whereIn('entity_type', [\App\Models\CountyInstitution::class, \App\Services\InstitutionSyncService::ENTITY_TYPE])
-                ->where('is_published', true)
-                ->pluck('entity_id')
-                ->unique();
-            $sectorPins[$s['sector_slug']] = collect($mapPins)->whereIn('id', $instIds)->values()->all();
-        }
+        $sectorPins = Cache::remember("county_pins_{$county->id}", config('kicc.cache_ttl.public', 21600), function () use ($county, $sectorData, $mapPins) {
+            $result = [];
+            foreach ($sectorData as $name => $s) {
+                $sectorModel = $county->sectors()->where('slug', 'like', $s['sector_slug'] . '%')->first();
+                if (!$sectorModel) continue;
+                $instIds = \App\Models\SectorEntity::where('county_id', $county->id)
+                    ->where('sector_id', $sectorModel->id)
+                    ->whereIn('entity_type', [\App\Models\CountyInstitution::class, \App\Services\InstitutionSyncService::ENTITY_TYPE])
+                    ->where('is_published', true)
+                    ->pluck('entity_id')
+                    ->unique();
+                $result[$s['sector_slug']] = collect($mapPins)->whereIn('id', $instIds)->values()->all();
+            }
+            return $result;
+        });
 
         return view('counties.show', compact(
             'county', 'sectors', 'sectorData',
