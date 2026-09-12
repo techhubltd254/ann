@@ -9,6 +9,7 @@ class MediaProxyController extends Controller
 {
     public function video(string $path, Request $request)
     {
+        \Illuminate\Support\Facades\Log::info('media-proxy video', ['path' => $path, 'url' => $request->fullUrl()]);
         $key = preg_replace('#^storage/#', '', $path);
 
         $disk = Storage::disk('r2');
@@ -53,6 +54,7 @@ class MediaProxyController extends Controller
 
     public function derivative(string $path, Request $request)
     {
+        \Illuminate\Support\Facades\Log::info('media-proxy derivative', ['path' => $path, 'url' => $request->fullUrl()]);
         $disk = Storage::disk('r2');
         if (!$disk->exists($path)) {
             abort(404);
