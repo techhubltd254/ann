@@ -142,13 +142,25 @@
                 @endphp
                 <a href="{{ route('counties.sector', [$county->slug, $s['route']]) }}"
                    class="group bg-white border border-gray-200 hover:border-kicc-gold/40 rounded-2xl overflow-hidden transition-all block card-hover"
+                   x-data="mediaTile()"
+                   @mouseenter="onHoverEnter()"
+                   @mouseleave="onHoverLeave()"
                    data-tilt="6" data-reveal data-reveal-delay="{{ $loop->index * 80 }}">
                     <div class="aspect-[4/3] overflow-hidden relative bg-gradient-to-br from-[#0A1024] to-[#1a1a2e]">
-                        @if($sectorTilePoster)
-                        <img src="{{ $sectorTilePoster }}" alt="{{ $name }}" loading="lazy"
-                             class="absolute inset-0 w-full h-full object-cover transition-transform duration-500 group-hover:scale-105"
-                             onerror="this.remove()">
+                        @php $hoverLoop = $tile['hoverLoopUrl'] ?? $tile['videoUrl'] ?? null; @endphp
+                        @if($hoverLoop)
+                        <video x-ref="video" muted loop playsinline preload="auto"
+                               class="absolute inset-0 w-full h-full object-cover transition-opacity duration-500"
+                               :class="videoReady ? 'opacity-100' : 'opacity-0'"
+                               poster="{{ $tile['posterUrl'] ?? '' }}"
+                               @playing="onVideoPlaying()">
+                            <source src="{{ $hoverLoop }}" type="video/mp4">
+                        </video>
                         @endif
+                        <img src="{{ $tile['posterUrl'] ?? '' }}" alt="{{ $name }}" loading="lazy"
+                             class="absolute inset-0 w-full h-full object-cover transition-opacity duration-500"
+                             :class="(videoReady && $hoverLoop) ? 'opacity-0' : 'opacity-100'"
+                             onerror="this.remove()">
                         <div class="absolute inset-0 bg-gradient-to-t from-black/60 via-black/10 to-black/30 pointer-events-none"></div>
                     </div>
                     <div class="p-4 text-center min-h-[80px] flex flex-col justify-center">

@@ -149,6 +149,8 @@
             <div class="entity-card group bg-white rounded-2xl overflow-hidden border border-gray-200 hover:border-[#FFCD05]/40 transition-all">
                 <x-media-tile
                     :poster="$entityPoster"
+                    :hover-loop="$entityHover"
+                    :video-url="$entityVideo"
                     :splat-url="$entitySplat"
                     :is4d="(bool)$entitySplat"
                     :title="$e->name"
