@@ -9,12 +9,15 @@ class MediaProxyController extends Controller
 {
     public function video(string $path, Request $request)
     {
-        \Illuminate\Support\Facades\Log::info('media-proxy video', ['path' => $path, 'url' => $request->fullUrl()]);
         $key = preg_replace('#^storage/#', '', $path);
-
-        $disk = Storage::disk('r2');
-        if (!$disk->exists($key)) {
-            abort(404);
+        try {
+            $disk = Storage::disk('r2');
+            if (!$disk->exists($key)) {
+                abort(404);
+            }
+        } catch (\Throwable $e) {
+            \Illuminate\Support\Facades\Log::error('media-proxy r2 error', ['msg' => $e->getMessage(), 'key' => $key]);
+            return redirect('https://kicc-r2-media.techhubltd254.workers.dev/storage/' . $key);
         }
 
         $mime = $disk->mimeType($key) ?? 'video/mp4';
@@ -54,10 +57,14 @@ class MediaProxyController extends Controller
 
     public function derivative(string $path, Request $request)
     {
-        \Illuminate\Support\Facades\Log::info('media-proxy derivative', ['path' => $path, 'url' => $request->fullUrl()]);
-        $disk = Storage::disk('r2');
-        if (!$disk->exists($path)) {
-            abort(404);
+        try {
+            $disk = Storage::disk('r2');
+            if (!$disk->exists($path)) {
+                abort(404);
+            }
+        } catch (\Throwable $e) {
+            \Illuminate\Support\Facades\Log::error('media-proxy derivative r2 error', ['msg' => $e->getMessage(), 'path' => $path]);
+            return redirect('https://kicc-r2-media.techhubltd254.workers.dev/storage/' . $path);
         }
 
         $mime = $disk->mimeType($path) ?? 'application/octet-stream';
