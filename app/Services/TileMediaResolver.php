@@ -7,8 +7,8 @@ use App\Models\County;
 use App\Models\CountyInstitution;
 use App\Models\MediaAsset;
 use App\Models\Ministry;
+use App\Models\Sector;
 use App\Models\SectorEntity;
-use Illuminate\Support\Facades\Cache;
 
 /**
  * TileMediaResolver — Universal 5-level fallback pipeline for tile hover videos.
@@ -164,14 +164,12 @@ class TileMediaResolver
      */
     protected function randomEntityVideo(County $county, string $sectorSlug): ?MediaAsset
     {
-        $sector = \App\Models\Sector::where('slug', $sectorSlug)->first();
+        $sector = Sector::where('slug', $sectorSlug)->first();
         if (!$sector) return null;
 
-        $entityIds = Cache::remember("tile_entity_ids_{$county->id}_{$sector->id}", 300, function () use ($county, $sector) {
-            return SectorEntity::where('county_id', $county->id)
-                ->where('sector_id', $sector->id)
-                ->pluck('id');
-        });
+        $entityIds = SectorEntity::where('county_id', $county->id)
+            ->where('sector_id', $sector->id)
+            ->pluck('id');
 
         if ($entityIds->isEmpty()) return null;
 
@@ -191,9 +189,7 @@ class TileMediaResolver
      */
     protected function randomAgencyVideo(Ministry $ministry): ?MediaAsset
     {
-        $agencyIds = Cache::remember("tile_agency_ids_{$ministry->id}", 300, function () use ($ministry) {
-            return $ministry->agencies()->pluck('id');
-        });
+        $agencyIds = $ministry->agencies()->pluck('id');
 
         if ($agencyIds->isEmpty()) return null;
 

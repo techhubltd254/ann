@@ -47,19 +47,21 @@
             <span class="text-sm ml-auto" style="color: var(--kicc-text-light);">{{ $stats['ministries'] }} total</span>
         </div>
 
-        <div class="grid sm:grid-cols-2 lg:grid-cols-3 gap-5">
+<div class="grid sm:grid-cols-2 lg:grid-cols-3 gap-5">
             @forelse($ministries as $idx => $m)
             @php
-                $tileHover = $tileHoverLoops[$idx % count($tileHoverLoops)] ?? null;
-                $tilePoster = $tilePosters[$idx % count($tilePosters)] ?? null;
+                $tile = $tileMedia[$m['slug']] ?? [];
+                $hasVideo = !empty($tile['videoUrl']);
+                $tileHover = $tile['hoverLoopUrl'] ?? $tile['videoUrl'] ?? null;
+                $tilePoster = $tile['posterUrl'] ?? null;
             @endphp
             <div class="group bg-white rounded-2xl overflow-hidden border border-gray-200 hover:border-[#FFCD05]/40 transition-all card-hover"
                  x-data="mediaTile()"
                  @mouseenter="onHoverEnter()"
                  @mouseleave="onHoverLeave()">
                 <a href="{{ route('national.site', $m['slug']) }}" class="block">
-                    <div class="aspect-[4/3] overflow-hidden relative {{ $tileHover ? 'bg-[#0B1E57]' : 'bg-gradient-to-br from-[#0A1024] to-[#1a1a2e]' }}">
-                        @if($tileHover)
+                    <div class="aspect-[4/3] overflow-hidden relative {{ $hasVideo ? 'bg-[#0B1E57]' : 'bg-gradient-to-br from-[#0A1024] to-[#1a1a2e]' }}">
+                        @if($hasVideo)
                         <video x-ref="video" muted loop playsinline preload="auto"
                                class="absolute inset-0 w-full h-full object-cover transition-opacity duration-500"
                                :class="videoReady ? 'opacity-100' : 'opacity-0'"
@@ -71,10 +73,9 @@
                              class="absolute inset-0 w-full h-full object-cover transition-opacity duration-500"
                              :class="videoReady ? 'opacity-0' : 'opacity-100'"
                              onerror="this.style.display='none'">
+                        <div class="absolute inset-0 bg-gradient-to-t from-black/60 via-black/10 to-transparent pointer-events-none"></div>
                         @else
-                        <div class="absolute inset-0 flex items-center justify-center">
-                            <span class="text-white/20 text-5xl font-black">{{ $m['code'] ?? substr($m['name'], 0, 2) }}</span>
-                        </div>
+                        <div class="absolute inset-0 bg-gradient-to-br from-[#0A1024] to-[#1a1a2e]"></div>
                         @endif
                         @if($tileHover)
                         <div class="absolute inset-0 bg-gradient-to-t from-black/60 via-black/10 to-transparent pointer-events-none"></div>

@@ -2,6 +2,7 @@
     'poster' => null,
     'hoverLoop' => null,
     'videoUrl' => null,
+    'media' => null,     // TileMediaResolver result array: ['videoUrl','hoverLoopUrl','posterUrl']
     'title' => '',
     'subtitle' => '',
     'is4d' => false,
@@ -11,6 +12,14 @@
     'href' => '#',
     'aspect' => 'aspect-video',
 ])
+
+@php
+    if ($media) {
+        $videoUrl = $videoUrl ?? $media['videoUrl'] ?? null;
+        $hoverLoop = $hoverLoop ?? $media['hoverLoopUrl'] ?? $media['videoUrl'] ?? null;
+        $poster = $poster ?? $media['posterUrl'] ?? null;
+    }
+@endphp
 
 <div class="group relative {{ $aspect }} bg-[#0B1E57] overflow-hidden rounded-xl"
      x-data="mediaTile()"

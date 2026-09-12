@@ -119,135 +119,20 @@ class CountyController extends Controller
         $countyMediaId = Cache::remember("resolve:county_hero_id_" . $county->id, config('kicc.cache_ttl.public', 21600), fn() => MediaAsset::resolveSlot(County::class, $county->id, 'hero_video')?->id);
         $countyMedia = $countyMediaId ? MediaAsset::with('derivatives')->find($countyMediaId) : null;
 
-        // Batched sector video loading — single queries instead of per-sector
-        $sectorSlugs = collect($sectorData)->pluck('sector_slug')->unique();
-$sectorVideos = [];
-        $sectorVideoHoverLoops = [];
-        $sectorWebmVideos = [];
-        $sectorEntityVideos = [];
+        // Sector tile media — unified 5-level fallback via TileMediaResolver
+        $tileMedia = [];
         $sectorPitches = [];
-        // Fallback map: surface slug -> actual DB slot name (sector_video_{slug})
-        $slotAliases = [
-            'hotels' => 'hospitality',
-            'farms' => 'agriculture',
-            'products' => 'commerce',
-            'institutions' => 'education',
-            'transport' => 'industry',
-        ];
-
-        $cacheKey = "kicc_county_sectors_{$county->id}_v2";
-
-        $cached = Cache::remember($cacheKey, config('kicc.cache_ttl.admin', 60), function () use ($county, $sectorSlugs, $sectorData, $slotAliases, &$sectorVideos, &$sectorVideoHoverLoops, &$sectorWebmVideos, &$sectorEntityVideos, &$sectorPitches) {
-            // Batch load sector video assets
-            $slots = $sectorSlugs->map(fn($slug) => 'sector_video_' . ($slotAliases[$slug] ?? $slug));
-            $assets = MediaAsset::where('owner_type', County::class)
-                ->where('owner_id', $county->id)
-                ->whereIn('slot', $slots)
-                ->ready()
-                ->with('derivatives')
-                ->get()
-                ->keyBy('slot');
-
-            foreach ($sectorData as $name => $s) {
-                $slot = 'sector_video_' . ($slotAliases[$s['sector_slug']] ?? $s['sector_slug']);
-                $asset = $assets->get($slot);
-                $sectorVideos[$s['sector_slug']] = $asset?->mp4Url();
-                $sectorVideoHoverLoops[$s['sector_slug']] = $asset?->hoverLoopUrl();
-                $sectorWebmVideos[$s['sector_slug']] = $asset?->webmUrl();
-            }
-
-            // Batch load all sector entities + their videos
-            $sectorModels = $county->sectors()->where(function ($q) use ($sectorSlugs) {
-                foreach ($sectorSlugs as $slug) {
-                    $q->orWhere('slug', 'like', $slug . '%');
-                }
-            })->get()->keyBy(fn($s) => explode('-', $s->slug)[0]);
-
-            foreach ($sectorData as $name => $s) {
-                $sectorModel = $sectorModels->get($s['sector_slug']);
-                if (!$sectorModel) { $sectorEntityVideos[$s['sector_slug']] = []; continue; }
-
-                $entities = SectorEntity::where('county_id', $county->id)
-                    ->where('sector_id', $sectorModel->id)
-                    ->where('is_published', true)
-                    ->get();
-
-                $entityIds = $entities->pluck('id');
-                $vids = [];
-
-                if ($entityIds->isNotEmpty()) {
-                    $fourDAssets = MediaAsset::where('owner_type', SectorEntity::class)
-                        ->whereIn('owner_id', $entityIds)
-                        ->where('slot', '4d_video')
-                        ->get();
-                    foreach ($fourDAssets as $a) {
-                        if ($url = $a->mp4Url() ?? $a->url()) $vids[] = $url;
-                    }
-                }
-
-                $instIds = $entities->whereIn('entity_type', [CountyInstitution::class, InstitutionSyncService::ENTITY_TYPE])->pluck('entity_id')->unique();
-                if ($instIds->isNotEmpty()) {
-                    $heroAssets = MediaAsset::where('owner_type', CountyInstitution::class)
-                        ->whereIn('owner_id', $instIds)
-                        ->where('slot', 'hero_video')
-                        ->get();
-                    foreach ($heroAssets as $a) {
-                        if ($url = $a->mp4Url() ?? $a->url()) $vids[] = $url;
-                    }
-                }
-
-                // Deduplicate: remove any video URL already assigned to a previous sector
-                static $usedVideos = [];
-                $unique = array_values(array_filter($vids, fn($v) => !in_array($v, $usedVideos)));
-                $usedVideos = array_merge($usedVideos, $unique);
-                $sectorEntityVideos[$s['sector_slug']] = $unique;
-            }
-
-            // Generate pitches
-            foreach ($sectorData as $name => $s) {
-                $sectorPitches[$s['sector_slug']] = SectorPitchService::generate($county, $s['sector_slug'], $s);
-            }
-
-            return compact('sectorVideos', 'sectorVideoHoverLoops', 'sectorWebmVideos', 'sectorEntityVideos', 'sectorPitches');
-        });
-
-        $sectorVideos = $cached['sectorVideos'];
-        $sectorVideoHoverLoops = $cached['sectorVideoHoverLoops'];
-        $sectorWebmVideos = $cached['sectorWebmVideos'];
-        $sectorEntityVideos = $cached['sectorEntityVideos'];
-        $sectorPitches = $cached['sectorPitches'];
-
-        // Generate poster thumbnails for sector tiles
-        $sectorTilePosters = [];
-        $resolver = app(\App\Services\MediaFallbackResolver::class);
+        $tileResolver = app(\App\Services\TileMediaResolver::class);
         foreach ($sectorData as $name => $s) {
-            $sv = $sectorVideos[$s['sector_slug']] ?? null;
-            $ev = $sectorEntityVideos[$s['sector_slug']] ?? [];
-            $first = $ev[0] ?? $sv;
-            if ($first) {
-                $frame = $resolver->extractFrame($first);
-                if ($frame) $sectorTilePosters[$s['sector_slug']] = $frame;
-            }
+            $tileMedia[$s['sector_slug']] = $tileResolver->forCountySector($county, $s['sector_slug']);
+            $sectorPitches[$s['sector_slug']] = SectorPitchService::generate($county, $s['sector_slug'], $s);
         }
 
-
-
-        // ═══ HERO FALLBACK ALGORITHM ═══
-        // If the county has no hero video uploaded, build a hero playlist from the
-        // sector videos + entity videos so the county hero still plays motion.
+        // ═══ HERO FALLBACK ═══
         $countyHeroFallback = [];
         if (!$countyMedia || !($countyMedia->mp4Url() ?? $countyMedia->url())) {
-            $fallback = [];
-            foreach ($sectorVideos as $url) {
-                if ($url) $fallback[] = $url;
-            }
-            foreach ($sectorEntityVideos as $vids) {
-                foreach ($vids as $url) {
-                    $fallback[] = $url;
-                }
-            }
-            // Cycle limit — a handful is plenty for a looping hero
-            $countyHeroFallback = array_values(array_unique(array_filter($fallback)));
+            $fallback = array_values(array_filter(array_map(fn($m) => $m['videoUrl'], $tileMedia)));
+            $countyHeroFallback = $fallback;
         }
 
         $mapPins = app(\App\Services\MapPinService::class)->countyPins($county);
@@ -272,8 +157,8 @@ $sectorVideos = [];
         return view('counties.show', compact(
             'county', 'sectors', 'sectorData',
             'featuredAttractions', 'featuredHotels', 'countyProducts',
-            'exhibitions', 'linkedSectors', 'countyMedia', 'countyHeroFallback', 'sectorVideos', 'sectorVideoHoverLoops', 'sectorWebmVideos',
-            'sectorEntityVideos', 'sectorPitches', 'sectorTilePosters', 'attractionThumbs', 'hotelThumbs', 'productThumbs',
+            'exhibitions', 'linkedSectors', 'countyMedia', 'countyHeroFallback', 'tileMedia',
+            'sectorPitches', 'attractionThumbs', 'hotelThumbs', 'productThumbs',
             'mapPins', 'sectorPins', 'countyFlagUri'
         ));
     }
