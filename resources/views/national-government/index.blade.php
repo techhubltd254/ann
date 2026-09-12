@@ -55,31 +55,15 @@
                 $tileHover = $tile['hoverLoopUrl'] ?? $tile['videoUrl'] ?? null;
                 $tilePoster = $tile['posterUrl'] ?? null;
             @endphp
-            <div class="group bg-white rounded-2xl overflow-hidden border border-gray-200 hover:border-[#FFCD05]/40 transition-all card-hover"
-                 x-data="mediaTile()"
-                 @mouseenter="onHoverEnter()"
-                 @mouseleave="onHoverLeave()">
+            <div class="group bg-white rounded-2xl overflow-hidden border border-gray-200 hover:border-[#FFCD05]/40 transition-all card-hover">
                 <a href="{{ route('national.site', $m['slug']) }}" class="block">
-                    <div class="aspect-[4/3] overflow-hidden relative {{ $hasVideo ? 'bg-[#0B1E57]' : 'bg-gradient-to-br from-[#0A1024] to-[#1a1a2e]' }}">
-                        @if($hasVideo)
-                        <video x-ref="video" muted loop playsinline preload="auto"
-                               class="absolute inset-0 w-full h-full object-cover transition-opacity duration-500"
-                               :class="videoReady ? 'opacity-100' : 'opacity-0'"
-                               poster="{{ $tilePoster ?? '' }}"
-                               @playing="onVideoPlaying()">
-                            <source src="{{ $tileHover }}" type="video/mp4">
-                        </video>
-                        <img src="{{ $tilePoster ?? '' }}" alt="{{ $m['name'] }}" loading="lazy"
-                             class="absolute inset-0 w-full h-full object-cover transition-opacity duration-500"
-                             :class="videoReady ? 'opacity-0' : 'opacity-100'"
-                             onerror="this.style.display='none'">
-                        <div class="absolute inset-0 bg-gradient-to-t from-black/60 via-black/10 to-transparent pointer-events-none"></div>
-                        @else
-                        <div class="absolute inset-0 bg-gradient-to-br from-[#0A1024] to-[#1a1a2e]"></div>
+                    <div class="aspect-[4/3] overflow-hidden relative bg-gradient-to-br from-[#0A1024] to-[#1a1a2e]">
+                        @if($tilePoster)
+                        <img src="{{ $tilePoster }}" alt="{{ $m['name'] }}" loading="lazy"
+                             class="absolute inset-0 w-full h-full object-cover transition-transform duration-500 group-hover:scale-105"
+                             onerror="this.remove()">
                         @endif
-                        @if($tileHover)
                         <div class="absolute inset-0 bg-gradient-to-t from-black/60 via-black/10 to-transparent pointer-events-none"></div>
-                        @endif
                     </div>
                     <div class="p-4">
                         <div class="flex items-center gap-3 mb-2">

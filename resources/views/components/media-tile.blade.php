@@ -1,8 +1,6 @@
 @props([
     'poster' => null,
-    'hoverLoop' => null,
-    'videoUrl' => null,
-    'media' => null,     // TileMediaResolver result array: ['videoUrl','hoverLoopUrl','posterUrl']
+    'media' => null,     // TileMediaResolver result array: ['posterUrl']
     'title' => '',
     'subtitle' => '',
     'is4d' => false,
@@ -15,37 +13,17 @@
 
 @php
     if ($media) {
-        $videoUrl = $videoUrl ?? $media['videoUrl'] ?? null;
-        $hoverLoop = $hoverLoop ?? $media['hoverLoopUrl'] ?? $media['videoUrl'] ?? null;
         $poster = $poster ?? $media['posterUrl'] ?? null;
     }
 @endphp
 
-<div class="group relative {{ $aspect }} bg-[#0B1E57] overflow-hidden rounded-xl"
-     x-data="mediaTile()"
-     @mouseenter="onHoverEnter()"
-     @mouseleave="onHoverLeave()">
+<div class="group relative {{ $aspect }} bg-[#0B1E57] overflow-hidden rounded-xl">
 
-    {{-- Poster: visible until video actually starts playing --}}
     @if($poster)
     <img src="{{ $poster }}" alt="{{ $title }}" loading="lazy"
-         class="absolute inset-0 w-full h-full object-cover transition-opacity duration-300"
-         :class="videoReady ? 'opacity-0' : 'opacity-100'"
+         class="absolute inset-0 w-full h-full object-cover transition-transform duration-500 group-hover:scale-105"
          onerror="this.remove()">
     @endif
-
-    {{-- Video: plays on hover, pauses on leave --}}
-    <video x-ref="video"
-           class="absolute inset-0 w-full h-full object-cover transition-opacity duration-300"
-           :class="videoReady ? 'opacity-100' : 'opacity-0'"
-           muted loop playsinline preload="auto"
-           x-on:playing="onVideoPlaying()">
-        @if($hoverLoop)
-        <source src="{{ $hoverLoop }}" type="video/mp4">
-        @elseif($videoUrl)
-        <source src="{{ $videoUrl }}" type="video/mp4">
-        @endif
-    </video>
 
     <div class="absolute inset-0 bg-gradient-to-t from-black/60 via-transparent to-transparent pointer-events-none"></div>
 
