@@ -176,8 +176,8 @@ Route::middleware('auth')->group(function () {
     Route::post('/kicc-admin/hero/delete', [\App\Http\Controllers\Web\KiccAdminController::class, 'deleteHeroVideo'])->name('kicc.admin.hero.delete')->middleware('admin:kicc');
     Route::post('/kicc-admin/county/{slug}/hero', [\App\Http\Controllers\Web\KiccAdminController::class, 'uploadCountyHero'])->name('kicc.admin.county.hero')->middleware('admin:kicc');
     Route::post('/kicc-admin/plans/{id}', [\App\Http\Controllers\Web\KiccAdminController::class, 'updatePlan'])->name('kicc.admin.plan.update')->middleware('admin:kicc');
-    // National Government Exhibitor Portal
-    Route::get('/national-admin', [\App\Http\Controllers\Web\NationalPortalController::class, 'index'])->name('national.admin')->middleware('admin:national');
+    // National Government Exhibitor Portal — redirects to KICC national admin
+    Route::get('/national-admin', fn() => redirect()->route('national.admin.v2.dashboard'))->name('national.admin')->middleware('admin:national');
 Route::post('/national-admin/ministries', [\App\Http\Controllers\Web\NationalPortalController::class, 'storeMinistry'])->name('national.admin.ministry.store')->middleware('admin:national');
 Route::post('/national-admin/ministries/{ministry}', [\App\Http\Controllers\Web\NationalPortalController::class, 'updateMinistry'])->name('national.admin.ministry.update')->middleware('admin:national');
 Route::get('/national-admin/ministries/{ministry}/delete', [\App\Http\Controllers\Web\NationalPortalController::class, 'deleteMinistry'])->name('national.admin.ministry.delete')->middleware('admin:national');
