@@ -139,6 +139,7 @@
                     $hasVideo = count($entityVids) > 0 || $sectorVideo;
                     $pitch = $sectorPitches[$s['sector_slug']] ?? '';
                     $firstVideo = $entityVids[0] ?? $sectorVideo ?? null;
+                    $hoverLoop = $sectorVideoHoverLoops[$s['sector_slug']] ?? $firstVideo;
                     $sectorTilePoster = null;
                     if ($sectorVideo) {
                         $sectorAsset = \App\Models\MediaAsset::where('owner_type', \App\Models\County::class)
@@ -161,9 +162,9 @@
                                :class="videoReady ? 'opacity-100' : 'opacity-0'"
                                poster="{{ $sectorTilePoster ?? ($sectorTilePosters[$s['sector_slug']] ?? '') }}"
                                @playing="onVideoPlaying()">
-                            <source src="{{ $firstVideo }}" type="video/mp4">
-                        </video>
-                        <img src="{{ $sectorTilePoster ?? ($sectorTilePosters[$s['sector_slug']] ?? '') }}" alt="{{ $name }}"
+<source src="{{ $hoverLoop }}" type="video/mp4">
+                         </video>
+                         <img src="{{ $sectorTilePoster ?? ($sectorTilePosters[$s['sector_slug']] ?? '') }}" alt="{{ $name }}"
                              loading="lazy" class="absolute inset-0 w-full h-full object-cover transition-opacity duration-500"
                              :class="videoReady ? 'opacity-0' : 'opacity-100'"
                              onerror="this.style.display='none'">

@@ -121,8 +121,9 @@ class CountyController extends Controller
 
         // Batched sector video loading — single queries instead of per-sector
         $sectorSlugs = collect($sectorData)->pluck('sector_slug')->unique();
-        $sectorVideos = [];
-        $sectorWebmVideos = [];
+$sectorVideos = [];
+$sectorVideoHoverLoops = [];
+$sectorWebmVideos = [];
         $sectorEntityVideos = [];
         $sectorPitches = [];
 
@@ -143,6 +144,7 @@ class CountyController extends Controller
                 $slot = 'sector_video_' . $s['sector_slug'];
                 $asset = $assets->get($slot);
                 $sectorVideos[$s['sector_slug']] = $asset?->mp4Url();
+                $sectorVideoHoverLoops[$s['sector_slug']] = $asset?->hoverLoopUrl();
                 $sectorWebmVideos[$s['sector_slug']] = $asset?->webmUrl();
             }
 
@@ -198,10 +200,11 @@ class CountyController extends Controller
                 $sectorPitches[$s['sector_slug']] = SectorPitchService::generate($county, $s['sector_slug'], $s);
             }
 
-            return compact('sectorVideos', 'sectorWebmVideos', 'sectorEntityVideos', 'sectorPitches');
+            return compact('sectorVideos', 'sectorVideoHoverLoops', 'sectorWebmVideos', 'sectorEntityVideos', 'sectorPitches');
         });
 
         $sectorVideos = $cached['sectorVideos'];
+        $sectorVideoHoverLoops = $cached['sectorVideoHoverLoops'];
         $sectorWebmVideos = $cached['sectorWebmVideos'];
         $sectorEntityVideos = $cached['sectorEntityVideos'];
         $sectorPitches = $cached['sectorPitches'];
@@ -261,7 +264,7 @@ class CountyController extends Controller
         return view('counties.show', compact(
             'county', 'sectors', 'sectorData',
             'featuredAttractions', 'featuredHotels', 'countyProducts',
-            'exhibitions', 'linkedSectors', 'countyMedia', 'countyHeroFallback', 'sectorVideos', 'sectorWebmVideos',
+            'exhibitions', 'linkedSectors', 'countyMedia', 'countyHeroFallback', 'sectorVideos', 'sectorVideoHoverLoops', 'sectorWebmVideos',
             'sectorEntityVideos', 'sectorPitches', 'sectorTilePosters', 'attractionThumbs', 'hotelThumbs', 'productThumbs',
             'mapPins', 'sectorPins', 'countyFlagUri'
         ));
