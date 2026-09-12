@@ -3,69 +3,237 @@
 @section('content')
 <div class="pt-24 max-w-7xl mx-auto px-5 py-10">
     <h1 class="text-2xl font-black text-gray-900 mb-2">National Government Management</h1>
-    <p class="text-gray-500 text-sm mb-6">Manage ministries, agencies, and national pages.</p>
+    <p class="text-gray-500 text-sm mb-6">Manage ministries, agencies, national hero video, ministry media, and flag videos.</p>
 
     @if(session('success'))<div class="bg-emerald-50 border border-emerald-200 text-emerald-700 rounded-xl px-4 py-3 mb-4 text-sm">{{ session('success') }}</div>@endif
 
-    <div class="grid lg:grid-cols-2 gap-6">
-        {{-- MINISTRIES --}}
-        <div class="bg-white border border-gray-200 rounded-2xl p-6">
-            <div class="flex items-center justify-between mb-4">
-                <h2 class="font-bold text-gray-900">Ministries ({{ $stats['ministries'] }})</h2>
-                <button onclick="document.getElementById('addMinistryForm').classList.toggle('hidden')" class="text-xs font-bold px-3 py-1.5 rounded-lg bg-[#046bd2] text-white">+ Add</button>
-            </div>
-            <form id="addMinistryForm" method="POST" action="{{ route('national.admin.v2.ministry.store') }}" class="hidden space-y-2 mb-4 p-4 border border-gray-200 rounded-xl">@csrf
-                <input type="text" name="name" required placeholder="Ministry name" class="w-full h-9 px-3 rounded-lg border border-gray-200 text-sm">
-                <div class="grid grid-cols-2 gap-2"><input type="text" name="code" placeholder="Code (e.g. MITI)" class="h-9 px-3 rounded-lg border border-gray-200 text-sm"><input type="text" name="color" placeholder="Color hex (e.g. #046bd2)" class="h-9 px-3 rounded-lg border border-gray-200 text-sm"></div>
-                <input type="url" name="website" placeholder="Website URL" class="w-full h-9 px-3 rounded-lg border border-gray-200 text-sm">
-                <textarea name="description" rows="2" placeholder="Description" class="w-full px-3 py-2 rounded-lg border border-gray-200 text-sm"></textarea>
-                <button class="h-9 px-4 rounded-lg bg-[#046bd2] text-white text-xs font-bold">Create</button>
-            </form>
-            <div class="space-y-3 max-h-[500px] overflow-y-auto">
-                @foreach($ministries as $m)
-                <div class="border border-gray-200 rounded-xl p-4">
-                    <div class="flex items-start justify-between">
-                        <div class="flex items-center gap-3">
-                            <div class="w-8 h-8 rounded-lg flex items-center justify-center text-xs font-black text-white" style="background: {{ $m->color ?: '#1890D7' }}">{{ $m->code ?? substr($m->name, 0, 3) }}</div>
-                            <div><div class="font-bold text-gray-900 text-sm">{{ $m->name }}</div><div class="text-xs text-gray-400">{{ $m->agencies->count() }} agencies</div></div>
-                        </div>
-                        <div class="flex gap-1">
-                            <button onclick="this.nextElementSibling.classList.toggle('hidden')" class="text-xs px-2 py-1 rounded border border-gray-200 hover:bg-gray-50"></button>
-                            <a href="{{ route('national.admin.v2.ministry.delete', $m->id) }}" class="text-xs px-2 py-1 rounded border border-red-200 text-red-500 hover:bg-red-50" onclick="return confirm('Delete?')">×</a>
-                        </div>
-                    </div>
-                    @if($m->description)<p class="text-xs text-gray-500 mt-2">{{ Str::limit($m->description, 120) }}</p>@endif
-                    <form method="POST" action="{{ route('national.admin.v2.ministry.update', $m->id) }}" class="hidden mt-3 space-y-2">@csrf
-                        <input type="text" name="name" value="{{ $m->name }}" class="w-full h-8 px-3 rounded-lg border border-gray-200 text-xs">
-                        <input type="text" name="code" value="{{ $m->code }}" class="w-full h-8 px-3 rounded-lg border border-gray-200 text-xs">
-                        <button class="h-8 px-3 rounded-lg bg-[#046bd2] text-white text-[10px] font-bold">Save</button>
-                    </form>
-                </div>
-                @endforeach
-            </div>
-        </div>
+    {{-- Tab navigation --}}
+    <div class="flex gap-1 mb-6 overflow-x-auto pb-2">
+        @foreach($navItems as $item)
+        <a href="{{ route('national.admin.v2.dashboard', ['tab' => $item['tab']]) }}"
+           class="px-4 py-2 rounded-lg text-xs font-bold transition whitespace-nowrap
+                  {{ $tab === $item['tab'] ? 'bg-[#046bd2] text-white' : 'bg-white border border-gray-200 text-gray-600 hover:bg-gray-50' }}">
+            {{ $item['label'] }}
+        </a>
+        @endforeach
+    </div>
 
-        {{-- AGENCIES --}}
-        <div class="bg-white border border-gray-200 rounded-2xl p-6">
-            <div class="flex items-center justify-between mb-4">
-                <h2 class="font-bold text-gray-900">Agencies ({{ $stats['agencies'] }})</h2>
-                <button onclick="document.getElementById('addAgencyForm').classList.toggle('hidden')" class="text-xs font-bold px-3 py-1.5 rounded-lg bg-[#046bd2] text-white">+ Add</button>
-            </div>
-            <form id="addAgencyForm" method="POST" action="{{ route('national.admin.v2.agency.store') }}" class="hidden space-y-2 mb-4 p-4 border border-gray-200 rounded-xl">@csrf
-                <select name="ministry_id" required class="w-full h-9 px-3 rounded-lg border border-gray-200 text-sm">@foreach($ministries as $m)<option value="{{ $m->id }}">{{ $m->name }}</option>@endforeach</select>
-                <input type="text" name="name" required placeholder="Agency name" class="w-full h-9 px-3 rounded-lg border border-gray-200 text-sm">
-                <input type="text" name="code" placeholder="Code" class="w-full h-9 px-3 rounded-lg border border-gray-200 text-sm">
-                <button class="h-9 px-4 rounded-lg bg-[#046bd2] text-white text-xs font-bold">Create</button>
-            </form>
-            <div class="space-y-2 max-h-[500px] overflow-y-auto">
-                @foreach($agencies as $a)
-                <div class="flex items-center justify-between border border-gray-200 rounded-xl p-3">
-                    <div><span class="font-semibold text-gray-900 text-sm">{{ $a->name }}</span><div class="text-xs text-gray-400">{{ $a->ministry?->name }}</div></div>
-                    <a href="{{ route('national.admin.v2.agency.delete', $a->id) }}" class="text-xs px-2 py-1 rounded border border-red-200 text-red-500 hover:bg-red-50" onclick="return confirm('Delete?')">×</a>
+    @if($tab === 'ministries')
+    {{-- MINISTRIES --}}
+    <div class="bg-white border border-gray-200 rounded-2xl p-6">
+        <div class="flex items-center justify-between mb-4">
+            <h2 class="font-bold text-gray-900">Ministries ({{ $stats['ministries'] }})</h2>
+            <button onclick="document.getElementById('addMinistryForm').classList.toggle('hidden')" class="text-xs font-bold px-3 py-1.5 rounded-lg bg-[#046bd2] text-white">+ Add</button>
+        </div>
+        <form id="addMinistryForm" method="POST" action="{{ route('national.admin.v2.ministry.store') }}" class="hidden space-y-2 mb-4 p-4 border border-gray-200 rounded-xl">@csrf
+            <input type="text" name="name" required placeholder="Ministry name" class="w-full h-9 px-3 rounded-lg border border-gray-200 text-sm">
+            <div class="grid grid-cols-2 gap-2"><input type="text" name="code" placeholder="Code (e.g. MITI)" class="h-9 px-3 rounded-lg border border-gray-200 text-sm"><input type="text" name="color" placeholder="Color hex (e.g. #046bd2)" class="h-9 px-3 rounded-lg border border-gray-200 text-sm"></div>
+            <input type="url" name="website" placeholder="Website URL" class="w-full h-9 px-3 rounded-lg border border-gray-200 text-sm">
+            <textarea name="description" rows="2" placeholder="Description" class="w-full px-3 py-2 rounded-lg border border-gray-200 text-sm"></textarea>
+            <button class="h-9 px-4 rounded-lg bg-[#046bd2] text-white text-xs font-bold">Create</button>
+        </form>
+        <div class="space-y-3 max-h-[600px] overflow-y-auto">
+            @foreach($ministries as $m)
+            <div class="border border-gray-200 rounded-xl p-4">
+                <div class="flex items-start justify-between">
+                    <div class="flex items-center gap-3">
+                        <div class="w-8 h-8 rounded-lg flex items-center justify-center text-xs font-black text-white" style="background: {{ $m->color ?: '#1890D7' }}">{{ $m->code ?? substr($m->name, 0, 3) }}</div>
+                        <div><div class="font-bold text-gray-900 text-sm">{{ $m->name }}</div><div class="text-xs text-gray-400">{{ $m->agencies->count() }} agencies</div></div>
+                    </div>
+                    <div class="flex gap-1">
+                        <button onclick="this.nextElementSibling.classList.toggle('hidden')" class="text-xs px-2 py-1 rounded border border-gray-200 hover:bg-gray-50">Edit</button>
+                        <a href="{{ route('national.admin.v2.ministry.delete', $m->id) }}" class="text-xs px-2 py-1 rounded border border-red-200 text-red-500 hover:bg-red-50" onclick="return confirm('Delete?')">×</a>
+                    </div>
                 </div>
-                @endforeach
+                @if($m->description)<p class="text-xs text-gray-500 mt-2">{{ Str::limit($m->description, 120) }}</p>@endif
+                <form method="POST" action="{{ route('national.admin.v2.ministry.update', $m->id) }}" class="hidden mt-3 space-y-2">@csrf
+                    <input type="text" name="name" value="{{ $m->name }}" class="w-full h-8 px-3 rounded-lg border border-gray-200 text-xs">
+                    <input type="text" name="code" value="{{ $m->code }}" class="w-full h-8 px-3 rounded-lg border border-gray-200 text-xs">
+                    <button class="h-8 px-3 rounded-lg bg-[#046bd2] text-white text-[10px] font-bold">Save</button>
+                </form>
+            </div>
+            @endforeach
+        </div>
+    </div>
+
+    @elseif($tab === 'agencies')
+    {{-- AGENCIES --}}
+    <div class="bg-white border border-gray-200 rounded-2xl p-6">
+        <div class="flex items-center justify-between mb-4">
+            <h2 class="font-bold text-gray-900">Agencies ({{ $stats['agencies'] }})</h2>
+            <button onclick="document.getElementById('addAgencyForm').classList.toggle('hidden')" class="text-xs font-bold px-3 py-1.5 rounded-lg bg-[#046bd2] text-white">+ Add</button>
+        </div>
+        <form id="addAgencyForm" method="POST" action="{{ route('national.admin.v2.agency.store') }}" class="hidden space-y-2 mb-4 p-4 border border-gray-200 rounded-xl">@csrf
+            <select name="ministry_id" required class="w-full h-9 px-3 rounded-lg border border-gray-200 text-sm">@foreach($ministries as $m)<option value="{{ $m->id }}">{{ $m->name }}</option>@endforeach</select>
+            <input type="text" name="name" required placeholder="Agency name" class="w-full h-9 px-3 rounded-lg border border-gray-200 text-sm">
+            <input type="text" name="code" placeholder="Code" class="w-full h-9 px-3 rounded-lg border border-gray-200 text-sm">
+            <button class="h-9 px-4 rounded-lg bg-[#046bd2] text-white text-xs font-bold">Create</button>
+        </form>
+        <div class="space-y-2 max-h-[600px] overflow-y-auto">
+            @foreach($agencies as $a)
+            <div class="flex items-center justify-between border border-gray-200 rounded-xl p-3">
+                <div><span class="font-semibold text-gray-900 text-sm">{{ $a->name }}</span><div class="text-xs text-gray-400">{{ $a->ministry?->name }}</div></div>
+                <a href="{{ route('national.admin.v2.agency.delete', $a->id) }}" class="text-xs px-2 py-1 rounded border border-red-200 text-red-500 hover:bg-red-50" onclick="return confirm('Delete?')">×</a>
+            </div>
+            @endforeach
+        </div>
+    </div>
+
+    @elseif($tab === 'hero')
+    {{-- NATIONAL HERO VIDEO --}}
+    <div class="bg-white border border-gray-200 rounded-2xl overflow-hidden">
+        <div class="grid md:grid-cols-3 gap-0">
+            <div class="md:col-span-2 bg-black relative min-h-[250px]">
+                @if($nationalHero?->mp4Url())
+                <video autoplay muted loop playsinline class="absolute inset-0 w-full h-full object-cover">
+                    <source src="{{ $nationalHero->mp4Url() }}" type="video/mp4">
+                </video>
+                <div class="absolute bottom-2 left-3 text-[10px] px-2 py-1 rounded bg-black/70 text-indigo-300 border border-indigo-500/30">National Hero Video Playing</div>
+                @else
+                <div class="absolute inset-0 flex items-center justify-center">
+                    <div class="text-center">
+                        <svg class="w-12 h-12 mx-auto text-zinc-600 mb-2" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M15 10l4.553-2.276A1 1 0 0121 8.618v6.764a1 1 0 01-1.447.894L15 14M5 18h8a2 2 0 002-2V8a2 2 0 00-2-2H5a2 2 0 00-2 2v8a2 2 0 002 2z"/></svg>
+                        <div class="text-sm font-semibold text-zinc-500">No national hero video</div>
+                        <div class="text-[10px] text-zinc-600 mt-1">Upload to play on /national-government</div>
+                    </div>
+                </div>
+                @endif
+            </div>
+            <div class="p-6 flex flex-col justify-center">
+                <div class="text-sm font-bold text-gray-900 mb-1">National Hero Video</div>
+                <div class="text-[10px] text-gray-500 mb-4">Plays on the national government landing page</div>
+                <form method="POST" action="{{ route('national.admin.v2.hero.upload') }}" enctype="multipart/form-data" class="mb-3">
+                    @csrf
+                    <label class="flex items-center justify-center h-10 rounded-xl bg-gradient-to-r from-indigo-500 to-violet-600 text-white text-xs font-bold cursor-pointer hover:from-indigo-400 hover:to-violet-500 transition active:scale-95">
+                        <input type="file" name="video" accept="video/mp4,video/webm" class="sr-only" onchange="this.form.submit()">
+                         Upload National Hero Video
+                    </label>
+                </form>
+                @if($nationalHero?->mp4Url())
+                <form method="POST" action="{{ route('national.admin.v2.hero.delete') }}" onsubmit="return confirm('Delete hero video?')">@csrf<button class="text-xs text-red-500 hover:text-red-400 underline">Delete</button></form>
+                @endif
             </div>
         </div>
     </div>
+
+    @elseif($tab === 'media')
+    {{-- MINISTRY MEDIA --}}
+    <div class="space-y-4">
+        @foreach($ministries as $m)
+        @php $media = $ministryMedia[$m->id] ?? ['video' => null, 'flag' => null]; @endphp
+        <div class="bg-white border border-gray-200 rounded-2xl overflow-hidden">
+            <div class="grid md:grid-cols-4 gap-0">
+                <div class="md:col-span-2 bg-black relative min-h-[180px]">
+                    @if($media['video']?->mp4Url())
+                    <video autoplay muted loop playsinline class="absolute inset-0 w-full h-full object-cover">
+                        <source src="{{ $media['video']->mp4Url() }}" type="video/mp4">
+                    </video>
+                    <div class="absolute bottom-2 left-3 text-[10px] px-2 py-1 rounded bg-black/70 text-indigo-300 border border-indigo-500/30">Ministry Video</div>
+                    @elseif($media['flag']?->mp4Url())
+                    <video autoplay muted loop playsinline class="absolute inset-0 w-full h-full object-cover">
+                        <source src="{{ $media['flag']->mp4Url() }}" type="video/mp4">
+                    </video>
+                    <div class="absolute bottom-2 left-3 text-[10px] px-2 py-1 rounded bg-black/70 text-amber-300 border border-amber-500/30">Ministry Flag</div>
+                    @else
+                    <div class="absolute inset-0 flex items-center justify-center">
+                        <div class="text-center">
+                            <div class="w-12 h-12 mx-auto rounded-xl flex items-center justify-center text-white text-lg font-black" style="background: {{ $m->color ?: '#1890D7' }}">{{ $m->code ?? substr($m->name, 0, 3) }}</div>
+                            <div class="text-xs text-zinc-500 mt-2">No video or flag</div>
+                        </div>
+                    </div>
+                    @endif
+                </div>
+                <div class="p-5 flex flex-col justify-center border-t md:border-t-0 md:border-l border-gray-200">
+                    <div class="text-sm font-bold text-gray-900 mb-1">{{ $m->name }}</div>
+                    <div class="text-[10px] text-gray-500 mb-3">Upload ministry tile video or animated flag</div>
+                    <form method="POST" action="{{ route('national.admin.v2.ministry.video.upload', $m->id) }}" enctype="multipart/form-data" class="mb-2">
+                        @csrf
+                        <label class="flex items-center justify-center h-8 rounded-lg bg-[#046bd2]/10 text-[#046bd2] text-[10px] font-bold cursor-pointer hover:bg-[#046bd2]/20 transition border border-[#046bd2]/20">
+                            <input type="file" name="video" accept="video/mp4,video/webm" class="sr-only" onchange="this.form.submit()">
+                             Upload Ministry Video
+                        </label>
+                    </form>
+                    @if($media['video']?->mp4Url())
+                    <form method="POST" action="{{ route('national.admin.v2.ministry.video.delete', $m->id) }}" onsubmit="return confirm('Delete ministry video?')">@csrf<button class="text-[10px] text-red-500 hover:text-red-400 underline mb-2">Delete video</button></form>
+                    @endif
+                    <form method="POST" action="{{ route('national.admin.v2.ministry.flag.upload', $m->id) }}" enctype="multipart/form-data" class="mb-1">
+                        @csrf
+                        <label class="flex items-center justify-center h-8 rounded-lg bg-amber-50 text-amber-600 text-[10px] font-bold cursor-pointer hover:bg-amber-100 transition border border-amber-200">
+                            <input type="file" name="video" accept="video/mp4,video/webm" class="sr-only" onchange="this.form.submit()">
+                             Upload Ministry Flag
+                        </label>
+                    </form>
+                    @if($media['flag']?->mp4Url())
+                    <form method="POST" action="{{ route('national.admin.v2.ministry.flag.delete', $m->id) }}" onsubmit="return confirm('Delete ministry flag?')">@csrf<button class="text-[10px] text-red-500 hover:text-red-400 underline">Delete flag</button></form>
+                    @endif
+                </div>
+                <div class="p-5 flex flex-col justify-center bg-gray-50 border-t md:border-t-0 md:border-l border-gray-200">
+                    <div class="text-[10px] font-semibold text-gray-700 mb-2">Fallback Chain</div>
+                    <div class="text-[9px] text-gray-500 space-y-1">
+                        <div class="{{ $media['video']?->mp4Url() ? 'text-emerald-600 font-semibold' : '' }}">1. Ministry video</div>
+                        <div>2. Agency videos</div>
+                        <div class="{{ $media['flag']?->mp4Url() ? 'text-emerald-600 font-semibold' : '' }}">3. Ministry flag</div>
+                        <div>4. National flag</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        @endforeach
+    </div>
+
+    @elseif($tab === 'flag')
+    {{-- NATIONAL FLAG --}}
+    <div class="bg-white border border-gray-200 rounded-2xl overflow-hidden">
+        <div class="grid md:grid-cols-3 gap-0">
+            <div class="md:col-span-2 bg-black relative min-h-[200px]">
+                @if($nationalFlag?->mp4Url())
+                <video autoplay muted loop playsinline class="absolute inset-0 w-full h-full object-cover">
+                    <source src="{{ $nationalFlag->mp4Url() }}" type="video/mp4">
+                </video>
+                <div class="absolute bottom-2 left-3 text-[10px] px-2 py-1 rounded bg-black/70 text-amber-300 border border-amber-500/30">National Flag Playing</div>
+                @else
+                <div class="absolute inset-0 flex items-center justify-center">
+                    <div class="text-center">
+                        <svg class="w-12 h-12 mx-auto text-zinc-600 mb-2" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M3 3v18h18M7 16l4-8 4 4 4-6"/></svg>
+                        <div class="text-sm font-semibold text-zinc-500">No national flag video</div>
+                        <div class="text-[10px] text-zinc-600 mt-1">Upload animated flag as last-resort fallback</div>
+                    </div>
+                </div>
+                @endif
+            </div>
+            <div class="p-6 flex flex-col justify-center">
+                <div class="text-sm font-bold text-gray-900 mb-1">National Animated Flag</div>
+                <div class="text-[10px] text-gray-500 mb-4">Plays on every tile when no other video is available (fallback level 5)</div>
+                <form method="POST" action="{{ route('national.admin.v2.flag.upload') }}" enctype="multipart/form-data" class="mb-3">
+                    @csrf
+                    <label class="flex items-center justify-center h-10 rounded-xl bg-gradient-to-r from-amber-500 to-orange-600 text-white text-xs font-bold cursor-pointer hover:from-amber-400 hover:to-orange-500 transition active:scale-95">
+                        <input type="file" name="video" accept="video/mp4,video/webm" class="sr-only" onchange="this.form.submit()">
+                         Upload National Flag
+                    </label>
+                </form>
+                @if($nationalFlag?->mp4Url())
+                <div class="flex items-center gap-2 text-xs">
+                    <span class="text-emerald-600">Live</span>
+                    <form method="POST" action="{{ route('national.admin.v2.flag.delete') }}" onsubmit="return confirm('Delete national flag?')">@csrf<button class="text-red-500 hover:text-red-400 underline">Delete</button></form>
+                </div>
+                @endif
+            </div>
+        </div>
+    </div>
+
+    @elseif($tab === 'pages')
+    {{-- PAGES --}}
+    <div class="bg-white border border-gray-200 rounded-2xl p-6">
+        <h2 class="font-bold text-gray-900 mb-4">National Pages</h2>
+        <div class="space-y-2">
+            @foreach($nationalPages as $p)
+            <div class="flex items-center justify-between border border-gray-200 rounded-xl p-3">
+                <div><span class="font-semibold text-gray-900 text-sm capitalize">{{ $p->slug }}</span><div class="text-xs text-gray-400">{{ Str::limit($p->title ?? '', 60) }}</div></div>
+                <a href="#" class="text-xs text-[#046bd2] hover:underline">Edit</a>
+            </div>
+            @endforeach
+        </div>
+    </div>
+    @endif
 </div>
 @endsection

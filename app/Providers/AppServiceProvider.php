@@ -32,7 +32,7 @@ class AppServiceProvider extends ServiceProvider
 {
     public function register(): void
     {
-        //
+        $this->app->singleton(\App\Services\TileMediaResolver::class);
     }
 
     public function boot(): void

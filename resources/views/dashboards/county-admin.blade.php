@@ -529,6 +529,46 @@
                     </div>
                     @endif
                     @endforeach
+
+                    {{-- County Flag Video card --}}
+                    <div class="sm:col-span-2 lg:col-span-4 glass rounded-xl overflow-hidden border border-amber-500/20 mt-4">
+                        <div class="grid md:grid-cols-3 gap-0">
+                            <div class="md:col-span-2 bg-black relative min-h-[200px]">
+                                @if($countyFlagVideo?->mp4Url())
+                                <video autoplay muted loop playsinline class="absolute inset-0 w-full h-full object-cover">
+                                    <source src="{{ $countyFlagVideo->mp4Url() }}" type="video/mp4">
+                                </video>
+                                <div class="absolute bottom-2 left-3 text-[10px] px-2 py-1 rounded bg-black/70 text-amber-300 border border-amber-500/30">Flag Video Playing</div>
+                                @else
+                                <div class="absolute inset-0 flex items-center justify-center">
+                                    <div class="text-center">
+                                        <svg class="w-12 h-12 mx-auto text-zinc-600 mb-2" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M3 3v18h18M7 16l4-8 4 4 4-6"/></svg>
+                                        <div class="text-sm font-semibold text-zinc-500">No county flag video</div>
+                                        <div class="text-[10px] text-zinc-600 mt-1">Upload animated flag for tile fallback</div>
+                                    </div>
+                                </div>
+                                @endif
+                            </div>
+                            <div class="p-5 flex flex-col justify-center">
+                                <div class="text-sm font-bold text-white mb-1">County Animated Flag</div>
+                                <div class="text-[10px] text-zinc-500 mb-3">Plays on sector tiles when no video is assigned (fallback level 4)</div>
+                                <form method="POST" action="{{ route('county.admin.flag.upload', $county->slug) }}" enctype="multipart/form-data" class="mb-2">
+                                    @csrf
+                                    <label class="flex items-center justify-center h-10 rounded-xl bg-gradient-to-r from-amber-500 to-orange-600 text-white text-xs font-bold cursor-pointer hover:from-amber-400 hover:to-orange-500 transition active:scale-95">
+                                        <input type="file" name="video" accept="video/mp4,video/webm" class="sr-only" onchange="this.form.submit()">
+                                         Upload Animated Flag
+                                    </label>
+                                </form>
+                                @if($countyFlagVideo?->mp4Url())
+                                <div class="flex items-center gap-2 text-[10px]">
+                                    <span class="text-emerald-400"> Live — {{ $countyFlagVideo->original_name ?? 'Flag video' }}</span>
+                                    <form method="POST" action="{{ route('county.admin.flag.delete', $county->slug) }}" onsubmit="return confirm('Delete flag video?')">@csrf<button class="text-red-400 hover:text-red-300 underline ml-2">Delete</button></form>
+                                </div>
+                                @endif
+                            </div>
+                        </div>
+                    </div>
+
                 </div>
             </div>
 

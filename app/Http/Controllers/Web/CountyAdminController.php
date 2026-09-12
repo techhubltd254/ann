@@ -154,6 +154,9 @@ class CountyAdminController extends Controller
         $broadcastSchedules = \App\Models\BroadcastSchedule::where('is_active', true)
             ->orderBy('sort_order')->latest()->take(50)->get();
 
+        // County flag video
+        $countyFlagVideo = \App\Models\MediaAsset::resolveSlot(\App\Models\County::class, $county->id, 'county_flag_video');
+
         // All counties for national admin switcher
         $allCounties = County::orderBy('name')->get(['slug', 'name']);
 
@@ -164,7 +167,7 @@ class CountyAdminController extends Controller
             'institutions', 'traderSpotlights', 'screens', 'screenGroups', 'liveFeeds', 'verifiedTraders',
             'housingProjects', 'droneSequences', 'presidentialAudios', 'floorPlans',
             'consentForms', 'voiceNotes',
-            'landmarks', 'broadcastSchedules', 'allCounties',
+            'landmarks', 'broadcastSchedules', 'countyFlagVideo', 'allCounties',
         ) + ['video4dMap' => $this->video4dMap($county), 'analytics' => $analytics]);
     }
 
@@ -551,6 +554,61 @@ class CountyAdminController extends Controller
             $a->delete();
         }
         return back()->with('success', 'Hero video removed.');
+    }
+
+    /* ─── COUNTY FLAG VIDEO ─── */
+
+    public function uploadFlagVideo(Request $request, string $slug)
+    {
+        $county = $this->authorizeCounty($slug);
+        $data = $request->validate([
+            'video' => 'required|file|mimes:mp4,webm,mov|max:512000',
+        ]);
+
+        $file = $request->file('video');
+        $filename = 'flag.' . $file->getClientOriginalExtension();
+        $disk = Storage::disk('r2');
+        $r2Path = "counties/{$slug}/flag-video/{$filename}";
+        $disk->writeStream($r2Path, fopen($file->getRealPath(), 'r'), ['visibility' => 'public']);
+
+        MediaAsset::forSlot(County::class, $county->id, 'county_flag_video')->delete();
+
+        $asset = MediaAsset::create([
+            'uuid' => (string) Str::uuid(),
+            'owner_id' => $county->id,
+            'owner_type' => County::class,
+            'slot' => 'county_flag_video',
+            'disk' => 'r2',
+            'path' => $r2Path,
+            'original_name' => $file->getClientOriginalName(),
+            'mime' => $file->getMimeType(),
+            'kind' => 'video',
+            'size_bytes' => $file->getSize(),
+            'status' => 'ready',
+        ]);
+
+        $asset->derivatives()->create([
+            'kind' => 'video_mp4',
+            'path' => $r2Path,
+            'mime' => 'video/mp4',
+            'size_bytes' => $file->getSize(),
+            'variant' => 'source',
+        ]);
+
+        return back()->with('success', 'County animated flag uploaded. It plays as fallback on sector tiles.');
+    }
+
+    public function deleteFlagVideo(string $slug)
+    {
+        $this->authorizeCounty($slug);
+        $countyId = County::where('slug', $slug)->value('id');
+        $assets = MediaAsset::forSlot(County::class, $countyId, 'county_flag_video')->get();
+        foreach ($assets as $a) {
+            if ($a->disk === 'r2') Storage::disk('r2')->delete($a->path);
+            $a->derivatives()->delete();
+            $a->delete();
+        }
+        return back()->with('success', 'County animated flag removed.');
     }
 
     /* ─── 4D VIDEOS ─── */

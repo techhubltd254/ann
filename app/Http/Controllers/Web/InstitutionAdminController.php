@@ -254,6 +254,43 @@ class InstitutionAdminController extends Controller
         return back()->with('success', 'Hero video uploaded. It now plays everywhere this institution appears.');
     }
 
+    public function uploadFlagVideo(Request $request, string $slug)
+    {
+        $institution = $this->authorizeInstitution($slug);
+        $data = $request->validate([
+            'video' => 'required|file|mimes:mp4,webm,mov|max:512000',
+        ]);
+
+        $file = $request->file('video');
+        $filename = 'flag.' . $file->getClientOriginalExtension();
+        $disk = Storage::disk('r2');
+        $r2Path = "institutions/{$institution->slug}/flag-video/{$filename}";
+        $disk->writeStream($r2Path, fopen($file->getRealPath(), 'r'), ['visibility' => 'public']);
+
+        MediaAsset::forSlot(CountyInstitution::class, $institution->id, 'institution_flag_video')->delete();
+
+        $asset = MediaAsset::create([
+            'uuid' => (string) Str::uuid(),
+            'owner_id' => $institution->id,
+            'owner_type' => CountyInstitution::class,
+            'slot' => 'institution_flag_video',
+            'disk' => 'r2',
+            'path' => $r2Path,
+            'original_name' => $file->getClientOriginalName(),
+            'mime' => $file->getMimeType(),
+            'kind' => 'video',
+            'size_bytes' => $file->getSize(),
+            'status' => 'ready',
+        ]);
+
+        $asset->derivatives()->create([
+            'kind' => 'video_mp4', 'path' => $r2Path, 'mime' => 'video/mp4',
+            'size_bytes' => $file->getSize(), 'variant' => 'source',
+        ]);
+
+        return back()->with('success', 'Institution animated emblem uploaded. It plays as fallback on tiles.');
+    }
+
     /* ─── PRODUCTION CHAIN ─── */
     public function updateProduction(Request $request, string $slug)
     {

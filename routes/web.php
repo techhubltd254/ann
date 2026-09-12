@@ -218,6 +218,8 @@ Route::get('/national-admin/agencies/{agency}/delete', [\App\Http\Controllers\We
     Route::post('/county-admin/{slug}/pro/landmark', [\App\Http\Controllers\Web\CountyAdminController::class, 'storeLandmark'])->name('county.admin.landmark.store');
     Route::post('/county-admin/{slug}/pro/hero-video', [\App\Http\Controllers\Web\CountyAdminController::class, 'uploadHeroVideo'])->name('county.admin.hero.upload');
     Route::post('/county-admin/{slug}/pro/hero-video/delete', [\App\Http\Controllers\Web\CountyAdminController::class, 'deleteHeroVideo'])->name('county.admin.hero.delete');
+    Route::post('/county-admin/{slug}/pro/flag-video', [\App\Http\Controllers\Web\CountyAdminController::class, 'uploadFlagVideo'])->name('county.admin.flag.upload');
+    Route::post('/county-admin/{slug}/pro/flag-video/delete', [\App\Http\Controllers\Web\CountyAdminController::class, 'deleteFlagVideo'])->name('county.admin.flag.delete');
     Route::post('/county-admin/{slug}/pro/entity', [\App\Http\Controllers\Web\CountyAdminController::class, 'addEntity'])->name('county.admin.entity');
     Route::post('/county-admin/{slug}/pro/entity/{entityId}/delete', [\App\Http\Controllers\Web\CountyAdminController::class, 'deleteEntity'])->name('county.admin.entity.delete');
     Route::post('/county-admin/{slug}/pro/institutions', [\App\Http\Controllers\Web\CountyAdminController::class, 'storeInstitution'])->name('county.admin.institution.store');
@@ -228,6 +230,7 @@ Route::get('/national-admin/agencies/{agency}/delete', [\App\Http\Controllers\We
     Route::post('/institution-admin/{institution}/profile', [\App\Http\Controllers\Web\InstitutionAdminController::class, 'updateProfile'])->name('institution.admin.profile');
     Route::post('/institution-admin/{institution}/logo', [\App\Http\Controllers\Web\InstitutionAdminController::class, 'uploadLogo'])->name('institution.admin.logo');
     Route::post('/institution-admin/{institution}/hero-video', [\App\Http\Controllers\Web\InstitutionAdminController::class, 'uploadHeroVideo'])->name('institution.admin.hero-video');
+    Route::post('/institution-admin/{institution}/flag-video', [\App\Http\Controllers\Web\InstitutionAdminController::class, 'uploadFlagVideo'])->name('institution.admin.flag-video');
     Route::post('/institution-admin/{institution}/production', [\App\Http\Controllers\Web\InstitutionAdminController::class, 'updateProduction'])->name('institution.admin.production');
     Route::post('/institution-admin/{institution}/sectors', [\App\Http\Controllers\Web\InstitutionAdminController::class, 'updateSectors'])->name('institution.admin.sectors');
     Route::post('/institution-admin/{institution}/products', [\App\Http\Controllers\Web\InstitutionAdminController::class, 'storeProduct'])->name('institution.admin.products.store');
@@ -457,7 +460,18 @@ Route::middleware(['auth', 'admin:kicc'])->prefix('kicc-admin/cms')->name('cms.a
 
 // National Government Admin (like counties)
 Route::middleware(['auth', 'admin:national'])->prefix('kicc-admin/national')->name('national.admin.v2.')->group(function () {
-    Route::get('/', [\App\Http\Controllers\Web\NationalAdminController::class, 'index'])->name('index');
+    Route::get('/', [\App\Http\Controllers\Web\NationalAdminController::class, 'dashboard'])->name('dashboard');
+    Route::get('/redirect', [\App\Http\Controllers\Web\NationalAdminController::class, 'index'])->name('index');
+    // Media routes (before generic ministry route)
+    Route::post('/hero', [\App\Http\Controllers\Web\NationalAdminController::class, 'uploadNationalHero'])->name('hero.upload');
+    Route::post('/hero/delete', [\App\Http\Controllers\Web\NationalAdminController::class, 'deleteNationalHero'])->name('hero.delete');
+    Route::post('/ministries/{ministry}/video', [\App\Http\Controllers\Web\NationalAdminController::class, 'uploadMinistryVideo'])->name('ministry.video.upload');
+    Route::post('/ministries/{ministry}/video/delete', [\App\Http\Controllers\Web\NationalAdminController::class, 'deleteMinistryVideo'])->name('ministry.video.delete');
+    Route::post('/ministries/{ministry}/flag', [\App\Http\Controllers\Web\NationalAdminController::class, 'uploadMinistryFlag'])->name('ministry.flag.upload');
+    Route::post('/ministries/{ministry}/flag/delete', [\App\Http\Controllers\Web\NationalAdminController::class, 'deleteMinistryFlag'])->name('ministry.flag.delete');
+    Route::post('/flag', [\App\Http\Controllers\Web\NationalAdminController::class, 'uploadNationalFlag'])->name('flag.upload');
+    Route::post('/flag/delete', [\App\Http\Controllers\Web\NationalAdminController::class, 'deleteNationalFlag'])->name('flag.delete');
+    // Ministry & Agency CRUD
     Route::post('/ministries', [\App\Http\Controllers\Web\NationalAdminController::class, 'storeMinistry'])->name('ministry.store');
     Route::post('/ministries/{ministry}', [\App\Http\Controllers\Web\NationalAdminController::class, 'updateMinistry'])->name('ministry.update');
     Route::get('/ministries/{ministry}/delete', [\App\Http\Controllers\Web\NationalAdminController::class, 'deleteMinistry'])->name('ministry.delete');
