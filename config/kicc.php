@@ -406,7 +406,7 @@ return [
     */
     'cache_ttl' => [
         'admin' => 60,
-        'public' => 600,
+        'public' => 21600,
         'media' => 3600,
     ],
 
