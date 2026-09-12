@@ -30,7 +30,7 @@ class OptimizeImageController extends Controller
 
         // Allowlist hosts (R2 CDN + our own)
         $host = parse_url($url, PHP_URL_HOST) ?? '';
-        $allowed = ['kicc-r2-media.techhubltd254.workers.dev', 'kicc-proxy.techhubltd254.workers.dev', 'kicctest.org', 'origin.kicctest.org'];
+        $allowed = ['kicc-r2-media.techhubltd254.workers.dev', 'kicc-proxy.techhubltd254.workers.dev', 'media.kicctest.org', 'kicctest.org', 'origin.kicctest.org'];
         if (!in_array($host, $allowed, true)) {
             return response('Host not allowed', 403);
         }

@@ -13,13 +13,13 @@ class SecurityHeaders
 
         // Content Security Policy — allow our CDN, fonts, and inline styles for Alpine/GSAP
         $response->headers->set('Content-Security-Policy',
-            "default-src 'self' *.cloudflarestream.com cloudflarestream.com *.workers.dev kicctest.org *.kicctest.org; " .
+            "default-src 'self' *.cloudflarestream.com cloudflarestream.com *.workers.dev media.kicctest.org kicctest.org *.kicctest.org; " .
             "script-src 'self' 'unsafe-inline' 'unsafe-eval' cdn.tailwindcss.com cdn.jsdelivr.net unpkg.com; " .
             "style-src 'self' 'unsafe-inline' cdn.tailwindcss.com fonts.googleapis.com; " .
             "font-src 'self' fonts.gstatic.com data:; " .
-            "img-src 'self' data: blob: *.cloudflarestream.com *.workers.dev *.r2.cloudflarestorage.com; " .
-            "media-src 'self' blob: data: *.cloudflarestream.com *.workers.dev *.r2.cloudflarestorage.com; " .
-            "connect-src 'self' kicctest.org *.kicctest.org *.cloudflarestream.com cloudflarestream.com *.workers.dev wss://* ws://*; " .
+            "img-src 'self' data: blob: *.cloudflarestream.com *.workers.dev media.kicctest.org *.r2.cloudflarestorage.com; " .
+            "media-src 'self' blob: data: *.cloudflarestream.com *.workers.dev media.kicctest.org *.r2.cloudflarestorage.com; " .
+            "connect-src 'self' kicctest.org *.kicctest.org *.cloudflarestream.com cloudflarestream.com *.workers.dev media.kicctest.org wss://* ws://*; " .
             "frame-ancestors 'self'; " .
             "base-uri 'self'; " .
             "form-action 'self'"
