@@ -31,6 +31,10 @@
     </div>
 
     <div class="max-w-7xl mx-auto px-5 py-10">
+        <div class="mb-8">
+            <x-all-counties-map :counties="$counties" height="380px" />
+        </div>
+
         @if($counties->count() > 0)
         <div class="flex items-center justify-between mb-4">
             <span id="county-count" class="text-[#5A6480] text-xs font-semibold">{{ $counties->count() }} counties</span>

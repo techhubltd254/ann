@@ -46,6 +46,18 @@
                         {{ ucfirst($exhibition->status) }}
                     </span>
                 </div>
+                @if($exhibition->venue)
+                <a href="https://www.google.com/maps/search/?api=1&query={{ urlencode($exhibition->venue->name . ', ' . ($exhibition->venue->city ?? $exhibition->county?->name ?? '')) }}" target="_blank" rel="noopener"
+                   class="inline-flex items-center gap-1 text-[10px] text-[#5A6480] hover:text-[#901C1E] transition-colors mb-1">
+                    <svg class="w-3 h-3" fill="currentColor" viewBox="0 0 24 24"><path d="M12 2C8.13 2 5 5.13 5 9c0 5.73 7 13 7 13s7-7.27 7-13c0-3.87-3.13-7-7-7zm0 9.5c-1.38 0-2.5-1.12-2.5-2.5s1.12-2.5 2.5-2.5S14.5 7.62 14.5 9s-1.12 2.5-2.5 2.5z"/></svg>
+                    {{ $exhibition->venue->name }}@if($exhibition->venue->city), {{ $exhibition->venue->city }}@endif
+                </a>
+                @elseif($exhibition->county)
+                <span class="inline-flex items-center gap-1 text-[10px] text-[#5A6480]">
+                    <svg class="w-3 h-3" fill="currentColor" viewBox="0 0 24 24"><path d="M12 2C8.13 2 5 5.13 5 9c0 5.73 7 13 7 13s7-7.27 7-13c0-3.87-3.13-7-7-7zm0 9.5c-1.38 0-2.5-1.12-2.5-2.5s1.12-2.5 2.5-2.5S14.5 7.62 14.5 9s-1.12 2.5-2.5 2.5z"/></svg>
+                    {{ $exhibition->county->name }}
+                </span>
+                @endif
                 <h3 class="font-black text-gray-900 text-base leading-snug">{{ $exhibition->name }}</h3>
                 <p class="text-[#5A6480] text-sm mt-2 leading-relaxed">{{ Str::limit($exhibition->tagline ?? $exhibition->description, 100) }}</p>
                 <div class="flex items-center justify-between mt-4">
