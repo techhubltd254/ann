@@ -36,9 +36,8 @@ class ScreenController extends Controller
         return view('screens.index', compact('screens'));
     }
 
-    public function show(string $id)
+    public function show(Screen $screen)
     {
-        $screen = Screen::findOrFail($id);
         $videoPath = storage_path("app/public/screens/auto_{$screen->id}.mp4");
         $screen->video_exists = file_exists($videoPath);
         $screen->video_size_mb = $screen->video_exists
@@ -99,9 +98,8 @@ class ScreenController extends Controller
      * Book advertising space on this screen.
      * Creates an Advertisement (pending until payment) + payment intent.
      */
-    public function advertise(Request $request, string $id, PaymentService $payments)
+    public function advertise(Request $request, Screen $screen, PaymentService $payments)
     {
-        $screen = Screen::findOrFail($id);
 
         $data = $request->validate([
             'business_name' => 'required|string|max:255',

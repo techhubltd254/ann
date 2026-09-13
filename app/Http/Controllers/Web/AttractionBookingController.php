@@ -30,9 +30,8 @@ class AttractionBookingController extends Controller
         ];
     }
 
-    public function show(int $id)
+    public function show(CountyTourismAttraction $attraction)
     {
-        $attraction = CountyTourismAttraction::with('county')->where('is_published', true)->findOrFail($id);
 
         // Recommendations driven by correlation engine
         $tripRecommendations = [];
@@ -57,9 +56,8 @@ class AttractionBookingController extends Controller
         ]);
     }
 
-    public function book(Request $request, int $id, PaymentService $payments)
+    public function book(Request $request, CountyTourismAttraction $attraction, PaymentService $payments)
     {
-        $attraction = CountyTourismAttraction::where('is_published', true)->findOrFail($id);
 
         $data = $request->validate([
             'name' => 'required|string|max:255',

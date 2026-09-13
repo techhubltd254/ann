@@ -33,6 +33,7 @@
     <script src="{{ asset('js/theme.js') }}"></script>
     <script defer src="https://cdn.jsdelivr.net/npm/hls.js@1.5.13/dist/hls.min.js"></script>
     <script defer src="{{ asset('js/media-tile.js') }}?v={{ filemtime(public_path('js/media-tile.js')) }}"></script>
+    <script defer src="{{ asset('js/alpine-data.js') }}"></script>
     <link rel="stylesheet" href="{{ asset('css/colors.css') }}">
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>

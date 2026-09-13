@@ -9,10 +9,12 @@ use App\Models\User;
 use Illuminate\Database\Seeder;
 use Illuminate\Support\Facades\DB;
 
+/** @see https://kicc-platform.kicc.go.ke/docs/seeders — use factory states for deterministic data */
 class BlueprintSeeder extends Seeder
 {
     public function run(): void
     {
+        if ($seed = $this->command?->option('seed')) srand(crc32((string)$seed));
         $this->seedSubscriptionPlans();
         $this->seedSectorEntities();
         $this->seedCountyTourism();

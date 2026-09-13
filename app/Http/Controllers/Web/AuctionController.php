@@ -11,12 +11,10 @@ class AuctionController extends Controller {
         $active = Auction::active()->with('product.images','seller')->latest('ends_at')->paginate(20);
         return view('ecommerce.auctions.index', compact('active'));
     }
-    public function show($id) {
-        $auction = Auction::with('product.images','product.variants','seller','bids.user')->findOrFail($id);
+    public function show(Auction $auction) {
         return view('ecommerce.auctions.show', compact('auction'));
     }
-    public function bid(Request $r, $id) {
-        $auction = Auction::findOrFail($id);
+    public function bid(Request $r, Auction $auction) {
         if ($auction->ends_at < now()) {
             return back()->with('error', 'Auction has ended');
         }

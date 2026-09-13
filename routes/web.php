@@ -117,10 +117,10 @@ Route::get('/auctions', [AuctionController::class, 'index'])->name('auctions.ind
     ->withoutMiddleware($noSession);
 Route::get('/auctions/create', [AuctionController::class, 'create'])->name('auctions.create')->middleware('auth');
 Route::post('/auctions', [AuctionController::class, 'store'])->name('auctions.store')->middleware('auth');
-Route::get('/auctions/{id}', [AuctionController::class, 'show'])->name('auctions.show')
+Route::get('/auctions/{auction}', [AuctionController::class, 'show'])->name('auctions.show')
     ->middleware($publicCache)
     ->withoutMiddleware($noSession);
-Route::post('/auctions/{id}/bid', [AuctionController::class, 'bid'])->name('auctions.bid')->middleware('auth');
+Route::post('/auctions/{auction}/bid', [AuctionController::class, 'bid'])->name('auctions.bid')->middleware('auth');
 
 Route::get('/rfq', [RfqController::class, 'index'])->name('rfq.index')->middleware('auth');
 Route::get('/rfq/create', [RfqController::class, 'create'])->name('rfq.create')->middleware('auth');
@@ -277,8 +277,8 @@ Route::get('/exhibitor/{slug}', [\App\Http\Controllers\Web\ExhibitorSiteControll
 Route::get('/national/{slug}', [\App\Http\Controllers\Web\NationalSiteController::class, 'show'])->name('national.site');
 
 // Attraction booking (every tourist attraction is bookable)
-Route::get('/attractions/{id}', [\App\Http\Controllers\Web\AttractionBookingController::class, 'show'])->name('attractions.show');
-Route::post('/attractions/{id}/book', [\App\Http\Controllers\Web\AttractionBookingController::class, 'book'])->name('attractions.book')->middleware('auth');
+Route::get('/attractions/{attraction}', [\App\Http\Controllers\Web\AttractionBookingController::class, 'show'])->name('attractions.show');
+Route::post('/attractions/{attraction}/book', [\App\Http\Controllers\Web\AttractionBookingController::class, 'book'])->name('attractions.book')->middleware('auth');
 
 // Travel & Tourism
 Route::get('/travel', [TravelController::class, 'index'])->name('travel.index')
@@ -539,10 +539,10 @@ Route::post('/venues/{venue}/inquire', [VenueController::class, 'inquire'])->nam
 
 // Exhibition screen videos
 Route::get('/screens', [ScreenController::class, 'directory'])->name('screens.directory');
-Route::get('/screens/{id}', [ScreenController::class, 'show'])->name('screens.show')
+Route::get('/screens/{screen}', [ScreenController::class, 'show'])->name('screens.show')
     ->middleware($publicCache)
     ->withoutMiddleware($noSession);
-Route::post('/screens/{id}/advertise', [ScreenController::class, 'advertise'])->name('screens.advertise')->middleware('auth');
+Route::post('/screens/{screen}/advertise', [ScreenController::class, 'advertise'])->name('screens.advertise')->middleware('auth');
 
 // 3D Exhibition experiences (standalone views)
 Route::view('/exhibition-3d/map', 'exhibition-3d.map')->name('exhibition-3d.map');

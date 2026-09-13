@@ -21,4 +21,13 @@ final class CacheKey
     public const TILE_MEDIA = 'tile_media_ids_';
     public const IMAGE_BLUR = 'iblur:';
     public const NG_PREFIX = 'ng_';
+
+    public static function key(string $name, ...$args): string
+    {
+        $prefix = match (true) {
+            str_starts_with($name, 'kicc_') || str_starts_with($name, 'resolve:') || str_starts_with($name, 'county_pins') || str_starts_with($name, 'tile_media') => '',
+            default => 'kicc_',
+        };
+        return $prefix . $name . ($args ? '_' . implode('_', $args) : '');
+    }
 }
