@@ -152,8 +152,7 @@ class MediaAsset extends Model
 
     protected function resolve(string $path): string
     {
-        $base = rtrim(config('app.url'), '/');
-        return $base . '/media/derivatives/' . ltrim($path, '/');
+        return media_url() . '/' . ltrim($path, '/');
     }
 
     public function scopeKind(Builder $q, string $kind): Builder
