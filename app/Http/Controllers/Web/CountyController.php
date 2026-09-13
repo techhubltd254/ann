@@ -99,7 +99,22 @@ class CountyController extends Controller
             }
         }
 
-        $featuredAttractionIds = Cache::remember("kicc_county_attractions_{$county->id}", config('kicc.cache_ttl.public', 21600), fn () => $county->tourismAttractions()->where('is_published', true)->orderBy('name')->take(12)->pluck('id')->all());
+        $featuredAttractionIds = Cache::remember("kicc_county_attractions_{$county->id}", config('kicc.cache_ttl.public', 21600), function () use ($county) {
+            return $county->tourismAttractions()
+                ->leftJoin('reviews', function ($j) {
+                    $j->on('reviews.reviewable_id', '=', 'county_tourism_attractions.id')
+                      ->where('reviews.reviewable_type', '=', \App\Models\CountyTourismAttraction::class)
+                      ->where('reviews.status', 'approved');
+                })
+                ->where('is_published', true)
+                ->selectRaw('county_tourism_attractions.id, AVG(COALESCE(reviews.rating,0)) as avg_rating')
+                ->groupBy('county_tourism_attractions.id')
+                ->orderByDesc('avg_rating')
+                ->orderBy('county_tourism_attractions.name')
+                ->take(12)
+                ->pluck('county_tourism_attractions.id')
+                ->all();
+        });
         $featuredHotelIds = Cache::remember("kicc_county_hotels_{$county->id}", config('kicc.cache_ttl.public', 21600), fn () => $county->hotels()->where('is_published', true)->orderByDesc('star_rating')->take(8)->pluck('id')->all());
         $countyProductIds = Cache::remember("kicc_county_products_{$county->id}", config('kicc.cache_ttl.public', 21600), fn () => $county->products()->where('is_published', true)->whereNotNull('price')->orderByDesc('price')->take(8)->pluck('id')->all());
         $exhibitionIds = Cache::remember("kicc_county_exhibitions_{$county->id}", config('kicc.cache_ttl.public', 21600), fn () => $county->exhibitions()->where('status', 'published')->orderBy('start_date', 'desc')->take(3)->pluck('id')->all());
@@ -134,6 +149,25 @@ class CountyController extends Controller
             $countyHeroFallback = $fallback;
         }
 
+        // Entity media — video pipeline for attractions, hotels, products
+        $entityMedia = [];
+        $resolver = app(\App\Services\TileMediaResolver::class);
+        foreach ($featuredAttractions as $a) {
+            $se = \App\Models\SectorEntity::where('entity_type', \App\Models\CountyTourismAttraction::class)
+                ->where('entity_id', $a->id)->first();
+            if ($se) $entityMedia['attraction_' . $a->id] = $resolver->forEntity($se);
+        }
+        foreach ($featuredHotels as $h) {
+            $se = \App\Models\SectorEntity::where('entity_type', \App\Models\CountyHotel::class)
+                ->where('entity_id', $h->id)->first();
+            if ($se) $entityMedia['hotel_' . $h->id] = $resolver->forEntity($se);
+        }
+        foreach ($countyProducts as $p) {
+            $se = \App\Models\SectorEntity::where('entity_type', \App\Models\CountyProduct::class)
+                ->where('entity_id', $p->id)->first();
+            if ($se) $entityMedia['product_' . $p->id] = $resolver->forEntity($se);
+        }
+
         $mapPins = app(\App\Services\MapPinService::class)->countyPins($county);
 
         // County flag data for 3D waving flag
@@ -161,7 +195,7 @@ class CountyController extends Controller
             'featuredAttractions', 'featuredHotels', 'countyProducts',
             'exhibitions', 'linkedSectors', 'countyMedia', 'countyHeroFallback', 'tileMedia',
             'sectorPitches', 'attractionThumbs', 'hotelThumbs', 'productThumbs',
-            'mapPins', 'sectorPins', 'countyFlagUri'
+            'mapPins', 'sectorPins', 'countyFlagUri', 'entityMedia'
         ));
     }
 

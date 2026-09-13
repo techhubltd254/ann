@@ -198,27 +198,16 @@
             </div>
             <div class="grid grid-cols-2 md:grid-cols-4 gap-4">
                 @foreach($featuredAttractions as $a)
-                @php
-                    $aKey = strtolower($a->category ?? 'default');
-                @endphp
-                <a href="{{ route('attractions.show', $a->id) }}" class="bg-white border border-gray-200 rounded-2xl overflow-hidden hover:border-kicc-gold/40 transition-all group card-hover">
-                    <div class="h-36 overflow-hidden relative">
-                        @if($a->image_url || ($attractionThumbs[$a->id] ?? null))
-                        <x-fast-image :src="$attractionThumbs[$a->id] ?? $a->image_url" :alt="$a->name" :width="640" :quality="75" class="w-full h-full" />
-                        @endif
-                        <div class="absolute inset-0 bg-gradient-to-t from-black/30 to-transparent pointer-events-none"></div>
-                    </div>
-                    <div class="p-4">
-                        <div class="flex items-center gap-1.5 mb-1">
-                            <span class="text-[10px] font-bold text-[#0B1E57] uppercase tracking-widest">{{ $a->category }}</span>
-                        </div>
-                        <div class="font-bold text-gray-900 text-sm">{{ $a->name }}</div>
-                        @if($a->entry_fee)<div class="text-kicc-gold text-xs mt-1 font-bold">KES {{ number_format($a->entry_fee) }}</div>@endif
-                    </div>
-                    <div class="px-4 pb-4">
-                        <a href="{{ route('attractions.show', $a->id) }}#book" class="block text-center text-xs font-bold text-white bg-kicc-gold hover:bg-yellow-600 rounded-lg py-2 transition-colors">Book a visit</a>
-                    </div>
-                </a>
+                @php $aMedia = $entityMedia['attraction_' . $a->id] ?? []; @endphp
+                <x-media-tile
+                    :media="$aMedia"
+                    :title="$a->name"
+                    :subtitle="'KES ' . number_format($a->entry_fee ?? 0)"
+                    :category="$a->category ?? 'Attraction'"
+                    :badge="$a->entry_fee > 0 ? 'KES ' . number_format($a->entry_fee) : 'Free'"
+                    :href="route('attractions.show', $a->id)"
+                    aspect="aspect-[4/3]"
+                />
                 @endforeach
             </div>
         </div>
@@ -235,43 +224,29 @@
             <div class="grid grid-cols-2 md:grid-cols-4 gap-4">
                 @foreach($featuredHotels as $h)
                 @php
-                    $hKey = strtolower($h->category ?? 'hotel');
-                    $stars = $h->star_rating ? str_repeat('', $h->star_rating) . str_repeat('', 5 - $h->star_rating) : '—';
+                    {{-- HOTELS --}}
+        @if(($featuredHotels ?? collect())->isNotEmpty())
+        <div class="mb-14">
+            <div class="flex items-center gap-3 mb-6">
+                <span class="h-px w-8 bg-kicc-gold"></span>
+                <span class="text-kicc-gold text-xs font-bold tracking-[0.2em] uppercase">Places to Stay</span>
+                <span class="h-px flex-1 bg-gray-200"></span>
+            </div>
+            <div class="grid grid-cols-2 md:grid-cols-4 gap-4">
+                @foreach($featuredHotels as $h)
+                @php
+                    $hMedia = $entityMedia['hotel_' . $h->id] ?? [];
+                    $stars = $h->star_rating ? str_repeat('', $h->star_rating) . str_repeat('', 5 - $h->star_rating) : '';
                 @endphp
-                <div class="bg-white border border-gray-200 rounded-2xl overflow-hidden card-hover">
-                    <div class="h-36 overflow-hidden relative">
-                        @if($h->image_url || ($hotelThumbs[$h->id] ?? null))
-                        <x-fast-image :src="$hotelThumbs[$h->id] ?? $h->image_url" :alt="$h->name" :width="640" :quality="75" class="w-full h-full" />
-                        @endif
-                        <div class="absolute inset-0 bg-gradient-to-t from-black/30 to-transparent pointer-events-none"></div>
-                    </div>
-                    <div class="p-4">
-                        <div class="font-bold text-gray-900 text-sm">{{ $h->name }}</div>
-                        <div class="flex items-center gap-2 mt-1">
-                            <span class="text-[10px] font-bold text-[#0B1E57] uppercase tracking-wider">{{ $h->category }}</span>
-                            <span class="text-amber-400 text-xs">{{ $stars }}</span>
-                        </div>
-                        <div class="flex items-center gap-2 mt-1.5 text-[10px] text-gray-400">
-                            @if($h->latitude && $h->longitude)
-                            <a href="https://www.google.com/maps/search/?api=1&query={{ $h->latitude }},{{ $h->longitude }}" target="_blank" rel="noopener"
-                               class="inline-flex items-center gap-1 hover:text-[#901C1E] transition-colors" title="View on Google Maps">
-                                <svg class="w-3 h-3" fill="currentColor" viewBox="0 0 24 24"><path d="M12 2C8.13 2 5 5.13 5 9c0 5.73 7 13 7 13s7-7.27 7-13c0-3.87-3.13-7-7-7zm0 9.5c-1.38 0-2.5-1.12-2.5-2.5s1.12-2.5 2.5-2.5S14.5 7.62 14.5 9s-1.12 2.5-2.5 2.5z"/></svg>
-                                Map
-                            </a>
-                            @elseif($h->location)
-                            <a href="https://www.google.com/maps/search/?api=1&query={{ urlencode($h->location) }}" target="_blank" rel="noopener"
-                               class="inline-flex items-center gap-1 hover:text-[#901C1E] transition-colors">
-                                <svg class="w-3 h-3" fill="currentColor" viewBox="0 0 24 24"><path d="M12 2C8.13 2 5 5.13 5 9c0 5.73 7 13 7 13s7-7.27 7-13c0-3.87-3.13-7-7-7zm0 9.5c-1.38 0-2.5-1.12-2.5-2.5s1.12-2.5 2.5-2.5S14.5 7.62 14.5 9s-1.12 2.5-2.5 2.5z"/></svg>
-                                Map
-                            </a>
-                            @endif
-                            @if($h->phone)
-                            <a href="tel:{{ $h->phone }}" class="hover:text-[#901C1E] transition-colors">{{ $h->phone }}</a>
-                            @endif
-                        </div>
-                        <a href="{{ route('counties.sector', [$county->slug, 'hotels']) }}" class="inline-block text-xs font-bold text-kicc-gold hover:underline mt-2">Check availability →</a>
-                    </div>
-                </div>
+                <x-media-tile
+                    :media="$hMedia"
+                    :title="$h->name"
+                    :subtitle="$h->phone ?? ''"
+                    :category="$h->category ?? 'Hotel'"
+                    :badge="$stars ?: ($h->phone ?? '')"
+                    :href="route('counties.sector', [$county->slug, 'hotels'])"
+                    aspect="aspect-[4/3]"
+                />
                 @endforeach
             </div>
         </div>
@@ -287,31 +262,16 @@
             </div>
             <div class="grid grid-cols-2 md:grid-cols-4 gap-4">
                 @foreach($countyProducts as $p)
-                <div class="bg-white border border-gray-200 rounded-2xl overflow-hidden card-hover hover:border-kicc-gold/40 transition-all flex flex-col">
-                    <div class="h-36 bg-gray-100 flex items-center justify-center overflow-hidden relative">
-                        @php $firstVideo = is_array($p->videos) ? ($p->videos[0] ?? null) : $p->video_url; @endphp
-                        @if($firstVideo)
-                        <video autoplay muted loop playsinline preload="auto" class="absolute inset-0 w-full h-full object-cover" onerror="this.remove()">
-                            <source src="{{ $firstVideo }}" type="video/mp4">
-                        </video>
-                        @elseif($p->image_url || ($productThumbs[$p->id] ?? null))
-                        <x-fast-image :src="$productThumbs[$p->id] ?? $p->image_url" :alt="$p->name" :width="640" :quality="75" class="w-full h-full" />
-                        @endif
-                        <div class="absolute inset-0 flex items-center justify-center {{ $firstVideo ? 'opacity-0' : '' }}">
-                        </div>
-                    </div>
-                    <div class="p-4 flex-1 flex flex-col">
-                        <span class="text-[10px] font-bold text-[#0B1E57] uppercase tracking-widest">{{ $p->category }}</span>
-                        <div class="font-bold text-gray-900 text-sm mt-1">{{ $p->name }}</div>
-                        <div class="mt-auto pt-3 flex items-center justify-between">
-                            <span class="font-black text-[#0B1E57] text-sm">KES {{ number_format($p->price) }}</span>
-                            <span class="text-gray-400 text-xs">/ {{ $p->unit }}</span>
-                        </div>
-                        <a href="{{ route('county.product.booking', [$county->slug, $p->id]) }}" class="mt-3 block text-center py-2 rounded-xl bg-[#901C1E] text-white text-xs font-bold hover:bg-[#7b1618] transition-all">
-                            {{ $p->booking_type === 'book' ? 'Book Now' : 'Order Now' }}
-                        </a>
-                    </div>
-                </div>
+                @php $pMedia = $entityMedia['product_' . $p->id] ?? []; @endphp
+                <x-media-tile
+                    :media="$pMedia"
+                    :title="$p->name"
+                    :subtitle="'KES ' . number_format($p->price ?? 0) . ' / ' . ($p->unit ?? 'unit')"
+                    :category="$p->category ?? 'Product'"
+                    :badge="'KES ' . number_format($p->price ?? 0)"
+                    :href="route('county.product.booking', [$county->slug, $p->id])"
+                    aspect="aspect-[4/3]"
+                />
                 @endforeach
             </div>
             <div class="mt-5 text-center">

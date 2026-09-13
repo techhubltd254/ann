@@ -196,6 +196,58 @@ class TileMediaResolver
     }
 
     /**
+     * Resolve media for a specific entity (attraction, hotel, product).
+     * Falls back to parent institution's hero video if no dedicated video exists.
+     */
+    public function forEntity(SectorEntity $se): array
+    {
+        $county = $se->county;
+
+        // 1. Entity's own 4d_video
+        $asset = $this->slotAsset(SectorEntity::class, $se->id, '4d_video');
+        if ($asset) return $this->makeResult($asset, 1);
+
+        // 2. Parent institution in same sector
+        $inst = $this->resolveParentInstitution($se);
+        if ($inst) {
+            $asset = $this->slotAsset(CountyInstitution::class, $inst->id, 'hero_video');
+            if ($asset) return $this->makeResult($asset, 2);
+            $asset = $this->slotAsset(CountyInstitution::class, $inst->id, '4d_video');
+            if ($asset) return $this->makeResult($asset, 2);
+        }
+
+        // 3. County flag
+        if ($county) {
+            $asset = $this->slotAsset(County::class, $county->id, 'county_flag_video');
+            if ($asset) return $this->makeResult($asset, 4);
+        }
+
+        // 4. National flag
+        $asset = $this->slotAsset(County::class, 0, 'national_flag_video');
+        if ($asset) return $this->makeResult($asset, 5);
+
+        return $this->emptyResult();
+    }
+
+    /**
+     * Find the parent institution for an entity via SectorEntity.
+     * Looks for a CountyInstitution-type SectorEntity in the same county + sector.
+     */
+    protected function resolveParentInstitution(SectorEntity $se): ?CountyInstitution
+    {
+        $instSE = SectorEntity::where('county_id', $se->county_id)
+            ->where('sector_id', $se->sector_id)
+            ->where('entity_type', CountyInstitution::class)
+            ->where('entity_id', '!=', $se->entity_id)
+            ->where('is_published', true)
+            ->first();
+
+        if (!$instSE) return null;
+
+        return CountyInstitution::find($instSE->entity_id);
+    }
+
+    /**
      * Generic resolver for any owner type.
      */
     public function forOwner(string $ownerType, int $ownerId, ?string $slot = null): array
