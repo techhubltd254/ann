@@ -195,7 +195,7 @@ class AuthController extends Controller
                 return redirect('/portal');
             }
             if ($adminType === 'national' && $user->hasRole('national_admin')) {
-                return redirect()->route('admin.national');
+                return redirect()->route('national.admin.v2.dashboard');
             }
             if ($adminType === 'county' && $user->hasRole('county_admin')) {
                 $countyId = $request->input('county_id') ?: $user->county_id;

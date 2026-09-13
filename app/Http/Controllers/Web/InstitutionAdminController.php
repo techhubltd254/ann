@@ -244,6 +244,8 @@ class InstitutionAdminController extends Controller
             'kind' => 'video_mp4',
             'path' => $path,
             'mime' => $file->getMimeType(),
+            'size_bytes' => $file->getSize(),
+            'variant' => 'source',
         ]);
 
         N8nService::fire('institution_hero_uploaded', [

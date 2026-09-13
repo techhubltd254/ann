@@ -178,7 +178,8 @@ class MediaAsset extends Model
             ->forSlot($ownerType, $ownerId, $slot)
             ->ready()
             ->with('derivatives')
-            ->latest()
+            ->latest('id')
+            ->lockForUpdate()
             ->first();
     }
 }

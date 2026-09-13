@@ -10,7 +10,7 @@ return new class extends Migration
     {
         Schema::create('stream_destinations', function (Blueprint $table) {
             $table->id();
-            $table->unsignedBigInteger('live_stream_id');
+            $table->foreignId('live_stream_id')->constrained('live_streams')->cascadeOnDelete();
             $table->unsignedBigInteger('destinable_id');
             $table->string('destinable_type', 100); // App\Models\Screen or App\Models\ScreenGroup
             $table->string('status', 20)->default('pending'); // pending, active, ended, failed
@@ -46,7 +46,7 @@ return new class extends Migration
 
         Schema::create('screen_playlist_items', function (Blueprint $table) {
             $table->id();
-            $table->unsignedBigInteger('screen_id')->index();
+            $table->foreignId('screen_id')->constrained()->cascadeOnDelete();
             $table->unsignedBigInteger('media_asset_id')->nullable()->index();
             $table->string('content_type', 32)->default('video'); // video, image, audio, live_feed, slide
             $table->integer('sort_order')->default(0);

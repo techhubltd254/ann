@@ -50,8 +50,8 @@
                class="block w-full text-xs text-gray-400 mb-3 file:mr-3 file:px-3 file:py-1.5 file:rounded-lg file:border-0 file:bg-[#0B1E57] file:text-white file:text-xs">
         @endif
 
-        <div class="cf-turnstile" data-site-key="__TURNSTILE_SITE_KEY__"></div>
-        <input type="hidden" name="cf-turnstile-response" value="__TURNSTILE_RESPONSE__">
+        <div class="cf-turnstile" data-site-key="{{ config('services.turnstile.site_key', '1x00000000000000000000AAAAAAAA') }}"></div>
+        <input type="hidden" name="cf-turnstile-response" value="{{ config('services.turnstile.site_key', '1x00000000000000000000AAAAAAAA') }}">
         <button type="submit" class="w-full h-10 rounded-xl bg-[#0B1E57] text-white text-sm font-bold hover:bg-[#16275f] transition-all">
             Submit Review
         </button>

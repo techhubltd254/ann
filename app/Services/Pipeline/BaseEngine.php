@@ -61,7 +61,7 @@ abstract class BaseEngine implements PipelineEngineContract
             'uuid' => (string) \Illuminate\Support\Str::uuid(),
             'owner_id' => $source->owner_id,
             'owner_type' => $source->owner_type,
-            'disk' => 'public',
+            'disk' => $source->disk ?? 'public',
             'path' => $relativePath,
             'original_name' => basename($relativePath),
             'mime' => mime_content_type($abs) ?: 'application/octet-stream',

@@ -501,7 +501,7 @@ class CountyAdminController extends Controller
 
         // Upload to R2
         $disk = Storage::disk('r2');
-        $r2Path = $county->slug . "/video/hero/hero.mp4";
+        $r2Path = "counties/{$county->slug}/video/hero/hero.mp4";
         $disk->writeStream($r2Path, fopen($file->getRealPath(), 'r'), ['visibility' => 'public']);
 
         // Delete old hero asset

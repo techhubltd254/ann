@@ -19,9 +19,6 @@ jobs:
       - name: Install dependencies
         run: composer install --no-interaction --prefer-dist --optimize-autoloader --no-dev
 
-      - name: Generate application key
-        run: php artisan key:generate --force
-
       - name: Run migrations
         run: php artisan migrate --force --allow-zero-downtime
 
