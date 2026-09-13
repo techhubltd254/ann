@@ -133,8 +133,13 @@ class MarketplaceController extends Controller
             ->orWhere(fn ($q) => $q->whereNull('trading_bloc_id')->where('agreement_type', 'bilateral'))
             ->latest()->take(3)->get();
 
-        $questions = ProductQuestion::where('product_id', $product->id)
-            ->whereNotNull('answer')->with('user')->latest()->get();
+        $questions = [];
+        try {
+            $questions = ProductQuestion::where('product_id', $product->id)
+                ->whereNotNull('answer')->with('user')->latest()->get();
+        } catch (\Throwable $e) {
+            Log::warning('product questions unavailable: ' . $e->getMessage());
+        }
 
         // Reviews + blended review score
         $productReviews = \App\Models\ProductReview::where('product_id', $product->id)
