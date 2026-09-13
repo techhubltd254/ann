@@ -139,7 +139,10 @@ class CountyController extends Controller
         $tileMedia = $tileResolver->forAllCountySectors($county, $sectorData);
         $sectorPitches = [];
         foreach ($sectorData as $name => $s) {
-            $sectorPitches[$s['sector_slug']] = SectorPitchService::generate($county, $s['sector_slug'], $s);
+            $cacheKey = "sector_pitch_{$county->id}_{$s['sector_slug']}";
+            $sectorPitches[$s['sector_slug']] = Cache::remember($cacheKey, 86400, fn() =>
+                SectorPitchService::generate($county, $s['sector_slug'], $s)
+            );
         }
 
         // ═══ HERO FALLBACK ═══
@@ -149,22 +152,37 @@ class CountyController extends Controller
             $countyHeroFallback = $fallback;
         }
 
-        // Entity media — video pipeline for attractions, hotels, products
+        // Entity media — video pipeline for attractions, hotels, products (batched)
         $entityMedia = [];
         $resolver = app(\App\Services\TileMediaResolver::class);
+
+        // Batch load all SectorEntity records for attractions, hotels, products
+        $attractionIds = $featuredAttractions->pluck('id');
+        $hotelIds = $featuredHotels->pluck('id');
+        $productIds = $countyProducts->pluck('id');
+
+        $seMap = \App\Models\SectorEntity::whereIn('entity_type', [
+                \App\Models\CountyTourismAttraction::class,
+                \App\Models\CountyHotel::class,
+                \App\Models\CountyProduct::class,
+            ])
+            ->whereIn('entity_id', $attractionIds->merge($hotelIds)->merge($productIds))
+            ->get()
+            ->groupBy(fn($se) => $se->entity_type . '_' . $se->entity_id);
+
         foreach ($featuredAttractions as $a) {
-            $se = \App\Models\SectorEntity::where('entity_type', \App\Models\CountyTourismAttraction::class)
-                ->where('entity_id', $a->id)->first();
+            $key = \App\Models\CountyTourismAttraction::class . '_' . $a->id;
+            $se = $seMap->get($key)?->first();
             if ($se) $entityMedia['attraction_' . $a->id] = $resolver->forEntity($se);
         }
         foreach ($featuredHotels as $h) {
-            $se = \App\Models\SectorEntity::where('entity_type', \App\Models\CountyHotel::class)
-                ->where('entity_id', $h->id)->first();
+            $key = \App\Models\CountyHotel::class . '_' . $h->id;
+            $se = $seMap->get($key)?->first();
             if ($se) $entityMedia['hotel_' . $h->id] = $resolver->forEntity($se);
         }
         foreach ($countyProducts as $p) {
-            $se = \App\Models\SectorEntity::where('entity_type', \App\Models\CountyProduct::class)
-                ->where('entity_id', $p->id)->first();
+            $key = \App\Models\CountyProduct::class . '_' . $p->id;
+            $se = $seMap->get($key)?->first();
             if ($se) $entityMedia['product_' . $p->id] = $resolver->forEntity($se);
         }
 

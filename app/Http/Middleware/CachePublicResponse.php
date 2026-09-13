@@ -34,6 +34,12 @@ class CachePublicResponse
             return $response;
         }
 
+        // Skip non-HTML responses (JSON, binary, etc.)
+        $contentType = $response->headers->get('Content-Type', '');
+        if (!str_contains($contentType, 'text/html')) {
+            return $response;
+        }
+
         // Never cache auth, admin, or mutation paths
         foreach (['/login','/register','/cart','/checkout','/kicc-live/admin','/broadcast','/api','/live'] as $no) {
             if (str_starts_with($path, $no)) {

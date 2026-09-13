@@ -8,6 +8,7 @@ use App\Models\CountyTourismAttraction;
 use App\Models\Marketplace\Product;
 use App\Models\MediaAsset;
 use App\Models\SectorEntity;
+use Illuminate\Support\Facades\Cache;
 use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Storage;
 
@@ -59,6 +60,8 @@ class ThumbnailService
      */
     public static function for($entity, string $countySlug = ''): ?string
     {
+        $cacheKey = 'thumb_' . get_class($entity) . '_' . ($entity->id ?? spl_object_id($entity));
+        return Cache::remember($cacheKey, 86400, function () use ($entity, $countySlug) {
         $countySlug = $countySlug ?: optional($entity->county ?? null)?->slug ?? '';
 
         // 1. Explicit image on the entity
@@ -118,6 +121,7 @@ class ThumbnailService
 
         // 7. Branded gradient placeholder (always available)
         return static::placeholder($entity->name ?? 'KICC', $category ?? null);
+        });
     }
 
     /** Generate a deterministic branded SVG placeholder (no external service). */
@@ -160,7 +164,6 @@ class ThumbnailService
             $code = 0;
             curl_exec($ch);
             $code = (int) curl_getinfo($ch, CURLINFO_RESPONSE_CODE);
-            curl_close($ch);
             return $cache[$url] = ($code >= 200 && $code < 400);
         } catch (\Throwable $e) {
             return $cache[$url] = false;
