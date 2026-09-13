@@ -36,6 +36,12 @@ class MediaDerivativesJob implements ShouldQueue
 
         $created = $service->generate($asset, $this->force);
 
+        if (empty($created)) {
+            MediaAsset::where('id', $this->assetId)->update(['status' => 'failed']);
+            Log::error("MediaDerivativesJob: failed to create any derivatives for asset {$this->assetId}");
+            return;
+        }
+
         if ($created) {
             Log::info("MediaDerivativesJob: created [" . implode(',', $created) . "] for asset {$this->assetId}");
         } else {

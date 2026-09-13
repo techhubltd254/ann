@@ -46,6 +46,15 @@ class MediaDerivativesService
                     fclose($stream);
                     return [];
                 }
+
+                if (disk_free_space(sys_get_temp_dir()) < 500 * 1024 * 1024) {
+                    fclose($fh);
+                    fclose($stream);
+                    @unlink($tempSource);
+                    throw new \RuntimeException('Insufficient temp space for media processing');
+                }
+
+                set_time_limit(300);
                 while (!feof($stream)) {
                     fwrite($fh, fread($stream, 1024 * 1024));
                 }

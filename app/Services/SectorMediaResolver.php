@@ -179,7 +179,15 @@ class SectorMediaResolver
 
         if (empty($conditions)) return collect();
 
-        return MediaAsset::whereRaw(implode(' OR ', $conditions), $bindings)
+        return MediaAsset::where(function ($q) use ($conditions, $bindings) {
+                $first = array_shift($conditions);
+                $firstBindings = array_splice($bindings, 0, 3);
+                $q->whereRaw($first, $firstBindings);
+                foreach ($conditions as $i => $cond) {
+                    $chunk = array_splice($bindings, 0, 3);
+                    $q->orWhereRaw($cond, $chunk);
+                }
+            })
             ->with('derivatives')
             ->get()
             ->groupBy(fn ($a) => $a->owner_type . '-' . $a->owner_id);

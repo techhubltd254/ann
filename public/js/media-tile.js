@@ -6,6 +6,8 @@ function mediaTile() {
         _videoEl: null,
 
         mounted() {
+            if (window.matchMedia('(prefers-reduced-motion: reduce)').matches) return;
+            if ('ontouchstart' in window) return;
             this._el = this.$el;
             this._videoEl = this._el.querySelector('video');
         },
