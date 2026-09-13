@@ -224,17 +224,6 @@
             <div class="grid grid-cols-2 md:grid-cols-4 gap-4">
                 @foreach($featuredHotels as $h)
                 @php
-                    {{-- HOTELS --}}
-        @if(($featuredHotels ?? collect())->isNotEmpty())
-        <div class="mb-14">
-            <div class="flex items-center gap-3 mb-6">
-                <span class="h-px w-8 bg-kicc-gold"></span>
-                <span class="text-kicc-gold text-xs font-bold tracking-[0.2em] uppercase">Places to Stay</span>
-                <span class="h-px flex-1 bg-gray-200"></span>
-            </div>
-            <div class="grid grid-cols-2 md:grid-cols-4 gap-4">
-                @foreach($featuredHotels as $h)
-                @php
                     $hMedia = $entityMedia['hotel_' . $h->id] ?? [];
                     $stars = $h->star_rating ? str_repeat('', $h->star_rating) . str_repeat('', 5 - $h->star_rating) : '';
                 @endphp
