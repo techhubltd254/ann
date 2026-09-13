@@ -625,6 +625,10 @@ Route::middleware(['auth', 'verified'])->prefix('broadcast')->name('live.screens
     Route::post('/route-venue', [\App\Http\Controllers\Live\ScreenBroadcastController::class, 'routeToScreenByName'])->name('route-venue');
 });
 
+// Media proxy — serves R2 files directly through Laravel (fallback when worker is unavailable)
+Route::get('/media/video/{path}', [\App\Http\Controllers\Web\MediaProxyController::class, 'video'])->where('path', '.*');
+Route::get('/media/derivatives/{path}', [\App\Http\Controllers\Web\MediaProxyController::class, 'derivative'])->where('path', '.*');
+
 // Murang'a County Admin SPA (dark mode command center)
 Route::get('/muranga-admin/{path?}', function () {
     return response()->file(public_path('muranga-admin/index.html'));

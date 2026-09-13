@@ -29,6 +29,11 @@ class CachePublicResponse
 
         $path = '/' . $request->path();
 
+        // Skip media proxy routes — binary streaming responses
+        if (str_starts_with($path, '/media/')) {
+            return $response;
+        }
+
         // Never cache auth, admin, or mutation paths
         foreach (['/login','/register','/cart','/checkout','/kicc-live/admin','/broadcast','/api','/live'] as $no) {
             if (str_starts_with($path, $no)) {
