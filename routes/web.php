@@ -408,7 +408,7 @@ Route::post('/safety/report', [\App\Http\Controllers\Web\SafetyController::class
 Route::get('/national-government', [\App\Http\Controllers\Web\NationalGovernmentController::class, 'index'])->name('national-government.index');
 Route::get('/kicc/news', [\App\Http\Controllers\Web\KiccWebsiteController::class, 'newsIndex'])->name('kicc.news');
 Route::get('/kicc/news/{slug}', [\App\Http\Controllers\Web\KiccWebsiteController::class, 'newsShow'])->name('kicc.news.show');
-Route::get('/kicc/about', [\App\Http\Controllers\Web\KiccWebsiteController::class, 'about']);
+Route::get('/kicc/about', [\App\Http\Controllers\Web\KiccWebsiteController::class, 'about'])->name('kicc.about');
 Route::get('/kicc/mission', [\App\Http\Controllers\Web\KiccWebsiteController::class, 'mission'])->name('kicc.mission');
 Route::get('/kicc/board', [\App\Http\Controllers\Web\KiccWebsiteController::class, 'board'])->name('kicc.board');
 Route::get('/kicc/management', [\App\Http\Controllers\Web\KiccWebsiteController::class, 'management'])->name('kicc.management');
@@ -435,10 +435,10 @@ Route::get('/kicc/faq', [\App\Http\Controllers\Web\KiccWebsiteController::class,
 Route::get('/kicc/annual-reports', [\App\Http\Controllers\Web\KiccWebsiteController::class, 'annualReports'])->name('kicc.annual-reports');
 Route::get('/kicc/publications', [\App\Http\Controllers\Web\KiccWebsiteController::class, 'publications'])->name('kicc.publications');
 Route::get('/kicc/service-charter', [\App\Http\Controllers\Web\KiccWebsiteController::class, 'serviceCharter'])->name('kicc.service-charter');
-Route::get('/kicc/about-us', function () { return redirect('/kicc/mission'); });
+Route::get('/kicc/about-us', function () { return redirect('/kicc/mission'); })->name('kicc.about-us');
 Route::get('/kicc/leadership', [\App\Http\Controllers\Web\KiccWebsiteController::class, 'leadership'])->name('kicc.leadership');
-Route::get('/faq', function () { return redirect('/kicc/faq'); });
-Route::get('/contact', function () { return redirect('/kicc/event-booking'); });
+Route::get('/faq', function () { return redirect('/kicc/faq'); })->name('faq');
+Route::get('/contact', function () { return redirect('/kicc/event-booking'); })->name('contact');
 Route::get('/kicc/our-departments', [\App\Http\Controllers\Web\KiccWebsiteController::class, 'ourDepartments'])->name('kicc.our-departments');
 
 // CMS Admin

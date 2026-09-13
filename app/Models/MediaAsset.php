@@ -45,7 +45,8 @@ class MediaAsset extends Model
 
     public function derivatives(): HasMany
     {
-        return $this->hasMany(MediaDerivative::class)->orderBy('variant');
+        return $this->hasMany(MediaDerivative::class)
+            ->orderByRaw("FIELD(variant, 'source', 'adaptive', 'master', '2160p', '1440p', '1080p', '720p', '480p', '360p', '240p')");
     }
 
     public function pipelineJobs(): HasMany
@@ -55,17 +56,13 @@ class MediaAsset extends Model
 
     public function url(?string $variant = null): string
     {
-        $path = $variant ? str_replace('/originals/', '/', $this->path) : $this->path;
-
-        // Serve R2 video assets directly through the edge worker
-        // for zero VPS load and Cloudflare edge caching.
         if ($this->disk === 'r2' && $this->kind === 'video') {
             $base = rtrim(config('app.url'), '/');
-            return $base . '/media/video/' . ltrim($path, '/');
+            return $base . '/media/video/' . ltrim($this->path, '/');
         }
 
         $media = media_url();
-        return $media . '/' . ltrim($path, '/');
+        return $media . '/' . ltrim($this->path, '/');
     }
 
     public function bestVideoUrl(): ?string

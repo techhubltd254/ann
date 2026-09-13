@@ -187,6 +187,11 @@ class MediaFallbackResolver
         $existing = ImageVariant::byHash($hash);
         if ($existing) return $existing->cardUrl();
 
+        if (!\Illuminate\Support\Facades\Cache::has("frame:{$hash}")) {
+            \App\Jobs\ExtractFrameJob::dispatch($videoUrl, 0)->onQueue('media');
+            return null;
+        }
+
         $ffmpeg = trim((string) shell_exec('which ffmpeg 2>/dev/null'));
         if (!$ffmpeg) return null;
 
