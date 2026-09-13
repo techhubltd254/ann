@@ -293,7 +293,7 @@ class CountyAdminController extends Controller
     /* ─── IMAGES ─── */
     protected function sectorImages(string $slug): array
     {
-        $sectors = ['hero', 'tourism', 'products', 'education', 'culture', 'hotels', 'farms', 'transport', 'health'];
+        $sectors = \App\Models\Sector::where('is_active', true)->orderBy('name')->pluck('slug')->prepend('hero')->toArray();
         $images = [];
         $county = \App\Models\County::where('slug', $slug)->first();
         foreach ($sectors as $s) {

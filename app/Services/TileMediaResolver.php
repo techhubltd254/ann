@@ -76,7 +76,8 @@ class TileMediaResolver
      */
     public function forAllCountySectors(County $county, array $sectorData): array
     {
-        $cacheKey = "tile_media_ids_{$county->id}";
+        $version = \Illuminate\Support\Facades\Cache::get("tile_media_version_{$county->id}", 1);
+        $cacheKey = "tile_media_ids_{$county->id}_v{$version}";
         $idMap = Cache::remember($cacheKey, config('kicc.cache_ttl.public', 21600), function () use ($county, $sectorData) {
             $slugs = array_map(fn($s) => $this->uploadFormSlugs[$s['sector_slug']] ?? $this->slotAliases[$s['sector_slug']] ?? $s['sector_slug'], $sectorData);
 

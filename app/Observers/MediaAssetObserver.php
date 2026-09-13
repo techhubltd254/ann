@@ -108,6 +108,7 @@ class MediaAssetObserver
             $keys[] = "tile_media_ids_{$asset->owner_id}";
             $keys[] = "county_pins_{$asset->owner_id}";
             $keys[] = "kicc_county_sector_counts_{$asset->owner_id}";
+            Cache::increment("tile_media_version_{$asset->owner_id}");
         } elseif (in_array($asset->owner_type, ['App\Models\CountyInstitution', 'institution'])) {
             // Try to resolve county via institution
             try {

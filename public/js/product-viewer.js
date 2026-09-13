@@ -32,6 +32,9 @@ class KiccProductViewer {
         const w = this.container.clientWidth || 640;
         const h = this.container.clientHeight || 480;
         this.scene = new THREE.Scene();
+        if (window.matchMedia('(prefers-color-scheme: dark)').matches) {
+            this.scene.background = new THREE.Color(0x1a1a2e);
+        }
         this.camera = new THREE.PerspectiveCamera(45, w / h, 0.1, 100);
         this.camera.position.set(0, 0.5, 4);
         this.renderer = new THREE.WebGLRenderer({ antialias: true, alpha: true, powerPreference: 'high-performance' });
