@@ -147,7 +147,6 @@
                    @mouseleave="onHoverLeave()"
                    data-tilt="6" data-reveal data-reveal-delay="{{ $loop->index * 80 }}">
                     <div class="aspect-[4/3] overflow-hidden relative bg-gradient-to-br from-[#0A1024] to-[#1a1a2e]">
-                        @php $hoverLoop = $tile['hoverLoopUrl'] ?? $tile['videoUrl'] ?? null; @endphp
                         @if($hoverLoop)
                         <video x-ref="video" muted loop playsinline preload="auto"
                                class="absolute inset-0 w-full h-full object-cover transition-opacity duration-500"
