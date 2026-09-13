@@ -134,10 +134,9 @@ class StreamController extends Controller
 
     public function adminIndex(Request $request)
     {
-        // KICC admin: all streams
-        // County admin: streams for their county
-        // Institution admin: streams for their institution
         $user = $request->user();
+        abort_unless($user->hasAnyRole(['kicc_admin', 'national_admin', 'county_admin', 'institution_admin']), 403);
+
         $query = LiveStream::with('exhibition', 'county', 'user');
 
         if ($user->hasRole('county_admin') && $user->county_id) {
