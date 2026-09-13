@@ -138,8 +138,9 @@ class HlsGenerator
             // Bust page caches so heroes/sector videos pick up HLS immediately
             $countyId = $asset->owner_id ?? null;
             if ($asset->owner_type === \App\Models\County::class && $countyId) {
-                \Illuminate\Support\Facades\Cache::forget("kicc_county_sectors_{$countyId}_v2");
-                \Illuminate\Support\Facades\Cache::forget('kicc_home_page_data_v2');
+                bust_cache();
+                \Illuminate\Support\Facades\Cache::forget("tile_media_ids_{$countyId}");
+                \Illuminate\Support\Facades\Cache::forget("county_pins_{$countyId}");
             }
 
             return true;

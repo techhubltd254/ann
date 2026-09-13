@@ -543,7 +543,7 @@ document.addEventListener('DOMContentLoaded', function() {
         </div>
     </footer>
     @stack('scripts')
-    <script defer src="https://cdn.jsdelivr.net/npm/alpinejs@3.x.x/dist/cdn.min.js"></script>
+    <script defer src="https://cdn.jsdelivr.net/npm/alpinejs@{{ config('kicc.alpine_version', '3.14.8') }}/dist/cdn.min.js"></script>
     {{-- Core motion system --}}
     <script src="{{ asset('js/animations.js') }}"></script>
     {{-- Immersive interaction engine --}}

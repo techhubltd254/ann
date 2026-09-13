@@ -11,14 +11,19 @@ use Illuminate\Support\Facades\Cache;
 
 class NationalGovernmentController extends Controller
 {
+    protected function cacheKey(string $key): string
+    {
+        return "ng_{$key}_" . cache_buster();
+    }
+
     public function index()
     {
-        $stats = Cache::remember('ng_stats', 3600, fn() => [
+        $stats = Cache::remember($this->cacheKey('stats'), 3600, fn() => [
             'ministries' => Ministry::where('is_active', true)->count(),
             'agencies' => Agency::where('is_active', true)->count(),
         ]);
 
-        $ministries = Cache::remember('ng_ministries', 3600, function () {
+        $ministries = Cache::remember($this->cacheKey('ministries'), 3600, function () {
             return Ministry::with('agencies')->where('is_active', true)->orderBy('name')->get()
                 ->map(fn($m) => [
                     'id' => $m->id, 'slug' => $m->slug, 'name' => $m->name,
@@ -27,14 +32,14 @@ class NationalGovernmentController extends Controller
                 ])->toArray();
         });
 
-        $agencies = Cache::remember('ng_agencies', 3600, function () {
+        $agencies = Cache::remember($this->cacheKey('agencies'), 3600, function () {
             return Agency::with('ministry')->where('is_active', true)->orderBy('name')->get()
                 ->map(fn($a) => ['id' => $a->id, 'name' => $a->name, 'ministry_name' => $a->ministry?->name ?? ''])
                 ->toArray();
         });
 
         // Hero video
-        $heroVid = Cache::remember('ng_hero', 900, function () {
+        $heroVid = Cache::remember($this->cacheKey('hero'), 900, function () {
             try {
                 $asset = MediaAsset::resolveSlot(\App\Models\County::class, 0, 'national_hero_video');
                 return $asset?->mp4Url();

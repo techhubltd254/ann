@@ -103,6 +103,22 @@ class MediaAssetObserver
             }
         }
 
+        // Bust county-level caches that include media
+        if ($asset->owner_type === 'App\Models\County' && $asset->owner_id) {
+            $keys[] = "tile_media_ids_{$asset->owner_id}";
+            $keys[] = "county_pins_{$asset->owner_id}";
+            $keys[] = "kicc_county_sector_counts_{$asset->owner_id}";
+        } elseif (in_array($asset->owner_type, ['App\Models\CountyInstitution', 'institution'])) {
+            // Try to resolve county via institution
+            try {
+                $inst = \App\Models\CountyInstitution::find($asset->owner_id);
+                if ($inst && $inst->county_id) {
+                    $keys[] = "tile_media_ids_{$inst->county_id}";
+                    $keys[] = "county_pins_{$inst->county_id}";
+                }
+            } catch (\Throwable) {}
+        }
+
         foreach ($keys as $key) {
             try {
                 Cache::forget($key);

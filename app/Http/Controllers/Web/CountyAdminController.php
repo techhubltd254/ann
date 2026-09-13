@@ -692,9 +692,10 @@ class CountyAdminController extends Controller
             'attraction' => CountyTourismAttraction::class,
             'hotel' => CountyHotel::class,
             'product' => CountyProduct::class,
+            'sector_entity' => \App\Models\SectorEntity::class,
             default => abort(422, 'Unknown entity type'),
         };
-        \App\Models\MediaAsset::forSlot($model, $entityId, '4d_video')->delete();
+        \App\Models\MediaAsset::forSlot($model, $entityId, '4d_video')->get()->each->delete();
         return back()->with('success', '4D video removed. The still image shows again.');
     }
 

@@ -5,7 +5,7 @@
     <div class="card-kicc overflow-hidden">
         <div class="aspect-video relative" style="background: #000;">
             @if($booth->liveStreams->where('isLive', true)->first())
-            <x-hls-player :src="$booth->liveStreams->where('isLive', true)->first()->hls_url" />
+            <x-hls-player :hls-url="$booth->liveStreams->where('isLive', true)->first()->hls_url" />
             @else
             <div class="flex items-center justify-center h-full text-gray-500">Stream offline</div>
             @endif

@@ -32,12 +32,22 @@ class TileMediaResolver
         'transport' => 'industry',
     ];
 
+    // Reverse alias: DB slug → upload form slug (admin uploads use form names for slot keys)
+    protected array $uploadFormSlugs = [
+        'agriculture' => 'farms',
+        'manufacturing' => 'products',
+        'creative' => 'culture',
+        'commerce' => 'products',
+        'hospitality' => 'hotels',
+        'industry' => 'transport',
+    ];
+
     /**
      * Resolve media for a county sector tile.
      */
     public function forCountySector(County $county, string $sectorSlug): array
     {
-        $slug = $this->slotAliases[$sectorSlug] ?? $sectorSlug;
+        $slug = $this->uploadFormSlugs[$sectorSlug] ?? $this->slotAliases[$sectorSlug] ?? $sectorSlug;
 
         // 1. Dedicated sector video
         $asset = $this->slotAsset(County::class, $county->id, "sector_video_{$slug}");
@@ -68,7 +78,7 @@ class TileMediaResolver
     {
         $cacheKey = "tile_media_ids_{$county->id}";
         $idMap = Cache::remember($cacheKey, config('kicc.cache_ttl.public', 21600), function () use ($county, $sectorData) {
-            $slugs = array_map(fn($s) => $this->slotAliases[$s['sector_slug']] ?? $s['sector_slug'], $sectorData);
+            $slugs = array_map(fn($s) => $this->uploadFormSlugs[$s['sector_slug']] ?? $this->slotAliases[$s['sector_slug']] ?? $s['sector_slug'], $sectorData);
 
             $slotNames = array_map(fn($slug) => "sector_video_{$slug}", $slugs);
             $sectorAssets = MediaAsset::where('owner_type', County::class)

@@ -13,7 +13,7 @@
             <div class="card-kicc overflow-hidden">
                 <div class="aspect-video relative" style="background: #000;">
                     @if($booth->stream_status === 'live' && $booth->liveStreams->first())
-                    <x-hls-player :src="$booth->liveStreams->first()->hls_url ?? ''" />
+                    <x-hls-player :hls-url="$booth->liveStreams->first()->hls_url ?? ''" />
                     @elseif($booth->stream_status === 'offline' && $booth->authorization?->status === 'AUTHORIZED')
                     <div class="flex items-center justify-center h-full flex-col">
                         <p class="text-2xl mb-2">📡</p>

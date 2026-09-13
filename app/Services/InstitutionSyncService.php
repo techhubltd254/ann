@@ -119,6 +119,8 @@ class InstitutionSyncService
                 "kicc_county_exhibitions_{$county->id}",
                 "kicc_county_linked_sectors_{$county->id}",
                 "kicc_county_sectors_{$county->id}_v2",
+                "tile_media_ids_{$county->id}",
+                "county_pins_{$county->id}",
                 'kicc_counties_index',
                 'kicc_home_page_data_v2',
             ] as $key) {
@@ -137,6 +139,9 @@ class InstitutionSyncService
             foreach ($allSectorIds as $sid) {
                 \Illuminate\Support\Facades\Cache::forget("dav:sector:{$county->id}:{$sid}");
             }
+
+            // Clear sector pitches so they recompute with new data
+            try { \App\Services\SectorPitchService::clearCache($county); } catch (\Throwable) {}
         } catch (\Throwable $e) {
             Log::warning('Cache bust failed: ' . $e->getMessage());
         }

@@ -60,7 +60,7 @@ Route::get('/institutions/{institution}', [CountyController::class, 'institution
 Route::get('/counties/{county}/products/{product}/book', [\App\Http\Controllers\Web\CountyProductBookingController::class, 'show'])->name('county.product.booking')
     ->middleware($publicCache)
     ->withoutMiddleware($noSession);
-Route::post('/counties/{county}/products/{product}/book', [\App\Http\Controllers\Web\CountyProductBookingController::class, 'book'])->name('county.product.booking.store');
+Route::post('/counties/{county}/products/{product}/book', [\App\Http\Controllers\Web\CountyProductBookingController::class, 'book'])->name('county.product.booking.store')->middleware('auth');
 Route::get('/counties/{county}/products/{product}/book/success/{reference}', [\App\Http\Controllers\Web\CountyProductBookingController::class, 'success'])->name('county.product.booking.success')
     ->middleware($publicCache)
     ->withoutMiddleware($noSession);
@@ -92,12 +92,12 @@ Route::post('/recently-viewed/track', [RecentlyViewedController::class, 'track']
 Route::get('/recently-viewed', [RecentlyViewedController::class, 'get'])->name('recently-viewed.get');
 
 // ── Experience Cart (integrated booking + transport) ──
-Route::post('/experience/create', [\App\Http\Controllers\Web\ExperienceController::class, 'create'])->name('experience.create');
-Route::post('/experience/{booking}/transport', [\App\Http\Controllers\Web\ExperienceController::class, 'setTransport'])->name('experience.transport');
-Route::post('/experience/{booking}/addon', [\App\Http\Controllers\Web\ExperienceController::class, 'addAddon'])->name('experience.addon');
-Route::post('/experience/{booking}/confirm', [\App\Http\Controllers\Web\ExperienceController::class, 'confirm'])->name('experience.confirm');
-Route::post('/experience/{booking}/cancel', [\App\Http\Controllers\Web\ExperienceController::class, 'cancel'])->name('experience.cancel');
-Route::post('/experience/{booking}/remove', [\App\Http\Controllers\Web\ExperienceController::class, 'removeFromCart'])->name('experience.remove');
+Route::post('/experience/create', [\App\Http\Controllers\Web\ExperienceController::class, 'create'])->name('experience.create')->middleware('auth');
+Route::post('/experience/{booking}/transport', [\App\Http\Controllers\Web\ExperienceController::class, 'setTransport'])->name('experience.transport')->middleware('auth');
+Route::post('/experience/{booking}/addon', [\App\Http\Controllers\Web\ExperienceController::class, 'addAddon'])->name('experience.addon')->middleware('auth');
+Route::post('/experience/{booking}/confirm', [\App\Http\Controllers\Web\ExperienceController::class, 'confirm'])->name('experience.confirm')->middleware('auth');
+Route::post('/experience/{booking}/cancel', [\App\Http\Controllers\Web\ExperienceController::class, 'cancel'])->name('experience.cancel')->middleware('auth');
+Route::post('/experience/{booking}/remove', [\App\Http\Controllers\Web\ExperienceController::class, 'removeFromCart'])->name('experience.remove')->middleware('auth');
 Route::get('/experience/counties', [\App\Http\Controllers\Web\ExperienceController::class, 'counties'])->name('experience.counties');
 Route::get('/experience/transport-options', [\App\Http\Controllers\Web\ExperienceController::class, 'transportOptions'])->name('experience.transport-options');
 
@@ -109,8 +109,8 @@ Route::get('/gift-cards', [GiftCardController::class, 'index'])->name('gift-card
     ->middleware($publicCache)
     ->withoutMiddleware($noSession);
 Route::post('/gift-cards/purchase', [GiftCardController::class, 'purchase'])->name('gift-cards.purchase')->middleware('auth');
-Route::post('/gift-cards/apply', [GiftCardController::class, 'apply'])->name('gift-cards.apply')->middleware('throttle:30,1');
-Route::get('/gift-cards/remove', [GiftCardController::class, 'remove'])->name('gift-cards.remove');
+Route::post('/gift-cards/apply', [GiftCardController::class, 'apply'])->name('gift-cards.apply')->middleware(['auth', 'throttle:30,1']);
+Route::post('/gift-cards/remove', [GiftCardController::class, 'remove'])->name('gift-cards.remove')->middleware('auth');
 
 Route::get('/auctions', [AuctionController::class, 'index'])->name('auctions.index')
     ->middleware($publicCache)
@@ -135,8 +135,8 @@ Route::post('/live-chat/{vendorId}/send', [LiveChatController::class, 'send'])->
 Route::get('/live-chat/{vendorId}/poll', [LiveChatController::class, 'poll'])->name('live-chat.poll')->middleware('auth');
 
 Route::get('/cart', [CartController::class, 'index'])->name('cart.index');
-Route::post('/cart/add', [CartController::class, 'add'])->name('cart.add');
-Route::patch('/cart/{item}', [CartController::class, 'update'])->name('cart.update');
+Route::post('/cart/add', [CartController::class, 'add'])->name('cart.add')->middleware('auth');
+Route::patch('/cart/{item}', [CartController::class, 'update'])->name('cart.update')->middleware('auth');
 Route::delete('/cart/{item}', [CartController::class, 'destroy'])->name('cart.destroy');
 Route::get('/checkout', [CheckoutController::class, 'index'])->name('checkout.index');
 Route::post('/checkout', [CheckoutController::class, 'store'])->name('checkout.store')->middleware('throttle:30,1');
@@ -278,7 +278,7 @@ Route::get('/national/{slug}', [\App\Http\Controllers\Web\NationalSiteController
 
 // Attraction booking (every tourist attraction is bookable)
 Route::get('/attractions/{id}', [\App\Http\Controllers\Web\AttractionBookingController::class, 'show'])->name('attractions.show');
-Route::post('/attractions/{id}/book', [\App\Http\Controllers\Web\AttractionBookingController::class, 'book'])->name('attractions.book');
+Route::post('/attractions/{id}/book', [\App\Http\Controllers\Web\AttractionBookingController::class, 'book'])->name('attractions.book')->middleware('auth');
 
 // Travel & Tourism
 Route::get('/travel', [TravelController::class, 'index'])->name('travel.index')
@@ -287,7 +287,7 @@ Route::get('/travel', [TravelController::class, 'index'])->name('travel.index')
 Route::get('/travel/flights', [TravelController::class, 'flights'])->name('travel.flights')
     ->middleware($publicCache)
     ->withoutMiddleware($noSession);
-Route::post('/travel/book', [TravelController::class, 'book'])->name('travel.book');
+Route::post('/travel/book', [TravelController::class, 'book'])->name('travel.book')->middleware('auth');
 Route::get('/travel/receipt/{groupRef}', [TravelController::class, 'receipt'])->name('travel.receipt')
     ->middleware($publicCache)
     ->withoutMiddleware($noSession);
@@ -355,8 +355,8 @@ Route::middleware('auth')->group(function () {
 });
 
 // Coupons
-Route::post('/cart/coupon', [\App\Http\Controllers\Web\CouponController::class, 'apply'])->name('coupon.apply');
-Route::post('/cart/coupon/remove', [\App\Http\Controllers\Web\CouponController::class, 'remove'])->name('coupon.remove');
+Route::post('/cart/coupon', [\App\Http\Controllers\Web\CouponController::class, 'apply'])->name('coupon.apply')->middleware('auth');
+Route::post('/cart/coupon/remove', [\App\Http\Controllers\Web\CouponController::class, 'remove'])->name('coupon.remove')->middleware('auth');
 Route::middleware('auth')->group(function () {
     Route::get('/kicc-admin/coupons', [\App\Http\Controllers\Web\CouponController::class, 'adminIndex'])->name('coupon.admin.index')->middleware('admin:kicc');
     Route::post('/kicc-admin/coupons', [\App\Http\Controllers\Web\CouponController::class, 'adminStore'])->name('coupon.admin.store')->middleware('admin:kicc');
@@ -394,7 +394,7 @@ Route::get('/counties/{county}/weather', [\App\Http\Controllers\Web\IntegrationC
 // LMS / Capacity Building
 Route::get('/lms', [\App\Http\Controllers\Web\CourseController::class, 'index'])->name('lms.index');
 Route::get('/lms/{course}', [\App\Http\Controllers\Web\CourseController::class, 'show'])->name('lms.show');
-Route::post('/lms/{course}/enroll', [\App\Http\Controllers\Web\CourseController::class, 'enroll'])->name('lms.enroll');
+Route::post('/lms/{course}/enroll', [\App\Http\Controllers\Web\CourseController::class, 'enroll'])->name('lms.enroll')->middleware('auth');
 Route::middleware('auth')->group(function () {
     Route::get('/my-courses', [\App\Http\Controllers\Web\CourseController::class, 'myCourses'])->name('lms.my-courses');
 });
@@ -402,7 +402,7 @@ Route::middleware('auth')->group(function () {
 // Safety & Security
 Route::get('/safety/alerts', [\App\Http\Controllers\Web\SafetyController::class, 'alerts'])->name('safety.alerts');
 Route::get('/safety/report', [\App\Http\Controllers\Web\SafetyController::class, 'reportForm'])->name('safety.report');
-Route::post('/safety/report', [\App\Http\Controllers\Web\SafetyController::class, 'submitReport'])->name('safety.report.submit')->middleware('throttle:10,1');
+Route::post('/safety/report', [\App\Http\Controllers\Web\SafetyController::class, 'submitReport'])->name('safety.report.submit')->middleware(['auth', 'throttle:10,1']);
 
 // KICC Website (kicc.co.ke functionality)
 Route::get('/national-government', [\App\Http\Controllers\Web\NationalGovernmentController::class, 'index'])->name('national-government.index');
@@ -535,14 +535,14 @@ Route::get('/venues', [ExhibitionController::class, 'venues'])->name('venues.ind
 Route::get('/venues/{venue}', [VenueController::class, 'show'])->name('venues.show')
     ->middleware($publicCache)
     ->withoutMiddleware($noSession);
-Route::post('/venues/{venue}/inquire', [VenueController::class, 'inquire'])->name('venues.inquire');
+Route::post('/venues/{venue}/inquire', [VenueController::class, 'inquire'])->name('venues.inquire')->middleware('auth');
 
 // Exhibition screen videos
 Route::get('/screens', [ScreenController::class, 'directory'])->name('screens.directory');
 Route::get('/screens/{id}', [ScreenController::class, 'show'])->name('screens.show')
     ->middleware($publicCache)
     ->withoutMiddleware($noSession);
-Route::post('/screens/{id}/advertise', [ScreenController::class, 'advertise'])->name('screens.advertise');
+Route::post('/screens/{id}/advertise', [ScreenController::class, 'advertise'])->name('screens.advertise')->middleware('auth');
 
 // 3D Exhibition experiences (standalone views)
 Route::view('/exhibition-3d/map', 'exhibition-3d.map')->name('exhibition-3d.map');

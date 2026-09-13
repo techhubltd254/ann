@@ -18,7 +18,7 @@ class HomeController extends Controller
     {
         $cacheKey = 'kicc_home_page_data_v4_' . cache_buster();
 
-        $ids = Cache::remember($cacheKey, 60, function () {
+        $ids = Cache::remember($cacheKey, config('kicc.cache_ttl.public', 21600), function () {
             // Display-priority products: sector representation + review score,
             // restricted to real-data counties (auto-detected by product count, not hardcoded).
             $priority = app(\App\Services\DisplayPriorityService::class);

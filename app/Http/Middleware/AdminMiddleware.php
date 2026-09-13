@@ -1,19 +1,22 @@
 <?php namespace App\Http\Middleware;
+
 use Closure;
 use Illuminate\Http\Request;
+
 class AdminMiddleware {
-    public function handle(Request $request, Closure $next, string $level = 'kicc') {
+    public function handle(Request $request, Closure $next, string $level = 'kicc')
+    {
         $user = $request->user();
         if (!$user) return redirect()->route('login');
 
-        $type = $user->account_type ?? '';
         $ok = match ($level) {
-            'kicc' => $type === 'superadmin' || $user->email === 'admin@kicc.go.ke',
-            'county' => $type === 'superadmin' || $type === 'county' || $user->county_id,
-            'national' => $type === 'superadmin' || $type === 'admin' || $type === 'ministry',
-            'any' => in_array($type, ['superadmin','admin','ministry','county','exhibitor','provider']),
-            default => $type === 'superadmin',
+            'kicc' => $user->hasRole('kicc_admin'),
+            'county' => $user->hasRole('kicc_admin') || $user->hasRole('national_admin') || $user->hasRole('county_admin'),
+            'national' => $user->hasRole('kicc_admin') || $user->hasRole('national_admin'),
+            'any' => $user->hasAnyRole(['kicc_admin', 'national_admin', 'county_admin', 'exhibitor', 'provider']),
+            default => $user->hasRole('kicc_admin'),
         };
+
         if (!$ok) abort(403, 'Unauthorized.');
         return $next($request);
     }
