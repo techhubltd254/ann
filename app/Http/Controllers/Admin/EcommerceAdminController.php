@@ -43,8 +43,8 @@ class EcommerceAdminController extends Controller
             'orders_processing' => Order::where('payment_status', 'paid')
                 ->where('fulfillment_status', '!=', 'delivered')->count(),
             'orders_delivered' => Order::where('fulfillment_status', 'delivered')->count(),
-            'revenue_total' => Order::sum('grand_total'),
-            'revenue_month' => Order::whereMonth('created_at', now()->month)->sum('grand_total'),
+            'revenue_total' => Order::sum('total'),
+            'revenue_month' => Order::whereMonth('created_at', now()->month)->sum('total'),
             'suppliers' => Supplier::count(),
             'counties_with_products' => Product::distinct('county_id')->count('county_id'),
             'categories' => ProductCategory::count(),
@@ -63,7 +63,7 @@ class EcommerceAdminController extends Controller
             ->groupBy('county_id')->orderByDesc('total')->take(10)->with('county')->get();
         $monthlyRevenue = Order::select(
             DB::raw('YEAR(created_at) as year'), DB::raw('MONTH(created_at) as month'),
-            DB::raw('SUM(grand_total) as revenue'), DB::raw('COUNT(*) as orders')
+            DB::raw('SUM(total) as revenue'), DB::raw('COUNT(*) as orders')
         )->groupBy('year', 'month')->orderByDesc('year')->orderByDesc('month')->take(12)->get();
 
         return view('admin.ecommerce.dashboard', compact(
@@ -323,7 +323,7 @@ class EcommerceAdminController extends Controller
 
         $revenue = Order::select(
             DB::raw(($period === 'day' ? 'DATE(created_at)' : ($period === 'week' ? 'WEEK(created_at)' : 'DATE_FORMAT(created_at, "%Y-%m")')) . ' as label'),
-            DB::raw('SUM(grand_total) as revenue'), DB::raw('COUNT(*) as orders'),
+            DB::raw('SUM(total) as revenue'), DB::raw('COUNT(*) as orders'),
         )->whereNotNull('paid_at')->groupBy('label')->orderBy('label')->take(30)->get();
 
         $topProducts = Product::select('products.*', DB::raw('COUNT(order_items.id) as sold_count, SUM(order_items.total) as revenue'))
@@ -332,7 +332,7 @@ class EcommerceAdminController extends Controller
             ->where('orders.payment_status', 'paid')
             ->groupBy('products.id')->orderByDesc('revenue')->take(20)->get();
 
-        $ordersByCounty = Order::select('counties.name as county', DB::raw('COUNT(*) as orders'), DB::raw('SUM(grand_total) as revenue'))
+        $ordersByCounty = Order::select('counties.name as county', DB::raw('COUNT(*) as orders'), DB::raw('SUM(total) as revenue'))
             ->join('counties', 'orders.county_id', '=', 'counties.id')
             ->groupBy('counties.id', 'counties.name')->orderByDesc('revenue')->get();
 
@@ -345,7 +345,7 @@ class EcommerceAdminController extends Controller
         ];
 
         $dailySales = Order::whereDate('created_at', today())
-            ->select(DB::raw('HOUR(created_at) as hour, SUM(grand_total) as revenue, COUNT(*) as orders'))
+            ->select(DB::raw('HOUR(created_at) as hour, SUM(total) as revenue, COUNT(*) as orders'))
             ->groupBy('hour')->orderBy('hour')->get();
 
         return view('admin.ecommerce.analytics', compact(

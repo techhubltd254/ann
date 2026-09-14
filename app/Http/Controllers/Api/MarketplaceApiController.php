@@ -80,8 +80,8 @@ class MarketplaceApiController extends Controller
             'total_products' => Product::count(),
             'active_products' => Product::active()->count(),
             'total_orders' => Order::count(),
-            'revenue_month' => Order::whereMonth('created_at', now()->month)->sum('grand_total'),
-            'revenue_year' => Order::whereYear('created_at', now()->year)->sum('grand_total'),
+            'revenue_month' => Order::whereMonth('created_at', now()->month)->sum('total'),
+            'revenue_year' => Order::whereYear('created_at', now()->year)->sum('total'),
             'orders_by_status' => [
                 'pending' => Order::where('payment_status', 'pending')->count(),
                 'paid' => Order::where('payment_status', 'paid')->count(),

@@ -196,3 +196,17 @@ Route::middleware('auth:sanctum')->prefix('verification')->group(function () {
 });
 Route::get('/test-public', function() { return response()->json(['status' => 'ok']); })->name('api.test-public');
 Route::get('/openapi', [\App\Http\Controllers\Api\OpenApiController::class, 'spec'])->name('api.openapi');
+
+// ── Marketplace API ──
+Route::prefix('marketplace')->name('api.marketplace.')->group(function () {
+    Route::get('/products', [\App\Http\Controllers\Api\MarketplaceApiController::class, 'products'])->name('products');
+    Route::get('/products/{id}', [\App\Http\Controllers\Api\MarketplaceApiController::class, 'productShow'])->name('product.show');
+    Route::get('/categories', [\App\Http\Controllers\Api\MarketplaceApiController::class, 'categories'])->name('categories');
+    Route::get('/flash-sales', [\App\Http\Controllers\Api\MarketplaceApiController::class, 'flashSales'])->name('flash-sales');
+    Route::get('/auctions', [\App\Http\Controllers\Api\MarketplaceApiController::class, 'auctions'])->name('auctions');
+    Route::get('/stats', [\App\Http\Controllers\Api\MarketplaceApiController::class, 'orderStats'])->name('stats');
+    Route::middleware('auth:sanctum')->group(function () {
+        Route::get('/my-orders', [\App\Http\Controllers\Api\MarketplaceApiController::class, 'myOrders'])->name('my-orders');
+        Route::get('/my-orders/{orderNumber}', [\App\Http\Controllers\Api\MarketplaceApiController::class, 'orderShow'])->name('my-order.show');
+    });
+});
