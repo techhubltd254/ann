@@ -71,16 +71,17 @@ class ExperienceBuilderController extends Controller
         $aiItinerary = null;
         try {
             $aiController = app(\App\Http\Controllers\Web\AIController::class);
-            $aiRequest = new Request([
+            $aiRequest = new \Illuminate\Http\Request([
                 'destination' => $context['county']?->name ?? $context['anchor_name'] ?? '',
                 'days' => $request->input('days', 3),
                 'budget' => $request->input('budget', 'moderate'),
-                'interests' => implode(', ', array_column($context['correlations']['places_to_visit'] ?? [], 'type')),
+                'interests' => implode(', ', array_column($context['correlations']['places_to_visit'] ?? [], 'type_label')),
             ]);
             $aiResponse = $aiController->itinerary($aiRequest);
-            $aiItinerary = $aiResponse->getContent();
+            $aiData = $aiResponse->getData(true);
+            $aiItinerary = $aiData['itinerary'] ?? null;
         } catch (\Throwable $e) {
-            $aiItinerary = "Plan your {$context['days'] ?? 3}-day trip to {$context['county']?->name ?? $context['anchor_name']} with the recommended places above.";
+            $aiItinerary = "Plan your " . ($context['days'] ?? 3) . "-day trip to " . ($context['county']?->name ?? $context['anchor_name']) . " with the recommended places above.";
         }
 
         return view('experience.itinerary', [
