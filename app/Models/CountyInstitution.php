@@ -78,7 +78,6 @@ class CountyInstitution extends Model
             if (empty($i->slug)) {
                 $i->slug = Str::slug($i->name) . '-' . Str::lower(Str::random(4));
             }
-            $i->countyId ??= $i->county_id;
         });
 
         static::saved(function (self $i) {
