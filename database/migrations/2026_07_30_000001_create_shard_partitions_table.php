@@ -8,6 +8,10 @@ return new class extends Migration
 {
     public function up(): void
     {
+        if (Schema::hasTable('shard_partitions')) {
+            return;
+        }
+
         Schema::create('shard_partitions', function (Blueprint $table) {
             $table->smallInteger('partition_id')->unsigned()->primary();
             $table->tinyInteger('shard_index')->unsigned();

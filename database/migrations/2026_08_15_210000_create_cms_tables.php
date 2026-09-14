@@ -8,6 +8,10 @@ return new class extends Migration
 {
     public function up(): void
     {
+        if (Schema::hasTable('pages')) {
+            return;
+        }
+
         // Pages (static content pages — about, mission, history, etc.)
         Schema::create('pages', function (Blueprint $table) {
             $table->id();

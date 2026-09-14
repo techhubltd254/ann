@@ -4,6 +4,10 @@ use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Support\Facades\Schema;
 return new class extends Migration {
     public function up(): void {
+        if (Schema::hasTable('order_status_history')) {
+            return;
+        }
+
         Schema::create('order_status_history', function (Blueprint $t) {
             $t->id();
             $t->foreignId('order_id')->constrained((new \App\Models\Marketplace\Order)->getTable())->cascadeOnDelete();

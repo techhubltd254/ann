@@ -8,6 +8,10 @@ return new class extends Migration
 {
     public function up(): void
     {
+        if (Schema::hasTable('escrow_transactions')) {
+            return;
+        }
+
         Schema::create('escrow_transactions', function (Blueprint $table) {
             $table->id();
             $table->foreignId('buyer_id')->constrained('users')->cascadeOnDelete();

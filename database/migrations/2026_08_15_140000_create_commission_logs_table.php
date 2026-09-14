@@ -8,6 +8,9 @@ return new class extends Migration
 {
     public function up(): void
     {
+        if (Schema::hasTable('commission_logs')) {
+            return;
+        }
         Schema::create('commission_logs', function (Blueprint $table) {
             $table->id();
             $table->foreignId('agent_id')->nullable()->constrained()->nullOnDelete();

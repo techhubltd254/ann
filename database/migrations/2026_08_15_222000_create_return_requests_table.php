@@ -4,6 +4,10 @@ use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Support\Facades\Schema;
 return new class extends Migration {
     public function up(): void {
+        if (Schema::hasTable('return_requests')) {
+            return;
+        }
+
         Schema::create('return_requests', function (Blueprint $t) {
             $t->id();
             $t->string('return_number')->unique();

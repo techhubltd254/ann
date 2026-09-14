@@ -8,6 +8,10 @@ return new class extends Migration
 {
     public function up(): void
     {
+        if (Schema::hasTable('phone_verification_codes')) {
+            return;
+        }
+
         Schema::create('phone_verification_codes', function (Blueprint $table) {
             $table->id();
             $table->string('phone', 20);

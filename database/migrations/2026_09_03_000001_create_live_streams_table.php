@@ -8,6 +8,10 @@ return new class extends Migration
 {
     public function up(): void
     {
+        if (Schema::hasTable('live_streams')) {
+            return;
+        }
+
         Schema::create('live_streams', function (Blueprint $table) {
             $table->id();
             $table->string('name');
