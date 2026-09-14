@@ -141,13 +141,11 @@ Route::middleware('auth:sanctum')->group(function () {
     Route::post('/county-sector/{county}/media/{sector}/{entityId?}', [CountySectorController::class, 'uploadMedia'])->name('api.county-sector.media.upload');
 });
 
-// MCP Protocol endpoints
-Route::middleware('auth:sanctum')->group(function () {
-    Route::get('/mcp', [McpController::class, 'discovery'])->name('api.mcp.discovery');
-    Route::get('/mcp/resources', [McpController::class, 'listResources'])->name('api.mcp.resources');
-    Route::get('/mcp/resources/{type}', [McpController::class, 'readResource'])->name('api.mcp.resources.show');
-    Route::post('/mcp/tools/{name}', [McpController::class, 'executeTool'])->name('api.mcp.tools.execute');
-});
+// MCP Protocol endpoints — publicly accessible for AI agent discovery
+Route::get('/mcp', [McpController::class, 'discovery'])->name('api.mcp.discovery');
+Route::get('/mcp/resources', [McpController::class, 'listResources'])->name('api.mcp.resources');
+Route::get('/mcp/resources/{type}', [McpController::class, 'readResource'])->name('api.mcp.resources.show');
+Route::post('/mcp/tools/{name}', [McpController::class, 'executeTool'])->name('api.mcp.tools.execute');
 
 // Engine → platform media publish webhook (HMAC-SHA256 + nonce + idempotent).
 // Signed by the Kotlin admin engine when a transcode job finishes; warms the
