@@ -259,7 +259,7 @@ class KiccAdminController extends Controller
             'owner_type' => County::class,
             'owner_id' => $county->id,
             'slot' => 'hero_video',
-            'disk' => 'r2',
+            'disk' => 'public',
             'alt_text' => $county->name . ' County Hero Video',
         ]);
 
@@ -312,7 +312,7 @@ class KiccAdminController extends Controller
             'owner_type' => 'landing_page',
             'owner_id' => 1,
             'slot' => 'hero_video',
-            'disk' => 'r2',
+            'disk' => 'public',
             'alt_text' => 'KICC Landing Page Hero Video',
         ]);
 
