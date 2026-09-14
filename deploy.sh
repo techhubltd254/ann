@@ -125,6 +125,27 @@ php artisan migrate --force --isolated
 
 # --- Phase 7: Cache + optimize ---
 echo "[7/8] Caching and optimizing..."
+
+# Fix storage symlink (must point to the correct app path, not local dev path)
+STORAGE_LINK="$APP_DIR/public/storage"
+STORAGE_TARGET="$APP_DIR/storage/app/public"
+if [ -L "$STORAGE_LINK" ] && [ "$(readlink "$STORAGE_LINK")" != "$STORAGE_TARGET" ]; then
+    rm -f "$STORAGE_LINK" && ln -sf "$STORAGE_TARGET" "$STORAGE_LINK"
+    echo "  ✓ Fixed storage symlink -> $STORAGE_TARGET"
+fi
+# Recreate if missing
+if [ ! -L "$STORAGE_LINK" ]; then
+    ln -sf "$STORAGE_TARGET" "$STORAGE_LINK"
+    echo "  ✓ Created storage symlink"
+fi
+# Ensure MEDIA_CDN_URL uses the origin (bypasses non-functional Cloudflare worker)
+if grep -q "^MEDIA_CDN_URL=" "$APP_DIR/.env" 2>/dev/null; then
+    if ! grep -q "origin.kicctest.org" "$APP_DIR/.env"; then
+        sed -i "s|^MEDIA_CDN_URL=.*|MEDIA_CDN_URL=https://origin.kicctest.org/storage|" "$APP_DIR/.env"
+        echo "  ✓ Fixed MEDIA_CDN_URL -> origin.kicctest.org"
+    fi
+fi
+
 php artisan config:cache
 php artisan route:cache
 php artisan view:cache
