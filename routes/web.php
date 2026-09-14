@@ -530,6 +530,43 @@ Route::middleware(['auth', 'admin:kicc'])->group(function () {
     })->name('commission.admin.index');
 });
 
+// ─── Admin: Ecommerce (Full Pipeline) ───
+Route::middleware(['auth', 'admin:kicc,national'])->prefix('kicc-admin/ecommerce')->name('admin.ecommerce.')->group(function () {
+    Route::get('/dashboard', [\App\Http\Controllers\Admin\EcommerceAdminController::class, 'dashboard'])->name('dashboard');
+    Route::get('/products', [\App\Http\Controllers\Admin\EcommerceAdminController::class, 'products'])->name('products');
+    Route::get('/products/create', [\App\Http\Controllers\Admin\EcommerceAdminController::class, 'productEdit'])->name('product.create');
+    Route::post('/products', [\App\Http\Controllers\Admin\EcommerceAdminController::class, 'productStore'])->name('product.store');
+    Route::get('/products/{id}/edit', [\App\Http\Controllers\Admin\EcommerceAdminController::class, 'productEdit'])->name('product.edit');
+    Route::put('/products/{id}', [\App\Http\Controllers\Admin\EcommerceAdminController::class, 'productUpdate'])->name('product.update');
+    Route::delete('/products/{id}', [\App\Http\Controllers\Admin\EcommerceAdminController::class, 'productDelete'])->name('product.delete');
+    Route::post('/products/bulk', [\App\Http\Controllers\Admin\EcommerceAdminController::class, 'productBulkAction'])->name('product.bulk');
+    Route::post('/products/{productId}/variants', [\App\Http\Controllers\Admin\EcommerceAdminController::class, 'variantStore'])->name('variant.store');
+    Route::put('/variants/{variantId}', [\App\Http\Controllers\Admin\EcommerceAdminController::class, 'variantUpdate'])->name('variant.update');
+
+    Route::get('/import', [\App\Http\Controllers\Admin\EcommerceAdminController::class, 'importForm'])->name('import.form');
+    Route::post('/import/run', [\App\Http\Controllers\Admin\EcommerceAdminController::class, 'importRun'])->name('import.run');
+    Route::post('/import/bulk', [\App\Http\Controllers\Admin\EcommerceAdminController::class, 'importBulk'])->name('import.bulk');
+
+    Route::get('/orders', [\App\Http\Controllers\Admin\EcommerceAdminController::class, 'orders'])->name('orders');
+    Route::get('/orders/{id}', [\App\Http\Controllers\Admin\EcommerceAdminController::class, 'orderShow'])->name('order.show');
+    Route::post('/orders/{id}/status', [\App\Http\Controllers\Admin\EcommerceAdminController::class, 'orderUpdateStatus'])->name('order.status');
+    Route::get('/analytics', [\App\Http\Controllers\Admin\EcommerceAdminController::class, 'analytics'])->name('analytics');
+});
+
+// ─── API: Marketplace (Public + Auth) ───
+Route::prefix('api/marketplace')->name('api.marketplace.')->group(function () {
+    Route::get('/products', [\App\Http\Controllers\Api\MarketplaceApiController::class, 'products'])->name('products');
+    Route::get('/products/{id}', [\App\Http\Controllers\Api\MarketplaceApiController::class, 'productShow'])->name('product.show');
+    Route::get('/categories', [\App\Http\Controllers\Api\MarketplaceApiController::class, 'categories'])->name('categories');
+    Route::get('/flash-sales', [\App\Http\Controllers\Api\MarketplaceApiController::class, 'flashSales'])->name('flash-sales');
+    Route::get('/auctions', [\App\Http\Controllers\Api\MarketplaceApiController::class, 'auctions'])->name('auctions');
+    Route::get('/stats', [\App\Http\Controllers\Api\MarketplaceApiController::class, 'orderStats'])->name('stats');
+    Route::middleware('auth:sanctum')->group(function () {
+        Route::get('/my-orders', [\App\Http\Controllers\Api\MarketplaceApiController::class, 'myOrders'])->name('my-orders');
+        Route::get('/my-orders/{orderNumber}', [\App\Http\Controllers\Api\MarketplaceApiController::class, 'orderShow'])->name('my-order.show');
+    });
+});
+
 
 Route::get('/venues', [ExhibitionController::class, 'venues'])->name('venues.index');
 Route::get('/venues/{venue}', [VenueController::class, 'show'])->name('venues.show')
