@@ -119,9 +119,36 @@ for var in "${required_vars[@]}"; do
     fi
 done
 
-# --- Phase 6: Run migrations ---
+# --- Phase 6: Run migrations & seed ---
 echo "[6/8] Running database migrations..."
 php artisan migrate --force --isolated
+
+# Seed roles & permissions if missing (runs only if no roles exist)
+php artisan db:seed --class=RolePermissionSeeder --force 2>/dev/null || true
+# Assign kicc_admin role to first admin user (safe to run every deploy)
+php -r '
+$app = require "/opt/kicc-laravel/bootstrap/app.php";
+$kernel = $app->make(Illuminate\Contracts\Console\Kernel::class);
+$kernel->bootstrap();
+$admin = App\Models\User::first();
+if ($admin && !$admin->hasRole("kicc_admin")) {
+    $admin->assignRole("kicc_admin", "county_admin", "national_admin");
+    $admin->county_id = 1; $admin->save();
+    echo "  ✓ Roles assigned to admin user\n";
+}
+' 2>/dev/null || echo "  ⚠ Role assignment skipped"
+
+# Make logo_url/cover_image_url TEXT to handle SVG placeholders
+php -r '
+$app = require "/opt/kicc-laravel/bootstrap/app.php";
+$kernel = $app->make(Illuminate\Contracts\Console\Kernel::class);
+$kernel->bootstrap();
+try {
+    DB::statement("ALTER TABLE county_institutions MODIFY logo_url TEXT NULL");
+    DB::statement("ALTER TABLE county_institutions MODIFY cover_image_url TEXT NULL");
+    echo "  ✓ Fixed logo_url/cover_image_url column types\n";
+} catch (\Throwable $e) { echo "  ⚠ Column fix: " . $e->getMessage() . "\n"; }
+' 2>/dev/null || true
 
 # --- Phase 7: Cache + optimize ---
 echo "[7/8] Caching and optimizing..."
