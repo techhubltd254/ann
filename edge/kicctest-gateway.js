@@ -118,33 +118,6 @@ async function handle(request, env, ctx) {
       return withCookies(await proxy(request, upstream, url, { cache: false, scheme: env.ORIGIN_SCHEME ?? "http" }), url.host);
     }
 
-    // ---- STATIC assets from R2 — serve /storage/* from the bucket, zero VPS load ----
-    if (url.pathname.startsWith("/storage/")) {
-      const key = url.pathname.replace("/storage/", "");
-      const obj = await env.MEDIA_BUCKET.get(key);
-      if (!obj) return new Response("Not found", { status: 404 });
-      const headers = new Headers();
-      obj.writeHttpMetadata(headers);
-      headers.set("Cache-Control", "public, s-maxage=86400, stale-while-revalidate=604800, immutable");
-      headers.set("CDN-Cache-Control", "max-age=86400");
-      headers.set("accept-ranges", "bytes");
-      const range = request.headers.get("range");
-      if (range) {
-        const m = range.match(/bytes=(\d+)-(\d*)/);
-        if (m) {
-          const start = +m[1];
-          const end = m[2] ? +m[2] : obj.size - 1;
-          const r = await env.MEDIA_BUCKET.get(key, { range: { offset: start, length: end - start + 1 } });
-          if (r) {
-            headers.set("content-range", "bytes " + start + "-" + end + "/" + obj.size);
-            headers.set("content-length", "" + (end - start + 1));
-            return new Response(r.body, { status: 206, headers });
-          }
-        }
-      }
-      return new Response(obj.body, { headers });
-    }
-
     // ---- Media DERIVATIVES from R2 (transcode outputs only). Everything else
     // under /media/* belongs to Laravel's media library — do not shadow it.
     if (url.pathname.startsWith("/media/derivatives/")) {

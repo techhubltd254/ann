@@ -14,9 +14,6 @@ class MediaAsset extends Model
         'mime', 'kind', 'size_bytes', 'width', 'height', 'status', 'alt_text', 'metadata',
     ];
 
-    protected static function booted(): void
-    {
-
     protected function casts(): array
     {
         return [

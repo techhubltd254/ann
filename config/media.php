@@ -1,5 +1,5 @@
 <?php
 
 return [
-    'cdn_url' => env('MEDIA_CDN_URL', url('storage')),
+    'cdn_url' => env('MEDIA_CDN_URL'),
 ];
