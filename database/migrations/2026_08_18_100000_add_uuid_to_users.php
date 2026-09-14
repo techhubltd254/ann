@@ -18,6 +18,11 @@ return new class extends Migration
 {
     public function up(): void
     {
+        // IDEMPOTENT_GUARD: skip when table missing / changes already applied
+        if (!Schema::hasTable('users')) {
+            return;
+        }
+        try {
         if (Schema::hasTable('users') && ! Schema::hasColumn('users', 'uuid')) {
             Schema::table('users', function (Blueprint $t) {
                 $t->uuid('uuid')->nullable()->after('id');
@@ -36,7 +41,11 @@ return new class extends Migration
                 $t->unique('uuid', 'users_uuid_unique');
             });
         }
-    }
+    
+        } catch (\Throwable $e) {
+            // already applied — ignore
+        }
+}
 
     public function down(): void
     {

@@ -332,7 +332,11 @@ return new class extends Migration
         foreach ($fkIndexes as $table => $indexes) {
             foreach ($indexes as [$col, $idxName]) {
                 if ($this->missing($table, $idxName) && $this->hasCol($table, $col)) {
-                    Schema::table($table, fn (Blueprint $t) => $t->index($col, $idxName));
+                    try {
+                        Schema::table($table, fn (Blueprint $t) => $t->index($col, $idxName));
+                    } catch (\Throwable $e) {
+                        // index already exists — ignore
+                    }
                 }
             }
         }
@@ -376,7 +380,11 @@ return new class extends Migration
                         if (! $this->hasCol($table, $col)) { $allColsExist = false; break; }
                     }
                     if ($allColsExist) {
-                        Schema::table($table, fn (Blueprint $t) => $t->index($idx['cols'], $idx['name']));
+                        try {
+                            Schema::table($table, fn (Blueprint $t) => $t->index($idx['cols'], $idx['name']));
+                        } catch (\Throwable $e) {
+                            // index already exists — ignore
+                        }
                     }
                 }
             }

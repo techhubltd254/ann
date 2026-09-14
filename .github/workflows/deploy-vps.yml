@@ -20,7 +20,7 @@ jobs:
         run: composer install --no-interaction --prefer-dist --optimize-autoloader --no-dev
 
       - name: Run migrations
-        run: php artisan migrate --force --allow-zero-downtime
+        run: php artisan migrate --force --isolated
 
       - name: Clear cache
         run: php artisan cache:clear && php artisan config:clear && php artisan route:clear

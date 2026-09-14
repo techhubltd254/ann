@@ -8,6 +8,11 @@ return new class extends Migration
 {
     public function up(): void
     {
+        // IDEMPOTENT_GUARD: skip when table missing / changes already applied
+        if (!Schema::hasTable('users')) {
+            return;
+        }
+        try {
         Schema::table('users', function (Blueprint $t) {
             if (!Schema::hasColumn('users', 'verification_tier')) $t->tinyInteger('verification_tier')->default(0)->after('trust_grade');
             if (!Schema::hasColumn('users', 'verification_status')) $t->string('verification_status', 30)->nullable()->after('verification_tier');
@@ -16,7 +21,11 @@ return new class extends Migration
             if (!Schema::hasColumn('users', 'verified_at')) $t->timestamp('verified_at')->nullable()->after('verification_rejection_reason');
             if (!Schema::hasColumn('users', 'verified_by')) $t->foreignId('verified_by')->nullable()->constrained('users')->after('verified_at');
         });
-    }
+    
+        } catch (\Throwable $e) {
+            // already applied — ignore
+        }
+}
 
     public function down(): void
     {

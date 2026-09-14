@@ -6,6 +6,11 @@ use Illuminate\Support\Facades\Schema;
 return new class extends Migration {
     public function up(): void
     {
+        // IDEMPOTENT_GUARD: skip when table missing / changes already applied
+        if (!Schema::hasTable('booths')) {
+            return;
+        }
+        try {
         Schema::table('booths', function (Blueprint $table) {
             if (!Schema::hasColumn('booths', 'user_id')) {
                 $table->foreignId('user_id')->nullable()->constrained()->nullOnDelete()->after('id');
@@ -56,7 +61,11 @@ return new class extends Migration {
                 $table->string('tagline', 500)->nullable();
             }
         });
-    }
+    
+        } catch (\Throwable $e) {
+            // already applied — ignore
+        }
+}
 
     public function down(): void
     {

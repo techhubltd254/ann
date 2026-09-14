@@ -6,6 +6,11 @@ use Illuminate\Support\Facades\Schema;
 return new class extends Migration {
     public function up(): void
     {
+        // IDEMPOTENT_GUARD: skip when table missing / changes already applied
+        if (!Schema::hasTable('live_streams')) {
+            return;
+        }
+        try {
         Schema::table('live_streams', function (Blueprint $table) {
             if (!Schema::hasColumn('live_streams', 'booth_id')) {
                 $table->unsignedBigInteger('booth_id')->nullable()->after('id');
@@ -18,7 +23,11 @@ return new class extends Migration {
                 $table->boolean('is_live')->default(false);
             }
         });
-    }
+    
+        } catch (\Throwable $e) {
+            // already applied — ignore
+        }
+}
 
     public function down(): void
     {

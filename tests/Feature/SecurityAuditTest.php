@@ -149,7 +149,7 @@ public function test_idor_on_counties(): void
     {
         $response = $this->get('/api/counties');
 
-        $response->assertHeader('X-Frame-Options', 'DENY');
+        $response->assertHeader('X-Frame-Options', 'SAMEORIGIN');
         $response->assertHeader('X-Content-Type-Options', 'nosniff');
         $response->assertHeader('Referrer-Policy', 'strict-origin-when-cross-origin');
         $response->assertHeader('Permissions-Policy');

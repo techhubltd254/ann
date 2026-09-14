@@ -103,10 +103,10 @@ class CommerceFlowTest extends TestCase
         $response->assertStatus(401);
     }
 
-    public function test_mcp_requires_auth(): void
+    public function test_mcp_discovery_is_public(): void
     {
         $response = $this->getJson('/api/mcp');
-        $response->assertStatus(401);
+        $response->assertStatus(200);
     }
 
     public function test_currency_convert(): void

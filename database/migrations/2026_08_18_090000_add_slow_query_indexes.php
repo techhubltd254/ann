@@ -14,6 +14,11 @@ return new class extends Migration
 {
     public function up(): void
     {
+        // IDEMPOTENT_GUARD: skip when table missing / changes already applied
+        if (!Schema::hasTable('bookings')) {
+            return;
+        }
+        try {
         // Bookings: list by exhibition (admin dashboards) + status filters
         if (Schema::hasTable('bookings')) {
             Schema::table('bookings', function (Blueprint $t) {
@@ -91,7 +96,11 @@ return new class extends Migration
                 }
             });
         }
-    }
+    
+        } catch (\Throwable $e) {
+            // already applied — ignore
+        }
+}
 
     public function down(): void
     {

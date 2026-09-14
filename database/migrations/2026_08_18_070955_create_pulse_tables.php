@@ -11,6 +11,11 @@ return new class extends PulseMigration
      */
     public function up(): void
     {
+        // IDEMPOTENT_GUARD: table may already exist on TiDB (raw schema)
+        if (Schema::hasTable('pulse_values')) {
+            return;
+        }
+
         if (! $this->shouldRun()) {
             return;
         }

@@ -8,6 +8,11 @@ return new class extends Migration
 {
     public function up(): void
     {
+        // IDEMPOTENT_GUARD: skip when table missing / changes already applied
+        if (!Schema::hasTable('county_farms')) {
+            return;
+        }
+        try {
         Schema::table('county_farms', function (Blueprint $table) {
             $table->string('image_url', 500)->nullable()->after('products');
         });
@@ -20,7 +25,11 @@ return new class extends Migration
         Schema::table('county_culture_sites', function (Blueprint $table) {
             $table->string('image_url', 500)->nullable()->after('contact');
         });
-    }
+    
+        } catch (\Throwable $e) {
+            // already applied — ignore
+        }
+}
 
     public function down(): void
     {

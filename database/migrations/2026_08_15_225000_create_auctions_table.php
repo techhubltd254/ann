@@ -4,6 +4,11 @@ use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Support\Facades\Schema;
 return new class extends Migration {
     public function up(): void {
+        // IDEMPOTENT_GUARD: table may already exist on TiDB (raw schema)
+        if (Schema::hasTable('auctions')) {
+            return;
+        }
+
         Schema::create('auctions', function (Blueprint $t) {
             $t->id();
             $t->foreignId('product_id')->constrained((new \App\Models\Marketplace\Product)->getTable())->cascadeOnDelete();

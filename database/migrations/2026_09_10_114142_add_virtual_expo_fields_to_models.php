@@ -8,6 +8,11 @@ return new class extends Migration
 {
     public function up(): void
     {
+        // IDEMPOTENT_GUARD: skip when table missing / changes already applied
+        if (!Schema::hasTable('booths')) {
+            return;
+        }
+        try {
         // ── Booth: contact + layout + spotlight fields ──
         Schema::table('booths', function (Blueprint $table) {
             $table->string('contact_name')->nullable()->after('location_hint');
@@ -74,7 +79,11 @@ return new class extends Migration
             $table->string('trade_enquiry_email')->nullable();
             $table->boolean('is_spotlight_product')->default(false);
         });
-    }
+    
+        } catch (\Throwable $e) {
+            // already applied — ignore
+        }
+}
 
     public function down(): void
     {

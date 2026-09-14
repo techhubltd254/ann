@@ -8,6 +8,11 @@ return new class extends Migration
 {
     public function up(): void
     {
+        // IDEMPOTENT_GUARD: skip when table missing / changes already applied
+        if (!Schema::hasTable('model_has_permissions')) {
+            return;
+        }
+        try {
         $columnNames = config('permission.column_names');
         $morphKey = $columnNames['model_morph_key'] ?? 'model_id';
 
@@ -29,7 +34,11 @@ return new class extends Migration
         Schema::table('role_has_permissions', function (Blueprint $table) {
             $table->index('role_id', 'role_has_permissions_role_id_index');
         });
-    }
+    
+        } catch (\Throwable $e) {
+            // already applied — ignore
+        }
+}
 
     public function down(): void
     {

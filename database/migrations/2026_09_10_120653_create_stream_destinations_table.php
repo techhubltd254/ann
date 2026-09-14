@@ -8,6 +8,11 @@ return new class extends Migration
 {
     public function up(): void
     {
+        // IDEMPOTENT_GUARD: table may already exist on TiDB (raw schema)
+        if (Schema::hasTable('stream_destinations')) {
+            return;
+        }
+
         Schema::create('stream_destinations', function (Blueprint $table) {
             $table->id();
             $table->foreignId('live_stream_id')->constrained('live_streams')->cascadeOnDelete();

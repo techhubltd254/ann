@@ -7,6 +7,11 @@ return new class extends Migration
 {
     public function up(): void
     {
+        // IDEMPOTENT_GUARD: table may already exist on TiDB (raw schema)
+        if (Schema::hasTable('booth_authorizations')) {
+            return;
+        }
+
         // Booth authorizations — Super Admin's live authorization list
         Schema::create('booth_authorizations', function (Blueprint $table) {
             $table->id();

@@ -4,6 +4,11 @@ use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Support\Facades\Schema;
 return new class extends Migration {
     public function up(): void {
+        // IDEMPOTENT_GUARD: table may already exist on TiDB (raw schema)
+        if (Schema::hasTable('gift_cards')) {
+            return;
+        }
+
         Schema::create('gift_cards', function (Blueprint $t) {
             $t->id();
             $t->string('code', 20)->unique();

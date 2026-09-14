@@ -15,6 +15,6 @@ class ExhibitionApiTest extends TestCase
     public function test_cors_headers_on_api(): void
     {
         $response = $this->getJson('/api/counties');
-        $response->assertHeader('Access-Control-Allow-Origin', '*');
+        $response->assertHeader('Access-Control-Allow-Origin', config('app.url'));
     }
 }

@@ -20,11 +20,18 @@ return new class extends Migration
         ];
 
         foreach ($tables as $table => $columns) {
-            Schema::table($table, function (Blueprint $t) use ($columns) {
-                foreach ($columns as $col) {
-                    $t->text($col)->change();
-                }
-            });
+            if (! Schema::hasTable($table)) {
+                continue;
+            }
+            try {
+                Schema::table($table, function (Blueprint $t) use ($columns) {
+                    foreach ($columns as $col) {
+                        $t->text($col)->change();
+                    }
+                });
+            } catch (\Throwable $e) {
+                // already applied — ignore
+            }
         }
     }
 

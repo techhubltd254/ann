@@ -8,6 +8,11 @@ return new class extends Migration
 {
     public function up(): void
     {
+        // IDEMPOTENT_GUARD: skip when table missing / changes already applied
+        if (!Schema::hasTable('county_institutions')) {
+            return;
+        }
+        try {
         // Institution profile fields for the master-record + auto-sync system
         Schema::table('county_institutions', function (Blueprint $table) {
             $table->string('slug')->nullable()->index();
@@ -33,7 +38,11 @@ return new class extends Migration
                 $table->foreignId('institution_id')->nullable()->index();
             });
         }
-    }
+    
+        } catch (\Throwable $e) {
+            // already applied — ignore
+        }
+}
 
     public function down(): void
     {

@@ -8,6 +8,11 @@ return new class extends Migration
 {
     public function up(): void
     {
+        // IDEMPOTENT_GUARD: table may already exist on TiDB (raw schema)
+        if (Schema::hasTable('product_variants')) {
+            return;
+        }
+
         if (Schema::hasTable('product_variants')) {
             Schema::table('product_variants', function (Blueprint $t) {
                 $t->integer('moq')->default(1)->after('stock');

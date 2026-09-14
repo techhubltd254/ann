@@ -12,6 +12,9 @@ use Illuminate\Support\Facades\Schema;
 return new class extends Migration {
     public function up(): void
     {
+        if (! Schema::hasTable('product_categories')) {
+            return;
+        }
         Schema::table('product_categories', function (Blueprint $t) {
             if (!Schema::hasColumn('product_categories', 'parent_id')) {
                 $t->foreignId('parent_id')->nullable()->constrained('product_categories')->nullOnDelete();

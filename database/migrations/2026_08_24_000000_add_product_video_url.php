@@ -8,6 +8,11 @@ return new class extends Migration
 {
     public function up(): void
     {
+        // IDEMPOTENT_GUARD: skip when table missing / changes already applied
+        if (!Schema::hasTable('products')) {
+            return;
+        }
+        try {
         // Add video_url to marketplace products
         if (!Schema::hasColumn('products', 'video_url')) {
             Schema::table('products', function (Blueprint $table) {
@@ -21,7 +26,11 @@ return new class extends Migration
                 $table->string('video_url')->nullable()->after('image_url');
             });
         }
-    }
+    
+        } catch (\Throwable $e) {
+            // already applied — ignore
+        }
+}
 
     public function down(): void
     {

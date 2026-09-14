@@ -8,6 +8,11 @@ return new class extends Migration
 {
     public function up(): void
     {
+        // IDEMPOTENT_GUARD: skip when table missing / changes already applied
+        if (!Schema::hasTable('products')) {
+            return;
+        }
+        try {
         if (!Schema::hasColumn('products', 'video_description')) {
             Schema::table('products', function (Blueprint $table) {
                 $table->text('video_description')->nullable()->after('videos');
@@ -18,7 +23,11 @@ return new class extends Migration
                 $table->text('video_description')->nullable()->after('videos');
             });
         }
-    }
+    
+        } catch (\Throwable $e) {
+            // already applied — ignore
+        }
+}
 
     public function down(): void
     {

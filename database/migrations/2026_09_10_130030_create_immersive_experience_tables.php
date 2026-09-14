@@ -8,6 +8,11 @@ return new class extends Migration
 {
     public function up(): void
     {
+        // IDEMPOTENT_GUARD: table may already exist on TiDB (raw schema)
+        if (Schema::hasTable('housing_projects')) {
+            return;
+        }
+
         Schema::create('housing_projects', function (Blueprint $table) {
             $table->id();
             $table->string('name');

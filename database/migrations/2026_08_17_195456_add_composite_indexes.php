@@ -8,6 +8,11 @@ return new class extends Migration
 {
     public function up(): void
     {
+        // IDEMPOTENT_GUARD: skip when table missing / changes already applied
+        if (!Schema::hasTable('orders')) {
+            return;
+        }
+        try {
         $missing = fn ($table, $index) => Schema::hasTable($table)
             && ! collect(Schema::getIndexes($table))->contains(fn ($i) => $i['name'] === $index);
         $hasCols = function (string $table, array $cols): bool {
@@ -111,7 +116,11 @@ return new class extends Migration
         if ($missing('order_items', 'idx_order_items_product_date')) {
             Schema::table('order_items', fn (Blueprint $t) => $t->index(['product_id', 'created_at'], 'idx_order_items_product_date'));
         }
-    }
+    
+        } catch (\Throwable $e) {
+            // already applied — ignore
+        }
+}
 
     public function down(): void
     {

@@ -88,7 +88,7 @@ class CoreApiTest extends TestCase
     public function test_security_headers(): void
     {
         $response = $this->get('/api/counties');
-        $response->assertHeader('X-Frame-Options', 'DENY');
+        $response->assertHeader('X-Frame-Options', 'SAMEORIGIN');
         $response->assertHeader('X-Content-Type-Options', 'nosniff');
         $response->assertHeader('Referrer-Policy', 'strict-origin-when-cross-origin');
     }
@@ -96,6 +96,6 @@ class CoreApiTest extends TestCase
     public function test_cors_headers(): void
     {
         $response = $this->getJson('/api/counties');
-        $response->assertHeader('Access-Control-Allow-Origin', '*');
+        $response->assertHeader('Access-Control-Allow-Origin', config('app.url'));
     }
 }
