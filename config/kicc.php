@@ -12,7 +12,7 @@ return [
         'completeness_boost' => 0.02,
         'freshness_boost' => 0.01,
         'freshness_days' => 14,
-        'synced_threshold' => 10,
+        'synced_threshold' => 1,
     ],
 
     /*

@@ -39,6 +39,8 @@ class MarketplaceSeeder extends Seeder
             ['county' => 'baringo', 'cat' => 'crafts-artisan', 'name' => 'Baringo Sisal Kiondo Bag', 'desc' => 'Handwoven sisal kiondo with leather straps from Baringo weavers. Everyday carry.', 'unit' => 'piece', 'variants' => [['name' => 'Classic', 'price' => 2200]]],
         ];
 
+        $firstUserId = optional(\App\Models\User::first())->id ?? 1;
+
         foreach ($items as $i => $data) {
             $county = County::where('slug', $data['county'])->first();
             if (!$county) continue;
@@ -46,6 +48,8 @@ class MarketplaceSeeder extends Seeder
             $product = Product::updateOrCreate(
                 ['slug' => Str::slug($data['name'])],
                 [
+                    'user_id' => $firstUserId,
+                    'county_id' => $county->id,
                     'county_id' => $county->id,
                     'category_id' => $cats[$data['cat']]->id,
                     'name' => $data['name'],
