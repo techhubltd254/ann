@@ -82,8 +82,8 @@ class NationalPortalController extends Controller
         ]);
         $data['slug'] = Str::slug($data['name']);
         Ministry::create($data);
-        return back()->with('success', "Ministry {$data['name']} created.");
         app(\App\Services\CacheSyncService::class)->national();
+        return back()->with('success', "Ministry {$data['name']} created.");
     }
 
     public function updateMinistry(Request $request, Ministry $ministry)
@@ -100,16 +100,16 @@ class NationalPortalController extends Controller
             'is_active' => 'nullable|boolean',
         ]);
         $ministry->update($data);
-        return back()->with('success', "Ministry {$ministry->name} updated.");
         app(\App\Services\CacheSyncService::class)->national();
+        return back()->with('success', "Ministry {$ministry->name} updated.");
     }
 
     public function deleteMinistry(Ministry $ministry)
     {
         $this->authorizeNational();
         $ministry->delete();
-        return back()->with('success', 'Ministry removed.');
         app(\App\Services\CacheSyncService::class)->national();
+        return back()->with('success', 'Ministry removed.');
     }
 
     // ─── AGENCY CRUD ───
@@ -126,8 +126,8 @@ class NationalPortalController extends Controller
         ]);
         $data['slug'] = Str::slug($data['name']);
         Agency::create($data);
-        return back()->with('success', "Agency {$data['name']} created.");
         app(\App\Services\CacheSyncService::class)->national();
+        return back()->with('success', "Agency {$data['name']} created.");
     }
 
     public function updateAgency(Request $request, Agency $agency)
@@ -143,15 +143,15 @@ class NationalPortalController extends Controller
             'is_active' => 'nullable|boolean',
         ]);
         $agency->update($data);
-        return back()->with('success', "Agency {$agency->name} updated.");
         app(\App\Services\CacheSyncService::class)->national();
+        return back()->with('success', "Agency {$agency->name} updated.");
     }
 
     public function deleteAgency(Agency $agency)
     {
         $this->authorizeNational();
         $agency->delete();
-        return back()->with('success', 'Agency removed.');
         app(\App\Services\CacheSyncService::class)->national();
+        return back()->with('success', 'Agency removed.');
     }
 }

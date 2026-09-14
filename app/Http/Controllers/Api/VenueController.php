@@ -82,6 +82,9 @@ class VenueController extends Controller
     {
         $venue = Venue::where('slug', $slug)->firstOrFail();
         $venue->delete();
+
+        app(\App\Services\CacheSyncService::class)->kicc();
+
         return response()->json(null, 204);
     }
 }

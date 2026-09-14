@@ -83,6 +83,7 @@ class GiftCardController extends Controller {
 
     public function remove() {
         session()->forget(['gift_card_code','gift_card_balance']);
+        app(\App\Services\CacheSyncService::class)->kicc();
         return back()->with('success', 'Gift card removed.');
     }
 }

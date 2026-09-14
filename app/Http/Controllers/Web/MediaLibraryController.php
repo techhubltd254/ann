@@ -218,7 +218,16 @@ class MediaLibraryController extends Controller
     {
         $this->authorizeMediaAccess();
 
+        $ownerType = $asset->owner_type;
+        $ownerId = $asset->owner_id;
         $library->delete($asset);
+
+        $sync = app(\App\Services\CacheSyncService::class);
+        if (str_contains($ownerType ?? '', 'County')) {
+            $sync->county((int) $ownerId);
+        } else {
+            $sync->kicc();
+        }
 
         return redirect()->route('media.library')->with('success', 'Asset deleted.');
     }

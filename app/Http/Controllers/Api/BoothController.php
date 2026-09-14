@@ -96,6 +96,9 @@ class BoothController extends Controller
     public function destroy(Booth $booth)
     {
         $booth->delete();
+
+        app(\App\Services\CacheSyncService::class)->kicc();
+
         return response()->json(null, 204);
     }
 }

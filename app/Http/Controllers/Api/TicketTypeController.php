@@ -80,6 +80,9 @@ class TicketTypeController extends Controller
             return response()->json(['message' => 'Cannot delete a ticket type with sales'], 422);
         }
         $ticketType->delete();
+
+        app(\App\Services\CacheSyncService::class)->kicc();
+
         return response()->json(null, 204);
     }
 }

@@ -164,6 +164,8 @@ class MediaApiController extends Controller
     {
         $library->delete($asset);
 
+        app(\App\Services\CacheSyncService::class)->kicc();
+
         return response()->json(['ok' => true]);
     }
 

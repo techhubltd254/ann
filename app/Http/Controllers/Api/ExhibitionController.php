@@ -109,6 +109,9 @@ class ExhibitionController extends Controller
     {
         $exhibition = Exhibition::where('slug', $slug)->firstOrFail();
         $exhibition->delete();
+
+        app(\App\Services\CacheSyncService::class)->kicc();
+
         return response()->json(null, 204);
     }
 }

@@ -187,8 +187,8 @@ class KiccAdminController extends Controller
         $escrow = EscrowTransaction::findOrFail($id);
         $steps = collect($escrow->steps ?? [])->map(fn ($s) => array_merge($s, ['done' => true]))->values()->all();
         $escrow->update(['status' => 'released', 'steps' => $steps, 'current_step' => 4, 'released_at' => now()]);
-        return redirect()->route('kicc.admin', ['tab' => 'escrow'])->with('success', "Escrow {$escrow->escrow_id} released to {$escrow->seller?->name}.");
         app(\App\Services\CacheSyncService::class)->kicc();
+        return redirect()->route('kicc.admin', ['tab' => 'escrow'])->with('success', "Escrow {$escrow->escrow_id} released to {$escrow->seller?->name}.");
     }
 
     /** KICC certifies a provider's service/price change (govt certification). */
@@ -203,8 +203,8 @@ class KiccAdminController extends Controller
         \Illuminate\Support\Facades\DB::table($table)->where('id', $id)->update($update);
 
         \App\Services\N8nService::fire('provider_service_approved', ['table' => $table, 'id' => $id]);
-        return redirect()->route('kicc.admin', ['tab' => 'providers'])->with('success', 'Service certified and now live.');
         app(\App\Services\CacheSyncService::class)->kicc();
+        return redirect()->route('kicc.admin', ['tab' => 'providers'])->with('success', 'Service certified and now live.');
     }
 
     /** Run an Artisan command from the admin panel (superadmin only). */
@@ -274,8 +274,8 @@ class KiccAdminController extends Controller
             'variant' => '1080p',
         ]);
 
-        return redirect()->route('kicc.admin', ['tab' => 'counties'])->with('success', $county->name . ' hero video uploaded.');
         app(\App\Services\CacheSyncService::class)->county(\App\Models\County::where('slug', $slug)->value('id'));
+        return redirect()->route('kicc.admin', ['tab' => 'counties'])->with('success', $county->name . ' hero video uploaded.');
     }
 
     /** Update an exhibitor subscription plan from the mother admin. */
@@ -294,8 +294,8 @@ class KiccAdminController extends Controller
             'is_active' => $request->boolean('is_active'),
         ]));
         \App\Services\N8nService::fire('package_updated', ['plan_id' => $plan->id, 'name' => $plan->name, 'price' => $plan->price]);
-        return redirect()->route('kicc.admin', ['tab' => 'packages'])->with('success', "Package '{$plan->name}' updated.");
         app(\App\Services\CacheSyncService::class)->kicc();
+        return redirect()->route('kicc.admin', ['tab' => 'packages'])->with('success', "Package '{$plan->name}' updated.");
     }
 
     public function uploadHeroVideo(Request $request, MediaLibraryService $library)
@@ -327,8 +327,8 @@ class KiccAdminController extends Controller
             'variant' => '1080p',
         ]);
 
-        return redirect()->route('kicc.admin', ['tab' => 'hero_media'])->with('success', 'Hero video uploaded and set as active.');
         app(\App\Services\CacheSyncService::class)->kicc();
+        return redirect()->route('kicc.admin', ['tab' => 'hero_media'])->with('success', 'Hero video uploaded and set as active.');
     }
 
     public function deleteHeroVideo()
@@ -340,7 +340,7 @@ class KiccAdminController extends Controller
             app(MediaLibraryService::class)->delete($asset);
         }
 
-        return redirect()->route('kicc.admin', ['tab' => 'hero_media'])->with('success', 'Hero video removed. Homepage will use fallback video.');
         app(\App\Services\CacheSyncService::class)->kicc();
+        return redirect()->route('kicc.admin', ['tab' => 'hero_media'])->with('success', 'Hero video removed. Homepage will use fallback video.');
     }
 }

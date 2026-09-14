@@ -227,8 +227,8 @@ class CountyAdminController extends Controller
             'tourism_highlights' => 'nullable|string|max:500',
         ]);
         $county->update($data);
-        return back()->with('success', 'County content updated. Changes are live immediately.');
         $this->syncCounty($county);
+        return back()->with('success', 'County content updated. Changes are live immediately.');
     }
 
     /* ─── FULL COUNTY DETAILS ─── */
@@ -254,8 +254,8 @@ class CountyAdminController extends Controller
             'icon_emoji' => 'nullable|string|max:10',
         ]);
         $county->update($data);
-        return back()->with('success', 'All county details updated.');
         $this->syncCounty($county);
+        return back()->with('success', 'All county details updated.');
     }
 
     /* ─── SECTOR MANAGEMENT ─── */
@@ -274,8 +274,8 @@ class CountyAdminController extends Controller
         } else {
             $county->sectors()->detach($data['sector_id']);
         }
-        return back()->with('success', 'Sector ' . ($data['action'] === 'attach' ? 'added' : 'removed') . '.');
         $this->syncCounty($county);
+        return back()->with('success', 'Sector ' . ($data['action'] === 'attach' ? 'added' : 'removed') . '.');
     }
 
     /** Toggle a sector's display_on_tile flag for the Economic Sectors grid. */
@@ -296,8 +296,8 @@ class CountyAdminController extends Controller
                 'display_on_tile' => $data['display_on_tile'],
                 'displayOnTile' => $data['display_on_tile'],
             ]);
-        return back()->with('success', 'Tile display ' . ($data['display_on_tile'] === 'yes' ? 'enabled' : 'disabled') . '.');
         $this->syncCounty($county);
+        return back()->with('success', 'Tile display ' . ($data['display_on_tile'] === 'yes' ? 'enabled' : 'disabled') . '.');
     }
 
     /* ─── SECTOR ENTITY CRUD ─── */
@@ -323,8 +323,8 @@ class CountyAdminController extends Controller
             'is_published' => true,
         ]);
 
-        return back()->with('success', "Entity '{$entity->name}' added to sector.");
         $this->syncCounty($county);
+        return back()->with('success', "Entity '{$entity->name}' added to sector.");
     }
 
     public function deleteEntity(string $slug, int $entityId)
@@ -335,8 +335,8 @@ class CountyAdminController extends Controller
         $county = $this->authorizeCounty($slug);
         $entity = SectorEntity::where('county_id', $county->id)->findOrFail($entityId);
         $entity->delete();
-        return back()->with('success', 'Entity removed.');
         $this->syncCounty($county);
+        return back()->with('success', 'Entity removed.');
     }
 
     /* ─── IMAGES ─── */
@@ -391,8 +391,8 @@ class CountyAdminController extends Controller
         \App\Services\N8nService::fire('county_image_updated', [
             'county' => $slug, 'sector' => $data['sector'],
         ]);
-        return back()->with('success', "{$data['sector']} image updated. Changes reflect everywhere immediately.");
         $this->syncCounty($county);
+        return back()->with('success', "{$data['sector']} image updated. Changes reflect everywhere immediately.");
     }
 
     public function uploadSectorVideo(Request $request, string $slug)
@@ -440,8 +440,8 @@ class CountyAdminController extends Controller
             'variant' => 'source',
         ]);
 
-        return back()->with('success', "Sector video for {$data['sector']} uploaded. It plays on the county page tile background.");
         $this->syncCounty($county);
+        return back()->with('success', "Sector video for {$data['sector']} uploaded. It plays on the county page tile background.");
     }
 
     public function deleteSectorVideo(string $slug, string $sector)
@@ -460,8 +460,8 @@ class CountyAdminController extends Controller
             $a->derivatives()->delete();
             $a->delete();
         }
-        return back()->with('success', "Sector video for {$sector} removed.");
         $this->syncCounty($county);
+        return back()->with('success', "Sector video for {$sector} removed.");
     }
 
     public function deleteImage(string $slug, string $sector)
@@ -474,8 +474,8 @@ class CountyAdminController extends Controller
         if (file_exists($path)) @unlink($path);
         $altPath = storage_path("app/public/counties/{$slug}/{$sector}.jpg");
         if (file_exists($altPath)) @unlink($altPath);
-        return back()->with('success', "{$sector} image removed. Fallback will show.");
         $this->syncCounty($county);
+        return back()->with('success', "{$sector} image removed. Fallback will show.");
     }
 
     /* ─── HERO VIDEO ─── */
@@ -522,8 +522,8 @@ class CountyAdminController extends Controller
             $institution->update(['user_id' => $admin->id]);
         }
 
-        return back()->with('success', "Institution \"{$data['name']}\" created. Open it to start building the profile.");
         $this->syncCounty($county);
+        return back()->with('success', "Institution \"{$data['name']}\" created. Open it to start building the profile.");
     }
 
     public function deleteInstitution(string $slug, int $institutionId)
@@ -537,8 +537,8 @@ class CountyAdminController extends Controller
         \App\Services\InstitutionSyncService::deleteDerived($institution);
         $institution->delete();
 
-        return back()->with('success', "Institution \"{$institution->name}\" deleted. All derived data removed.");
         $this->syncCounty($county);
+        return back()->with('success', "Institution \"{$institution->name}\" deleted. All derived data removed.");
     }
 
     public function uploadHeroVideo(Request $request, string $slug)
@@ -586,8 +586,8 @@ class CountyAdminController extends Controller
             'variant' => '1080p',
         ]);
 
-        return back()->with('success', 'Hero video uploaded. Processing derivatives...');
         $this->syncCounty($county);
+        return back()->with('success', 'Hero video uploaded. Processing derivatives...');
     }
 
     public function deleteHeroVideo(string $slug)
@@ -609,8 +609,8 @@ class CountyAdminController extends Controller
             $a->derivatives()->delete();
             $a->delete();
         }
-        return back()->with('success', 'Hero video removed.');
         $this->syncCounty($county);
+        return back()->with('success', 'Hero video removed.');
     }
 
     /* ─── COUNTY FLAG VIDEO ─── */
@@ -652,8 +652,8 @@ class CountyAdminController extends Controller
             'variant' => 'source',
         ]);
 
-        return back()->with('success', 'County animated flag uploaded. It plays as fallback on sector tiles.');
         $this->syncCounty($county);
+        return back()->with('success', 'County animated flag uploaded. It plays as fallback on sector tiles.');
     }
 
     public function deleteFlagVideo(string $slug)
@@ -666,8 +666,8 @@ class CountyAdminController extends Controller
             $a->derivatives()->delete();
             $a->delete();
         }
-        return back()->with('success', 'County animated flag removed.');
         $this->syncCounty($county);
+        return back()->with('success', 'County animated flag removed.');
     }
 
     /* ─── 4D VIDEOS ─── */
@@ -738,8 +738,8 @@ class CountyAdminController extends Controller
             \Illuminate\Support\Facades\Log::warning('N8n fire failed for 4D upload: ' . $e->getMessage());
         }
 
-        return back()->with('success', "4D video attached to {$entity->name}. It now plays on the county page.");
         $this->syncCounty($county);
+        return back()->with('success', "4D video attached to {$entity->name}. It now plays on the county page.");
     }
 
     public function delete4dVideo(string $slug, string $entityType, int $entityId)
@@ -756,8 +756,8 @@ class CountyAdminController extends Controller
             default => abort(422, 'Unknown entity type'),
         };
         \App\Models\MediaAsset::forSlot($model, $entityId, '4d_video')->get()->each->delete();
-        return back()->with('success', '4D video removed. The still image shows again.');
         $this->syncCounty($county);
+        return back()->with('success', '4D video removed. The still image shows again.');
     }
 
     /** Existing 4D video asset per entity, keyed "type-id" for the admin view. */
@@ -869,8 +869,8 @@ class CountyAdminController extends Controller
         DB::table($data['table'])->where('id', $data['id'])->update([
             'price' => $data['price'], 'updated_at' => now(),
         ]);
-        return back()->with('success', 'Price updated and live on the county page.');
         $this->syncCounty($county);
+        return back()->with('success', 'Price updated and live on the county page.');
     }
 
     /* ─── ADVERTISING ─── */
@@ -915,8 +915,8 @@ class CountyAdminController extends Controller
         \App\Services\N8nService::fire('county_ad_created', [
             'county' => $slug, 'product' => $data['name'], 'price' => $data['price'],
         ]);
-        return back()->with('success', "Ad for {$data['name']} is now live on {$county->name}'s page.");
         $this->syncCounty($county);
+        return back()->with('success', "Ad for {$data['name']} is now live on {$county->name}'s page.");
     }
 
     /* ─── PACKAGES ─── */
@@ -946,8 +946,8 @@ class CountyAdminController extends Controller
             'expires_at' => now()->addMonth(),
         ]);
 
-        return back()->with('success', "{$plan->name} plan purchased (KES {$planPrice}). Payment confirmed.");
         $this->syncCounty($county);
+        return back()->with('success', "{$plan->name} plan purchased (KES {$planPrice}). Payment confirmed.");
     }
 
     /* ─── REPORTS ─── */
@@ -994,8 +994,8 @@ class CountyAdminController extends Controller
         $data['investment_opportunities'] = !empty($data['investment_opportunities'])
             ? array_map('trim', explode(',', $data['investment_opportunities'])) : null;
         $county->update($data);
-        return back()->with('success', 'Trade hub updated.');
         $this->syncCounty($county);
+        return back()->with('success', 'Trade hub updated.');
     }
 
     /* ─── VIRTUAL EXHIBITION: TRADER SPOTLIGHTS ─── */
@@ -1020,8 +1020,8 @@ class CountyAdminController extends Controller
         ]);
 
         \App\Services\N8nService::fire('trader_spotlight_created', ['county' => $county->slug, 'name' => $data['name']]);
-        return back()->with('success', 'Trader spotlight created.');
         $this->syncCounty($county);
+        return back()->with('success', 'Trader spotlight created.');
     }
 
     /* ─── VIRTUAL EXHIBITION: BROADCAST SCHEDULE ─── */
@@ -1044,8 +1044,8 @@ class CountyAdminController extends Controller
                 'feed_id' => $data['live_feed_id'],
             ]);
         }
-        return back()->with('success', 'Broadcast schedule updated.');
         $this->syncCounty($county);
+        return back()->with('success', 'Broadcast schedule updated.');
     }
 
     /* ─── VIRTUAL EXHIBITION: HOUSING FLYTHROUGHS ─── */
@@ -1061,8 +1061,8 @@ class CountyAdminController extends Controller
             'description' => 'nullable|string|max:5000',
         ]);
         \App\Models\HousingProject::create($data + ['county_id' => $county->id]);
-        return back()->with('success', 'Housing project created.');
         $this->syncCounty($county);
+        return back()->with('success', 'Housing project created.');
     }
 
     /* ─── VIRTUAL EXHIBITION: DRONE SEQUENCES ─── */
@@ -1076,8 +1076,8 @@ class CountyAdminController extends Controller
         ]);
         \App\Models\DroneSequence::create($data + ['county_id' => $county->id]);
         \App\Services\N8nService::fire('drone_sequence_composed', ['county' => $county->slug, 'name' => $data['name']]);
-        return back()->with('success', 'Drone sequence created.');
         $this->syncCounty($county);
+        return back()->with('success', 'Drone sequence created.');
     }
 
     /* ─── VIRTUAL EXHIBITION: FLOOR PLANS ─── */
@@ -1099,8 +1099,8 @@ class CountyAdminController extends Controller
             'layout_data' => !empty($data['layout_json']) ? json_decode($data['layout_json'], true) : null,
         ]);
         \App\Services\N8nService::fire('floor_plan_uploaded', ['county' => $county->slug, 'name' => $data['name']]);
-        return back()->with('success', 'Floor plan created.');
         $this->syncCounty($county);
+        return back()->with('success', 'Floor plan created.');
     }
 
     /* ─── P3: CONSENT FORMS ─── */
@@ -1118,8 +1118,8 @@ class CountyAdminController extends Controller
             'entity_id' => $county->id,
         ]);
         \App\Services\N8nService::fire('consent_signed', ['county' => $county->slug, 'title' => $data['title']]);
-        return back()->with('success', 'Consent form created.');
         $this->syncCounty($county);
+        return back()->with('success', 'Consent form created.');
     }
 
     /* ─── P3: VOICE NOTES ─── */
@@ -1138,8 +1138,8 @@ class CountyAdminController extends Controller
             'transcribed_at' => !empty($data['transcript']) ? now() : null,
         ]);
         \App\Services\N8nService::fire('voice_note_recorded', ['county' => $county->slug, 'title' => $data['title']]);
-        return back()->with('success', 'Voice note recorded.');
         $this->syncCounty($county);
+        return back()->with('success', 'Voice note recorded.');
     }
 
     /* ─── P4: LANDMARKS ─── */
@@ -1154,7 +1154,7 @@ class CountyAdminController extends Controller
             'description' => 'nullable|string|max:2000',
         ]);
         \App\Models\Landmark::create($data + ['county_id' => $county->id]);
-        return back()->with('success', 'Landmark created.');
         $this->syncCounty($county);
+        return back()->with('success', 'Landmark created.');
     }
 }

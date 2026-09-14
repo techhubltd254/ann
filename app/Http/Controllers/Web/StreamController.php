@@ -105,7 +105,15 @@ class StreamController extends Controller
 
     public function destroy(LiveStream $stream)
     {
+        $countyId = $stream->county_id;
         $stream->delete();
+
+        $sync = app(\App\Services\CacheSyncService::class);
+        $sync->kicc();
+        if ($countyId) {
+            $sync->county($countyId);
+        }
+
         return redirect()->route('streams.index')->with('success', 'Stream deleted.');
     }
 

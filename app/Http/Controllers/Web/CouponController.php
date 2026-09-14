@@ -37,6 +37,7 @@ class CouponController extends Controller
     public function remove()
     {
         session()->forget(['coupon_id', 'coupon_code', 'coupon_discount']);
+        app(\App\Services\CacheSyncService::class)->kicc();
         return redirect()->route('cart.index')->with('success', 'Coupon removed.');
     }
 

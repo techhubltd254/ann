@@ -129,7 +129,16 @@ class ExhibitorPortalController extends Controller
     public function deleteProduct(int $id)
     {
         $this->authorizeExhibitor();
-        Product::where('user_id', Auth::id())->findOrFail($id)->delete();
+        $product = Product::where('user_id', Auth::id())->findOrFail($id);
+        $countyId = $product->county_id;
+        $product->delete();
+
+        $sync = app(\App\Services\CacheSyncService::class);
+        $sync->kicc();
+        if ($countyId) {
+            $sync->county($countyId);
+        }
+
         return redirect()->route('exhibitor.admin', ['tab' => 'products'])->with('success', 'Product removed.');
     }
 }

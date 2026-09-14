@@ -102,8 +102,8 @@ class NationalAdminController extends Controller
             'kind' => 'video_mp4', 'path' => $r2Path, 'mime' => 'video/mp4',
             'size_bytes' => $file->getSize(), 'variant' => 'source',
         ]);
-        return redirect()->route('national.admin.v2', ['tab' => 'hero'])->with('success', 'National hero video uploaded.');
         app(\App\Services\CacheSyncService::class)->national();
+        return redirect()->route('national.admin.v2', ['tab' => 'hero'])->with('success', 'National hero video uploaded.');
     }
 
     public function deleteNationalHero()
@@ -115,8 +115,8 @@ class NationalAdminController extends Controller
             $a->derivatives()->delete();
             $a->delete();
         }
-        return redirect()->route('national.admin.v2', ['tab' => 'hero'])->with('success', 'National hero video removed.');
         app(\App\Services\CacheSyncService::class)->national();
+        return redirect()->route('national.admin.v2', ['tab' => 'hero'])->with('success', 'National hero video removed.');
     }
 
     /* ─── MINISTRY MEDIA ─── */
@@ -149,8 +149,8 @@ class NationalAdminController extends Controller
             'kind' => 'video_mp4', 'path' => $r2Path, 'mime' => 'video/mp4',
             'size_bytes' => $file->getSize(), 'variant' => 'source',
         ]);
-        return redirect()->route('national.admin.v2', ['tab' => 'media'])->with('success', "Video for {$ministry->name} uploaded.");
         app(\App\Services\CacheSyncService::class)->national();
+        return redirect()->route('national.admin.v2', ['tab' => 'media'])->with('success', "Video for {$ministry->name} uploaded.");
     }
 
     public function deleteMinistryVideo(Ministry $ministry)
@@ -162,8 +162,8 @@ class NationalAdminController extends Controller
             $a->derivatives()->delete();
             $a->delete();
         }
-        return redirect()->route('national.admin.v2', ['tab' => 'media'])->with('success', "Video for {$ministry->name} removed.");
         app(\App\Services\CacheSyncService::class)->national();
+        return redirect()->route('national.admin.v2', ['tab' => 'media'])->with('success', "Video for {$ministry->name} removed.");
     }
 
     public function uploadMinistryFlag(Request $request, Ministry $ministry)
@@ -194,8 +194,8 @@ class NationalAdminController extends Controller
             'kind' => 'video_mp4', 'path' => $r2Path, 'mime' => 'video/mp4',
             'size_bytes' => $file->getSize(), 'variant' => 'source',
         ]);
-        return redirect()->route('national.admin.v2', ['tab' => 'media'])->with('success', "Flag for {$ministry->name} uploaded.");
         app(\App\Services\CacheSyncService::class)->national();
+        return redirect()->route('national.admin.v2', ['tab' => 'media'])->with('success', "Flag for {$ministry->name} uploaded.");
     }
 
     public function deleteMinistryFlag(Ministry $ministry)
@@ -207,8 +207,8 @@ class NationalAdminController extends Controller
             $a->derivatives()->delete();
             $a->delete();
         }
-        return redirect()->route('national.admin.v2', ['tab' => 'media'])->with('success', "Flag for {$ministry->name} removed.");
         app(\App\Services\CacheSyncService::class)->national();
+        return redirect()->route('national.admin.v2', ['tab' => 'media'])->with('success', "Flag for {$ministry->name} removed.");
     }
 
     /* ─── NATIONAL FLAG ─── */
@@ -241,8 +241,8 @@ class NationalAdminController extends Controller
             'kind' => 'video_mp4', 'path' => $r2Path, 'mime' => 'video/mp4',
             'size_bytes' => $file->getSize(), 'variant' => 'source',
         ]);
-        return redirect()->route('national.admin.v2', ['tab' => 'flag'])->with('success', 'National animated flag uploaded.');
         app(\App\Services\CacheSyncService::class)->national();
+        return redirect()->route('national.admin.v2', ['tab' => 'flag'])->with('success', 'National animated flag uploaded.');
     }
 
     public function deleteNationalFlag()
@@ -254,8 +254,8 @@ class NationalAdminController extends Controller
             $a->derivatives()->delete();
             $a->delete();
         }
-        return redirect()->route('national.admin.v2', ['tab' => 'flag'])->with('success', 'National animated flag removed.');
         app(\App\Services\CacheSyncService::class)->national();
+        return redirect()->route('national.admin.v2', ['tab' => 'flag'])->with('success', 'National animated flag removed.');
     }
 
     /* ─── CRUD: kept from original ─── */
@@ -272,8 +272,8 @@ class NationalAdminController extends Controller
         ]);
         $data['slug'] = Str::slug($data['name']);
         Ministry::create($data);
-        return redirect()->route('national.admin.v2', ['tab' => 'ministries'])->with('success', "Ministry created.");
         app(\App\Services\CacheSyncService::class)->national();
+        return redirect()->route('national.admin.v2', ['tab' => 'ministries'])->with('success', "Ministry created.");
     }
 
     public function updateMinistry(Request $request, Ministry $ministry)
@@ -285,15 +285,15 @@ class NationalAdminController extends Controller
             'is_active' => 'nullable|boolean',
         ]);
         $ministry->update($data);
-        return redirect()->route('national.admin.v2', ['tab' => 'ministries'])->with('success', "Ministry updated.");
         app(\App\Services\CacheSyncService::class)->national();
+        return redirect()->route('national.admin.v2', ['tab' => 'ministries'])->with('success', "Ministry updated.");
     }
 
     public function deleteMinistry(Ministry $ministry)
     {
         $ministry->delete();
-        return redirect()->route('national.admin.v2', ['tab' => 'ministries'])->with('success', "Ministry removed.");
         app(\App\Services\CacheSyncService::class)->national();
+        return redirect()->route('national.admin.v2', ['tab' => 'ministries'])->with('success', "Ministry removed.");
     }
 
     public function storeAgency(Request $request)
@@ -306,14 +306,14 @@ class NationalAdminController extends Controller
         ]);
         $data['slug'] = Str::slug($data['name']);
         Agency::create($data);
-        return redirect()->route('national.admin.v2', ['tab' => 'agencies'])->with('success', "Agency created.");
         app(\App\Services\CacheSyncService::class)->national();
+        return redirect()->route('national.admin.v2', ['tab' => 'agencies'])->with('success', "Agency created.");
     }
 
     public function deleteAgency(Agency $agency)
     {
         $agency->delete();
-        return redirect()->route('national.admin.v2', ['tab' => 'agencies'])->with('success', "Agency removed.");
         app(\App\Services\CacheSyncService::class)->national();
+        return redirect()->route('national.admin.v2', ['tab' => 'agencies'])->with('success', "Agency removed.");
     }
 }

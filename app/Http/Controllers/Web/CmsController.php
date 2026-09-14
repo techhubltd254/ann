@@ -146,7 +146,8 @@ class CmsController extends Controller
     public function deleteTeamMember(TeamMember $member)
     {
         $member->delete();
-        return back()->with('success', 'Team member removed.');
+                app(\App\Services\CacheSyncService::class)->national();
+return back()->with('success', 'Team member removed.');
     }
 
     public function storeTimelineEvent(Request $request)
@@ -159,7 +160,8 @@ class CmsController extends Controller
     public function deleteTimelineEvent(TimelineEvent $event)
     {
         $event->delete();
-        return back()->with('success', 'Timeline event removed.');
+                app(\App\Services\CacheSyncService::class)->national();
+return back()->with('success', 'Timeline event removed.');
     }
 
     public function storeFaq(Request $request)
@@ -179,7 +181,8 @@ class CmsController extends Controller
     public function deleteFaq(FaqItem $faq)
     {
         $faq->delete();
-        return back()->with('success', 'FAQ removed.');
+                app(\App\Services\CacheSyncService::class)->national();
+return back()->with('success', 'FAQ removed.');
     }
 
     public function storeVideo(Request $request)
@@ -192,6 +195,7 @@ class CmsController extends Controller
     public function deleteVideo(VideoItem $video)
     {
         $video->delete();
-        return back()->with('success', 'Video removed.');
+                app(\App\Services\CacheSyncService::class)->national();
+return back()->with('success', 'Video removed.');
     }
 }
