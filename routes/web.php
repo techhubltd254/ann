@@ -45,6 +45,10 @@ Route::get('/', HomeController::class)->name('home')
     ->middleware($publicCache)
     ->withoutMiddleware($noSession);
 
+// Diagnostic — shows which DB the app is connected to (TiDB vs injected MySQL).
+// Not cached; always returns live status. Useful on the platform deploy URL.
+Route::get('/db-check', [\App\Http\Controllers\Web\DbCheckController::class, 'index'])->name('db-check');
+
 Route::get('/counties', [CountyController::class, 'index'])->name('counties.index')
     ->middleware($publicCache)
     ->withoutMiddleware($noSession);
@@ -559,6 +563,9 @@ Route::middleware(['auth', 'admin:kicc,national'])->prefix('kicc-admin/ecommerce
     Route::get('/analytics', [\App\Http\Controllers\Admin\EcommerceAdminController::class, 'analytics'])->name('analytics');
 });
 
+Route::get('/venues', [\App\Http\Controllers\Web\ExhibitionController::class, 'venues'])->name('venues.index')
+    ->middleware($publicCache)
+    ->withoutMiddleware($noSession);
 Route::get('/venues/{venue}', [VenueController::class, 'show'])->name('venues.show')
     ->middleware($publicCache)
     ->withoutMiddleware($noSession);

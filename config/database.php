@@ -28,9 +28,9 @@ return [
 
         'mysql' => [
             'driver' => 'mysql',
-            'url' => env('DB_URL'),
-            // Laravel Cloud injects DB_HOST for its own internal MySQL.
-            // We NEVER use the injected DB_HOST — always use TIDB_* vars.
+            // NOTE: no 'url' => env('DB_URL') here — Laravel Cloud injects
+            // DB_URL pointing at its own empty MySQL, which would hijack the
+            // connection away from TiDB. We NEVER use injected DB_* vars.
             'host' => env('TIDB_HOST', 'gateway01.eu-central-1.prod.aws.tidbcloud.com'),
             'port' => env('TIDB_PORT', '4000'),
             'database' => env('TIDB_DATABASE', 'kicc'),
@@ -44,7 +44,7 @@ return [
             'strict' => true,
             'engine' => null,
             'options' => extension_loaded('pdo_mysql') ? array_filter([
-                Mysql::ATTR_SSL_CA => env('MYSQL_ATTR_SSL_CA', '/etc/ssl/certs/ca-certificates.crt'),
+                Mysql::ATTR_SSL_CA => file_exists(env('MYSQL_ATTR_SSL_CA', '/etc/ssl/certs/ca-certificates.crt')) ? env('MYSQL_ATTR_SSL_CA', '/etc/ssl/certs/ca-certificates.crt') : null,
                 Mysql::ATTR_SSL_VERIFY_SERVER_CERT => env('DB_SSL_VERIFY', false),
             ], fn($v) => $v !== null && $v !== '') : [],
         ],
@@ -68,14 +68,13 @@ return [
             'strict' => true,
             'engine' => null,
             'options' => extension_loaded('pdo_mysql') ? array_filter([
-                Mysql::ATTR_SSL_CA => env('MYSQL_ATTR_SSL_CA', '/etc/ssl/certs/ca-certificates.crt'),
+                Mysql::ATTR_SSL_CA => file_exists(env('MYSQL_ATTR_SSL_CA', '/etc/ssl/certs/ca-certificates.crt')) ? env('MYSQL_ATTR_SSL_CA', '/etc/ssl/certs/ca-certificates.crt') : null,
                 Mysql::ATTR_SSL_VERIFY_SERVER_CERT => env('DB_SSL_VERIFY', false),
             ], fn($v) => $v !== null && $v !== '') : [],
         ],
 
         'mariadb' => [
             'driver' => 'mariadb',
-            'url' => env('DB_URL'),
             'host' => env('DB_HOST', '127.0.0.1'),
             'port' => env('DB_PORT', '3306'),
             'database' => env('DB_DATABASE', 'laravel'),
