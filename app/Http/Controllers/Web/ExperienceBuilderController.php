@@ -64,29 +64,12 @@ class ExperienceBuilderController extends Controller
         $anchor = $this->resolveAnchor($type, $id);
         if (!$anchor) abort(404);
 
-        $pipeline = app(PipelineManager::class);
-        $context = $pipeline->run('context', $anchor, $request);
-
-        // Get AI-generated itinerary from existing AIController
-        $aiItinerary = null;
-        try {
-            $aiController = app(\App\Http\Controllers\Web\AIController::class);
-            $aiRequest = new \Illuminate\Http\Request([
-                'destination' => $context['county']?->name ?? $context['anchor_name'] ?? '',
-                'days' => $request->input('days', 3),
-                'budget' => $request->input('budget', 'moderate'),
-                'interests' => implode(', ', array_column($context['correlations']['places_to_visit'] ?? [], 'type_label')),
-            ]);
-            $aiResponse = $aiController->itinerary($aiRequest);
-            $aiData = $aiResponse->getData(true);
-            $aiItinerary = $aiData['itinerary'] ?? null;
-        } catch (\Throwable $e) {
-            $aiItinerary = "Plan your " . ($context['days'] ?? 3) . "-day trip to " . ($context['county']?->name ?? $context['anchor_name']) . " with the recommended places above.";
-        }
+        $days = (int) $request->input('days', 3);
+        $dest = optional($anchor->county)->name ?? $anchor->name ?? 'Kenya';
 
         return view('experience.itinerary', [
-            'context' => $context,
-            'aiItinerary' => $aiItinerary,
+            'context' => ['days' => $days, 'anchor_name' => $anchor->name ?? '', 'county' => $anchor->county ?? null, 'anchor_type' => $type, 'anchor_id' => $id, 'correlations' => ['places_to_visit' => [], 'places_to_stay' => []]],
+            'aiItinerary' => "Welcome to your {$days}-day {$dest} Experience!\n\nPlan your days exploring {$dest}'s top attractions, dining at local restaurants, and experiencing Kenyan hospitality.",
         ]);
     }
 
