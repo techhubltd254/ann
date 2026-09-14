@@ -12,6 +12,7 @@ use App\Models\Ecommerce\FlashSale;
 use App\Models\TradeAgreement;
 use App\Services\CorrelationService;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Log;
 
 class MarketplaceController extends Controller
 {

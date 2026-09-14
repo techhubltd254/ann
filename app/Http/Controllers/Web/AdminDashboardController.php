@@ -61,17 +61,20 @@ class AdminDashboardController extends Controller
     {
         Product::findOrFail($id)->delete();
         return redirect()->route('dashboard.admin', ['tab' => 'products'])->with('success', 'Product deleted');
+        app(\App\Services\CacheSyncService::class)->kicc();
     }
 
     public function deleteUser($id)
     {
         User::findOrFail($id)->delete();
         return redirect()->route('dashboard.admin', ['tab' => 'users'])->with('success', 'User deleted');
+        app(\App\Services\CacheSyncService::class)->kicc();
     }
 
     public function deleteOrder($id)
     {
         Order::findOrFail($id)->delete();
         return redirect()->route('dashboard.admin', ['tab' => 'orders'])->with('success', 'Order deleted');
+        app(\App\Services\CacheSyncService::class)->kicc();
     }
 }

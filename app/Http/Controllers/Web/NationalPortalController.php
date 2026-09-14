@@ -83,6 +83,7 @@ class NationalPortalController extends Controller
         $data['slug'] = Str::slug($data['name']);
         Ministry::create($data);
         return back()->with('success', "Ministry {$data['name']} created.");
+        app(\App\Services\CacheSyncService::class)->national();
     }
 
     public function updateMinistry(Request $request, Ministry $ministry)
@@ -100,6 +101,7 @@ class NationalPortalController extends Controller
         ]);
         $ministry->update($data);
         return back()->with('success', "Ministry {$ministry->name} updated.");
+        app(\App\Services\CacheSyncService::class)->national();
     }
 
     public function deleteMinistry(Ministry $ministry)
@@ -107,6 +109,7 @@ class NationalPortalController extends Controller
         $this->authorizeNational();
         $ministry->delete();
         return back()->with('success', 'Ministry removed.');
+        app(\App\Services\CacheSyncService::class)->national();
     }
 
     // ─── AGENCY CRUD ───
@@ -124,6 +127,7 @@ class NationalPortalController extends Controller
         $data['slug'] = Str::slug($data['name']);
         Agency::create($data);
         return back()->with('success', "Agency {$data['name']} created.");
+        app(\App\Services\CacheSyncService::class)->national();
     }
 
     public function updateAgency(Request $request, Agency $agency)
@@ -140,6 +144,7 @@ class NationalPortalController extends Controller
         ]);
         $agency->update($data);
         return back()->with('success', "Agency {$agency->name} updated.");
+        app(\App\Services\CacheSyncService::class)->national();
     }
 
     public function deleteAgency(Agency $agency)
@@ -147,5 +152,6 @@ class NationalPortalController extends Controller
         $this->authorizeNational();
         $agency->delete();
         return back()->with('success', 'Agency removed.');
+        app(\App\Services\CacheSyncService::class)->national();
     }
 }
