@@ -50,7 +50,13 @@ class CacheSyncService
         try {
             $client = Redis::connection('cache')->client();
             $cachePrefix = (string) config('cache.prefix');
+            // The Redis connection may add its own prefix (e.g. '...-database-')
+            // on top of Laravel's cache prefix — match both forms.
+            $connPrefix = (string) config('database.redis.options.prefix', '');
             $pattern = $cachePrefix . $prefix . '*';
+            if ($connPrefix !== '' && ! str_starts_with($pattern, $connPrefix)) {
+                $pattern = $connPrefix . $pattern;
+            }
 
             // PhpRedis: scan(cursor, pattern, count) — cursor passed by reference.
             $cursor = null;
@@ -60,7 +66,12 @@ class CacheSyncService
                     $keys = [$keys];
                 }
                 if (! empty($keys)) {
-                    $client->del($keys);
+                    // The client auto-prefixes DEL keys with the connection
+                    // prefix — strip it from scanned keys first.
+                    $toDelete = array_map(fn ($k) => $connPrefix !== '' && str_starts_with($k, $connPrefix)
+                        ? substr($k, strlen($connPrefix))
+                        : $k, $keys);
+                    $client->del($toDelete);
                 }
             } while ($cursor !== 0 && $cursor !== null && $cursor !== false);
         } catch (\Throwable $e) {

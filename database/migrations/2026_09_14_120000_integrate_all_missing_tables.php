@@ -63,7 +63,7 @@ return new class extends Migration
             $t->string('event', 50), $t->json('old_values')->nullable(),
             $t->json('new_values')->nullable(), $t->text('description')->nullable(),
             $t->string('ip', 45)->nullable(), $t->string('user_agent', 500)->nullable(),
-            $t->timestamps(), $t->index(['auditable_type', 'auditable_id']),
+            $t->timestamps(),
         ]);
         $this->createIfMissing('notification_logs', fn (Blueprint $t) => [
             $t->id(), $t->nullableMorphs('notifiable'), $t->string('channel', 50),
@@ -181,7 +181,7 @@ return new class extends Migration
         $this->createIfMissing('recommendations', fn (Blueprint $t) => [
             $t->id(), $t->morphs('recommendable'), $t->morphs('recommended'),
             $t->decimal('score', 8, 4)->default(0), $t->string('reason')->nullable(),
-            $t->timestamps(), $t->index(['recommendable_type', 'recommendable_id']),
+            $t->timestamps(),
         ]);
         $this->createIfMissing('pulse_entries', fn (Blueprint $t) => [
             $t->id(), $t->timestamp('timestamp'), $t->string('type', 100),
@@ -270,7 +270,6 @@ return new class extends Migration
         $this->createIfMissing('embeddings', fn (Blueprint $t) => [
             $t->id(), $t->morphs('embeddable'), $t->text('content'), $t->binary('vector'),
             $t->string('model', 100)->nullable(), $t->timestamps(),
-            $t->index(['embeddable_type', 'embeddable_id']),
         ]);
         $this->createIfMissing('payment_intents', fn (Blueprint $t) => [
             $t->id(), $t->string('stripe_pi_id', 255)->unique(), $t->morphs('payable'),
