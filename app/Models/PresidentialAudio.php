@@ -7,6 +7,8 @@ use Illuminate\Support\Str;
 
 class PresidentialAudio extends Model
 {
+    protected $table = 'presidential_audios';
+
     protected $fillable = [
         'title', 'slug', 'speaker', 'transcript',
         'audio_asset_id', 'key_topics', 'timemarks',

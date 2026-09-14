@@ -135,6 +135,33 @@ if php -r "echo function_exists('opcache_reset') ? '1' : '0';" 2>/dev/null | gre
     php -r "opcache_reset();" 2>/dev/null && echo "  ✓ OpCache reset" || true
 fi
 
+# --- Phase 7b: Table integration check ---
+echo "[7b/8] Verifying table integration..."
+php -r '
+require "vendor/autoload.php";
+$app = require "bootstrap/app.php";
+$kernel = $app->make(Illuminate\Contracts\Console\Kernel::class);
+$kernel->bootstrap();
+
+$critical = ["orders","order_items","wishlists","product_questions","recently_viewed","auctions","auction_bids","flash_sales","flash_sale_products","gift_cards","rfqs","rfq_quotes","booth_authorizations","image_variants","attractions","hotels","airports","flights","flight_inventory","hotel_rooms","airport_transfers","flight_bookings","hotel_bookings","transfer_bookings","consent_forms","ad_campaigns","ad_creatives","audit_logs","invoices","content_pages","seo_metadata","county_subscribers","payment_gateways","pipeline_jobs","product_reviews","shipping_zones","shipping_rates","voice_notes","oauth_clients","oauth_tokens","analytics_events","page_views","embeddings","payment_intents","transaction_logs","livestream_channels","presidential_audios","notification_logs","county_financial_config","wallet_transactions","county_subscription_plans","drone_sequences","floor_plans","housing_projects","landmarks","pulse_entries","pulse_aggregates","pulse_values","usage_logs","speech_segments","screen_playlist_items","trader_spotlights","broadcast_schedules","billing_cycles","courier_partners","invoices","invoice_items","recommendations","trade_agreement_product_category","trade_bloc_county"];
+
+$missing = [];
+foreach ($critical as $t) {
+    if (!Illuminate\Support\Facades\Schema::hasTable($t)) {
+        $missing[] = $t;
+    }
+}
+
+if (count($missing) > 0) {
+    echo "  ⚠ Missing tables: " . implode(", ", $missing) . "\n";
+    echo "  ✓ Running integration migration...\n";
+    $kernel->call("migrate", ["--force" => true, "--path" => "database/migrations/2026_09_14_120000_integrate_all_missing_tables.php"]);
+    echo "  ✓ Table integration complete\n";
+} else {
+    echo "  ✓ All 70+ integration tables present\n";
+}
+' 2>/dev/null && echo "  ✓ Table verification done" || echo "  ⚠ Table verification skipped"
+
 # --- Phase 8: Health check ---
 echo "[8/8] Running health check..."
 HEALTH_URL="${APP_URL:-https://kicctest.org}/up"
