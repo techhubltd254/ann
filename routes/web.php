@@ -280,6 +280,12 @@ Route::get('/national/{slug}', [\App\Http\Controllers\Web\NationalSiteController
 Route::get('/attractions/{attraction}', [\App\Http\Controllers\Web\AttractionBookingController::class, 'show'])->name('attractions.show');
 Route::post('/attractions/{attraction}/book', [\App\Http\Controllers\Web\AttractionBookingController::class, 'book'])->name('attractions.book')->middleware('auth');
 
+// Experience Builder Pipeline (single-page experience planner)
+Route::get('/experience/{type}/{id}/plan', [\App\Http\Controllers\Web\ExperienceBuilderController::class, 'plan'])->name('experience.plan');
+Route::post('/experience/{type}/{id}/build', [\App\Http\Controllers\Web\ExperienceBuilderController::class, 'build'])->name('experience.build');
+Route::get('/experience/{type}/{id}/receipt', [\App\Http\Controllers\Web\ExperienceBuilderController::class, 'receipt'])->name('experience.receipt');
+Route::get('/experience/{type}/{id}/itinerary', [\App\Http\Controllers\Web\ExperienceBuilderController::class, 'itinerary'])->name('experience.itinerary');
+
 // Travel & Tourism
 Route::get('/travel', [TravelController::class, 'index'])->name('travel.index')
     ->middleware($publicCache)

@@ -121,6 +121,9 @@
                         <span class="text-sm font-bold text-gray-500">Total</span>
                         <span class="text-xl font-black text-gray-900">KES <span x-text="total()"></span></span>
                     </div>
+                    <a href="{{ route('experience.plan', ['type' => 'attraction', 'id' => $attraction->id]) }}" class="w-full h-12 rounded-xl bg-emerald-600 text-white font-black text-sm hover:bg-emerald-700 transition-all active:scale-[0.98] flex items-center justify-center mb-2">
+                        🎯 Build Your Full Experience
+                    </a>
                     <button type="submit" class="w-full h-12 rounded-xl bg-[#0B1E57] text-white font-black text-sm hover:bg-[#0D2A7A] transition-all active:scale-[0.98]">
                         Book &amp; Pay
                     </button>

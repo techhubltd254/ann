@@ -8,6 +8,7 @@ use App\Services\CorrelationService;
 use App\Services\PaymentService;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Str;
 
 /**
@@ -38,6 +39,7 @@ class AttractionBookingController extends Controller
         try {
             $tripRecommendations = app(CorrelationService::class)->forAttraction($attraction);
         } catch (\Throwable $e) {
+            Log::warning('correlation for attraction: ' . $e->getMessage());
         }
 
         $recommended = CountyTourismAttraction::where('county_id', $attraction->county_id)
