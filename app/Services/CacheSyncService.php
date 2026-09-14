@@ -48,22 +48,21 @@ class CacheSyncService
     private function forgetRedisPrefix(string $prefix): void
     {
         try {
-            $redis = Redis::connection('cache');
+            $client = Redis::connection('cache')->client();
             $cachePrefix = (string) config('cache.prefix');
             $pattern = $cachePrefix . $prefix . '*';
 
-            $cursor = 0;
+            // PhpRedis: scan(cursor, pattern, count) — cursor passed by reference.
+            $cursor = null;
             do {
-                $result = $redis->scan($cursor, ['match' => $pattern, 'count' => 500]);
-                if (! is_array($result) || count($result) < 2) {
-                    break;
+                $keys = $client->scan($cursor, $pattern, 500);
+                if (is_string($keys)) {
+                    $keys = [$keys];
                 }
-                $cursor = (int) $result[0];
-                $keys = $result[1] ?? [];
                 if (! empty($keys)) {
-                    $redis->del($keys);
+                    $client->del($keys);
                 }
-            } while ($cursor > 0);
+            } while ($cursor !== 0 && $cursor !== null && $cursor !== false);
         } catch (\Throwable $e) {
             Log::warning('cache-sync: redis scan failed', ['error' => $e->getMessage()]);
         }
@@ -91,6 +90,7 @@ class CacheSyncService
             "county_pins_{$countyId}",
             "dav:county:{$countyId}",
             "dav:sector:{$countyId}:",
+            "county_admin_dash_{$countyId}_",
         ];
 
         foreach ($prefixes as $p) {
@@ -131,6 +131,7 @@ class CacheSyncService
             'national',
             'ministry',
             'agency',
+            'national_admin_dash',
             'resolve:county_hero_id_0',
             'resolve:county_hero_url_0',
         ];
@@ -157,6 +158,7 @@ class CacheSyncService
             'home',
             'display_priority',
             'counties',
+            'kicc_admin_dash_',
         ];
         foreach ($prefixes as $p) {
             $this->forgetKeysWithPrefix($p);

@@ -70,50 +70,103 @@ class CountyAdminController extends Controller
         $county = $this->authorizeCounty($slug);
         $tab = $request->get('tab', 'overview');
 
-        // Analytics — paginate all entity collections to prevent OOM
-        $products = CountyProduct::where('county_id', $county->id)->paginate(50);
-        $attractions = CountyTourismAttraction::where('county_id', $county->id)->paginate(50);
-        $hotels = CountyHotel::where('county_id', $county->id)->paginate(50);
-        $sectorImages = $this->sectorImages($county->slug);
-        $plans = SubscriptionPlan::where('is_active', true)->orderBy('sort_order')->get();
-        $marketplaceProducts = Product::with(['variants', 'images'])->where('county_id', $county->id)->latest()->paginate(50);
-        $ads = Advertisement::where('placement', 'like', "%{$county->slug}%")->latest()->paginate(50);
-        $sectors = Sector::where('is_active', true)->orderBy('name')->get();
-        $linkedSectors = DB::table('county_sector')->where('county_id', $county->id)->pluck('sector_id');
-        $tileSectors = DB::table('county_sector')->where('county_id', $county->id)->where('display_on_tile', 'yes')->pluck('sector_id')->toArray();
-        $allSectors = Sector::orderBy('name')->get();
-        $sectorEntities = SectorEntity::where('county_id', $county->id)->paginate(100);
-        $institutions = \App\Models\CountyInstitution::with('owner', 'sectorEntities')
-            ->where('county_id', $county->id)
-            ->latest()
-            ->paginate(50);
+        $page = (int) $request->get('page', 1);
 
-        // Stats
-        $totalOrders = DB::table('order_items')
-            ->join('products', 'order_items.product_id', '=', 'products.id')
-            ->where('products.county_id', $county->id)->count();
-        $totalRevenue = DB::table('escrow_transactions')
-            ->join('users', 'escrow_transactions.seller_id', '=', 'users.id')
-            ->where('users.county_id', $county->id)->where('escrow_transactions.status', 'released')
-            ->sum('escrow_transactions.amount');
+        // Analytics — paginate all entity collections to prevent OOM.
+        // Cached 60s (admin TTL) so the dashboard loads fast; busted by syncCounty() on write.
+        $data = \Illuminate\Support\Facades\Cache::remember(
+            "county_admin_dash_{$county->id}_{$tab}_{$page}",
+            config('kicc.cache_ttl.admin', 60),
+            function () use ($county) {
+                $products = CountyProduct::where('county_id', $county->id)->paginate(50);
+                $attractions = CountyTourismAttraction::where('county_id', $county->id)->paginate(50);
+                $hotels = CountyHotel::where('county_id', $county->id)->paginate(50);
+                $sectorImages = $this->sectorImages($county->slug);
+                $plans = SubscriptionPlan::where('is_active', true)->orderBy('sort_order')->get();
+                $marketplaceProducts = Product::with(['variants', 'images'])->where('county_id', $county->id)->latest()->paginate(50);
+                $ads = Advertisement::where('placement', 'like', "%{$county->slug}%")->latest()->paginate(50);
+                $sectors = Sector::where('is_active', true)->orderBy('name')->get();
+                $linkedSectors = DB::table('county_sector')->where('county_id', $county->id)->pluck('sector_id');
+                $tileSectors = DB::table('county_sector')->where('county_id', $county->id)->where('display_on_tile', 'yes')->pluck('sector_id')->toArray();
+                $allSectors = Sector::orderBy('name')->get();
+                $sectorEntities = SectorEntity::where('county_id', $county->id)->paginate(100);
+                $institutions = \App\Models\CountyInstitution::with('owner', 'sectorEntities')
+                    ->where('county_id', $county->id)
+                    ->latest()
+                    ->paginate(50);
 
-        $stats = [
-            'products' => $products->count(),
-            'attractions' => $attractions->count(),
-            'hotels' => $hotels->count(),
-            'marketplaceProducts' => $marketplaceProducts->count(),
-            'orders' => $totalOrders,
-            'revenue' => $totalRevenue,
-            'sector_images' => count($sectorImages ?? []),
-            'packages' => $plans->count(),
-            // Dynamic KPI descriptors
-            'top_attractions' => $attractions->take(2)->pluck('name')->join(', '),
-            'hotel_rating' => $hotels->count() > 0 ? round($hotels->avg('star_rating') ?: 0, 1) : null,
-            'products_new' => $products->where('created_at', '>=', now()->subMonth())->count(),
-            'marketplace_new' => $marketplaceProducts->where('created_at', '>=', now()->subMonth())->count(),
-            'institutions' => $institutions->count(),
-            'sector_entities' => $sectorEntities->count(),
-        ];
+                // Stats
+                $totalOrders = DB::table('order_items')
+                    ->join('products', 'order_items.product_id', '=', 'products.id')
+                    ->where('products.county_id', $county->id)->count();
+                $totalRevenue = DB::table('escrow_transactions')
+                    ->join('users', 'escrow_transactions.seller_id', '=', 'users.id')
+                    ->where('users.county_id', $county->id)->where('escrow_transactions.status', 'released')
+                    ->sum('escrow_transactions.amount');
+
+                $stats = [
+                    'products' => $products->count(),
+                    'attractions' => $attractions->count(),
+                    'hotels' => $hotels->count(),
+                    'marketplaceProducts' => $marketplaceProducts->count(),
+                    'orders' => $totalOrders,
+                    'revenue' => $totalRevenue,
+                    'sector_images' => count($sectorImages ?? []),
+                    'packages' => $plans->count(),
+                    // Dynamic KPI descriptors
+                    'top_attractions' => $attractions->take(2)->pluck('name')->join(', '),
+                    'hotel_rating' => $hotels->count() > 0 ? round($hotels->avg('star_rating') ?: 0, 1) : null,
+                    'products_new' => $products->where('created_at', '>=', now()->subMonth())->count(),
+                    'marketplace_new' => $marketplaceProducts->where('created_at', '>=', now()->subMonth())->count(),
+                    'institutions' => $institutions->count(),
+                    'sector_entities' => $sectorEntities->count(),
+                ];
+
+                // ── Virtual Exhibition data ──
+                $traderSpotlights = \App\Models\TraderSpotlight::where('county_id', $county->id)
+                    ->with('spotlightVideo')->latest()->get();
+                $screens = \App\Models\Screen::where('county_id', $county->id)
+                    ->orderBy('label')->get();
+                $screenGroups = \App\Models\ScreenGroup::where('county_id', $county->id)->get();
+                $liveFeeds = \App\Models\LiveStream::where('county_id', $county->id)
+                    ->latest()->take(20)->get();
+                $verifiedTraders = \App\Models\CountyInstitution::where('county_id', $county->id)
+                    ->where('is_verified_trader', true)->count();
+                // P2 data
+                $housingProjects = \App\Models\HousingProject::where('county_id', $county->id)
+                    ->with('flythroughVideo')->latest()->get();
+                $droneSequences = \App\Models\DroneSequence::where('county_id', $county->id)
+                    ->with('droneVideo', 'audioOverlay')->latest()->get();
+                $presidentialAudios = \App\Models\PresidentialAudio::latest()->get();
+                $floorPlans = \App\Models\FloorPlan::with('exhibition', 'venue')->latest()->get();
+                // P3 data
+                $consentForms = \App\Models\ConsentForm::where(function ($q) use ($county) {
+                    $q->where('entity_type', \App\Models\County::class)->where('entity_id', $county->id);
+                })->with('records')->latest()->get();
+                $voiceNotes = \App\Models\VoiceNote::where(function ($q) use ($county) {
+                    $q->where('entity_type', \App\Models\County::class)->where('entity_id', $county->id);
+                })->with('audioAsset', 'segments')->latest()->get();
+                // P4 data
+                $landmarks = \App\Models\Landmark::where('county_id', $county->id)->latest()->get();
+                $broadcastSchedules = \App\Models\BroadcastSchedule::where('is_active', true)
+                    ->orderBy('sort_order')->latest()->take(50)->get();
+
+                return [
+                    'products' => $products, 'attractions' => $attractions, 'hotels' => $hotels,
+                    'sectorImages' => $sectorImages, 'plans' => $plans, 'marketplaceProducts' => $marketplaceProducts,
+                    'ads' => $ads, 'sectors' => $sectors, 'linkedSectors' => $linkedSectors, 'tileSectors' => $tileSectors,
+                    'allSectors' => $allSectors, 'sectorEntities' => $sectorEntities, 'institutions' => $institutions,
+                    'stats' => $stats, 'traderSpotlights' => $traderSpotlights, 'screens' => $screens,
+                    'screenGroups' => $screenGroups, 'liveFeeds' => $liveFeeds, 'verifiedTraders' => $verifiedTraders,
+                    'housingProjects' => $housingProjects, 'droneSequences' => $droneSequences,
+                    'presidentialAudios' => $presidentialAudios, 'floorPlans' => $floorPlans,
+                    'consentForms' => $consentForms, 'voiceNotes' => $voiceNotes,
+                    'landmarks' => $landmarks, 'broadcastSchedules' => $broadcastSchedules,
+                ];
+            }
+        );
+
+        extract($data);
 
         $navItems = [
             ['label' => 'Overview', 'tab' => 'overview', 'icon' => 'M3 12l2-2m0 0l7-7 7 7M5 10v10a1 1 0 001 1h3m10-11l2 2m-2-2v10a1 1 0 01-1 1h-3m-6 0a1 1 0 001-1v-4a1 1 0 011-1h2a1 1 0 011 1v4a1 1 0 001 1m-6 0h6'],
@@ -143,35 +196,6 @@ class CountyAdminController extends Controller
         ];
 
         $analytics = app(\App\Services\AnalyticsService::class)->forCounty($county);
-
-        // ── Virtual Exhibition data ──
-        $traderSpotlights = \App\Models\TraderSpotlight::where('county_id', $county->id)
-            ->with('spotlightVideo')->latest()->get();
-        $screens = \App\Models\Screen::where('county_id', $county->id)
-            ->orderBy('label')->get();
-        $screenGroups = \App\Models\ScreenGroup::where('county_id', $county->id)->get();
-        $liveFeeds = \App\Models\LiveStream::where('county_id', $county->id)
-            ->latest()->take(20)->get();
-        $verifiedTraders = \App\Models\CountyInstitution::where('county_id', $county->id)
-            ->where('is_verified_trader', true)->count();
-        // P2 data
-        $housingProjects = \App\Models\HousingProject::where('county_id', $county->id)
-            ->with('flythroughVideo')->latest()->get();
-        $droneSequences = \App\Models\DroneSequence::where('county_id', $county->id)
-            ->with('droneVideo', 'audioOverlay')->latest()->get();
-        $presidentialAudios = \App\Models\PresidentialAudio::latest()->get();
-        $floorPlans = \App\Models\FloorPlan::with('exhibition', 'venue')->latest()->get();
-        // P3 data
-        $consentForms = \App\Models\ConsentForm::where(function ($q) use ($county) {
-            $q->where('entity_type', \App\Models\County::class)->where('entity_id', $county->id);
-        })->with('records')->latest()->get();
-        $voiceNotes = \App\Models\VoiceNote::where(function ($q) use ($county) {
-            $q->where('entity_type', \App\Models\County::class)->where('entity_id', $county->id);
-        })->with('audioAsset', 'segments')->latest()->get();
-        // P4 data
-        $landmarks = \App\Models\Landmark::where('county_id', $county->id)->latest()->get();
-        $broadcastSchedules = \App\Models\BroadcastSchedule::where('is_active', true)
-            ->orderBy('sort_order')->latest()->take(50)->get();
 
         // County flag video
         $countyFlagVideo = \App\Models\MediaAsset::resolveSlot(\App\Models\County::class, $county->id, 'county_flag_video');

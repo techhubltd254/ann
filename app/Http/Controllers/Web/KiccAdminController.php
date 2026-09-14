@@ -40,7 +40,13 @@ class KiccAdminController extends Controller
         $this->authorizeKicc();
         $tab = $request->get('tab', 'overview');
 
-        $stats = [
+        // Cached 60s (admin TTL); busted by CacheSyncService::kicc() on write.
+        $page = (int) $request->get('page', 1);
+        $dash = \Illuminate\Support\Facades\Cache::remember(
+            "kicc_admin_dash_{$tab}_{$page}",
+            config('kicc.cache_ttl.admin', 60),
+            function () {
+                $stats = [
             'counties' => County::count(),
             'ministries' => Ministry::count(),
             'agencies' => Agency::count(),
@@ -133,6 +139,17 @@ class KiccAdminController extends Controller
             ->merge(\Illuminate\Support\Facades\DB::table('hotel_rooms')->where('is_active', 0)->limit(20)->get()->map(fn ($s) => ['table' => 'hotel_rooms', 'id' => $s->id, 'label' => "Room: {$s->name}", 'price' => $s->price_per_night]))
             ->merge(\Illuminate\Support\Facades\DB::table('airport_transfers')->where('is_active', 0)->limit(20)->get()->map(fn ($s) => ['table' => 'airport_transfers', 'id' => $s->id, 'label' => "Transfer: {$s->provider_name} ({$s->vehicle_type})", 'price' => $s->price]))
             ->merge(\Illuminate\Support\Facades\DB::table('flights')->where('status', 'pending')->limit(20)->get()->map(fn ($s) => ['table' => 'flights', 'id' => $s->id, 'label' => "Flight: {$s->flight_number}", 'price' => $s->base_price]));
+
+                return compact(
+                    'stats', 'counties', 'exhibitors', 'ministries', 'orders', 'escrows', 'users',
+                    'providers', 'institutions', 'pendingServices', 'plans', 'allPlans',
+                    'experienceBookings', 'experienceStats', 'streams', 'streamStats',
+                    'adminExhibitions', 'adminCounties', 'heroAsset',
+                );
+            }
+        );
+
+        extract($dash);
 
         $navItems = [
             ['label' => 'Overview', 'tab' => 'overview', 'icon' => 'M3 12l2-2m0 0l7-7 7 7M5 10v10a1 1 0 001 1h3m10-11l2 2m-2-2v10a1 1 0 01-1 1h-3m-6 0a1 1 0 001-1v-4a1 1 0 011-1h2a1 1 0 011 1v4a1 1 0 001 1m-6 0h6'],

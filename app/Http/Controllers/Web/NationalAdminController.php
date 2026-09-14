@@ -28,26 +28,38 @@ class NationalAdminController extends Controller
     public function dashboard(Request $request)
     {
         $tab = $request->get('tab', 'ministries');
-        $ministries = Ministry::with('agencies')->orderBy('name')->get();
-        $agencies = Agency::with('ministry')->orderBy('name')->get();
-        $nationalPages = Page::whereIn('slug', ['about','mission','vision','history','org-structure','pricing'])->orderBy('sort_order')->get();
 
-        $stats = [
-            'ministries' => $ministries->count(),
-            'agencies' => $agencies->count(),
-        ];
+        // Cached 60s (admin TTL); busted by CacheSyncService::national() on write.
+        $data = \Illuminate\Support\Facades\Cache::remember(
+            "national_admin_dash_{$tab}",
+            config('kicc.cache_ttl.admin', 60),
+            function () {
+                $ministries = Ministry::with('agencies')->orderBy('name')->get();
+                $agencies = Agency::with('ministry')->orderBy('name')->get();
+                $nationalPages = Page::whereIn('slug', ['about','mission','vision','history','org-structure','pricing'])->orderBy('sort_order')->get();
 
-        // Media data
-        $nationalHero = MediaAsset::resolveSlot(County::class, 0, 'national_hero_video');
-        $nationalFlag = MediaAsset::resolveSlot(County::class, 0, 'national_flag_video');
+                $stats = [
+                    'ministries' => $ministries->count(),
+                    'agencies' => $agencies->count(),
+                ];
 
-        $ministryMedia = [];
-        foreach ($ministries as $m) {
-            $ministryMedia[$m->id] = [
-                'video' => MediaAsset::resolveSlot(Ministry::class, $m->id, 'ministry_video_' . $m->slug),
-                'flag' => MediaAsset::resolveSlot(Ministry::class, $m->id, 'ministry_flag_video'),
-            ];
-        }
+                // Media data
+                $nationalHero = MediaAsset::resolveSlot(County::class, 0, 'national_hero_video');
+                $nationalFlag = MediaAsset::resolveSlot(County::class, 0, 'national_flag_video');
+
+                $ministryMedia = [];
+                foreach ($ministries as $m) {
+                    $ministryMedia[$m->id] = [
+                        'video' => MediaAsset::resolveSlot(Ministry::class, $m->id, 'ministry_video_' . $m->slug),
+                        'flag' => MediaAsset::resolveSlot(Ministry::class, $m->id, 'ministry_flag_video'),
+                    ];
+                }
+
+                return compact('ministries', 'agencies', 'nationalPages', 'stats', 'nationalHero', 'nationalFlag', 'ministryMedia');
+            }
+        );
+
+        extract($data);
 
         $navItems = [
             ['label' => 'Ministries', 'tab' => 'ministries', 'icon' => 'M19 21V5a2 2 0 00-2-2H7a2 2 0 00-2 2v16m14 0h2m-2 0h-5m-9 0H3m2 0h5M9 7h1m-1 4h1m4-4h1m-1 4h1m-5 10v-5a1 1 0 011-1h2a1 1 0 011 1v5m-4 0h4'],
