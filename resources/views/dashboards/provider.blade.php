@@ -40,12 +40,14 @@
             @if($pendingCount > 0)
             <span class="text-[10px] font-bold px-2.5 py-1 rounded-full bg-amber-50 text-amber-600">{{ $pendingCount }} awaiting KICC approval</span>
             @endif
-        </div>
+            @endisset
+</div>
         <div class="flex-1 overflow-y-auto p-6">
 
             @if(session('success'))
             <div class="bg-emerald-50 border border-emerald-200 text-emerald-700 rounded-xl px-5 py-3 mb-6 text-sm">{{ session('success') }}</div>
             @endif
+            @isset($errors)
             @if($errors->any())
             <div class="bg-red-50 border border-red-200 text-red-700 rounded-xl px-5 py-3 mb-6 text-sm">{{ $errors->first() }}</div>
             @endif
@@ -179,12 +181,13 @@
                     <span class="w-10 h-10 rounded-full bg-amber-50 flex items-center justify-center"><svg class="w-5 h-5 text-amber-600" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4m0 4h.01"/></svg></span>
                     <div><div class="font-bold text-amber-600">Pending Certification</div><div class="text-xs text-gray-400">KICC reviews your services before they go live.</div></div>
                     @endif
-                </div>
+            @endisset
+</div>
                 <p class="text-xs text-gray-500 leading-relaxed">Certification requirement: every travel &amp; accommodation provider on the KICC platform must be government-certified. KICC's admin team verifies each new service and price change before it appears to travelers.</p>
             </div>
             @endif
-
-        </div>
+            @endisset
+</div>
     </div>
 </div>
 @endsection

@@ -48,6 +48,7 @@
             @if(session('success'))
             <div class="bg-emerald-50 border border-emerald-200 text-emerald-700 rounded-xl px-5 py-3 mb-6 text-sm">{{ session('success') }}</div>
             @endif
+            @isset($errors)
             @if($errors->any())
             <div class="bg-red-50 border border-red-200 text-red-700 rounded-xl px-5 py-3 mb-6 text-sm">{{ $errors->first() }}</div>
             @endif
@@ -182,8 +183,8 @@
                 </div>
             </div>
             @endif
-
-        </div>
+            @endisset
+</div>
     </div>
 </div>
 @endsection
