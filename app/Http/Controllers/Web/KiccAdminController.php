@@ -133,6 +133,7 @@ class KiccAdminController extends Controller
         $allPlans = \App\Models\SubscriptionPlan::orderBy('sort_order')->get();
 
         // Provider certification queue (pending services across travel providers).
+        $providers = collect();
         // Each source is guarded — a missing table must never 500 the admin.
         $pendingServices = collect();
         foreach ([
