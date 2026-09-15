@@ -308,6 +308,13 @@ return new class extends Migration
             $t->decimal('total', 10, 2), $t->string('currency', 3)->default('KES'),
             $t->string('status', 30)->default('pending'), $t->timestamps(),
         ]);
+        $this->createIfMissing('airport_transfers', fn (Blueprint $t) => [
+            $t->id(), $t->foreignId('airport_id')->constrained('airports')->cascadeOnDelete(),
+            $t->string('provider_name'), $t->string('vehicle_type', 50),
+            $t->integer('capacity'), $t->decimal('price', 12, 2),
+            $t->string('currency', 3)->default('KES'), $t->text('description')->nullable(),
+            $t->boolean('is_active')->default(true), $t->timestamps(),
+        ]);
         $this->createIfMissing('transfer_bookings', fn (Blueprint $t) => [
             $t->id(), $t->string('booking_reference', 20)->unique(),
             $t->foreignId('user_id')->constrained()->cascadeOnDelete(),

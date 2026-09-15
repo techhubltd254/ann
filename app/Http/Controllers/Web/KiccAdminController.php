@@ -132,13 +132,25 @@ class KiccAdminController extends Controller
         $plans = \App\Models\SubscriptionPlan::where('is_active', true)->orderBy('sort_order')->get();
         $allPlans = \App\Models\SubscriptionPlan::orderBy('sort_order')->get();
 
-        // Provider certification queue (pending services across travel providers)
-        $providers = User::where('account_type', 'provider')->paginate(50);
-        $pendingServices = collect()
-            ->merge(\Illuminate\Support\Facades\DB::table('flight_inventory')->where('is_active', 0)->limit(20)->get()->map(fn ($s) => ['table' => 'flight_inventory', 'id' => $s->id, 'label' => 'Flight seat inventory', 'price' => $s->price]))
-            ->merge(\Illuminate\Support\Facades\DB::table('hotel_rooms')->where('is_active', 0)->limit(20)->get()->map(fn ($s) => ['table' => 'hotel_rooms', 'id' => $s->id, 'label' => "Room: {$s->name}", 'price' => $s->price_per_night]))
-            ->merge(\Illuminate\Support\Facades\DB::table('airport_transfers')->where('is_active', 0)->limit(20)->get()->map(fn ($s) => ['table' => 'airport_transfers', 'id' => $s->id, 'label' => "Transfer: {$s->provider_name} ({$s->vehicle_type})", 'price' => $s->price]))
-            ->merge(\Illuminate\Support\Facades\DB::table('flights')->where('status', 'pending')->limit(20)->get()->map(fn ($s) => ['table' => 'flights', 'id' => $s->id, 'label' => "Flight: {$s->flight_number}", 'price' => $s->base_price]));
+        // Provider certification queue (pending services across travel providers).
+        // Each source is guarded — a missing table must never 500 the admin.
+        $pendingServices = collect();
+        foreach ([
+            ['flight_inventory', 'is_active', 0, fn ($s) => 'Flight seat inventory', 'price'],
+            ['hotel_rooms', 'is_active', 0, fn ($s) => "Room: {$s->name}", 'price_per_night'],
+            ['airport_transfers', 'is_active', 0, fn ($s) => "Transfer: {$s->provider_name} ({$s->vehicle_type})", 'price'],
+            ['flights', 'status', 'pending', fn ($s) => "Flight: {$s->flight_number}", 'base_price'],
+        ] as [$table, $whereCol, $whereVal, $labelFn, $priceCol]) {
+            try {
+                $rows = \Illuminate\Support\Facades\DB::table($table)->where($whereCol, $whereVal)->limit(20)->get();
+            } catch (\Throwable $e) {
+                $rows = collect();
+            }
+            $pendingServices = $pendingServices->merge($rows->map(fn ($s) => [
+                'table' => $table, 'id' => $s->id,
+                'label' => $labelFn($s), 'price' => $s->{$priceCol} ?? null,
+            ]));
+        }
 
                 return compact(
                     'stats', 'counties', 'exhibitors', 'ministries', 'orders', 'escrows', 'users',
