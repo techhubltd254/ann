@@ -42,11 +42,8 @@ class MediaAsset extends Model
 
     public function url(?string $variant = null): string
     {
-        if ($this->disk === 'r2' && $this->kind === 'video') {
-            $base = rtrim(config('app.url'), '/');
-            return $base . '/media/video/' . ltrim($this->path, '/');
-        }
-
+        // Serve everything through the CDN worker (media.kicctest.org) —
+        // it has the KICC_MEDIA R2 binding and streams video/mp4 + derivatives.
         $media = media_url();
         return $media . '/' . ltrim($this->path, '/');
     }

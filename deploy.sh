@@ -111,6 +111,13 @@ if [ -f "$EDGE_FILE" ]; then
     python3 /opt/kicc-laravel/infra/deploy/deploy-worker.py >> "$LOG" 2>&1 || echo "worker deploy FAILED" >> "$LOG"
 fi
 
+# Deploy R2 media worker (kicc-r2-media) — always re-assert the KICC_MEDIA
+# R2 binding; the media CDN breaks if this binding is missing.
+R2_META="$APP_DIR/infra/deploy/worker-r2-meta.json"
+if [ -f "$R2_META" ]; then
+    python3 /opt/kicc-laravel/infra/deploy/deploy-worker-r2.py >> "$LOG" 2>&1 || echo "r2-media worker deploy FAILED" >> "$LOG"
+fi
+
 # Bring app back
 php artisan up 2>/dev/null || true
 
