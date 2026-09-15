@@ -31,6 +31,20 @@ class MediaLibraryService
 
         [$width, $height] = $this->detectDimensions($file, $kind);
 
+        // Write metadata sidecar file for future sync (used by media:sync-from-r2)
+        if ($disk === 'r2' && !empty($opts['owner_type'])) {
+            try {
+                Storage::disk($disk)->put($path . '.meta.json', json_encode([
+                    'owner_type' => $opts['owner_type'] ?? null,
+                    'owner_id' => $opts['owner_id'] ?? null,
+                    'slot' => $opts['slot'] ?? null,
+                    'uploaded_at' => now()->toIso8601String(),
+                ]), ['visibility' => 'public']);
+            } catch (\Throwable $e) {
+                \Illuminate\Support\Facades\Log::warning('meta sidecar write failed: ' . $e->getMessage());
+            }
+        }
+
         return MediaAsset::create([
             'uuid' => $uuid,
             'owner_id' => $opts['owner_id'] ?? auth()->id(),
