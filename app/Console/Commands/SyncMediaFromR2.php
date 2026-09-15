@@ -37,20 +37,26 @@ class SyncMediaFromR2 extends Command
         $this->info("  Metadata sidecar files: " . count($metaFiles));
         $this->info("  Files with metadata: " . count($metaPaths));
 
-        // Media files eligible for MediaAsset creation (no metadata files themselves)
-        $mediaFiles = array_filter($allFiles, fn($f) =>
-            preg_match('/\.(mp4|webm|m3u8|jpg|jpeg|png|webp)$/i', $f) &&
-            !str_ends_with($f, '.meta.json')
-        );
-        $this->info("  Media files: " . count($mediaFiles));
+        // Media files: only process files WITH metadata sidecars. Skip intermediates.
+        // Intermediates are derivative/hover files that are generated during processing.
+        $mediaFiles = array_filter($metaPaths, function($meta, $path) {
+            // Only process files with valid owner metadata
+            if (empty($meta['owner_type']) || $meta['owner_type'] === 'r2_file') return false;
+            // Skip intermediate processing noise (hover/hover/hover nested paths)
+            if (substr_count($path, '/hover/') > 1) return false;
+            // Must be a valid media extension
+            if (!preg_match('/\.(mp4|webm|m3u8|jpg|jpeg|png|webp)$/i', $path)) return false;
+            return true;
+        }, ARRAY_FILTER_USE_BOTH);
+
+        $this->info("  Media files WITH metadata: " . count($mediaFiles));
         $this->newLine();
 
         $created = 0;
         $updated = 0;
         $skipped = 0;
-        $existingPaths = MediaAsset::pluck('path')->toArray();
 
-        foreach ($mediaFiles as $path) {
+        foreach ($mediaFiles as $path => $meta) {
             // Determine mime and kind from file extension
             $mime = 'application/octet-stream';
             $kind = 'file';
@@ -60,8 +66,7 @@ class SyncMediaFromR2 extends Command
             elseif (preg_match('/\.png$/i', $path)) { $mime = 'image/png'; $kind = 'image'; }
             elseif (preg_match('/\.webp$/i', $path)) { $mime = 'image/webp'; $kind = 'image'; }
 
-            // Get metadata from sidecar file — this is the SOURCE OF TRUTH
-            $meta = $metaPaths[$path] ?? null;
+            // Get metadata from sidecar file — comes from the filtered $mediaFiles array
 
             $asset = MediaAsset::where('path', $path)->first();
 
@@ -78,7 +83,8 @@ class SyncMediaFromR2 extends Command
                         $updated++;
                     } else { $skipped++; }
                 } else { $skipped++; }
-            } else {
+            } else if ($meta) {
+                // Only create new asset when metadata sidecar exists
                 $assetData = [
                     'uuid' => Str::uuid(),
                     'owner_type' => $meta['owner_type'] ?? 'r2_file',

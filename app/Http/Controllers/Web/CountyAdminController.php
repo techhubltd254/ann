@@ -37,10 +37,12 @@ class CountyAdminController extends Controller
     protected function authorizeCounty(string $slug): County
     {
         $user = Auth::user();
+        abort_unless($user, 401);
         $county = County::where('slug', $slug)->firstOrFail();
-        $allowed = $user->hasRole('kicc_admin')
+        $allowed = $user->isAdmin()
+            || $user->hasRole('kicc_admin')
             || $user->hasRole('national_admin')
-            || ($user->county_id == $county->id)
+            || ($user->county_id && $user->county_id == $county->id)
             || ($user->hasRole('county_admin') && $user->county_id == $county->id);
         abort_unless($allowed, 403, 'You do not have access to this county.');
         return $county;
