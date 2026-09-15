@@ -183,7 +183,7 @@ class AuthController extends Controller
 
         $field = filter_var($data['login'], FILTER_VALIDATE_EMAIL) ? 'email' : 'phone';
 
-        if (Auth::attempt([$field => $data['login'], 'password' => $data['password'], 'active' => true], $request->boolean('remember'))) {
+        if (Auth::attempt([$field => $data['login'], 'password' => $data['password'], 'status' => 'active'], $request->boolean('remember'))) {
             $request->session()->regenerate();
             RateLimiter::clear($key);
 
