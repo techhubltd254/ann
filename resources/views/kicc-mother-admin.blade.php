@@ -52,9 +52,7 @@
             </div>
         </header>
         <main class="flex-1 overflow-y-auto p-6 scrollbar-hide">
-            @isset($errors)
-            @if($errors->any())<div class="mb-4 px-5 py-3 rounded-xl bg-red-500/10 border border-red-500/20 text-red-400 text-sm">{{ $errors->first() }}</div>@endif
-            @endisset
+            @isset($errors) @if($errors->any())<div class="mb-4 px-5 py-3 rounded-xl bg-red-500/10 border border-red-500/20 text-red-400 text-sm">{{ $errors->first() }}</div>@endif @endisset
 
             {{--  OVERVIEW  --}}
             @if($tab === 'overview')
@@ -233,7 +231,7 @@
                         <span class="text-[10px] font-bold px-2 py-0.5 rounded-full bg-emerald-500/10 text-emerald-400">CERTIFIED</span>
                         @else
                         <span class="text-[10px] font-bold px-2 py-0.5 rounded-full bg-amber-500/10 text-amber-400">PENDING</span>
-                        @endif @endisset
+                        @endif
 </div>
                     @endforeach
                 </div>
@@ -297,7 +295,7 @@
                         </div>
                         @if($e->status === 'held')
                         <form method="POST" action="{{ route('kicc.admin.escrow.release', $e->id) }}" onsubmit="return confirm('Release KES {{ number_format($e->amount) }} to {{ $e->seller?->name }}?')">@csrf<button class="text-[10px] font-bold px-2.5 py-1.5 rounded-lg bg-rose-500/20 text-rose-400 hover:bg-rose-500/30">RELEASE</button></form>
-                        @endif @endisset
+                        @endif
 </div>
                 </div>
                 @empty
@@ -530,7 +528,7 @@
                             <span class="text-[10px] font-bold uppercase tracking-widest text-zinc-400">{{ $p->name }}</span>
                             @if($p->slug === 'exhibitor-pro')
                             <span class="text-[9px] font-bold px-2 py-0.5 rounded-full bg-[#FFCD05]/20 text-[#FFCD05]">POPULAR</span>
-                            @endif @endisset
+@endif
 </div>
                         <div class="text-2xl font-black text-white">KES {{ number_format($p->price) }}<span class="text-xs text-zinc-500 font-medium">/mo</span></div>
                         <div class="text-[10px] text-zinc-500 mt-1">{{ $p->max_booths >= 999 ? 'Unlimited' : $p->max_booths }} booth{{ $p->max_booths > 1 ? 's' : '' }} · {{ $p->is_active ? 'Active' : 'Hidden' }}</div>
