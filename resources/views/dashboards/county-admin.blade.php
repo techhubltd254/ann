@@ -148,9 +148,9 @@
 
         {{-- Content area --}}
         <main class="flex-1 overflow-y-auto p-6 scrollbar-hide">
-            @if($errors->any())
+            @isset($errors)@if($errors->any())
             <div class="mb-4 px-5 py-3 rounded-xl bg-red-500/10 border border-red-500/20 text-red-400 text-sm flex items-center gap-2">{{ $errors->first() }}</div>
-            @endif
+            @endif @endisset
 
             {{--  OVERVIEW — Executive Dashboard  --}}
             @if($tab === 'overview')

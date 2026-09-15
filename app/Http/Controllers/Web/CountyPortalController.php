@@ -33,9 +33,12 @@ class CountyPortalController extends Controller
     {
         $this->authorizeCounty();
         $user = Auth::user();
-        // KICC admins see all counties; county admins go to their own
         if ($user->hasRole('kicc_admin')) {
             return redirect()->route('kicc.admin', ['tab' => 'counties']);
+        }
+        if (!$user->county_id) {
+            return redirect()->route('kicc.admin', ['tab' => 'counties'])
+                ->with('error', 'You have not been assigned to any county. Contact a KICC administrator.');
         }
         $county = County::findOrFail($user->county_id);
         return redirect()->route('county.admin.pro', $county->slug);
@@ -45,6 +48,10 @@ class CountyPortalController extends Controller
     {
         $this->authorizeCounty();
         $user = Auth::user();
+        if (!$user->county_id) {
+            return redirect()->route('kicc.admin', ['tab' => 'counties'])
+                ->with('error', 'You have not been assigned to any county.');
+        }
         $county = County::withCount('sectors')->findOrFail($user->county_id);
         $tab = $request->get('tab', 'overview');
 
