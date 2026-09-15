@@ -50,9 +50,9 @@ class InstitutionSyncService
 
                 // 1. Link sector to county if missing
                 if (!$county->sectors()->where('sector_id', $sector->id)->exists()) {
-                    $county->sectors()->attach($sector->id, ['display_on_tile' => 'yes', 'countyId' => $county->id, 'sectorId' => $sector->id]);
+                    $county->sectors()->attach($sector->id, ['display_on_tile' => 'yes']);
                 } else {
-                    $county->sectors()->updateExistingPivot($sector->id, ['display_on_tile' => 'yes', 'countyId' => $county->id, 'sectorId' => $sector->id]);
+                    $county->sectors()->updateExistingPivot($sector->id, ['display_on_tile' => 'yes']);
                 }
                 $summary['sectors']++;
 
