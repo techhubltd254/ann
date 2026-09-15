@@ -57,7 +57,7 @@ class MediaAsset extends Model
         if ($webm) return $this->resolve($webm->path);
         $mp4 = $this->derivatives->firstWhere('kind', 'video_mp4');
         if ($mp4) return $this->resolve($mp4->path);
-        return null;
+        return $this->url();
     }
 
     public function derivativeUrl(string $kind, ?string $variant = null): ?string
