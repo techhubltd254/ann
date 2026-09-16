@@ -405,7 +405,7 @@ return [
     | explicit cache-busting hooks.
     */
     'cache_ttl' => [
-        'admin' => 60,
+        'admin' => 600,
         'public' => 21600,
         'media' => 3600,
     ],
