@@ -7,7 +7,7 @@ BRANCH="main"
 TOKEN="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"
 WORK="/tmp/ann-deploy"
 LOG="/opt/deploy-webhook/deploy.log"
-export CF_TOKEN="cfat_O5sm7cBn09iAcOrgkassBRO4yNElj1PhBdmh2r4K0f9e27ef"
+export CF_TOKEN="cfat_s9JltaYS3YyiM3w7QTG3zKqZZ7AJMGgLcqUYLQdCf99d30c4"
 export CF_ACCOUNT="c8416e05ed0a3554806be51aac862ec4"
 
 echo "=== DEPLOY START $(date) ===" >> "$LOG"
