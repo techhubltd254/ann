@@ -107,11 +107,7 @@
                     <a href="{{ route('county.admin.pro', $county->slug) }}" class="px-4 py-2 rounded-xl bg-[#0B1E57] text-white text-xs font-bold hover:bg-[#0D2A7A] transition-all">County Admin</a>
                     @endif
                 @else
-                @auth
-            <a href="{{ route('county.admin.pro', $county->slug) }}" class="px-4 py-2 rounded-xl bg-[#901C1E] text-white text-xs font-bold hover:bg-[#7b1618] transition-all">County Admin</a>
-            @else
-            <a href="{{ route('login') }}" class="px-4 py-2 rounded-xl border border-[#0B1E57]/40 text-[#0B1E57] text-xs font-bold hover:bg-[#0B1E57]/10 transition-all">Admin Login</a>
-            @endauth
+                <a href="{{ route('login') }}" class="px-4 py-2 rounded-xl border border-[#0B1E57]/40 text-[#0B1E57] text-xs font-bold hover:bg-[#0B1E57]/10 transition-all">Admin Login</a>
                 @endauth
             </div>
         </div>
