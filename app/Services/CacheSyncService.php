@@ -212,21 +212,29 @@ class CacheSyncService
 
         $zone = config('services.cloudflare.zone_id');
         $token = config('services.cloudflare.api_token');
-        if (! $zone || ! $token) {
+        if (! $zone) {
             return;
         }
 
-        try {
-            Http::withToken($token)
-                ->timeout(10)
-                ->post("https://api.cloudflare.com/client/v4/zones/{$zone}/purge_cache", [
-                    'files' => $urls,
-                ])->throw();
-        } catch (\Throwable $e) {
-            Log::warning('cache-sync: cloudflare purge failed', [
-                'urls' => $urls,
-                'error' => $e->getMessage(),
-            ]);
+        // Try multiple tokens in order of preference
+        $tokens = array_filter([
+            $token,
+            env('CF_TOKEN'),
+            env('CLOUDFLARE_API_TOKEN'),
+        ]);
+
+        foreach ($tokens as $t) {
+            try {
+                Http::withToken($t)
+                    ->timeout(10)
+                    ->post("https://api.cloudflare.com/client/v4/zones/{$zone}/purge_cache", [
+                        'files' => $urls,
+                    ])->throw();
+                return; // Success — stop here
+            } catch (\Throwable $e) {
+                continue; // Try next token
+            }
         }
+        Log::warning('cache-sync: cloudflare purge failed (all tokens)', ['urls' => $urls]);
     }
 }

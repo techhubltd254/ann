@@ -118,6 +118,20 @@ if [ -f "$R2_META" ]; then
     python3 /opt/kicc-laravel/infra/deploy/deploy-worker-r2.py >> "$LOG" 2>&1 || echo "r2-media worker deploy FAILED" >> "$LOG"
 fi
 
+# Purge Cloudflare CDN cache for the entire site (so users see changes immediately)
+# Requires CLOUDFLARE_API_TOKEN with zone-level cache purge permissions
+ZONE_ID="abeda0e6440d9eabd5e2e54deced291e"
+if [ -n "${CLOUDFLARE_API_TOKEN:-}" ]; then
+    echo "purging Cloudflare cache..." >> "$LOG"
+    curl -s -X POST "https://api.cloudflare.com/client/v4/zones/$ZONE_ID/purge_cache" \
+        -H "Authorization: Bearer $CLOUDFLARE_API_TOKEN" \
+        -H "Content-Type: application/json" \
+        -d '{"purge_everything":true}' \
+        -o /dev/null 2>&1 && echo "  ✓ Cloudflare cache purged" >> "$LOG" || echo "  ⚠ Cloudflare cache purge failed" >> "$LOG"
+else
+    echo "  ⚠ CLOUDFLARE_API_TOKEN not set — skipping cache purge" >> "$LOG"
+fi
+
 # Bring app back
 php artisan up 2>/dev/null || true
 
