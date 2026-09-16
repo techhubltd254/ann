@@ -6,25 +6,18 @@ use Illuminate\Support\Facades\Schema;
 return new class extends Migration {
     public function up(): void
     {
-        $tables = [
-            'county_institutions' => ['is_published'],
-            'county_tourism_attractions' => ['is_published'],
-            'county_hotels' => ['is_published'],
-            'county_products' => ['is_published'],
-            'sector_entities' => ['entity_type', 'is_published'],
-            'county_sector' => ['display_on_tile'],
+        $statements = [
+            "CREATE INDEX IF NOT EXISTS county_institutions_is_published_index ON county_institutions (is_published)",
+            "CREATE INDEX IF NOT EXISTS county_tourism_attractions_is_published_index ON county_tourism_attractions (is_published)",
+            "CREATE INDEX IF NOT EXISTS county_hotels_is_published_index ON county_hotels (is_published)",
+            "CREATE INDEX IF NOT EXISTS county_products_is_published_index ON county_products (is_published)",
+            "CREATE INDEX IF NOT EXISTS sector_entities_entity_type_index ON sector_entities (entity_type)",
+            "CREATE INDEX IF NOT EXISTS sector_entities_is_published_index ON sector_entities (is_published)",
+            "CREATE INDEX IF NOT EXISTS county_sector_display_on_tile_index ON county_sector (display_on_tile)",
+            "CREATE INDEX IF NOT EXISTS county_sector_county_sector_index ON county_sector (county_id, sector_id)",
         ];
-        foreach ($tables as $table => $cols) {
-            if (!Schema::hasTable($table)) continue;
-            Schema::table($table, function (Blueprint $t) use ($table, $cols) {
-                foreach ($cols as $col) {
-                    $idx = "{$table}_{$col}_index";
-                    try { $t->index($col, $idx); } catch (\Throwable $e) {}
-                }
-            });
-        }
-        if (Schema::hasTable('county_sector')) {
-            try { Schema::table('county_sector', fn (Blueprint $t) => $t->index(['county_id', 'sector_id'], 'county_sector_county_sector_index')); } catch (\Throwable $e) {}
+        foreach ($statements as $sql) {
+            try { DB::statement($sql); } catch (\Throwable $e) {}
         }
     }
     public function down(): void {}
