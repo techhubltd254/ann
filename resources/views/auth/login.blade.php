@@ -10,7 +10,6 @@
         portals: [
             { id: 'kicc',     title: 'KICC Mother Admin',    desc: 'Platform-wide control — all counties, national, exhibitors', icon: '', color: 'from-[#F59E0B] to-[#D97706]' },
             { id: 'national', title: 'National Government',   desc: 'Ministries & agencies portal',                              icon: '', color: 'from-[#0EA5E9] to-[#0284C7]' },
-            { id: 'county',   title: 'County Admin',          desc: 'Manage your county — products, sectors, videos',            icon: '', color: 'from-[#0B1E57] to-[#1a3070]' },
             { id: 'exhibitor',title: 'Exhibitor',             desc: 'Your storefront & marketplace dashboard',                   icon: '', color: 'from-[#2D6A4F] to-[#40916C]' },
         ],
         select(p) { this.portal = p; this.step = 'form'; },
@@ -108,8 +107,9 @@
                 </div>
                 <h2 class="text-2xl font-black text-white leading-tight" data-split>Enter where you<br>belong</h2>
                 <p class="text-white/70 text-sm mt-3 leading-relaxed">
-                    The KICC Mother Admin governs everything. Below it sit the three pillar portals:
-                    <strong class="text-white">National Government</strong>, <strong class="text-white">County Admin</strong> (all 47 counties) and <strong class="text-white">Exhibitor</strong> storefronts.
+                    The KICC Mother Admin governs everything. Below it sit the 
+                    <strong class="text-white">National Government</strong> and <strong class="text-white">Exhibitor</strong> storefronts.
+                    County admins log in through the KICC Mother Admin portal.
                 </p>
                 <div class="mt-6 space-y-3">
                     <div class="flex items-center gap-3 p-3 rounded-xl bg-white/5 border border-white/10">
@@ -124,13 +124,6 @@
                         <div>
                             <div class="text-white text-sm font-bold">National Government</div>
                             <div class="text-white/50 text-xs">Ministries & agencies portal</div>
-                        </div>
-                    </div>
-                    <div class="flex items-center gap-3 p-3 rounded-xl bg-white/5 border border-white/10">
-                        <span class="text-xl"></span>
-                        <div>
-                            <div class="text-white text-sm font-bold">County Admin</div>
-                            <div class="text-white/50 text-xs">47 counties, each with its own dashboard</div>
                         </div>
                     </div>
                     <div class="flex items-center gap-3 p-3 rounded-xl bg-white/5 border border-white/10">
