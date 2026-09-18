@@ -667,3 +667,9 @@ Route::get('/media/derivatives/{path}', [\App\Http\Controllers\Web\MediaProxyCon
 Route::get('/muranga-admin/{path?}', function () {
     return response()->file(public_path('muranga-admin/index.html'));
 })->where('path', '.*')->middleware('auth');
+
+// ── Digital Consent Forms (Public — compliant with Kenya DPA 2019 & GDPR) ──
+Route::get('/consent/{slug}', [\App\Http\Controllers\Web\ConsentController::class, 'show'])->name('consent.show');
+Route::post('/consent/{slug}/sign', [\App\Http\Controllers\Web\ConsentController::class, 'sign'])->name('consent.sign');
+Route::get('/consent/{slug}/confirmation/{record}', [\App\Http\Controllers\Web\ConsentController::class, 'confirmation'])->name('consent.confirmation');
+Route::get('/consent/verify', [\App\Http\Controllers\Web\ConsentController::class, 'verify'])->name('consent.verify');
