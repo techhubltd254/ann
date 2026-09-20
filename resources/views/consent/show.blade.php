@@ -10,6 +10,13 @@
     <h1 class="text-3xl md:text-4xl font-black text-gray-900 leading-tight mb-2">{{ $form->title }}</h1>
     <p class="text-gray-500 text-sm mb-8">{{ $form->language === 'sw' ? 'Tafadhali soma na kukubali sheria na masharti hapa chini.' : 'Please read and agree to the terms below.' }}</p>
 
+    <div class="flex gap-3 mb-6">
+        <a href="{{ route('consent.physical') }}" target="_blank" class="inline-flex items-center gap-2 text-xs text-gray-500 hover:text-gray-700 bg-gray-100 hover:bg-gray-200 px-3 py-2 rounded-xl transition-colors">
+            <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 17h2a2 2 0 002-2v-4a2 2 0 00-2-2H5a2 2 0 00-2 2v4a2 2 0 002 2h2m2 4h6a2 2 0 002-2v-4a2 2 0 00-2-2H9a2 2 0 00-2 2v4a2 2 0 002 2zm8-12V5a2 2 0 00-2-2H9a2 2 0 00-2 2v4"/></svg>
+            Print Physical Form
+        </a>
+    </div>
+
     <form method="POST" action="{{ route('consent.sign', $form->slug) }}" class="bg-white rounded-2xl border border-gray-200 p-6 md:p-10">
         @csrf
 

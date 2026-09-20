@@ -108,4 +108,12 @@ class ConsentController extends Controller
         $record = ConsentRecord::with('consentForm')->findOrFail($request->reference);
         return view('consent.verify', compact('record'));
     }
+
+    /**
+     * Physical/printable consent form — includes QR code linking to digital version.
+     */
+    public function physical()
+    {
+        return view('consent.physical');
+    }
 }

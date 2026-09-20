@@ -672,4 +672,5 @@ Route::get('/muranga-admin/{path?}', function () {
 Route::get('/consent/{slug}', [\App\Http\Controllers\Web\ConsentController::class, 'show'])->name('consent.show');
 Route::post('/consent/{slug}/sign', [\App\Http\Controllers\Web\ConsentController::class, 'sign'])->name('consent.sign');
 Route::get('/consent/{slug}/confirmation/{record}', [\App\Http\Controllers\Web\ConsentController::class, 'confirmation'])->name('consent.confirmation');
+Route::get('/consent/physical', [\App\Http\Controllers\Web\ConsentController::class, 'physical'])->name('consent.physical');
 Route::get('/consent/verify', [\App\Http\Controllers\Web\ConsentController::class, 'verify'])->name('consent.verify');
