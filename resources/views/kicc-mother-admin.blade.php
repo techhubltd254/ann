@@ -573,6 +573,82 @@
             @if($tab === 'analytics')
             @include('dashboards.analytics-tab', ['analytics' => $analytics ?? []])
             @endif
+
+            @if($tab === 'pool')
+            <div class="p-6 space-y-6">
+                <h2 class="text-xl font-bold text-white">Selling Pool</h2>
+                <p class="text-zinc-400 text-sm">All proceeds from every sector, county, and pipeline accrue into one pool. Monthly payouts flow back weighted by contribution &times; quality.</p>
+
+                <div class="grid grid-cols-1 md:grid-cols-3 gap-4 mt-4">
+                    <div class="bg-zinc-800/80 rounded-xl p-5 border border-zinc-700">
+                        <div class="text-zinc-400 text-xs uppercase tracking-wide">Pool Balance</div>
+                        <div class="text-2xl font-bold text-white mt-1">KES {{ number_format($poolBalance ?? 0) }}</div>
+                        @if($pool ?? false)
+                        <div class="text-xs text-zinc-500 mt-1">Holdback {{ $pool->holdback_pct ?? 10 }}% &middot; Equalisation {{ $pool->equalisation_pct ?? 0.5 }}%</div>
+                        @endif
+                    </div>
+                    <div class="bg-zinc-800/80 rounded-xl p-5 border border-zinc-700">
+                        <div class="text-zinc-400 text-xs uppercase tracking-wide">Pending Distributions</div>
+                        <div class="text-2xl font-bold text-white mt-1">{{ $poolPendingDistributions?->count() ?? 0 }}</div>
+                        <div class="text-xs text-zinc-500 mt-1">Awaiting Mother Admin approval</div>
+                    </div>
+                    <div class="bg-zinc-800/80 rounded-xl p-5 border border-zinc-700">
+                        <div class="text-zinc-400 text-xs uppercase tracking-wide">Current Period</div>
+                        <div class="text-2xl font-bold text-white mt-1">{{ now()->format('Y-m') }}</div>
+                        <div class="text-xs text-zinc-500 mt-1">Contributions tracked daily</div>
+                    </div>
+                </div>
+
+                <div class="bg-zinc-800/80 rounded-xl border border-zinc-700 p-5 mt-6">
+                    <h3 class="text-lg font-semibold text-white mb-3">Top Contributors This Period</h3>
+                    @if(($poolPeriodContributions ?? collect())->isNotEmpty())
+                    <table class="w-full text-sm text-zinc-300">
+                        <thead><tr class="text-left border-b border-zinc-700"><th class="pb-2">County</th><th class="pb-2">Contribution</th></tr></thead>
+                        <tbody>
+                        @foreach($poolPeriodContributions as $contrib)
+                        @php $county = \App\Models\County::find($contrib->county_id); @endphp
+                        <tr class="border-b border-zinc-700/50"><td class="py-2">{{ $county?->name ?? 'County #'.$contrib->county_id }}</td><td class="py-2">KES {{ number_format($contrib->total) }}</td></tr>
+                        @endforeach
+                        </tbody>
+                    </table>
+                    @else
+                    <p class="text-zinc-500 text-sm">No contributions recorded yet. Contributions appear when escrows are released.</p>
+                    @endif
+                </div>
+
+                <div class="bg-zinc-800/80 rounded-xl border border-zinc-700 p-5 mt-6">
+                    <h3 class="text-lg font-semibold text-white mb-3">Pending Distributions</h3>
+                    @if(($poolPendingDistributions ?? collect())->isNotEmpty())
+                    <table class="w-full text-sm text-zinc-300">
+                        <thead><tr class="text-left border-b border-zinc-700"><th class="pb-2">Period</th><th class="pb-2">Beneficiary</th><th class="pb-2">Amount</th><th class="pb-2">Status</th></tr></thead>
+                        <tbody>
+                        @foreach($poolPendingDistributions as $d)
+                        <tr class="border-b border-zinc-700/50">
+                            <td class="py-2">{{ $d->period_id }}</td>
+                            <td class="py-2">Entity #{{ $d->beneficiary_id }}</td>
+                            <td class="py-2">KES {{ number_format($d->amount) }}</td>
+                            <td class="py-2"><span class="px-2 py-0.5 rounded text-xs bg-yellow-900/50 text-yellow-300">{{ $d->status }}</span></td>
+                        </tr>
+                        @endforeach
+                        </tbody>
+                    </table>
+                    @else
+                    <p class="text-zinc-500 text-sm">No pending distributions. Run <code class="text-zinc-400 bg-zinc-700 px-1 rounded">php artisan pool:distribute</code> after contributions accrue.</p>
+                    @endif
+                </div>
+
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-4 mt-6">
+                    <div class="bg-zinc-800/80 rounded-xl border border-zinc-700 p-5">
+                        <h3 class="text-sm font-semibold text-white mb-2">Distribution Formula</h3>
+                        <p class="text-xs text-zinc-400 leading-relaxed">weight = contribution&alpha; &times; quality&beta; (default &alpha;=0.7, &beta;=0.3). Holdback {{ $pool->holdback_pct ?? 10 }}% funds dispute reversals. Equalisation {{ $pool->equalisation_pct ?? 0.5 }}% earmarked for foundational/anchor counties per Art. 204(1) precedent.</p>
+                    </div>
+                    <div class="bg-zinc-800/80 rounded-xl border border-zinc-700 p-5">
+                        <h3 class="text-sm font-semibold text-white mb-2">Quality Scoring</h3>
+                        <p class="text-xs text-zinc-400 leading-relaxed">Computed from: delivery rate (25%), dispute record (20%), trust grade (15%), data completeness (15%), review standing (15%), media presence (10%). Run <code class="text-zinc-400 bg-zinc-700 px-1 rounded">php artisan pool:quality-scores</code> to update.</p>
+                    </div>
+                </div>
+            </div>
+            @endif
         </main>
     </div>
 </div>

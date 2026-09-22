@@ -174,6 +174,7 @@ class KiccAdminController extends Controller
             ['label' => 'Orders', 'tab' => 'orders', 'icon' => 'M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2'],
             ['label' => 'Providers', 'tab' => 'providers', 'icon' => 'M9 12l2 2 4-4m5.618-4.016A11.955 11.955 0 0112 2.944a11.955 11.955 0 01-8.618 3.04A12.02 12.02 0 003 9c0 5.591 3.824 10.29 9 11.622 5.176-1.332 9-6.03 9-11.622 0-1.042-.133-2.052-.382-3.016z'],
             ['label' => 'Escrow', 'tab' => 'escrow', 'icon' => 'M12 8c-1.657 0-3 .895-3 2s1.343 2 3 2 3 .895 3 2-1.343 2-3 2m0-8c1.11 0 2.08.402 2.599 1M12 8V7m0 1v8m0 0v1m0-1c-1.11 0-2.08-.402-2.599-1'],
+            ['label' => 'Selling Pool', 'tab' => 'pool', 'icon' => 'M12 8c-1.657 0-3 .895-3 2s1.343 2 3 2 3 .895 3 2-1.343 2-3 2m0-8c1.11 0 2.08.402 2.599 1M12 8V7m0 1v8m0 0v1m0-1c-1.11 0-2.08-.402-2.599-1'],
             ['label' => 'Experiences', 'tab' => 'experiences', 'icon' => 'M9 20l-5.447-2.724A1 1 0 013 16.382V5.618a1 1 0 011.447-.894L9 7m0 13l6-3m-6 3V7m6 10l4.553 2.276A1 1 0 0021 18.382V7.618a1 1 0 00-.553-.894L15 4m0 13V4m0 0L9 7'],
             ['label' => 'Live Events', 'tab' => 'live_events', 'icon' => 'M15 10l4.553-2.276A1 1 0 0121 8.618v6.764a1 1 0 01-1.447.894L15 14M5 18h8a2 2 0 002-2V8a2 2 0 00-2-2H5a2 2 0 00-2 2v8a2 2 0 002 2z'],
             ['label' => 'Users', 'tab' => 'users', 'icon' => 'M12 4.354a4 4 0 110 5.292M15 21H3v-1a6 6 0 0112 0v1zm0 0h6v-1a6 6 0 00-9-5.197'],
@@ -184,12 +185,22 @@ class KiccAdminController extends Controller
 
         $analytics = app(\App\Services\AnalyticsService::class)->forKicc($stats);
 
+        // ── Pool data (outside cache — needs real-time accuracy) ──
+        $pool = \App\Models\Pool\Pool::where('scope', 'global')->where('is_active', true)->first();
+        $poolBalance = $pool?->balance ?? 0;
+        $poolContributionsCountyPointer = null; // placeholder
+        $poolPendingDistributions = \App\Models\Pool\PoolDistribution::where('status', 'pending')->latest()->take(20)->get();
+        $poolPeriodContributions = \App\Models\Pool\PoolContribution::where('period_id', now()->format('Y-m'))
+            ->selectRaw('county_id, SUM(pool_share) as total')
+            ->groupBy('county_id')->orderByDesc('total')->take(10)->get();
+
         return view('kicc-mother-admin', compact(
             'stats', 'counties', 'exhibitors', 'ministries',
             'orders', 'escrows', 'users', 'providers', 'institutions',
             'pendingServices', 'navItems', 'tab', 'heroAsset', 'analytics',
             'plans', 'allPlans', 'experienceBookings', 'experienceStats',
             'streams', 'streamStats', 'adminExhibitions', 'adminCounties',
+            'pool', 'poolBalance', 'poolPendingDistributions', 'poolPeriodContributions',
         ));
     }
 

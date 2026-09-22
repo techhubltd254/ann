@@ -132,6 +132,27 @@ class EscrowService
         ]);
         $this->markStep($escrow, 'released');
         Log::info('escrow: funds released to seller', ['escrow_id' => $escrow->id, 'amount' => $escrow->amount, 'seller_id' => $escrow->seller_id]);
+
+        // ── Pool contribution accrual ──
+        try {
+            $fee = round($escrow->amount * (config('kicc.pool.escrow_fee_rate', 0.05)), 2);
+            app(\App\Services\Pool\ContributionAccrualService::class)->accrue(
+                sourceType: 'escrow_transaction',
+                sourceId: $escrow->id,
+                grossAmount: (float) $escrow->amount,
+                platformFee: $fee,
+                countyId: $escrow->reference?->county_id ?? $escrow->reference?->county?->id,
+                sectorId: null,
+                entityId: $escrow->seller_id,
+                entityType: 'App\\Models\\User',
+                sponsorId: null,
+            );
+        } catch (\Throwable $e) {
+            \Illuminate\Support\Facades\Log::error('pool: contribution accrual failed on escrow release', [
+                'escrow_id' => $escrow->id, 'error' => $e->getMessage(),
+            ]);
+        }
+
         return $escrow->fresh();
     }
 

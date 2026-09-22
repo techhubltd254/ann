@@ -149,6 +149,18 @@ class McpController extends Controller
             return response()->json(['error' => "Resource '$type' not found"], 404);
         }
 
+        // k-anonymity gate — no individual-identifying data exposed to AI agents
+        // when group sizes fall below configured threshold
+        if (is_array($data)) {
+            try {
+                $data = app(\App\Services\Mcp\KAnonymizerService::class)->anonymize($data,
+                    $type === 'orders' || $type === 'escrow' ? 'user_id' : 'county_id'
+                );
+            } catch (\Throwable $e) {
+                \Illuminate\Support\Facades\Log::warning('mcp: k-anonymizer skipped', ['error' => $e->getMessage()]);
+            }
+        }
+
         return response()->json([
             'uri' => url("/api/mcp/resources/$type"),
             'mimeType' => $this->resources[$type]['mimeType'],

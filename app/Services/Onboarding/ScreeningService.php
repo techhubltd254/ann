@@ -1,0 +1,100 @@
+<?php
+
+namespace App\Services\Onboarding;
+
+/**
+ * Sanctions/PEP screening — Algorithm 17 from kicc-algorithms.
+ * Jaro-Winkler fuzzy match against a watchlist.
+ */
+class ScreeningService
+{
+    private float $threshold;
+    private array $watchlist;
+
+    public function __construct(?array $watchlist = null)
+    {
+        $this->threshold = config('kicc.screening.threshold', 0.85);
+        $this->watchlist = $watchlist ?? [
+            'John Appropriator', 'Global Terror Fund', 'Example Sanctioned Entity',
+        ];
+        $this->watchlist = array_map([$this, 'normalize'], $this->watchlist);
+    }
+
+    public function screen(string $name): array
+    {
+        $norm = $this->normalize($name);
+        $best = null;
+        $bestScore = 0.0;
+
+        foreach ($this->watchlist as $entry) {
+            $score = $this->jaroWinkler($norm, $entry);
+            if ($score > $bestScore) {
+                $best = $entry;
+                $bestScore = $score;
+            }
+        }
+
+        $hit = $bestScore >= $this->threshold;
+        return [
+            'name'       => $name,
+            'normalized' => $norm,
+            'match'      => $best,
+            'score'      => round($bestScore, 4),
+            'hit'        => $hit,
+            'action'     => $hit ? 'freeze_pending_review' : 'clear',
+        ];
+    }
+
+    public function normalize(string $name): string
+    {
+        $text = iconv('UTF-8', 'ASCII//TRANSLIT//IGNORE', $name);
+        $text = preg_replace('/[^a-zA-Z0-9 ]/', '', strtolower($text ?? $name));
+        return trim(preg_replace('/\s+/', ' ', $text));
+    }
+
+    public function jaroWinkler(string $s1, string $s2): float
+    {
+        if ($s1 === $s2) return 1.0;
+        if (strlen($s1) === 0 || strlen($s2) === 0) return 0.0;
+
+        $matchDist = max(strlen($s1), strlen($s2)) / 2 - 1;
+        $m1 = array_fill(0, strlen($s1), false);
+        $m2 = array_fill(0, strlen($s2), false);
+        $matches = 0;
+
+        for ($i = 0; $i < strlen($s1); $i++) {
+            $lo = max(0, $i - $matchDist);
+            $hi = min(strlen($s2), $i + $matchDist + 1);
+            for ($j = $lo; $j < $hi; $j++) {
+                if (!$m2[$j] && $s1[$i] === $s2[$j]) {
+                    $m1[$i] = $m2[$j] = true;
+                    $matches++;
+                    break;
+                }
+            }
+        }
+
+        if ($matches === 0) return 0.0;
+
+        $transpositions = 0;
+        $k = 0;
+        for ($i = 0; $i < strlen($s1); $i++) {
+            if ($m1[$i]) {
+                while (!$m2[$k]) $k++;
+                if ($s1[$i] !== $s2[$k]) $transpositions++;
+                $k++;
+            }
+        }
+        $transpositions /= 2;
+
+        $jaro = (($matches / strlen($s1)) + ($matches / strlen($s2)) + (($matches - $transpositions) / $matches)) / 3;
+
+        $prefix = 0;
+        for ($i = 0; $i < min(4, min(strlen($s1), strlen($s2))); $i++) {
+            if ($s1[$i] === $s2[$i]) $prefix++;
+            else break;
+        }
+
+        return $jaro + $prefix * 0.1 * (1 - $jaro);
+    }
+}

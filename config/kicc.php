@@ -429,4 +429,32 @@ return [
         'forecast_multiplier' => 1.1,
         'forecast_round' => 1000,
     ],
+
+    /*
+    |--------------------------------------------------------------------------
+    | Pool & Quality Scoring
+    |--------------------------------------------------------------------------
+    | All 20 algorithms from the reference implementation map here.
+    | Alpha/beta control the contribution × quality power-law weighting:
+    |   weight = contribution^alpha * quality^beta
+    | (alpha=1, beta=0 degrades to pure proportional for launch month).
+    */
+    'pool' => [
+        'alpha' => 0.7,
+        'beta' => 0.3,
+        'holdback_pct' => 10.0,
+        'equalisation_pct' => 0.5,
+        'default_quality' => 0.5,
+        'quality_weights' => [
+            'delivery' => 0.25,
+            'disputes' => 0.20,
+            'trust' => 0.15,
+            'completeness' => 0.15,
+            'reviews' => 0.15,
+            'media' => 0.10,
+        ],
+        'escrow_fee_rate' => 0.05,
+        'commission_default_rate' => 0.03,
+        'billing_vat_rate' => 0.16,
+    ],
 ];
