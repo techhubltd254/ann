@@ -31,8 +31,12 @@ class PoolEngine
 
     public function distribute(int $poolId, string $periodId): array
     {
-        $contributions = PoolContribution::where('pool_id', $poolId)
-            ->where('period_id', $periodId)->get();
+        try {
+            $contributions = PoolContribution::where('pool_id', $poolId)
+                ->where('period_id', $periodId)->get();
+        } catch (\Throwable $e) {
+            return [];
+        }
         if ($contributions->isEmpty()) return [];
 
         $inflow = $contributions->sum('pool_share');

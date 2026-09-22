@@ -55,18 +55,21 @@ class ScreeningService
     public function jaroWinkler(string $s1, string $s2): float
     {
         if ($s1 === $s2) return 1.0;
-        if (strlen($s1) === 0 || strlen($s2) === 0) return 0.0;
+        $len1 = strlen($s1);
+        $len2 = strlen($s2);
+        if ($len1 === 0 || $len2 === 0) return 0.0;
 
-        $matchDist = max(strlen($s1), strlen($s2)) / 2 - 1;
-        $m1 = array_fill(0, strlen($s1), false);
-        $m2 = array_fill(0, strlen($s2), false);
+        $matchDist = (int)(max($len1, $len2) / 2 - 1);
+        if ($matchDist < 0) $matchDist = 0;
+        $m1 = array_fill(0, $len1, false);
+        $m2 = array_fill(0, $len2, false);
         $matches = 0;
 
-        for ($i = 0; $i < strlen($s1); $i++) {
+        for ($i = 0; $i < $len1; $i++) {
             $lo = max(0, $i - $matchDist);
-            $hi = min(strlen($s2), $i + $matchDist + 1);
+            $hi = min($len2, $i + $matchDist + 1);
             for ($j = $lo; $j < $hi; $j++) {
-                if (!$m2[$j] && $s1[$i] === $s2[$j]) {
+                if ($j < $len2 && !$m2[$j] && $s1[$i] === $s2[$j]) {
                     $m1[$i] = $m2[$j] = true;
                     $matches++;
                     break;
@@ -78,19 +81,19 @@ class ScreeningService
 
         $transpositions = 0;
         $k = 0;
-        for ($i = 0; $i < strlen($s1); $i++) {
+        for ($i = 0; $i < $len1; $i++) {
             if ($m1[$i]) {
-                while (!$m2[$k]) $k++;
-                if ($s1[$i] !== $s2[$k]) $transpositions++;
+                while ($k < $len2 && !$m2[$k]) $k++;
+                if ($k < $len2 && $s1[$i] !== $s2[$k]) $transpositions++;
                 $k++;
             }
         }
         $transpositions /= 2;
 
-        $jaro = (($matches / strlen($s1)) + ($matches / strlen($s2)) + (($matches - $transpositions) / $matches)) / 3;
+        $jaro = (($matches / $len1) + ($matches / $len2) + (($matches - $transpositions) / $matches)) / 3;
 
         $prefix = 0;
-        for ($i = 0; $i < min(4, min(strlen($s1), strlen($s2))); $i++) {
+        for ($i = 0; $i < min(4, min($len1, $len2)); $i++) {
             if ($s1[$i] === $s2[$i]) $prefix++;
             else break;
         }
