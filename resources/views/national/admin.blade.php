@@ -235,5 +235,63 @@
         </div>
     </div>
     @endif
+
+    {{-- COUNTY CLASSIFICATION --}}
+    @if($tab === 'counties')
+    <div class="space-y-6">
+        <h2 class="text-xl font-bold text-white">County Classification</h2>
+        <p class="text-zinc-400 text-sm">Dual-score quadrant: RPS (revenue potential) vs FNS (foundational need).</p>
+
+        @if(isset($quadrantCounts))
+        <div class="grid grid-cols-2 md:grid-cols-4 gap-4">
+            <div class="bg-zinc-800/80 rounded-xl p-4 border border-zinc-700">
+                <div class="text-xs text-zinc-400">Engine</div>
+                <div class="text-2xl font-bold text-emerald-400">{{ $quadrantCounts['engine'] ?? 0 }}</div>
+            </div>
+            <div class="bg-zinc-800/80 rounded-xl p-4 border border-zinc-700">
+                <div class="text-xs text-zinc-400">Growth</div>
+                <div class="text-2xl font-bold text-sky-400">{{ $quadrantCounts['growth'] ?? 0 }}</div>
+            </div>
+            <div class="bg-zinc-800/80 rounded-xl p-4 border border-zinc-700">
+                <div class="text-xs text-zinc-400">Priority Development</div>
+                <div class="text-2xl font-bold text-amber-400">{{ $quadrantCounts['priority_development'] ?? 0 }}</div>
+            </div>
+            <div class="bg-zinc-800/80 rounded-xl p-4 border border-zinc-700">
+                <div class="text-xs text-zinc-400">Foundational Anchor</div>
+                <div class="text-2xl font-bold text-rose-400">{{ $quadrantCounts['foundational_anchor'] ?? 0 }}</div>
+            </div>
+        </div>
+        @endif
+
+        <div class="bg-zinc-800/80 rounded-xl border border-zinc-700 overflow-hidden">
+            <table class="w-full text-sm">
+                <thead><tr class="bg-zinc-700/50 text-left text-zinc-300"><th class="p-3">County</th><th class="p-3">RPS</th><th class="p-3">FNS</th><th class="p-3">Quadrant</th></tr></thead>
+                <tbody>
+                @forelse($counties ?? [] as $c)
+                <tr class="border-t border-zinc-700/50 text-zinc-300">
+                    <td class="p-3 font-medium text-white">{{ $c->name }}</td>
+                    <td class="p-3">{{ $c->classification_rps !== null ? number_format($c->classification_rps, 4) : '—' }}</td>
+                    <td class="p-3">{{ $c->classification_fns !== null ? number_format($c->classification_fns, 4) : '—' }}</td>
+                    <td class="p-3">
+                        @if($c->classification_quadrant === 'engine')
+                        <span class="px-2 py-0.5 rounded text-xs bg-emerald-900/50 text-emerald-300">Engine</span>
+                        @elseif($c->classification_quadrant === 'growth')
+                        <span class="px-2 py-0.5 rounded text-xs bg-sky-900/50 text-sky-300">Growth</span>
+                        @elseif($c->classification_quadrant === 'priority_development')
+                        <span class="px-2 py-0.5 rounded text-xs bg-amber-900/50 text-amber-300">Priority</span>
+                        @elseif($c->classification_quadrant === 'foundational_anchor')
+                        <span class="px-2 py-0.5 rounded text-xs bg-rose-900/50 text-rose-300">Foundational</span>
+                        @else
+                        <span class="text-zinc-500">—</span>
+                        @endif
+                    </td>
+                </tr>
+                @empty
+                <tr><td colspan="4" class="p-6 text-center text-zinc-500">No counties classified. Run <code class="text-zinc-400 bg-zinc-700 px-1 rounded">php artisan pool:classify-counties</code>.</td></tr>
+                @endforelse
+            </tbody></table>
+        </div>
+    </div>
+    @endif
 </div>
 @endsection
