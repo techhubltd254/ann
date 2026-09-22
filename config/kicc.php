@@ -439,6 +439,7 @@ return [
     |   weight = contribution^alpha * quality^beta
     | (alpha=1, beta=0 degrades to pure proportional for launch month).
     */
+'algorithms_service_url' => env('KICC_ALGORITHMS_URL', 'http://127.0.0.1:8400'),
     'pool' => [
         'alpha' => 0.7,
         'beta' => 0.3,

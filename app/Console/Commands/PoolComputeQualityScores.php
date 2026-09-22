@@ -2,42 +2,46 @@
 
 namespace App\Console\Commands;
 
-use App\Models\User;
-use App\Models\EscrowTransaction;
 use App\Models\Pool\PoolContribution;
-use App\Models\Marketplace\Order;
+use App\Services\AlgorithmsClient;
 use App\Services\Pool\QualityScorer;
 use Illuminate\Console\Command;
 
 class PoolComputeQualityScores extends Command
 {
     protected $signature = 'pool:quality-scores';
-    protected $description = 'Compute quality scores for every entity with pool contributions';
+    protected $description = 'Compute quality scores via Python algorithms service';
 
-    public function handle(QualityScorer $scorer): int
+    public function handle(AlgorithmsClient $client): int
     {
         $entityIds = PoolContribution::whereNull('quality_score')
             ->distinct()->pluck('entity_id');
-
         if ($entityIds->isEmpty()) {
-            $entityIds = User::where('account_type', 'seller')->pluck('id');
+            $entityIds = collect([1]);
         }
 
         $count = 0;
         foreach ($entityIds as $entityId) {
-            $deliveryRate = $this->deliveryRate($entityId);
-            $adverseRate = $this->adverseRate($entityId);
-            $trustGrade = $this->trustGrade($deliveryRate);
-            $completeness = $this->completeness($entityId);
-            $avgReview = $this->avgReview($entityId);
-            $mediaTier = $this->mediaTier($entityId);
+            $data = $this->computeInputs($entityId);
+            $result = $client->quality(
+                $data['delivery_rate'],
+                $data['adverse_rate'],
+                $data['trust_grade'],
+                $data['completeness'],
+                $data['avg_review'],
+                $data['media_tier']
+            );
 
-            $result = $scorer->score($deliveryRate, $adverseRate, $trustGrade, $completeness, $avgReview, $mediaTier);
+            // Fallback to local PHP QualityScorer if Python fails
+            if (empty($result['score'])) {
+                $result = app(QualityScorer::class)->score(
+                    $data['delivery_rate'], $data['adverse_rate'], $data['trust_grade'],
+                    $data['completeness'], $data['avg_review'], $data['media_tier']
+                );
+            }
 
-            // Upsert quality score into pool_contributions
             PoolContribution::where('entity_id', $entityId)
-                ->update(['quality_score' => $result['score'], 'updated_at' => now()]);
-
+                ->update(['quality_score' => $result['score'] ?? 0.5, 'updated_at' => now()]);
             $count++;
         }
 
@@ -45,57 +49,25 @@ class PoolComputeQualityScores extends Command
         return 0;
     }
 
-    protected function deliveryRate(int $entityId): float
+    protected function computeInputs(int $entityId): array
     {
-        $total = EscrowTransaction::where('seller_id', $entityId)->count();
-        if ($total === 0) return 0.5;
-        $delivered = EscrowTransaction::where('seller_id', $entityId)
-            ->where('status', 'released')->count();
-        return round($delivered / $total, 4);
-    }
+        $total = \App\Models\EscrowTransaction::where('seller_id', $entityId)->count();
+        $delivered = \App\Models\EscrowTransaction::where('seller_id', $entityId)->where('status', 'released')->count();
+        $deliveryRate = $total > 0 ? round($delivered / $total, 4) : 0.5;
 
-    protected function adverseRate(int $entityId): float
-    {
         $cases = \App\Models\DisputeCase::where('seller_id', $entityId)->count();
-        if ($cases === 0) return 0.0;
-        $adverse = \App\Models\DisputeCase::where('seller_id', $entityId)
-            ->whereIn('status', ['open', 'lost'])->count();
-        return round($adverse / $cases, 4);
-    }
+        $adverse = \App\Models\DisputeCase::where('seller_id', $entityId)->whereIn('status', ['open', 'lost'])->count();
+        $adverseRate = $cases > 0 ? round($adverse / $cases, 4) : 0.0;
 
-    protected function trustGrade(float $deliveryRate): string
-    {
-        return match (true) {
-            $deliveryRate >= 0.98 => 'A',
-            $deliveryRate >= 0.90 => 'B',
-            $deliveryRate >= 0.75 => 'C',
-            $deliveryRate >= 0.50 => 'D',
-            default => 'F',
-        };
-    }
+        $trustGrade = match (true) { $deliveryRate >= 0.98 => 'A', $deliveryRate >= 0.90 => 'B',
+            $deliveryRate >= 0.75 => 'C', $deliveryRate >= 0.50 => 'D', default => 'F' };
 
-    protected function completeness(int $entityId): float
-    {
-        // Use existing CorrelationService completenessScore if available
-        if (\Illuminate\Support\Facades\Cache::has("completeness:{$entityId}")) {
-            return min(1.0, (float) \Illuminate\Support\Facades\Cache::get("completeness:{$entityId}"));
-        }
-        return 0.5;
-    }
-
-    protected function avgReview(int $entityId): float
-    {
-        // Average review rating out of 5, default to 3.0
-        $reviews = \App\Models\Review::where('user_id', $entityId)
-            ->whereNotNull('rating')->avg('rating');
-        return $reviews ?? 3.0;
-    }
-
-    protected function mediaTier(int $entityId): int
-    {
-        // 3 = hero video, 2 = poster/image, 1 = text only, 0 = minimal
-        $assetCount = \App\Models\MediaAsset::where('owner_type', 'App\\Models\\User')
+        $completeness = (float) (\Illuminate\Support\Facades\Cache::get("completeness:{$entityId}", 0.5));
+        $avgReview = (float) (\App\Models\Review::where('user_id', $entityId)->whereNotNull('rating')->avg('rating') ?? 3.0);
+        $mediaTier = \App\Models\MediaAsset::where('owner_type', 'App\\Models\\User')
             ->where('owner_id', $entityId)->count();
-        return $assetCount > 5 ? 3 : ($assetCount > 2 ? 2 : ($assetCount > 0 ? 1 : 0));
+        $mediaTier = $mediaTier > 5 ? 3 : ($mediaTier > 2 ? 2 : ($mediaTier > 0 ? 1 : 0));
+
+        return compact('delivery_rate', 'adverse_rate', 'trust_grade', 'completeness', 'avg_review', 'media_tier');
     }
 }
