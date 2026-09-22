@@ -118,6 +118,28 @@ if [ -f "$R2_META" ]; then
     python3 /opt/kicc-laravel/infra/deploy/deploy-worker-r2.py >> "$LOG" 2>&1 || echo "r2-media worker deploy FAILED" >> "$LOG"
 fi
 
+# Start Python algorithms service (restart on every deploy to pick up code changes)
+ALGO_SERVICE="$APP_DIR/kicc_api/server.py"
+if [ -f "$ALGO_SERVICE" ]; then
+    pkill -f "kicc_api/server.py" 2>/dev/null || true
+    sleep 1
+    export PYTHONPATH="$APP_DIR"
+    export KICC_API_PORT="8400"
+    nohup python3 "$ALGO_SERVICE" >> "$APP_DIR/storage/logs/algorithms-service.log" 2>&1 &
+    ALGO_PID=$!
+    echo $ALGO_PID > "$APP_DIR/storage/kicc-algorithms.pid"
+    echo "algorithms service started on port 8400 (PID $ALGO_PID)" >> "$LOG"
+    
+    # Health check — give the service 5 seconds to boot
+    for i in 1 2 3 4 5; do
+        if curl -s -o /dev/null --max-time 2 "http://127.0.0.1:8400/health" 2>/dev/null; then
+            echo "  ✓ algorithms service health check PASSED" >> "$LOG"
+            break
+        fi
+        sleep 1
+    done
+fi
+
 # Purge Cloudflare CDN cache for the entire site (so users see changes immediately)
 # Requires CLOUDFLARE_API_TOKEN with zone-level cache purge permissions
 ZONE_ID="abeda0e6440d9eabd5e2e54deced291e"
