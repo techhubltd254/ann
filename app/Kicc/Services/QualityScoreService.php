@@ -4,22 +4,18 @@ namespace App\Kicc\Services;
 
 use Illuminate\Support\Facades\DB;
 
-/** Quality multiplier from fill/dispute/completeness/reliability — clipped to [0.8, 1.2]. */
+/** Quality multiplier from pool_contributions.quality_score. Default 1.0 (neutral). */
 class QualityScoreService
 {
     public function multiplierFor(string $pipelineCode, ?int $countyId, string $period): float
     {
-        $q = DB::table('quality_metrics')
-            ->where('pipeline_code', $pipelineCode)
-            ->where('period', $period)
+        $q = DB::table('pool_contributions')
+            ->where('period_id', $period)
+            ->whereNotNull('quality_score')
             ->when($countyId, fn ($qq) => $qq->where('county_id', $countyId))
             ->orderByDesc('id')->first();
-        if (!$q) return 1.0;
-        $score = 1.0
-            + (($q->fill_rate - 90) / 100)          // above/below 90% fill
-            - ($q->dispute_rate / 50)               // penalty
-            + (($q->data_completeness - 90) / 200)
-            + (($q->delivery_reliability - 90) / 200);
+        if (!$q || !$q->quality_score) return 1.0;
+        $score = 0.6 + ($q->quality_score * 0.6);
         return max(0.8, min(1.2, round($score, 2)));
     }
 }

@@ -4,6 +4,7 @@ namespace App\Console\Commands;
 
 use App\Models\Pool\Pool;
 use App\Models\Pool\PoolContribution;
+use App\Kicc\Services\MotherPoolService;
 use App\Services\AlgorithmsClient;
 use App\Services\Pool\PoolEngine;
 use Illuminate\Console\Command;
@@ -11,7 +12,7 @@ use Illuminate\Console\Command;
 class PoolDistribute extends Command
 {
     protected $signature = 'pool:distribute {period? : YYYY-MM period (default: current month)}';
-    protected $description = 'Run monthly pool distribution via Python algorithms service';
+    protected $description = 'Run monthly pool distribution via MotherPoolService (kit)';
 
     public function handle(): int
     {
@@ -28,36 +29,37 @@ class PoolDistribute extends Command
             ]);
         }
 
-        $contributions = PoolContribution::where('pool_id', $pool->id)
-            ->where('period_id', $period)->get(['entity_id', 'pool_share']);
+        $this->info("Distributing pool #{$pool->id} for period {$period} via kit MotherPoolService...");
 
-        if ($contributions->isEmpty()) {
-            $this->warn('No contributions found for this period.');
+        try {
+            $plan = app(MotherPoolService::class)->computeDistribution($pool->id, true);
+            $totalAmount = $plan['total'] ?? 0;
+            $rowCount = count($plan['rows'] ?? []);
+            $this->info("Dry-run distribution: {$rowCount} rows, total KES {$totalAmount}");
+            $this->info("Run with --commit to settle.");
             return 0;
+        } catch (\Throwable $e) {
+            $this->warn('Kit MotherPoolService failed: ' . $e->getMessage());
         }
 
-        $this->info("Distributing {$contributions->count()} contributions via Python service...");
-
+        // Fallback: Python service
         $client = app(AlgorithmsClient::class);
-        $contribData = $contributions->map(fn($c) => [
-            'entity_id' => $c->entity_id, 'pool_share' => (float) $c->pool_share,
-        ])->toArray();
-
-        $rows = $client->distributePool($contribData);
-
-        if (empty($rows)) {
-            $this->warn('Python service returned empty. Falling back to PHP PoolEngine...');
-            $rows = app(PoolEngine::class)->distribute($pool->id, $period);
-            if (empty($rows)) {
-                $this->warn('No distribution rows generated.');
+        $contributions = PoolContribution::where('pool_id', $pool->id)
+            ->where('period_id', $period)->get(['entity_id', 'pool_share']);
+        if ($contributions->isNotEmpty()) {
+            $contribData = $contributions->map(fn($c) => [
+                'entity_id' => $c->entity_id, 'pool_share' => (float) $c->pool_share,
+            ])->toArray();
+            $rows = $client->distributePool($contribData);
+            if (!empty($rows)) {
+                $totalAmount = array_sum(array_column($rows, 'amount'));
+                $this->info("Distributed via Python: " . count($rows) . " beneficiaries, KES {$totalAmount}");
+                $this->info("Status: pending — approve via Mother Admin → Selling Pool tab.");
                 return 0;
             }
         }
 
-        $totalAmount = array_sum(array_column($rows, 'amount'));
-        $this->info("Distributed {$period}: " . count($rows) . " beneficiaries, total KES {$totalAmount}");
-        $this->info("Status: pending — approve via Mother Admin → Selling Pool tab.");
-
+        $this->warn('No distribution completed.');
         return 0;
     }
 }
