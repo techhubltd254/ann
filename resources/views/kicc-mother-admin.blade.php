@@ -649,6 +649,107 @@
                 </div>
             </div>
             @endif
+
+            @if($tab === 'pipelines')
+            <div class="p-6 space-y-6">
+                <div class="flex items-center justify-between">
+                    <div>
+                        <h2 class="text-xl font-bold text-white">Pipeline Management</h2>
+                        <p class="text-zinc-400 text-sm mt-1">{{ $pipelineTotal }} revenue pipelines — 50 parents + 152 subsectors · 87 per the catalog</p>
+                    </div>
+                    <div class="text-right">
+                        <a href="{{ route('kicc.admin', ['tab' => 'pipelines', 'pipeline_q' => '', 'pipeline_sector' => '']) }}" class="text-xs text-[#046bd2] hover:underline">Reset</a>
+                    </div>
+                </div>
+
+                {{-- Status breakdown --}}
+                <div class="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-6 gap-3">
+                    <div class="bg-zinc-800/80 rounded-xl p-3 border border-zinc-700">
+                        <div class="text-2xl font-bold text-white">{{ $pipelineTotal }}</div>
+                        <div class="text-xs text-zinc-400">Total</div>
+                    </div>
+                    @foreach($pipelineStatusBreakdown as $ps)
+                    <div class="bg-zinc-800/80 rounded-xl p-3 border border-zinc-700">
+                        <div class="text-2xl font-bold text-{{ $ps->status === 'built' ? 'emerald' : ($ps->status === 'licence_gated' ? 'amber' : ($ps->status === 'blocked' ? 'rose' : 'sky')) }}-400">{{ $ps->c }}</div>
+                        <div class="text-xs text-zinc-400">{{ ucwords(str_replace('_', ' ', $ps->status)) }}</div>
+                    </div>
+                    @endforeach
+                </div>
+
+                {{-- Search + sector filter --}}
+                <div class="flex flex-col sm:flex-row gap-3">
+                    <form method="GET" action="{{ route('kicc.admin') }}" class="flex flex-1 gap-2">
+                        <input type="hidden" name="tab" value="pipelines">
+                        <input type="text" name="pipeline_q" value="{{ request('pipeline_q') }}" placeholder="Search pipeline code or name…"
+                            class="flex-1 bg-zinc-900/60 border border-zinc-700 rounded-lg px-3 py-2 text-sm text-white placeholder:text-zinc-500 outline-none focus:border-kicc-gold">
+                        <select name="pipeline_sector" class="bg-zinc-900/60 border border-zinc-700 rounded-lg px-3 py-2 text-sm text-white outline-none">
+                            <option value="">All sectors</option>
+                            @foreach($pipelineSectors as $sector)
+                            <option value="{{ $sector->sector }}" @if(request('pipeline_sector') == $sector->sector) selected @endif>{{ ucfirst($sector->sector) }} ({{ $sector->c }})</option>
+                            @endforeach
+                        </select>
+                        <button type="submit" class="bg-kicc-gold text-gray-900 text-sm font-bold px-4 py-2 rounded-lg hover:bg-yellow-300 transition">Filter</button>
+                    </form>
+                </div>
+
+                {{-- Pipeline table --}}
+                <div class="bg-zinc-800/40 rounded-xl border border-zinc-700/50 overflow-hidden">
+                    <table class="w-full text-sm">
+                        <thead><tr class="bg-zinc-700/40 text-left text-zinc-300 text-xs uppercase tracking-wide">
+                            <th class="px-4 py-3">Code</th>
+                            <th class="px-4 py-3">Pipeline</th>
+                            <th class="px-4 py-3">Sector</th>
+                            <th class="px-4 py-3">Phase</th>
+                            <th class="px-4 py-3">Status</th>
+                            <th class="px-4 py-3">Economics</th>
+                            <th class="px-4 py-3">Regulators</th>
+                        </tr></thead>
+                        <tbody>
+                        @forelse($pipelines as $p)
+                        <tr class="border-t border-zinc-700/40 text-zinc-300 hover:bg-zinc-700/20">
+                            <td class="px-4 py-2.5 font-mono text-[#046bd2] font-semibold">{{ $p->code }}</td>
+                            <td class="px-4 py-2.5 text-white">{{ Str::title(str_replace('-', ' ', $p->slug)) }}</td>
+                            <td class="px-4 py-2.5">{{ ucfirst($p->sector) }}</td>
+                            <td class="px-4 py-2.5">P{{ $p->phase }}</td>
+                            <td class="px-4 py-2.5">
+                                @php
+                                $badgeColor = $p->status === 'built' ? 'bg-emerald-900/50 text-emerald-300'
+                                    : ($p->status === 'licence_gated' ? 'bg-amber-900/50 text-amber-300'
+                                    : ($p->status === 'blocked' ? 'bg-rose-900/50 text-rose-300'
+                                    : ($p->status === 'partial' ? 'bg-sky-900/50 text-sky-300'
+                                    : 'bg-zinc-700/50 text-zinc-300')));
+                                @endphp
+                                <span class="px-2 py-0.5 rounded text-xs {{ $badgeColor }}">{{ ucwords(str_replace('_',' ',$p->status)) }}</span>
+                            </td>
+                            <td class="px-4 py-2.5 text-xs text-zinc-400">
+                                @php
+                                $eco = json_decode($p->economics ?? '{}', true);
+                                $rate = $eco['take_rate_pct'] ?? ($eco['take_rate'] ?? '');
+                                if (is_array($rate)) $rate = min($rate) . '-' . max($rate) . '%';
+                                echo $rate ?: ($eco['model'] ?? '—');
+                                @endphp
+                            </td>
+                            <td class="px-4 py-2.5 text-xs text-zinc-400">
+                                @php
+                                $regs = json_decode($p->regulators ?? '[]', true);
+                                echo implode(', ', array_map('ucfirst', $regs ?: [])) ?: '—';
+                                @endphp
+                            </td>
+                        </tr>
+                        @empty
+                        <tr><td colspan="7" class="px-4 py-8 text-center text-zinc-500">No pipelines match your filter.</td></tr>
+                        @endforelse
+                        </tbody>
+                    </table>
+                </div>
+
+                @if($pipelines->hasPages())
+                <div class="flex justify-center mt-4">
+                    {{ $pipelines->links() }}
+                </div>
+                @endif
+            </div>
+            @endif
         </main>
     </div>
 </div>
