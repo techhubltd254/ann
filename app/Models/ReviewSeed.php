@@ -27,7 +27,8 @@ public function sourceLabel(): string
         return match ($this->source) {
             'google' => 'Google reviews',
             'tripadvisor' => 'Tripadvisor',
-            default => ucfirst((string) $this->source) . ' reviews',
+            'admin' => 'Admin',
+            default => $this->source ? ucfirst($this->source) . ' reviews' : '',
         };
     }
 }

@@ -304,8 +304,8 @@ onerror="this.remove()">
                 :reviews="$institutionReviews ?? collect([])"
                 :average="$institutionReviewAvg ?? 0"
                 :count="$institutionReviewCount ?? 0"
-                :seed-source="$institutionReviewSeed->sourceLabel() ?? null"
-                :seed-url="$institutionReviewSeed->external_url ?? null"
+                :seed-source="$institutionReviewSeed?->sourceLabel()"
+                :seed-url="$institutionReviewSeed?->external_url"
             />
             <x-review-form
                 :reviewable-type="\App\Models\CountyInstitution::class"

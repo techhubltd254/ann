@@ -505,6 +505,13 @@ class CountyAdminController extends Controller
             'is_published' => true,
         ]);
 
+        // Seed a default review_seed so the institution page loads without
+        // crashing — review stars show once real user reviews accumulate.
+        \App\Models\ReviewSeed::firstOrCreate(
+            ['owner_type' => \App\Models\CountyInstitution::class, 'owner_id' => $institution->id],
+            ['source' => 'admin', 'rating' => 0.0, 'review_count' => 0, 'external_url' => null],
+        );
+
         // Auto-create the institution admin user
         if (!empty($data['admin_email'])) {
             $admin = \App\Models\User::where('email', $data['admin_email'])->first();
