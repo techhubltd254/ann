@@ -210,3 +210,7 @@ Route::prefix('marketplace')->name('api.marketplace.')->group(function () {
         Route::get('/my-orders/{orderNumber}', [\App\Http\Controllers\Api\MarketplaceApiController::class, 'orderShow'])->name('my-order.show');
     });
 });
+
+// ── Integration webhooks (called by Node.js integration service) ──
+Route::post('/webhooks/integration-forward', [\App\Http\Controllers\Api\IntegrationWebhookController::class, 'forward'])
+    ->name('api.webhooks.integration-forward');

@@ -440,6 +440,13 @@ return [
     | (alpha=1, beta=0 degrades to pure proportional for launch month).
     */
 'algorithms_service_url' => env('KICC_ALGORITHMS_URL', 'http://127.0.0.1:8400'),
+
+    /*
+    | Integration Layer (Node.js) — payment, freight, customs, FX, webhooks
+    */
+    'integration_service_url' => env('KICC_INTEGRATION_URL', 'http://127.0.0.1:8787'),
+
+    'integration_webhook_secret' => env('KICC_INTEGRATION_WEBHOOK_SECRET', 'dev-secret'),
     'pool' => [
         'alpha' => 0.7,
         'beta' => 0.3,

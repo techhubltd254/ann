@@ -259,6 +259,7 @@ Route::get('/national-admin/agencies/{agency}/delete', [\App\Http\Controllers\We
 
     // KICC approvals
     Route::post('/kicc-admin/approve/{table}/{id}', [\App\Http\Controllers\Web\KiccAdminController::class, 'approveService'])->name('kicc.admin.approve');
+Route::post('/kicc-admin/pipelines/store', [\App\Http\Controllers\Web\KiccAdminController::class, 'storePipeline'])->name('kicc.admin.pipeline.store');
 
     // ─── Media Pipeline (admin-controlled; nothing hardcoded) ───
     Route::prefix('media')->group(function () {

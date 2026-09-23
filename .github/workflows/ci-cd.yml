@@ -119,6 +119,26 @@ jobs:
             php artisan route:clear
             php artisan view:clear
 
+            # Start Python algorithms service
+            if [ -f kicc_api/server.py ] && ! curl -s -o /dev/null --max-time 2 http://127.0.0.1:8400/health; then
+              pkill -f "kicc_api/server.py" 2>/dev/null || true
+              sleep 1
+              export PYTHONPATH="$PWD"
+              nohup python3 kicc_api/server.py >> storage/logs/algorithms-service.log 2>&1 &
+              echo $! > storage/kicc-algorithms.pid
+            fi
+
+            # Install + start Node.js integration service
+            if [ -f integrations-service/api/server.js ]; then
+              if [ ! -d integrations-service/node_modules ]; then
+                cd integrations-service && npm install --no-audit --no-fund || true && cd ..
+              fi
+              pkill -f "integrations-service/api/server" 2>/dev/null || true
+              sleep 1
+              nohup node integrations-service/api/server.js >> storage/logs/integration-service.log 2>&1 &
+              echo $! > storage/kicc-integration.pid
+            fi
+
             # Restart services
             systemctl restart php8.4-fpm
             systemctl restart kicc-pulse || true

@@ -1,0 +1,308 @@
+# =============================================================================
+# Provider registry. Toggles + endpoint facts.
+# `confirmed: true`  = endpoint/auth read from the provider's own live docs.
+# `confirmed: false` = NOT verified against the provider's own page. The driver
+#                      still works, but run `node run/verify_endpoints.mjs` with
+#                      real keys before trusting it in production.
+# =============================================================================
+
+meta:
+  mock_default: true
+  note: >
+    With MOCK_MODE=true every driver returns a deterministic simulated response
+    and no network call is made. Flip a provider's enabled flag AND set
+    MOCK_MODE=false to go live.
+
+payments:
+
+  stripe:
+    label: Stripe
+    lanes: [card, wallet]
+    coverage: [global]
+    enabled_env: STRIPE_ENABLED
+    docs: https://docs.stripe.com/api/payment_intents/create
+    base_url: https://api.stripe.com
+    auth:
+      scheme: basic
+      username_env: STRIPE_SECRET_KEY
+      password: ""                       # Stripe uses the key as username, empty password
+      confirmed: true
+    endpoints:
+      authorize: { method: POST, path: /v1/payment_intents, confirmed: true }
+      capture:   { method: POST, path: /v1/payment_intents/{id}/capture, confirmed: true }
+      refund:    { method: POST, path: /v1/refunds, confirmed: true }
+      verify:    { method: GET,  path: /v1/payment_intents/{id}, confirmed: true }
+    webhook:
+      header: Stripe-Signature
+      scheme: hmac_sha256_timestamped
+      secret_env: STRIPE_WEBHOOK_SECRET
+      tolerance_seconds: 300
+      docs: https://docs.stripe.com/webhooks
+      confirmed: true
+
+  flutterwave:
+    label: Flutterwave
+    lanes: [card, mobile_money, bank]
+    coverage: [KE, NG, GH, ZA, global]
+    enabled_env: FLUTTERWAVE_ENABLED
+    docs: https://developer.flutterwave.com/docs/webhooks
+    base_url: https://api.flutterwave.com/v3
+    auth:
+      scheme: bearer
+      token_env: FLUTTERWAVE_SECRET_KEY
+      confirmed: false
+    endpoints:
+      authorize: { method: POST, path: /payments, confirmed: true }   # verified: https://api.flutterwave.com/v3/payments with Authorization: Bearer <FLW_SECRET_KEY>
+      verify:    { method: GET,  path: /transactions/{id}/verify, confirmed: false }
+      refund:    { method: POST, path: /transactions/{id}/refund, confirmed: false }
+    webhook:
+      header: verif-hash
+      scheme: static_hash
+      secret_env: FLUTTERWAVE_SECRET_HASH
+      docs: https://developer.flutterwave.com/docs/webhooks
+      confirmed: true
+
+  paystack:
+    label: Paystack
+    lanes: [card, bank, mobile_money]
+    coverage: [KE, NG, GH, ZA]
+    enabled_env: PAYSTACK_ENABLED
+    docs: https://paystack.com/docs/api/transaction/
+    base_url: https://api.paystack.co
+    auth:
+      scheme: bearer
+      token_env: PAYSTACK_SECRET_KEY
+      confirmed: true
+    endpoints:
+      authorize: { method: POST, path: /transaction/initialize, confirmed: true }
+      verify:    { method: GET,  path: /transaction/verify/{reference}, confirmed: true }
+      refund:    { method: POST, path: /refund, confirmed: false }
+    webhook:
+      header: x-paystack-signature
+      scheme: hmac_sha512
+      secret_env: PAYSTACK_SECRET_KEY
+      docs: https://paystack.com/docs/payments/verify-payments/
+      confirmed: false
+      note: Documented as HMAC-SHA512 of the raw body; not re-read from Paystack's page this session.
+
+  mpesa:
+    label: Safaricom M-Pesa (Daraja)
+    lanes: [mobile_money]
+    coverage: [KE]
+    enabled_env: MPESA_ENABLED
+    docs: https://developer.safaricom.co.ke/apis/MpesaExpressSimulate
+    base_url:
+      sandbox: https://sandbox.safaricom.co.ke
+      production: https://api.safaricom.co.ke
+    auth:
+      scheme: oauth2_client_credentials
+      token_path: /oauth/v1/generate?grant_type=client_credentials
+      key_env: MPESA_CONSUMER_KEY
+      secret_env: MPESA_CONSUMER_SECRET
+      confirmed: false
+    endpoints:
+      authorize: { method: POST, path: /mpesa/stkpush/v1/processrequest, confirmed: false }
+      verify:    { method: POST, path: /mpesa/stkpushquery/v1/query, confirmed: false }
+    webhook:
+      header: null
+      scheme: none
+      note: Daraja posts an asynchronous callback to MPESA_CALLBACK_URL. Safaricom does not sign it; validate by re-querying the STK query endpoint.
+      confirmed: true
+
+  pesapal:
+    label: Pesapal
+    lanes: [card, mobile_money]
+    coverage: [KE, UG, TZ, RW]
+    enabled_env: PESAPAL_ENABLED
+    base_url:
+      sandbox: https://cybqa.pesapal.com/pesapalv3
+      production: https://pay.pesapal.com/v3
+    auth:
+      scheme: bearer_via_token_request
+      token_path: /api/Auth/RequestToken
+      confirmed: false
+    endpoints:
+      authorize: { method: POST, path: /api/Transactions/SubmitOrderRequest, confirmed: false }
+      verify:    { method: GET,  path: /api/Transactions/GetTransactionStatus, confirmed: false }
+      ipn:       { method: POST, path: /api/URLSetup/RegisterIPN, confirmed: false }
+    webhook:
+      header: null
+      scheme: none
+      note: Pesapal IPN is unsigned; confirm by calling GetTransactionStatus.
+      confirmed: false
+
+  bank:
+    label: Bank / escrow settlement
+    lanes: [bank]
+    coverage: [KE, global]
+    enabled_env: BANK_ENABLED
+    base_url_env: BANK_API_BASE
+    auth:
+      scheme: oauth2_client_credentials
+      key_env: BANK_CLIENT_ID
+      secret_env: BANK_CLIENT_SECRET
+      confirmed: false
+    endpoints:
+      hold:    { method: POST, path: /escrow/holds, confirmed: false }
+      release: { method: POST, path: /escrow/holds/{id}/release, confirmed: false }
+      payout:  { method: POST, path: /payments/payouts, confirmed: false }
+    webhook:
+      header: X-Bank-Signature
+      scheme: hmac_sha256
+      secret_env: BANK_WEBHOOK_SECRET
+      confirmed: false
+
+freight:
+
+  dhl:
+    label: DHL Express (MyDHL API)
+    modes: [air, courier]
+    coverage: [global, eu-uk, mena-asia, americas, af]
+    enabled_env: DHL_ENABLED
+    docs: https://developer.dhl.com/api-reference/dhl-express-mydhl-api
+    base_url:
+      test: https://express.api.dhl.com/mydhlapi/test
+      production: https://express.api.dhl.com/mydhlapi
+    auth:
+      scheme: basic
+      username_env: DHL_API_KEY
+      password_env: DHL_API_SECRET
+      confirmed: true
+    endpoints:
+      quote:  { method: GET,  path: /rates, confirmed: false }
+      label:  { method: POST, path: /shipments, confirmed: false }
+      track:  { method: GET,  path: /shipments/{awb}/tracking, confirmed: false }
+      pickup: { method: POST, path: /pickups, confirmed: false }
+    webhook:
+      header: X-DHL-Signature
+      scheme: hmac_sha256
+      secret_env: DHL_API_SECRET
+      confirmed: false
+
+  fedex:
+    label: FedEx
+    modes: [air, courier]
+    coverage: [global, eu-uk, mena-asia, americas]
+    enabled_env: FEDEX_ENABLED
+    docs: https://developer.fedex.com/api/en-us/catalog/track/v1/docs.html
+    base_url:
+      sandbox: https://apis-sandbox.fedex.com
+      production: https://apis.fedex.com
+    auth:
+      scheme: oauth2_client_credentials
+      token_path: /oauth/token
+      key_env: FEDEX_CLIENT_ID
+      secret_env: FEDEX_CLIENT_SECRET
+      confirmed: false
+    endpoints:
+      quote:  { method: POST, path: /rate/v1/rates/quotes, confirmed: false }
+      label:  { method: POST, path: /ship/v1/shipments, confirmed: false }
+      track:  { method: POST, path: /track/v1/trackingnumbers, confirmed: false }
+    webhook:
+      header: null
+      scheme: none
+      note: FedEx pushes shipment-visibility events to a registered HTTPS endpoint; no published signature header.
+      confirmed: false
+
+  aramex:
+    label: Aramex
+    modes: [air, courier, road]
+    coverage: [mena-asia, eu-uk, af, ea]
+    enabled_env: ARAMEX_ENABLED
+    docs: https://www.aramex.com/ae/en/developers-solution-center/aramex-apis
+    base_url: https://ws.aramex.net/ShippingAPI.V2
+    auth:
+      scheme: body_credentials
+      note: Credentials travel in the JSON body (UserName, Password, AccountNumber, AccountPin, AccountEntity, AccountCountryCode).
+      confirmed: false
+    endpoints:
+      quote: { method: POST, path: /Rate/Service_1_0.svc/json/CalculateRate, confirmed: false }
+      label: { method: POST, path: /Shipping/Service_1_0.svc/json/CreateShipments, confirmed: false }
+      track: { method: POST, path: /Tracking/Service_1_0.svc/json/TrackShipments, confirmed: false }
+    webhook:
+      header: null
+      scheme: none
+      confirmed: false
+
+  sendy:
+    label: Sendy
+    modes: [road]
+    coverage: [ke]
+    enabled_env: SENDY_ENABLED
+    docs: https://sendyit.com
+    base_url_env: SENDY_API_BASE
+    auth:
+      scheme: api_key_header
+      header: X-Api-Key
+      key_env: SENDY_API_KEY
+      confirmed: false
+    endpoints:
+      quote:  { method: POST, path: /api/v1/price, confirmed: false }
+      label:  { method: POST, path: /api/v1/deliveries, confirmed: false }
+      track:  { method: GET,  path: /api/v1/deliveries/{awb}, confirmed: false }
+    webhook:
+      header: null
+      scheme: none
+      confirmed: false
+
+  posta:
+    label: Postal Corporation of Kenya
+    modes: [road]
+    coverage: [ke]
+    enabled_env: POSTA_ENABLED
+    base_url_env: POSTA_API_BASE
+    auth:
+      scheme: api_key_header
+      header: X-API-Key
+      key_env: POSTA_API_KEY
+      confirmed: false
+    endpoints:
+      quote: { method: POST, path: /v1/rates, confirmed: false }
+      label: { method: POST, path: /v1/parcels, confirmed: false }
+      track: { method: GET,  path: /v1/parcels/{awb}, confirmed: false }
+    webhook:
+      header: null
+      scheme: none
+      confirmed: false
+
+  ocean:
+    label: Ocean freight (Maersk DCSA / Hapag-Lloyd)
+    modes: [sea]
+    coverage: [global, eu-uk, mena-asia, americas, af]
+    enabled_env: OCEAN_ENABLED
+    docs: https://developer.maersk.com/catalogue/EDP%20Booking
+    base_url_env: OCEAN_API_BASE
+    auth:
+      scheme: oauth2_client_credentials
+      token_path: /oauth2/token
+      key_env: OCEAN_CLIENT_ID
+      secret_env: OCEAN_CLIENT_SECRET
+      confirmed: false
+    endpoints:
+      quote:   { method: POST, path: /v2/quotes, confirmed: false }
+      booking: { method: POST, path: /v2/bookings, confirmed: false }
+      label:   { method: GET,  path: /v2/bookings/{id}/shipping-instructions, confirmed: false }
+      track:   { method: GET,  path: /v2/shipments/{awb}, confirmed: false }
+    webhook:
+      header: X-Carrier-Signature
+      scheme: hmac_sha256
+      secret_env: OCEAN_WEBHOOK_SECRET
+      confirmed: false
+      note: PLACEHOLDER. Maersk builds its Ocean Booking API on the DCSA Booking Interface v2.0 and Hapag-Lloyd publishes booking APIs on api-portal.hlag.com, but no resource path or push-signing header was confirmed from the carriers' own references this session.
+
+services:
+
+  customs:
+    label: KRA iCMS / KEBS / EPC documentation
+    enabled_env: CUSTOMS_ENABLED
+    endpoints:
+      declaration:  { method: POST, path: /icms/declarations, confirmed: false }
+      coo:          { method: POST, path: /epc/certificate-of-origin, confirmed: false }
+      kebs_permit:  { method: POST, path: /kebs/permits, confirmed: false }
+    confirmed: false
+
+  fx:
+    label: FX rates
+    provider_env: FX_PROVIDER
+    static_fallback: { KES: 1, USD: 0.00775, EUR: 0.00710, GBP: 0.00610, AED: 0.02847, ZAR: 0.13860 }
+    confirmed: false

@@ -1,0 +1,128 @@
+# =============================================================================
+# Routing. Which provider serves which lane / payment method.
+# Order = priority. First enabled provider wins; the rest are failover.
+# =============================================================================
+
+payments:
+  # buyer selects "M-Pesa" in checkout
+  mobile_money:
+    KE: [mpesa, flutterwave, pesapal]
+    UG: [pesapal, flutterwave]
+    TZ: [pesapal, flutterwave]
+    RW: [pesapal, flutterwave]
+    default: [flutterwave, stripe]
+  # buyer selects "Card"
+  card:
+    KE: [flutterwave, pesapal, paystack, stripe]
+    default: [stripe, flutterwave, paystack]
+  # buyer selects "Bank transfer / escrow"
+  bank:
+    default: [bank, paystack]
+
+freight:
+  # lane id (matches store/config.js ZONES) -> carrier priority
+  ke-nairobi:   [sendy, dhl, posta]
+  ke-upcountry: [sendy, posta, dhl]
+  ke-remote:    [posta, sendy]
+  ea:           [dhl, aramex, fedex]
+  af:           [dhl, aramex]
+  eu-uk:        [dhl, fedex, aramex]
+  mena-asia:    [dhl, aramex, fedex]
+  americas:     [fedex, dhl]
+  # sea lane (heavy cargo: minerals, tea, coffee in bulk, machinery)
+  sea:          [ocean, dhl]
+
+# Goods that must never travel without cold chain or special handling.
+special_handling:
+  cold_chain_pipelines: [5, 6, 7, 8, 9, 10, 12, 13, 57]
+  licensed_export_pipelines: [1, 2, 7, 8, 14, 15, 18, 19, 56]
+  high_value_pipelines: [18, 19, 85, 86, 87]
+
+# Which pipeline a settled transaction is credited to, and at what fee basis.
+# fee_basis: "percent" of settled value, or "flat" (subscription / ad / data lines).
+fee_basis:
+  percent_pipelines:
+    1: 0.04    # coffee 3-5%
+    2: 0.04
+    3: 0.015
+    5: 0.04
+    6: 0.04
+    7: 0.045
+    8: 0.04
+    9: 0.02
+    10: 0.03
+    11: 0.03
+    12: 0.03
+    13: 0.03
+    14: 0.03
+    15: 0.03
+    18: 0.04
+    19: 0.075
+    20: 0.015
+    31: 0.02
+    32: 0.06
+    33: 0.04
+    34: 0.04
+    35: 0.025
+    36: 0.15
+    37: 0.25
+    38: 0.25
+    39: 0.12
+    40: 0.15
+    41: 0.22
+    42: 0.22
+    44: 0.035
+    46: 0.15
+    47: 0.03
+    48: 0.12
+    54: 0.05
+    55: 0.08
+    56: 0.06
+    57: 0.06
+    58: 0.035
+    61: 0.02
+    63: 0.05
+    66: 0.0175
+    67: 0.0075
+    68: 0.08
+    69: 0.06
+    70: 0.07
+    71: 0.1
+    72: 0.08
+    73: 0.03
+    74: 0.05
+    75: 0.07
+    76: 0.06
+    77: 0.14
+    78: 0.08
+    80: 0.05
+    81: 0.22
+    83: 0.06
+    84: 0.15
+    85: 0.02
+    86: 0.003
+    87: 0.02
+    22: 0.003
+    23: 0.003
+    24: 0.003
+    25: 0.05
+    26: 0.04
+    27: 0.003
+    28: 0.003
+    29: 0.003
+    30: 0.003
+    16: 0.003
+    17: 0.003
+    21: 0.003
+    43: 0.0     # enabler: feeds other lines, carries no fee of its own
+    53: 0.0
+    79: 0.0
+    82: 0.0
+  flat_pipelines:
+    45: 2500    # exhibitor subscription tiers 500 / 2500 / 10000
+    49: 18000   # featured placement
+    50: 1200    # livestream pass
+    60: 7500    # credit data query
+    64: 7500    # KYB API call
+    65: 150000  # county subscription tier
+    59: 0       # escrow float: interest, not a fee

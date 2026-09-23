@@ -1,0 +1,19 @@
+{
+  "name": "integrations-service",
+  "version": "1.0.0",
+  "description": "Every one of the 87 pipelines wired to a settlement chain, and every payment method and freight lane routed to a named provider. **You only add API keys.**",
+  "type": "module",
+  "main": "registries.js",
+  "directories": {
+    "lib": "lib"
+  },
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "dependencies": {
+    "js-yaml": "^5.4.2"
+  }
+}

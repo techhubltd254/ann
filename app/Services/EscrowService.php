@@ -7,6 +7,7 @@ use App\Models\DisputeCase;
 use App\Models\CourierShipment;
 use App\Models\CourierTrackingEvent;
 use App\Models\User;
+use App\Services\IntegrationClient;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Str;
@@ -89,6 +90,21 @@ class EscrowService
         $escrow->update(['current_step' => 3]);
         $this->markStep($escrow, 'shipped');
         Log::info('escrow: shipped', ['escrow_id' => $escrow->id, 'tracking' => $trackingNumber]);
+
+        // ── Integration: generate freight label ──
+        try {
+            app(IntegrationClient::class)->freightLabel($courierName, [
+                'tracking' => $trackingNumber,
+                'origin' => $origin,
+                'destination' => $destination,
+                'weight_kg' => 1,
+            ]);
+        } catch (\Throwable $e) {
+            Log::error('escrow: freight label via integration failed', [
+                'escrow_id' => $escrow->id, 'error' => $e->getMessage(),
+            ]);
+        }
+
         return $shipment;
     }
 
@@ -109,6 +125,19 @@ class EscrowService
                 'description' => 'Package delivered successfully',
                 'occurred_at' => now(),
             ]);
+
+            // ── Integration: verify delivery via tracking ──
+            try {
+                $trackInfo = app(IntegrationClient::class)->freightTrack($shipment->tracking_number);
+                if (($trackInfo['status'] ?? '') === 'DELIVERED') {
+                    $escrow->update(['delivery_confirmed_at' => now(), 'current_step' => 4]);
+                    $this->markStep($escrow, 'delivered');
+                }
+            } catch (\Throwable $e) {
+                Log::error('escrow: freight track via integration failed', [
+                    'escrow_id' => $escrow->id, 'error' => $e->getMessage(),
+                ]);
+            }
         }
         return $escrow->fresh();
     }
@@ -132,6 +161,17 @@ class EscrowService
         ]);
         $this->markStep($escrow, 'released');
         Log::info('escrow: funds released to seller', ['escrow_id' => $escrow->id, 'amount' => $escrow->amount, 'seller_id' => $escrow->seller_id]);
+
+        // ── Integration: capture payment via Node.js service ──
+        try {
+            if ($escrow->payment_ref) {
+                app(IntegrationClient::class)->paymentCapture($escrow->payment_ref);
+            }
+        } catch (\Throwable $e) {
+            Log::error('escrow: payment capture via integration failed', [
+                'escrow_id' => $escrow->id, 'error' => $e->getMessage(),
+            ]);
+        }
 
         // ── Pool contribution accrual ──
         try {

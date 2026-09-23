@@ -83,3 +83,9 @@ scripts
 .phpunit.cache
 storage/oauth-*.key
 Exhibition
+
+# integration service runtime env (secrets) + pid files
+integrations-service/.env
+.env.integration
+*.pid
+integrations-service/run/artifacts/

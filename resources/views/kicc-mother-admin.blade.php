@@ -574,6 +574,9 @@
             @include('dashboards.analytics-tab', ['analytics' => $analytics ?? []])
             @endif
 
+            @include('partials.integration-tab')
+            @include('partials.pipeline-creator-tab')
+
             @if($tab === 'pool')
             <div class="p-6 space-y-6">
                 <h2 class="text-xl font-bold text-white">Selling Pool</h2>

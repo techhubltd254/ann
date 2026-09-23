@@ -140,6 +140,31 @@ if [ -f "$ALGO_SERVICE" ]; then
     done
 fi
 
+# Start Node.js integration service (restart on every deploy)
+INT_SERVICE="$APP_DIR/integrations-service/api/server.js"
+if [ -f "$INT_SERVICE" ]; then
+    pkill -f "integrations-service/api/server\.js" 2>/dev/null || true
+    sleep 1
+    # Ensure Node deps are present (node_modules is excluded from rsync)
+    if [ ! -d "$APP_DIR/integrations-service/node_modules" ]; then
+        cd "$APP_DIR/integrations-service" && npm install --no-audit --no-fund 2>>"$LOG" || true
+        cd "$APP_DIR"
+    fi
+    cp "$APP_DIR/.env.integration" "$APP_DIR/integrations-service/.env" 2>/dev/null || true
+    cd "$APP_DIR/integrations-service" && nohup node api/server.js >> "$APP_DIR/storage/logs/integration-service.log" 2>&1 &
+    INT_PID=$!
+    echo $INT_PID > "$APP_DIR/storage/kicc-integration.pid"
+    echo "integration service started on port 8787 (PID $INT_PID)" >> "$LOG"
+    for i in 1 2 3 4 5; do
+        if curl -s -o /dev/null --max-time 2 "http://127.0.0.1:8787/health" 2>/dev/null; then
+            echo "  ✓ integration service health check PASSED" >> "$LOG"
+            break
+        fi
+        sleep 1
+    done
+    cd "$APP_DIR"
+fi
+
 # Purge Cloudflare CDN cache for the entire site (so users see changes immediately)
 # Requires CLOUDFLARE_API_TOKEN with zone-level cache purge permissions
 ZONE_ID="abeda0e6440d9eabd5e2e54deced291e"

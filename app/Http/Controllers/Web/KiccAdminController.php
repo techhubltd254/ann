@@ -13,11 +13,15 @@ use App\Models\Marketplace\Product;
 use App\Models\MediaAsset;
 use App\Models\Ministry;
 use App\Models\Payment\PaymentIntent;
+use App\Models\Pipeline\DynamicPipeline;
 use App\Models\User;
+use App\Services\IntegrationClient;
 use App\Services\MediaLibraryService;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Artisan;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Http;
+use Illuminate\Support\Str;
 
 /**
  * KICC Overall Admin Portal — the platform owner's god-mode.
@@ -182,6 +186,8 @@ class KiccAdminController extends Controller
             ['label' => 'Hero Media', 'tab' => 'hero_media', 'icon' => 'M15 10l4.553-2.276A1 1 0 0121 8.618v6.764a1 1 0 01-1.447.894L15 14M5 18h8a2 2 0 002-2V8a2 2 0 00-2-2H5a2 2 0 00-2 2v8a2 2 0 002 2z'],
             ['label' => 'Packages', 'tab' => 'packages', 'icon' => 'M3 3h2l.4 2M7 13h10l4-8H5.4M7 13L5.4 5M7 13l-2.293 2.293c-.63.63-.184 1.707.707 1.707H17m0 0a2 2 0 100 4 2 2 0 000-4zm-8 2a2 2 0 11-4 0 2 2 0 014 0z'],
             ['label' => 'Analytics', 'tab' => 'analytics', 'icon' => 'M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z'],
+            ['label' => 'Integration', 'tab' => 'integration', 'icon' => 'M8 9l3 3-3 3m5 0h3M5 20h14a2 2 0 002-2V6a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z'],
+            ['label' => 'Pipeline Creator', 'tab' => 'pipeline-creator', 'icon' => 'M12 6v6m0 0v6m0-6h6m-6 0H6'],
         ];
 
         $analytics = app(\App\Services\AnalyticsService::class)->forKicc($stats);
@@ -208,6 +214,43 @@ class KiccAdminController extends Controller
             ->selectRaw('status, COUNT(*) as c')->groupBy('status')->orderByDesc('c')->get();
         $pipelineTotal = \Illuminate\Support\Facades\DB::table('pipeline_registrations')->count();
 
+        // ── Integration tab (real-time data, no cache) ──
+        $integrationHealth = [];
+        $algorithmsHealth = [];
+        $integrationProviders = [];
+        $integrationCredentials = [];
+        $integrationLiveCount = 0;
+        $integrationWebhookRoutes = [];
+        try {
+            $intClient = app(IntegrationClient::class);
+            $integrationHealth = $intClient->health();
+            $integrationProviders = $intClient->providers()['providers'] ?? [];
+            $integrationWebhookRoutes = $integrationHealth['routes'] ?? [];
+            $integrationLiveCount = count($integrationHealth['live_configured'] ?? []);
+            $integrationCredentials = collect($integrationProviders)->filter(fn($p) => count($p['missing']) === 0)->values()->toArray();
+        } catch (\Throwable $e) {
+            $integrationHealth = ['ok' => false];
+        }
+        try {
+            $resp = Http::timeout(3)->get('http://127.0.0.1:8400/health');
+            if ($resp->successful()) $algorithmsHealth = $resp->json();
+        } catch (\Throwable $e) {
+            $algorithmsHealth = ['status' => 'offline'];
+        }
+
+        // ── Pipeline Creator tab ──
+        $dynamicPipelines = DynamicPipeline::orderBy('sector')->orderBy('code')->paginate(50);
+        $dynamicPipelineTotal = DynamicPipeline::count();
+        $dynamicSectors = DynamicPipeline::selectRaw('DISTINCT sector')->pluck('sector')->sort()->values()->toArray();
+        $suggestedPipelines = [
+            ['code' => 'XR1', 'name' => 'Cashew Nuts Collection', 'sector' => 'crops', 'fee' => '3%', 'description' => 'Collection & bulking of raw cashew from smallholders for processing & export'],
+            ['code' => 'XR2', 'name' => 'Macadamia Processing', 'sector' => 'crops', 'fee' => '4%', 'description' => 'Macadamia kernel processing, grading, roasting for local & export market'],
+            ['code' => 'XR3', 'name' => 'Avocado Export (Hass)', 'sector' => 'crops', 'fee' => '4%', 'description' => 'Hass avocado export — ripening, packing, phytosanitary compliance'],
+            ['code' => 'XR4', 'name' => 'Shea Butter Processing', 'sector' => 'crops', 'fee' => '3%', 'description' => 'Shea nut collection, butter extraction, cosmetic-grade processing'],
+            ['code' => 'XR5', 'name' => 'Fish Farming (Aquaculture)', 'sector' => 'fisheries', 'fee' => '3%', 'description' => 'Tilapia and catfish farming, pond management, feed supply, harvest logistics'],
+            ['code' => 'XR6', 'name' => 'Bee Keeping & Honey', 'sector' => 'livestock', 'fee' => '3%', 'description' => 'Modern beekeeping, honey extraction, beeswax processing, propolis collection'],
+        ];
+
         return view('kicc-mother-admin', compact(
             'stats', 'counties', 'exhibitors', 'ministries',
             'orders', 'escrows', 'users', 'providers', 'institutions',
@@ -216,6 +259,13 @@ class KiccAdminController extends Controller
             'streams', 'streamStats', 'adminExhibitions', 'adminCounties',
             'pool', 'poolBalance', 'poolPendingDistributions', 'poolPeriodContributions',
             'pipelines', 'pipelineSectors', 'pipelineStatusBreakdown', 'pipelineTotal',
+            // Integration tab data
+            'integrationHealth', 'algorithmsHealth', 'integrationProviders',
+            'integrationCredentials', 'integrationLiveCount',
+            'integrationWebhookRoutes',
+            // Pipeline Creator tab data
+            'dynamicPipelines', 'dynamicPipelineTotal', 'dynamicSectors',
+            'suggestedPipelines',
         ));
     }
 
@@ -381,5 +431,48 @@ class KiccAdminController extends Controller
 
         app(\App\Services\CacheSyncService::class)->kicc();
         return redirect()->route('kicc.admin', ['tab' => 'hero_media'])->with('success', 'Hero video removed. Homepage will use fallback video.');
+    }
+
+    /** Store a new dynamic pipeline. */
+    public function storePipeline(Request $request)
+    {
+        $this->authorizeKicc();
+
+        $data = $request->validate([
+            'code' => 'required|string|max:20|unique:dynamic_pipelines,code',
+            'name' => 'required|string|max:200',
+            'sector' => 'required|string|max:100',
+            'description' => 'nullable|string|max:2000',
+            'mechanism' => 'nullable|string|max:50',
+            'fee_rate' => 'nullable|numeric|min:0|max:100',
+        ]);
+
+        $data['slug'] = Str::slug($data['name']);
+        $data['is_active'] = true;
+        if (empty($data['mechanism'])) $data['mechanism'] = 'commission';
+        if (empty($data['fee_rate'])) $data['fee_rate'] = 4.00;
+
+        $pipeline = DynamicPipeline::create($data);
+
+        // Also register in pipeline_registrations for unified tracking
+        \Illuminate\Support\Facades\DB::table('pipeline_registrations')->insert([
+            'code' => $pipeline->code,
+            'sector' => $pipeline->sector,
+            'slug' => $pipeline->slug,
+            'parent' => null,
+            'phase' => 3,
+            'status' => 'built',
+            'economics' => json_encode([
+                'model' => $pipeline->mechanism,
+                'take_rate_pct' => $pipeline->fee_rate,
+                'description' => $pipeline->description,
+            ]),
+            'created_at' => now(),
+            'updated_at' => now(),
+        ]);
+
+        app(\App\Services\CacheSyncService::class)->kicc();
+        return redirect()->route('kicc.admin', ['tab' => 'pipeline-creator'])
+            ->with('success', "Pipeline {$pipeline->code}: {$pipeline->name} created.");
     }
 }
