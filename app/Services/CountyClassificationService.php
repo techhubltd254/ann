@@ -51,13 +51,19 @@ class CountyClassificationService
                 COUNT(DISTINCT h.id) as hotels,
                 COUNT(DISTINCT p.id) as products,
                 COUNT(DISTINCT i.id) as institutions')
-            ->where('c.id', $id)->groupBy('c.id')->first();
+            ->where('c.id', $id)->groupBy('c.id')->first() ?? (object) [
+                'population_2024' => null, 'area_km2' => null, 'economic_zone' => null,
+                'former_province' => null, 'attractions' => 0, 'hotels' => 0,
+                'products' => 0, 'institutions' => 0,
+            ];
     }
 
     public function rps(County $county, object $stats): float
     {
         $maxPop = 5544000; $minPop = 143000;
-        $popScore = ($stats->population_2024 - $minPop) / max(1, ($maxPop - $minPop));
+        $popScore = $stats->population_2024
+            ? ($stats->population_2024 - $minPop) / max(1, ($maxPop - $minPop))
+            : 0;
         $ecoBonus = in_array($stats->economic_zone, ['Coast','Nairobi Metro','Central Highlands']) ? 0.2 : 0;
         $entityScore = min(1, ($stats->attractions + $stats->hotels + $stats->products + $stats->institutions) / 50);
         return round(min(1, ($popScore * 0.6) + $entityScore * 0.2 + $ecoBonus), 4);
@@ -65,11 +71,10 @@ class CountyClassificationService
 
     public function fns(County $county, object $stats): float
     {
-        $pop = max(1, $stats->population_2024);
-        $area = max(1, $stats->area_km2);
+        $pop = max(1, $stats->population_2024 ?: 0);
+        $area = max(1, $stats->area_km2 ?: 1);
         $density = $pop / $area;
-        $maxDensity = 5485; // Nairobi: 5.5M / 703km2 ≈ 7800
-        // Low density = high FNS (sparse populations need more infrastructure per capita)
+        $maxDensity = 5485;
         $densityScore = 1 - min(1, $density / $maxDensity);
         $areaScore = min(1, $area / 70000);
         $ecoPenalty = in_array($stats->economic_zone, ['Arid','North Eastern','Upper Eastern']) ? 0.3 : 0;

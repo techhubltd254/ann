@@ -152,8 +152,16 @@ class PoolIntegrationTest extends TestCase
         $county->health = 0; $county->power = 0;
         $county->security = 0; $county->education = 0;
 
-        $rps = $reflRps->invoke($svc, $county);
-        $fns = $reflFns->invoke($svc, $county);
+        $rps = $reflRps->invoke($svc, $county, (object)[
+            'population_2024' => 100000, 'area_km2' => 1000, 'economic_zone' => 'Nairobi Metro',
+            'former_province' => 'Nairobi', 'attractions' => 0, 'hotels' => 0,
+            'products' => 0, 'institutions' => 0,
+        ]);
+        $fns = $reflFns->invoke($svc, $county, (object)[
+            'population_2024' => 100000, 'area_km2' => 1000, 'economic_zone' => 'Nairobi Metro',
+            'former_province' => 'Nairobi', 'attractions' => 0, 'hotels' => 0,
+            'products' => 0, 'institutions' => 0,
+        ]);
 
         $this->assertGreaterThanOrEqual(0, $rps);
         $this->assertLessThanOrEqual(1, $fns);
