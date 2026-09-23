@@ -71,15 +71,28 @@ class NationalAdminController extends Controller
             ['label' => 'County Classification', 'tab' => 'counties', 'icon' => 'M9 20l-5.447-2.724A1 1 0 013 16.382V5.618a1 1 0 011.447-.894L9 7m0 13l6-3m-6 3V7m6 10l4.553 2.276A1 1 0 0021 18.382V7.618a1 1 0 00-.553-.894L15 4m0 13V4m0 0L9 7'],
         ];
 
-        // ── County classification data (outside cache — refreshed every load) ──
+        // ── County classification data + pipeline activations (outside cache) ──
         $counties = \App\Models\County::orderBy('name')->get(['id', 'name', 'slug', 'classification_rps', 'classification_fns', 'classification_quadrant']);
         $quadrantCounts = $counties->groupBy('classification_quadrant')->map->count();
         $unclassified = $counties->whereNull('classification_quadrant');
+
+        // Pipeline activation counts per county
+        $activationCounts = \Illuminate\Support\Facades\DB::table('pipeline_activations')
+            ->selectRaw('county_id, COUNT(*) as c')
+            ->groupBy('county_id')->pluck('c', 'county_id');
+        $activationTotal = $activationCounts->sum();
+
+        // Pipeline codes grouped by county (for drill-down)
+        $activeByCounty = \Illuminate\Support\Facades\DB::table('pipeline_activations')
+            ->join('pipeline_registrations', 'pipeline_activations.pipeline_code', '=', 'pipeline_registrations.code')
+            ->selectRaw('pipeline_activations.county_id, pipeline_registrations.code, pipeline_registrations.slug')
+            ->get()->groupBy('county_id');
 
         return view('national.admin', compact(
             'tab', 'navItems', 'ministries', 'agencies', 'nationalPages',
             'stats', 'nationalHero', 'nationalFlag', 'ministryMedia',
             'counties', 'quadrantCounts', 'unclassified',
+            'activationCounts', 'activationTotal', 'activeByCounty',
         ));
     }
 

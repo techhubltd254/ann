@@ -243,7 +243,7 @@
         <p class="text-zinc-400 text-sm">Dual-score quadrant: RPS (revenue potential) vs FNS (foundational need).</p>
 
         @if(isset($quadrantCounts))
-        <div class="grid grid-cols-2 md:grid-cols-4 gap-4">
+        <div class="grid grid-cols-2 md:grid-cols-5 gap-4">
             <div class="bg-zinc-800/80 rounded-xl p-4 border border-zinc-700">
                 <div class="text-xs text-zinc-400">Engine</div>
                 <div class="text-2xl font-bold text-emerald-400">{{ $quadrantCounts['engine'] ?? 0 }}</div>
@@ -260,14 +260,20 @@
                 <div class="text-xs text-zinc-400">Foundational Anchor</div>
                 <div class="text-2xl font-bold text-rose-400">{{ $quadrantCounts['foundational_anchor'] ?? 0 }}</div>
             </div>
+            <div class="bg-zinc-800/80 rounded-xl p-4 border border-zinc-700/70">
+                <div class="text-xs text-zinc-400">Active Pipelines</div>
+                <div class="text-2xl font-bold text-white">{{ number_format($activationTotal ?? 0) }}</div>
+                <div class="text-xs text-zinc-500">across all counties</div>
+            </div>
         </div>
         @endif
 
-        <div class="bg-zinc-800/80 rounded-xl border border-zinc-700 overflow-hidden">
+        <div class="mt-4 bg-zinc-800/80 rounded-xl border border-zinc-700 overflow-hidden">
             <table class="w-full text-sm">
-                <thead><tr class="bg-zinc-700/50 text-left text-zinc-300"><th class="p-3">County</th><th class="p-3">RPS</th><th class="p-3">FNS</th><th class="p-3">Quadrant</th></tr></thead>
+                <thead><tr class="bg-zinc-700/50 text-left text-zinc-300"><th class="p-3">County</th><th class="p-3">RPS</th><th class="p-3">FNS</th><th class="p-3">Quadrant</th><th class="p-3">Active Pipelines</th><th class="p-3">Codes</th></tr></thead>
                 <tbody>
                 @forelse($counties ?? [] as $c)
+                @php $actCount = $activationCounts[$c->id] ?? 0; $actPipes = $activeByCounty[$c->id] ?? collect([]); @endphp
                 <tr class="border-t border-zinc-700/50 text-zinc-300">
                     <td class="p-3 font-medium text-white">{{ $c->name }}</td>
                     <td class="p-3">{{ $c->classification_rps !== null ? number_format($c->classification_rps, 4) : '—' }}</td>
@@ -284,6 +290,12 @@
                         @else
                         <span class="text-zinc-500">—</span>
                         @endif
+                    </td>
+                    <td class="p-3">
+                        <span class="font-bold text-white">{{ $actCount }}</span>
+                    </td>
+                    <td class="p-3 text-xs text-zinc-400 max-w-[200px] truncate" title="{{ $actPipes->pluck('code')->implode(', ') }}">
+                        {{ $actPipes->pluck('code')->take(5)->implode(', ') }}{{ $actPipes->count() > 5 ? '…' : '' }}
                     </td>
                 </tr>
                 @empty
