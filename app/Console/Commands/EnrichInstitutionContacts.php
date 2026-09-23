@@ -137,7 +137,7 @@ class EnrichInstitutionContacts extends Command
 
         // Extract website URLs
         if (preg_match_all('/https?:\/\/(?:www\.)?[a-zA-Z0-9-]+\.[a-zA-Z]{2,}(?:\/[^\s"<]*)?/', $html, $m)) {
-            $filtered = array_filter($m[0], fn($u) => {
+            $filtered = array_filter($m[0], function ($u) use ($excludeDomains) {
                 foreach ($excludeDomains as $d) {
                     if (str_contains($u, $d)) return false;
                 }
