@@ -125,15 +125,20 @@ fi
 # Start Python algorithms service (restart on every deploy to pick up code changes)
 ALGO_SERVICE="$APP_DIR/kicc_api/server.py"
 if [ -f "$ALGO_SERVICE" ]; then
-    pkill -f "kicc_api/server.py" 2>/dev/null || true
-    sleep 1
-    export PYTHONPATH="$APP_DIR"
-    export KICC_API_PORT="8400"
-    nohup python3 "$ALGO_SERVICE" >> "$APP_DIR/storage/logs/algorithms-service.log" 2>&1 &
-    ALGO_PID=$!
-    echo $ALGO_PID > "$APP_DIR/storage/kicc-algorithms.pid"
-    echo "algorithms service started on port 8400 (PID $ALGO_PID)" >> "$LOG"
-    
+    # Prefer systemd (kicc-algorithms) so the port is not double-owned; fall back to nohup.
+    if systemctl list-unit-files kicc-algorithms.service >/dev/null 2>&1; then
+        systemctl restart kicc-algorithms >> "$LOG" 2>&1 || echo "systemd algorithms restart warn" >> "$LOG"
+    else
+        pkill -f "kicc_api/server.py" 2>/dev/null || true
+        sleep 1
+        export PYTHONPATH="$APP_DIR"
+        export KICC_API_PORT="8400"
+        nohup python3 "$ALGO_SERVICE" >> "$APP_DIR/storage/logs/algorithms-service.log" 2>&1 &
+        ALGO_PID=$!
+        echo $ALGO_PID > "$APP_DIR/storage/kicc-algorithms.pid"
+        echo "algorithms service started on port 8400 (PID $ALGO_PID)" >> "$LOG"
+    fi
+
     # Health check — give the service 5 seconds to boot
     for i in 1 2 3 4 5; do
         if curl -s -o /dev/null --max-time 2 "http://127.0.0.1:8400/health" 2>/dev/null; then
@@ -147,18 +152,25 @@ fi
 # Start Node.js integration service (restart on every deploy)
 INT_SERVICE="$APP_DIR/integrations-service/api/server.js"
 if [ -f "$INT_SERVICE" ]; then
-    pkill -f "integrations-service/api/server\.js" 2>/dev/null || true
-    sleep 1
     # Ensure Node deps are present (node_modules is excluded from rsync)
     if [ ! -d "$APP_DIR/integrations-service/node_modules" ]; then
         cd "$APP_DIR/integrations-service" && npm install --no-audit --no-fund 2>>"$LOG" || true
         cd "$APP_DIR"
     fi
     cp "$APP_DIR/.env.integration" "$APP_DIR/integrations-service/.env" 2>/dev/null || true
-    cd "$APP_DIR/integrations-service" && nohup node api/server.js >> "$APP_DIR/storage/logs/integration-service.log" 2>&1 &
-    INT_PID=$!
-    echo $INT_PID > "$APP_DIR/storage/kicc-integration.pid"
-    echo "integration service started on port 8787 (PID $INT_PID)" >> "$LOG"
+
+    if systemctl list-unit-files kicc-integration.service >/dev/null 2>&1; then
+        systemctl restart kicc-integration >> "$LOG" 2>&1 || echo "systemd integration restart warn" >> "$LOG"
+    else
+        pkill -f "integrations-service/api/server\.js" 2>/dev/null || true
+        sleep 1
+        cd "$APP_DIR/integrations-service" && nohup node api/server.js >> "$APP_DIR/storage/logs/integration-service.log" 2>&1 &
+        INT_PID=$!
+        echo $INT_PID > "$APP_DIR/storage/kicc-integration.pid"
+        echo "integration service started on port 8787 (PID $INT_PID)" >> "$LOG"
+        cd "$APP_DIR"
+    fi
+
     for i in 1 2 3 4 5; do
         if curl -s -o /dev/null --max-time 2 "http://127.0.0.1:8787/health" 2>/dev/null; then
             echo "  ✓ integration service health check PASSED" >> "$LOG"
@@ -166,18 +178,22 @@ if [ -f "$INT_SERVICE" ]; then
         fi
         sleep 1
     done
-    cd "$APP_DIR"
 fi
 
 # Start inter-pipeline automation bus (port 8790)
 BUS_SERVER="$APP_DIR/integrations-service/server.mjs"
 if [ -f "$BUS_SERVER" ]; then
-    pkill -f "integrations-service/server\.mjs" 2>/dev/null || true
-    sleep 1
-    echo "bus server started on port 8790" >> "$LOG"
-    cd "$APP_DIR/integrations-service" && nohup node server.mjs >> "$APP_DIR/storage/logs/pipeline-bus.log" 2>&1 &
-    BUS_PID=$!
-    echo $BUS_PID > "$APP_DIR/storage/kicc-bus.pid"
+    if systemctl list-unit-files kicc-pipeline-bus.service >/dev/null 2>&1; then
+        systemctl restart kicc-pipeline-bus >> "$LOG" 2>&1 || echo "systemd bus restart warn" >> "$LOG"
+    else
+        pkill -f "integrations-service/server\.mjs" 2>/dev/null || true
+        sleep 1
+        echo "bus server started on port 8790" >> "$LOG"
+        cd "$APP_DIR/integrations-service" && nohup node server.mjs >> "$APP_DIR/storage/logs/pipeline-bus.log" 2>&1 &
+        BUS_PID=$!
+        echo $BUS_PID > "$APP_DIR/storage/kicc-bus.pid"
+        cd "$APP_DIR"
+    fi
     for i in 1 2 3 4 5; do
         if curl -s -o /dev/null --max-time 2 "http://127.0.0.1:8790/health" 2>/dev/null; then
             echo "  ✓ pipeline bus health check PASSED" >> "$LOG"
@@ -185,7 +201,6 @@ if [ -f "$BUS_SERVER" ]; then
         fi
         sleep 1
     done
-    cd "$APP_DIR"
 fi
 
 # Purge Cloudflare CDN cache for the entire site (so users see changes immediately)
