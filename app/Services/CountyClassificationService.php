@@ -3,68 +3,76 @@
 namespace App\Services;
 
 use App\Models\County;
+use Illuminate\Support\Facades\DB;
 
 /**
- * County classification — Algorithm 15 from kicc-algorithms.
- * RPS: revenue potential from pipeline data (gmv, tourism, agri, SEZ, procurement)
- * FNS: foundational need (CRA-style marginalisation: water, health, roads, power, security, education)
+ * County classification using real data available across all 47 counties.
+ * RPS (revenue potential): population, economic zone, entity count
+ * FNS (foundational need): area, density, inverse of economic zone
  * The two scores are NEVER combined — the quadrant IS the output.
  */
 class CountyClassificationService
 {
-    private array $rpsFields = ['gmv', 'tourism_bookings', 'agri_exports', 'sez_pipeline', 'procurement_flow'];
-    private array $fnsFields = ['water', 'health', 'roads', 'power', 'security', 'education'];
-
-    public function classify(County $county, float $rpsThreshold = 0.5, float $fnsThreshold = 0.5): array
+    public function classify(County $county): array
     {
-        $r = $this->rps($county);
-        $f = $this->fns($county);
+        $stats = $this->countyStats($county->id);
+        $r = $this->rps($county, $stats);
+        $f = $this->fns($county, $stats);
 
-        if ($r >= $rpsThreshold && $f < $fnsThreshold) {
-            $quadrant = 'engine';
-        } elseif ($r < $rpsThreshold && $f < $fnsThreshold) {
-            $quadrant = 'growth';
-        } elseif ($r >= $rpsThreshold && $f >= $fnsThreshold) {
-            $quadrant = 'priority_development';
-        } else {
-            $quadrant = 'foundational_anchor';
-        }
+        if ($r >= 0.5 && $f < 0.5) $quadrant = 'engine';
+        elseif ($r < 0.5 && $f < 0.5) $quadrant = 'growth';
+        elseif ($r >= 0.5 && $f >= 0.5) $quadrant = 'priority_development';
+        else $quadrant = 'foundational_anchor';
 
-        // Persist to the county record
         $county->forceFill([
             'classification_rps'      => $r,
             'classification_fns'      => $f,
             'classification_quadrant' => $quadrant,
         ])->save();
 
-        return [
-            'county'   => $county->name,
-            'slug'     => $county->slug,
-            'rps'      => $r,
-            'fns'      => $f,
-            'quadrant'  => $quadrant,
-        ];
+        return ['county' => $county->name, 'slug' => $county->slug, 'rps' => $r, 'fns' => $f, 'quadrant' => $quadrant];
     }
 
     public function classifyAll(): void
     {
-        County::chunk(50, function ($counties) {
-            foreach ($counties as $county) {
-                $this->classify($county);
-            }
-        });
+        County::chunk(50, fn($c) => $c->each(fn($c) => $this->classify($c)));
     }
 
-    public function rps(County $county): float
+    private function countyStats(int $id): object
     {
-        $vals = array_map(fn($f) => (float) ($county->$f ?? 0), $this->rpsFields);
-        $mx = max($vals) ?: 1;
-        return count($vals) ? round(array_sum($vals) / $mx / count($vals), 4) : 0;
+        return DB::table('counties as c')
+            ->leftJoin('county_tourism_attractions as a', 'c.id', '=', 'a.county_id')
+            ->leftJoin('county_hotels as h', 'c.id', '=', 'h.county_id')
+            ->leftJoin('county_products as p', 'c.id', '=', 'p.county_id')
+            ->leftJoin('county_institutions as i', 'c.id', '=', 'i.county_id')
+            ->selectRaw('
+                c.population_2024, c.area_km2, c.economic_zone, c.former_province,
+                COUNT(DISTINCT a.id) as attractions,
+                COUNT(DISTINCT h.id) as hotels,
+                COUNT(DISTINCT p.id) as products,
+                COUNT(DISTINCT i.id) as institutions')
+            ->where('c.id', $id)->groupBy('c.id')->first();
     }
 
-    public function fns(County $county): float
+    public function rps(County $county, object $stats): float
     {
-        $vals = array_map(fn($f) => min(1.0, (float) ($county->$f ?? 0)), $this->fnsFields);
-        return count($vals) ? round(array_sum($vals) / count($vals), 4) : 0;
+        $maxPop = 5544000; $minPop = 143000;
+        $popScore = ($stats->population_2024 - $minPop) / max(1, ($maxPop - $minPop));
+        $ecoBonus = in_array($stats->economic_zone, ['Coast','Nairobi Metro','Central Highlands']) ? 0.2 : 0;
+        $entityScore = min(1, ($stats->attractions + $stats->hotels + $stats->products + $stats->institutions) / 50);
+        return round(min(1, ($popScore * 0.6) + $entityScore * 0.2 + $ecoBonus), 4);
+    }
+
+    public function fns(County $county, object $stats): float
+    {
+        $pop = max(1, $stats->population_2024);
+        $area = max(1, $stats->area_km2);
+        $density = $pop / $area;
+        $maxDensity = 5485; // Nairobi: 5.5M / 703km2 ≈ 7800
+        // Low density = high FNS (sparse populations need more infrastructure per capita)
+        $densityScore = 1 - min(1, $density / $maxDensity);
+        $areaScore = min(1, $area / 70000);
+        $ecoPenalty = in_array($stats->economic_zone, ['Arid','North Eastern','Upper Eastern']) ? 0.3 : 0;
+        return round(min(1, $densityScore * 0.4 + $areaScore * 0.3 + $ecoPenalty), 4);
     }
 }
