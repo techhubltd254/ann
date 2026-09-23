@@ -3,6 +3,9 @@
 namespace App\Http\Controllers\Api;
 
 use App\Http\Controllers\Controller;
+use App\Models\AutomationRun;
+use App\Services\PipelineBusClient;
+use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Storage;
@@ -46,5 +49,69 @@ class PipelineController extends Controller
             'job_id' => $jobId,
             'status' => 'processing',
         ]);
+    }
+
+    // ── Inter-pipeline automation bus (monitor + control) ──
+
+    /** The 87-pipeline dependency graph. */
+    public function graph(): JsonResponse
+    {
+        return response()->json(app(PipelineBusClient::class)->graph());
+    }
+
+    /** Aggregate bus metrics for the Mother Admin monitoring page. */
+    public function busStatus(): JsonResponse
+    {
+        return response()->json(app(PipelineBusClient::class)->status());
+    }
+
+    public function ledger(Request $request): JsonResponse
+    {
+        return response()->json(app(PipelineBusClient::class)->ledger((int) $request->integer('limit', 100)));
+    }
+
+    public function dlq(Request $request): JsonResponse
+    {
+        return response()->json(app(PipelineBusClient::class)->dlq((int) $request->integer('limit', 100)));
+    }
+
+    /** CONTROL — settle roots and cascade into every dependent pipeline. */
+    public function cascade(Request $request): JsonResponse
+    {
+        $roots = (array) $request->input('roots', []);
+        if ($roots === []) {
+            return response()->json(['ok' => false, 'error' => 'roots required'], 422);
+        }
+
+        $result = app(PipelineBusClient::class)->cascade($roots);
+
+        AutomationRun::create([
+            'node_key' => 'api-cascade',
+            'node_name' => 'API cascade',
+            'status' => ($result['ok'] ?? false) ? 'succeeded' : 'failed',
+            'trigger' => 'api',
+            'root_pipeline_ids' => $roots,
+            'settled_pipeline_ids' => $result['pipelines'] ?? [],
+            'settled_count' => count($result['pipelines'] ?? []),
+            'failed_pipeline_ids' => $result['failed'] ?? [],
+            'dlq_count' => (int) ($result['dlq'] ?? 0),
+            'duration_ms' => (int) ($result['metrics']['elapsed_ms'] ?? 0),
+            'triggered_by' => optional($request->user())->id,
+            'started_at' => now(),
+            'finished_at' => now(),
+        ]);
+
+        return response()->json($result);
+    }
+
+    /** CONTROL — trigger one pipeline directly (also used to retry the DLQ). */
+    public function trigger(Request $request): JsonResponse
+    {
+        $id = (int) $request->integer('pipeline_id');
+        if ($id < 1) {
+            return response()->json(['ok' => false, 'error' => 'pipeline_id required'], 422);
+        }
+
+        return response()->json(app(PipelineBusClient::class)->trigger($id, (array) $request->input('payload', [])));
     }
 }

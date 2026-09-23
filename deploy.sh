@@ -4,11 +4,12 @@ set -euo pipefail
 APP_DIR="/opt/kicc-laravel"
 REPO="techhubltd254/ann"
 BRANCH="main"
-TOKEN="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"
+: "${GITHUB_DEPLOY_TOKEN:?GITHUB_DEPLOY_TOKEN is not set - export it in the droplet env, never commit it}"
+TOKEN="$GITHUB_DEPLOY_TOKEN"
 WORK="/tmp/ann-deploy"
 LOG="/opt/deploy-webhook/deploy.log"
-export CF_TOKEN="cfat_s9JltaYS3YyiM3w7QTG3zKqZZ7AJMGgLcqUYLQdCf99d30c4"
-export CF_ACCOUNT="c8416e05ed0a3554806be51aac862ec4"
+: "${CF_TOKEN:?CF_TOKEN is not set - export it in the droplet env}"
+export CF_ACCOUNT="${CF_ACCOUNT:-}"
 
 echo "=== DEPLOY START $(date) ===" >> "$LOG"
 
@@ -100,6 +101,9 @@ php artisan view:cache >> "$LOG" 2>&1
 # Opcache reset
 php -r "opcache_reset();" 2>/dev/null || true
 
+# Generate pipeline-bus registry (pipelines.json + integration-map.json) from live DB
+php artisan kicc:bus-registry >> "$LOG" 2>&1 || echo "bus-registry generation warn" >> "$LOG"
+
 # Deploy CDN worker
 EDGE_FILE="$APP_DIR/edge/kicctest-gateway.js"
 if [ -f "$EDGE_FILE" ]; then
@@ -158,6 +162,25 @@ if [ -f "$INT_SERVICE" ]; then
     for i in 1 2 3 4 5; do
         if curl -s -o /dev/null --max-time 2 "http://127.0.0.1:8787/health" 2>/dev/null; then
             echo "  ✓ integration service health check PASSED" >> "$LOG"
+            break
+        fi
+        sleep 1
+    done
+    cd "$APP_DIR"
+fi
+
+# Start inter-pipeline automation bus (port 8790)
+BUS_SERVER="$APP_DIR/integrations-service/server.mjs"
+if [ -f "$BUS_SERVER" ]; then
+    pkill -f "integrations-service/server\.mjs" 2>/dev/null || true
+    sleep 1
+    echo "bus server started on port 8790" >> "$LOG"
+    cd "$APP_DIR/integrations-service" && nohup node server.mjs >> "$APP_DIR/storage/logs/pipeline-bus.log" 2>&1 &
+    BUS_PID=$!
+    echo $BUS_PID > "$APP_DIR/storage/kicc-bus.pid"
+    for i in 1 2 3 4 5; do
+        if curl -s -o /dev/null --max-time 2 "http://127.0.0.1:8790/health" 2>/dev/null; then
+            echo "  ✓ pipeline bus health check PASSED" >> "$LOG"
             break
         fi
         sleep 1

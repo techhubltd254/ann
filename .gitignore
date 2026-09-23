@@ -89,3 +89,7 @@ integrations-service/.env
 .env.integration
 *.pid
 integrations-service/run/artifacts/
+
+# pipeline bus registry (generated from pipeline_registrations on deploy)
+pipelines.json
+integration-map.json

@@ -3,6 +3,7 @@ import fs from "fs";
 import path from "path";
 import crypto from "crypto";
 import { fileURLToPath } from "url";
+import { createSink } from "./store.js";
 
 export const ROOT = path.resolve(path.dirname(fileURLToPath(import.meta.url)), "..");
 export const ARTIFACTS = path.join(ROOT, "run", "artifacts");
@@ -55,32 +56,38 @@ export const log = {
 };
 
 /* ----------------------------------------------------------------- state --- */
+// Both streams go through the coalesced sink in lib/store.js: one syscall per tick
+// instead of one per row, and no possibility of two writers interleaving mid-line.
 const EVENTS = path.join(ARTIFACTS, "events.jsonl");
 const LEDGER = path.join(ARTIFACTS, "ledger.csv");
+const LEDGER_HEAD = "ts,pipeline_id,pipeline_name,category,mechanism,event_type,value_kes,commission_kes,provider_ref,settled\n";
+const eventSink = createSink(EVENTS, "");
+const ledgerSink = createSink(LEDGER, LEDGER_HEAD);
+
 export function emit(event) {
   const row = { ts: new Date().toISOString(), ...event };
-  fs.appendFileSync(EVENTS, JSON.stringify(row) + "\n");
+  eventSink.write(JSON.stringify(row));
   return row;
 }
 export function readEvents() {
-  if (!fs.existsSync(EVENTS)) return [];
-  return fs.readFileSync(EVENTS, "utf8").trim().split("\n").filter(Boolean).map((l) => JSON.parse(l));
+  return eventSink.read().map((l) => JSON.parse(l));
 }
+export async function flushArtifacts() { await eventSink.flush(); await ledgerSink.flush(); }
 export function resetArtifacts() {
-  for (const f of [EVENTS, LEDGER]) if (fs.existsSync(f)) fs.unlinkSync(f);
+  eventSink.reset();
+  ledgerSink.reset();
 }
-const LEDGER_HEAD = "ts,pipeline_id,pipeline_name,category,mechanism,event_type,value_kes,commission_kes,provider_ref,settled\n";
 export function ledger(entry) {
-  if (!fs.existsSync(LEDGER)) fs.writeFileSync(LEDGER, LEDGER_HEAD);
   const esc = (v) => `"${String(v ?? "").replace(/"/g, '""')}"`;
-  fs.appendFileSync(LEDGER, [
+  ledgerSink.write([
     entry.ts, entry.pipeline_id, esc(entry.pipeline_name), esc(entry.category), entry.mechanism,
     entry.event_type, entry.value_kes, entry.commission_kes, esc(entry.provider_ref), entry.settled,
-  ].join(",") + "\n");
+  ].join(","));
 }
 export function readLedger() {
-  if (!fs.existsSync(LEDGER)) return [];
-  const [head, ...rows] = fs.readFileSync(LEDGER, "utf8").trim().split("\n");
+  const lines = ledgerSink.read();
+  if (!lines.length) return [];
+  const [head, ...rows] = lines;
   const cols = head.split(",");
   return rows.filter(Boolean).map((r) => {
     const cells = r.match(/("([^"]|"")*"|[^,]*)(,|$)/g).map((c) => c.replace(/,$/, "").replace(/^"|"$/g, "").replace(/""/g, '"'));
@@ -89,6 +96,7 @@ export function readLedger() {
 }
 export const LEDGER_PATH = LEDGER;
 export const EVENTS_PATH = EVENTS;
+export const SINK_STATS = () => ({ events: eventSink.written, ledger: ledgerSink.written });
 
 /* ------------------------------------------------------------------ sign --- */
 export const sign = {
@@ -201,6 +209,8 @@ export async function request(provider, key, { method = "GET", path: p, body, id
   };
   const live = configured(provider) && !MOCK_MODE;
   if (!live) {
+    const lat = Number(env("MOCK_LATENCY_MS", 0));      // simulate real provider RTT when benchmarking
+    if (lat > 0) await sleep(Math.round(lat * (0.6 + Math.random() * 0.8)));
     const res = mockResponse(provider.id, key, body);
     emit({ kind: "http.mock", ...call, status: 200, note: "no live credentials or MOCK_MODE=true" });
     return res;

@@ -447,6 +447,30 @@ return [
     'integration_service_url' => env('KICC_INTEGRATION_URL', 'http://127.0.0.1:8787'),
 
     'integration_webhook_secret' => env('KICC_INTEGRATION_WEBHOOK_SECRET', 'dev-secret'),
+
+    /*
+    | Inter-pipeline automation bus (Node.js on :8790)
+    | One pipeline's settled output drives every dependent pipeline via the
+    | pipeline graph. Surfaced in Mother Admin → Automation → Pipeline Automation.
+    */
+    'pipeline_bus' => [
+        'url' => env('KICC_PIPELINE_BUS_URL', 'http://127.0.0.1:8790'),
+        'timeout' => (int) env('KICC_PIPELINE_BUS_TIMEOUT', 10),
+        'max_attempts' => (int) env('KICC_PIPELINE_BUS_MAX_ATTEMPTS', 3),
+        'base_delay_ms' => (int) env('KICC_PIPELINE_BUS_BASE_DELAY_MS', 200),
+        'max_delay_ms' => (int) env('KICC_PIPELINE_BUS_MAX_DELAY_MS', 5000),
+    ],
+
+    /*
+    | Integration layer retry policy (payments, freight, customs, FX, webhooks)
+    */
+    'integration' => [
+        'timeout' => (int) env('KICC_INTEGRATION_TIMEOUT', 10),
+        'max_attempts' => (int) env('KICC_INTEGRATION_MAX_ATTEMPTS', 3),
+        'base_delay_ms' => (int) env('KICC_INTEGRATION_BASE_DELAY_MS', 200),
+        'max_delay_ms' => (int) env('KICC_INTEGRATION_MAX_DELAY_MS', 5000),
+    ],
+
     'pool' => [
         'alpha' => 0.7,
         'beta' => 0.3,

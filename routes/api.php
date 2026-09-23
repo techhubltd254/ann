@@ -214,3 +214,13 @@ Route::prefix('marketplace')->name('api.marketplace.')->group(function () {
 // ── Integration webhooks (called by Node.js integration service) ──
 Route::post('/webhooks/integration-forward', [\App\Http\Controllers\Api\IntegrationWebhookController::class, 'forward'])
     ->name('api.webhooks.integration-forward');
+
+// ── Inter-pipeline automation (auth-guarded) ──
+Route::middleware('auth:sanctum')->prefix('pipeline')->group(function () {
+    Route::get('/graph', [\App\Http\Controllers\Api\PipelineController::class, 'graph'])->name('api.pipeline.graph');
+    Route::get('/status', [\App\Http\Controllers\Api\PipelineController::class, 'busStatus'])->name('api.pipeline.bus-status');
+    Route::get('/ledger', [\App\Http\Controllers\Api\PipelineController::class, 'ledger'])->name('api.pipeline.ledger');
+    Route::get('/dlq', [\App\Http\Controllers\Api\PipelineController::class, 'dlq'])->name('api.pipeline.dlq');
+    Route::post('/cascade', [\App\Http\Controllers\Api\PipelineController::class, 'cascade'])->name('api.pipeline.cascade');
+    Route::post('/trigger', [\App\Http\Controllers\Api\PipelineController::class, 'trigger'])->name('api.pipeline.trigger');
+});

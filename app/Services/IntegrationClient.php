@@ -2,6 +2,7 @@
 
 namespace App\Services;
 
+use App\Support\RetryPolicy;
 use Illuminate\Support\Facades\Http;
 use Illuminate\Support\Facades\Log;
 
@@ -15,10 +16,55 @@ use Illuminate\Support\Facades\Log;
 class IntegrationClient
 {
     private string $baseUrl;
+    private RetryPolicy $retry;
 
-    public function __construct()
+    public function __construct(?string $baseUrl = null, ?RetryPolicy $retry = null)
     {
-        $this->baseUrl = rtrim(config('kicc.integration_service_url', 'http://127.0.0.1:8787'), '/');
+        $this->baseUrl = rtrim($baseUrl ?? (string) config('kicc.integration_service_url', 'http://127.0.0.1:8787'), '/');
+        $this->retry = $retry ?? new RetryPolicy(
+            (int) config('kicc.integration.max_attempts', 3),
+            (int) config('kicc.integration.base_delay_ms', 200),
+            (int) config('kicc.integration.max_delay_ms', 5000),
+        );
+    }
+
+    // ── Inter-pipeline automation ──
+
+    /** The 87-pipeline dependency graph. */
+    public function pipelineGraph(): array
+    {
+        return $this->call('GET', '/api/pipeline/graph');
+    }
+
+    /** Settle a pipeline and cascade into every dependent pipeline. */
+    public function cascade(array $roots, array $opts = []): array
+    {
+        return $this->call('POST', '/api/pipeline/cascade', array_merge([
+            'roots' => array_values(array_map('intval', $roots)),
+        ], $opts));
+    }
+
+    /** Trigger one pipeline directly. */
+    public function trigger(int $pipelineId, array $payload = []): array
+    {
+        return $this->call('POST', '/api/pipeline/trigger', array_merge([
+            'pipeline_id' => $pipelineId,
+        ], $payload));
+    }
+
+    public function pipelineStatus(): array
+    {
+        return $this->call('GET', '/api/pipeline/status');
+    }
+
+    public function pipelineLedger(int $limit = 100): array
+    {
+        return $this->call('GET', '/api/pipeline/ledger?limit=' . $limit);
+    }
+
+    public function pipelineDlq(int $limit = 100): array
+    {
+        return $this->call('GET', '/api/pipeline/dlq?limit=' . $limit);
     }
 
     public function health(): array
@@ -141,30 +187,45 @@ class IntegrationClient
 
     // ── Low-level HTTP call ──
 
-    private function call(string $method, string $path, array $body = []): array
+    /** Low-level call: retry + backoff + idempotency. */
+    public function call(string $method, string $path, array $body = [], ?string $idempotencyKey = null): array
     {
-        try {
-            $response = $method === 'GET'
-                ? Http::timeout(5)->get($this->baseUrl . $path)
-                : Http::timeout(10)->post($this->baseUrl . $path, $body);
+        $key = $idempotencyKey ?? RetryPolicy::idempotencyKey($method . ' ' . $path, $body);
+        $attempt = 0;
+        $lastError = 'unknown';
 
-            if ($response->successful()) {
-                return $response->json();
+        while (true) {
+            $attempt++;
+            try {
+                $pending = Http::timeout((int) config('kicc.integration.timeout', 10))
+                    ->withHeaders(['Accept' => 'application/json', 'X-Idempotency-Key' => $key]);
+
+                $response = $method === 'GET'
+                    ? $pending->get($this->baseUrl . $path)
+                    : $pending->post($this->baseUrl . $path, $body);
+
+                if ($response->successful()) {
+                    $json = $response->json();
+
+                    return is_array($json) ? $json : ['ok' => true];
+                }
+
+                $lastError = 'HTTP ' . $response->status();
+                if (! $this->retry->shouldRetry($attempt, $response->status())) {
+                    break;
+                }
+            } catch (\Throwable $e) {
+                $lastError = $e->getMessage();
+                if (! $this->retry->shouldRetry($attempt, null)) {
+                    break;
+                }
             }
 
-            Log::warning('integration: service returned ' . $response->status(), [
-                'path' => $path,
-                'body' => $body,
-            ]);
-
-            return ['ok' => false, 'error' => "HTTP {$response->status()}", 'mock' => true];
-        } catch (\Throwable $e) {
-            Log::warning('integration: service unreachable', [
-                'path' => $path,
-                'error' => $e->getMessage(),
-            ]);
-
-            return ['ok' => false, 'error' => 'service unreachable', 'mock' => true];
+            usleep($this->retry->delayFor($attempt, crc32($key)) * 1000);
         }
+
+        Log::warning('integration: call failed', ['path' => $path, 'attempts' => $attempt, 'error' => $lastError]);
+
+        return ['ok' => false, 'error' => $lastError, 'attempts' => $attempt, 'mock' => true, 'idempotency_key' => $key];
     }
 }
