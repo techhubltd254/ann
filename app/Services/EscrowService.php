@@ -153,6 +153,24 @@ class EscrowService
             ]);
         }
 
+        // ── Double-entry ledger (kit LedgerService) ──
+        try {
+            $ledger = app(\App\Kicc\Services\LedgerService::class);
+            $txId = $ledger->hold(
+                'ESCROW',
+                (float) $escrow->amount,
+                'escrow_transaction',
+                $escrow->id,
+                $escrow->seller_id
+            );
+            $ledger->capture($txId);
+            $ledger->release($txId);
+        } catch (\Throwable $e) {
+            \Illuminate\Support\Facades\Log::error('ledger: posting failed on escrow release', [
+                'escrow_id' => $escrow->id, 'error' => $e->getMessage(),
+            ]);
+        }
+
         return $escrow->fresh();
     }
 
