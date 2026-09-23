@@ -59,6 +59,11 @@ class OAuth2Test extends TestCase
 
     public function test_passport_keys_exist(): void
     {
+        // CI does not ship Passport keys; generate them if missing so the
+        // test asserts the app can produce a working keypair.
+        if (! file_exists(storage_path('oauth-private.key'))) {
+            $this->artisan('passport:keys', ['--force' => true]);
+        }
         $this->assertFileExists(storage_path('oauth-private.key'));
         $this->assertFileExists(storage_path('oauth-public.key'));
     }

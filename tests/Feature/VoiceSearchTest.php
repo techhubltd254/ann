@@ -38,6 +38,10 @@ class VoiceSearchTest extends TestCase
 
     public function test_voice_search_returns_transcribed_text(): void
     {
+        // The controller requires a configured key before hitting OpenRouter;
+        // set one so the mocked HTTP call is exercised.
+        config(['services.openrouter.key' => 'test-openrouter-key']);
+
         // Mock the OpenRouter API call
         Http::fake([
             'openrouter.ai/*' => Http::response([

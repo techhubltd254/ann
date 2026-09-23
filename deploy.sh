@@ -4,7 +4,7 @@ set -euo pipefail
 APP_DIR="/opt/kicc-laravel"
 REPO="techhubltd254/ann"
 BRANCH="main"
-TOKEN="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"
+TOKEN="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"
 WORK="/tmp/ann-deploy"
 LOG="/opt/deploy-webhook/deploy.log"
 export CF_TOKEN="cfat_s9JltaYS3YyiM3w7QTG3zKqZZ7AJMGgLcqUYLQdCf99d30c4"
