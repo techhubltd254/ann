@@ -40,7 +40,7 @@ class KiccStatus extends Command
         $this->line("  📦  Total: $total");
         foreach ($byStatus as $s => $c) $this->line("     $s: $c");
         if ($total === 202) $this->line('  ✅  All 202 pipelines registered (50 parents + 152 subsectors)');
-        else $this->warn("  ⚠️  Expected 202, got $total");
+        else $this->warn("  ⚠️  Registered: $total");
 
         // 3. Subsector configs
         $subsectors = [];

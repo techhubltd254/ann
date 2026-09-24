@@ -139,6 +139,16 @@ jobs:
               echo $! > storage/kicc-integration.pid
             fi
 
+            # Generate pipeline-bus registry + start bus (port 8790)
+            if [ -f pipelines.json ] || php artisan kicc:bus-registry 2>/dev/null; then
+              if [ -f integrations-service/server.mjs ]; then
+                pkill -f "integrations-service/server.mjs" 2>/dev/null || true
+                sleep 1
+                nohup node integrations-service/server.mjs >> storage/logs/pipeline-bus.log 2>&1 &
+                echo $! > storage/kicc-bus.pid
+              fi
+            fi
+
             # Restart services
             systemctl restart php8.4-fpm
             systemctl restart kicc-pulse || true
