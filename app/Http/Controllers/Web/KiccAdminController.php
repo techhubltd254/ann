@@ -314,6 +314,34 @@ class KiccAdminController extends Controller
             ->orderByDesc('c')
             ->get();
 
+        // ── User & Order Analytics ──
+        $analyticsGrowth = \App\Models\User::selectRaw("DATE(created_at) as day, COUNT(*) as registrations")
+            ->where('created_at', '>=', now()->subDays(30))
+            ->groupBy('day')->orderBy('day')->pluck('registrations', 'day');
+        $analyticsUsers = [
+            'total' => \App\Models\User::count(),
+            'active' => \App\Models\User::where('status', 'active')->orWhereNull('status')->count(),
+            'today' => \App\Models\User::whereDate('created_at', today())->count(),
+            'this_week' => \App\Models\User::where('created_at', '>=', now()->startOfWeek())->count(),
+            'by_type' => \App\Models\User::selectRaw('account_type, COUNT(*) as c')->groupBy('account_type')->pluck('c', 'account_type'),
+        ];
+        $analyticsOrders = [
+            'total' => \App\Models\Marketplace\Order::count(),
+            'today' => \App\Models\Marketplace\Order::whereDate('created_at', today())->count(),
+            'total_revenue' => \App\Models\Marketplace\Order::sum('grand_total'),
+            'avg_order' => \App\Models\Marketplace\Order::avg('grand_total'),
+        ];
+        $analyticsEscrows = [
+            'total' => \App\Models\EscrowTransaction::count(),
+            'released' => \App\Models\EscrowTransaction::where('status', 'released')->count(),
+            'total_value' => \App\Models\EscrowTransaction::where('status', 'released')->sum('amount'),
+        ];
+        $analyticsSearch = [
+            'total' => DB::table('search_analytics')->count(),
+            'unique_queries' => DB::table('search_analytics')->distinct('query')->count('query'),
+            'top_source' => DB::table('search_analytics')->selectRaw('source, COUNT(*) as c')->groupBy('source')->orderByDesc('c')->first(),
+        ];
+
         return view('kicc-mother-admin', compact(
             'stats', 'counties', 'exhibitors', 'ministries',
             'orders', 'escrows', 'users', 'providers', 'institutions',
@@ -338,6 +366,9 @@ class KiccAdminController extends Controller
             'pipelineSettings',
             // Search Analytics data
             'searchQuery', 'searchSources', 'searchTotal', 'searchEngines',
+            // User & Order Analytics
+            'analyticsGrowth', 'analyticsUsers', 'analyticsOrders',
+            'analyticsEscrows', 'analyticsSearch',
         ));
     }
 

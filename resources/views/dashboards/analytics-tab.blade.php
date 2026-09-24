@@ -36,6 +36,20 @@
         <x-nexora-kpi title="Customer Lifetime" :value="$analytics['clv'] ?? 'KES 0'" :growth="$analytics['clv_growth'] ?? 0" color="violet" :sparkline="$analytics['clv_sparkline'] ?? []" />
     </div>
 
+    {{-- User & Order Analytics --}}
+    @if(($analyticsUsers ?? null) && isset($analyticsUsers['total']))
+    <div class="grid grid-cols-2 sm:grid-cols-4 lg:grid-cols-8 gap-3 mt-2">
+        <div class="glass-card rounded-xl p-3"><div class="text-lg font-bold text-white">{{ $analyticsUsers['total'] ?? 0 }}</div><div class="text-[9px] text-zinc-500">Total Users</div></div>
+        <div class="glass-card rounded-xl p-3"><div class="text-lg font-bold text-emerald-400">{{ $analyticsUsers['active'] ?? 0 }}</div><div class="text-[9px] text-zinc-500">Active</div></div>
+        <div class="glass-card rounded-xl p-3"><div class="text-lg font-bold text-sky-400">{{ $analyticsUsers['today'] ?? 0 }}</div><div class="text-[9px] text-zinc-500">Signed Up Today</div></div>
+        <div class="glass-card rounded-xl p-3"><div class="text-lg font-bold text-amber-400">{{ $analyticsUsers['this_week'] ?? 0 }}</div><div class="text-[9px] text-zinc-500">This Week</div></div>
+        <div class="glass-card rounded-xl p-3"><div class="text-lg font-bold text-white">{{ number_format($analyticsOrders['total'] ?? 0) }}</div><div class="text-[9px] text-zinc-500">Total Orders</div></div>
+        <div class="glass-card rounded-xl p-3"><div class="text-lg font-bold text-emerald-400">KES {{ number_format($analyticsEscrows['total_value'] ?? 0) }}</div><div class="text-[9px] text-zinc-500">Escrow Revenue</div></div>
+        <div class="glass-card rounded-xl p-3"><div class="text-lg font-bold text-sky-400">{{ $analyticsOrders['total'] > 0 ? round($analyticsUsers['total'] / $analyticsOrders['total'], 1) : '-' }}</div><div class="text-[9px] text-zinc-500">Orders/User</div></div>
+        <div class="glass-card rounded-xl p-3"><div class="text-lg font-bold text-amber-400">{{ $analyticsSearch['unique_queries'] ?? 0 }}</div><div class="text-[9px] text-zinc-500">Search Queries</div></div>
+    </div>
+    @endif
+
     {{-- Charts Row --}}
     <div class="grid grid-cols-1 lg:grid-cols-3 gap-4">
         {{-- Revenue Forecast --}}

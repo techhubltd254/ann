@@ -29,6 +29,7 @@ return Application::configure(basePath: dirname(__DIR__))
         $middleware->append(\App\Http\Middleware\OptimizeUploadedImages::class);
         $middleware->web(prepend: [
             \App\Http\Middleware\SearchIntent::class,
+            \App\Http\Middleware\LoginGate::class,
             \App\Http\Middleware\CachePublicResponse::class,
         ]);
         $middleware->web(append: [

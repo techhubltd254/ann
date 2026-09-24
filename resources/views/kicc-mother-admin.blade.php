@@ -571,7 +571,14 @@
             @endif
 
             @if($tab === 'analytics')
-            @include('dashboards.analytics-tab', ['analytics' => $analytics ?? []])
+            @include('dashboards.analytics-tab', [
+                'analytics' => $analytics ?? [],
+                'analyticsUsers' => $analyticsUsers ?? [],
+                'analyticsOrders' => $analyticsOrders ?? [],
+                'analyticsEscrows' => $analyticsEscrows ?? [],
+                'analyticsSearch' => $analyticsSearch ?? [],
+                'analyticsGrowth' => $analyticsGrowth ?? [],
+            ])
             @endif
 
             @include('partials.integration-tab')
