@@ -81,6 +81,33 @@ class AlgorithmsClient
         ], fn () => $rows);
     }
 
+    public function recommend(array $history, array $catalog, string $seasonTag = '', int $limit = 6): array
+    {
+        return $this->call('/recommend', [
+            'history'    => $history,
+            'catalog'    => $catalog,
+            'season_tag' => $seasonTag,
+            'limit'      => $limit,
+        ], fn () => ['items' => $catalog, 'count' => count($catalog)]);
+    }
+
+    public function pricing(float $basePrice, float $occupancy = 0, int $daysToEvent = 30, string $seasonTag = 'low'): array
+    {
+        return $this->call('/pricing', [
+            'base_price'   => $basePrice,
+            'occupancy'    => $occupancy,
+            'days_to_event' => $daysToEvent,
+            'season_tag'   => $seasonTag,
+        ], fn () => ['multiplier' => 1.0, 'adjusted_price' => $basePrice]);
+    }
+
+    public function trust(int $sellerId): array
+    {
+        return $this->call('/trust', [
+            'seller_id' => $sellerId,
+        ], fn () => ['seller_id' => $sellerId, 'trust_grade' => '?', 'dispute_score' => 0]);
+    }
+
     private function call(string $path, array $body, \Closure $fallback): array
     {
         try {

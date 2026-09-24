@@ -265,6 +265,11 @@ Route::post('/kicc-admin/licence/{id}/approve', [\App\Http\Controllers\Web\Pipel
 Route::post('/kicc-admin/licence/{id}/reject', [\App\Http\Controllers\Web\PipelineLicenceController::class, 'reject'])->name('kicc.admin.licence.reject');
 Route::post('/kicc-admin/pipeline/{code}/config', [\App\Http\Controllers\Web\PipelineLicenceController::class, 'updateConfig'])->name('kicc.admin.pipeline.config');
 
+// ── Public pipeline sector pages ──
+Route::get('/pipelines', [\App\Http\Controllers\Web\PipelineController::class, 'index'])->name('pipelines.index');
+Route::get('/pipelines/{sector}', [\App\Http\Controllers\Web\PipelineController::class, 'sector'])->name('pipelines.sector');
+Route::get('/pipeline/{code}', [\App\Http\Controllers\Web\PipelineController::class, 'show'])->name('pipeline.show');
+
     // ─── Media Pipeline (admin-controlled; nothing hardcoded) ───
     Route::prefix('media')->group(function () {
         Route::get('/', [\App\Http\Controllers\Web\MediaLibraryController::class, 'index'])->name('media.library');

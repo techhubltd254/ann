@@ -135,12 +135,25 @@ class CheckoutController extends Controller
                 ?? \App\Models\User::where('email', 'guest@kicc.go.ke')->value('id');
             $bySeller = $order->items->groupBy(fn ($item) => $item->variant?->product?->user_id);
 
-            // Determine which pipeline processes this order (default: A1 = marketplace)
-            $pipelineCode = $order->pipeline_code ?? 'A1';
+            $resolver = app(\App\Services\PipelineResolver::class);
 
             foreach ($bySeller as $sellerId => $items) {
                 if (!$sellerId || !$buyerId) continue;
                 $amount = $items->sum('total');
+
+                // Resolve the pipeline for this group of items (use first item's category)
+                $firstProduct = $items->first()?->variant?->product;
+                $pipelineCode = $firstProduct
+                    ? $resolver->forProduct($firstProduct)
+                    : 'A1';
+
+                // Update each order item with its pipeline code
+                foreach ($items as $item) {
+                    $itemPipeline = $item->variant?->product
+                        ? $resolver->forProduct($item->variant->product)
+                        : $pipelineCode;
+                    $item->update(['pipeline_code' => $itemPipeline]);
+                }
 
                 // EscrowService handles the full lifecycle: hold → release → pool accrue → ledger post
                 $escrow = app(\App\Services\EscrowService::class)->createEscrow(
@@ -170,8 +183,9 @@ class CheckoutController extends Controller
                 }
             }
 
-            // Record the pipeline that processed this order
-            $order->update(['pipeline_code' => $pipelineCode]);
+            // Record the primary pipeline for the order
+            $primaryPipeline = $order->items->first()?->pipeline_code ?? 'A1';
+            $order->update(['pipeline_code' => $primaryPipeline]);
 
             return $order;
         });

@@ -49,6 +49,33 @@ class Handler(BaseHTTPRequestHandler):
                 a = get().anonymizer
                 a.k = body.get("k", 5)
                 r = a.anonymize(body.get("rows", []), body.get("group_by_key", "county_id"))
+            elif self.path == "/recommend":
+                plat = get()
+                r = plat.recommender.recommend(
+                    history=body.get("history", []),
+                    catalog=body.get("catalog", []),
+                    season_tag=body.get("season_tag", ""),
+                    limit=body.get("limit", 6),
+                )
+                r = {"items": r, "count": len(r)}
+            elif self.path == "/pricing":
+                plat = get()
+                multiplier = plat.pricing.multiplier(
+                    occupancy=body.get("occupancy", 0),
+                    days_to_event=body.get("days_to_event", 30),
+                    season_tag=body.get("season_tag", "low"),
+                )
+                price = plat.pricing.price(
+                    base_price=body.get("base_price", 0),
+                    multiplier=multiplier,
+                )
+                r = {"multiplier": multiplier, "adjusted_price": price}
+            elif self.path == "/trust":
+                plat = get()
+                seller_id = body.get("seller_id", 0)
+                grade = plat.trust.grade(seller_id)
+                dispute = plat.trust.dispute_score(seller_id)
+                r = {"seller_id": seller_id, "trust_grade": grade, "dispute_score": dispute}
             else:
                 return self._send(404, {"error": "not found"})
             self._send(200, r)

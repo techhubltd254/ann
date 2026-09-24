@@ -99,6 +99,19 @@
             <div class="flex items-center gap-2">
                 <span class="h-px w-8 bg-kicc-gold"></span>
                 <span class="text-kicc-gold text-xs font-bold tracking-[0.2em] uppercase">{{ $county->name }}</span>
+                @if($county->classification_quadrant)
+                @php
+                    $quadrant = $county->classification_quadrant;
+                    $badge = match($quadrant) {
+                        'engine' => ['Engine County', 'bg-emerald-500/20 text-emerald-400 border-emerald-500/30'],
+                        'growth' => ['Growth County', 'bg-sky-500/20 text-sky-400 border-sky-500/30'],
+                        'priority_development' => ['Priority Development', 'bg-amber-500/20 text-amber-400 border-amber-500/30'],
+                        'foundational_anchor' => ['Foundational Anchor', 'bg-rose-500/20 text-rose-400 border-rose-500/30'],
+                        default => [ucwords(str_replace('_', ' ', $quadrant)), 'bg-zinc-500/20 text-zinc-400 border-zinc-500/30'],
+                    };
+                @endphp
+                <span class="text-[9px] font-bold px-2.5 py-1 rounded-full border {{ $badge[1] }}">{{ $badge[0] }}</span>
+                @endif
             </div>
             <div class="flex gap-2">
                 <a href="{{ route('marketplace.index', ['county' => $county->slug]) }}" class="px-4 py-2 rounded-xl bg-[#901C1E] text-white text-xs font-bold hover:bg-[#7b1618] transition-all">View Products</a>

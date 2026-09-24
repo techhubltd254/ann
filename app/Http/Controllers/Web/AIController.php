@@ -93,24 +93,73 @@ class AIController extends Controller
         $interests = $request->get('interests', '');
         $county = $request->get('county');
 
-        $products = Product::with('county')->active()->inRandomOrder()->take(4)->get()->map(fn ($p) => [
-            'type' => 'product', 'name' => $p->name, 'price' => $p->price, 'county' => $p->county?->name,
-            'url' => route('marketplace.show', $p->slug),
-        ]);
+        // Build user history from orders and views
+        $history = [];
+        if ($userId) {
+            $history = \App\Models\Marketplace\Order::where('user_id', $userId)
+                ->with('items.variant.product')
+                ->latest()->take(10)->get()
+                ->flatMap(fn ($o) => $o->items->map(fn ($i) => [
+                    'product_id' => $i->variant?->product_id,
+                    'category' => $i->variant?->product?->category?->name ?? 'general',
+                    'sector' => $i->variant?->product?->category?->sector ?? 'trade',
+                    'price' => $i->unit_price,
+                ]))->toArray();
+        }
 
-        $attractions = CountyTourismAttraction::with('county')->where('is_published', true)->inRandomOrder()->take(4)->get()->map(fn ($a) => [
-            'type' => 'attraction', 'name' => $a->name, 'county' => $a->county?->name,
-            'url' => route('attractions.show', $a->id),
-        ]);
+        // Build catalog from active products
+        $catalog = \App\Models\Marketplace\Product::active()
+            ->with('category')
+            ->take(50)->get()
+            ->map(fn ($p) => [
+                'id' => $p->id,
+                'name' => $p->name,
+                'category' => $p->category?->name ?? 'general',
+                'sector' => $p->category?->sector ?? 'trade',
+                'price' => $p->price,
+                'rating' => $p->rating ?? 3.5,
+            ])->toArray();
 
-        $hotels = CountyHotel::with('county')->where('is_published', true)->inRandomOrder()->take(4)->get()->map(fn ($h) => [
-            'type' => 'hotel', 'name' => $h->name, 'county' => $h->county?->name,
-        ]);
+        // Call Python recommender
+        $recommended = app(\App\Services\AlgorithmsClient::class)->recommend(
+            $history, $catalog, $interests, 6
+        );
+
+        $items = $recommended['items'] ?? [];
+        $recommendedIds = collect($items)->pluck('id')->toArray();
+
+        // Fallback: if recommender returned nothing, use random products
+        if (empty($recommendedIds)) {
+            $recommendedIds = \App\Models\Marketplace\Product::active()
+                ->inRandomOrder()->take(6)->pluck('id')->toArray();
+        }
+
+        $products = \App\Models\Marketplace\Product::with('county')
+            ->whereIn('id', $recommendedIds)
+            ->get()
+            ->map(fn ($p) => [
+                'type' => 'product', 'name' => $p->name, 'price' => $p->price,
+                'county' => $p->county?->name,
+                'url' => route('marketplace.show', $p->slug),
+                'pipeline' => app(\App\Services\PipelineResolver::class)->forProduct($p),
+            ]);
+
+        $attractions = \App\Models\CountyTourismAttraction::with('county')
+            ->where('is_published', true)->inRandomOrder()->take(4)->get()->map(fn ($a) => [
+                'type' => 'attraction', 'name' => $a->name, 'county' => $a->county?->name,
+                'url' => route('attractions.show', $a->id),
+            ]);
+
+        $hotels = \App\Models\CountyHotel::with('county')
+            ->where('is_published', true)->inRandomOrder()->take(4)->get()->map(fn ($h) => [
+                'type' => 'hotel', 'name' => $h->name, 'county' => $h->county?->name,
+            ]);
 
         return response()->json([
             'products' => $products,
             'attractions' => $attractions,
             'hotels' => $hotels,
+            'algorithm' => ! empty($recommended['items']) ? 'python_recommender' : 'random_fallback',
         ]);
     }
 

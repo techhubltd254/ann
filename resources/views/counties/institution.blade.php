@@ -81,6 +81,23 @@ onerror="this.remove()">
                 @endif
                 <div>
                     <h1 class="text-3xl md:text-5xl font-black text-white" data-split>{{ $institution->name }}</h1>
+                    @if(($institution->user->trust_grade ?? null))
+                    @php
+                        $tg = $institution->user->trust_grade;
+                        $tgBadge = match($tg) {
+                            'A' => 'bg-emerald-500/20 text-emerald-400',
+                            'B' => 'bg-sky-500/20 text-sky-400',
+                            'C' => 'bg-amber-500/20 text-amber-400',
+                            'D' => 'bg-rose-500/20 text-rose-400',
+                            'F' => 'bg-zinc-500/20 text-zinc-400',
+                            default => 'bg-zinc-500/20 text-zinc-400',
+                        };
+                    @endphp
+                    <span class="inline-flex items-center gap-1 mt-2 text-[10px] font-bold px-2.5 py-1 rounded-full {{ $tgBadge }}">
+                        <svg class="w-3 h-3" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m5.618-4.016A11.955 11.955 0 0112 2.944a11.955 11.955 0 01-8.618 3.04A12.02 12.02 0 003 9c0 5.591 3.824 10.29 9 11.622 5.176-1.332 9-6.03 9-11.622 0-1.042-.133-2.052-.382-3.016z"/></svg>
+                        Trust Grade {{ $tg }}
+                    </span>
+                    @endif
                     <p class="text-white/70 text-sm mt-2">{{ $institution->type ?? 'Institution' }}
                         @if($institution->founded_year) · Founded {{ $institution->founded_year }}@endif
                         @if($institution->headquarters) · {{ $institution->headquarters }}@endif

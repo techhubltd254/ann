@@ -124,10 +124,19 @@
                 <div class="text-gray-400 text-sm">per {{ $product->unit ?? 'unit' }}</div>
 
                 <div class="mt-3">
+                    @php
+                        $resolver = app(\App\Services\PipelineResolver::class);
+                        $prodPipeline = $resolver->forProduct($product);
+                        $prodFeeRate = $resolver->feeRate($prodPipeline);
+                        $prodIsLocked = \App\Models\Pipeline\PipelineLicence::where('pipeline_code', $prodPipeline)
+                            ->where('status', 'approved')->exists() ? false : (\Illuminate\Support\Facades\DB::table('pipeline_registrations')
+                            ->where('code', $prodPipeline)->value('earning_locked') ?? true);
+                    @endphp
                     @include('components.pipeline-badge', [
-                        'pipelineCode' => 'A1',
-                        'feeRate' => '4%',
-                        'isLocked' => false,
+                        'pipelineCode' => $prodPipeline,
+                        'feeRate' => $prodFeeRate . '%',
+                        'isLocked' => $prodIsLocked,
+                        'lockReason' => $prodIsLocked ? 'Awaiting regulatory data' : null,
                     ])
                 </div>
 
