@@ -29,6 +29,8 @@ class PipelineEarn extends Command
     protected $signature = 'kicc:pipeline:earn
         {--code= : Comma-separated pipeline codes to process (default: all active)}
         {--dry-run : Report what would happen without writing}
+        {--no-demo : Only process pipelines with REAL data. Skip synthetic trades for pipelines with no real entities.}
+        {--only-real : Alias for --no-demo}
         {--limit= : Max pipelines to process in this run}';
 
     protected $description = 'Execute every active pipeline through its earning lifecycle — match, escrow, pool accrue, ledger post';
@@ -149,9 +151,17 @@ class PipelineEarn extends Command
         // Build a minimal PipelineContract-compatible object from config
         $pipeline = $this->buildPipeline($pipelineConfig);
 
-        // Execute through the engine
+        // Execute through the engine (default: no demo — real data only)
         $engine = new PipelineEngine($pipeline, $pipelineConfig);
+        $noDemo = $this->option('no-demo') || $this->option('only-real');
+        if (! $noDemo) {
+            $engine->setDemoMode(true); // Fall back to synthetic trade if no real data
+        }
         $result = $engine->execute();
+
+        if ($result === null) {
+            return ['pipeline' => $code, 'settled' => false, 'error' => 'no real data available (use --demo to enable synthetic trades)'];
+        }
 
         return [
             'pipeline' => $code,

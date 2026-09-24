@@ -134,26 +134,22 @@ class CheckoutController extends Controller
             $buyerId = $request->user()?->id
                 ?? \App\Models\User::where('email', 'guest@kicc.go.ke')->value('id');
             $bySeller = $order->items->groupBy(fn ($item) => $item->variant?->product?->user_id);
+
+            // Determine which pipeline processes this order (default: A1 = marketplace)
+            $pipelineCode = $order->pipeline_code ?? 'A1';
+
             foreach ($bySeller as $sellerId => $items) {
                 if (!$sellerId || !$buyerId) continue;
                 $amount = $items->sum('total');
-                EscrowTransaction::create([
-                    'buyer_id' => $buyerId,
-                    'seller_id' => $sellerId,
-                    'escrow_id' => 'ESC-' . strtoupper(Str::random(10)),
-                    'amount' => $amount,
-                    'currency' => $order->currency ?? 'KES',
-                    'status' => 'held',
-                    'reference_type' => 'order',
-                    'reference_id' => $order->id,
-                    'steps' => [
-                        ['step' => 'funds_held', 'label' => 'Buyer payment held in escrow', 'done' => true, 'at' => now()->toIso8601String()],
-                        ['step' => 'seller_ship', 'label' => 'Seller ships goods', 'done' => false],
-                        ['step' => 'buyer_confirm', 'label' => 'Buyer confirms delivery', 'done' => false],
-                        ['step' => 'released', 'label' => 'Funds released to seller', 'done' => false],
-                    ],
-                    'current_step' => 1,
-                ]);
+
+                // EscrowService handles the full lifecycle: hold → release → pool accrue → ledger post
+                $escrow = app(\App\Services\EscrowService::class)->createEscrow(
+                    $buyerId, $sellerId, $amount, $pipelineCode, $order->id
+                );
+                app(\App\Services\EscrowService::class)->holdFunds($escrow);
+                app(\App\Services\EscrowService::class)->confirmBySeller($escrow);
+                app(\App\Services\EscrowService::class)->confirmByBuyer($escrow);
+                app(\App\Services\EscrowService::class)->releaseFunds($escrow);
 
                 // Record marketplace commission for this seller's items
                 foreach ($items as $item) {
@@ -173,6 +169,9 @@ class CheckoutController extends Controller
                     }
                 }
             }
+
+            // Record the pipeline that processed this order
+            $order->update(['pipeline_code' => $pipelineCode]);
 
             return $order;
         });

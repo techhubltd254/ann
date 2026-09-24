@@ -123,6 +123,14 @@
                 <div class="font-black text-kicc-gold text-2xl">KES {{ number_format($product->price ?? 0) }}</div>
                 <div class="text-gray-400 text-sm">per {{ $product->unit ?? 'unit' }}</div>
 
+                <div class="mt-3">
+                    @include('components.pipeline-badge', [
+                        'pipelineCode' => 'A1',
+                        'feeRate' => '4%',
+                        'isLocked' => false,
+                    ])
+                </div>
+
                 <div class="mt-6 space-y-3">
                     @foreach($product->variants->where('is_active', true) as $i => $variant)
                     <label class="flex items-center justify-between bg-[#F9FAFB] border border-gray-200 rounded-xl px-4 py-3 cursor-pointer transition-all has-[:checked]:border-kicc-gold has-[:checked]:bg-[#FFCD05]/5">

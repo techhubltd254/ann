@@ -89,6 +89,16 @@
                     <div class="flex justify-between text-gray-400"><span>Delivery</span><span>Calculated after order</span></div>
                     <div class="flex justify-between text-lg font-black text-kicc-gold pt-2 border-t border-gray-100"><span>Total</span><span>KES {{ number_format($cart->subtotal) }}</span></div>
                 </div>
+
+                <div class="mt-4">
+                    @include('components.pipeline-fee-breakdown', [
+                        'pipelineCode' => 'A1',
+                        'pipelineName' => 'Marketplace Pipeline',
+                        'feeRate' => 4,
+                        'subtotal' => $cart->subtotal,
+                        'isLocked' => false,
+                    ])
+                </div>
             </div>
 
             <div class="bg-white rounded-2xl border border-gray-100 p-6 text-sm text-gray-400 card-hover" data-reveal>

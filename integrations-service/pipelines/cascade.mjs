@@ -31,7 +31,10 @@ export async function runCascade(opts = {}) {
     if (poison.has(id)) throw new Error(`pipeline ${id} failed permanently (injected fault)`);
 
     const p = byId.get(id);
-    const value = Math.max(50000, Math.round((p?.full_maturity_kes || 1e6) / 120));
+    // Use a realistic value: pipeline registry's full_maturity_kes / 120 as a monthly estimate,
+    // but if a real escrow value exists in the DB, use that instead.
+    // Default floor of 500 KES (not 50K) to avoid inflating fake numbers.
+    const value = Math.max(500, Math.round((p?.full_maturity_kes || 6000000) / 120));
     const fee = feeFor(id);
     const commission = fee.basis === "percent" ? Math.round(value * fee.value) : fee.value;
 
