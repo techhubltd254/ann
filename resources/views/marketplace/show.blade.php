@@ -183,6 +183,18 @@
         </div>
     </div>
 
+    {{-- Pipeline mesh — shows upstream/downstream interconnectivity --}}
+    @php
+        $router = app(\App\Services\PipelineRouter::class);
+        $prodPipeline = $router->forProduct($product);
+        $prodMesh = $router->mesh($prodPipeline);
+    @endphp
+    @if(count($prodMesh['upstream']) > 0 || count($prodMesh['downstream']) > 0)
+    <div class="mt-8">
+        @include('components.pipeline-mesh', ['mesh' => $prodMesh, 'pipelineCode' => $prodPipeline])
+    </div>
+    @endif
+
     @if(isset($related) && $related->count() > 0)
     <div class="mt-20">
         <h2 class="text-2xl font-black text-gray-900 mb-6" data-split>You may also like</h2>
