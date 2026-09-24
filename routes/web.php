@@ -269,6 +269,7 @@ Route::post('/kicc-admin/pipeline/{code}/config', [\App\Http\Controllers\Web\Pip
 Route::get('/pipelines', [\App\Http\Controllers\Web\PipelineController::class, 'index'])->name('pipelines.index');
 Route::get('/pipelines/{sector}', [\App\Http\Controllers\Web\PipelineController::class, 'sector'])->name('pipelines.sector');
 Route::get('/pipeline/{code}', [\App\Http\Controllers\Web\PipelineController::class, 'show'])->name('pipeline.show');
+Route::get('/api/pipelines/stats', [\App\Http\Controllers\Web\PipelineController::class, 'stats'])->name('api.pipelines.stats');
 
     // ─── Media Pipeline (admin-controlled; nothing hardcoded) ───
     Route::prefix('media')->group(function () {
