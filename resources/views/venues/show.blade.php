@@ -56,6 +56,15 @@
                     </div>
                 </div>
 
+                <div class="mt-4">
+                    @include('components.pipeline-badge', [
+                        'pipelineCode' => $venue->pipelineCode(),
+                        'feeRate' => $venue->feeRate() . '%',
+                        'isLocked' => \Illuminate\Support\Facades\DB::table('pipeline_registrations')
+                            ->where('code', $venue->pipelineCode())->value('earning_locked') ?? false,
+                    ])
+                </div>
+
                 <div class="mt-6 space-y-3" id="kicc-booking-modal">
                     <button onclick="document.getElementById('kicc-booking-overlay').style.display='flex'; document.body.style.overflow='hidden';" class="w-full inline-flex items-center justify-center gap-2 font-bold tracking-wide transition-all duration-200 px-8 text-base h-14 rounded-xl bg-[#901C1E] text-gray-900 hover:bg-[#7b1618] active:scale-[0.97]" data-magnetic>Request Booking</button>
                     <a href="{{ route('packages.index') }}" class="w-full inline-flex items-center justify-center gap-2 font-bold tracking-wide transition-all duration-200 px-4 text-xs h-11 rounded-xl border border-[#901C1E]/30 text-[#901C1E] hover:bg-[#901C1E]/5" data-magnetic>See Exhibitor Packages</a>

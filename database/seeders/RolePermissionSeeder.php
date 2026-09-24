@@ -63,7 +63,7 @@ class RolePermissionSeeder extends Seeder
             'view_sector', 'edit_sector',
             'view_sector_entity', 'edit_sector_entity',
             'view_exhibition', 'edit_exhibition',
-            'view_venue', 'edit_venue',
+            'view_venue', 'create_venue', 'edit_venue', 'delete_venue',
             'view_screen', 'edit_screen',
             'view_booking', 'edit_booking',
             'view_payment', 'edit_payment',

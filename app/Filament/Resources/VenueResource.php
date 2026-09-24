@@ -44,8 +44,6 @@ class VenueResource extends Resource
                     TextInput::make('slug')->required()->unique(ignoreRecord: true),
                     Textarea::make('description')->columnSpanFull(),
                     TextInput::make('capacity')->numeric()->integer(),
-                    TextInput::make('area')->label('Area (sqm)')->numeric(),
-                    TextInput::make('price_day')->numeric()->prefix('KES')->label('Price per Day'),
                 ]),
                 Section::make('Media & Type')->columns(2)->schema([
                     FileUpload::make('cover_image')
@@ -59,7 +57,29 @@ class VenueResource extends Resource
                             'hybrid' => 'Hybrid',
                             'conference' => 'Conference Hall',
                             'exhibition' => 'Exhibition Hall',
+                            'hotel' => 'Hotel/Resort Venue',
+                            'event_space' => 'Event Space',
                         ]),
+                    Select::make('institution_id')
+                        ->label('Institution/Hotel')
+                        ->options(\App\Models\CountyInstitution::pluck('name', 'id'))
+                        ->searchable()
+                        ->nullable(),
+                    Select::make('county')
+                        ->label('County')
+                        ->options(\App\Models\County::pluck('name', 'id'))
+                        ->searchable()
+                        ->nullable(),
+                    Select::make('pipeline_code')
+                        ->label('Pipeline')
+                        ->options([
+                            'P2' => 'P2 - Real Estate / Venues',
+                            'C1' => 'C1 - Tourism / Hospitality',
+                            'A1' => 'A1 - Marketplace',
+                            'C5' => 'C5 - Outdoor Events',
+                        ])
+                        ->nullable()
+                        ->helperText('Pipeline that processes this venue\'s bookings'),
                     CheckboxList::make('amenities')
                         ->options([
                             'wifi' => 'WiFi',
@@ -79,12 +99,26 @@ class VenueResource extends Resource
 
     public static function table(Table $table): Table
     {
+        $user = Auth::user();
+
         return $table
+            ->modifyQueryUsing(function (Builder $query) use ($user) {
+                // County admins see only venues in their county
+                if ($user && $user->hasRole('county_admin') && $user->county_id) {
+                    $query->where('county', $user->county_id)
+                        ->orWhereHas('institution', fn ($q) => $q->where('county_id', $user->county_id));
+                }
+                // Institution admins see only their venues
+                if ($user && $user->hasRole('institution_admin') && $user->institution_id) {
+                    $query->where('institution_id', $user->institution_id);
+                }
+            })
             ->columns([
                 TextColumn::make('name')->searchable()->sortable(),
-                TextColumn::make('capacity')->numeric()->sortable(),
-                TextColumn::make('price_day')->money('KES')->sortable()->label('Price/Day'),
+                TextColumn::make('institution.name')->label('Institution/Hotel')->searchable()->sortable(),
                 TextColumn::make('venue_type')->badge()->sortable(),
+                TextColumn::make('pipeline_code')->label('Pipeline')->badge()->color('warning'),
+                TextColumn::make('capacity')->numeric()->sortable(),
                 IconColumn::make('is_active')->boolean()->sortable(),
             ])
             ->filters([
