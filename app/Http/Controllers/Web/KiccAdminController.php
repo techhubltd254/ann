@@ -188,6 +188,7 @@ class KiccAdminController extends Controller
             ['label' => 'Analytics', 'tab' => 'analytics', 'icon' => 'M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z'],
             ['label' => 'Integration', 'tab' => 'integration', 'icon' => 'M8 9l3 3-3 3m5 0h3M5 20h14a2 2 0 002-2V6a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z'],
             ['label' => 'Pipeline Creator', 'tab' => 'pipeline-creator', 'icon' => 'M12 6v6m0 0v6m0-6h6m-6 0H6'],
+            ['label' => 'Earnings', 'tab' => 'earnings', 'icon' => 'M12 8c-1.657 0-3 .895-3 2s1.343 2 3 2 3 .895 3 2-1.343 2-3 2m0-8c1.11 0 2.08.402 2.599 1M12 8V7m0 1v8m0 0v1m0-1c-1.11 0-2.08-.402-2.599-1'],
         ];
 
         $analytics = app(\App\Services\AnalyticsService::class)->forKicc($stats);
@@ -251,6 +252,36 @@ class KiccAdminController extends Controller
             ['code' => 'XR6', 'name' => 'Bee Keeping & Honey', 'sector' => 'livestock', 'fee' => '3%', 'description' => 'Modern beekeeping, honey extraction, beeswax processing, propolis collection'],
         ];
 
+        // ── Earnings dashboard (per-pipeline revenue) ──
+        $earningsQuery = \Illuminate\Support\Facades\DB::table('escrow_transactions')
+            ->where('status', 'released');
+        $earningsTotal = (float) $earningsQuery->clone()->sum('amount');
+        $earningsCount = $earningsQuery->clone()->count();
+        $earningsByPipeline = $earningsQuery->clone()
+            ->selectRaw('reference_type as code, COUNT(*) as trades, SUM(amount) as gmv')
+            ->groupBy('reference_type')
+            ->orderByDesc('gmv')
+            ->limit(30)
+            ->get();
+        $earningsByDay = $earningsQuery->clone()
+            ->selectRaw('DATE(released_at) as day, SUM(amount) as gmv, COUNT(*) as trades')
+            ->groupBy('day')
+            ->orderByDesc('day')
+            ->limit(14)
+            ->get();
+        $poolEarnings = (float) (\App\Models\Pool\Pool::where('scope', 'global')->where('is_active', true)->value('balance') ?? 0);
+        $poolContribTotal = (float) \App\Models\Pool\PoolContribution::sum('pool_share');
+
+        // Pipeline earn status (which pipelines have earned)
+        $earnedCodes = \Illuminate\Support\Facades\DB::table('escrow_transactions')
+            ->where('status', 'released')
+            ->distinct()->pluck('reference_type')->toArray();
+        $allRegisteredCodes = \Illuminate\Support\Facades\DB::table('pipeline_registrations')->pluck('code')->toArray();
+        $earnCoverage = [
+            'total' => count($allRegisteredCodes),
+            'earned' => count(array_intersect($allRegisteredCodes, $earnedCodes)),
+        ];
+
         return view('kicc-mother-admin', compact(
             'stats', 'counties', 'exhibitors', 'ministries',
             'orders', 'escrows', 'users', 'providers', 'institutions',
@@ -266,6 +297,10 @@ class KiccAdminController extends Controller
             // Pipeline Creator tab data
             'dynamicPipelines', 'dynamicPipelineTotal', 'dynamicSectors',
             'suggestedPipelines',
+            // Earnings dashboard data
+            'earningsTotal', 'earningsCount', 'earningsByPipeline',
+            'earningsByDay', 'poolEarnings', 'poolContribTotal',
+            'earnedCodes', 'earnCoverage',
         ));
     }
 

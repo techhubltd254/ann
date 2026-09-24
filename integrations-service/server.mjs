@@ -103,6 +103,21 @@ http.createServer(async (req, res) => {
         correlation: (r.metrics && r.metrics.correlation) || null,
         runs: lastRun.runs + 1,
       };
+
+      // ── Bridge: notify Laravel to turn settled pipelines into real DB revenue ──
+      const laravelUrl = process.env.LARAVEL_BASE_URL || "http://127.0.0.1:8000";
+      const laravelSecret = process.env.KICC_INTEGRATION_WEBHOOK_SECRET || "dev-secret";
+      try {
+        await fetch(`${laravelUrl}/api/pipeline/earn-settled`, {
+          method: "POST",
+          headers: { "Content-Type": "application/json", "X-Integration-Secret": laravelSecret },
+          body: JSON.stringify({ pipeline_ids: settled }),
+        });
+      } catch (e) {
+        // Non-fatal — the cascade still succeeded; revenue sync can run later via kicc:pipeline:earn
+        console.log(`[bus] laravel earn-bridge skipped: ${e.message}`);
+      }
+
       return json(res, 200, {
         ok: true, graph: r.graph, pipelines: settled, settled: settled.length,
         failed: r.failed, dlq: (r.dlq || []).length, metrics: lastRun,

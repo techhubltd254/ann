@@ -114,4 +114,64 @@ class PipelineController extends Controller
 
         return response()->json(app(PipelineBusClient::class)->trigger($id, (array) $request->input('payload', [])));
     }
+
+    /**
+     * EARN — called after a bus cascade to turn the settled pipelines into real
+     * DB revenue (escrow → pool → ledger). This is the bridge between the
+     * automation bus ledger and the Mother Pool.
+     */
+    public function earnSettled(Request $request): JsonResponse
+    {
+        // Verify the integration secret (bus calls this without a Sanctum token)
+        $secret = config('kicc.integration_webhook_secret', 'dev-secret');
+        if ($request->header('X-Integration-Secret') !== $secret) {
+            return response()->json(['ok' => false, 'error' => 'invalid secret'], 401);
+        }
+
+        $ids = (array) $request->input('pipeline_ids', []);
+
+        if ($ids === []) {
+            return response()->json(['ok' => false, 'error' => 'pipeline_ids required'], 422);
+        }
+
+        // Resolve pipeline IDs → codes
+        $codes = \Illuminate\Support\Facades\DB::table('pipeline_registrations')
+            ->whereIn('id', array_map('intval', $ids))
+            ->where(function ($q) {
+                $q->whereNull('earning_locked')->orWhere('earning_locked', 0);
+            })
+            ->pluck('code')
+            ->values()
+            ->toArray();
+
+        if ($codes === []) {
+            return response()->json(['ok' => true, 'earned' => 0, 'pipeline_codes' => []]);
+        }
+
+        // Run the earn engine on these pipelines
+        $earn = new \App\Console\Commands\PipelineEarn();
+        // Use reflection to invoke the internal processor per code
+        $ref = new \ReflectionClass($earn);
+        $method = $ref->getMethod('processOne');
+        $method->setAccessible(true);
+
+        $results = [];
+        foreach ($codes as $code) {
+            try {
+                $results[] = $method->invoke($earn, $code, false);
+            } catch (\Throwable $e) {
+                Log::warning('pipeline-earn: single failed', ['code' => $code, 'error' => $e->getMessage()]);
+            }
+        }
+
+        $earned = count(array_filter($results, fn ($r) => $r['settled'] ?? false));
+
+        return response()->json([
+            'ok' => true,
+            'earned' => $earned,
+            'pipeline_codes' => $codes,
+            'gmv' => array_sum(array_column($results, 'gmv')),
+            'results' => $results,
+        ]);
+    }
 }

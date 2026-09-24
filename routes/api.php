@@ -224,3 +224,7 @@ Route::middleware('auth:sanctum')->prefix('pipeline')->group(function () {
     Route::post('/cascade', [\App\Http\Controllers\Api\PipelineController::class, 'cascade'])->name('api.pipeline.cascade');
     Route::post('/trigger', [\App\Http\Controllers\Api\PipelineController::class, 'trigger'])->name('api.pipeline.trigger');
 });
+
+// Earn-bridge called by the Node bus (verified by integration secret, not Sanctum)
+Route::post('/pipeline/earn-settled', [\App\Http\Controllers\Api\PipelineController::class, 'earnSettled'])
+    ->name('api.pipeline.earn-settled');
