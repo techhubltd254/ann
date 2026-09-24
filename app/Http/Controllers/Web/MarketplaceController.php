@@ -40,7 +40,7 @@ class MarketplaceController extends Controller
         // Cache the query's product IDs + sidebars; hydrate models fresh (avoids Redis serialization issues)
         $cacheKey = "marketplace_data_{$cat}_{$countySlug}_{$search}_{$page}_" . cache_buster();
 
-        $data = \Illuminate\Support\Facades\Cache::remember($cacheKey, config('kicc.cache_ttl.public', 21600), function () use ($cat, $countySlug, $search, $priority, $googleQuery, $googleEngine) {
+        $data = \Illuminate\Support\Facades\Cache::remember($cacheKey, config('kicc.cache_ttl.public', 21600), function () use ($cat, $countySlug, $search, $priority, $googleQuery) {
             // Display only real-data counties (auto-detected by product count >10, not hardcoded)
             $countyIds = $priority->displayCountyIds();
 
