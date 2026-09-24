@@ -23,14 +23,6 @@
         </div>
     </div>
 
-    {{-- Pipeline cascade result — real interconnectivity from the bus --}}
-    @php $cascadeResult = session('pipeline_cascade'); @endphp
-    @if($cascadeResult)
-    <div class="mb-8">
-        @include('components.pipeline-cascade', ['cascade' => $cascadeResult])
-    </div>
-    @endif
-
     <p class="text-sm text-gray-400 mb-8" data-reveal>Our team will contact you on the phone number provided to confirm payment via M-Pesa and arrange delivery.</p>
 
     <div class="flex justify-center gap-4" data-reveal>

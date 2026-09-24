@@ -312,15 +312,6 @@
             @include('components.packages-strip')
         </div>
 
-        {{-- County pipeline earnings --}}
-        @if(($countyPipelines ?? collect())->isNotEmpty())
-        <div class="max-w-7xl mx-auto px-5 pb-12">
-            @include('components.county-pipelines', [
-                'countyName' => $county->name,
-                'countyPipelines' => $countyPipelines,
-            ])
-        </div>
-        @endif
     </div>
 </div>
 @endsection

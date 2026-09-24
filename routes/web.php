@@ -266,12 +266,9 @@ Route::post('/kicc-admin/licence/{id}/reject', [\App\Http\Controllers\Web\Pipeli
 Route::post('/kicc-admin/pipeline/{code}/config', [\App\Http\Controllers\Web\PipelineLicenceController::class, 'updateConfig'])->name('kicc.admin.pipeline.config');
 
 // ── Public pipeline sector pages (bypass Authenticate middleware) ──
-Route::withoutMiddleware(\Illuminate\Auth\Middleware\Authenticate::class)->group(function () {
-    Route::get('/pipelines', [\App\Http\Controllers\Web\PipelineController::class, 'index'])->name('pipelines.index');
-    Route::get('/pipelines/{sector}', [\App\Http\Controllers\Web\PipelineController::class, 'sector'])->name('pipelines.sector');
-    Route::get('/pipeline/{code}', [\App\Http\Controllers\Web\PipelineController::class, 'show'])->name('pipeline.show');
-    Route::get('/api/pipelines/stats', [\App\Http\Controllers\Web\PipelineController::class, 'stats'])->name('api.pipelines.stats');
-});
+// REMOVED — pipeline data is proprietary and must be admin-only.
+// Pipeline management available at /kicc-admin (Mother Admin) and
+// /filament-admin (Automation Console).
 
     // ─── Media Pipeline (admin-controlled; nothing hardcoded) ───
     Route::prefix('media')->group(function () {

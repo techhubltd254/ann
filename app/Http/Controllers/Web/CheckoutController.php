@@ -220,25 +220,6 @@ class CheckoutController extends Controller
             'total' => $order->grand_total,
         ]);
 
-        // ── Cascade: settle the pipeline and show real interconnectivity on success page ──
-        try {
-            $pipeline = $order->pipeline_code ?? 'A1';
-            // Resolve pipeline ID from code
-            $pipelineId = \Illuminate\Support\Facades\DB::table('pipeline_registrations')
-                ->where('code', $pipeline)->value('id');
-            if ($pipelineId) {
-                $bus = app(\App\Services\PipelineBusClient::class);
-                $cascadeResult = $bus->cascade([$pipelineId]);
-                if (($cascadeResult['ok'] ?? false)) {
-                    session()->flash('pipeline_cascade', $cascadeResult);
-                }
-            }
-        } catch (\Throwable $e) {
-            \Illuminate\Support\Facades\Log::warning('checkout: cascade skipped', [
-                'order' => $order->id, 'error' => $e->getMessage(),
-            ]);
-        }
-
         return redirect()->route('checkout.success', $order->order_number)
             ->with('customer', $data);
     }

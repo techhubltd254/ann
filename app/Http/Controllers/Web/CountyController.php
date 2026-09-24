@@ -208,28 +208,16 @@ class CountyController extends Controller
             return $result;
         });
 
-        // ── Pipeline earnings for this county ──
-        $countyPipelines = \Illuminate\Support\Facades\DB::table('escrow_transactions')
-            ->join('users', 'escrow_transactions.seller_id', '=', 'users.id')
-            ->where('users.county_id', $county->id)
-            ->where('escrow_transactions.status', 'released')
-            ->selectRaw('escrow_transactions.reference_type as code, COUNT(*) as trades, SUM(escrow_transactions.amount) as gmv')
-            ->groupBy('code')
-            ->orderByDesc('gmv')
-            ->limit(15)
-            ->get();
-
         return view('counties.show', compact(
             'county', 'sectors', 'sectorData',
             'featuredAttractions', 'featuredHotels', 'countyProducts',
             'exhibitions', 'linkedSectors', 'countyMedia', 'countyHeroFallback', 'tileMedia',
             'sectorPitches', 'attractionThumbs', 'hotelThumbs', 'productThumbs',
             'mapPins', 'sectorPins', 'countyFlagUri', 'entityMedia',
-            'countyPipelines',
         ));
     }
 
-        public function sector(County $county, string $sector)
+    public function sector(County $county, string $sector)
     {
         $page = request()->get('page', 1);
         $county->load('sectors');
@@ -541,24 +529,10 @@ class CountyController extends Controller
         } catch (\Throwable $e) {
         }
 
-        // ── Institution pipeline earnings ──
-        $institutionEarnings = collect();
-        if ($institution->user_id) {
-            $institutionEarnings = \Illuminate\Support\Facades\DB::table('escrow_transactions')
-                ->where('seller_id', $institution->user_id)
-                ->where('status', 'released')
-                ->selectRaw('reference_type as code, COUNT(*) as trades, SUM(amount) as gmv')
-                ->groupBy('reference_type')
-                ->orderByDesc('gmv')
-                ->limit(10)
-                ->get();
-        }
-
         return view('counties.institution', compact(
             'institution', 'county', 'heroAsset', 'heroVideo', 'heroHls', 'heroPoster', 'heroSplat', 'products', 'sectorEntities', 'libraryVideos',
             'institutionReviews', 'institutionReviewSeed', 'institutionReviewAvg', 'institutionReviewCount',
             'tripRecommendations', 'institutionFallbackVideos',
-            'institutionEarnings',
         ));
     }
 }

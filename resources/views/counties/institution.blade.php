@@ -415,16 +415,6 @@ onerror="this.remove()">
     @endif
 </div>
 
-{{-- Institution pipeline earnings --}}
-@if(($institutionEarnings ?? collect())->isNotEmpty())
-<div class="max-w-7xl mx-auto px-5 pb-12">
-    @include('components.institution-earnings', [
-        'institutionName' => $institution->name ?? 'this Institution',
-        'institutionEarnings' => $institutionEarnings,
-    ])
-</div>
-@endif
-
 @push('styles')
 <style>
 /* Responsive touch targets */

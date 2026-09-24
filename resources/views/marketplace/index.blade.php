@@ -125,27 +125,6 @@
     </div>
     @endif
 
-{{-- Mother Pool widget --}}
-<div class="max-w-7xl mx-auto px-5 pb-12">
-    @php
-        $poolBalance = \App\Models\Pool\Pool::where('scope', 'global')->where('is_active', true)->value('balance') ?? 0;
-        $contribToday = \App\Models\Pool\PoolContribution::whereDate('created_at', today())->sum('pool_share');
-        $activeCount = \App\Models\EscrowTransaction::where('status', 'released')->distinct('reference_type')->count('reference_type');
-        $topEarners = \App\Models\EscrowTransaction::where('status', 'released')
-            ->selectRaw('reference_type as code, SUM(amount) as gmv')
-            ->groupBy('reference_type')
-            ->orderByDesc('gmv')
-            ->limit(5)
-            ->get();
-    @endphp
-    @include('components.pool-widget', [
-        'poolBalance' => $poolBalance,
-        'contributionsToday' => $contribToday,
-        'activePipelines' => $activeCount,
-        'topEarners' => $topEarners,
-    ])
-</div>
-
 @push('styles')
 <style>
 /* Responsive touch targets */
