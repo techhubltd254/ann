@@ -260,6 +260,10 @@ Route::get('/national-admin/agencies/{agency}/delete', [\App\Http\Controllers\We
     // KICC approvals
     Route::post('/kicc-admin/approve/{table}/{id}', [\App\Http\Controllers\Web\KiccAdminController::class, 'approveService'])->name('kicc.admin.approve');
 Route::post('/kicc-admin/pipelines/store', [\App\Http\Controllers\Web\KiccAdminController::class, 'storePipeline'])->name('kicc.admin.pipeline.store');
+Route::post('/kicc-admin/licence/upload', [\App\Http\Controllers\Web\PipelineLicenceController::class, 'upload'])->name('kicc.admin.licence.upload');
+Route::post('/kicc-admin/licence/{id}/approve', [\App\Http\Controllers\Web\PipelineLicenceController::class, 'approve'])->name('kicc.admin.licence.approve');
+Route::post('/kicc-admin/licence/{id}/reject', [\App\Http\Controllers\Web\PipelineLicenceController::class, 'reject'])->name('kicc.admin.licence.reject');
+Route::post('/kicc-admin/pipeline/{code}/config', [\App\Http\Controllers\Web\PipelineLicenceController::class, 'updateConfig'])->name('kicc.admin.pipeline.config');
 
     // ─── Media Pipeline (admin-controlled; nothing hardcoded) ───
     Route::prefix('media')->group(function () {

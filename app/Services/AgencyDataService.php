@@ -118,18 +118,37 @@ class AgencyDataService
     }
 
     /** Ardhisasa: title verification → real estate pipeline */
+    /** Ardhisasa: title verification → unlock D3 (real estate) */
     protected function processArdhisasa(string $pipeline, string $type, array $payload, int $eventId): array
     {
-        if ($type === 'title_verified') {
-            return ['status' => 'processed', 'pipeline' => $pipeline, 'verified' => $payload['verified'] ?? false];
+        if ($type === "partnership_confirmed" || $type === "api_granted") {
+            DB::table("pipeline_registrations")
+                ->whereIn("code", ["D3"])
+                ->orWhere("code", "like", "D3.%")
+                ->update(["earning_locked" => false, "status" => "partial", "updated_at" => now()]);
+            Log::info("agency-data: Ardhisasa unlock for D3 and subsectors");
+            return ["status" => "processed", "pipeline" => $pipeline, "action" => "earning_locked=false"];
         }
-        return ['status' => 'unhandled', 'type' => $type];
+        if ($type === "title_verified") {
+            return ["status" => "processed", "pipeline" => $pipeline, "verified" => $payload["verified"] ?? false];
+        }
+        return ["status" => "unhandled", "type" => $type];
     }
 
     /** IFMIS: tender/posted PO → procurement pipeline */
+    /** IFMIS: tender/posted PO → procurement pipeline */
     protected function processIfmis(string $pipeline, string $type, array $data, int $eventId): array
     {
-        return ['status' => 'processed', 'pipeline' => $pipeline, 'type' => $type];
+        if ($type === "api_credentials_verified" || $type === "integration_confirmed") {
+            DB::table("pipeline_registrations")
+                ->whereIn("code", ["G2", "H1"])
+                ->orWhere("code", "like", "G2.%")
+                ->orWhere("code", "like", "H1.%")
+                ->update(["earning_locked" => false, "status" => "partial", "updated_at" => now()]);
+            Log::info("agency-data: IFMIS unlock for G2, H1 and subsectors");
+            return ["status" => "processed", "pipeline" => $pipeline, "action" => "earning_locked=false"];
+        }
+        return ["status" => "processed", "pipeline" => $pipeline, "type" => $type];
     }
 
     /** SEZA: zone registration → investment pipeline */

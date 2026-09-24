@@ -577,6 +577,8 @@
             @include('partials.integration-tab')
             @include('partials.pipeline-creator-tab')
             @include('partials.earnings-tab')
+            @include('partials.licence-queue-tab')
+            @include('partials.pipeline-settings-tab')
 
             @if($tab === 'pool')
             <div class="p-6 space-y-6">

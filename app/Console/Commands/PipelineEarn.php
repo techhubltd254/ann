@@ -128,10 +128,10 @@ class PipelineEarn extends Command
             return ['pipeline' => $code, 'settled' => false, 'error' => 'No config found'];
         }
 
-        // Check if licence-gated — skip if earning_locked
-        $reg = DB::table('pipeline_registrations')->where('code', $code)->first();
+        // Check earning_locked on DB — if locked, skip (pipeline is ready but waiting for licence/regulatory data)
+        $reg = DB::table('pipeline_registrations')->where('code', $code)->first(['earning_locked']);
         if ($reg && ($reg->earning_locked ?? false)) {
-            return ['pipeline' => $code, 'settled' => false, 'error' => 'licence_gated — earning_locked'];
+            return ['pipeline' => $code, 'settled' => false, 'error' => 'earning_locked — awaiting regulatory data'];
         }
 
         if ($dryRun) {
@@ -185,7 +185,7 @@ class PipelineEarn extends Command
 
         // 1. Parent pipelines (config/kicc-pipelines.php)
         $all = array_merge($all, collect(config('kicc-pipelines'))
-            ->reject(fn($p) => in_array($p['status'], ['blocked', 'licence_gated']))
+            ->reject(fn($p) => $p['status'] === 'blocked')
             ->pluck('code')
             ->values()
             ->toArray());
@@ -194,7 +194,7 @@ class PipelineEarn extends Command
         try {
             $subsectors = require base_path('config/kicc/subsectors/index.php');
             $all = array_merge($all, collect($subsectors)
-                ->reject(fn($p) => in_array($p['status'] ?? '', ['blocked', 'licence_gated']))
+                ->reject(fn($p) => ($p['status'] ?? '') === 'blocked')
                 ->pluck('code')
                 ->values()
                 ->toArray());
