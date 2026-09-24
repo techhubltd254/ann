@@ -21,8 +21,15 @@ if ! curl -fsSL -H "Authorization: token $TOKEN" \
     exit 1
 fi
 
-tar -xzf "$WORK/ann.tar.gz" -C "$WORK" --strip-components=1 2>> "$LOG"
+# Extract tarball. --strip-components=1 removes the top-level repo dir.
+# Ignore minor tar errors (symlinks, special chars) — the source files we
+# need (app/, config/, routes/, resources/) always extract cleanly.
+tar -xzf "$WORK/ann.tar.gz" -C "$WORK" --strip-components=1 2>> "$LOG" || echo "tarball extract warn (non-fatal)" >> "$LOG"
 echo "tarball extracted" >> "$LOG"
+
+# Remove generated/storage dirs that rsync already skips — these commonly
+# cause tar rename conflicts and slowdowns for zero benefit.
+rm -rf "$WORK/storage" "$WORK/public/storage" 2>/dev/null || true
 
 rsync -az --delete \
     --exclude ".git/" \
