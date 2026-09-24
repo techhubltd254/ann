@@ -27,6 +27,27 @@ class PipelineRouter
     public const INTENT_LICENCED = 'licenced';
     public const INTENT_TOURISM  = 'tourism';
 
+    /** Search query → pipeline mapping (Google SEO intent routing) */
+    private const SEARCH_PIPELINES = [
+        'hotel' => 'C1', 'lodge' => 'C1', 'resort' => 'C1', 'accommodation' => 'C1',
+        'safari' => 'C1', 'tour' => 'C1', 'tourism' => 'C1', 'travel' => 'C1', 'vacation' => 'C1',
+        'coffee' => 'B1', 'tea' => 'B1', 'crop' => 'B1', 'agriculture' => 'B1',
+        'fish' => 'B2', 'seafood' => 'B2', 'tilapia' => 'B2',
+        'export' => 'B3', 'logistics' => 'B3', 'freight' => 'B3', 'shipping' => 'B3',
+        'wholesale' => 'A3', 'bulk' => 'A3', 'group' => 'A3',
+        'equipment' => 'M1', 'energy' => 'M1', 'power' => 'M1', 'solar' => 'M1',
+        'vehicle' => 'N1', 'car' => 'N1', 'transport' => 'N1',
+        'real estate' => 'P2', 'property' => 'P2', 'land' => 'P2', 'rent' => 'P2',
+        'conference' => 'P2', 'event' => 'P2', 'venue' => 'P2',
+        'dairy' => 'DA1', 'milk' => 'DA1', 'cheese' => 'DA1', 'yoghurt' => 'DA1',
+        'health' => 'K1', 'medical' => 'K1', 'clinic' => 'K1', 'pharmacy' => 'K1',
+        'education' => 'L1', 'school' => 'L1', 'training' => 'L1', 'course' => 'L1',
+        'government' => 'G1', 'tender' => 'G2', 'procurement' => 'G2',
+        'finance' => 'F1', 'loan' => 'F1', 'credit' => 'F1', 'insurance' => 'F1',
+        'creative' => 'H1', 'media' => 'H1', 'film' => 'H1', 'video' => 'H1',
+        'market' => 'A1', 'shop' => 'A1', 'store' => 'A1', 'product' => 'A1',
+    ];
+
     /** Sector → default pipeline code mapping (expanded) */
     private const SECTOR_PIPELINES = [
         'trade'       => 'A1',
@@ -201,6 +222,37 @@ class PipelineRouter
     public function allMappings(): array
     {
         return self::SECTOR_PIPELINES;
+    }
+
+    /** Resolve the pipeline a search query targets (Google SEO intent routing). */
+    public function fromSearchQuery(string $query): ?string
+    {
+        if (empty($query)) return null;
+
+        $query = strtolower($query);
+        foreach (self::SEARCH_PIPELINES as $keyword => $pipeline) {
+            if (str_contains($query, $keyword)) {
+                return $pipeline;
+            }
+        }
+        return null;
+    }
+
+    /** Update search_analytics with the pipeline a search intent maps to. */
+    public function attributeSearchToPipeline(string $query, string $pipelineCode): void
+    {
+        try {
+            $count = DB::table('search_analytics')
+                ->where('query', 'like', "%{$query}%")
+                ->whereNull('pipeline')
+                ->count();
+            if ($count > 0) {
+                DB::table('search_analytics')
+                    ->where('query', 'like', "%{$query}%")
+                    ->whereNull('pipeline')
+                    ->update(['pipeline' => $pipelineCode]);
+            }
+        } catch (\Throwable) {}
     }
 
     /** Load the pipeline dependency graph from integration-map.json. */

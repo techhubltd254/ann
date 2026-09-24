@@ -4,17 +4,13 @@ namespace App\Http\Middleware;
 
 use Closure;
 use Illuminate\Http\Request;
-use Illuminate\Support\Facades\Cache;
-use Illuminate\Support\Facades\Log;
+use Illuminate\Support\Facades\DB;
 use Symfony\Component\HttpFoundation\Response;
 
 /**
  * SearchIntent — captures user search intent from Google referrals, UTM params,
- * geolocation, and landing page behavior. Stores in session for marketplace
- * personalization and SEO-driven product ranking.
- *
- * This middleware is what makes the marketplace "recommend" products based on
- * what the user was searching for on Google that brought them here.
+ * geolocation, and landing page behavior. Persists to search_analytics for
+ * admin reporting. Stores in session for marketplace personalization.
  */
 class SearchIntent
 {
@@ -22,61 +18,64 @@ class SearchIntent
     {
         $response = $next($request);
 
-        if (! $response->isSuccessful()) {
-            return $response;
-        }
-
-        // Session may not be available in all contexts (tests, API, etc.)
-        if (! $request->hasSession()) {
+        if (! $response->isSuccessful() || ! $request->hasSession()) {
             return $response;
         }
 
         $session = $request->session();
-
-        // 1. Capture referrer — was this user referred by Google?
         $referrer = $request->header('referer', $request->input('utm_source', ''));
         $searchEngine = preg_match('/google\.|bing\.|yahoo\.|duckduckgo\./', $referrer);
 
-        // 2. Extract search query from Google referrer URL
         $searchQuery = '';
         if ($searchEngine) {
-            parse_str(parse_url($referrer, PHP_URL_QUERY), $refParams);
+            parse_str(parse_url($referrer, PHP_URL_QUERY) ?: '', $refParams);
             $searchQuery = $refParams['q'] ?? '';
         }
-        // 3. Also check direct "q" param in the current URL
         if (empty($searchQuery)) {
             $searchQuery = $request->input('q', '');
         }
 
-        // 4. Extract UTM params for campaign tracking
         $utm = [
             'source'   => $request->input('utm_source', 'direct'),
             'medium'   => $request->input('utm_medium', 'none'),
             'campaign' => $request->input('utm_campaign', ''),
             'term'     => $request->input('utm_term', $searchQuery),
-            'content'  => $request->input('utm_content', ''),
         ];
 
-        // 5. Get geo-location from Cloudflare headers
         $country = $request->header('CF-IPCountry', '');
         $city = $request->header('CF-IPCity', '');
-        $region = $request->header('CF-Region', '');
 
-        // 6. Store in session for the marketplace to use
         $session->put('search_intent', [
-            'query'        => $searchQuery,
-            'referrer'     => $referrer,
-            'is_search'    => $searchEngine,
-            'engine'       => $searchEngine ? $this->detectEngine($referrer) : 'direct',
-            'utm'          => $utm,
-            'country'      => $country,
-            'city'         => $city,
-            'region'       => $region,
-            'landing_url'  => $request->fullUrl(),
-            'landed_at'    => now()->toIso8601String(),
+            'query'    => $searchQuery,
+            'referrer' => $referrer,
+            'is_search' => (bool) $searchEngine,
+            'engine'   => $searchEngine ? $this->detectEngine($referrer) : 'direct',
+            'utm'      => $utm,
+            'country'  => $country,
+            'city'     => $city,
+            'landing_url' => $request->fullUrl(),
+            'landed_at'   => now()->toIso8601String(),
         ]);
 
-        // 7. Set response headers so Cloudflare workers can read search intent
+        // Log to search_analytics once per session
+        if ($searchQuery && ! $session->has('search_logged')) {
+            $session->put('search_logged', true);
+            try {
+                DB::table('search_analytics')->insert([
+                    'query'       => substr($searchQuery, 0, 200),
+                    'engine'      => $searchEngine ? $this->detectEngine($referrer) : 'direct',
+                    'source'      => $utm['source'],
+                    'medium'      => $utm['medium'],
+                    'campaign'    => substr($utm['campaign'] ?? '', 0, 100),
+                    'country'     => $country,
+                    'city'        => substr($city, 0, 100),
+                    'landing_page' => substr($request->fullUrl(), 0, 500),
+                    'created_at'  => now(),
+                    'updated_at'  => now(),
+                ]);
+            } catch (\Throwable) {}
+        }
+
         if ($searchQuery) {
             $response->headers->set('X-Search-Intent', substr($searchQuery, 0, 200));
         }

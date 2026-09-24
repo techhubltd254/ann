@@ -25,14 +25,14 @@ class MarketplaceController extends Controller
         $page = (int) $request->get('page', 1);
 
         $priority = app(\App\Services\DisplayPriorityService::class);
+        $router = app(PipelineRouter::class);
 
-        // ── Google SE0: capture search intent from session (set by SearchIntent middleware) ──
+        // ── Google SEO: capture search intent from session ──
         $searchIntent = session('search_intent', []);
         $googleQuery = $searchIntent['query'] ?? '';
-        $googleEngine = $searchIntent['engine'] ?? 'direct';
-        $utmSource = $searchIntent['utm']['source'] ?? 'direct';
+        $intentPipeline = $googleQuery ? $router->fromSearchQuery($googleQuery) : null;
 
-        // If user came from a Google search with a query, use it to personalize the search
+        // Use Google search query as the marketplace search
         if ($googleQuery && empty($search)) {
             $search = $googleQuery;
         }
@@ -137,6 +137,16 @@ class MarketplaceController extends Controller
                 'viewable_id' => $product->id,
                 'viewed_at' => now(),
             ]);
+        } catch (\Throwable $e) {}
+
+        // ── Pipeline attribution: link search intent to pipeline ──
+        try {
+            $searchIntent = session('search_intent', []);
+            if (!empty($searchIntent['query'])) {
+                $router = app(PipelineRouter::class);
+                $pipeline = $router->forProduct($product);
+                $router->attributeSearchToPipeline($searchIntent['query'], $pipeline);
+            }
         } catch (\Throwable $e) {}
 
         // Trip correlation: related places to visit, places to stay, transport
