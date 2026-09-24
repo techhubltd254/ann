@@ -389,6 +389,19 @@ document.addEventListener('DOMContentLoaded', function() {
     document.head.appendChild(script);
 });
 </script>
+<!-- Google Analytics / gtag -->
+<script async src="https://www.googletagmanager.com/gtag/js?id=G-XXXXXXXXXX"></script>
+<script>
+    window.dataLayer = window.dataLayer || [];
+    function gtag(){dataLayer.push(arguments);}
+    gtag('js', new Date());
+    gtag('config', 'G-XXXXXXXXXX', {
+        'cookie_domain': 'kicctest.org',
+        'anonymize_ip': true,
+    });
+    // Pass UTM params and referrer to GA
+    gtag('set', 'page_referrer', document.referrer);
+</script>
 </head>
 <body class="antialiased text-gray-900 bg-[#F9FAFB]">
     <a href="#main-content" class="skip-link" aria-label="Skip to main content">Skip to main content</a>

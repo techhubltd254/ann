@@ -11,6 +11,7 @@ use App\Models\Ecommerce\ProductQuestion;
 use App\Models\Ecommerce\FlashSale;
 use App\Models\TradeAgreement;
 use App\Services\CorrelationService;
+use App\Services\PipelineRouter;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Log;
 
@@ -25,10 +26,21 @@ class MarketplaceController extends Controller
 
         $priority = app(\App\Services\DisplayPriorityService::class);
 
-        // Cache the query's product IDs + sidebars; hydrate models fresh (avoids Redis serialization issues)
-        $cacheKey = "marketplace_data_{$cat}_{$countySlug}_{$search}_" . cache_buster();
+        // ── Google SE0: capture search intent from session (set by SearchIntent middleware) ──
+        $searchIntent = session('search_intent', []);
+        $googleQuery = $searchIntent['query'] ?? '';
+        $googleEngine = $searchIntent['engine'] ?? 'direct';
+        $utmSource = $searchIntent['utm']['source'] ?? 'direct';
 
-        $data = \Illuminate\Support\Facades\Cache::remember($cacheKey, config('kicc.cache_ttl.public', 21600), function () use ($cat, $countySlug, $search, $priority) {
+        // If user came from a Google search with a query, use it to personalize the search
+        if ($googleQuery && empty($search)) {
+            $search = $googleQuery;
+        }
+
+        // Cache the query's product IDs + sidebars; hydrate models fresh (avoids Redis serialization issues)
+        $cacheKey = "marketplace_data_{$cat}_{$countySlug}_{$search}_{$page}_" . cache_buster();
+
+        $data = \Illuminate\Support\Facades\Cache::remember($cacheKey, config('kicc.cache_ttl.public', 21600), function () use ($cat, $countySlug, $search, $priority, $googleQuery, $googleEngine) {
             // Display only real-data counties (auto-detected by product count >10, not hardcoded)
             $countyIds = $priority->displayCountyIds();
 
@@ -41,9 +53,22 @@ class MarketplaceController extends Controller
             if ($countySlug) {
                 $query->whereHas('county', fn ($q) => $q->where('slug', $countySlug));
             }
+
+            // Google-personalized search: boost products matching the search query
             if ($search) {
-                $query->where(fn ($q) => $q->where('name', 'like', "%{$search}%")
-                    ->orWhere('short_description', 'like', "%{$search}%"));
+                $query->where(function ($q) use ($search) {
+                    $q->where('name', 'like', "%{$search}%")
+                      ->orWhere('short_description', 'like', "%{$search}%")
+                      ->orWhere('tags', 'like', "%{$search}%");
+                });
+                // Order by relevance: title match > description match > tag match
+                $query->orderByRaw(
+                    "CASE WHEN name LIKE ? THEN 0 WHEN short_description LIKE ? THEN 1 WHEN tags LIKE ? THEN 2 ELSE 3 END",
+                    ["%{$search}%", "%{$search}%", "%{$search}%"]
+                );
+            } else {
+                // When no search query, use priority-based display
+                $query->orderBy('is_featured', 'desc')->latest();
             }
 
             $ids = $query->pluck('id')->all();

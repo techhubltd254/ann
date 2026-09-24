@@ -611,6 +611,15 @@ Route::middleware('auth')->group(function () {
     Route::get('/dashboard/bookings', [DashboardController::class, 'bookings'])->name('dashboard.bookings');
     Route::get('/dashboard/profile', [DashboardController::class, 'profile'])->name('dashboard.profile');
     Route::post('/dashboard/profile', [DashboardController::class, 'updateProfile'])->name('dashboard.profile.update');
+    Route::get('/dashboard/addresses', [DashboardController::class, 'addresses'])->name('dashboard.addresses');
+    Route::post('/dashboard/addresses', [DashboardController::class, 'saveAddress'])->name('dashboard.addresses.save');
+    Route::delete('/dashboard/addresses/{id}', [DashboardController::class, 'deleteAddress'])->name('dashboard.addresses.delete');
+    Route::get('/dashboard/security', [DashboardController::class, 'security'])->name('dashboard.security');
+    Route::post('/dashboard/security/2fa', [DashboardController::class, 'toggle2fa'])->name('dashboard.security.2fa');
+    Route::get('/dashboard/reviews', [DashboardController::class, 'myReviews'])->name('dashboard.reviews');
+    Route::get('/dashboard/referrals', [DashboardController::class, 'referrals'])->name('dashboard.referrals');
+    Route::get('/dashboard/gift-cards', [DashboardController::class, 'giftCards'])->name('dashboard.gift-cards');
+    Route::get('/dashboard/seller', [DashboardController::class, 'seller'])->name('dashboard.seller');
 });
 
 // Google OAuth

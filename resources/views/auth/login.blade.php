@@ -75,6 +75,13 @@
                         <input type="password" name="password" required
                                class="w-full bg-[#F9FAFB] border border-gray-200 focus:border-[#F59E0B]/60 rounded-xl px-4 py-2.5 text-sm text-gray-900 placeholder:text-[#5A6480]/50 outline-none transition-colors">
                     </div>
+                    <div class="flex items-center justify-between text-xs">
+                        <label class="flex items-center gap-2 text-gray-500 cursor-pointer">
+                            <input type="checkbox" name="remember" value="1" class="rounded border-gray-300 accent-[#901C1E]">
+                            Keep me signed in
+                        </label>
+                        <a href="{{ route('password.request') }}" class="text-[#0EA5E9] font-semibold hover:underline">Forgot password?</a>
+                    </div>
                 </div>
                 <button type="submit" :disabled="loading"
                         class="w-full inline-flex items-center justify-center gap-2 font-bold tracking-wide transition-all duration-200 mt-6 px-8 text-base h-14 rounded-xl bg-[#901C1E] text-white hover:bg-[#7b1618] disabled:opacity-60" data-magnetic>

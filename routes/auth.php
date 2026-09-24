@@ -28,6 +28,12 @@ Route::middleware('guest')->group(function () {
     Route::post('/login/send-code', [AuthController::class, 'sendLoginCode'])->name('login.send-code');
     Route::get('/login/code', [AuthController::class, 'showLoginCode'])->name('login.code');
     Route::post('/login/code/verify', [AuthController::class, 'verifyLoginCode'])->name('login.code.verify');
+
+    // Password reset
+    Route::get('/forgot-password', [AuthController::class, 'showForgotPassword'])->name('password.request');
+    Route::post('/forgot-password', [AuthController::class, 'sendResetLink'])->name('password.email');
+    Route::get('/reset-password/{token}', [AuthController::class, 'showResetForm'])->name('password.reset');
+    Route::post('/reset-password', [AuthController::class, 'resetPassword'])->name('password.update');
 });
 
 // Authenticated-only
