@@ -9,6 +9,7 @@ import { Consumer, idemKey } from "../lib/consumer.mjs";
 import { CONSUMER_TOPICS, validate } from "../lib/contracts.consumers.mjs";
 import { TOPICS } from "../lib/contracts.mjs";
 import { ROOT, ARTIFACTS, MOCK_MODE, env } from "../lib/core.js";
+import { insertAlgorithmResult } from "../lib/bus-sql.mjs";
 
 export const GROUP = "kicc-algorithms";
 export const TOPICS_SUBSCRIBED = [TOPICS.SETTLED, TOPICS.TRIGGER];
@@ -30,9 +31,6 @@ async function callService(payload) {
 }
 
 export function buildAlgorithmsConsumer(opts = {}) {
-  const outFile = opts.outFile || path.join(ARTIFACTS, "algorithms-results.csv");
-  fs.mkdirSync(path.dirname(outFile), { recursive: true });
-  if (!fs.existsSync(outFile)) fs.writeFileSync(outFile, "pipeline_id,edge_score,mechanism,value_kes,correlation_id,ts\n");
   return new Consumer({
     group: GROUP,
     topics: TOPICS_SUBSCRIBED,
@@ -50,7 +48,8 @@ export function buildAlgorithmsConsumer(opts = {}) {
         pipeline_id: p.pipeline_id, topic: ev.topic, edge_score: Number(edge),
         mechanism: p.mechanism, value_kes: p.value_kes, correlation_id: ev.correlationId,
       });
-      fs.appendFileSync(outFile, [p.pipeline_id, edge, p.mechanism ?? "", p.value_kes ?? "", ev.correlationId, ev.ts].join(",") + "\n");
+      // Write to SQL table (replaces CSV file)
+      insertAlgorithmResult(p.pipeline_id, edge, p.mechanism, p.value_kes, ev.correlationId).catch(() => {});
       if (ev.topic === TOPICS.SETTLED && typeof opts.publish === "function") {
         await opts.publish(CONSUMER_TOPICS.ML_REQUEST, {
           pipeline_id: p.pipeline_id, edge_score: Number(edge), commission_kes: p.commission_kes,

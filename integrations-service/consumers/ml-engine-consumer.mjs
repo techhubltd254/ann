@@ -8,6 +8,7 @@ import { Consumer, idemKey } from "../lib/consumer.mjs";
 import { CONSUMER_TOPICS, validate } from "../lib/contracts.consumers.mjs";
 import { TOPICS } from "../lib/contracts.mjs";
 import { ROOT, ARTIFACTS, MOCK_MODE, env } from "../lib/core.js";
+import { insertPrediction } from "../lib/bus-sql.mjs";
 
 export const GROUP = "ml-engine";
 export const TOPICS_SUBSCRIBED = [CONSUMER_TOPICS.ML_REQUEST, TOPICS.TRIGGER];
@@ -34,9 +35,6 @@ async function infer(payload) {
 }
 
 export function buildMlEngineConsumer(opts = {}) {
-  const outFile = opts.outFile || path.join(ARTIFACTS, "ml-predictions.csv");
-  fs.mkdirSync(path.dirname(outFile), { recursive: true });
-  if (!fs.existsSync(outFile)) fs.writeFileSync(outFile, "pipeline_id,score,band,edge_score,correlation_id,ts\n");
   return new Consumer({
     group: GROUP,
     topics: TOPICS_SUBSCRIBED,
@@ -50,7 +48,8 @@ export function buildMlEngineConsumer(opts = {}) {
       if (!v.ok) throw new Error(`contract violation on ${ev.topic}: ${v.error}`);
       const p = ev.payload;
       const r = await infer(p);
-      fs.appendFileSync(outFile, [p.pipeline_id, r.score, r.band, p.edge_score ?? "", ev.correlationId, ev.ts].join(",") + "\n");
+      // Write prediction to SQL table (replaces CSV file)
+      insertPrediction(p.pipeline_id, r.score, r.band, p.edge_score, ev.correlationId).catch(() => {});
       if (ev.topic === CONSUMER_TOPICS.ML_REQUEST && typeof opts.publish === "function") {
         await opts.publish(CONSUMER_TOPICS.ML_PREDICTION, {
           pipeline_id: p.pipeline_id, score: r.score, band: r.band, correlationId: ev.correlationId,

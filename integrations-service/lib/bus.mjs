@@ -11,8 +11,9 @@
 //   * failure is observable: a failed pipeline is recorded, and its dependents
 //     are never triggered — so the chain cannot half-execute silently
 import path from "path";
-import { ROOT, log } from "./core.js";
+import { ROOT, log, MOCK_MODE } from "./core.js";
 import { createSink } from "./store.js";
+import { insertEvent, insertDlq } from "./bus-sql.mjs";
 
 export class Bus {
   constructor(opts = {}) {
@@ -90,6 +91,8 @@ export class Bus {
     this.seen.add(ev.idempotencyKey);
     const targets = this.subs.filter((s) => s.re.test(ev.topic));
     this.eventSink.write(JSON.stringify({ ...ev, subscribers: targets.length }));
+    // Dual-write to SQL (authoritative); file is fallback
+    insertEvent(ev.topic, ev.payload, ev).catch(() => {});
     for (const s of targets) {
       for (let attempt = 1; attempt <= this.maxAttempts; attempt++) {
         try {
@@ -105,6 +108,8 @@ export class Bus {
           }
           this.metrics.dlq++;
           this.dlqSink.write(JSON.stringify({ ...ev, subscriber: s.id, error: String(e && e.message || e), attempts: attempt }));
+          // Dual-write DLQ to SQL
+          insertDlq('bus', ev.topic, ev.idempotencyKey || ev.key, 0, String(e && e.message || e), attempt, ev).catch(() => {});
           this.failed.set(ev.key, String(e && e.message || e));
           log.warn(`bus: ${ev.topic} -> ${s.id} dead-lettered after ${attempt} attempts: ${e && e.message}`);
         }
