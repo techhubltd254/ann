@@ -1,0 +1,37 @@
+{
+  "bus": {
+    "journal": "integrations-service/run/artifacts/bus.jsonl",
+    "http": "http://127.0.0.1:8790",
+    "topics": ["pipeline.trigger", "pipeline.settled", "pipeline.failed", "ml.inference.requested", "ml.prediction", "algorithms.result"]
+  },
+  "consumers": [
+    {
+      "group": "kicc-algorithms",
+      "service": "kicc_algorithms",
+      "entry": "integrations-service/consumers/run_consumers.mjs --only=kicc-algorithms",
+      "consumes": ["pipeline.settled", "pipeline.trigger"],
+      "emits": ["ml.inference.requested", "algorithms.result"],
+      "endpoint_env": "KICC_ALGORITHMS_URL",
+      "state_dir": "integrations-service/run/offsets/kicc-algorithms",
+      "max_attempts": 3,
+      "backoff_ms": 20,
+      "max_in_flight": 8,
+      "dlq": "integrations-service/run/offsets/kicc-algorithms/dlq.jsonl"
+    },
+    {
+      "group": "ml-engine",
+      "service": "ml-engine",
+      "entry": "integrations-service/consumers/run_consumers.mjs --only=ml-engine",
+      "consumes": ["ml.inference.requested", "pipeline.trigger"],
+      "emits": ["ml.prediction"],
+      "endpoint_env": "ML_ENGINE_URL",
+      "state_dir": "integrations-service/run/offsets/ml-engine",
+      "max_attempts": 3,
+      "backoff_ms": 20,
+      "max_in_flight": 8,
+      "dlq": "integrations-service/run/offsets/ml-engine/dlq.jsonl"
+    }
+  ],
+  "supervisor": "infra/supervisor/kicc-consumers.conf",
+  "compose": "infra/docker-compose.consumers.yml"
+}

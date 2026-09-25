@@ -1,0 +1,50 @@
+# KICC inter-pipeline bus consumers (kicc_algorithms + ml-engine).
+# Run alongside the existing stack: docker compose -f infra/docker-compose.consumers.yml up -d
+services:
+  kicc-algorithms-consumer:
+    image: node:22-alpine
+    container_name: kicc-algorithms-consumer
+    working_dir: /srv/kicc/integrations-service
+    command: ["node", "consumers/run_consumers.mjs", "--only=kicc-algorithms"]
+    environment:
+      MOCK_MODE: "false"
+      KICC_ALGORITHMS_URL: "http://kicc-algorithms:8801/algorithms/score"
+      PIPELINE_BUS_JOURNAL: "/srv/kicc/integrations-service/run/artifacts/bus.jsonl"
+      CONSUMER_STATUS_PORT: "8791"
+      CONSUMER_MAX_ATTEMPTS: "3"
+      CONSUMER_BACKOFF_MS: "20"
+      CONSUMER_MAX_IN_FLIGHT: "8"
+    volumes:
+      - ../integrations-service:/srv/kicc/integrations-service
+    ports:
+      - "127.0.0.1:8791:8791"
+    restart: unless-stopped
+    healthcheck:
+      test: ["CMD", "wget", "-qO-", "http://127.0.0.1:8791/health"]
+      interval: 30s
+      timeout: 5s
+      retries: 3
+
+  ml-engine-consumer:
+    image: node:22-alpine
+    container_name: ml-engine-consumer
+    working_dir: /srv/kicc/integrations-service
+    command: ["node", "consumers/run_consumers.mjs", "--only=ml-engine"]
+    environment:
+      MOCK_MODE: "false"
+      ML_ENGINE_URL: "http://ml-engine:8802/predict"
+      PIPELINE_BUS_JOURNAL: "/srv/kicc/integrations-service/run/artifacts/bus.jsonl"
+      CONSUMER_STATUS_PORT: "8792"
+      CONSUMER_MAX_ATTEMPTS: "3"
+      CONSUMER_BACKOFF_MS: "20"
+      CONSUMER_MAX_IN_FLIGHT: "8"
+    volumes:
+      - ../integrations-service:/srv/kicc/integrations-service
+    ports:
+      - "127.0.0.1:8792:8792"
+    restart: unless-stopped
+    healthcheck:
+      test: ["CMD", "wget", "-qO-", "http://127.0.0.1:8792/health"]
+      interval: 30s
+      timeout: 5s
+      retries: 3
