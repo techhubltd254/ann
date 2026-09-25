@@ -268,9 +268,6 @@
                                 <th class="text-right py-3 font-semibold">Price</th>
                             </tr></thead>
                             <tbody class="divide-y divide-white/5">
-                                @foreach(fn() => $attractions->take(5) ?? []() as $a)
-                                @php break; @endphp
-                                @endforeach
                                 @forelse($attractions->take(5) as $a)
                                 <tr class="hover:bg-white/5 transition cursor-pointer" onclick="openInspector({{ json_encode(['id'=>$a->id,'name'=>$a->name,'category'=>$a->category,'status'=>'Published','price'=>number_format($a->entry_fee ?? 0)]) }})">
                                     <td class="py-3 font-medium text-zinc-200">{{ $a->name }}</td>
