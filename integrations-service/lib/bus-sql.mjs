@@ -7,7 +7,6 @@
 // Env vars (typically set in the systemd unit or docker-compose):
 //   TIDB_HOST, TIDB_PORT, TIDB_USER, TIDB_PASSWORD, TIDB_DATABASE
 import mysql from 'mysql2/promise';
-import { log, MOCK_MODE, env } from './core.js';
 
 let pool = null;
 
@@ -35,9 +34,7 @@ async function getPool() {
 
 /** Insert one bus event into the SQL journal. Returns the auto-increment id. */
 export async function insertEvent(topic, payload, metadata = {}) {
-    if (MOCK_MODE) return Date.now(); // mock: no real DB insert
-
-    try {
+  try {
         const db = await getPool();
         const [result] = await db.execute(
             `INSERT INTO bus_events (topic, payload, metadata, idempotency_key, correlation_id, causation_id, hop, published_at)
@@ -64,7 +61,7 @@ export async function insertEvent(topic, payload, metadata = {}) {
  * This is what replaces fs.readFileSync(bus.jsonl) in the consumer.
  */
 export async function fetchEventsSince(offset = 0, limit = 200, topics = null) {
-    if (MOCK_MODE) return { rows: [], maxId: offset };
+    
 
     try {
         const db = await getPool();
