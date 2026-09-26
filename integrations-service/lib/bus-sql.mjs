@@ -202,7 +202,7 @@ export async function insertPrediction(pipelineId, score, band, edgeScore, corre
         const db = await getPool();
         await db.execute(
             'INSERT INTO ml_predictions (pipeline_id, score, band, edge_score, correlation_id) VALUES (?, ?, ?, ?, ?)',
-            [pipelineId, score, band, edgeScore, correlationId || null]
+            [pipelineId, score ?? null, band ?? null, edgeScore ?? null, correlationId ?? null]
         );
     } catch (e) {
         log.warn(`bus-sql: prediction insert failed: ${e.message}`);
@@ -215,7 +215,7 @@ export async function insertAlgorithmResult(pipelineId, edgeScore, mechanism, va
         const db = await getPool();
         await db.execute(
             'INSERT INTO algorithm_results (pipeline_id, edge_score, mechanism, value_kes, correlation_id) VALUES (?, ?, ?, ?, ?)',
-            [pipelineId, edgeScore, mechanism || null, valueKes || 0, correlationId || null]
+            [pipelineId, edgeScore ?? null, mechanism ?? null, valueKes ?? 0, correlationId ?? null]
         );
     } catch (e) {
         log.warn(`bus-sql: algorithm result insert failed: ${e.message}`);
