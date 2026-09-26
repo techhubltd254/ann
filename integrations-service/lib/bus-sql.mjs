@@ -7,6 +7,7 @@
 // Env vars (typically set in the systemd unit or docker-compose):
 //   TIDB_HOST, TIDB_PORT, TIDB_USER, TIDB_PASSWORD, TIDB_DATABASE
 import mysql from 'mysql2/promise';
+import { log, env } from './core.js';
 
 let pool = null;
 
@@ -75,8 +76,7 @@ export async function fetchEventsSince(offset = 0, limit = 200, topics = null) {
             params.push(...topics);
         }
 
-        sql += ' ORDER BY id ASC LIMIT ?';
-        params.push(limit);
+        sql += ` ORDER BY id ASC LIMIT ${Math.max(1, limit)}`;
 
         const [rows] = await db.execute(sql, params);
 

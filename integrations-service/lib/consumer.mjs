@@ -14,7 +14,7 @@
 import fs from "fs";
 import path from "path";
 import crypto from "crypto";
-import { ROOT, ARTIFACTS, log, MOCK_MODE } from "./core.js";
+import { ROOT, ARTIFACTS, log } from "./core.js";
 import {
   fetchEventsSince, loadOffset, updateOffset, countEvents,
   hasEventKey, insertEventKey, insertDlq, fetchDlq,
@@ -80,7 +80,7 @@ export class Consumer {
     this.startedAt = Date.now();
 
     // Load checkpoint from SQL (primary) with local file fallback
-    if (!MOCK_MODE) {
+    {
       try {
         const ck = await loadOffset(this.group);
         this.ackOffset = Number(ck.ack_offset || 0);
@@ -135,7 +135,7 @@ export class Consumer {
 
   async #readNew(n) {
     // SQL primary path
-    if (!MOCK_MODE) {
+    {
       try {
         const { rows } = await fetchEventsSince(this.ackOffset, n, this.topicNames);
         if (rows.length > 0) {
@@ -192,7 +192,7 @@ export class Consumer {
     let lastErr = null;
 
     // SQL idempotency check (before handler runs)
-    if (!MOCK_MODE) {
+    {
       try {
         if (await hasEventKey(key, this.group)) {
           this.stats.deduped++;
@@ -215,7 +215,7 @@ export class Consumer {
         this.terminal.add(key);
 
         // Persist idempotency key to SQL
-        if (!MOCK_MODE) {
+        {
           insertEventKey(key, this.group, offset).catch(() => {});
         }
 
@@ -231,7 +231,7 @@ export class Consumer {
     if (/contract/i.test(String(lastErr && lastErr.message))) this.stats.contract_errors++;
 
     // Persist DLQ to SQL
-    if (!MOCK_MODE) {
+    {
       insertDlq(this.group, ev.topic, key, offset, String((lastErr && lastErr.message) || lastErr), this.maxAttempts, ev).catch(() => {});
     }
 
@@ -247,14 +247,14 @@ export class Consumer {
       this.ackOffset++;
     }
     // Persist checkpoint to SQL (async, fire-and-forget)
-    if (!MOCK_MODE && this.ackOffsetLoaded) {
+    if (this.ackOffsetLoaded) {
       updateOffset(this.group, this.ackOffset, this.stats.processed, this.stats.dlq).catch(() => {});
     }
     this._saveLocalCheckpoint();
   }
 
   async #persist() {
-    if (!MOCK_MODE && this.ackOffsetLoaded) {
+    if (this.ackOffsetLoaded) {
       await updateOffset(this.group, this.ackOffset, this.stats.processed, this.stats.dlq);
     }
     this._saveLocalCheckpoint();
@@ -278,7 +278,7 @@ export class Consumer {
   }
 
   async readDlq(limit = 100) {
-    if (!MOCK_MODE) {
+    {
       try { return await fetchDlq(this.group, limit); } catch {}
     }
     return [];

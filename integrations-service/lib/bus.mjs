@@ -92,7 +92,7 @@ export class Bus {
     const targets = this.subs.filter((s) => s.re.test(ev.topic));
     this.eventSink.write(JSON.stringify({ ...ev, subscribers: targets.length }));
     // Dual-write to SQL (authoritative); file is fallback
-    insertEvent(ev.topic, ev.payload, ev).catch(() => {});
+    insertEvent(ev.topic, ev.payload, ev).catch(e => log.warn("bus: SQL insert failed: " + e.message));
     for (const s of targets) {
       for (let attempt = 1; attempt <= this.maxAttempts; attempt++) {
         try {
