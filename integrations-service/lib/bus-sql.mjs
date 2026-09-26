@@ -186,8 +186,8 @@ export async function fetchDlq(consumerGroup, limit = 100) {
     try {
         const db = await getPool();
         const [rows] = await db.execute(
-            'SELECT * FROM bus_dlq WHERE consumer_group = ? ORDER BY created_at DESC LIMIT ?',
-            [consumerGroup, limit]
+            'SELECT * FROM bus_dlq WHERE consumer_group = ? ORDER BY created_at DESC LIMIT ' + Math.max(1, limit),
+            [consumerGroup]
         );
         return rows.map(r => ({
             ...r,
