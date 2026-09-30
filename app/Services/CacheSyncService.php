@@ -2,6 +2,7 @@
 
 namespace App\Services;
 
+use App\Jobs\PurgeEdgeCache;
 use Illuminate\Support\Facades\Cache;
 use Illuminate\Support\Facades\Http;
 use Illuminate\Support\Facades\Log;
@@ -108,10 +109,11 @@ class CacheSyncService
             $this->forgetKeysWithPrefix($p);
         }
 
-        $this->purgeCloudflareUrls([
-            '/counties',
-            '/counties/' . $this->countySlug($countyId),
-        ]);
+        $slug = $this->countySlug($countyId);
+        dispatch(new PurgeEdgeCache(
+            urls: ['/counties', '/counties/' . $slug],
+            tags: ["county:{$slug}"]
+        ));
     }
 
     /**
@@ -121,7 +123,10 @@ class CacheSyncService
     {
         $this->forgetKeysWithPrefix("dav:sector:{$countyId}:{$sectorId}");
         $this->forgetKeysWithPrefix("kicc_county_sector_items_{$countyId}_{$sectorId}_");
-        $this->purgeCloudflareUrls(['/counties/' . $this->countySlug($countyId)]);
+        dispatch(new PurgeEdgeCache(
+            urls: ['/counties/' . $this->countySlug($countyId)],
+            tags: ["county:{$this->countySlug($countyId)}"]
+        ));
     }
 
     /**
@@ -150,10 +155,10 @@ class CacheSyncService
             $this->forgetKeysWithPrefix($p);
         }
 
-        $this->purgeCloudflareUrls([
-            '/national-government',
-            '/national-exhibition',
-        ]);
+        dispatch(new PurgeEdgeCache(
+            urls: ['/national-government', '/national-exhibition'],
+            tags: ['page:national-government', 'page:national-exhibition']
+        ));
     }
 
     /**
@@ -175,12 +180,10 @@ class CacheSyncService
             $this->forgetKeysWithPrefix($p);
         }
 
-        $this->purgeCloudflareUrls([
-            '/',
-            '/marketplace',
-            '/counties',
-            '/national-government',
-        ]);
+        dispatch(new PurgeEdgeCache(
+            urls: ['/', '/marketplace', '/counties', '/national-government'],
+            tags: ['page:home', 'page:marketplace', 'page:counties', 'page:national-government']
+        ));
     }
 
     /**
@@ -208,33 +211,6 @@ class CacheSyncService
      */
     public function purgeCloudflareUrls(array $urls): void
     {
-        $urls = array_values(array_filter(array_map(fn ($u) => 'https://kicctest.org' . $u, $urls)));
-
-        $zone = config('services.cloudflare.zone_id');
-        $token = config('services.cloudflare.api_token');
-        if (! $zone) {
-            return;
-        }
-
-        // Try multiple tokens in order of preference
-        $tokens = array_filter([
-            $token,
-            env('CF_TOKEN'),
-            env('CLOUDFLARE_API_TOKEN'),
-        ]);
-
-        foreach ($tokens as $t) {
-            try {
-                Http::withToken($t)
-                    ->timeout(10)
-                    ->post("https://api.cloudflare.com/client/v4/zones/{$zone}/purge_cache", [
-                        'files' => $urls,
-                    ])->throw();
-                return; // Success — stop here
-            } catch (\Throwable $e) {
-                continue; // Try next token
-            }
-        }
-        Log::warning('cache-sync: cloudflare purge failed (all tokens)', ['urls' => $urls]);
+        dispatch(new PurgeEdgeCache(urls: $urls, tags: []));
     }
 }
