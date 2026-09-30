@@ -7,7 +7,9 @@
         "php": "^8.4.1",
         "africastalking/africastalking": "^3.0",
         "barryvdh/laravel-dompdf": "^3.1",
+        "blade-ui-kit/blade-heroicons": "^2.6",
         "elasticsearch/elasticsearch": "^9.5",
+        "filament/filament": "^5.7",
         "inertiajs/inertia-laravel": "^3.1",
         "laravel/cashier": "^15.0",
         "laravel/framework": "^13.8",
@@ -48,7 +50,7 @@
         "post-autoload-dump": [
             "@php -r \"is_dir('bootstrap/cache') || mkdir('bootstrap/cache', 0755, true); is_dir('storage/framework/cache') || mkdir('storage/framework/cache', 0755, true); is_dir('storage/framework/sessions') || mkdir('storage/framework/sessions', 0755, true); is_dir('storage/framework/views') || mkdir('storage/framework/views', 0755, true); is_dir('storage/logs') || mkdir('storage/logs', 0755, true);\"",
             "Illuminate\\Foundation\\ComposerScripts::postAutoloadDump",
-            "@php artisan package:discover --ansi",
+            "@php artisan package:discover --ansi"
         ],
         "post-update-cmd": [
             "@php artisan package:discover --ansi"
