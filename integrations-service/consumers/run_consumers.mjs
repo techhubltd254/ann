@@ -18,8 +18,9 @@ if (!consumers.length) {
 
 await Promise.all(consumers.map((c) => c.start({ handleSignals: false })));
 
-const flushTimer = setInterval(() => { bus.eventSink.flush().catch(() => {}); }, 20);
-if (flushTimer.unref) flushTimer.unref();
+// Flush is event-driven via onIdle() — no timer. The 20ms setInterval was
+// a self-DDoS (50 TiDB writes/sec per consumer, 1,698 CPU-min in 4 days,
+// 1.1 GB log). The onIdle callback fires after each batch processed.
 
 const port = Number(process.env.CONSUMER_STATUS_PORT || 8791);
 const server = http.createServer((req, res) => {
@@ -47,7 +48,6 @@ for (const sig of ["SIGTERM", "SIGINT"]) {
     shuttingDown = true;
     console.log(`kicc-bus-consumers: ${sig} received - draining ${consumers.length} consumer(s)`);
     await Promise.all(consumers.map((c) => c.stop()));
-    clearInterval(flushTimer);
     server.close();
     process.exit(0);
   });

@@ -99,3 +99,15 @@ integrations-service/run/offsets/
 
 # deliverable/patche archives kept out of git history
 *.zip
+
+# archived directories and root assets (keep out of git, live on filesystem)
+_archive/
+
+# root-level binary/document files (not source code)
+*.pdf
+*.xlsx
+*.pptx
+*.docx
+*.csv
+*.mp4
+!infra/**/*.pdf

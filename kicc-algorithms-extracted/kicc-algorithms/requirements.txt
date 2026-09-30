@@ -1,3 +1,0 @@
-# Zero runtime dependencies: stdlib only (asyncio, decimal, re, collections).
-# Production adapters (asyncpg, redis, aioboto3) are deployment concerns
-# behind the ports in core/, not runtime requirements of the algorithm layer.

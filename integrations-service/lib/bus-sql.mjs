@@ -10,6 +10,35 @@ import mysql from 'mysql2/promise';
 import { log, env } from './core.js';
 
 let pool = null;
+let backoffMs = 1000;          // current backoff (mutates on failure)
+const BACKOFF_FLOOR = 1000;    // 1 s
+const BACKOFF_CAP   = 60000;   // 1 min
+
+function resetBackoff() {
+    backoffMs = BACKOFF_FLOOR;
+}
+
+function waitForBackoff() {
+    return new Promise(r => setTimeout(r, backoffMs));
+}
+
+function growBackoff() {
+    backoffMs = Math.min(backoffMs * 2, BACKOFF_CAP);
+}
+
+async function withBackoff(fn, label) {
+    for (let attempt = 1; attempt <= 5; attempt++) {
+        try {
+            return await fn();
+        } catch (e) {
+            log.warn(`bus-sql: ${label} attempt ${attempt}/5 failed: ${e.message}`);
+            if (attempt === 5) throw e;
+            await waitForBackoff();
+            growBackoff();
+        }
+    }
+    throw new Error(`bus-sql: ${label} exhausted retries`);
+}
 
 async function getPool() {
     if (pool) return pool;
@@ -62,40 +91,41 @@ export async function insertEvent(topic, payload, metadata = {}) {
  * This is what replaces fs.readFileSync(bus.jsonl) in the consumer.
  */
 export async function fetchEventsSince(offset = 0, limit = 200, topics = null) {
-    
-
     try {
-        const db = await getPool();
-        let sql = 'SELECT id, topic, payload, metadata, idempotency_key, correlation_id, causation_id, hop, published_at FROM bus_events WHERE id > ?';
-        const params = [offset];
+        const result = await withBackoff(async () => {
+            const db = await getPool();
+            let sql = 'SELECT id, topic, payload, metadata, idempotency_key, correlation_id, causation_id, hop, published_at FROM bus_events WHERE id > ?';
+            const params = [offset];
 
-        if (topics && topics.length > 0 && !topics.includes('*')) {
-            // Build parameterized IN clause
-            const placeholders = topics.map(() => '?').join(',');
-            sql += ` AND topic IN (${placeholders})`;
-            params.push(...topics);
-        }
+            if (topics && topics.length > 0 && !topics.includes('*')) {
+                const placeholders = topics.map(() => '?').join(',');
+                sql += ` AND topic IN (${placeholders})`;
+                params.push(...topics);
+            }
 
-        sql += ` ORDER BY id ASC LIMIT ${Math.max(1, limit)}`;
+            sql += ` ORDER BY id ASC LIMIT ${Math.max(1, limit)}`;
 
-        const [rows] = await db.execute(sql, params);
+            const [rows] = await db.execute(sql, params);
 
-        const parsed = rows.map(r => ({
-            id: r.id,
-            topic: r.topic,
-            payload: typeof r.payload === 'string' ? JSON.parse(r.payload) : r.payload,
-            metadata: typeof r.metadata === 'string' ? JSON.parse(r.metadata) : (r.metadata || {}),
-            idempotency_key: r.idempotency_key,
-            correlation_id: r.correlation_id,
-            causation_id: r.causation_id,
-            hop: r.hop || 0,
-            published_at: r.published_at,
-        }));
+            const parsed = rows.map(r => ({
+                id: r.id,
+                topic: r.topic,
+                payload: typeof r.payload === 'string' ? JSON.parse(r.payload) : r.payload,
+                metadata: typeof r.metadata === 'string' ? JSON.parse(r.metadata) : (r.metadata || {}),
+                idempotency_key: r.idempotency_key,
+                correlation_id: r.correlation_id,
+                causation_id: r.causation_id,
+                hop: r.hop || 0,
+                published_at: r.published_at,
+            }));
 
-        const maxId = parsed.length > 0 ? parsed[parsed.length - 1].id : offset;
-        return { rows: parsed, maxId };
+            resetBackoff();
+            return parsed;
+        }, 'fetchEventsSince');
+        const maxId = result.length > 0 ? result[result.length - 1].id : offset;
+        return { rows: result, maxId };
     } catch (e) {
-        log.error(`bus-sql: fetch failed: ${e.message}`);
+        log.error(`bus-sql: fetch failed after retries: ${e.message}`);
         return { rows: [], maxId: offset };
     }
 }

@@ -19,7 +19,11 @@ class AppendAuditContext
             return $response;
         }
         if (!auth()->check()) return $response;
-        if ($response->getStatusCode() >= 500) return $response; // don't pollute on errors
+        if ($response->getStatusCode() >= 500) return $response;
+
+        // Rate-gate: sample 1% of background audit writes to prevent DB churn.
+        // Full audit is produced by explicit AuditLogger::log() calls in controllers.
+        if (random_int(1, 100) > 1) return $response;
 
         DB::table('audit_log')->insertOrIgnore([
             'actor_id'     => auth()->id(),
