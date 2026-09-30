@@ -48,9 +48,9 @@ class ArchitectureTest extends TestCase
             'InstitutionAdminController', 'IntelligenceController',
             'LivestreamController', 'NationalAdminController',
             'PipelineController', 'PipelineLicenceController',
-            'ProviderPortalController', 'TravelController',
             'AuthController', 'MarketplaceApiController',
             'SemanticSearchController',
+            // Resolved Phase 5: Travel + Provider controllers now use Eloquent
         ];
 
         foreach ($controllers as $file) {

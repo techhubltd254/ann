@@ -4,9 +4,15 @@ namespace App\Http\Controllers\Web;
 
 use App\Http\Controllers\Controller;
 use App\Events\GenericDomainEvent;
+use App\Models\Travel\Airline;
+use App\Models\Travel\Airport;
+use App\Models\Travel\AirportTransfer;
+use App\Models\Travel\Flight;
+use App\Models\Travel\FlightInventory;
+use App\Models\Travel\Hotel;
+use App\Models\Travel\HotelRoom;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
-use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Str;
 
 /**
@@ -17,6 +23,19 @@ use Illuminate\Support\Str;
  */
 class ProviderPortalController extends Controller
 {
+    /** Map of provider table names → Eloquent models. Single source of truth. */
+    private const PROVIDER_MODELS = [
+        'flight_inventory'  => FlightInventory::class,
+        'hotel_rooms'       => HotelRoom::class,
+        'airport_transfers' => AirportTransfer::class,
+    ];
+
+    protected function providerModel(string $table): string
+    {
+        abort_unless(isset(self::PROVIDER_MODELS[$table]), 404, 'Unknown provider table.');
+        return self::PROVIDER_MODELS[$table];
+    }
+
     protected function user()
     {
         $u = Auth::user();
@@ -72,12 +91,12 @@ class ProviderPortalController extends Controller
 
         // Ownership check — scope update to provider's own records
         $ownerId = match ($data['table_key']) {
-            'flight' => DB::table('flights')->where('id', $data['id'])->value('airline_id'),
-            'room' => DB::table('hotel_rooms')->where('id', $data['id'])->value('hotel_id'),
-            'transfer' => DB::table('airport_transfers')->where('id', $data['id'])->value('id'), // basic
+            'flight' => Flight::query()->where('id', $data['id'])->value('airline_id'),
+            'room' => HotelRoom::query()->where('id', $data['id'])->value('hotel_id'),
+            'transfer' => AirportTransfer::query()->where('id', $data['id'])->value('id'), // basic
         };
-        $providerAirlineId = DB::table('airlines')->where('iata_code', $meta['airline_code'] ?? '')->value('id');
-        $providerHotelId = DB::table('hotels')->where('slug', $meta['hotel_slug'] ?? '')->value('id');
+        $providerAirlineId = Airline::query()->where('iata_code', $meta['airline_code'] ?? '')->value('id');
+        $providerHotelId = Hotel::query()->where('slug', $meta['hotel_slug'] ?? '')->value('id');
         $ownsRecord = match ($data['table_key']) {
             'flight' => $ownerId === $providerAirlineId,
             'room' => $ownerId === $providerHotelId,
@@ -85,7 +104,7 @@ class ProviderPortalController extends Controller
         };
         abort_unless($ownsRecord, 403, 'You do not own this record.');
 
-        $updated = DB::table($table)->where('id', $data['id'])->update([
+        $updated = $this->providerModel($table)::where('id', $data['id'])->update([
             $priceCol => $data['price'],
             'is_active' => 0, // pending KICC re-approval
             'updated_at' => now(),
@@ -110,9 +129,9 @@ class ProviderPortalController extends Controller
                 'name' => 'required|string|max:255', 'room_type' => 'required|string|max:50',
                 'price_per_night' => 'required|numeric|min:1', 'max_guests' => 'required|integer|min:1',
             ]);
-            $hotelId = DB::table('hotels')->where('slug', $meta['hotel_slug'] ?? '')->value('id');
+            $hotelId = Hotel::query()->where('slug', $meta['hotel_slug'] ?? '')->value('id');
             abort_unless($hotelId, 404, 'Hotel not linked to your account.');
-            DB::table('hotel_rooms')->insert([
+            HotelRoom::query()->insert([
                 'hotel_id' => $hotelId, 'name' => $data['name'], 'room_type' => $data['room_type'],
                 'max_guests' => $data['max_guests'], 'total_rooms' => 5,
                 'price_per_night' => $data['price_per_night'], 'currency' => 'KES',
@@ -124,11 +143,11 @@ class ProviderPortalController extends Controller
                 'departure_time' => 'required', 'arrival_time' => 'required',
                 'base_price' => 'required|numeric|min:1',
             ]);
-            $airlineId = DB::table('airlines')->where('iata_code', $meta['airline_code'] ?? '')->value('id');
-            $originId = DB::table('airports')->where('iata_code', $data['origin'])->value('id');
-            $destId = DB::table('airports')->where('iata_code', $data['destination'])->value('id');
+            $airlineId = Airline::query()->where('iata_code', $meta['airline_code'] ?? '')->value('id');
+            $originId = Airport::query()->where('iata_code', $data['origin'])->value('id');
+            $destId = Airport::query()->where('iata_code', $data['destination'])->value('id');
             abort_unless($airlineId && $originId && $destId, 404);
-            DB::table('flights')->insert([
+            Flight::query()->insert([
                 'airline_id' => $airlineId, 'flight_number' => strtoupper(Str::random(6)),
                 'origin_airport_id' => $originId, 'destination_airport_id' => $destId,
                 'departure_time' => $data['departure_time'], 'arrival_time' => $data['arrival_time'],
@@ -141,9 +160,9 @@ class ProviderPortalController extends Controller
                 'airport' => 'required|string|size:3', 'vehicle_type' => 'required|string|max:50',
                 'capacity' => 'required|integer|min:1', 'price' => 'required|numeric|min:1',
             ]);
-            $airportId = DB::table('airports')->where('iata_code', $data['airport'])->value('id');
+            $airportId = Airport::query()->where('iata_code', $data['airport'])->value('id');
             abort_unless($airportId, 404);
-            DB::table('airport_transfers')->insert([
+            AirportTransfer::query()->insert([
                 'airport_id' => $airportId, 'provider_name' => $meta['provider_name'] ?? $user->name,
                 'vehicle_type' => $data['vehicle_type'], 'capacity' => $data['capacity'],
                 'price' => $data['price'], 'currency' => 'KES',
@@ -162,37 +181,37 @@ class ProviderPortalController extends Controller
     private function loadScope(string $type, array $meta): array
     {
         if ($type === 'airline') {
-            $airlineId = DB::table('airlines')->where('iata_code', $meta['airline_code'] ?? '')->value('id');
-            $flightIds = DB::table('flights')->where('airline_id', $airlineId)->pluck('id');
-            $services = DB::table('flight_inventory')
+            $airlineId = Airline::query()->where('iata_code', $meta['airline_code'] ?? '')->value('id');
+            $flightIds = Flight::query()->where('airline_id', $airlineId)->pluck('id');
+            $services = FlightInventory::query()
                 ->join('flights', 'flight_inventory.flight_id', '=', 'flights.id')
                 ->whereIn('flights.id', $flightIds)
                 ->select('flight_inventory.id', 'flights.flight_number as title', 'flight_inventory.date as sub', 'flight_inventory.price', 'flight_inventory.is_active')
                 ->orderByDesc('flight_inventory.date')->limit(60)->get()
                 ->map(fn ($s) => tap($s, fn ($x) => $x->table_key = 'flight'));
-            $bookings = DB::table('flight_bookings')->whereIn('flight_id', $flightIds)->latest()->limit(50)->get();
+            $bookings = FlightBooking::query()->whereIn('flight_id', $flightIds)->latest()->limit(50)->get();
             $money = ['total' => $bookings->where('status', 'confirmed')->sum('total'), 'count' => $bookings->count(), 'commission' => 0.10];
             return [$services, $bookings, $money];
         }
 
         if ($type === 'hotel') {
-            $hotelId = DB::table('hotels')->where('slug', $meta['hotel_slug'] ?? '')->value('id');
-            $services = DB::table('hotel_rooms')->where('hotel_id', $hotelId)->get()
+            $hotelId = Hotel::query()->where('slug', $meta['hotel_slug'] ?? '')->value('id');
+            $services = HotelRoom::query()->where('hotel_id', $hotelId)->get()
                 ->map(fn ($s) => tap($s, function ($x) {
                     $x->title = $x->name; $x->sub = $x->room_type; $x->price = $x->price_per_night; $x->table_key = 'room';
                 }));
-            $bookings = DB::table('hotel_bookings')->where('hotel_id', $hotelId)->latest()->limit(50)->get();
+            $bookings = HotelBooking::query()->where('hotel_id', $hotelId)->latest()->limit(50)->get();
             $money = ['total' => $bookings->where('status', 'confirmed')->sum('total'), 'count' => $bookings->count(), 'commission' => 0.10];
             return [$services, $bookings, $money];
         }
 
         // transfer
-        $services = DB::table('airport_transfers')->where('provider_name', $meta['provider_name'] ?? '')->get()
+        $services = AirportTransfer::query()->where('provider_name', $meta['provider_name'] ?? '')->get()
             ->map(fn ($s) => tap($s, function ($x) {
                 $x->title = ucfirst($x->vehicle_type); $x->sub = 'seats ' . $x->capacity; $x->table_key = 'transfer';
             }));
         $transferIds = $services->pluck('id');
-        $bookings = DB::table('transfer_bookings')->whereIn('transfer_id', $transferIds)->latest()->limit(50)->get();
+        $bookings = TransferBooking::query()->whereIn('transfer_id', $transferIds)->latest()->limit(50)->get();
         $money = ['total' => $bookings->sum('total'), 'count' => $bookings->count(), 'commission' => 0.10];
         return [$services, $bookings, $money];
     }

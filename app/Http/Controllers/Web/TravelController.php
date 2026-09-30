@@ -4,16 +4,25 @@ namespace App\Http\Controllers\Web;
 
 use App\Http\Controllers\Controller;
 use App\Models\County;
+use App\Models\Travel\Airport;
+use App\Models\Travel\Flight;
+use App\Models\Travel\FlightInventory;
+use App\Models\Travel\TransferBooking;
+use App\Models\Travel\HotelRoom;
+use App\Models\Travel\AirportTransfer;
 use App\Models\Travel\Attraction;
 use App\Models\Travel\Hotel;
 use App\Services\PaymentService;
 use App\Events\GenericDomainEvent;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Cache;
-use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Http;
 use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Str;
+
+// DB facade removed — all queries use Eloquent models directly.
+// When a migration changes a column type/name, the model's $casts and
+// $fillable handle it — no raw query string to hunt down.
 
 /**
  * The complete travel journey:
@@ -29,15 +38,15 @@ class TravelController extends Controller
         $counties = County::orderBy('name')->get(['id', 'name', 'slug']);
 
         // Destinations = airports served, with cheapest upcoming flight
-        $destinations = DB::table('airports')
+        $destinations = Airport::query()
             ->where('airports.is_active', 1)->where('iata_code', '!=', 'NBO')->where('iata_code', '!=', 'WIL')
             ->get()->map(function ($ap) {
-                $ap->from_price = DB::table('flight_inventory')
+                $ap->from_price = FlightInventory::query()
                     ->join('flights', 'flight_inventory.flight_id', '=', 'flights.id')
                     ->where('flights.destination_airport_id', $ap->id)
                     ->where('flight_inventory.date', '>=', now()->toDateString())
                     ->min('flight_inventory.price');
-                $ap->county_slug = DB::table('counties')->where('id', $ap->county_id)->value('slug');
+                $ap->county_slug = County::query()->where('id', $ap->county_id)->value('slug');
                 return $ap;
             })->filter(fn ($d) => $d->from_price);
 
@@ -56,10 +65,10 @@ class TravelController extends Controller
             'from' => 'nullable|string|size:3',
         ]);
 
-        $origin = DB::table('airports')->where('iata_code', $data['from'] ?? 'NBO')->first() ?? DB::table('airports')->where('iata_code', 'NBO')->first();
-        $destination = DB::table('airports')->where('iata_code', $data['to'])->firstOrFail();
+        $origin = Airport::query()->where('iata_code', $data['from'] ?? 'NBO')->first() ?? Airport::query()->where('iata_code', 'NBO')->first();
+        $destination = Airport::query()->where('iata_code', $data['to'])->firstOrFail();
 
-        $flights = DB::table('flight_inventory')
+        $flights = FlightInventory::query()
             ->join('flights', 'flight_inventory.flight_id', '=', 'flights.id')
             ->join('airlines', 'flights.airline_id', '=', 'airlines.id')
             ->where('flights.origin_airport_id', $origin->id)
@@ -76,9 +85,9 @@ class TravelController extends Controller
 
         // Package components at destination
         $countyId = $destination->county_id;
-        $hotels = DB::table('hotels')->where('county_id', $countyId)->where('is_active', 1)->get()
-            ->map(fn ($h) => tap($h, fn ($x) => $x->rooms = DB::table('hotel_rooms')->where('hotel_id', $h->id)->where('is_active', 1)->orderBy('price_per_night')->get()));
-        $transfers = DB::table('airport_transfers')->where('airport_id', $destination->id)->where('is_active', 1)->orderBy('price')->get();
+        $hotels = Hotel::query()->where('county_id', $countyId)->where('is_active', 1)->get()
+            ->map(fn ($h) => tap($h, fn ($x) => $x->rooms = HotelRoom::query()->where('hotel_id', $h->id)->where('is_active', 1)->orderBy('price_per_night')->get()));
+        $transfers = AirportTransfer::query()->where('airport_id', $destination->id)->where('is_active', 1)->orderBy('price')->get();
 
         return view('travel.flights', [
             'origin' => $origin, 'destination' => $destination, 'date' => $data['date'],
@@ -100,9 +109,9 @@ class TravelController extends Controller
             'phone' => 'required|string|max:30',
         ]);
 
-        $inventory = DB::table('flight_inventory')->where('id', $data['inventory_id'])->where('is_active', 1)->first();
+        $inventory = FlightInventory::query()->where('id', $data['inventory_id'])->where('is_active', 1)->first();
         abort_unless($inventory && $inventory->available_seats >= $data['passengers'], 422, 'Flight no longer available for that many passengers.');
-        $flight = DB::table('flights')->find($inventory->flight_id);
+        $flight = Flight::query()->find($inventory->flight_id);
 
         $guestId = $request->user()?->id ?? \App\Models\User::where('email', 'guest@kicc.go.ke')->value('id');
         $groupRef = 'TRV-' . strtoupper(Str::random(8));
@@ -121,9 +130,9 @@ class TravelController extends Controller
                 'pnr_code' => strtoupper(Str::random(6)), 'booked_at' => now(),
             ]);
             try {
-                DB::table('flight_inventory')->where('id', $inventory->id)->decrement('available_seats', $data['passengers']);
+                FlightInventory::query()->where('id', $inventory->id)->decrement('available_seats', $data['passengers']);
             } catch (\Throwable $e) {
-                DB::table('flight_inventory')->where('id', $inventory->id)->increment('available_seats', $data['passengers']);
+                FlightInventory::query()->where('id', $inventory->id)->increment('available_seats', $data['passengers']);
                 throw $e;
             }
             $bookings[] = ['type' => 'Flight', 'ref' => $flightBooking->booking_reference, 'total' => $flightTotal];
@@ -131,12 +140,12 @@ class TravelController extends Controller
 
             // 2. Hotel booking (optional)
             if (!empty($data['room_id'])) {
-                $room = DB::table('hotel_rooms')->find($data['room_id']);
+                $room = HotelRoom::query()->find($data['room_id']);
                 $nights = $data['nights'] ?? 2;
                 if ($room) {
                     $hotelTotal = $room->price_per_night * $nights;
                     $hbRef = $groupRef . '-HT';
-                    DB::table('hotel_bookings')->insert([
+                    HotelBooking::query()->insert([
                         'booking_reference' => $hbRef, 'user_id' => $guestId, 'hotel_id' => $room->hotel_id,
                         'check_in' => $inventory->date, 'check_out' => date('Y-m-d', strtotime($inventory->date . " +{$nights} days")),
                         'guest_count' => $data['passengers'], 'subtotal' => $hotelTotal, 'tax' => 0,
@@ -150,10 +159,10 @@ class TravelController extends Controller
 
             // 3. Transfer / cab allocation (optional — allocated by chosen vehicle type)
             if (!empty($data['transfer_id'])) {
-                $transfer = DB::table('airport_transfers')->find($data['transfer_id']);
+                $transfer = AirportTransfer::query()->find($data['transfer_id']);
                 if ($transfer) {
                     $tbRef = $groupRef . '-TR';
-                    DB::table('transfer_bookings')->insert([
+                    TransferBooking::query()->insert([
                         'booking_reference' => $tbRef, 'user_id' => $guestId, 'transfer_id' => $transfer->id,
                         'flight_booking_id' => $flightBooking?->id,
                         'pickup_location' => 'Airport', 'dropoff_location' => 'Hotel',
@@ -177,7 +186,7 @@ class TravelController extends Controller
             ]);
         } catch (\Throwable $e) {
             if ($flightBooking) {
-                DB::table('flight_inventory')->where('id', $inventory->id)->increment('available_seats', $data['passengers']);
+                FlightInventory::query()->where('id', $inventory->id)->increment('available_seats', $data['passengers']);
             }
             throw $e;
         }
@@ -195,14 +204,14 @@ class TravelController extends Controller
         $booking = \App\Models\Travel\FlightBooking::where('booking_reference', $groupRef . '-FL')->firstOrFail();
         abort_if($booking->user_id !== auth()->id() && !auth()->user()?->is_admin, 403);
 
-        $flight = DB::table('flight_bookings')->where('booking_reference', $groupRef . '-FL')->first();
+        $flight = FlightBooking::query()->where('booking_reference', $groupRef . '-FL')->first();
         abort_unless($flight, 404);
-        $hotel = DB::table('hotel_bookings')->where('booking_reference', $groupRef . '-HT')->first();
-        $transfer = DB::table('transfer_bookings')->where('booking_reference', $groupRef . '-TR')->first();
+        $hotel = HotelBooking::query()->where('booking_reference', $groupRef . '-HT')->first();
+        $transfer = TransferBooking::query()->where('booking_reference', $groupRef . '-TR')->first();
 
-        $flightDetail = DB::table('flights')->find($flight->flight_id);
-        $hotelDetail = $hotel ? DB::table('hotels')->find($hotel->hotel_id) : null;
-        $transferDetail = $transfer ? DB::table('airport_transfers')->find($transfer->transfer_id) : null;
+        $flightDetail = Flight::query()->find($flight->flight_id);
+        $hotelDetail = $hotel ? Hotel::query()->find($hotel->hotel_id) : null;
+        $transferDetail = $transfer ? AirportTransfer::query()->find($transfer->transfer_id) : null;
 
         $total = $flight->total + ($hotel->total ?? 0) + ($transfer->total ?? 0);
 
