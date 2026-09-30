@@ -15,11 +15,16 @@ use App\Models\Ministry;
 use App\Models\Payment\PaymentIntent;
 use App\Models\Pipeline\DynamicPipeline;
 use App\Models\User;
+use App\Services\AuditLogger;
 use App\Services\IntegrationClient;
+use App\Services\LedgerService;
 use App\Services\MediaLibraryService;
+use App\Services\N8nService;
+use App\Services\PoolEngine;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Artisan;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Http;
 use Illuminate\Support\Str;
 
@@ -378,31 +383,98 @@ class KiccAdminController extends Controller
         ));
     }
 
-    /** KICC releases escrow funds to a seller after delivery confirmation. */
+    /** KICC releases escrow funds — ledger entry + audit trail + pool recalc. */
     public function releaseEscrow(int $id)
     {
         $this->authorizeKicc();
-        $escrow = EscrowTransaction::findOrFail($id);
-        $steps = collect($escrow->steps ?? [])->map(fn ($s) => array_merge($s, ['done' => true]))->values()->all();
-        $escrow->update(['status' => 'released', 'steps' => $steps, 'current_step' => 4, 'released_at' => now()]);
-        app(\App\Services\CacheSyncService::class)->kicc();
-        return redirect()->route('kicc.admin', ['tab' => 'escrow'])->with('success', "Escrow {$escrow->escrow_id} released to {$escrow->seller?->name}.");
+        return DB::transaction(function () use ($id) {
+            $escrow = EscrowTransaction::findOrFail($id);
+            abort_if($escrow->status === 'released', 422, 'Escrow already released.');
+
+            $steps = collect($escrow->steps ?? [])->map(fn ($s) => array_merge($s, ['done' => true]))->values()->all();
+            $escrow->update([
+                'status' => 'released',
+                'steps' => $steps,
+                'current_step' => 4,
+                'released_at' => now(),
+                'released_by' => Auth::id(),
+            ]);
+
+            // Double-entry ledger: debit escrow_liability, credit seller_payable
+            LedgerService::post([
+                'journal_ref' => 'escrow-release-' . $escrow->escrow_id,
+                'memo'        => 'Escrow released to seller',
+                'entries'     => [
+                    ['account' => 'escrow_liability', 'debit' => (float) $escrow->amount, 'credit' => 0.0],
+                    ['account' => 'seller_payable',   'debit' => 0.0, 'credit' => (float) $escrow->amount],
+                ],
+            ]);
+
+            AuditLogger::log(Auth::id(), 'escrow.released', EscrowTransaction::class, $escrow->id, [
+                'amount' => (float) $escrow->amount,
+                'seller_id' => $escrow->seller_id,
+                'buyer_id'  => $escrow->buyer_id,
+            ]);
+
+            PoolEngine::recalcFor(period: now()->format('Y-m'), scope: 'global', reason: 'escrow.release');
+
+            N8nService::fire('escrow_released', ['escrow_id' => $escrow->escrow_id, 'amount' => (float) $escrow->amount]);
+            app(\App\Services\CacheSyncService::class)->kicc();
+
+            return redirect()->route('kicc.admin', ['tab' => 'escrow'])
+                ->with('success', "Escrow {$escrow->escrow_id} released + ledger posted.");
+        });
     }
 
-    /** KICC certifies a provider's service/price change (govt certification). */
+    /** KICC certifies a provider's service/price change (govt certification) — transactional + audited. */
     public function approveService(string $table, int $id)
     {
         $this->authorizeKicc();
         $allowed = ['flight_inventory', 'hotel_rooms', 'airport_transfers', 'flights'];
-        abort_unless(in_array($table, $allowed), 404);
+        abort_unless(in_array($table, $allowed, true), 404);
 
-        $update = ['is_active' => 1, 'updated_at' => now()];
-        if ($table === 'flights') $update = ['status' => 'active', 'updated_at' => now()];
-        \Illuminate\Support\Facades\DB::table($table)->where('id', $id)->update($update);
+        return DB::transaction(function () use ($table, $id) {
+            $update = ['is_active' => 1, 'updated_at' => now()];
+            if ($table === 'flights') {
+                $update = ['status' => 'active', 'updated_at' => now()];
+            }
+            $rows = DB::table($table)->where('id', $id)->update($update);
+            abort_if($rows === 0, 422, 'Service not found or already approved.');
 
-        \App\Services\N8nService::fire('provider_service_approved', ['table' => $table, 'id' => $id]);
-        app(\App\Services\CacheSyncService::class)->kicc();
-        return redirect()->route('kicc.admin', ['tab' => 'providers'])->with('success', 'Service certified and now live.');
+            AuditLogger::log(Auth::id(), 'provider.approved', $table, $id, [
+                'approver_ip' => request()->ip(),
+            ]);
+
+            N8nService::fire('provider_service_approved', ['table' => $table, 'id' => $id]);
+            app(\App\Services\CacheSyncService::class)->kicc();
+            return redirect()->route('kicc.admin', ['tab' => 'providers'])->with('success', 'Service certified and now live.');
+        });
+    }
+
+    public function denyService(string $table, int $id, Request $request)
+    {
+        $this->authorizeKicc();
+        $allowed = ['flight_inventory', 'hotel_rooms', 'airport_transfers', 'flights'];
+        abort_unless(in_array($table, $allowed, true), 404);
+
+        $data = $request->validate([
+            'reason' => 'required|string|max:500',
+        ]);
+
+        return DB::transaction(function () use ($table, $id, $data) {
+            $update = ['is_active' => 0, 'denial_reason' => $data['reason'], 'updated_at' => now()];
+            if ($table === 'flights') {
+                $update = ['status' => 'denied', 'denial_reason' => $data['reason'], 'updated_at' => now()];
+            }
+            DB::table($table)->where('id', $id)->update($update);
+
+            AuditLogger::log(Auth::id(), 'service.denied', null, $id, [
+                'table' => $table,
+                'reason' => $data['reason'],
+            ]);
+            return redirect()->route('kicc.admin', ['tab' => 'providers'])
+                ->with('success', 'Service denied with reason recorded.');
+        });
     }
 
     /** Run an Artisan command from the admin panel (superadmin only). */

@@ -5,6 +5,7 @@ namespace App\Http\Controllers\Web;
 use App\Http\Controllers\Controller;
 use App\Models\User;
 use App\Models\PhoneVerificationCode;
+use App\Services\AuditLogger;
 use App\Services\SMSService;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
@@ -176,7 +177,8 @@ class AuthController extends Controller
             'county_id' => 'nullable|integer|exists:counties,id',
         ]);
 
-        $key = 'login:' . $request->ip();
+        $login = $data['login'] ?? '';
+        $key = 'login:' . $request->ip() . ':' . strtolower($login);
         if (RateLimiter::tooManyAttempts($key, 5)) {
             return back()->withErrors(['login' => 'Too many attempts. Try again in ' . RateLimiter::availableIn($key) . ' seconds.']);
         }
@@ -186,8 +188,8 @@ class AuthController extends Controller
         if (Auth::attempt([$field => $data['login'], 'password' => $data['password'], 'status' => 'active'], $request->boolean('remember'))) {
             $request->session()->regenerate();
             RateLimiter::clear($key);
-
             $user = Auth::user();
+            AuditLogger::log($user->id, 'auth.login_success', 'User', $user->id, ['ip' => $request->ip(), 'field' => $field]);
             $adminType = $request->input('admin_type');
 
             // Role-based redirect
@@ -212,6 +214,7 @@ class AuthController extends Controller
         }
 
         RateLimiter::hit($key, 120);
+        AuditLogger::log(null, 'auth.login_failed', 'User', null, ['login_attempt' => $login, 'ip' => $request->ip(), 'field' => $field]);
         return back()->withErrors(['login' => 'Invalid credentials.'])->onlyInput('login');
     }
 

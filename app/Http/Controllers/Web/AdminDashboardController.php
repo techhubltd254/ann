@@ -13,6 +13,10 @@ use App\Models\Payment\PaymentIntent;
 use App\Models\Subscription\CountySubscriber;
 use App\Models\User;
 use App\Models\Venue;
+use App\Services\AuditLogger;
+use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\DB;
 
 class AdminDashboardController extends Controller
 {
@@ -57,24 +61,53 @@ class AdminDashboardController extends Controller
         ));
     }
 
-    public function deleteProduct($id)
+    public function deleteProduct($id, Request $request)
     {
-        Product::findOrFail($id)->delete();
-        app(\App\Services\CacheSyncService::class)->kicc();
-        return redirect()->route('dashboard.admin', ['tab' => 'products'])->with('success', 'Product deleted');
+        return DB::transaction(function () use ($id, $request) {
+            Product::findOrFail($id)->delete();
+            AuditLogger::log(Auth::id(), 'product.soft_delete', Product::class, $id, ['ip' => $request->ip()]);
+            app(\App\Services\CacheSyncService::class)->kicc();
+            return redirect()->route('dashboard.admin', ['tab' => 'products'])->with('success', 'Product sent to trash (recoverable).');
+        });
     }
 
-    public function deleteUser($id)
+    public function deleteUser($id, Request $request)
     {
-        User::findOrFail($id)->delete();
-        app(\App\Services\CacheSyncService::class)->kicc();
-        return redirect()->route('dashboard.admin', ['tab' => 'users'])->with('success', 'User deleted');
+        return DB::transaction(function () use ($id, $request) {
+            User::findOrFail($id)->delete();
+            AuditLogger::log(Auth::id(), 'user.soft_delete', User::class, $id, ['ip' => $request->ip()]);
+            app(\App\Services\CacheSyncService::class)->kicc();
+            return redirect()->route('dashboard.admin', ['tab' => 'users'])->with('success', 'User sent to trash (recoverable).');
+        });
     }
 
-    public function deleteOrder($id)
+    public function deleteOrder($id, Request $request)
     {
-        Order::findOrFail($id)->delete();
-        app(\App\Services\CacheSyncService::class)->kicc();
-        return redirect()->route('dashboard.admin', ['tab' => 'orders'])->with('success', 'Order deleted');
+        return DB::transaction(function () use ($id, $request) {
+            Order::findOrFail($id)->delete();
+            AuditLogger::log(Auth::id(), 'order.soft_delete', Order::class, $id, ['ip' => $request->ip()]);
+            app(\App\Services\CacheSyncService::class)->kicc();
+            return redirect()->route('dashboard.admin', ['tab' => 'orders'])->with('success', 'Order sent to trash (recoverable).');
+        });
+    }
+
+    public function restoreProduct($id, Request $request)
+    {
+        return DB::transaction(function () use ($id) {
+            $product = Product::onlyTrashed()->findOrFail($id);
+            $product->restore();
+            AuditLogger::log(Auth::id(), 'product.restore', Product::class, $id, []);
+            return back()->with('success', 'Product restored.');
+        });
+    }
+
+    public function restoreUser($id, Request $request)
+    {
+        return DB::transaction(function () use ($id) {
+            $user = User::onlyTrashed()->findOrFail($id);
+            $user->restore();
+            AuditLogger::log(Auth::id(), 'user.restore', User::class, $id, []);
+            return back()->with('success', 'User restored.');
+        });
     }
 }

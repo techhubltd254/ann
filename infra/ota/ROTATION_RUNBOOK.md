@@ -8,7 +8,7 @@
 | Service | Where to rotate | Then update |
 |---|---|---|
 | **GitHub PAT** | github.com → Settings → Developer settings → PATs → revoke `ghp_WO2G…`, create new fine-grained | CI secrets, local git remotes |
-| **TiDB password** | tidbcloud.com → cluster → Security → reset password for `28dbcDfwh5hEbSc.root` | droplet `/opt/kicc-laravel/.env` (DB_PASSWORD), engine systemd `Environment=`, then `systemctl restart kicc-engine` + queue |
+| **TiDB password** | tidbcloud.com → cluster → Security → reset password for `REDACTED.root` | droplet `/opt/kicc-laravel/.env` (DB_PASSWORD), engine systemd `Environment=`, then `systemctl restart kicc-engine` + queue |
 | **Cloudflare API** | dash.cloudflare.com → My Profile → API Tokens → roll `cfat_uk7…` + `cfat_m35r…` | `deploy-worker.sh` usage, platform `.env` CLOUDFLARE_API_TOKEN |
 | **Cloudflare R2 keys** | R2 → Manage API tokens → rotate both keypairs | platform `.env` AWS_* |
 | **DigitalOcean** | cloud.digitalocean.com → API → regenerate `dop_v1_…` | any DO scripts |

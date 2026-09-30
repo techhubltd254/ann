@@ -8,13 +8,29 @@ use App\Models\County\FinancialConfig;
 use App\Models\County\WalletTransaction;
 use App\Models\Subscription\CountyBulkSlotAllocation;
 use App\Models\Subscription\CountySubscriber;
+use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 
 class DashboardV2Controller extends Controller
 {
-    public function county()
+    public function county(Request $request)
     {
-        $county = County::find(Auth::user()?->county_id ?? 1) ?? County::first();
+        $user = Auth::user();
+        abort_unless($user, 401);
+
+        $countyId = $user->county_id;
+
+        if (!$countyId) {
+            if ($user->hasRole('kicc_admin') && $request->filled('county_id')) {
+                $countyId = (int) $request->county_id;
+            } else {
+                abort(403, 'Your account has no county assigned. Contact the KICC mother admin.');
+            }
+        }
+
+        $county = County::find($countyId);
+        abort_unless($county, 404, 'County not found.');
+
         $config = FinancialConfig::firstOrCreate(['county_id' => $county->id]);
         $allocation = CountyBulkSlotAllocation::where('county_id', $county->id)->paginate(50);
         $subscribers = CountySubscriber::with('user', 'plan')->where('county_id', $county->id)->paginate(50);

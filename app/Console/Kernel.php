@@ -17,6 +17,27 @@ class Kernel extends ConsoleKernel
         $schedule->command('agentic:loop --background')->everyFiveMinutes();
         $schedule->command('queue:restart')->hourly();
         $schedule->command('media:transcode-webm')->hourly();
+
+        // ── Financial hygiene (patch 2026-09-28) ──
+        $schedule->command('kicc:escrow-auto-release')
+                 ->everyFiveMinutes()
+                 ->withoutOverlapping();
+
+        $schedule->command('kicc:mpesa-timeout-scrub')
+                 ->everyTenMinutes()
+                 ->withoutOverlapping();
+
+        $schedule->command('kicc:replay-dlq')
+                 ->hourly()
+                 ->withoutOverlapping();
+
+        $schedule->command('kicc:pool-close-monthly')
+                 ->monthlyOn(1, '02:00')
+                 ->withoutOverlapping();
+
+        $schedule->command('kicc:warmup-cache')
+                 ->everyFifteenMinutes()
+                 ->withoutOverlapping();
     }
 
     protected function commands(): void

@@ -93,3 +93,9 @@ integrations-service/run/artifacts/
 # pipeline bus registry (generated from pipeline_registrations on deploy)
 pipelines.json
 integration-map.json
+
+# integration service runtime offsets (per-group consumer state)
+integrations-service/run/offsets/
+
+# deliverable/patche archives kept out of git history
+*.zip

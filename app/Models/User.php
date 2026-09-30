@@ -43,7 +43,7 @@ use Spatie\Permission\Traits\HasRoles;
 #[Hidden(['password', 'remember_token', 'mfa_secret'])]
 class User extends Authenticatable implements FilamentUser
 {
-    use HasRoles;
+    use HasRoles, SoftDeletes;
     /** @use HasFactory<UserFactory> */
     use HasApiTokens, HasFactory, HasUuids, Notifiable;
 

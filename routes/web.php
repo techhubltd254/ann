@@ -170,6 +170,8 @@ Route::middleware('auth')->group(function () {
     Route::post('/dashboard/admin/delete-product/{id}', [AdminDashboardController::class, 'deleteProduct'])->name('admin.delete-product')->middleware('admin:kicc');
     Route::post('/dashboard/admin/delete-user/{id}', [AdminDashboardController::class, 'deleteUser'])->name('admin.delete-user')->middleware('admin:kicc');
     Route::post('/dashboard/admin/delete-order/{id}', [AdminDashboardController::class, 'deleteOrder'])->name('admin.delete-order')->middleware('admin:kicc');
+    Route::post('/dashboard/admin/restore-product/{id}', [AdminDashboardController::class, 'restoreProduct'])->name('admin.restore-product')->middleware('admin:kicc');
+    Route::post('/dashboard/admin/restore-user/{id}', [AdminDashboardController::class, 'restoreUser'])->name('admin.restore-user')->middleware('admin:kicc');
 
     // ═══ FOUR-TIER EXHIBITOR PORTALS ═══
     // KICC Overall Admin — control everything
@@ -189,6 +191,7 @@ Route::post('/national-admin/agencies', [\App\Http\Controllers\Web\NationalPorta
 Route::post('/national-admin/agencies/{agency}', [\App\Http\Controllers\Web\NationalPortalController::class, 'updateAgency'])->name('national.admin.agency.update')->middleware('admin:national');
 Route::get('/national-admin/agencies/{agency}/delete', [\App\Http\Controllers\Web\NationalPortalController::class, 'deleteAgency'])->name('national.admin.agency.delete')->middleware('admin:national');
     // County Exhibitor Portal (county = a website by itself)
+    Route::middleware('county.scope')->group(function () {
     Route::get('/county-admin', [\App\Http\Controllers\Web\CountyPortalController::class, 'index'])->name('county.admin');
     Route::get('/county-admin/exhibitor', [\App\Http\Controllers\Web\CountyPortalController::class, 'exhibitor'])->name('county.admin.exhibitor');
 
@@ -228,6 +231,7 @@ Route::get('/national-admin/agencies/{agency}/delete', [\App\Http\Controllers\We
     Route::post('/county-admin/{slug}/pro/entity/{entityId}/delete', [\App\Http\Controllers\Web\CountyAdminController::class, 'deleteEntity'])->name('county.admin.entity.delete');
     Route::post('/county-admin/{slug}/pro/institutions', [\App\Http\Controllers\Web\CountyAdminController::class, 'storeInstitution'])->name('county.admin.institution.store');
     Route::post('/county-admin/{slug}/pro/institutions/{institutionId}/delete', [\App\Http\Controllers\Web\CountyAdminController::class, 'deleteInstitution'])->name('county.admin.institution.delete');
+    }); // county.scope
 
     // ═══ INSTITUTION ADMIN PORTAL (strict per-institution access) ═══
     Route::get('/institution-admin/{institution}', [\App\Http\Controllers\Web\InstitutionAdminController::class, 'dashboard'])->name('institution.admin');
@@ -259,6 +263,7 @@ Route::get('/national-admin/agencies/{agency}/delete', [\App\Http\Controllers\We
 
     // KICC approvals
     Route::post('/kicc-admin/approve/{table}/{id}', [\App\Http\Controllers\Web\KiccAdminController::class, 'approveService'])->name('kicc.admin.approve');
+    Route::post('/kicc-admin/deny/{table}/{id}', [\App\Http\Controllers\Web\KiccAdminController::class, 'denyService'])->name('kicc.admin.deny');
 Route::post('/kicc-admin/pipelines/store', [\App\Http\Controllers\Web\KiccAdminController::class, 'storePipeline'])->name('kicc.admin.pipeline.store');
 Route::post('/kicc-admin/licence/upload', [\App\Http\Controllers\Web\PipelineLicenceController::class, 'upload'])->name('kicc.admin.licence.upload');
 Route::post('/kicc-admin/licence/{id}/approve', [\App\Http\Controllers\Web\PipelineLicenceController::class, 'approve'])->name('kicc.admin.licence.approve');

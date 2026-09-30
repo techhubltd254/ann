@@ -21,7 +21,7 @@ $apply = in_array('--apply', $argv ?? [], true);
 
 $pdo = new PDO(
     'mysql:host=gateway01.eu-central-1.prod.aws.tidbcloud.com;port=4000;dbname=kicc;charset=utf8mb4',
-    '28dbcDfwh5hEbSc.root', 'D8trCZaYhqZWo5Vq',
+    'REDACTED', 'REDACTED',
     [PDO::ATTR_ERRMODE => PDO::ERRMODE_EXCEPTION, PDO::MYSQL_ATTR_SSL_CA => '/etc/ssl/certs/ca-certificates.crt']
 );
 

@@ -33,6 +33,7 @@ return Application::configure(basePath: dirname(__DIR__))
             \App\Http\Middleware\CachePublicResponse::class,
         ]);
         $middleware->web(append: [
+            \App\Http\Middleware\AppendAuditContext::class,
             \App\Http\Middleware\HandleInertiaRequests::class,
             'throttle:60,1',
         ]);
@@ -47,6 +48,7 @@ return Application::configure(basePath: dirname(__DIR__))
         ]);
         $middleware->alias([
             'admin' => \App\Http\Middleware\AdminMiddleware::class,
+            'county.scope' => \App\Http\Middleware\EnsureCountyScope::class,
             'security.headers' => \App\Http\Middleware\SecurityHeaders::class,
             'throttle.api' => \App\Http\Middleware\ThrottleApi::class,
             'ip.whitelist' => \App\Http\Middleware\IpWhitelistAdmin::class,
