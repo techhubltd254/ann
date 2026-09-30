@@ -228,3 +228,14 @@ Route::middleware('auth:sanctum')->prefix('pipeline')->group(function () {
 // Earn-bridge called by the Node bus (verified by integration secret, not Sanctum)
 Route::post('/pipeline/earn-settled', [\App\Http\Controllers\Api\PipelineController::class, 'earnSettled'])
     ->name('api.pipeline.earn-settled');
+
+// ═══ Engine Write Contract ════════════════════════════════════════════════
+// The Kotlin admin engine writes to the platform through these endpoints.
+// Until the engine is updated to call these, it writes TiDB directly
+// (LegacyColumnMirror bridges snake_case/camelCase conventions).
+// Future: engine must NOT write TiDB directly — use these contracts instead.
+Route::prefix('engine/write')->middleware('auth:sanctum')->group(function () {
+    Route::post('/county-entity', [\App\Http\Controllers\Api\EngineWriteController::class, 'writeCountyEntity']);
+    Route::post('/institution', [\App\Http\Controllers\Api\EngineWriteController::class, 'writeInstitution']);
+    Route::post('/venue', [\App\Http\Controllers\Api\EngineWriteController::class, 'writeVenue']);
+});

@@ -2,7 +2,7 @@
 
 namespace Tests\Feature;
 
-use Tests\TestCase;
+use PHPUnit\Framework\TestCase;
 
 /**
  * @group architecture
@@ -10,9 +10,20 @@ use Tests\TestCase;
  * Architecture regression tests — enforced module boundaries.
  * These are the safety net: a failing test here means a developer
  * bypassed a module boundary or introduced a naming collision.
+ *
+ * Extends PHPUnit TestCase (not Laravel) — no DB needed, file-scanning only.
  */
 class ArchitectureTest extends TestCase
 {
+    private static function basePath(string $path = ''): string
+    {
+        return dirname(__DIR__, 2) . ($path ? '/' . $path : '');
+    }
+
+    private static function appPath(string $path = ''): string
+    {
+        return self::basePath('app' . ($path ? '/' . $path : ''));
+    }
     /**
      * No controller may call DB::table() directly. All data access
      * must go through Eloquent models or a dedicated repository.
@@ -23,7 +34,7 @@ class ArchitectureTest extends TestCase
      */
     public function test_no_controller_uses_db_table_directly(): void
     {
-        $controllers = glob(app_path('Http/Controllers/**/*.php'));
+        $controllers = glob(self::appPath('Http/Controllers/**/*.php'));
         $violations = [];
         $knownExceptions = [
             // Webhook handlers — third-party payload validation
@@ -56,7 +67,7 @@ class ArchitectureTest extends TestCase
             $rawCount = count($rawMatches[0] ?? []);
 
             if ($count > 0 || $rawCount > 0) {
-                $violations[] = str_replace(app_path() . '/', '', $file)
+                $violations[] = str_replace(self::appPath() . '/', '', $file)
                     . " DB::table:{$count} DB::raw:{$rawCount}";
             }
         }
@@ -74,13 +85,13 @@ class ArchitectureTest extends TestCase
      */
     public function test_no_duplicate_service_class_names(): void
     {
-        $serviceFiles = glob(app_path('Services/**/*.php'));
+        $serviceFiles = glob(self::appPath('Services/**/*.php'));
         $names = [];
 
         foreach ($serviceFiles as $file) {
             $short = pathinfo($file, PATHINFO_FILENAME);
             if (! isset($names[$short])) $names[$short] = [];
-            $names[$short][] = str_replace(app_path() . '/', '', $file);
+            $names[$short][] = str_replace(self::appPath() . '/', '', $file);
         }
 
         $duplicates = [];
@@ -112,7 +123,7 @@ class ArchitectureTest extends TestCase
     public function test_pipeline_resolver_is_deleted(): void
     {
         $this->assertFileDoesNotExist(
-            app_path('Services/PipelineResolver.php'),
+            self::appPath('Services/PipelineResolver.php'),
             'PipelineResolver is stale. Use PipelineRouter instead.'
         );
     }
@@ -125,10 +136,51 @@ class ArchitectureTest extends TestCase
     public function test_journal_service_exists(): void
     {
         $this->assertFileExists(
-            app_path('Services/JournalService.php'),
+            self::appPath('Services/JournalService.php'),
             'JournalService (static journal) must exist.'
         );
-        $content = file_get_contents(app_path('Services/JournalService.php'));
+        $content = file_get_contents(self::appPath('Services/JournalService.php'));
         $this->assertStringContainsString('class JournalService', $content);
+    }
+
+    /**
+     * Media module must exist with its contract and provider.
+     */
+    public function test_media_module_is_registered(): void
+    {
+        $this->assertFileExists(
+            self::appPath('Modules/Media/Contracts/MediaServiceContract.php'),
+            'MediaServiceContract must exist.'
+        );
+        $this->assertFileExists(
+            self::appPath('Modules/Media/MediaServiceProvider.php'),
+            'MediaServiceProvider must exist.'
+        );
+    }
+
+    /**
+     * Filament admin panel must NOT exist (retired — replaced by Kotlin engine).
+     */
+    public function test_filament_is_removed(): void
+    {
+        $this->assertDirectoryDoesNotExist(
+            self::appPath('Filament'),
+            'Filament admin panel is retired. Use the Kotlin engine admin app.'
+        );
+        $this->assertDirectoryDoesNotExist(
+            self::appPath('Providers/Filament'),
+            'Filament AdminPanelProvider must not exist.'
+        );
+    }
+
+    /**
+     * Engine write contract must exist (the API the Kotlin engine will call).
+     */
+    public function test_engine_write_contract_exists(): void
+    {
+        $this->assertFileExists(
+            self::appPath('Http/Controllers/Api/EngineWriteController.php'),
+            'EngineWriteController must exist — the engine-to-Laravel write contract.'
+        );
     }
 }

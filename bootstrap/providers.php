@@ -2,7 +2,7 @@
 
 return [
     App\Providers\AppServiceProvider::class,
-    App\Providers\Filament\AdminPanelProvider::class,
+    App\Modules\Media\MediaServiceProvider::class,
     App\Providers\HorizonServiceProvider::class,
     App\Providers\ShardServiceProvider::class,
     App\Providers\LivePlatformServiceProvider::class,

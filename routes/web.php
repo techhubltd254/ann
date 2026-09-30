@@ -273,7 +273,6 @@ Route::post('/kicc-admin/pipeline/{code}/config', [\App\Http\Controllers\Web\Pip
 // ── Public pipeline sector pages (bypass Authenticate middleware) ──
 // REMOVED — pipeline data is proprietary and must be admin-only.
 // Pipeline management available at /kicc-admin (Mother Admin) and
-// /filament-admin (Automation Console).
 
     // ─── Media Pipeline (admin-controlled; nothing hardcoded) ───
     Route::prefix('media')->group(function () {
