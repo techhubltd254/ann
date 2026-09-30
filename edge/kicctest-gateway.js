@@ -13,7 +13,7 @@
 const JSON_CT = { "content-type": "application/json" };
 // Bump on every deploy that changes origin output — instantly invalidates all
 // edge page-cache entries (they key on this version).
-const CACHE_VERSION = "v37";
+const CACHE_VERSION = "v38";
 
 // Purge must cover the live cache version (and the previous one, in case a
 // deploy is mid-flight) — not a stale hardcoded list.
@@ -101,7 +101,6 @@ async function handle(request, env, ctx) {
         const res = await proxy(request, upstream, url, { cache: false, scheme: env.ORIGIN_SCHEME ?? "http" });
         if (res.ok && !(res.headers.getSetCookie?.().length)) {
           const tagged = new Response(res.body, res);
-          // Optimized images are immutable (keyed by url+width+quality) — cache a year
           const isImage = url.pathname.startsWith("/api/optimize-image");
           tagged.headers.set(
             "Cache-Control",
@@ -109,6 +108,9 @@ async function handle(request, env, ctx) {
               ? "public, max-age=31536000, immutable"
               : "public, s-maxage=60, stale-while-revalidate=300"
           );
+          const apiTag = url.pathname.split("/").slice(1, 3).join(":") || "api";
+          tagged.headers.set("Cache-Tag", `api:${apiTag}`);
+          tagged.headers.set("X-CDN-Cache", isImage ? "MISS" : "MISS");
           ctx.waitUntil(caches.default.put(apiKey, tagged.clone()));
           return tagged;
         }
@@ -121,13 +123,25 @@ async function handle(request, env, ctx) {
     // ---- Media DERIVATIVES from R2 (transcode outputs only). Everything else
     // under /media/* belongs to Laravel's media library — do not shadow it.
     if (url.pathname.startsWith("/media/derivatives/")) {
-      const obj = await env.MEDIA_BUCKET.get(url.pathname.slice(7));
+      const r2Key = url.pathname.slice(7);
+      // 1. Check Cache API first (edge hit = zero origin/R2 traffic)
+      const cacheKey = `r2:deriv:${r2Key}::${CACHE_VERSION}`;
+      let cachedObj = await edgeCacheMatch("deriv", cacheKey);
+      if (cachedObj) {
+        return new Response(cachedObj.body, mergeHeaders(cachedObj, { "X-CDN-Cache": "HIT", "Cache-Tag": `media:deriv:${hashKey(r2Key)}` }));
+      }
+      // 2. Cache miss — fetch from R2
+      const obj = await env.MEDIA_BUCKET.get(r2Key);
       if (!obj) return new Response("Not found", { status: 404 });
       const headers = new Headers();
       obj.writeHttpMetadata(headers);
       headers.set("Cache-Control", "public, s-maxage=86400, stale-while-revalidate=604800, immutable");
       headers.set("CDN-Cache-Control", "max-age=86400");
-      return new Response(obj.body, { headers });
+      headers.set("X-CDN-Cache", "MISS");
+      headers.set("Cache-Tag", `media:deriv:${hashKey(r2Key)}`);
+      const res = new Response(obj.body, { headers });
+      ctx.waitUntil(edgeCachePut("deriv", cacheKey, res, ctx));
+      return res;
     }
 
     // ---- VIDEO assets from R2 — serve directly from edge, zero VPS load ----
@@ -154,9 +168,22 @@ async function handle(request, env, ctx) {
     }
 
     if (url.pathname.startsWith("/media/video/")) {
-      // Strip /media/video/ to get the R2 key (e.g. storage/institutions/...)
       let r2Key = url.pathname.replace("/media/video/", "storage/");
-      // Try exact match first; fall back to prefixed lookup for multi-tenant paths
+      const rangeHeader = request.headers.get("Range");
+      // Cache key includes range so partial fetches don't collide with full fetches
+      const cacheSuffix = rangeHeader ? `::range:${rangeHeader}` : "";
+      const cacheKey = `r2:video:${r2Key}${cacheSuffix}::${CACHE_VERSION}`;
+
+      // 1. Check Cache API first
+      let cachedVideo = await edgeCacheMatch("video", cacheKey);
+      if (cachedVideo) {
+        const ch = new Headers(cachedVideo.headers);
+        ch.set("X-CDN-Cache", "HIT");
+        ch.set("Cache-Tag", `media:video:${hashKey(r2Key)}`);
+        return new Response(cachedVideo.body, { status: cachedVideo.status, headers: ch });
+      }
+
+      // 2. Cache miss — fetch from R2
       let obj = await env.MEDIA_BUCKET.get(r2Key);
       if (!obj && r2Key.startsWith("storage/")) {
         obj = await env.MEDIA_BUCKET.get(r2Key.slice(8));
@@ -171,11 +198,14 @@ async function handle(request, env, ctx) {
       headers.set("Access-Control-Allow-Headers", "Content-Type, Range, Origin");
       headers.set("Access-Control-Expose-Headers", "Content-Type, Content-Length, Content-Range, Accept-Ranges");
       headers.set("Accept-Ranges", "bytes");
+      headers.set("X-CDN-Cache", "MISS");
+      headers.set("Cache-Tag", `media:video:${hashKey(r2Key)}`);
       // Handle byte-range requests for video seeking/HLS
-      const rangeHeader = request.headers.get("Range");
+      let status = 200;
       if (rangeHeader) {
         const range = parseRange(rangeHeader);
         if (range) {
+          status = 206;
           const end = range.length !== undefined
             ? range.offset + range.length - 1
             : (range.suffix !== undefined
@@ -184,10 +214,34 @@ async function handle(request, env, ctx) {
           const start = range.offset ?? (range.suffix !== undefined ? obj.size - range.suffix : 0);
           headers.set("Content-Range", `bytes ${start}-${end}/${obj.size}`);
           headers.set("Content-Length", String(end - start + 1));
-          return new Response(obj.body, { status: 206, headers });
         }
       }
-      return new Response(obj.body, { headers });
+      const res = new Response(obj.body, { status, headers });
+      // Only cache full responses (200); range responses are ephemeral
+      if (status === 200) ctx.waitUntil(edgeCachePut("video", cacheKey, res, ctx));
+      return res;
+    }
+
+    // ---- Immutable static assets (JS/CSS/fonts/images — 1-year, versioned by CACHE_VERSION) ----
+    const STATIC_PREFIXES = ["/build/", "/assets/", "/js/", "/css/", "/fonts/", "/images/"];
+    if (request.method === "GET" && STATIC_PREFIXES.some((p) => url.pathname.startsWith(p))) {
+      const assetKey = new Request(`${url.origin}${url.pathname}${url.search}::static::${CACHE_VERSION}`);
+      const assetCached = await caches.default.match(assetKey);
+      if (assetCached) {
+        const h = mergeHeaders(assetCached, { "X-CDN-Cache": "HIT", "Cache-Tag": `static:${hashKey(url.pathname)}` });
+        return new Response(assetCached.body, { status: assetCached.status, headers: h });
+      }
+      const assetRes = await proxy(request, env.ORIGIN_HOST, url, { cache: true, scheme: env.ORIGIN_SCHEME ?? "http" });
+      if (assetRes.ok) {
+        const tagged = new Response(assetRes.body, assetRes);
+        tagged.headers.set("Cache-Control", "public, max-age=31536000, immutable");
+        tagged.headers.set("CDN-Cache-Control", "max-age=31536000");
+        tagged.headers.set("Cache-Tag", `static:${hashKey(url.pathname)}`);
+        tagged.headers.set("X-CDN-Cache", "MISS");
+        ctx.waitUntil(caches.default.put(assetKey, tagged.clone()));
+        return tagged;
+      }
+      return assetRes;
     }
 
     // ---- Admin SPA (React, separate from Laravel) — proxy to R2 CDN ----
@@ -213,12 +267,13 @@ async function handle(request, env, ctx) {
     const res = await proxy(request, env.ORIGIN_HOST, url, { cache: true, scheme: env.ORIGIN_SCHEME ?? "http" });
     if (res.ok && cacheable && !(res.headers.getSetCookie?.().length)) {
       const tagged = new Response(res.body, res);
-      // Content pages are cacheable for 1h at the edge (SWR 1 day) — the publish
-      // webhook purges by path on real edits, so freshness is event-driven, not TTL-bound.
+      const pageTagPath = url.pathname === "/" ? "home" : url.pathname.replace(/^\/+|\/+$/g, "").replace(/\//g, ":");
       tagged.headers.set(
         "Cache-Control",
         "public, s-maxage=3600, stale-while-revalidate=86400"
       );
+      tagged.headers.set("Cache-Tag", `page:${pageTagPath}`);
+      tagged.headers.set("X-CDN-Cache", "MISS");
       ctx.waitUntil(caches.default.put(cacheKey, tagged.clone()));
       return tagged;
     }
@@ -233,6 +288,13 @@ async function handle(request, env, ctx) {
 
 function json(body, status = 200) {
   return new Response(JSON.stringify(body), { status, headers: JSON_CT });
+}
+
+/** Merge headers from a source response with extra overrides. */
+function mergeHeaders(response, extra) {
+  const h = new Headers(response.headers);
+  for (const [k, v] of Object.entries(extra)) h.set(k, v);
+  return h;
 }
 
 /**
@@ -337,6 +399,14 @@ async function verifyHmac(request, secret) {
 }
 
 // Parse an HTTP Range header into an R2 range option object
+/** Extract a short, stable hash from a string for cache-tag condensation. */
+function hashKey(input) {
+  let h = 0;
+  for (let i = 0; i < input.length; i++) { h = (Math.imul(31, h) + input.charCodeAt(i)) | 0; }
+  return (h >>> 0).toString(36);
+}
+
+// Parse an HTTP Range header into an R2 range option object
 function parseRange(rangeHeader) {
   if (!rangeHeader) return null;
   const m = rangeHeader.match(/bytes=(\d*)-(\d*)/);
@@ -349,4 +419,14 @@ function parseRange(rangeHeader) {
   }
   if (start !== undefined) return { offset: start };
   return { suffix: end };
+}
+
+// ---- Cache API helpers ----
+async function edgeCacheMatch(prefix, key) {
+  const req = new Request(`https://edge-cache/${prefix}/${key}`);
+  return caches.default.match(req);
+}
+async function edgeCachePut(prefix, key, response, ctx) {
+  const req = new Request(`https://edge-cache/${prefix}/${key}`);
+  ctx.waitUntil(caches.default.put(req, response.clone()));
 }
