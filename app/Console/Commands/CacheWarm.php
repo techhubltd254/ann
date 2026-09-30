@@ -3,7 +3,7 @@
 namespace App\Console\Commands;
 
 use App\Services\CacheService;
-use App\Services\PipelineResolver;
+use App\Services\PipelineRouter;
 use Illuminate\Console\Command;
 
 /**
@@ -37,7 +37,7 @@ class CacheWarm extends Command
             ->get(['id', 'name', 'slug', 'sector', 'pipeline_code']);
 
         // Pipeline bus registry (cold — 24h)
-        $keys['pipeline_bus_registry'] = fn () => app(PipelineResolver::class)->mesh('A1');
+        $keys['pipeline_bus_registry'] = fn () => app(PipelineRouter::class)->mesh('A1');
 
         // Pool balance (hot — 30s)
         $keys['pool_balance'] = fn () => \App\Models\Pool\Pool::where('scope', 'global')

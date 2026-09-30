@@ -3,7 +3,7 @@
 namespace App\Http\Controllers\Web;
 
 use App\Http\Controllers\Controller;
-use App\Services\PipelineResolver;
+use App\Services\PipelineRouter;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Str;
 
@@ -29,7 +29,7 @@ class PipelineController extends Controller
         return view('pipelines.index', compact('sectors', 'totals'));
     }
 
-    public function sector(string $sector, PipelineResolver $resolver)
+    public function sector(string $sector, PipelineRouter $resolver)
     {
         $pipelines = DB::table('pipeline_registrations')
             ->where('sector', $sector)
@@ -53,7 +53,7 @@ class PipelineController extends Controller
         ));
     }
 
-    public function show(string $code, PipelineResolver $resolver)
+    public function show(string $code, PipelineRouter $resolver)
     {
         $pipeline = DB::table('pipeline_registrations')->where('code', $code)->first();
         if (! $pipeline) abort(404);

@@ -17,7 +17,7 @@ use App\Models\Pipeline\DynamicPipeline;
 use App\Models\User;
 use App\Services\AuditLogger;
 use App\Services\IntegrationClient;
-use App\Services\LedgerService;
+use App\Services\JournalService;
 use App\Services\MediaLibraryService;
 use App\Services\N8nService;
 use App\Services\PoolEngine;
@@ -401,7 +401,7 @@ class KiccAdminController extends Controller
             ]);
 
             // Double-entry ledger: debit escrow_liability, credit seller_payable
-            LedgerService::post([
+            JournalService::post([
                 'journal_ref' => 'escrow-release-' . $escrow->escrow_id,
                 'memo'        => 'Escrow released to seller',
                 'entries'     => [

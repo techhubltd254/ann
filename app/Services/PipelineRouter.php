@@ -224,6 +224,32 @@ class PipelineRouter
         return self::SECTOR_PIPELINES;
     }
 
+    /** Resolve pipeline for a category (compatibility adapter for PipelineResolver). */
+    public function forCategory(?ProductCategory $category): string
+    {
+        if (! $category) return 'A1';
+        $sector = $category->sector ?? $this->inferSector($category);
+        return self::SECTOR_PIPELINES[$sector] ?? 'A1';
+    }
+
+    /** Resolve pipeline for a sector string (compatibility adapter). */
+    public function forSector(string $sector): string
+    {
+        return self::SECTOR_PIPELINES[$sector] ?? 'A1';
+    }
+
+    /** Get active pipeline activations for a county. */
+    public function forCounty(int $countyId): array
+    {
+        return Cache::remember("pipeline_router_county_{$countyId}", 3600, fn () =>
+            DB::table('pipeline_activations')
+                ->where('county_id', $countyId)
+                ->where('is_active', true)
+                ->pluck('pipeline_code')
+                ->toArray()
+        );
+    }
+
     /** Resolve the pipeline a search query targets (Google SEO intent routing). */
     public function fromSearchQuery(string $query): ?string
     {

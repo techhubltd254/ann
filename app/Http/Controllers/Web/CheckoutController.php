@@ -135,7 +135,7 @@ class CheckoutController extends Controller
                 ?? \App\Models\User::where('email', 'guest@kicc.go.ke')->value('id');
             $bySeller = $order->items->groupBy(fn ($item) => $item->variant?->product?->user_id);
 
-            $resolver = app(\App\Services\PipelineResolver::class);
+            $resolver = app(\App\Services\PipelineRouter::class);
 
             foreach ($bySeller as $sellerId => $items) {
                 if (!$sellerId || !$buyerId) continue;

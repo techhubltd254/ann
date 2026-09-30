@@ -2,7 +2,7 @@
 
 namespace App\Console\Commands;
 
-use App\Services\LedgerService;
+use App\Services\JournalService;
 use App\Services\PoolEngine;
 use Illuminate\Console\Command;
 
@@ -21,7 +21,7 @@ class PoolCloseMonthly extends Command
             ->value('distributable');
 
         // Single balanced ledger journal summarizing the close.
-        LedgerService::post([
+        JournalService::post([
             'journal_ref' => 'pool-close-' . $period,
             'memo'        => 'Monthly pool close',
             'source'      => 'scheduler',

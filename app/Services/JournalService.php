@@ -6,12 +6,11 @@ use Illuminate\Support\Facades\DB;
 use RuntimeException;
 
 /**
- * Double-entry ledger.
- *   - For every journal, sum(debit) must equal sum(credit).
- *   - Journals are append-only; they cannot be edited or deleted.
- *   - One journal can split into many entries, but the invariant holds.
+ * Double-entry journal (append-only). Every journal is balanced (sum debit == sum credit).
+ * Renamed from LedgerService to avoid collision with App\Kicc\Services\LedgerService
+ * which handles escrow lifecycle (hold/capture/release/refund).
  */
-class LedgerService
+class JournalService
 {
     /**
      * Post a balanced journal.

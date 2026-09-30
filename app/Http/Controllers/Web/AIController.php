@@ -141,7 +141,7 @@ class AIController extends Controller
                 'type' => 'product', 'name' => $p->name, 'price' => $p->price,
                 'county' => $p->county?->name,
                 'url' => route('marketplace.show', $p->slug),
-                'pipeline' => app(\App\Services\PipelineResolver::class)->forProduct($p),
+                'pipeline' => app(\App\Services\PipelineRouter::class)->forProduct($p),
             ]);
 
         $attractions = \App\Models\CountyTourismAttraction::with('county')

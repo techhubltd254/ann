@@ -4,7 +4,7 @@ namespace App\Console\Commands;
 
 use App\Models\EscrowTransaction;
 use App\Services\AuditLogger;
-use App\Services\LedgerService;
+use App\Services\JournalService;
 use App\Services\N8nService;
 use App\Services\PoolEngine;
 use Illuminate\Console\Command;
@@ -40,7 +40,7 @@ class EscrowAutoRelease extends Command
                     'released_at' => now(), 'released_by' => null,
                 ]);
 
-                LedgerService::post([
+                JournalService::post([
                     'journal_ref' => 'escrow-auto-' . $escrow->escrow_id,
                     'memo'        => 'Auto-release after 7-day delivery window',
                     'source'      => 'scheduler',
