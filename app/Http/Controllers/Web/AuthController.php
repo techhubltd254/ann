@@ -6,6 +6,7 @@ use App\Http\Controllers\Controller;
 use App\Models\User;
 use App\Models\PhoneVerificationCode;
 use App\Services\AuditLogger;
+use App\Events\UserEvent;
 use App\Services\SMSService;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
@@ -141,9 +142,7 @@ class AuthController extends Controller
             'status' => 'active',
         ]);
 
-        \App\Services\N8nService::fire('user_registered', [
-            'user_id' => $user->id, 'email' => $user->email, 'account_type' => $user->account_type,
-        ]);
+        event(new UserEvent($user->id, 'registered', $request->ip()));
 
         Auth::login($user);
         session()->forget('reg_email');

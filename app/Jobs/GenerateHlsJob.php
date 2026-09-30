@@ -3,6 +3,7 @@
 namespace App\Jobs;
 
 use App\Models\MediaAsset;
+use App\Events\MediaPublished;
 use App\Services\HlsGenerator;
 use Illuminate\Bus\Queueable;
 use Illuminate\Contracts\Queue\ShouldQueue;
@@ -38,15 +39,7 @@ class GenerateHlsJob implements ShouldQueue
 
         if ($ok) {
             Log::info("GenerateHlsJob: HLS ready for asset {$this->assetId} ({$asset->path})");
-            try {
-                \App\Services\N8nService::fire('video_hls_ready', [
-                    'asset' => $asset->id,
-                    'path' => $asset->path,
-                    'slot' => $asset->slot,
-                ]);
-            } catch (\Throwable $e) {
-                // non-fatal
-            }
+            event(new MediaPublished($this->assetId, 'video_hls', $asset->path));
         } else {
             Log::warning("GenerateHlsJob: HLS skipped/failed for asset {$this->assetId}");
         }

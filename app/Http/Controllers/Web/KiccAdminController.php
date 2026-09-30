@@ -16,10 +16,12 @@ use App\Models\Payment\PaymentIntent;
 use App\Models\Pipeline\DynamicPipeline;
 use App\Models\User;
 use App\Services\AuditLogger;
+use App\Events\EscrowReleased;
+use App\Events\GenericDomainEvent;
+use App\Events\ProviderServiceChanged;
 use App\Services\IntegrationClient;
 use App\Services\JournalService;
 use App\Services\MediaLibraryService;
-use App\Services\N8nService;
 use App\Services\PoolEngine;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Artisan;
@@ -435,8 +437,7 @@ class KiccAdminController extends Controller
 
             PoolEngine::recalcFor(period: now()->format('Y-m'), scope: 'global', reason: 'escrow.release');
 
-            N8nService::fire('escrow_released', ['escrow_id' => $escrow->escrow_id, 'amount' => (float) $escrow->amount]);
-            app(\App\Services\CacheSyncService::class)->kicc();
+            event(new EscrowReleased($escrow->escrow_id, (float) $escrow->amount, $escrow->seller_id, $escrow->buyer_id));
 
             return redirect()->route('kicc.admin', ['tab' => 'escrow'])
                 ->with('success', "Escrow {$escrow->escrow_id} released + ledger posted.");
@@ -460,8 +461,7 @@ class KiccAdminController extends Controller
                 'approver_ip' => request()->ip(),
             ]);
 
-            N8nService::fire('provider_service_approved', ['table' => $table, 'id' => $id]);
-            app(CacheSyncService::class)->kicc();
+            event(new ProviderServiceChanged($table, $id, 'approved'));
             return redirect()->route('kicc.admin', ['tab' => 'providers'])->with('success', 'Service certified and now live.');
         });
     }
@@ -574,8 +574,7 @@ class KiccAdminController extends Controller
         $plan->update(array_merge($data, [
             'is_active' => $request->boolean('is_active'),
         ]));
-        \App\Services\N8nService::fire('package_updated', ['plan_id' => $plan->id, 'name' => $plan->name, 'price' => $plan->price]);
-        app(\App\Services\CacheSyncService::class)->kicc();
+        event(new GenericDomainEvent('package_updated', ['plan_id' => $plan->id, 'name' => $plan->name, 'price' => $plan->price], n8nEventName: 'package_updated'));
         return redirect()->route('kicc.admin', ['tab' => 'packages'])->with('success', "Package '{$plan->name}' updated.");
     }
 

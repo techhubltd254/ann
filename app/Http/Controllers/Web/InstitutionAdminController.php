@@ -11,6 +11,7 @@ use App\Models\Marketplace\Product;
 use App\Models\MediaAsset;
 use App\Services\InstitutionSyncService;
 use App\Services\N8nService;
+use App\Events\GenericDomainEvent;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
@@ -248,10 +249,10 @@ class InstitutionAdminController extends Controller
             'variant' => 'source',
         ]);
 
-        N8nService::fire('institution_hero_uploaded', [
+        event(new GenericDomainEvent('institution_hero_uploaded', [
             'institution' => $institution->slug,
             'video_path' => $path,
-        ]);
+        ], n8nEventName: 'institution_hero_uploaded'));
 
         return back()->with('success', 'Hero video uploaded. It now plays everywhere this institution appears.');
     }
@@ -391,11 +392,11 @@ class InstitutionAdminController extends Controller
         // Immediate sync for this product
         app(InstitutionSyncService::class)->sync($institution);
 
-        N8nService::fire('product_created', [
+        event(new GenericDomainEvent('product_created', [
             'institution' => $institution->slug,
             'name' => $data['name'],
             'price' => $data['price'],
-        ]);
+        ], n8nEventName: 'product_created'));
 
         return back()->with('success', "Product \"{$data['name']}\" added & synced to county + marketplace.");
     }
@@ -489,11 +490,11 @@ class InstitutionAdminController extends Controller
         // Sync to county products
         app(InstitutionSyncService::class)->sync($institution);
 
-        N8nService::fire('product_updated', [
+        event(new GenericDomainEvent('product_updated', [
             'institution' => $institution->slug,
             'name' => $data['name'],
             'price' => $data['price'],
-        ]);
+        ], n8nEventName: 'product_updated'));
 
         return back()->with('success', "Product \"{$data['name']}\" updated & synced.");
     }
@@ -509,10 +510,10 @@ class InstitutionAdminController extends Controller
 
         app(InstitutionSyncService::class)->sync($institution);
 
-        N8nService::fire('product_deleted', [
+        event(new GenericDomainEvent('product_deleted', [
             'institution' => $institution->slug,
             'index' => $index,
-        ]);
+        ], n8nEventName: 'product_deleted'));
 
         return back()->with('success', 'Product removed & synced.');
     }

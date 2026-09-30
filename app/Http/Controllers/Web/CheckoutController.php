@@ -3,6 +3,8 @@
 namespace App\Http\Controllers\Web;
 
 use App\Http\Controllers\Controller;
+use App\Events\GenericDomainEvent;
+use App\Events\OrderPaid;
 use App\Models\EscrowTransaction;
 use App\Models\ExperienceBooking;
 use App\Models\Marketplace\Order;
@@ -199,13 +201,9 @@ class CheckoutController extends Controller
             'changed_by_user_id' => $request->user()?->id,
         ]);
 
-        \App\Services\N8nService::fire('order_created', [
-            'order_number' => $order->order_number, 'total' => $order->grand_total,
-            'items' => $order->items->count(), 'phone' => $data['phone'],
-        ]);
+        event(new OrderPaid($order->id, (float) $order->grand_total, null, $request->user()?->id));
 
-        // Fire fulfillment and invoice signals for n8n to process
-        \App\Services\N8nService::fire('fulfillment_initiated', [
+        event(new GenericDomainEvent('fulfillment_initiated', [
             'order_number' => $order->order_number,
             'payment_method' => $data['payment_method'],
             'shipping_address' => "{$data['address']}, {$data['town']}, {$data['county']}",
@@ -213,12 +211,12 @@ class CheckoutController extends Controller
                 'product' => $i->product_name, 'variant' => $i->variant_name,
                 'qty' => $i->quantity, 'price' => $i->unit_price,
             ])->toArray(),
-        ]);
-        \App\Services\N8nService::fire('invoice_generated', [
+        ], n8nEventName: 'fulfillment_initiated'));
+        event(new GenericDomainEvent('invoice_generated', [
             'order_number' => $order->order_number,
             'customer_email' => $data['email'] ?? $request->user()?->email,
             'total' => $order->grand_total,
-        ]);
+        ], n8nEventName: 'invoice_generated'));
 
         return redirect()->route('checkout.success', $order->order_number)
             ->with('customer', $data);
