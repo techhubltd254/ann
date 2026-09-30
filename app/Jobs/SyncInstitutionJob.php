@@ -4,6 +4,7 @@ namespace App\Jobs;
 
 use App\Models\CountyInstitution;
 use App\Services\InstitutionSyncService;
+use App\Events\GenericDomainEvent;
 use Illuminate\Bus\Queueable;
 use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Foundation\Bus\Dispatchable;
@@ -38,10 +39,10 @@ class SyncInstitutionJob implements ShouldQueue
         Log::info("SyncInstitutionJob: synced {$institution->slug} — " . json_encode($summary));
 
         try {
-            \App\Services\N8nService::fire('institution_auto_synced', [
+            event(new GenericDomainEvent('institution_auto_synced', [
                 'institution' => $institution->slug,
                 'summary' => $summary,
-            ]);
+            ], n8nEventName: 'institution_auto_synced'));;
         } catch (\Throwable $e) {
             // non-fatal
         }

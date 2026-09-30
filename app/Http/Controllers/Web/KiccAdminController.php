@@ -574,7 +574,7 @@ class KiccAdminController extends Controller
         $plan->update(array_merge($data, [
             'is_active' => $request->boolean('is_active'),
         ]));
-        event(new GenericDomainEvent('package_updated', ['plan_id' => $plan->id, 'name' => $plan->name, 'price' => $plan->price], n8nEventName: 'package_updated'));
+        event(new GenericDomainEvent('package_updated', ['plan_id' => $plan->id, 'name' => $plan->name, 'price' => $plan->price], n8nEventName: 'package_updated'));;
         return redirect()->route('kicc.admin', ['tab' => 'packages'])->with('success', "Package '{$plan->name}' updated.");
     }
 

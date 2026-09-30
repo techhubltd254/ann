@@ -5,6 +5,7 @@ namespace App\Http\Controllers\Web;
 use App\Http\Controllers\Controller;
 use App\Models\ConsentForm;
 use App\Models\ConsentRecord;
+use App\Events\GenericDomainEvent;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Log;
 
@@ -72,12 +73,12 @@ class ConsentController extends Controller
 
         // Fire webhook for audit trail
         try {
-            \App\Services\N8nService::fire('consent_signed', [
+            event(new GenericDomainEvent('consent_signed', [
                 'consent_form' => $form->slug,
                 'signer_name' => $data['signer_name'],
                 'signer_email' => $data['signer_email'],
                 'signed_at' => $record->signed_at,
-            ]);
+            ], n8nEventName: 'consent_signed'));;
         } catch (\Throwable $e) {
             Log::warning('consent webhook: ' . $e->getMessage());
         }

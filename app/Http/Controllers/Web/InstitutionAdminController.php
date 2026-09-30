@@ -252,7 +252,7 @@ class InstitutionAdminController extends Controller
         event(new GenericDomainEvent('institution_hero_uploaded', [
             'institution' => $institution->slug,
             'video_path' => $path,
-        ], n8nEventName: 'institution_hero_uploaded'));
+        ], n8nEventName: 'institution_hero_uploaded'));;
 
         return back()->with('success', 'Hero video uploaded. It now plays everywhere this institution appears.');
     }
@@ -396,7 +396,7 @@ class InstitutionAdminController extends Controller
             'institution' => $institution->slug,
             'name' => $data['name'],
             'price' => $data['price'],
-        ], n8nEventName: 'product_created'));
+        ], n8nEventName: 'product_created'));;
 
         return back()->with('success', "Product \"{$data['name']}\" added & synced to county + marketplace.");
     }
@@ -494,7 +494,7 @@ class InstitutionAdminController extends Controller
             'institution' => $institution->slug,
             'name' => $data['name'],
             'price' => $data['price'],
-        ], n8nEventName: 'product_updated'));
+        ], n8nEventName: 'product_updated'));;
 
         return back()->with('success', "Product \"{$data['name']}\" updated & synced.");
     }
@@ -513,7 +513,7 @@ class InstitutionAdminController extends Controller
         event(new GenericDomainEvent('product_deleted', [
             'institution' => $institution->slug,
             'index' => $index,
-        ], n8nEventName: 'product_deleted'));
+        ], n8nEventName: 'product_deleted'));;
 
         return back()->with('success', 'Product removed & synced.');
     }

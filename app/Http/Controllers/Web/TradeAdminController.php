@@ -4,6 +4,7 @@ namespace App\Http\Controllers\Web;
 
 use App\Http\Controllers\Controller;
 use App\Models\TradeEnquiry;
+use App\Events\GenericDomainEvent;
 use Illuminate\Http\Request;
 
 class TradeAdminController extends Controller
@@ -35,11 +36,10 @@ class TradeAdminController extends Controller
         ]);
         $enquiry->save();
 
-        \App\Services\N8nService::fire('export_enquiry_status_changed', [
+        event(new GenericDomainEvent('export_enquiry_status_changed', [
             'reference' => $enquiry->reference,
             'status' => $data['status'],
-        ]);
-
+        ], n8nEventName: 'export_enquiry_status_changed'));;
         return redirect()->route('trade.admin.enquiries')->with('success', "Enquiry {$enquiry->reference} updated to {$data['status']}.");
     }
 }

@@ -3,6 +3,7 @@
 namespace App\Pipeline\Stages;
 
 use App\Services\PaymentService;
+use App\Events\GenericDomainEvent;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Str;
@@ -46,13 +47,13 @@ class BookingStage
 
         // Fire n8n webhook
         try {
-            \App\Services\N8nService::fire('experience_booked', [
+            event(new GenericDomainEvent('experience_booked', [
                 'reference' => $booking['reference'],
                 'anchor' => $context['anchor_name'] ?? '',
                 'county' => $context['county']?->name ?? '',
                 'items' => $selections,
                 'total' => $booking['total'],
-            ]);
+            ], n8nEventName: 'experience_booked'));;
         } catch (\Throwable $e) {
             Log::warning('n8n experience webhook: ' . $e->getMessage());
         }

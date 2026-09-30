@@ -5,6 +5,7 @@ namespace App\Http\Controllers\Web;
 use App\Http\Controllers\Controller;
 use App\Models\County;
 use App\Models\SubscriptionPlan;
+use App\Events\GenericDomainEvent;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Str;
@@ -69,10 +70,9 @@ class ExhibitorOnboardingController extends Controller
             ]),
         ]);
 
-        \App\Services\N8nService::fire('exhibitor_onboarded', [
+        event(new GenericDomainEvent('exhibitor_onboarded', [
             'user_id' => $user->id, 'business_type' => $data['business_type'], 'package' => $package->slug,
-        ]);
-
+        ], n8nEventName: 'exhibitor_onboarded'));;
         return redirect()->route('exhibitor.admin')
             ->with('success', "🎉 Your exhibitor website is ready: " . route('exhibitor.site', Str::slug($user->name)));
     }

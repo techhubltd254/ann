@@ -6,6 +6,7 @@ use App\Http\Controllers\Controller;
 use App\Models\Agent;
 use App\Models\AgentDocument;
 use App\Models\County;
+use App\Events\GenericDomainEvent;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Storage;
@@ -68,12 +69,11 @@ class AgentOnboardingController extends Controller
             }
         }
 
-        \App\Services\N8nService::fire('agent_onboarded', [
+        event(new GenericDomainEvent('agent_onboarded', [
             'agent_id' => $agent->id,
             'business_name' => $agent->business_name,
             'service_types' => $agent->service_types,
-        ]);
-
+        ], n8nEventName: 'agent_onboarded'));;
         return redirect()->route('agent.onboarding.success', $agent->id)
             ->with('success', 'Application submitted. We will review and notify you.');
     }

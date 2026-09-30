@@ -4,6 +4,7 @@ namespace App\Services;
 
 use App\Models\UserNotification;
 use App\Models\User;
+use App\Events\GenericDomainEvent;
 
 class NotificationService
 {
@@ -29,11 +30,11 @@ class NotificationService
     public static function fire(int $userId, string $type, string $title, ?string $body = null, ?string $actionUrl = null): void
     {
         self::send($userId, $type, $title, $body, $actionUrl);
-        \App\Services\N8nService::fire('notification_created', [
+        event(new GenericDomainEvent('notification_created', [
             'user_id' => $userId,
             'type' => $type,
             'title' => $title,
             'body' => $body,
-        ]);
+        ], n8nEventName: 'notification_created'));;
     }
 }

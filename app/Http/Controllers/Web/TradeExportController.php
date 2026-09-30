@@ -8,6 +8,7 @@ use App\Models\Marketplace\ProductCategory;
 use App\Models\TradeAgreement;
 use App\Models\TradeEnquiry;
 use App\Models\TradingBloc;
+use App\Events\GenericDomainEvent;
 use Illuminate\Http\Request;
 
 class TradeExportController extends Controller
@@ -87,14 +88,13 @@ class TradeExportController extends Controller
             'message' => $data['message'],
         ]);
 
-        \App\Services\N8nService::fire('export_enquiry_created', [
+        event(new GenericDomainEvent('export_enquiry_created', [
             'reference' => $enquiry->reference,
             'company_name' => $enquiry->company_name,
             'product_name' => $enquiry->product_name,
             'destination' => $enquiry->destination,
             'estimated_value' => $enquiry->estimated_value,
-        ]);
-
+        ], n8nEventName: 'export_enquiry_created'));;
         return redirect()->route('trade.enquiry.success', $enquiry->reference)
             ->with('success', "Export enquiry {$enquiry->reference} submitted.");
     }

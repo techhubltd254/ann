@@ -4,6 +4,7 @@ namespace App\Http\Controllers\Web;
 
 use App\Http\Controllers\Controller;
 use App\Models\Review;
+use App\Events\GenericDomainEvent;
 use Illuminate\Http\Request;
 
 class ReviewAdminController extends Controller
@@ -22,7 +23,7 @@ class ReviewAdminController extends Controller
     public function approve(Request $request, Review $review)
     {
         $review->update(['status' => 'approved', 'is_verified' => $request->has('verified')]);
-        \App\Services\N8nService::fire('review_approved', ['review_id' => $review->id]);
+        event(new GenericDomainEvent('review_approved', ['review_id' => $review->id], n8nEventName: 'review_approved'));;
         return back()->with('success', 'Review approved.');
     }
 
@@ -35,7 +36,7 @@ class ReviewAdminController extends Controller
     public function approveProduct(Request $request, \App\Models\ProductReview $review)
     {
         $review->update(['is_approved' => true, 'is_verified_purchase' => $request->has('verified')]);
-        \App\Services\N8nService::fire('review_approved', ['product_review_id' => $review->id]);
+        event(new GenericDomainEvent('review_approved', ['product_review_id' => $review->id], n8nEventName: 'review_approved'));;
         return back()->with('success', 'Product review approved.');
     }
 

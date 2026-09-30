@@ -20,6 +20,7 @@ use App\Models\Sector;
 use App\Models\SectorEntity;
 use App\Models\SubscriptionPlan;
 use App\Services\CacheSyncService;
+use App\Events\GenericDomainEvent;
 use App\Services\PaymentService;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
@@ -390,9 +391,9 @@ class CountyAdminController extends Controller
             $jpegPath = storage_path("app/public/counties/{$slug}/{$data['sector']}.jpeg");
             @copy(storage_path("app/public/{$path}"), $jpegPath);
         }
-        \App\Services\N8nService::fire('county_image_updated', [
+        event(new GenericDomainEvent('county_image_updated', [
             'county' => $slug, 'sector' => $data['sector'],
-        ]);
+        ], n8nEventName: 'county_image_updated'));;
         $this->syncCounty($county);
         return back()->with('success', "{$data['sector']} image updated. Changes reflect everywhere immediately.");
     }
@@ -740,11 +741,11 @@ class CountyAdminController extends Controller
         ]);
 
         try {
-            \App\Services\N8nService::fire('county_4d_uploaded', [
+            event(new GenericDomainEvent('county_4d_uploaded', [
                 'county' => $slug, 'entity_type' => $data['entity_type'], 'entity_id' => $entity->id,
-            ]);
+            ], n8nEventName: 'county_4d_uploaded'));;
         } catch (\Throwable $e) {
-            \Illuminate\Support\Facades\Log::warning('N8n fire failed for 4D upload: ' . $e->getMessage());
+            \Illuminate\Support\Facades\Log::warning('Event dispatch failed for 4D upload: ' . $e->getMessage());
         }
 
         $this->syncCounty($county);
@@ -921,9 +922,9 @@ class CountyAdminController extends Controller
             'starts_at' => now(),
         ]);
 
-        \App\Services\N8nService::fire('county_ad_created', [
+        event(new GenericDomainEvent('county_ad_created', [
             'county' => $slug, 'product' => $data['name'], 'price' => $data['price'],
-        ]);
+        ], n8nEventName: 'county_ad_created'));;
         $this->syncCounty($county);
         return back()->with('success', "Ad for {$data['name']} is now live on {$county->name}'s page.");
     }
@@ -1028,7 +1029,7 @@ class CountyAdminController extends Controller
             'is_published' => true,
         ]);
 
-        \App\Services\N8nService::fire('trader_spotlight_created', ['county' => $county->slug, 'name' => $data['name']]);
+        event(new GenericDomainEvent('trader_spotlight_created', ['county' => $county->slug, 'name' => $data['name']], n8nEventName: 'trader_spotlight_created'));;
         $this->syncCounty($county);
         return back()->with('success', 'Trader spotlight created.');
     }
@@ -1047,11 +1048,11 @@ class CountyAdminController extends Controller
         $screen->update(['live_feed_id' => $data['live_feed_id']]);
 
         if ($data['live_feed_id']) {
-            \App\Services\N8nService::fire('broadcast_scheduled', [
+            event(new GenericDomainEvent('broadcast_scheduled', [
                 'county' => $county->slug,
                 'screen' => $screen->label,
                 'feed_id' => $data['live_feed_id'],
-            ]);
+            ], n8nEventName: 'broadcast_scheduled'));;
         }
         $this->syncCounty($county);
         return back()->with('success', 'Broadcast schedule updated.');
@@ -1084,7 +1085,7 @@ class CountyAdminController extends Controller
             'audio_overlay_id' => 'nullable|integer|exists:presidential_audios,id',
         ]);
         \App\Models\DroneSequence::create($data + ['county_id' => $county->id]);
-        \App\Services\N8nService::fire('drone_sequence_composed', ['county' => $county->slug, 'name' => $data['name']]);
+        event(new GenericDomainEvent('drone_sequence_composed', ['county' => $county->slug, 'name' => $data['name']], n8nEventName: 'drone_sequence_composed'));;
         $this->syncCounty($county);
         return back()->with('success', 'Drone sequence created.');
     }
@@ -1107,7 +1108,7 @@ class CountyAdminController extends Controller
             'image_url' => $data['image_url'] ?? null,
             'layout_data' => !empty($data['layout_json']) ? json_decode($data['layout_json'], true) : null,
         ]);
-        \App\Services\N8nService::fire('floor_plan_uploaded', ['county' => $county->slug, 'name' => $data['name']]);
+        event(new GenericDomainEvent('floor_plan_uploaded', ['county' => $county->slug, 'name' => $data['name']], n8nEventName: 'floor_plan_uploaded'));;
         $this->syncCounty($county);
         return back()->with('success', 'Floor plan created.');
     }
@@ -1126,7 +1127,7 @@ class CountyAdminController extends Controller
             'entity_type' => \App\Models\County::class,
             'entity_id' => $county->id,
         ]);
-        \App\Services\N8nService::fire('consent_signed', ['county' => $county->slug, 'title' => $data['title']]);
+        event(new GenericDomainEvent('consent_signed', ['county' => $county->slug, 'title' => $data['title']], n8nEventName: 'consent_signed'));;
         $this->syncCounty($county);
         return back()->with('success', 'Consent form created.');
     }
@@ -1146,7 +1147,7 @@ class CountyAdminController extends Controller
             'entity_id' => $county->id,
             'transcribed_at' => !empty($data['transcript']) ? now() : null,
         ]);
-        \App\Services\N8nService::fire('voice_note_recorded', ['county' => $county->slug, 'title' => $data['title']]);
+        event(new GenericDomainEvent('voice_note_recorded', ['county' => $county->slug, 'title' => $data['title']], n8nEventName: 'voice_note_recorded'));;
         $this->syncCounty($county);
         return back()->with('success', 'Voice note recorded.');
     }

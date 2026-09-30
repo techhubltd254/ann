@@ -12,6 +12,7 @@ use App\Models\Marketplace\ProductVariant;
 use App\Models\MediaAsset;
 use App\Models\Sector;
 use App\Models\SectorEntity;
+use App\Events\GenericDomainEvent;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Str;
@@ -91,11 +92,11 @@ class InstitutionSyncService
         });
 
         try {
-            \App\Services\N8nService::fire('institution_synced', [
+            event(new GenericDomainEvent('institution_synced', [
                 'institution' => $institution->slug,
                 'county' => $county->slug,
                 'summary' => $summary,
-            ]);
+            ], n8nEventName: 'institution_synced'));;
         } catch (\Throwable $e) {
             Log::warning('N8n fire failed for institution sync: ' . $e->getMessage());
         }

@@ -6,6 +6,7 @@ use App\Http\Controllers\Controller;
 use App\Models\Advertisement;
 use App\Models\Screen;
 use App\Services\PaymentService;
+use App\Events\GenericDomainEvent;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 
@@ -135,11 +136,10 @@ class ScreenController extends Controller
             return $ad;
         });
 
-        \App\Services\N8nService::fire('screen_ad_booked', [
+        event(new GenericDomainEvent('screen_ad_booked', [
             'screen' => $screen->id, 'advertisement' => $ad->id,
             'business' => $data['business_name'], 'package' => $data['package'],
-        ]);
-
+        ], n8nEventName: 'screen_ad_booked'));;
         return back()->with('success',
             "Booking received! Your {$pkg['label']} slot on {$screen->label} is reserved pending payment (KES "
             . number_format($pkg['price']) . "). Our ads team will contact you within 24h to collect your artwork.");

@@ -6,6 +6,7 @@ use App\Http\Controllers\Controller;
 use App\Models\CountyTourismAttraction;
 use App\Services\CorrelationService;
 use App\Services\PaymentService;
+use App\Events\GenericDomainEvent;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Log;
@@ -104,11 +105,10 @@ class AttractionBookingController extends Controller
             ['description' => "Attraction booking {$ref}: {$attraction->name}", 'phone' => $data['phone']]
         );
 
-        \App\Services\N8nService::fire('booking_created', [
+        event(new GenericDomainEvent('booking_created', [
             'type' => 'attraction', 'reference' => $ref, 'attraction' => $attraction->name,
             'total' => $total, 'addons' => $chosenAddons,
-        ]);
-
+        ], n8nEventName: 'booking_created'));;
         return view('attractions.success', [
             'attraction' => $attraction,
             'reference' => $ref,

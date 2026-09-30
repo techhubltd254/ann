@@ -9,6 +9,7 @@ use App\Models\JobApplication;
 use App\Models\JobListing;
 use App\Models\NewsletterSubscriber;
 use App\Models\Venue;
+use App\Events\GenericDomainEvent;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Mail;
 
@@ -58,7 +59,7 @@ class KiccWebsiteController extends Controller
             'additional_info' => 'nullable|string|max:2000',
         ]);
         $booking = EventBooking::create($data + ['needs_catering' => $request->boolean('needs_catering'), 'needs_av' => $request->boolean('needs_av')]);
-        \App\Services\N8nService::fire('event_booking_created', ['reference' => $booking->reference, 'email' => $booking->email]);
+        event(new GenericDomainEvent('event_booking_created', ['reference' => $booking->reference, 'email' => $booking->email], n8nEventName: 'event_booking_created'));;
         return redirect()->route('kicc.event-booking.success', $booking->reference)->with('success', 'Booking enquiry submitted.');
     }
 
@@ -99,7 +100,7 @@ class KiccWebsiteController extends Controller
     {
         $data = $request->validate(['email' => 'required|email|unique:newsletter_subscribers,email']);
         NewsletterSubscriber::create($data);
-        \App\Services\N8nService::fire('newsletter_subscribed', ['email' => $data['email']]);
+        event(new GenericDomainEvent('newsletter_subscribed', ['email' => $data['email']], n8nEventName: 'newsletter_subscribed'));;
         return back()->with('success', 'Subscribed! Check your inbox.');
     }
 

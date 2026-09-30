@@ -4,6 +4,7 @@ namespace App\Http\Controllers\Web;
 
 use App\Http\Controllers\Controller;
 use App\Models\Venue;
+use App\Events\GenericDomainEvent;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Log;
 
@@ -41,11 +42,10 @@ class VenueController extends Controller
             ...$validated,
         ]);
 
-        \App\Services\N8nService::fire('venue_inquiry', [
+        event(new GenericDomainEvent('venue_inquiry', [
             'venue' => $venue->name, 'venue_id' => $venue->id,
             'event_type' => $validated['event_type'], 'event_date' => $validated['event_date'],
-        ]);
-
+        ], n8nEventName: 'venue_inquiry'));;
         return back()->with('success', "Inquiry sent! Our events team will contact you about {$venue->name} within 24 hours.");
     }
 }

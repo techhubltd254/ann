@@ -2,6 +2,8 @@
 
 namespace App\Console\Commands;
 
+use App\Events\GenericDomainEvent;
+
 use Illuminate\Console\Command;
 use Illuminate\Support\Facades\Cache;
 use Illuminate\Support\Facades\Http;
@@ -32,10 +34,10 @@ class RefreshTravelRecommendations extends Command
                 $this->info("{$city}: {$temp}°C ({$data['desc']})");
 
                 if ($temp <= 14) {
-                    \App\Services\N8nService::fire('cold_market_detected', [
+                    event(new GenericDomainEvent('cold_market_detected', [
                         'city' => $city, 'temp' => $temp,
                         'recommendation' => 'Push Kenya summer vacation SEO campaign (Mombasa 30°C)',
-                    ]);
+                    ], n8nEventName: 'cold_market_detected'));;
                 }
             } catch (\Throwable $e) {
                 $this->warn("{$city}: weather fetch failed — {$e->getMessage()}");

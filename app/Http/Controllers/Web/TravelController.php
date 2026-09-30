@@ -7,6 +7,7 @@ use App\Models\County;
 use App\Models\Travel\Attraction;
 use App\Models\Travel\Hotel;
 use App\Services\PaymentService;
+use App\Events\GenericDomainEvent;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Cache;
 use Illuminate\Support\Facades\DB;
@@ -181,11 +182,10 @@ class TravelController extends Controller
             throw $e;
         }
 
-        \App\Services\N8nService::fire('booking_created', [
+        event(new GenericDomainEvent('booking_created', [
             'type' => 'travel_package', 'reference' => $groupRef, 'total' => $total,
             'components' => array_column($bookings, 'type'),
-        ]);
-
+        ], n8nEventName: 'booking_created'));;
         return redirect()->route('travel.receipt', $groupRef);
     }
 

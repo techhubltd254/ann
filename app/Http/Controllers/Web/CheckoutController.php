@@ -211,12 +211,12 @@ class CheckoutController extends Controller
                 'product' => $i->product_name, 'variant' => $i->variant_name,
                 'qty' => $i->quantity, 'price' => $i->unit_price,
             ])->toArray(),
-        ], n8nEventName: 'fulfillment_initiated'));
+        ], n8nEventName: 'fulfillment_initiated'));;
         event(new GenericDomainEvent('invoice_generated', [
             'order_number' => $order->order_number,
             'customer_email' => $data['email'] ?? $request->user()?->email,
             'total' => $order->grand_total,
-        ], n8nEventName: 'invoice_generated'));
+        ], n8nEventName: 'invoice_generated'));;
 
         return redirect()->route('checkout.success', $order->order_number)
             ->with('customer', $data);

@@ -18,6 +18,7 @@ use App\Models\Ecommerce\Auction;
 use App\Models\Ecommerce\Rfq;
 use App\Models\User;
 use App\Services\Ecommerce\ProductImportService;
+use App\Events\GenericDomainEvent;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
@@ -306,10 +307,10 @@ class EcommerceAdminController extends Controller
 
             // Fire n8n webhook for order update
             try {
-                \App\Services\N8nService::fire('order_updated', [
+                event(new GenericDomainEvent('order_updated', [
                     'order_id' => $order->id, 'order_number' => $order->order_number,
                     'changes' => $changes, 'notes' => $request->notes,
-                ]);
+                ], n8nEventName: 'order_updated'));;
             } catch (\Throwable $e) { Log::warning('n8n order update: ' . $e->getMessage()); }
         });
 

@@ -5,6 +5,7 @@ namespace App\Http\Controllers\Web;
 use App\Http\Controllers\Controller;
 use App\Models\Agent;
 use App\Models\AgentDocument;
+use App\Events\GenericDomainEvent;
 use Illuminate\Http\Request;
 
 class AgentAdminController extends Controller
@@ -42,11 +43,10 @@ class AgentAdminController extends Controller
         ]);
         $agent->documents()->update(['status' => 'verified', 'verified_at' => now()]);
 
-        \App\Services\N8nService::fire('agent_approved', [
+        event(new GenericDomainEvent('agent_approved', [
             'agent_id' => $agent->id,
             'business_name' => $agent->business_name,
-        ]);
-
+        ], n8nEventName: 'agent_approved'));;
         return redirect()->route('agent.admin.index')->with('success', "{$agent->business_name} approved.");
     }
 
@@ -55,12 +55,11 @@ class AgentAdminController extends Controller
         $data = $request->validate(['notes' => 'nullable|string|max:500']);
         $agent->update(['status' => 'rejected']);
 
-        \App\Services\N8nService::fire('agent_rejected', [
+        event(new GenericDomainEvent('agent_rejected', [
             'agent_id' => $agent->id,
             'business_name' => $agent->business_name,
             'notes' => $data['notes'] ?? '',
-        ]);
-
+        ], n8nEventName: 'agent_rejected'));;
         return redirect()->route('agent.admin.index')->with('success', "{$agent->business_name} rejected.");
     }
 

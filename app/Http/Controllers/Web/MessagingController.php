@@ -5,6 +5,7 @@ namespace App\Http\Controllers\Web;
 use App\Http\Controllers\Controller;
 use App\Models\Conversation;
 use App\Models\Message;
+use App\Events\GenericDomainEvent;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 
@@ -72,12 +73,11 @@ class MessagingController extends Controller
         ]);
         $conversation->update(['last_message_at' => now()]);
 
-        \App\Services\N8nService::fire('message_sent', [
+        event(new GenericDomainEvent('message_sent', [
             'conversation_id' => $conversation->id,
             'sender_id' => Auth::id(),
             'preview' => substr($data['body'], 0, 100),
-        ]);
-
+        ], n8nEventName: 'message_sent'));;
         return back();
     }
 

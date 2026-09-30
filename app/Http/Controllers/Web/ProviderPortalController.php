@@ -3,6 +3,7 @@
 namespace App\Http\Controllers\Web;
 
 use App\Http\Controllers\Controller;
+use App\Events\GenericDomainEvent;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
@@ -91,10 +92,9 @@ class ProviderPortalController extends Controller
         ]);
         abort_unless($updated, 404);
 
-        \App\Services\N8nService::fire('provider_price_changed', [
+        event(new GenericDomainEvent('provider_price_changed', [
             'provider' => $user->email, 'table' => $table, 'id' => $data['id'], 'price' => $data['price'],
-        ]);
-
+        ], n8nEventName: 'provider_price_changed'));;
         return back()->with('success', 'Price updated — pending KICC approval before it goes live.');
     }
 
@@ -152,10 +152,9 @@ class ProviderPortalController extends Controller
             ]);
         }
 
-        \App\Services\N8nService::fire('provider_service_added', [
+        event(new GenericDomainEvent('provider_service_added', [
             'provider' => $user->email, 'type' => $type,
-        ]);
-
+        ], n8nEventName: 'provider_service_added'));;
         return back()->with('success', 'Service submitted — KICC will review and certify it shortly.');
     }
 

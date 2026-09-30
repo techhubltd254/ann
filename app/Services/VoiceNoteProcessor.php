@@ -5,6 +5,7 @@ namespace App\Services;
 use App\Models\MediaAsset;
 use App\Models\VoiceNote;
 use App\Models\SpeechSegment;
+use App\Events\GenericDomainEvent;
 use Illuminate\Support\Str;
 
 /**
@@ -103,11 +104,11 @@ class VoiceNoteProcessor
             ]);
         }
 
-        \App\Services\N8nService::fire('voice_note_transcribed', [
+        event(new GenericDomainEvent('voice_note_transcribed', [
             'voice_note_id' => $voiceNote->id,
             'title' => $voiceNote->title,
             'segments_count' => count($segments),
-        ]);
+        ], n8nEventName: 'voice_note_transcribed'));;
     }
 
     protected function getAudioDuration(string $path): ?float
