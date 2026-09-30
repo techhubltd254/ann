@@ -104,9 +104,8 @@ class ArchitectureTest extends TestCase
         // Known acceptable duplicates — these serve different purposes
         // across namespaces and are intentional bounded-context collocations.
         $knownAcceptable = [
-            'LedgerService',     // App\Kicc\Services (lifecycle) vs App\Services\JournalService (renamed)
-            'PoolEngine',        // App\Services\PoolEngine (root) vs App\Services\Pool\PoolEngine (sub-context)
-            'CountyClassificationService', // App\Services (AlgorithmsClient) only — Kicc variant deleted
+            'LedgerService',     // App\Kicc\Services (lifecycle) — only instance
+            // PoolEngine fork eliminated in Phase 3
         ];
 
         $duplicates = array_diff_key($duplicates, array_flip($knownAcceptable));

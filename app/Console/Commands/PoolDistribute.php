@@ -6,7 +6,6 @@ use App\Models\Pool\Pool;
 use App\Models\Pool\PoolContribution;
 use App\Kicc\Services\MotherPoolService;
 use App\Services\AlgorithmsClient;
-use App\Services\Pool\PoolEngine;
 use Illuminate\Console\Command;
 
 class PoolDistribute extends Command
