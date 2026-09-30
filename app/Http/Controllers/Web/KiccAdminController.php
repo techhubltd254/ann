@@ -37,6 +37,24 @@ use Illuminate\Support\Str;
  */
 class KiccAdminController extends Controller
 {
+    /**
+     * Provider service tables — each entry maps a table name to its
+     * activation column and its display column. This is the SINGLE
+     * source of truth for approveService/denyService. No raw table
+     * names accepted from request context.
+     */
+    private const PROVIDER_SERVICES = [
+        'flight_inventory'  => ['active_col' => 'is_active', 'label_col' => 'price'],
+        'hotel_rooms'       => ['active_col' => 'is_active', 'label_col' => 'price_per_night'],
+        'airport_transfers' => ['active_col' => 'is_active', 'label_col' => 'price'],
+        'flights'           => ['active_col' => 'status',     'label_col' => 'base_price'],
+    ];
+
+    protected function authorizedTable(string $table): string
+    {
+        abort_unless(isset(self::PROVIDER_SERVICES[$table]), 404, 'Unknown provider table.');
+        return $table;
+    }
     protected function authorizeKicc(): void
     {
         if (!Auth::user()?->hasRole('kicc_admin')) {
@@ -145,17 +163,16 @@ class KiccAdminController extends Controller
         $providers = collect();
         // Each source is guarded — a missing table must never 500 the admin.
         $pendingServices = collect();
-        foreach ([
-            ['flight_inventory', 'is_active', 0, fn ($s) => 'Flight seat inventory', 'price'],
-            ['hotel_rooms', 'is_active', 0, fn ($s) => "Room: {$s->name}", 'price_per_night'],
-            ['airport_transfers', 'is_active', 0, fn ($s) => "Transfer: {$s->provider_name} ({$s->vehicle_type})", 'price'],
-            ['flights', 'status', 'pending', fn ($s) => "Flight: {$s->flight_number}", 'base_price'],
-        ] as [$table, $whereCol, $whereVal, $labelFn, $priceCol]) {
+        foreach (self::PROVIDER_SERVICES as $table => $spec) {
+            $col = $spec['active_col'];
+            $inactiveVal = $col === 'status' ? 'pending' : 0;
             try {
-                $rows = \Illuminate\Support\Facades\DB::table($table)->where($whereCol, $whereVal)->limit(20)->get();
+                $rows = \Illuminate\Support\Facades\DB::table($table)->where($col, $inactiveVal)->limit(20)->get();
             } catch (\Throwable $e) {
                 $rows = collect();
             }
+            $labelFn = fn ($s) => "{$table}: {$s->id}";
+            $priceCol = $spec['label_col'];
             $pendingServices = $pendingServices->merge($rows->map(fn ($s) => [
                 'table' => $table, 'id' => $s->id,
                 'label' => $labelFn($s), 'price' => $s->{$priceCol} ?? null,
@@ -430,14 +447,12 @@ class KiccAdminController extends Controller
     public function approveService(string $table, int $id)
     {
         $this->authorizeKicc();
-        $allowed = ['flight_inventory', 'hotel_rooms', 'airport_transfers', 'flights'];
-        abort_unless(in_array($table, $allowed, true), 404);
+        $table = $this->authorizedTable($table);
+        $spec = self::PROVIDER_SERVICES[$table];
+        $activeCol = $spec['active_col'];
 
-        return DB::transaction(function () use ($table, $id) {
-            $update = ['is_active' => 1, 'updated_at' => now()];
-            if ($table === 'flights') {
-                $update = ['status' => 'active', 'updated_at' => now()];
-            }
+        return DB::transaction(function () use ($table, $id, $activeCol) {
+            $update = [$activeCol => $activeCol === 'status' ? 'active' : 1, 'updated_at' => now()];
             $rows = DB::table($table)->where('id', $id)->update($update);
             abort_if($rows === 0, 422, 'Service not found or already approved.');
 
@@ -446,7 +461,7 @@ class KiccAdminController extends Controller
             ]);
 
             N8nService::fire('provider_service_approved', ['table' => $table, 'id' => $id]);
-            app(\App\Services\CacheSyncService::class)->kicc();
+            app(CacheSyncService::class)->kicc();
             return redirect()->route('kicc.admin', ['tab' => 'providers'])->with('success', 'Service certified and now live.');
         });
     }
@@ -454,18 +469,14 @@ class KiccAdminController extends Controller
     public function denyService(string $table, int $id, Request $request)
     {
         $this->authorizeKicc();
-        $allowed = ['flight_inventory', 'hotel_rooms', 'airport_transfers', 'flights'];
-        abort_unless(in_array($table, $allowed, true), 404);
+        $table = $this->authorizedTable($table);
+        $spec = self::PROVIDER_SERVICES[$table];
+        $activeCol = $spec['active_col'];
 
-        $data = $request->validate([
-            'reason' => 'required|string|max:500',
-        ]);
+        $data = $request->validate(['reason' => 'required|string|max:500']);
 
-        return DB::transaction(function () use ($table, $id, $data) {
-            $update = ['is_active' => 0, 'denial_reason' => $data['reason'], 'updated_at' => now()];
-            if ($table === 'flights') {
-                $update = ['status' => 'denied', 'denial_reason' => $data['reason'], 'updated_at' => now()];
-            }
+        return DB::transaction(function () use ($table, $id, $data, $activeCol) {
+            $update = [$activeCol => $activeCol === 'status' ? 'denied' : 0, 'denial_reason' => $data['reason'], 'updated_at' => now()];
             DB::table($table)->where('id', $id)->update($update);
 
             AuditLogger::log(Auth::id(), 'service.denied', null, $id, [
