@@ -19,6 +19,7 @@ use App\Models\Marketplace\ProductVariant;
 use App\Models\Sector;
 use App\Models\SectorEntity;
 use App\Models\SubscriptionPlan;
+use App\Http\Controllers\Concerns\CountyAdminHelpers;
 use App\Services\CacheSyncService;
 use App\Events\GenericDomainEvent;
 use App\Services\PaymentService;
@@ -35,37 +36,7 @@ use Illuminate\Support\Str;
  */
 class CountyAdminController extends Controller
 {
-    protected function authorizeCounty(string $slug): County
-    {
-        $user = Auth::user();
-        abort_unless($user, 401);
-        $county = County::where('slug', $slug)->firstOrFail();
-        $allowed = $user->isAdmin()
-            || $user->hasRole('kicc_admin')
-            || $user->hasRole('national_admin')
-            || ($user->county_id && $user->county_id == $county->id)
-            || ($user->hasRole('county_admin') && $user->county_id == $county->id);
-        abort_unless($allowed, 403, 'You do not have access to this county.');
-        return $county;
-    }
-
-    /**
-     * Bust public caches + purge the CDN edge so the change is live immediately.
-     */
-    protected function syncCounty(County $county): void
-    {
-        app(CacheSyncService::class)->county($county->id);
-    }
-
-    protected function syncSector(County $county, int $sectorId): void
-    {
-        app(CacheSyncService::class)->sector($county->id, $sectorId);
-    }
-
-    protected function syncInstitution(int $institutionId): void
-    {
-        app(CacheSyncService::class)->institution($institutionId);
-    }
+    use CountyAdminHelpers;
 
     public function dashboard(string $slug, Request $request)
     {

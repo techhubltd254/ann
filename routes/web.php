@@ -198,12 +198,12 @@ Route::get('/national-admin/agencies/{agency}/delete', [\App\Http\Controllers\We
     // Professional County Admin (full content/image/price/ad/package control)
     Route::get('/county-admin/{slug}/pro', [\App\Http\Controllers\Web\CountyAdminController::class, 'dashboard'])->name('county.admin.pro');
     Route::post('/county-admin/{slug}/pro/content', [\App\Http\Controllers\Web\CountyAdminController::class, 'updateContent'])->name('county.admin.content');
-    Route::post('/county-admin/{slug}/pro/image', [\App\Http\Controllers\Web\CountyAdminController::class, 'uploadImage'])->name('county.admin.image.upload');
-    Route::post('/county-admin/{slug}/pro/image/{sector}/delete', [\App\Http\Controllers\Web\CountyAdminController::class, 'deleteImage'])->name('county.admin.image.delete');
-    Route::post('/county-admin/{slug}/pro/sector-video', [\App\Http\Controllers\Web\CountyAdminController::class, 'uploadSectorVideo'])->name('county.admin.sector.video.upload');
-    Route::post('/county-admin/{slug}/pro/sector-video/{sector}/delete', [\App\Http\Controllers\Web\CountyAdminController::class, 'deleteSectorVideo'])->name('county.admin.sector.video.delete');
-    Route::post('/county-admin/{slug}/pro/4d-video', [\App\Http\Controllers\Web\CountyAdminController::class, 'upload4dVideo'])->name('county.admin.4d.upload');
-    Route::post('/county-admin/{slug}/pro/4d-video/{entityType}/{entityId}/delete', [\App\Http\Controllers\Web\CountyAdminController::class, 'delete4dVideo'])->name('county.admin.4d.delete');
+    Route::post('/county-admin/{slug}/pro/image', [\App\Http\Controllers\Web\CountyMediaController::class, 'uploadImage'])->name('county.admin.image.upload');
+    Route::post('/county-admin/{slug}/pro/image/{sector}/delete', [\App\Http\Controllers\Web\CountyMediaController::class, 'deleteImage'])->name('county.admin.image.delete');
+    Route::post('/county-admin/{slug}/pro/sector-video', [\App\Http\Controllers\Web\CountyMediaController::class, 'uploadSectorVideo'])->name('county.admin.sector.video.upload');
+    Route::post('/county-admin/{slug}/pro/sector-video/{sector}/delete', [\App\Http\Controllers\Web\CountyMediaController::class, 'deleteSectorVideo'])->name('county.admin.sector.video.delete');
+    Route::post('/county-admin/{slug}/pro/4d-video', [\App\Http\Controllers\Web\CountyMediaController::class, 'upload4dVideo'])->name('county.admin.4d.upload');
+    Route::post('/county-admin/{slug}/pro/4d-video/{entityType}/{entityId}/delete', [\App\Http\Controllers\Web\CountyMediaController::class, 'delete4dVideo'])->name('county.admin.4d.delete');
     Route::post('/county-admin/{slug}/pro/price', [\App\Http\Controllers\Web\CountyAdminController::class, 'updatePrice'])->name('county.admin.price');
     Route::post('/county-admin/{slug}/pro/ads', [\App\Http\Controllers\Web\CountyAdminController::class, 'createAd'])->name('county.admin.ads');
     Route::post('/county-admin/{slug}/pro/package', [\App\Http\Controllers\Web\CountyAdminController::class, 'purchasePackage'])->name('county.admin.package');
@@ -223,10 +223,10 @@ Route::get('/national-admin/agencies/{agency}/delete', [\App\Http\Controllers\We
     Route::post('/county-admin/{slug}/pro/voice-note', [\App\Http\Controllers\Web\CountyAdminController::class, 'storeVoiceNote'])->name('county.admin.voice.store');
     // Virtual Expo — P4: Landmarks
     Route::post('/county-admin/{slug}/pro/landmark', [\App\Http\Controllers\Web\CountyAdminController::class, 'storeLandmark'])->name('county.admin.landmark.store');
-    Route::post('/county-admin/{slug}/pro/hero-video', [\App\Http\Controllers\Web\CountyAdminController::class, 'uploadHeroVideo'])->name('county.admin.hero.upload');
-    Route::post('/county-admin/{slug}/pro/hero-video/delete', [\App\Http\Controllers\Web\CountyAdminController::class, 'deleteHeroVideo'])->name('county.admin.hero.delete');
-    Route::post('/county-admin/{slug}/pro/flag-video', [\App\Http\Controllers\Web\CountyAdminController::class, 'uploadFlagVideo'])->name('county.admin.flag.upload');
-    Route::post('/county-admin/{slug}/pro/flag-video/delete', [\App\Http\Controllers\Web\CountyAdminController::class, 'deleteFlagVideo'])->name('county.admin.flag.delete');
+    Route::post('/county-admin/{slug}/pro/hero-video', [\App\Http\Controllers\Web\CountyMediaController::class, 'uploadHeroVideo'])->name('county.admin.hero.upload');
+    Route::post('/county-admin/{slug}/pro/hero-video/delete', [\App\Http\Controllers\Web\CountyMediaController::class, 'deleteHeroVideo'])->name('county.admin.hero.delete');
+    Route::post('/county-admin/{slug}/pro/flag-video', [\App\Http\Controllers\Web\CountyMediaController::class, 'uploadFlagVideo'])->name('county.admin.flag.upload');
+    Route::post('/county-admin/{slug}/pro/flag-video/delete', [\App\Http\Controllers\Web\CountyMediaController::class, 'deleteFlagVideo'])->name('county.admin.flag.delete');
     Route::post('/county-admin/{slug}/pro/entity', [\App\Http\Controllers\Web\CountyAdminController::class, 'addEntity'])->name('county.admin.entity');
     Route::post('/county-admin/{slug}/pro/entity/{entityId}/delete', [\App\Http\Controllers\Web\CountyAdminController::class, 'deleteEntity'])->name('county.admin.entity.delete');
     Route::post('/county-admin/{slug}/pro/institutions', [\App\Http\Controllers\Web\CountyAdminController::class, 'storeInstitution'])->name('county.admin.institution.store');
