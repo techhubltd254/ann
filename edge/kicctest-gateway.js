@@ -96,7 +96,10 @@ async function handle(request, env, ctx) {
       if (request.method === "GET" && !url.pathname.startsWith("/api/auth/") && isCacheableApi(url.pathname)) {
         const apiKey = new Request(`${url.origin}${url.pathname}${url.search}::${CACHE_VERSION}`);
         const apiCached = await caches.default.match(apiKey);
-        if (apiCached) return apiCached;
+        if (apiCached) {
+            const apiHit = mergeHeaders(apiCached, { "X-CDN-Cache": "HIT" });
+            return new Response(apiCached.body, { status: apiCached.status, headers: apiHit });
+          }
 
         const res = await proxy(request, upstream, url, { cache: false, scheme: env.ORIGIN_SCHEME ?? "http" });
         if (res.ok && !(res.headers.getSetCookie?.().length)) {
@@ -262,7 +265,10 @@ async function handle(request, env, ctx) {
     // are never served from another filter's cached HTML.
     const cacheKey = new Request(`${url.origin}${url.pathname}${url.search}::${country === "KE" ? "ke" : "row"}::${CACHE_VERSION}`);
     const cached = cacheable ? await caches.default.match(cacheKey) : undefined;
-    if (cached) return cached;
+    if (cached) {
+      const hitHeaders = mergeHeaders(cached, { "X-CDN-Cache": "HIT" });
+      return new Response(cached.body, { status: cached.status, headers: hitHeaders });
+    }
 
     const res = await proxy(request, env.ORIGIN_HOST, url, { cache: true, scheme: env.ORIGIN_SCHEME ?? "http" });
     if (res.ok && cacheable && !(res.headers.getSetCookie?.().length)) {
