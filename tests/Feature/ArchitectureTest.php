@@ -40,6 +40,8 @@ class ArchitectureTest extends TestCase
             // Webhook handlers — third-party payload validation
             'StripeWebhookController', 'MpesaWebhookController',
             'CourierWebhookController', 'VerifyN8nWebhook',
+            // Monitoring — system tables (bus_events, jobs, consumer_offsets)
+            'MetricsController',
             // Tracked: Phase 3c decomposition (god controllers)
             'KiccAdminController', 'CountyAdminController',
             // Tracked: DB::table() elimination backlog
