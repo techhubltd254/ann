@@ -13,13 +13,16 @@
     "@dnd-kit/sortable": "^10.0.0",
     "@dnd-kit/utilities": "^3.2.0",
     "@inertiajs/react": "^2.0.0",
+    "@react-three/drei": "^10.7.9",
+    "@react-three/fiber": "^9.8.1",
     "clsx": "^2.1.0",
     "date-fns": "^4.1.0",
     "lucide-react": "^0.468.0",
     "react": "^19.2.8",
     "react-dom": "^19.2.8",
     "recharts": "^2.15.0",
-    "tailwind-merge": "^2.6.0"
+    "tailwind-merge": "^2.6.0",
+    "three": "^0.186.1"
   },
   "devDependencies": {
     "@types/react": "^18.3.0",

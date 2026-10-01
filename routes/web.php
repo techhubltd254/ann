@@ -596,6 +596,7 @@ Route::post('/screens/{screen}/advertise', [ScreenController::class, 'advertise'
 Route::view('/exhibition-3d/map', 'exhibition-3d.map')->name('exhibition-3d.map');
 Route::view('/exhibition-3d/sector', 'exhibition-3d.sector')->name('exhibition-3d.sector');
 Route::view('/exhibition-3d/booth', 'exhibition-3d.booth')->name('exhibition-3d.booth');
+Route::view('/exhibition-3d/terrain', 'exhibition-3d.terrain')->name('exhibition-3d.terrain');
 
 // 3D Room Explorer
 Route::get('/room3d', [Room3dController::class, 'index'])->name('room3d.index');
@@ -692,8 +693,25 @@ Route::get('/muranga-admin/{path?}', function () {
 })->where('path', '.*')->middleware('auth');
 
 // ── Digital Consent Forms (Public — compliant with Kenya DPA 2019 & GDPR) ──
+Route::get('/consent/verify', [\App\Http\Controllers\Web\ConsentController::class, 'verify'])->name('consent.verify');
+Route::get('/consent/physical', [\App\Http\Controllers\Web\ConsentController::class, 'physical'])->name('consent.physical');
 Route::get('/consent/{slug}', [\App\Http\Controllers\Web\ConsentController::class, 'show'])->name('consent.show');
 Route::post('/consent/{slug}/sign', [\App\Http\Controllers\Web\ConsentController::class, 'sign'])->name('consent.sign');
 Route::get('/consent/{slug}/confirmation/{record}', [\App\Http\Controllers\Web\ConsentController::class, 'confirmation'])->name('consent.confirmation');
-Route::get('/consent/physical', [\App\Http\Controllers\Web\ConsentController::class, 'physical'])->name('consent.physical');
-Route::get('/consent/verify', [\App\Http\Controllers\Web\ConsentController::class, 'verify'])->name('consent.verify');
+
+// ═══ 3D Experiences (Item #7) ═══════════════════════════════════════════════
+Route::get('/3d/counties/{county:slug}', function (\App\Models\County $county) {
+    return \Inertia\Inertia::render('3D/County3D', [
+        'county' => ['id' => $county->id, 'name' => $county->name, 'slug' => $county->slug],
+        'modelUrl' => "https://kicctest.org/3d/models/{$county->slug}.glb",
+    ]);
+})->name('3d.county')->middleware($publicCache);
+
+Route::get('/3d/splats/{name}', function (string $name) {
+    $allowed = ['university_orig', 'hospital', 'hospital_netflix', 'hospital_v3'];
+    abort_unless(in_array($name, $allowed, true), 404);
+    return \Inertia\Inertia::render('3D/SplatViewer', [
+        'splatName' => $name,
+        'splatUrl' => "https://kicctest.org/3d/splats/{$name}.splat",
+    ]);
+})->name('3d.splat')->middleware($publicCache);
