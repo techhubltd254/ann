@@ -41,6 +41,7 @@ rsync -az --delete \
     --exclude "node_modules/" \
     --exclude "muranga video.mp4" \
     --exclude "muranga hero.mp4" \
+    --exclude "public/3d/splats/" \
     "$WORK/" "$APP_DIR/" >> "$LOG" 2>&1
 
 # Fix storage symlink
