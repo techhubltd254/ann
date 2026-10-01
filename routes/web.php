@@ -249,6 +249,19 @@ Route::get('/national-admin/agencies/{agency}/delete', [\App\Http\Controllers\We
     Route::get('/institution-admin/{institution}/sync', [\App\Http\Controllers\Web\InstitutionAdminController::class, 'sync'])->name('institution.admin.sync');
     Route::post('/institution-admin/{institution}/team', [\App\Http\Controllers\Web\InstitutionAdminController::class, 'addTeamMember'])->name('institution.admin.team.add');
     Route::post('/institution-admin/{institution}/team/{userId}/remove', [\App\Http\Controllers\Web\InstitutionAdminController::class, 'removeTeamMember'])->name('institution.admin.team.remove');
+
+    // ── 3D Asset Admin (KICC superadmin) ──
+    Route::get('/kicc-admin/3d-assets', [\App\Http\Controllers\Web\Admin3dAssetsController::class, 'index'])->name('admin.3d.assets')->middleware('admin:kicc');
+    Route::match(['get', 'post'], '/kicc-admin/3d-assets/upload', [\App\Http\Controllers\Web\Admin3dAssetsController::class, 'upload'])->name('admin.3d.upload')->middleware('admin:kicc');
+    Route::post('/kicc-admin/3d-assets/{assetId}/attach', [\App\Http\Controllers\Web\Admin3dAssetsController::class, 'attach'])->name('admin.3d.attach')->middleware('admin:kicc');
+    Route::post('/kicc-admin/3d-assets/{assetId}/detach', [\App\Http\Controllers\Web\Admin3dAssetsController::class, 'detach'])->name('admin.3d.detach')->middleware('admin:kicc');
+    Route::post('/kicc-admin/3d-assets/{assetId}/delete', [\App\Http\Controllers\Web\Admin3dAssetsController::class, 'delete'])->name('admin.3d.delete')->middleware('admin:kicc');
+
+    // ── Institution Admin — 3D Asset Management ──
+    Route::get('/institution-admin/{institution}/3d', [\App\Http\Controllers\Web\Admin3dAssetsController::class, 'index'])->name('admin.3d.institution');
+    Route::match(['get', 'post'], '/institution-admin/{institution}/3d/upload', [\App\Http\Controllers\Web\Admin3dAssetsController::class, 'upload'])->name('admin.3d.upload.institution');
+    Route::post('/institution-admin/{institution}/3d/room3d', [\App\Http\Controllers\Web\Admin3dAssetsController::class, 'storeRoom3d'])->name('admin.3d.room3d.store.institution');
+
     // Private Exhibitor Portal
     Route::get('/exhibitor-admin', [\App\Http\Controllers\Web\ExhibitorPortalController::class, 'index'])->name('exhibitor.admin');
     Route::post('/exhibitor-admin/products', [\App\Http\Controllers\Web\ExhibitorPortalController::class, 'storeProduct'])->name('exhibitor.admin.products.store');

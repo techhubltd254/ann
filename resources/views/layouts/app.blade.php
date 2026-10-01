@@ -19,6 +19,43 @@
     {{-- GSAP + ScrollTrigger for scroll-driven cinematic experiences --}}
     <script src="{{ asset('js/gsap.min.js') }}"></script>
     <script src="{{ asset('js/ScrollTrigger.min.js') }}"></script>
+    <script type="importmap">
+    {
+        "imports": {
+            "three": "https://cdn.jsdelivr.net/npm/three@0.170.0/build/three.module.js",
+            "three/addons/": "https://cdn.jsdelivr.net/npm/three@0.170.0/examples/jsm/"
+        }
+    }
+    </script>
+    <script src="https://cdn.jsdelivr.net/npm/lenis@1.1.20/dist/lenis.min.js"></script>
+    <script>
+    var KICC_MOTION = {
+        // Scrollytelling flag: set to true when 3D scene is active
+        active3d: false,
+        // Shared camera/object handles populated by 3D scripts
+        cameraHandle: null,
+        objectHandle: null,
+    };
+    if (window.Lenis) {
+        window._lenis = new Lenis({
+            lerp: 0.08,
+            smoothWheel: true,
+            wheelMultiplier: 0.9,
+            touchMultiplier: 1.8,
+            infinite: false,
+        });
+        window._lenis.on("scroll", ({ scroll, limit }) => {
+            const pct = limit > 0 ? scroll / limit : 0;
+            KICC_MOTION.scrollY = scroll;
+            KICC_MOTION.scrollPct = pct;
+        });
+        gsap.ticker.add((time) => window._lenis.raf(time * 1000));
+        gsap.ticker.lagSmoothing(0);
+        gsap.registerPlugin(ScrollTrigger);
+        // Tie ScrollTrigger to Lenis so scrub timelines sync
+        ScrollTrigger.defaults({ scroller: window._lenis.wrapper || document.body });
+    }
+    </script>
     <script type="application/ld+json">
     {
         "@@context": "https://schema.org",
@@ -40,8 +77,11 @@
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@200;300;400;500;600;700;800;900&display=swap" rel="stylesheet">
     <style>
         * { font-family: 'Inter', system-ui, sans-serif; }
-        body { background-color: #F9FAFB; color: #111827; scroll-behavior: smooth; }
+        body { background-color: #F9FAFB; color: #111827; }
         #kicc-3d-bg { position: fixed; top: 0; left: 0; width: 100vw; height: 100vh; z-index: 0; pointer-events: none; }
+        .kicc-canvas-3d { position: fixed; top: 0; left: 0; width: 100vw; height: 100vh; z-index: 0; pointer-events: none; }
+        .kicc-canvas-3d.interactive { pointer-events: auto; }
+        .kicc-content-layer { position: relative; z-index: 10; }
         .three-video-container { position: relative; z-index: 1; background: transparent; }
         .three-video-container canvas { display: block; width: 100% !important; height: 100% !important; }
         .scrollbar-hide { scrollbar-width: none; -ms-overflow-style: none; }
@@ -356,6 +396,19 @@
             .mobile-stack { flex-direction: column !important; }
             .mobile-text-center { text-align: center !important; }
         }
+
+        /*  SCROLL-DRIVEN 3D SECTION (Kasane-style scrollytelling)  */
+        .scroll-3d-section { position: relative; height: 300vh; }
+        .scroll-3d-sticky { position: sticky; top: 0; height: 100vh; overflow: hidden; }
+        .scroll-3d-overlay { position: absolute; inset: 0; z-index: 10; display: flex; flex-direction: column; justify-content: flex-end; padding: 4rem; pointer-events: none; }
+        .scroll-3d-overlay > * { pointer-events: auto; max-width: 32rem; }
+        .scroll-progress { position: fixed; bottom: 2rem; left: 50%; transform: translateX(-50%); z-index: 20; height: 2px; background: rgba(144,28,30,0.3); border-radius: 1px; width: 200px; }
+        .scroll-progress-bar { height: 100%; background: var(--kicc-red); border-radius: 1px; width: 0%; transition: width 0.1s linear; }
+
+        /*  SHADER BACKDROP VARIANTS (RFEQ-style)  */
+        .shader-dark .kicc-canvas-3d { z-index: -1; }
+        .shader-dark { background: #0a0a14; }
+        .shader-dark .glass-card-dark { background: rgba(10,10,20,0.65); border: 1px solid rgba(255,255,255,0.08); }
     </style>
     @stack('styles')
 <script>
@@ -542,6 +595,7 @@ document.addEventListener('DOMContentLoaded', function() {
                     <li><a href="{{ route('streams.index') }}" class="text-white/50 hover:text-kicc-gold text-sm transition-colors">Live Events</a></li>
                     <li><a href="{{ route('screens.directory') }}" class="text-white/50 hover:text-kicc-gold text-sm transition-colors">Screens</a></li>
                     <li><a href="{{ route('exhibition-3d.map') }}" class="text-white/50 hover:text-kicc-gold text-sm transition-colors">3D Tour</a></li>
+                    <li><a href="{{ route('exhibition-3d.terrain') }}" class="text-white/50 hover:text-kicc-gold text-sm transition-colors">Terrain Explorer</a></li>
                     <li><a href="{{ route('operations.index') }}" class="text-white/50 hover:text-kicc-gold text-sm transition-colors">Operations</a></li>
                 </ul>
             </div>
@@ -558,6 +612,24 @@ document.addEventListener('DOMContentLoaded', function() {
     </footer>
     @stack('scripts')
     <script defer src="https://cdn.jsdelivr.net/npm/alpinejs@3.14.8/dist/cdn.min.js"></script>
+    <div class="scroll-progress" aria-hidden="true"><div class="scroll-progress-bar" id="scroll-progress-bar"></div></div>
+    <script>
+    (function() {
+        var bar = document.getElementById('scroll-progress-bar');
+        if (!bar) return;
+        if (window._lenis) {
+            window._lenis.on('scroll', function(e) {
+                var pct = e.limit > 0 ? Math.round(e.scroll / e.limit * 100) : 0;
+                bar.style.width = pct + '%';
+            });
+        } else {
+            window.addEventListener('scroll', function() {
+                var h = document.documentElement.scrollHeight - window.innerHeight;
+                bar.style.width = h > 0 ? Math.round(window.scrollY / h * 100) + '%' : '0%';
+            }, { passive: true });
+        }
+    })();
+    </script>
     {{-- Core motion system --}}
     <script src="{{ asset('js/animations.js') }}"></script>
     {{-- Immersive interaction engine --}}

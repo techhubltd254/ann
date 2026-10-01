@@ -18,6 +18,8 @@ class Room3d extends Model
         'pipeline',
         'job_result',
         'processed_at',
+        'entity_type',
+        'entity_id',
     ];
 
     protected $casts = [
