@@ -2,6 +2,7 @@
 
 namespace App\Services;
 
+use App\Support\CircuitBreaker;
 use Illuminate\Support\Facades\Http;
 use Illuminate\Support\Facades\Log;
 
@@ -9,18 +10,19 @@ use Illuminate\Support\Facades\Log;
  * N8nService — fires n8n automation webhooks for every platform event.
  * Also verifies incoming webhooks from n8n.
  *
- * Configure in .env:
- *   N8N_BASE_URL=https://annitalolen.app.n8n.cloud
- *   N8N_WEBHOOK_SECRET=your-shared-secret
- *   N8N_API_KEY=your-n8n-api-key
- *   N8N_WEBHOOK_ORDER_CREATED=/webhook/kicc-order-created
- *   N8N_WEBHOOK_BOOKING_CREATED=/webhook/kicc-booking-created
- *   ... (one per event)
+ * Protected by circuit breaker: after 5 consecutive failures, all n8n
+ * calls are skipped for 60 seconds to prevent cascade timeouts.
  *
  * Non-blocking by design: failures are logged, never thrown.
  */
 class N8nService
 {
+    private static ?CircuitBreaker $breaker = null;
+
+    private static function breaker(): CircuitBreaker
+    {
+        return self::$breaker ??= new CircuitBreaker('n8n', 5, 60);
+    }
     /** All events that can fire webhooks — also the 13 previously missing ones */
     public static array $events = [
         'order_created', 'booking_created', 'user_registered', 'venue_inquiry',
@@ -50,10 +52,10 @@ class N8nService
         'flythrough_rendered', 'beneficiary_audio_attached',
     ];
 
-    /** Fire an n8n webhook for the given event with its payload. */
+    /** Fire an n8n webhook for the given event with its payload. Protected by circuit breaker. */
     public static function fire(string $event, array $payload = []): void
     {
-        try {
+        self::breaker()->call(function () use ($event, $payload) {
             $base = rtrim((string) config('services.n8n.base_url', ''), '/');
             if (!$base) {
                 $base = rtrim((string) env('N8N_BASE_URL', ''), '/');
@@ -83,9 +85,7 @@ class N8nService
                 'data' => $payload,
             ]);
             Log::info("n8n: fired [{$event}]");
-        } catch (\Throwable $e) {
-            Log::warning("n8n: webhook [{$event}] failed: " . $e->getMessage());
-        }
+        }, $event, $payload);
     }
 
     /** Verify an incoming n8n webhook signature */

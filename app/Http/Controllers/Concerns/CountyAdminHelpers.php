@@ -5,6 +5,7 @@ namespace App\Http\Controllers\Concerns;
 use App\Models\County;
 use App\Services\CacheSyncService;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Gate;
 
 /**
  * Shared helpers for county-scoped admin controllers.
@@ -17,12 +18,7 @@ trait CountyAdminHelpers
         $user = Auth::user();
         abort_unless($user, 401);
         $county = County::where('slug', $slug)->firstOrFail();
-        $allowed = $user->isAdmin()
-            || $user->hasRole('kicc_admin')
-            || $user->hasRole('national_admin')
-            || ($user->county_id && $user->county_id == $county->id)
-            || ($user->hasRole('county_admin') && $user->county_id == $county->id);
-        abort_unless($allowed, 403, 'You do not have access to this county.');
+        Gate::authorize('update', $county);
         return $county;
     }
 

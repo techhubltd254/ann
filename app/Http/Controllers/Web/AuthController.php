@@ -189,6 +189,13 @@ class AuthController extends Controller
             RateLimiter::clear($key);
             $user = Auth::user();
             AuditLogger::log($user->id, 'auth.login_success', 'User', $user->id, ['ip' => $request->ip(), 'field' => $field]);
+            \Sentry\addBreadcrumb(new \Sentry\Breadcrumb(
+                \Sentry\Breadcrumb::LEVEL_INFO,
+                \Sentry\Breadcrumb::TYPE_USER,
+                'auth',
+                "Login success: {$user->email}",
+                ['user_id' => $user->id, 'field' => $field]
+            ));
             $adminType = $request->input('admin_type');
 
             // Role-based redirect
@@ -214,6 +221,13 @@ class AuthController extends Controller
 
         RateLimiter::hit($key, 120);
         AuditLogger::log(null, 'auth.login_failed', 'User', null, ['login_attempt' => $login, 'ip' => $request->ip(), 'field' => $field]);
+        \Sentry\addBreadcrumb(new \Sentry\Breadcrumb(
+            \Sentry\Breadcrumb::LEVEL_WARNING,
+            \Sentry\Breadcrumb::TYPE_USER,
+            'auth',
+            "Login failed: {$login}",
+            ['ip' => $request->ip(), 'field' => $field]
+        ));
         return back()->withErrors(['login' => 'Invalid credentials.'])->onlyInput('login');
     }
 
