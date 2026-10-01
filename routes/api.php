@@ -239,3 +239,8 @@ Route::prefix('engine/write')->middleware('auth:sanctum')->group(function () {
     Route::post('/institution', [\App\Http\Controllers\Api\EngineWriteController::class, 'writeInstitution']);
     Route::post('/venue', [\App\Http\Controllers\Api\EngineWriteController::class, 'writeVenue']);
 });
+
+// ── Observability: Prometheus-compatible metrics endpoint ──
+Route::get('/metrics', [\App\Http\Controllers\Api\MetricsController::class, 'index'])
+    ->name('api.metrics')
+    ->middleware('throttle:10,1'); // max 10 scrapes/min

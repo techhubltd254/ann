@@ -1,0 +1,9 @@
+# KICC Platform — Grafana Data Source
+apiVersion: 1
+datasources:
+  - name: KICC Metrics
+    type: prometheus
+    access: proxy
+    url: https://kicctest.org/api/metrics
+    isDefault: true
+    editable: true

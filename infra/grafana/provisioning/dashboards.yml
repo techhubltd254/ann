@@ -1,0 +1,16 @@
+# KICC Platform — Grafana Dashboard Provisioning
+# Deploy: copy to /etc/grafana/provisioning/dashboards/kicc.yml
+# Restart: systemctl restart grafana-server
+
+apiVersion: 1
+
+providers:
+  - name: 'KICC Platform'
+    orgId: 1
+    folder: 'KICC'
+    type: file
+    disableDeletion: false
+    updateIntervalSeconds: 30
+    allowUiUpdates: true
+    options:
+      path: /etc/grafana/provisioning/dashboards/kicc
