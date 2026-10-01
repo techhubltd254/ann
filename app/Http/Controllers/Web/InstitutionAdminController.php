@@ -10,7 +10,6 @@ use App\Models\Marketplace\Order;
 use App\Models\Marketplace\Product;
 use App\Models\MediaAsset;
 use App\Services\InstitutionSyncService;
-use App\Services\N8nService;
 use App\Events\GenericDomainEvent;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;

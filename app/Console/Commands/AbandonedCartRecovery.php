@@ -1,6 +1,5 @@
 <?php namespace App\Console\Commands;
 use App\Models\Marketplace\ShoppingCart;
-use App\Services\N8nService;
 use App\Events\GenericDomainEvent;
 use Illuminate\Console\Command;
 class AbandonedCartRecovery extends Command {

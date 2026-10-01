@@ -67,4 +67,16 @@ return Application::configure(basePath: dirname(__DIR__))
         $exceptions->shouldRenderJsonWhen(
             fn (Request $request) => $request->is('api/*'),
         );
+        // Breadcrumb on every 500 for production debugging
+        $exceptions->reportable(function (\Throwable $e) {
+            if (app()->isProduction()) {
+                \Sentry\addBreadcrumb(new \Sentry\Breadcrumb(
+                    \Sentry\Breadcrumb::LEVEL_ERROR,
+                    \Sentry\Breadcrumb::TYPE_HTTP,
+                    '500',
+                    'Internal Server Error: ' . $e->getMessage(),
+                    ['file' => $e->getFile(), 'line' => $e->getLine()]
+                ));
+            }
+        });
     })->create();

@@ -5,7 +5,7 @@ namespace App\Console\Commands;
 use App\Models\EscrowTransaction;
 use App\Services\AuditLogger;
 use App\Services\JournalService;
-use App\Services\N8nService;
+use App\Events\GenericDomainEvent;
 use App\Services\PoolEngine;
 use Illuminate\Console\Command;
 use Illuminate\Support\Facades\DB;
