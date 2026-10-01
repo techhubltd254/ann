@@ -100,21 +100,18 @@ try {
 ' 2>/dev/null >> "$LOG" || true
 
 # Build frontend assets (Inertia/React/3D components — use absolute npm path for systemd env)
-NPM=$(command -v npm /usr/bin/npm 2>/dev/null | head -1)
+NPM=$(command -v npm 2>/dev/null)
+[ -z "$NPM" ] && [ -x /usr/bin/npm ] && NPM=/usr/bin/npm
+[ -z "$NPM" ] && echo "  frontend: npm not found" >> "$LOG"
 if [ -f package.json ] && [ -n "$NPM" ]; then
-    echo "  frontend: npm found at $NPM" >> "$LOG"
-    "$NPM" install --no-audit --no-fund >> "$LOG" 2>&1 || true
+    echo "  frontend: npm at $NPM" >> "$LOG"
     mkdir -p public/build 2>/dev/null
-    if "$NPM" run build >> "$LOG" 2>&1; then
-        echo "  frontend: build succeeded" >> "$LOG"
-    else
-        echo "  frontend build FAILED (fallback: trying NODE_PATH)" >> "$LOG"
-        PATH="/usr/bin:/usr/local/bin:$PATH" npm run build >> "$LOG" 2>&1 || \
-            echo "  frontend build FAILED (all attempts)" >> "$LOG"
-    fi
-    if [ -f public/build/.vite/manifest.json ]; then
+    if "$NPM" install --no-audit --no-fund >> "$LOG" 2>&1 && "$NPM" run build >> "$LOG" 2>&1; then
+        echo "  frontend: build OK" >> "$LOG"
         ln -sf .vite/manifest.json public/build/manifest.json 2>/dev/null || true
-        echo "  frontend: manifest symlinked" >> "$LOG"
+        [ -f public/build/.vite/manifest.json ] && echo "  frontend: manifest symlinked" >> "$LOG"
+    else
+        echo "  frontend build FAILED" >> "$LOG"
     fi
 fi
 
