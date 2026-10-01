@@ -98,6 +98,15 @@ try {
 } catch (\Throwable $e) {}
 ' 2>/dev/null >> "$LOG" || true
 
+# Build frontend assets (Inertia/React/3D components)
+if [ -f package.json ] && command -v npm &>/dev/null; then
+    npm install --no-audit --no-fund --prefer-offline >> "$LOG" 2>&1 || true
+    npm run build >> "$LOG" 2>&1 || echo "frontend build warn" >> "$LOG"
+    # Vite 6 puts manifest in .vite/ subdir — Laravel expects build/manifest.json
+    [ -f public/build/.vite/manifest.json ] && ln -sf .vite/manifest.json public/build/manifest.json 2>/dev/null || true
+    echo "  frontend built" >> "$LOG"
+fi
+
 # View/route cache
 php artisan view:clear >> "$LOG" 2>&1
 php artisan route:clear >> "$LOG" 2>&1 || true
