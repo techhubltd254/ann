@@ -99,15 +99,22 @@ try {
 } catch (\Throwable $e) {}
 ' 2>/dev/null >> "$LOG" || true
 
-# Build frontend assets (Inertia/React/3D components)
-if [ -f package.json ] && command -v npm &>/dev/null; then
-    npm install --no-audit --no-fund >> "$LOG" 2>&1 || true
+# Build frontend assets (Inertia/React/3D components — use absolute npm path for systemd env)
+NPM=$(command -v npm /usr/bin/npm 2>/dev/null | head -1)
+if [ -f package.json ] && [ -n "$NPM" ]; then
+    echo "  frontend: npm found at $NPM" >> "$LOG"
+    "$NPM" install --no-audit --no-fund >> "$LOG" 2>&1 || true
     mkdir -p public/build 2>/dev/null
-    npm run build >> "$LOG" 2>&1 || echo "frontend build FAILED" >> "$LOG"
-    # Vite 6 puts manifest in .vite/ subdir. Laravel expects build/manifest.json
+    if "$NPM" run build >> "$LOG" 2>&1; then
+        echo "  frontend: build succeeded" >> "$LOG"
+    else
+        echo "  frontend build FAILED (fallback: trying NODE_PATH)" >> "$LOG"
+        PATH="/usr/bin:/usr/local/bin:$PATH" npm run build >> "$LOG" 2>&1 || \
+            echo "  frontend build FAILED (all attempts)" >> "$LOG"
+    fi
     if [ -f public/build/.vite/manifest.json ]; then
         ln -sf .vite/manifest.json public/build/manifest.json 2>/dev/null || true
-        echo "  frontend built" >> "$LOG"
+        echo "  frontend: manifest symlinked" >> "$LOG"
     fi
 fi
 
