@@ -8,36 +8,96 @@
 
 ## 1. System Topology
 
+```mermaid
+flowchart TB
+    subgraph CDN["Cloudflare Edge (330+ PoPs)"]
+        W["Worker (kicctest-gateway.js)"]
+        CDN_CACHE["Edge Cache API"]
+        R2["R2 Object Storage"]
+    end
+
+    subgraph DROPLET["DigitalOcean Droplet (167.172.62.234)"]
+        subgraph WEB["Laravel 13 (nginx → php-fpm)"]
+            RT["Router (280+ routes)"]
+            MW["Middleware Stack (17 layers)"]
+            CT["Controllers (Web/Admin/API)"]
+            EV["Domain Events + Listeners"]
+            Q["Horizon Queue Workers"]
+        end
+        subgraph SVC["Sidecar Services"]
+            ALGO["Python Algorithms (:8400)"]
+            INTEG["Node.js Integration (:8787)"]
+            BUS["Pipeline Bus (:8790)"]
+            CON["Consumers (:8791)"]
+            ENG["Kotlin Engine (:8091)"]
+        end
+        REDIS["Redis Cache + Queue"]
+    end
+
+    subgraph DB["TiDB Cloud"]
+        TIDB[(kicc + kicc_shard_0..3 — 341 tables)]
+    end
+
+    USER["Browser / Mobile"] -->|HTTPS| W
+    W -->|Cache Hit| USER
+    W -->|Cache Miss| RT
+    W -->|R2 Media| R2
+    W -->|Auth API| ENG
+    RT --> MW --> CT
+    CT --> EV
+    CT --> TIDB
+    CT --> REDIS
+    CT --> BUS
+    EV --> Q --> INTEG
+    BUS --> CON --> ALGO
+    CON --> TIDB
+    ALGO -->|Results| TIDB
+    ENG --> TIDB
 ```
-Cloudflare Edge Worker (kicctest.org)
-  ├─ Geo-routing (KE vs intl), Cache API, Rate limiting
-  ├─ JWT pre-validation, HMAC-guarded purge (/edge/purge)
-  ├─ R2 origin media server (images, videos, 3D models)
-  └─ 4-layer CDN (Cache API, Cache-Tags, Purge, Nginx config)
 
-Laravel 13 Application (Droplet :8443 → nginx → php-fpm)
-  ├─ 194 Eloquent models → 341 TiDB tables
-  ├─ 280+ routes (public + admin + API)
-  ├─ 9 domain events + 3 queued listeners
-  ├─ 7 ShouldQueue async jobs
-  ├─ 17 middleware layers
-  ├─ 4-tier CDN integration
-  └─ Full-text + vector search (OpenRouter)
+### Request Flow
 
-Kotlin/Spring Engine (:8091)
-  └─ 4-tier admin API (KICC/National/County/Exhibitor)
+```mermaid
+sequenceDiagram
+    participant U as Browser
+    participant CF as Cloudflare Worker
+    participant AP as Laravel App
+    participant DB as TiDB
+    participant R2S as R2 Storage
+    participant RD as Redis
 
-Python Algorithms (:8400)
-  └─ 20 algorithms: recommendations, pricing, trust, screening
+    U->>CF: HTTPS Request
+    CF->>CF: Rate Limit Check
+    CF->>CF: JWT Pre-validation
+    CF->>CF: Geo-routing (KE/intl)
 
-Node.js Integration Layer (:8787)
-  └─ N8n webhook dispatch, payment processor callbacks
+    alt Cache Hit (HTML/page cache)
+        CF-->>U: Cached Response (X-CDN-Cache: HIT)
+    else Cache Miss
+        CF->>AP: Proxy with Origin headers
+        AP->>AP: Middleware Pipeline (17 layers)
+        AP->>AP: Route → Controller
+        AP->>DB: Query Data
+        AP->>RD: Cache/Queue operations
+        AP-->>CF: HTML Response (X-CDN-Cache: MISS)
+        CF->>CF: Store in edge cache (ctx.waitUntil)
+        CF-->>U: Response with Cache-Tag header
+    end
 
-Pipeline Bus (:8790) + Consumers (:8791)
-  └─ Event-driven inter-pipeline bus with SQL journal
+    alt R2 Media (/media/derivatives/*, /media/video/*)
+        CF->>R2S: Fetch from R2
+        R2S-->>CF: Object data
+        CF->>CF: Wrap with Cache API
+        CF-->>U: Response with byte-range for video
+    end
 
-Redis Cache + Queue (Droplet)
-  ├─ Cache storage (LRU, allkeys-lru, TTL)
+    alt Admin API (/api/engine/*)
+        CF->>ENG: Kotlin Engine
+        ENG->>DB: Read/Write TiDB
+        ENG-->>CF: JSON Response
+        CF-->>U: Response
+    end
+```
   ├─ Session storage
   ├─ Horizon job queues (default, video, sync)
   └─ Rate-limit buckets + idempotency keys
@@ -65,6 +125,58 @@ Redis Cache + Queue (Droplet)
    - Enables pipeline chaining (e.g., B2 fisheries → B3 export logistics)
 
 ### Pipeline Structure
+
+```mermaid
+flowchart LR
+    subgraph INPUT["Product Signals"]
+        HS["HS Code (trade classification)"]
+        CAT["Category / Sector"]
+        TAG["Tags / Keywords"]
+        INT["User Intent (export/B2B/tourism)"]
+        EXPL["Explicit pipeline_code"]
+    end
+
+    subgraph ROUTER["PipelineRouter"]
+        FOR["forProduct()"]
+        SEARCH["fromSearchQuery()"]
+        MESH["mesh() — graph traversal"]
+    end
+
+    subgraph ENG["PipelineEngine"]
+        CALC["Calculate Fee / Take-rate"]
+        ESCROW["Create Escrow Hold"]
+        FULFILL["Capture on Fulfillment"]
+        REL["Release to Seller"]
+        LEDGER["Post Double-Entry Ledger"]
+        EVENT["Fire Domain Event"]
+    end
+
+    subgraph BUS["Bus Consumers"]
+        N8N["DispatchN8nWebhook → n8n"]
+        CACHE["InvalidateCacheOnChange → CDN Purge"]
+        AUDIT["AuditDomainEvent → audit_log"]
+    end
+
+    HS --> FOR
+    CAT --> FOR
+    TAG --> FOR
+    INT --> FOR
+    EXPL --> FOR
+    SEARCH --> FOR
+
+    FOR -->|determines pipeline code| CALC
+    CALC --> ESCROW
+    ESCROW --> FULFILL
+    FULFILL --> REL
+    REL --> LEDGER
+    LEDGER --> EVENT
+
+    EVENT --> N8N
+    EVENT --> CACHE
+    EVENT --> AUDIT
+
+    MESH -->|upstream/downstream pipelines| FOR
+```
 | Attribute | Description |
 |---|---|
 | **Code** | Hierarchical — e.g. A1, B2.3, DA7 |
@@ -368,29 +480,221 @@ Redis Cache + Queue (Droplet)
 | Impact | All 50 N8nService::fire() calls → queued events. Zero blocking HTTP in admin controllers. |
 
 ### CDN (4 layers)
-| Layer | Implementation |
-|---|---|
-| Origin Storage | R2 bucket (kicc-media) + Laravel app server |
-| Edge Anycast/DNS | Cloudflare native (330+ PoPs, geo-routing) |
-| Edge Caching | Worker Cache API for HTML (1h SWR), API (60s), R2 media (24h), static assets (1yr) |
-| Purge Pipeline | Queued: Cloudflare API (URL) + edge worker (tag-based), 3× retry |
 
-### API Security
-| Feature | Implementation |
-|---|---|
-| Authorization Gates | CountyPolicy + InstitutionPolicy — Gate::authorize() replaces inline isAdmin() |
-| Circuit Breaker | N8nService — 5 consecutive failures → 60s open |
-| Dynamic Table Guard | PROVIDER_SERVICES map — no raw DB::table($variable) |
-| Roles | Spatie: kicc_admin, national_admin, county_admin, institution_admin, exhibitor |
-| CSRF | Sanctum tokens + middleware |
+```mermaid
+flowchart TB
+    subgraph L1["Layer 1 — Origin Storage"]
+        LR["Laravel App Server"]
+        R2B["R2 Bucket (kicc-media)"]
+    end
+
+    subgraph L2["Layer 2 — Anycast/DNS"]
+        DNS["Cloudflare GeoDNS"]
+    end
+
+    subgraph L3["Layer 3 — Edge Caching Engine"]
+        subgraph L3A["Worker Cache API"]
+            HTML_CACHE["HTML Pages (1h SWR)"]
+            API_CACHE["API GETs (60s SWR)"]
+            R2_CACHE["R2 Media (24h immutable)"]
+            STATIC_CACHE["Static Assets (1yr immutable)"]
+        end
+    end
+
+    subgraph L4["Layer 4 — Purge Pipeline"]
+        QUEUED["PurgeEdgeCache Job (queued, 3× retry)"]
+        CF_API["Cloudflare API URL Purge"]
+        EDGE_PURGE["Edge Worker /edge/purge (tag-based)"]
+    end
+
+    USER["Client"] --> DNS
+    DNS -->|"Nearest PoP"| L3
+    L3 -->|Cache Hit| USER
+    L3 -->|Cache Miss| LR
+    L3 -->|R2 Fetch| R2B
+    LR --> L3
+    R2B --> L3
+
+    ADMIN["Admin Edit"] -.->|domain event| QUEUED
+    QUEUED -.-> CF_API
+    QUEUED -.-> EDGE_PURGE
+    CF_API -.->|"purge_cache (files)"| L3
+    EDGE_PURGE -.->|"purge (tags)"| L3
+```
+
+### Event-Driven Architecture
+
+```mermaid
+flowchart LR
+    subgraph EVENTS["Domain Events (9)"]
+        CO["CountyContentChanged"]
+        OR["OrderPaid"]
+        ER["EscrowReleased"]
+        PC["ProductChanged"]
+        UE["UserEvent"]
+        MP["MediaPublished"]
+        PSC["ProviderServiceChanged"]
+        GE["GenericDomainEvent (44x)"]
+    end
+
+    subgraph LISTENERS["Queued Listeners (3)"]
+        N8N["DispatchN8nWebhook"]
+        INV["InvalidateCacheOnChange"]
+        AUD["AuditDomainEvent"]
+    end
+
+    subgraph SIDE["Side Effects"]
+        WEBH["N8n Automation Webhooks"]
+        CDNP["Cloudflare Edge Purge"]
+        CACHEF["Redis Cache Tag Flush"]
+        AL["audit_log INSERT"]
+    end
+
+    CO --> N8N
+    CO --> INV
+    CO --> AUD
+    OR --> N8N
+    OR --> AUD
+    ER --> N8N
+    ER --> AUD
+    PC --> N8N
+    PC --> INV
+    PC --> AUD
+    UE --> N8N
+    UE --> AUD
+    MP --> N8N
+    MP --> AUD
+    PSC --> N8N
+    PSC --> AUD
+    GE --> N8N
+    GE --> AUD
+
+    N8N -.-> WEBH
+    INV -.-> CDNP
+    INV -.-> CACHEF
+    AUD -.-> AL
+```
+
+### Data Model — Core Domain Relationships
+
+```mermaid
+erDiagram
+    County ||--o{ CountyProduct : "has"
+    County ||--o{ CountyTourismAttraction : "has"
+    County ||--o{ CountyHotel : "has"
+    County ||--o{ CountyInstitution : "has"
+    County ||--o{ CountyFarm : "has"
+    County ||--o{ CountyTransport : "has"
+
+    User ||--o{ EscrowTransaction : "creates"
+    User ||--o{ Marketplace_Order : "places"
+    User ||--o{ Product : "sells"
+
+    Marketplace_Product ||--o{ Marketplace_OrderItem : "contains"
+    Marketplace_Order ||--o{ Marketplace_OrderItem : "has"
+
+    Marketplace_Product ||--o{ EscrowTransaction : "reference"
+
+    EscrowTransaction ||--o{ Ledger_LedgerTransaction : "settles"
+    Ledger_LedgerTransaction ||--o{ Ledger_LedgerEntry : "debits/credits"
+
+    Pool_Pool ||--o{ Pool_PoolContribution : "collects"
+    Pool_Pool ||--o{ Pool_PoolDistribution : "distributes"
+
+    Pipeline_PipelineRegistration ||--o{ Pipeline_PipelineActivation : "enables"
+    MarketPlace_Product }|--|| Pipeline_PipelineRegistration : "routes to"
+```
+
+### Middleware Pipeline
+
+```mermaid
+flowchart LR
+    subgraph PRE["Web Prep (runs first)"]
+        T["TrimStrings"]
+        C["ConvertEmptyStringsToNull"]
+        SO["SearchIntent"]
+        LG["LoginGate"]
+        CR["CachePublicResponse"]
+    end
+
+    subgraph CORE["Session + Security"]
+        SS["StartSession"]
+        CSRF["PreventRequestForgery"]
+        SB["SubstituteBindings"]
+        SI["ShareErrorsFromSession"]
+    end
+
+    subgraph APP["Application"]
+        THROT["ThrottleRequests (60/1min)"]
+        INERTIA["HandleInertiaRequests"]
+        AUDC["AppendAuditContext"]
+        SH["SecurityHeaders (CSP,HSTS)"]
+        OI["OptimizeUploadedImages"]
+    end
+
+    REQ["Incoming Request"] --> T --> C --> SO --> LG --> CR --> SS --> CSRF --> SB --> SI --> THROT --> INERTIA --> AUDC --> SH --> OI --> RT
+    RT["Router → Controller"] 
+```
+
+### API Security — Authorization Flow
+
+```mermaid
+flowchart TD
+    subgraph GATES["Laravel Gates (Policy-based Auth)"]
+        CP["CountyPolicy. update(County)"]
+        IP["InstitutionPolicy. update/delete(Institution)"]
+    end
+
+    subgraph CONTROLLERS["Controllers"]
+        CAC["CountyAdminController"]
+        CMC["CountyMediaController"]
+        IAC["InstitutionAdminController"]
+    end
+
+    subgraph GUARDS["Protection Layers"]
+        CB["CircuitBreaker (5 fails→60s open)"]
+        PSM["PROVIDER_SERVICES Map (table guard)"]
+        ROLE["Spatie Roles"]
+        CSRF2["CSRF + Sanctum"]
+    end
+
+    CAC -->|authorizeCounty| CP
+    CMC -->|authorizeCounty| CP
+    IAC -->|"authorize(Institution)"| IP
+    CAC --> CB
+    CAC --> PSM
+    CAC --> ROLE
+    CAC --> CSRF2
+```
 
 ### Observability Stack
-| Tool | Purpose |
-|---|---|
-| Metrics endpoint | GET /api/metrics — bus lag, queue depth, 5xx rate, active users, TiDB connections |
-| Sentry | Error tracking + breadcrumbs on login events + 500s |
-| Pulse | Active (Laravel performance monitoring daemon) |
-| Grafana | Provisioning configs deployed (Prometheus + Grafana on droplet) |
+
+```mermaid
+flowchart LR
+    subgraph APP2["Laravel App"]
+        MTR["GET /api/metrics"]
+        SENT["Sentry SDK"]
+        PULSE["Laravel Pulse"]
+    end
+
+    subgraph DROPLET2["Droplet"]
+        GRF["Grafana (localhost:3000)"]
+        PROM["Prometheus scraping"]
+        LOGS["storage/logs/*"]
+    end
+
+    subGRAPH CLOUD["Cloudflare"]
+        METRIC["Analytics / Cache hit ratio"]
+        WAF["WAF / DDoS metrics"]
+    end
+
+    MTR -->|scrape every 60s| PROM --> GRF
+    SENT -->|trace errors| SENTRY["sentry.io"]
+    PULSE -->|performance metrics| PULSE_DB["pulse database"]
+
+    LOGS -->|laravel.log| SENT
+    LOGS -->|access log| GRF
+```
 
 ### Data Layer
 | Metric | Value |
