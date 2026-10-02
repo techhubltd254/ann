@@ -507,9 +507,6 @@ document.addEventListener('DOMContentLoaded', function() {
                 <a href="{{ route('dashboard.index') }}" class="inline-flex items-center gap-3 touch-target font-bold tracking-wide transition-all duration-200 px-4 text-xs h-9 rounded-xl bg-[#901C1E] text-gray-900 hover:bg-[#7a181a]">
                     Dashboard
                 </a>
-                <a href="{{ route('admin.portal') }}" class="hidden sm:inline-flex items-center gap-3 touch-target font-bold tracking-wide transition-all duration-200 px-4 text-xs h-9 rounded-xl border border-gray-200 text-gray-600 hover:bg-gray-100" title="Admin">
-                    Admin
-                </a>
                 <form method="POST" action="{{ route('logout') }}" class="inline">@csrf
                     <button type="submit" class="inline-flex items-center gap-3 touch-target font-bold tracking-wide transition-all duration-200 px-3 text-xs h-9 rounded-xl border border-gray-200 text-gray-500 hover:bg-gray-100">Logout</button>
                 </form>
@@ -535,7 +532,6 @@ document.addEventListener('DOMContentLoaded', function() {
             <a href="{{ route('marketplace.index') }}" class="text-left px-4 py-3 text-sm font-semibold text-gray-600 hover:text-gray-900 hover:bg-gray-100 rounded-lg">Marketplace</a>
             @auth
             <a href="{{ route('dashboard.index') }}" class="text-left px-4 py-3 text-sm font-semibold text-kicc-gold hover:bg-gray-100 rounded-lg">Dashboard</a>
-            <a href="{{ route('admin.portal') }}" class="text-left px-4 py-3 text-sm font-semibold text-gray-600 hover:text-gray-900 hover:bg-gray-100 rounded-lg">Admin</a>
             @else
             <a href="{{ route('login') }}" class="text-left px-4 py-3 text-sm font-semibold text-[#5A6480] hover:text-[#901C1E] hover:bg-sky-50 rounded-lg">Sign In</a>
             @endauth
@@ -586,7 +582,6 @@ document.addEventListener('DOMContentLoaded', function() {
                     <li><a href="{{ route('dashboard.index') }}" class="text-white/50 hover:text-kicc-gold text-sm transition-colors">My Dashboard</a></li>
                     <li><a href="{{ route('dashboard.exhibitions') }}" class="text-white/50 hover:text-kicc-gold text-sm transition-colors">My Exhibitions</a></li>
                     <li><a href="{{ route('dashboard.bookings') }}" class="text-white/50 hover:text-kicc-gold text-sm transition-colors">My Bookings</a></li>
-                    <li><a href="{{ route('admin.portal') }}" class="text-white/50 hover:text-kicc-gold text-sm transition-colors">Admin Portal</a></li>
                 </ul>
             </div>
             <div>

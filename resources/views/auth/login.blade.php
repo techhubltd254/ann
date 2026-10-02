@@ -3,68 +3,25 @@
 @section('title', 'Sign In — KICC Platform')
 @section('content')
 <div class="min-h-dvh flex items-center justify-center px-5 pt-20 py-12"
-     x-data="{
-        step: 'portal',
-        portal: null,
-        loading: false,
-        showPassword: false,
-        portals: [
-            { id: 'kicc',     title: 'KICC Mother Admin',    desc: 'Platform-wide control — all counties, national, exhibitors', icon: '', color: 'from-[#F59E0B] to-[#D97706]' },
-            { id: 'national', title: 'National Government',   desc: 'Ministries & agencies portal',                              icon: '', color: 'from-[#0EA5E9] to-[#0284C7]' },
-            { id: 'exhibitor',title: 'Exhibitor',             desc: 'Your storefront & marketplace dashboard',                   icon: '', color: 'from-[#2D6A4F] to-[#40916C]' },
-        ],
-        select(p) { this.portal = p; this.step = 'form'; },
-        back() { this.step = 'portal'; this.portal = null; }
-     }">
-    <div class="w-full max-w-4xl grid md:grid-cols-2 gap-6" data-reveal>
+     x-data="{ loading: false, showPassword: false }">
+    <div class="w-full max-w-md">
 
-        {{-- LEFT: Portal Selector / Sign In --}}
         <div class="bg-white border border-gray-100 rounded-2xl p-6 md:p-8">
             <div class="text-center mb-6">
                 <img src="{{ media('kicc/kicc-logo.png') }}" alt="KICC" class="h-12 w-auto mx-auto mb-3">
-                <h1 class="text-xl font-black text-gray-900" data-split x-text="step === 'portal' ? 'Choose your portal' : 'Sign in to portal'"></h1>
-                <p class="text-gray-400 text-sm mt-1" x-text="step === 'portal' ? 'Select where you are entering as' : portal ? 'Enter credentials for ' + portal.title : ''"></p>
+                <h1 class="text-xl font-black text-gray-900" data-split>Sign In</h1>
+                <p class="text-gray-400 text-sm mt-1">Sign in to your KICC National Exhibition account</p>
             </div>
 
             @if($errors->any())
             <div class="bg-red-50 border border-red-200 text-red-600 rounded-xl px-4 py-3 mb-4 text-sm">{{ $errors->first() }}</div>
             @endif
 
-            {{-- STEP 1: Choose portal --}}
-            <div x-show="step === 'portal'" x-cloak x-transition class="space-y-3">
-                <template x-for="p in portals" :key="p.id">
-                    <button type="button" @click="select(p)"
-                            class="w-full flex items-center gap-4 p-4 rounded-2xl border-2 border-gray-200 hover:border-gray-400 transition-all text-left group">
-                        <div class="w-12 h-12 rounded-xl bg-gradient-to-br flex items-center justify-center text-2xl shrink-0"
-                             :class="p.color">
-                            <span x-text="p.icon"></span>
-                        </div>
-                        <div class="flex-1 min-w-0">
-                            <div class="font-bold text-gray-900 text-sm group-hover:text-gray-700" x-text="p.title"></div>
-                            <div class="text-xs text-gray-400 mt-0.5" x-text="p.desc"></div>
-                        </div>
-                        <svg class="w-4 h-4 text-gray-300 group-hover:text-gray-500 shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"/></svg>
-                    </button>
-                </template>
-                <div class="text-center pt-2">
-                    <a href="{{ route('register') }}" class="text-xs text-[#0EA5E9] font-semibold hover:underline">New? Create an exhibitor account →</a>
-                </div>
-            </div>
-
-            {{-- STEP 2: Credentials --}}
-            <form x-show="step === 'form'" x-cloak x-transition method="POST" action="{{ route('login') }}"
+            {{-- Sign-in form --}}
+            <form method="POST" action="{{ route('login') }}"
                   @submit="loading = true">
                 @csrf
-                <input type="hidden" name="admin_type" :value="portal.id">
-                <div class="flex items-center gap-2 mb-5">
-                    <button type="button" @click="back()" class="text-gray-400 hover:text-gray-600 p-1.5 rounded-lg hover:bg-gray-100 transition-colors" aria-label="Back to portal selection">
-                        <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 19l-7-7 7-7"/></svg>
-                    </button>
-                    <span class="inline-flex items-center gap-2 text-xs font-bold text-gray-500">
-                        <span class="text-base" x-text="portal.icon"></span>
-                        <span x-text="portal.title"></span>
-                    </span>
-                </div>
+                <input type="hidden" name="admin_type" value="public">
                 <div class="space-y-4">
                     <div>
                         <label class="block text-[10px] font-bold text-gray-400 uppercase tracking-wider mb-1.5">Email or Phone</label>
@@ -105,8 +62,8 @@
                 </button>
             </form>
 
-            {{-- Google Sign-In (exhibitor path) --}}
-            <div class="mt-4" x-show="step === 'form' && portal.id === 'exhibitor'" x-cloak>
+            {{-- Google Sign-In (available to all public users) --}}
+            <div class="mt-4">
                 <div class="flex items-center gap-3 mb-4">
                     <span class="h-px flex-1 bg-gray-200"></span>
                     <span class="text-xs text-gray-400">or</span>
@@ -118,52 +75,12 @@
                     Sign in with Google
                 </a>
             </div>
+
+            <p class="text-center text-xs mt-6 text-gray-500">
+                New to KICC? <a href="{{ route('register') }}" class="text-[#0EA5E9] font-semibold hover:underline">Create your account &rarr;</a>
+            </p>
         </div>
 
-        {{-- RIGHT: Portal info / Sign Up --}}
-        <div class="bg-gradient-to-br from-[#0B1E57] to-[#0A1024] rounded-2xl p-6 md:p-8 flex flex-col justify-between">
-            <div>
-                <div class="flex items-center gap-2 mb-4">
-                    <span class="bg-[#FFCD05]/20 text-[#FFCD05] text-[10px] font-black uppercase tracking-widest px-2.5 py-1 rounded-full">KICC Platform</span>
-                    <span class="text-white/60 text-xs">One account, four portals</span>
-                </div>
-                <h2 class="text-2xl font-black text-white leading-tight" data-split>Enter where you<br>belong</h2>
-                <p class="text-white/70 text-sm mt-3 leading-relaxed">
-                    The KICC Mother Admin governs everything. Below it sit the 
-                    <strong class="text-white">National Government</strong> and <strong class="text-white">Exhibitor</strong> storefronts.
-                    County admins log in through the KICC Mother Admin portal.
-                </p>
-                <div class="mt-6 space-y-3">
-                    <div class="flex items-center gap-3 p-3 rounded-xl bg-white/5 border border-white/10">
-                        <span class="text-xl"></span>
-                        <div>
-                            <div class="text-white text-sm font-bold">KICC Mother Admin</div>
-                            <div class="text-white/50 text-xs">Counties, national, exhibitors, orders, escrow, users</div>
-                        </div>
-                    </div>
-                    <div class="flex items-center gap-3 p-3 rounded-xl bg-white/5 border border-white/10">
-                        <span class="text-xl"></span>
-                        <div>
-                            <div class="text-white text-sm font-bold">National Government</div>
-                            <div class="text-white/50 text-xs">Ministries & agencies portal</div>
-                        </div>
-                    </div>
-                    <div class="flex items-center gap-3 p-3 rounded-xl bg-white/5 border border-white/10">
-                        <span class="text-xl"></span>
-                        <div>
-                            <div class="text-white text-sm font-bold">Exhibitor</div>
-                            <div class="text-white/50 text-xs">Your storefront, products & orders</div>
-                        </div>
-                    </div>
-                </div>
-            </div>
-            <div class="mt-6 space-y-2">
-                <a href="{{ route('register') }}" class="block w-full text-center py-3.5 rounded-xl bg-[#FFCD05] text-[#0B1E57] font-black text-sm hover:bg-[#ffe44d] transition-all active:scale-[0.98]">
-                    Create Your Exhibitor Account →
-                </a>
-                <p class="text-white/40 text-[11px] text-center">Takes 2 minutes. 3 quick setup questions to build your website.</p>
-            </div>
-        </div>
     </div>
 </div>
 @endsection

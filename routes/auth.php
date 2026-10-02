@@ -41,6 +41,10 @@ Route::middleware('auth')->group(function () {
     Route::post('/logout', [AuthController::class, 'logout'])->name('logout');
 });
 
+// Hidden admin login (no public link — admins must know the URL)
+Route::get('/kicc-admin/login', [AuthController::class, 'showAdminLogin'])->name('auth.admin-login.form');
+Route::post('/kicc-admin/login', [AuthController::class, 'adminLogin'])->name('auth.admin-login');
+
 // Social OAuth
 Route::get('/auth/google', [SocialAuthController::class, 'redirectToGoogle'])->name('auth.google');
 Route::get('/auth/google/callback', [SocialAuthController::class, 'handleGoogleCallback']);

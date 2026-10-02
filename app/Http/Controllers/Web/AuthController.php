@@ -167,12 +167,79 @@ class AuthController extends Controller
         return view('auth.login');
     }
 
+    /** Hidden admin login page (accessible at /kicc-admin/login — no public link). */
+    public function showAdminLogin()
+    {
+        if (Auth::check()) {
+            return app(\App\Services\Auth\LoginRedirectService::class)->redirect(Auth::user());
+        }
+        return view('auth.admin-login');
+    }
+
+    /** Hidden admin login POST — authenticates and redirects by role. */
+    public function adminLogin(Request $request)
+    {
+        $data = $request->validate([
+            'login' => 'required|string',
+            'password' => 'required|string',
+        ]);
+
+        $login = $data['login'] ?? '';
+        $key = 'login:' . $request->ip() . ':' . strtolower($login);
+        if (RateLimiter::tooManyAttempts($key, 5)) {
+            return back()->withErrors(['login' => 'Too many attempts. Try again in ' . RateLimiter::availableIn($key) . ' seconds.']);
+        }
+
+        $field = filter_var($data['login'], FILTER_VALIDATE_EMAIL) ? 'email' : 'phone';
+
+        if (Auth::attempt([$field => $data['login'], 'password' => $data['password'], 'status' => 'active'], $request->boolean('remember'))) {
+            $request->session()->regenerate();
+            RateLimiter::clear($key);
+            $user = Auth::user();
+            AuditLogger::log($user->id, 'auth.admin_login_success', 'User', $user->id, ['ip' => $request->ip()]);
+            \Sentry\addBreadcrumb(new \Sentry\Breadcrumb(
+                \Sentry\Breadcrumb::LEVEL_INFO,
+                \Sentry\Breadcrumb::TYPE_USER,
+                'auth',
+                "Admin login success: {$user->email}",
+                ['user_id' => $user->id]
+            ));
+
+            // Role-based redirect — determined server-side, no portal selector needed
+            if ($user->hasRole('kicc_admin')) {
+                return redirect('/portal');
+            }
+            if ($user->hasRole('national_admin')) {
+                return redirect()->route('national.admin.v2.dashboard');
+            }
+            if ($user->hasRole('county_admin')) {
+                $countyId = $user->county_id;
+                if ($countyId) {
+                    $county = \App\Models\County::find($countyId);
+                    if ($county) return redirect()->route('county.admin.pro', $county->slug);
+                }
+                return redirect()->route('dashboard.county');
+            }
+            // Generic admin fallback
+            if ($user->hasRole('exhibitor') || $user->account_type === 'exhibitor') {
+                return redirect()->route('exhibitor.admin');
+            }
+            // Authenticated but no admin role — use standard redirect
+            return app(\App\Services\Auth\LoginRedirectService::class)->redirect($user);
+        }
+
+        RateLimiter::hit($key, 120);
+        AuditLogger::log(null, 'auth.admin_login_failed', 'User', null, ['login_attempt' => $login, 'ip' => $request->ip()]);
+
+        return back()->withErrors(['login' => 'Invalid admin credentials.'])->onlyInput('login');
+    }
+
     public function login(Request $request)
     {
         $data = $request->validate([
             'login' => 'required|string',
             'password' => 'required|string',
-            'admin_type' => 'nullable|string|in:kicc,national,county,exhibitor',
+            'admin_type' => 'nullable|string|in:kicc,national,county,exhibitor,public',
             'county_id' => 'nullable|integer|exists:counties,id',
         ]);
 
