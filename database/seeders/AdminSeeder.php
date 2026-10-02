@@ -52,7 +52,7 @@ class AdminSeeder extends Seeder
         $seeded[] = ['admin@national.kicc.go.ke', 'National Government Admin', $nationalPassword, 'national_admin'];
 
         // 3. Per-county admins
-        $counties = County::orderBy('slug');
+        $counties = County::orderBy('slug')->get();
         $countyCount = 0;
         foreach ($counties as $county) {
             $countyPassword = Str::random(24);
