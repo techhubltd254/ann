@@ -19,6 +19,7 @@ class AdminSeeder extends Seeder
             ['email' => 'admin@kicc.go.ke'],
             [
                 'name' => 'KICC Mother Admin',
+                'fullName' => 'KICC Mother Admin',
                 'email' => 'admin@kicc.go.ke',
                 'password' => bcrypt($password),
                 'account_type' => 'superadmin',
@@ -34,6 +35,7 @@ class AdminSeeder extends Seeder
             ['email' => 'admin@national.kicc.go.ke'],
             [
                 'name' => 'National Government Admin',
+                'fullName' => 'National Government Admin',
                 'email' => 'admin@national.kicc.go.ke',
                 'password' => bcrypt($nationalPassword),
                 'account_type' => 'admin',
@@ -53,6 +55,7 @@ class AdminSeeder extends Seeder
                 ['email' => $email],
                 [
                     'name' => "{$county->name} County Admin",
+                    'fullName' => "{$county->name} County Admin",
                     'email' => $email,
                     'password' => bcrypt($countyPassword),
                     'account_type' => 'admin',
