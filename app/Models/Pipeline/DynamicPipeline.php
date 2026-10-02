@@ -4,7 +4,7 @@ namespace App\Models\Pipeline;
 
 use Illuminate\Database\Eloquent\Model;
 
-class DynamicPipeline extends Model
+class DynamicPipeline extends Model { protected $fillable = ['*']; }
 {
     protected $table = 'dynamic_pipelines';
 

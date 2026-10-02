@@ -4,6 +4,9 @@ namespace App\Models\Travel;
 
 use Illuminate\Database\Eloquent\Model;
 
+use App\Models\Travel\Airline;
+use App\Models\Travel\Airport;
+
 class Flight extends Model
 {
     protected $fillable = [

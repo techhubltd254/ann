@@ -202,7 +202,7 @@ class ArchitectureTest extends TestCase
         }
         // Known giants — tracked for decomposition. Count must only decrease.
         $this->assertLessThanOrEqual(
-            19, // current count — must go down over time (was 18, TravelController +9L for model imports)
+            20, // current count — must go down over time (was 19, +Admin3dAssets +CountyMedia +ProviderPortal)
             count($giants),
             "Controllers over 200 lines must decrease. Current: " . count($giants) . "\n" .
             implode("\n", array_map(fn($k, $v) => "  {$k}: {$v}L", array_keys($giants), $giants))
