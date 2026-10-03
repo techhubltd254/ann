@@ -113,3 +113,5 @@ _archive/
 !infra/**/*.pdf
 ARCHITECTURE.*
 WORKFLOW_TREES.*
+*.docx#
+*.xlsx#
