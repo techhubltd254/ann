@@ -80,6 +80,9 @@ class User extends Authenticatable implements FilamentUser
             if ($user->status === null) {
                 $user->status = 'active';
             }
+            if ($user->passwordHash === null && $user->password !== null) {
+                $user->passwordHash = $user->password;
+            }
         });
     }
 
