@@ -257,7 +257,7 @@ async function handle(request, env, ctx) {
     // ---- Geo-routing: KE users → HTML page cache; intl → same but no personalisation ----
     // NEVER cache stateful paths (login/register/cart/checkout/dashboard) — a cached
     // page has no session cookie, which breaks CSRF for every subsequent visitor.
-    const NO_CACHE_PATHS = ["/login", "/register", "/cart", "/checkout", "/dashboard", "/logout", "/media", "/room3d"];
+    const NO_CACHE_PATHS = ["/login", "/register", "/cart", "/checkout", "/dashboard", "/logout", "/media", "/room3d", "/kicc-admin/login"];
     const cacheable = request.method === "GET" && !NO_CACHE_PATHS.some((p) => url.pathname.startsWith(p))
         && url.pathname !== "/counties" && url.pathname !== "/counties/";
     const country = request.cf?.country ?? "XX";
