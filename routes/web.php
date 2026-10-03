@@ -283,6 +283,10 @@ Route::post('/kicc-admin/licence/{id}/approve', [\App\Http\Controllers\Web\Pipel
 Route::post('/kicc-admin/licence/{id}/reject', [\App\Http\Controllers\Web\PipelineLicenceController::class, 'reject'])->name('kicc.admin.licence.reject');
 Route::post('/kicc-admin/pipeline/{code}/config', [\App\Http\Controllers\Web\PipelineLicenceController::class, 'updateConfig'])->name('kicc.admin.pipeline.config');
 
+// ── Venue management from Mother Admin ──
+Route::post('/kicc-admin/venues/store', [\App\Http\Controllers\Web\KiccAdminController::class, 'storeVenue'])->name('kicc.admin.venue.store')->middleware('admin:kicc');
+Route::post('/kicc-admin/venues/{id}/update', [\App\Http\Controllers\Web\KiccAdminController::class, 'updateVenue'])->name('kicc.admin.venue.update')->middleware('admin:kicc');
+
 // ── Public pipeline sector pages (bypass Authenticate middleware) ──
 // REMOVED — pipeline data is proprietary and must be admin-only.
 // Pipeline management available at /kicc-admin (Mother Admin) and
