@@ -5,7 +5,7 @@
 @section('content')
 <div class="relative bg-[#F9FAFB] overflow-hidden border-b border-gray-200">
     <div class="absolute inset-0">
-        <img src="{{ media('kicc/tower-night.jpg') }}" alt="" class="w-full h-full object-cover object-top opacity-25" data-parallax="0.15">
+        <img src="{{ media('kicc/tower-night.jpg') }}" alt="" class="w-full h-full object-cover object-top opacity-25" data-parallax="0.15" loading="lazy">
     </div>
     <div class="absolute inset-0 bg-gradient-to-b from-[#07090F]/70 via-[#07090F]/85 to-[#07090F]"></div>
     <div class="relative max-w-7xl mx-auto px-5 py-16" data-reveal>
@@ -19,6 +19,7 @@
 </div>
 
 <div class="max-w-7xl mx-auto px-5 py-12">
+
     {{-- MICE Services Banner --}}
     <div class="relative overflow-hidden rounded-2xl border border-[#FFCD05]/25 bg-gradient-to-r from-[#141B2E] to-[#0D1220] p-8 mb-12" data-reveal="zoom">
         <div class="absolute w-64 h-64 rounded-full bg-[#FFCD05]/10 blur-3xl -top-16 -right-16 animate-float-slow"></div>
@@ -33,11 +34,52 @@
         </div>
     </div>
 
-    {{-- Rooms Grid --}}
-    <div class="flex items-center gap-3 mb-8" data-reveal>
-        <h2 class="text-2xl font-black text-gray-900 tracking-tight" data-split>Rooms &amp; Spaces</h2>
-        <span class="h-px flex-1 bg-[#1890D7]/8"></span>
+    {{-- Filter Bar --}}
+    <div class="bg-white border border-gray-200 rounded-2xl p-5 mb-8" data-reveal>
+        <form method="GET" action="{{ route('venues.index') }}" class="flex flex-wrap items-end gap-3">
+            {{-- County Filter --}}
+            <div class="w-full sm:w-auto">
+                <label class="text-[10px] font-bold text-gray-400 uppercase tracking-wider block mb-1">County</label>
+                <select name="county_id" onchange="this.form.submit()" class="w-full bg-gray-50 border border-gray-200 rounded-xl px-3.5 py-2.5 text-sm text-gray-900 outline-none">
+                    <option value="">All Counties</option>
+                    @foreach($counties as $c)
+                    <option value="{{ $c->id }}" @selected($c->id == request('county_id'))>{{ $c->name }}</option>
+                    @endforeach
+                </select>
+            </div>
+            {{-- Venue Type Filter --}}
+            <div class="w-full sm:w-auto">
+                <label class="text-[10px] font-bold text-gray-400 uppercase tracking-wider block mb-1">Type</label>
+                <select name="type" onchange="this.form.submit()" class="w-full bg-gray-50 border border-gray-200 rounded-xl px-3.5 py-2.5 text-sm text-gray-900 outline-none">
+                    <option value="">All Types</option>
+                    @foreach($venueTypes as $vt)
+                    <option value="{{ $vt }}" @selected($vt == request('type'))>{{ $vt }}</option>
+                    @endforeach
+                </select>
+            </div>
+            {{-- Capacity Filter --}}
+            <div class="w-full sm:w-auto">
+                <label class="text-[10px] font-bold text-gray-400 uppercase tracking-wider block mb-1">Min. Capacity</label>
+                <select name="min_capacity" onchange="this.form.submit()" class="w-full bg-gray-50 border border-gray-200 rounded-xl px-3.5 py-2.5 text-sm text-gray-900 outline-none">
+                    <option value="">Any</option>
+                    <option value="50" @selected('50' == request('min_capacity'))>50+</option>
+                    <option value="100" @selected('100' == request('min_capacity'))>100+</option>
+                    <option value="250" @selected('250' == request('min_capacity'))>250+</option>
+                    <option value="500" @selected('500' == request('min_capacity'))>500+</option>
+                    <option value="1000" @selected('1000' == request('min_capacity'))>1000+</option>
+                </select>
+            </div>
+            <button type="submit" class="bg-kicc-gold text-[#07090F] font-bold px-5 py-2.5 rounded-xl text-sm">Filter</button>
+            @if(request('county_id') || request('type') || request('min_capacity'))
+            <a href="{{ route('venues.index') }}" class="text-xs text-kicc-gold font-semibold underline">Clear all</a>
+            @endif
+        </form>
     </div>
+
+    {{-- Results Count --}}
+    <div class="text-xs text-gray-400 mb-5">{{ $venues->count() }} venue(s) found</div>
+
+    {{-- Venues Grid --}}
     <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-5 mb-16">
         @foreach($venues as $i => $v)
         <a href="{{ route('venues.show', $v->slug) }}" class="bg-white rounded-2xl border border-gray-200 overflow-hidden hover:border-kicc-gold/40 transition-all group card-hover block" data-tilt="6" data-reveal data-reveal-delay="{{ ($i % 3) * 80 }}">
@@ -56,6 +98,9 @@
                     @endif
                 </div>
                 <h3 class="font-black text-gray-900 mb-1">{{ $v->name }}</h3>
+                @if($v->relationLoaded('institution') && $v->institution)
+                <div class="text-xs text-gray-400 mb-1">🏢 {{ $v->institution->name }}</div>
+                @endif
                 <p class="text-sm text-[#5A6480] line-clamp-2 leading-relaxed">{{ $v->description }}</p>
                 <div class="mt-3 flex flex-wrap gap-1.5">
                     @foreach(array_slice(is_array($v->amenities) ? $v->amenities : (json_decode($v->amenities ?? '[]', true) ?? []), 0, 3) as $a)
@@ -69,6 +114,17 @@
             </div>
         </a>
         @endforeach
+    </div>
+
+    {{-- Pagination --}}
+    <div class="flex items-center justify-center gap-2 mt-8">
+        @if($venues->previousPage())
+        <a href="{{ $venues->previousPageUrl() }}" class="inline-flex items-center gap-1 px-4 py-2 rounded-lg bg-gray-100 text-gray-700 text-sm hover:bg-gray-200 transition-all">← Previous</a>
+        @endif
+        <span class="text-xs text-gray-400">Page {{ $venues->currentPage() }} of {{ $venues->lastPage() }}</span>
+        @if($venues->hasMorePages())
+        <a href="{{ $venues->nextPageUrl() }}" class="inline-flex items-center gap-1 px-4 py-2 rounded-lg bg-gray-100 text-gray-700 text-sm hover:bg-gray-200 transition-all">Next →</a>
+        @endif
     </div>
 
     {{-- Accreditations --}}
