@@ -41,8 +41,11 @@ class SocialAuthController extends Controller
                 'email_verified_at' => now(),
                 'mfaEnabled' => false,
                 'tier' => 'EXHIBITOR',
+                'account_type' => 'exhibitor',
                 'status' => 'active',
             ]);
+
+            $user->assignRole('exhibitor');
 
             Auth::login($user, true);
 
