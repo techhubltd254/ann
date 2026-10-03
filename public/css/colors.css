@@ -1,0 +1,32 @@
+@charset "UTF-8";
+/* KICC colors.css — brand palette tokens (served as static CSS to avoid MIME errors) */
+:root {
+    --kicc-navy: #0B1E57;
+    --kicc-navy-light: #1a3070;
+    --kicc-red: #901C1E;
+    --kicc-red-light: #b71c1c;
+    --kicc-crimson: #A6192E;
+    --kicc-crimson-dark: #7A1122;
+    --kicc-gold: #FFCD05;
+    --kicc-gold-soft: #FFD966;
+    --kicc-gold-light: #ffe44d;
+    --kicc-dark: #0A1024;
+    --kicc-ivory: #FAF7F2;
+    --kicc-text: #5A6480;
+    --kicc-text-light: #8a94a6;
+    --kicc-bg: #F9FAFB;
+    --kicc-bg-alt: #f0f2f5;
+    --kicc-border: #E5E7EB;
+    --kicc-success: #059669;
+    --kicc-warning: #D97706;
+    --kicc-error: #DC2626;
+    --kicc-info: #0284C7;
+    --focus-ring: 0 0 0 3px rgba(144, 28, 30, 0.35);
+    --shadow-sm: 0 1px 2px rgba(11, 30, 87, 0.06);
+    --shadow-md: 0 4px 12px rgba(11, 30, 87, 0.08);
+    --shadow-lg: 0 8px 32px rgba(11, 30, 87, 0.12);
+    --radius-sm: 0.5rem;
+    --radius-md: 0.75rem;
+    --radius-lg: 1rem;
+    --radius-xl: 1.5rem;
+}

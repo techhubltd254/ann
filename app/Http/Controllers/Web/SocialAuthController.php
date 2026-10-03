@@ -54,6 +54,7 @@ class SocialAuthController extends Controller
                 ->with('success', 'Welcome, ' . $user->name . '!');
                 
         } catch (\Exception $e) {
+            \Illuminate\Support\Facades\Log::error('Google OAuth callback failed: ' . $e->getMessage(), ['trace' => $e->getTraceAsString()]);
             return redirect()->route('login')
                 ->withErrors(['google' => 'Google login failed. Please try again.']);
         }

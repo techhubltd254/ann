@@ -111,3 +111,5 @@ _archive/
 *.csv
 *.mp4
 !infra/**/*.pdf
+ARCHITECTURE.*
+WORKFLOW_TREES.*
