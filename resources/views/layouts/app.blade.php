@@ -66,7 +66,9 @@
         "description": "Africa's Premier Meeting Venue. A national icon since 1973."
     }
     </script>
-    <script src="{{ asset('js/tailwind-cdn.js') }}"></script>
+    <script src="https://cdn.tailwindcss.com"></script>
+    {{-- Suppress Tailwind production warning --}}
+    <script>var _cw=console.warn;console.warn=function(m){if(typeof m==="string"&&m.includes("tailwindcss.com"))return;_cw.apply(this,arguments)}</script>
     <script src="{{ asset('js/theme.js') }}"></script>
     <script defer src="https://cdn.jsdelivr.net/npm/hls.js@1.5.13/dist/hls.min.js"></script>
     <script defer src="{{ asset('js/media-tile.js') }}?v={{ filemtime(public_path('js/media-tile.js')) }}"></script>
