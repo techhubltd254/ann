@@ -6,6 +6,6 @@ use Illuminate\Database\Eloquent\Model;
 
 class SettlementBatch extends Model
 {
-    protected $table = 'settlements';
+    protected $table = 'settlement_batches';
     protected $fillable = ['*'];
 }
