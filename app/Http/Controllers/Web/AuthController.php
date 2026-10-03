@@ -49,15 +49,12 @@ class AuthController extends Controller
 
         try {
             \Illuminate\Support\Facades\Mail::to($email)->send(new \App\Mail\VerificationCodeMail($code, 'registration'));
-            \Illuminate\Support\Facades\Log::info("Auth: registration code sent to {$email}");
-            return redirect()->route('register.verify')->with('message', 'Code sent to ' . $email);
         } catch (\Throwable $e) {
             \Illuminate\Support\Facades\Log::error("Verification email to {$email} failed: " . $e->getMessage());
-            \Illuminate\Support\Facades\Log::info("FALLBACK — verification code for {$email}: {$code}");
-            return redirect()->route('register.verify')
-                ->with('message', 'Mail server unreachable — your verification code is: ' . $code)
-                ->with('warning', 'Check the server logs or use this code to complete registration.');
         }
+        \Illuminate\Support\Facades\Log::info("Auth: registration code sent to {$email}");
+
+        return redirect()->route('register.verify')->with('message', 'Code sent to ' . $email);
     }
 
     public function showVerify()
@@ -343,18 +340,16 @@ class AuthController extends Controller
             'expires_at' => now()->addMinutes(10),
         ]);
 
+        session(['login_code_email' => $email]);
+
         try {
             \Illuminate\Support\Facades\Mail::to($email)->send(new \App\Mail\VerificationCodeMail($code, 'login'));
-            \Illuminate\Support\Facades\Log::info("Login code sent to {$email}");
-            session(['login_code_email' => $email]);
-            return redirect()->route('login.code')->with('message', 'Code sent to your email.');
         } catch (\Throwable $e) {
             \Illuminate\Support\Facades\Log::error("Login code email to {$email} failed: " . $e->getMessage());
-            \Illuminate\Support\Facades\Log::info("FALLBACK — login code for {$email}: {$code}");
-            return redirect()->route('login.code')
-                ->with('message', 'Mail server unreachable — your login code is: ' . $code)
-                ->with('warning', 'Check the server logs or use this code to sign in.');
         }
+        \Illuminate\Support\Facades\Log::info("Login code sent to {$email}");
+
+        return redirect()->route('login.code')->with('message', 'Code sent to your email.');
     }
 
     public function showLoginCode()
