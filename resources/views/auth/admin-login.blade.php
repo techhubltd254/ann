@@ -1,5 +1,7 @@
 @extends('layouts.blank')
 
+@section('title', 'Admin Sign In')
+
 @push('styles')
 <style>
 body { background: #0A1024; min-height: 100vh; display: flex; align-items: center; justify-content: center; }
@@ -26,14 +28,14 @@ body { background: #0A1024; min-height: 100vh; display: flex; align-items: cente
             @endif
 
             <div>
-                <label class="block text-[10px] font-bold text-zinc-400 uppercase tracking-wider mb-1.5">Email</label>
-                <input type="email" name="login" value="{{ old('login') }}" required autofocus
+                <label for="login" class="block text-[10px] font-bold text-zinc-400 uppercase tracking-wider mb-1.5">Email</label>
+                <input id="login" type="email" name="login" value="{{ old('login') }}" required autofocus
                        class="w-full bg-white/5 border border-white/10 focus:border-[#F59E0B]/60 rounded-xl px-4 py-2.5 text-sm text-white placeholder:text-zinc-500 outline-none transition-colors"
                        placeholder="admin@kicc.go.ke">
             </div>
             <div>
-                <label class="block text-[10px] font-bold text-zinc-400 uppercase tracking-wider mb-1.5">Password</label>
-                <input type="password" name="password" required
+                <label for="password" class="block text-[10px] font-bold text-zinc-400 uppercase tracking-wider mb-1.5">Password</label>
+                <input id="password" type="password" name="password" required
                        class="w-full bg-white/5 border border-white/10 focus:border-[#F59E0B]/60 rounded-xl px-4 py-2.5 text-sm text-white placeholder:text-zinc-500 outline-none transition-colors"
                        style="min-height:44px" placeholder="Enter your password">
             </div>
@@ -43,9 +45,5 @@ body { background: #0A1024; min-height: 100vh; display: flex; align-items: cente
                 Sign In
             </button>
         </form>
-
-        <div class="mt-5 text-center text-xs">
-            <a href="{{ route('login') }}" class="text-zinc-400 hover:text-[#FFCD05] transition-colors">&larr; Public sign-in</a>
-        </div>
     </div>
 </section>
