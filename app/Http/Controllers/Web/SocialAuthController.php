@@ -20,6 +20,8 @@ class SocialAuthController extends Controller
     {
         try {
             $googleUser = Socialite::driver('google')->user();
+            $name = $googleUser->getName();
+            $googleId = $googleUser->getId();
             
             $avatar = $googleUser->getAvatar();
             // Truncate avatar URL — Google returns extremely long signed URLs
