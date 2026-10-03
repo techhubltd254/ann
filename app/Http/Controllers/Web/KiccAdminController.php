@@ -686,8 +686,13 @@ class KiccAdminController extends Controller
             'name' => 'required|string|max:255',
             'slug' => 'required|string|max:255',
             'venue_type' => 'nullable|string|max:100',
+            'county_id' => 'nullable|integer|exists:counties,id',
+            'institution_id' => 'nullable|integer|exists:county_institutions,id',
             'capacity' => 'nullable|integer|min:0',
             'description' => 'nullable|string|max:5000',
+            'address' => 'nullable|string|max:500',
+            'city' => 'nullable|string|max:200',
+            'cover_image' => 'nullable|string|max:500',
             'amenities' => 'nullable|string',
         ]);
 
@@ -695,8 +700,13 @@ class KiccAdminController extends Controller
             'name' => $data['name'],
             'slug' => $data['slug'],
             'venue_type' => $data['venue_type'] ?? 'General',
+            'county_id' => (int) ($data['county_id'] ?? 0) > 0 ? (int) $data['county_id'] : null,
+            'institution_id' => (int) ($data['institution_id'] ?? 0) > 0 ? (int) $data['institution_id'] : null,
             'capacity' => (int) ($data['capacity'] ?? 0) > 0 ? (int) $data['capacity'] : null,
             'description' => $data['description'] ?? '',
+            'address' => $data['address'] ?? '',
+            'city' => $data['city'] ?? '',
+            'cover_image' => $data['cover_image'] ?? '',
             'amenities' => $data['amenities'] ?? '[]',
             'is_active' => true,
         ]);
@@ -716,8 +726,13 @@ class KiccAdminController extends Controller
             'name' => 'required|string|max:255',
             'slug' => 'required|string|max:255',
             'venue_type' => 'nullable|string|max:100',
+            'county_id' => 'nullable|integer|exists:counties,id',
+            'institution_id' => 'nullable|integer|exists:county_institutions,id',
             'capacity' => 'nullable|integer|min:0',
             'description' => 'nullable|string|max:5000',
+            'address' => 'nullable|string|max:500',
+            'city' => 'nullable|string|max:200',
+            'cover_image' => 'nullable|string|max:500',
             'amenities' => 'nullable|string',
         ]);
 
@@ -725,8 +740,13 @@ class KiccAdminController extends Controller
             'name' => $data['name'],
             'slug' => $data['slug'],
             'venue_type' => $data['venue_type'] ?? 'General',
+            'county_id' => (int) ($data['county_id'] ?? 0) > 0 ? (int) $data['county_id'] : null,
+            'institution_id' => (int) ($data['institution_id'] ?? 0) > 0 ? (int) $data['institution_id'] : null,
             'capacity' => (int) ($data['capacity'] ?? 0) > 0 ? (int) $data['capacity'] : null,
             'description' => $data['description'] ?? '',
+            'address' => $data['address'] ?? '',
+            'city' => $data['city'] ?? '',
+            'cover_image' => $data['cover_image'] ?? '',
             'amenities' => $data['amenities'] ?? '[]',
         ]);
 
