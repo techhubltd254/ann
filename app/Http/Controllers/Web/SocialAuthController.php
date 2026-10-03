@@ -31,11 +31,15 @@ class SocialAuthController extends Controller
             $user = User::updateOrCreate([
                 'email' => $googleUser->getEmail(),
             ], [
-                'name' => $googleUser->getName(),
-                'google_id' => $googleUser->getId(),
+                'name' => $name,
+                'fullName' => $name,
+                'google_id' => $googleId,
                 'avatar' => $avatar,
                 'password' => bcrypt(\Illuminate\Support\Str::random(24)),
                 'email_verified_at' => now(),
+                'mfaEnabled' => false,
+                'tier' => 'EXHIBITOR',
+                'status' => 'active',
             ]);
 
             Auth::login($user, true);
