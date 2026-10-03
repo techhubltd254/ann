@@ -8,7 +8,13 @@ BRANCH="main"
 TOKEN="$GITHUB_DEPLOY_TOKEN"
 WORK="/tmp/ann-deploy"
 LOG="/opt/deploy-webhook/deploy.log"
-: "${CF_TOKEN:?CF_TOKEN is not set - export it in the droplet env}"
+
+# Source .env so Cloudflare tokens are available for cache purge
+if [ -f "$APP_DIR/.env" ]; then
+    set -a; source "$APP_DIR/.env"; set +a
+fi
+
+CF_TOKEN="${CF_TOKEN:-${CLOUDFLARE_API_TOKEN:-}}"
 export CF_ACCOUNT="${CF_ACCOUNT:-}"
 
 echo "=== DEPLOY START $(date) ===" >> "$LOG"
