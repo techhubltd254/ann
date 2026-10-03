@@ -594,6 +594,7 @@ document.addEventListener('DOMContentLoaded', function() {
                     <li><a href="{{ route('exhibition-3d.map') }}" class="text-white/50 hover:text-kicc-gold text-sm transition-colors">3D Tour</a></li>
                     <li><a href="{{ route('exhibition-3d.terrain') }}" class="text-white/50 hover:text-kicc-gold text-sm transition-colors">Terrain Explorer</a></li>
                     <li><a href="{{ route('operations.index') }}" class="text-white/50 hover:text-kicc-gold text-sm transition-colors">Operations</a></li>
+                    <li><a href="{{ route('auth.admin-login.form') }}" class="text-white/50 hover:text-kicc-gold text-sm transition-colors">Admin</a></li>
                 </ul>
             </div>
         </div>
