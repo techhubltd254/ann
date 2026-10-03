@@ -40,6 +40,12 @@ use Spatie\Permission\Traits\HasRoles;
     'trust_grade',
     'visibility_score',
     'institution_id',
+    'google_id',
+    'avatar',
+    'fullName',
+    'mfaEnabled',
+    'tier',
+    'passwordHash',
 ])]
 #[Hidden(['password', 'remember_token', 'mfa_secret'])]
 class User extends Authenticatable implements FilamentUser
