@@ -112,20 +112,18 @@
                 @endphp
                 <span class="text-[9px] font-bold px-2.5 py-1 rounded-full border {{ $badge[1] }}">{{ $badge[0] }}</span>
                 @endif
-            </div>
+</div>
             <div class="flex gap-2">
                 <a href="{{ route('marketplace.index', ['county' => $county->slug]) }}" class="px-4 py-2 rounded-xl bg-[#901C1E] text-white text-xs font-bold hover:bg-[#7b1618] transition-all">View Products</a>
                 @auth
                     @if(auth()->user()->hasAnyRole(['county_admin','kicc_admin']) && (auth()->user()->county_id == $county->id || auth()->user()->hasRole('kicc_admin')))
                     <a href="{{ route('county.admin.pro', $county->slug) }}" class="px-4 py-2 rounded-xl bg-[#0B1E57] text-white text-xs font-bold hover:bg-[#0D2A7A] transition-all">County Admin</a>
                     @endif
-                @else
-                <a href="{{ route('login') }}" class="px-4 py-2 rounded-xl border border-[#0B1E57]/40 text-[#0B1E57] text-xs font-bold hover:bg-[#0B1E57]/10 transition-all">Admin Login</a>
                 @endauth
             </div>
         </div>
 
-        {{-- COUNTY LOCATION — compact pin link in sidebar --}}
+        {{-- COUNTY LOCATION -- compact pin link in sidebar --}}
         <div class="mb-14">
             <div class="flex items-center gap-3 mb-6">
                 <span class="h-px w-8 bg-kicc-gold"></span>
