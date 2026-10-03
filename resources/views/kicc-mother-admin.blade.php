@@ -167,6 +167,57 @@
             </div>
             @endif
 
+            {{--  VENUES  --}}
+            @if($tab === 'venues')
+            <div>
+                <div class="flex items-center justify-between mb-4">
+                    <h3 class="font-bold text-white text-lg">Venues ({{ $adminVenues->total() }})</h3>
+                    <button @click="drawer = 'venue-form'; $nextTick(() => document.getElementById('venue-name')?.focus())" class="text-xs font-bold px-3 py-1.5 rounded-lg bg-emerald-500/10 text-emerald-400 hover:bg-emerald-500/20 transition-all">+ Add Venue</button>
+                </div>
+                <div class="table-kicc-wrap">
+                    <table class="table-kicc">
+                        <thead><tr><th>Name</th><th>Type</th><th>Capacity</th><th>Institution</th><th></th></tr></thead>
+                        <tbody>
+                        @foreach($adminVenues as $v)
+                        <tr>
+                            <td class="font-semibold text-white">{{ $v->name }}</td>
+                            <td><span class="text-zinc-400 text-xs">{{ $v->venue_type ?? '—' }}</span></td>
+                            <td class="text-zinc-400">{{ $v->capacity ?? '—' }}</td>
+                            <td class="text-zinc-400 text-xs">{{ $v->institution?->name ?? '—' }}</td>
+                            <td><a href="{{ route('venues.show', $v->slug) }}" class="text-rose-400 text-xs hover:underline">View</a></td>
+                        </tr>
+                        @endforeach
+                        </tbody>
+                    </table>
+                </div>
+                <div class="mt-4">{{ $adminVenues->onEachSide(1)->links() }}</div>
+            </div>
+
+            {{--  Venue quick-create drawer  --}}
+            <div x-show="drawer === 'venue-form'" x-cloak x-transition
+                 class="fixed inset-0 z-50 flex justify-end" @click.self="drawer = null">
+                <div class="w-full max-w-lg bg-[#111827] border-l border-zinc-800 p-6 overflow-y-auto" @click.stop>
+                    <div class="flex items-center justify-between mb-6">
+                        <h3 class="text-white font-bold text-lg">New Venue</h3>
+                        <button @click="drawer = null" class="text-zinc-400 hover:text-white p-2">✕</button>
+                    </div>
+                    <form method="POST" action="{{ route('kicc.admin.venue.store') }}" class="space-y-4">
+                        @csrf
+                        <div><label class="label-kicc text-zinc-300">Name</label><input id="venue-name" name="name" required class="input-kicc bg-zinc-800 border-zinc-700 text-white"></div>
+                        <div><label class="label-kicc text-zinc-300">Type</label>
+                            <select name="venue_type" class="input-kicc bg-zinc-800 border-zinc-700 text-white">
+                                <option value="">— Select —</option>
+                                <option>Plenary Hall</option><option>Theatre</option><option>Meeting Room</option><option>Boardroom</option><option>Outdoor</option><option>VIP/Events</option>
+                            </select>
+                        </div>
+                        <div><label class="label-kicc text-zinc-300">Capacity</label><input type="number" name="capacity" class="input-kicc bg-zinc-800 border-zinc-700 text-white"></div>
+                        <div><label class="label-kicc text-zinc-300">Description</label><textarea name="description" rows="3" class="input-kicc bg-zinc-800 border-zinc-700 text-white"></textarea></div>
+                        <button type="submit" class="btn-kicc btn-kicc-primary w-full justify-center">Create Venue</button>
+                    </form>
+                </div>
+            </div>
+            @endif
+
             {{--  NATIONAL  --}}
             @if($tab === 'national')
             <div>
