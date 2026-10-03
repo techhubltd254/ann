@@ -17,9 +17,9 @@ class SecurityHeaders
             "script-src 'self' 'unsafe-inline' 'unsafe-eval' cdn.tailwindcss.com cdn.jsdelivr.net unpkg.com www.googletagmanager.com googletagmanager.com accounts.google.com *.google.com *.gstatic.com; " .
             "style-src 'self' 'unsafe-inline' cdn.tailwindcss.com fonts.googleapis.com *.googleapis.com; " .
             "font-src 'self' fonts.gstatic.com data:; " .
-            "img-src 'self' data: blob: *.cloudflarestream.com *.workers.dev media.kicctest.org *.r2.cloudflarestorage.com *.google.com *.gstatic.com; " .
+            "img-src 'self' data: blob: *.cloudflarestream.com *.workers.dev media.kicctest.org *.r2.cloudflarestorage.com *.google.com *.gstatic.com www.google-analytics.com google-analytics.com; " .
             "media-src 'self' blob: data: *.cloudflarestream.com *.workers.dev media.kicctest.org *.r2.cloudflarestorage.com; " .
-            "connect-src 'self' kicctest.org *.kicctest.org *.cloudflarestream.com cloudflarestream.com *.workers.dev media.kicctest.org wss://* ws://* cdn.jsdelivr.net accounts.google.com *.google.com; " .
+            "connect-src 'self' kicctest.org *.kicctest.org *.cloudflarestream.com cloudflarestream.com *.workers.dev media.kicctest.org wss://* ws://* cdn.jsdelivr.net accounts.google.com *.google.com www.google-analytics.com google-analytics.com *.googletagmanager.com; " .
             "frame-ancestors 'self'; " .
             "base-uri 'self'; " .
             "form-action 'self' accounts.google.com"
