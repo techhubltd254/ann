@@ -10,7 +10,7 @@ use Illuminate\Support\Str;
 class CountyInstitution extends Model
 {
     protected $fillable = [
-        'county_id', 'name', 'type', 'description', 'location', 'phone', 'email', 'website',
+        'county_id', 'countyId', 'name', 'type', 'description', 'location', 'phone', 'email', 'website',
         'student_count', 'is_published', 'slug', 'user_id', 'logo_url', 'cover_image_url',
         'headquarters', 'founded_year', 'lat', 'lng', 'social_links', 'story',
         'production_chain', 'sector_mappings', 'products', 'videos', 'synced_at',
