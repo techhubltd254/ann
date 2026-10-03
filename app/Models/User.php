@@ -64,6 +64,25 @@ class User extends Authenticatable implements FilamentUser
         return ['uuid'];
     }
 
+    /** Set model-level defaults for TiDB NOT NULL columns so every create path is covered. */
+    protected static function booted(): void
+    {
+        static::creating(function (self $user) {
+            if ($user->fullName === null) {
+                $user->fullName = $user->name ?? 'User';
+            }
+            if ($user->mfaEnabled === null) {
+                $user->mfaEnabled = false;
+            }
+            if ($user->tier === null) {
+                $user->tier = 'EXHIBITOR';
+            }
+            if ($user->status === null) {
+                $user->status = 'active';
+            }
+        });
+    }
+
     public const TYPE_INDIVIDUAL = 'individual';
     public const TYPE_SME = 'sme';
     public const TYPE_SCHOOL = 'school';

@@ -132,6 +132,7 @@ class AuthController extends Controller
 
         $user = User::create([
             'name' => $data['name'],
+            'fullName' => $data['name'],
             'email' => $email,
             'phone' => $data['phone'] ?? null,
             'account_type' => $data['account_type'],
@@ -139,6 +140,7 @@ class AuthController extends Controller
             'email_verified_at' => now(),
             'active' => true,
             'mfaEnabled' => false,
+            'tier' => 'EXHIBITOR',
             'status' => 'active',
         ]);
 
