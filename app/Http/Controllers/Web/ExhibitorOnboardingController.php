@@ -26,6 +26,13 @@ class ExhibitorOnboardingController extends Controller
         'services'   => ['label' => 'Services & Experiences',  'icon' => '✨', 'hint' => 'Tours, transport, events…'],
     ];
 
+    /** Complexity levels for the intelligent decision tree */
+    public const COMPLEXITY_LEVELS = [
+        'simple'  => ['label' => 'I need a simple storefront',    'icon' => '🚀', 'desc' => 'Use a pre-made template — ready in minutes. Best for new exhibitors with standard needs.'],
+        'custom'  => ['label' => 'I need a custom setup',         'icon' => '🎨', 'desc' => 'Request a personalized dashboard built by the KICC team. We will design and configure it for your business.'],
+        'premium' => ['label' => 'I need the full experience',   'icon' => '🎬', 'desc' => 'Book a professional photo/video shoot. Our team visits your location, captures custom media, and builds a premium storefront.'],
+    ];
+
     public function show()
     {
         $user = Auth::user();
@@ -36,6 +43,7 @@ class ExhibitorOnboardingController extends Controller
             'businessTypes' => self::BUSINESS_TYPES,
             'counties' => County::orderBy('name')->get(['id', 'name']),
             'packages' => SubscriptionPlan::where('is_active', true)->orderBy('sort_order')->get(),
+            'complexityLevels' => self::COMPLEXITY_LEVELS,
         ]);
     }
 
@@ -51,6 +59,7 @@ class ExhibitorOnboardingController extends Controller
             'tagline' => 'required|string|max:500',
             'phone' => 'required|string|max:30',
             'package_slug' => 'required|exists:subscription_plans,slug',
+            'complexity' => 'required|in:' . implode(',', array_keys(self::COMPLEXITY_LEVELS)),
         ]);
 
         $package = SubscriptionPlan::where('slug', $data['package_slug'])->first();
@@ -66,13 +75,32 @@ class ExhibitorOnboardingController extends Controller
                 'tagline' => $data['tagline'],
                 'package' => $package->slug,
                 'package_name' => $package->name,
+                'complexity' => $data['complexity'],
                 'onboarded_at' => now()->toIso8601String(),
             ]),
         ]);
 
         event(new GenericDomainEvent('exhibitor_onboarded', [
-            'user_id' => $user->id, 'business_type' => $data['business_type'], 'package' => $package->slug,
-        ], n8nEventName: 'exhibitor_onboarded'));;
+            'user_id' => $user->id, 'business_type' => $data['business_type'],
+            'package' => $package->slug, 'complexity' => $data['complexity'],
+        ], n8nEventName: 'exhibitor_onboarded'));
+
+        if ($data['complexity'] === 'custom') {
+            event(new GenericDomainEvent('admin_request_created', [
+                'user_id' => $user->id, 'display_name' => $data['display_name'],
+                'type' => 'custom_admin', 'message' => 'Exhibitor requests a custom admin setup',
+                'business_type' => $data['business_type'], 'tagline' => $data['tagline'],
+            ], n8nEventName: 'admin_request_created'));
+            session()->flash('success', 'Your request has been sent to the KICC team. We will build a personalized admin for you and notify you when it is ready.');
+        } elseif ($data['complexity'] === 'premium') {
+            event(new GenericDomainEvent('admin_request_created', [
+                'user_id' => $user->id, 'display_name' => $data['display_name'],
+                'type' => 'premium_shoot', 'message' => 'Exhibitor requests a premium photo/video shoot',
+                'business_type' => $data['business_type'], 'tagline' => $data['tagline'],
+            ], n8nEventName: 'admin_request_created'));
+            session()->flash('success', 'Thank you! Our team will contact you within 24 hours to schedule your personalized photo/video shoot.');
+        }
+
         return redirect()->route('exhibitor.admin')
             ->with('success', "🎉 Your exhibitor website is ready: " . route('exhibitor.site', Str::slug($user->name)));
     }

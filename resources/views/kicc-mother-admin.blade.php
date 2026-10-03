@@ -483,6 +483,49 @@
             </div>
             @endif
 
+            {{--  EXHIBITOR REQUESTS (custom/premium setups)  --}}
+            @if($tab === 'exh_requests')
+            <div class="glass-card rounded-2xl p-6">
+                <div class="flex items-center justify-between mb-3">
+                    <h3 class="font-bold text-white text-lg">📋 Exhibitor Setup Requests</h3>
+                    <span class="text-xs text-zinc-400">{{ count($exhRequests) }} pending</span>
+                </div>
+                <table class="w-full text-xs">
+                    <thead>
+                        <tr class="text-zinc-500 uppercase tracking-wider text-[10px] font-bold">
+                            <th class="px-3 py-2 text-left">Exhibitor</th><th class="px-3 py-2 text-left">County</th>
+                            <th class="px-3 py-2 text-left">Business Type</th><th class="px-3 py-2 text-center">Complexity</th>
+                            <th class="px-3 py-2 text-left">Tagline</th><th class="px-3 py-2 text-left">Requested</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        @forelse($exhRequests as $u)
+                        @php $m = $u->metadata ?? []; @endphp
+                        <tr class="border-t border-white/5 hover:bg-white/5 transition-all">
+                            <td class="px-3 py-2 font-semibold text-white">{{ $u->name }}</td>
+                            <td class="px-3 py-2 text-zinc-400">{{ $u->county?->name ?? '—' }}</td>
+                            <td class="px-3 py-2 text-zinc-400">{{ $m['business_type_label'] ?? $m['business_type'] ?? '—' }}</td>
+                            <td class="px-3 py-2 text-center">
+                                @if($m['complexity'] === 'premium')
+                                <span class="inline-flex items-center gap-1 px-2 py-0.5 rounded-full bg-rose-500/15 text-rose-400 font-bold">🎬 Premium Shoot</span>
+                                @elseif($m['complexity'] === 'custom')
+                                <span class="inline-flex items-center gap-1 px-2 py-0.5 rounded-full bg-sky-500/15 text-sky-400 font-bold">🎨 Custom Admin</span>
+                                @else
+                                <span class="inline-flex items-center gap-1 px-2 py-0.5 rounded-full bg-emerald-500/15 text-emerald-400 font-bold">🚀 Simple</span>
+                                @endif
+                            </td>
+                            <td class="px-3 py-2 text-zinc-500 max-w-[200px] truncate">{{ $m['tagline'] ?? '' }}</td>
+                            <td class="px-3 py-2 text-zinc-500">{{ substr($u->created_at ?? '', 0, 10) }}</td>
+                        </tr>
+                        @empty
+                        <tr><td colspan="6" class="px-4 py-8 text-center text-zinc-500">No pending exhibitor requests. All fully onboarded.</td></tr>
+                        @endforelse
+                    </tbody>
+                </table>
+                <p class="text-[10px] text-zinc-500 mt-3">Premium and Custom requests are also sent to the N8n automation workflow for team notification.</p>
+            </div>
+            @endif
+
             {{--  HERO MEDIA  --}}
             @if($tab === 'hero_media')
             <div class="glass-card rounded-2xl p-6 max-w-2xl">

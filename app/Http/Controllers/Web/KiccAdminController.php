@@ -214,6 +214,7 @@ class KiccAdminController extends Controller
             ['label' => 'Live Events', 'tab' => 'live_events', 'icon' => 'M15 10l4.553-2.276A1 1 0 0121 8.618v6.764a1 1 0 01-1.447.894L15 14M5 18h8a2 2 0 002-2V8a2 2 0 00-2-2H5a2 2 0 00-2 2v8a2 2 0 002 2z'],
             ['label' => 'Users', 'tab' => 'users', 'icon' => 'M12 4.354a4 4 0 110 5.292M15 21H3v-1a6 6 0 0112 0v1zm0 0h6v-1a6 6 0 00-9-5.197'],
             ['label' => 'Venues', 'tab' => 'venues', 'icon' => 'M19 21V5a2 2 0 00-2-2H7a2 2 0 00-2 2v16m14 0h2m-2 0h-5m-9 0H3m2 0h5M9 7h1m-1 4h1m4-4h1m-1 4h1m-5 10v-5a1 1 0 011-1h2a1 1 0 011 1v5m-4 0h4'],
+            ['label' => 'Exhibitor Requests', 'tab' => 'exh_requests', 'icon' => 'M12 4.354a4 4 0 110 5.292M15 21H3v-1a6 6 0 0112 0v1zm0 0h6v-1a6 6 0 00-9-5.197'],
             ['label' => 'Hero Media', 'tab' => 'hero_media', 'icon' => 'M15 10l4.553-2.276A1 1 0 0121 8.618v6.764a1 1 0 01-1.447.894L15 14M5 18h8a2 2 0 002-2V8a2 2 0 00-2-2H5a2 2 0 00-2 2v8a2 2 0 002 2z'],
             ['label' => 'Packages', 'tab' => 'packages', 'icon' => 'M3 3h2l.4 2M7 13h10l4-8H5.4M7 13L5.4 5M7 13l-2.293 2.293c-.63.63-.184 1.707.707 1.707H17m0 0a2 2 0 100 4 2 2 0 000-4zm-8 2a2 2 0 11-4 0 2 2 0 014 0z'],
             ['label' => 'Analytics', 'tab' => 'analytics', 'icon' => 'M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z'],
@@ -380,13 +381,21 @@ class KiccAdminController extends Controller
         // ── Venues (manageable via admin) ──
         $adminVenues = Venue::orderBy('name')->paginate(50);
 
+        // ── Exhibitor Requests (pending custom/premium setups) ──
+        $exhRequests = User::with('county')
+            ->where('account_type', 'exhibitor')
+            ->where('metadata', 'like', '%"complexity"%')
+            ->latest()
+            ->take(50)
+            ->get();
+
         return view('kicc-mother-admin', compact(
             'stats', 'counties', 'exhibitors', 'ministries',
             'orders', 'escrows', 'users', 'providers', 'institutions',
             'pendingServices', 'navItems', 'tab', 'heroAsset', 'analytics',
             'plans', 'allPlans', 'experienceBookings', 'experienceStats',
             'streams', 'streamStats', 'adminExhibitions', 'adminCounties',
-            'adminVenues',
+            'adminVenues', 'exhRequests',
             'pool', 'poolBalance', 'poolPendingDistributions', 'poolPeriodContributions',
             'pipelines', 'pipelineSectors', 'pipelineStatusBreakdown', 'pipelineTotal',
             // Integration tab data
