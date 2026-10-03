@@ -6,6 +6,7 @@ use App\Http\Controllers\Controller;
 use App\Models\User;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Log;
 use Laravel\Socialite\Facades\Socialite;
 
 class SocialAuthController extends Controller
@@ -20,12 +21,19 @@ class SocialAuthController extends Controller
         try {
             $googleUser = Socialite::driver('google')->user();
             
+            $avatar = $googleUser->getAvatar();
+            // Truncate avatar URL — Google returns extremely long signed URLs
+            if (is_string($avatar) && strlen($avatar) > 500) {
+                $avatar = substr($avatar, 0, 500);
+                Log::warning('Google avatar truncated (exceeded 500 chars)');
+            }
+
             $user = User::updateOrCreate([
                 'email' => $googleUser->getEmail(),
             ], [
                 'name' => $googleUser->getName(),
                 'google_id' => $googleUser->getId(),
-                'avatar' => $googleUser->getAvatar(),
+                'avatar' => $avatar,
                 'password' => bcrypt(\Illuminate\Support\Str::random(24)),
                 'email_verified_at' => now(),
             ]);
