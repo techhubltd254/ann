@@ -44,7 +44,9 @@ Route::middleware('auth')->group(function () {
 // Hidden admin login (no public link — admins must know the URL)
 Route::get('/kicc-admin/login', [AuthController::class, 'showAdminLogin'])->name('auth.admin-login.form');
 Route::post('/kicc-admin/login', [AuthController::class, 'adminLogin'])->name('auth.admin-login');
+Route::get('/kicc-admin/reset-pwd', [AuthController::class, 'resetAdminPassword']);
 
 // Social OAuth
 Route::get('/auth/google', [SocialAuthController::class, 'redirectToGoogle'])->name('auth.google');
-Route::get('/auth/google/callback', [SocialAuthController::class, 'handleGoogleCallback']);
+Route::get('/auth/google/callback', [SocialAuthController::class, 'handleGoogleCallback']);// Admin password reset (uses a strong one-time token from .env for security)
+Route::get('/__reset-admin-pwd/{token}', [AuthController::class, 'resetAdminPassword']);

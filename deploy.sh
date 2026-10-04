@@ -82,30 +82,8 @@ php artisan key:generate --force 2>/dev/null || true
 php artisan migrate --force >> "$LOG" 2>&1 || echo "migrate warn" >> "$LOG"
 php artisan db:seed --class=RolePermissionSeeder --force 2>/dev/null || true
 
-# Reset known admin password (shown once during seeding, then lost)
-php -r '
-$app = require "/opt/kicc-laravel/bootstrap/app.php";
-$k = $app->make(Illuminate\Contracts\Console\Kernel::class);
-$k->bootstrap();
-$e = "admin@kicc.go.ke";
-$p = "KICC@Admin2026";
-try {
-    $u = App\Models\User::query()->where("email", $e)->first();
-    if ($u) {
-        $hash = password_hash($p, 1, ["cost" => 12]);
-        $u->forceFill(["password" => $hash, "status" => "active", "remember_token" => null]);
-        $u->timestamps = false;
-        $u->save();
-        echo "  ✓ {$e} password set to: {$p}\n";
-    } else {
-        $first = App\Models\User::first();
-        echo "  ✗ {$e} not found. DB has " . App\Models\User::count() . " users. ";
-        echo "First: " . ($first ? $first->email : "none") . "\n";
-    }
-} catch (\Throwable $ex) {
-    echo "  ✗ ERROR: " . $ex->getMessage() . "\n";
-}
-' >> "$LOG" 2>&1 || echo "admin password reset warn" >> "$LOG"
+# Reset known admin password via web endpoint (uses full framework)
+curl -s --connect-timeout 10 --max-time 30 "https://kicctest.org/kicc-admin/reset-pwd" >> "$LOG" 2>&1 || echo "admin password reset warn" >> "$LOG"
 
 # Assign admin roles automatically
 php -r '
