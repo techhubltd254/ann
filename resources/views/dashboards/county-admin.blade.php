@@ -1,3 +1,4 @@
+@php use Illuminate\Database\Eloquent\Collection; @endphp
 @extends('layouts.nexora')
 
 @section('title', $county->name . ' County — Nexora Control')

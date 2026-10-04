@@ -1,0 +1,23 @@
+<!DOCTYPE html><html lang="en"><head><meta charset="utf-8"><title>KICC — Marketplace</title>
+<style>*{margin:0;padding:0;box-sizing:border-box;font-family:system-ui,-apple-system,sans-serif}body{background:#0A1024;color:#fff;padding:40px}
+.wrap{max-width:1200px;margin:auto}.card{background:#1B1E3F;border:1px solid #5A648030;border-radius:18px;padding:20px}
+.grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(230px,1fr));gap:16px}.fade{color:#5A6480;font-size:13px}
+.search{width:100%;padding:14px 18px;border-radius:14px;background:#0A1024;border:1px solid #5A6480;color:#fff;font-size:15px;outline:none}
+.badge{background:#901C1E;color:#fff;padding:4px 8px;border-radius:6px;font-size:10px;font-weight:700}
+</style>
+<nav style="display:flex;align-items:center;gap:16px;margin-bottom:24px">
+<h1 style="font-size:28px;font-weight:800;color:#FFCD05">🛍️ Marketplace</h1>
+<input class=search placeholder="Search products across all 47 counties..." style="flex:1"><select style="padding:12px 16px;border-radius:12px;background:#0A1024;border:1px solid #5A6480;color:#fff"><option>All Counties</option></select>
+<select style="padding:12px 16px;border-radius:12px;background:#0A1024;border:1px solid #5A6480;color:#fff"><option>All Categories</option></select>
+<button style="padding:12px 24px;background:#901C1E;color:#fff;border:none;border-radius:10px;font-weight:700">Filter</button>
+</nav>
+<div style="display:flex;gap:6px;flex-wrap:wrap;margin-bottom:24px">
+<span class="badge" style="background:#FFCD05;color:#0B1E57">All</span><span class=badge>Coffee</span><span class=badge>Tea</span><span class=badge>Textiles</span><span class=badge>Honey</span><span class=badge>Handicrafts</span><span class=badge>Fresh Produce</span><span class=badge>Electronics</span>
+</div>
+<p class=fade>Showing 24 products across 47 counties</p>
+<div class=grid><script>
+const p=[{n:"Single-Origin Tea",p:"KES 1,200",c:"Murang'a",t:"Agriculture→B1",e:"☕"},{n:"Pure Forest Honey",p:"KES 850",c:"Murang'a",t:"Agriculture→B1",e:"🍯"},{n:"Handwoven Kikoyi",p:"KES 2,400",c:"Kajiado",t:"Trade→A1",e:"🧶"},{n:"Arabica Coffee",p:"KES 1,800",c:"Nyeri",t:"Agriculture→B6",e:"☕"},{n:"Mango Fresh",p:"KES 350",c:"Kilifi",t:"Agriculture→B1",e:"🥭"},{n:"Silver Jewelry",p:"KES 3,200",c:"Mombasa",t:"Trade→A1",e:"💍"},{n:"Macadamia Nuts",p:"KES 1,500",c:"Embu",t:"Agriculture→B5",e:"🥜"},{n:"Sun-Dried Tomatoes",p:"KES 680",c:"Kajiado",t:"Agriculture→B1",e:"🍅"},{n:"Shea Butter",p:"KES 950",c:"Turkana",t:"Trade→A1",e:"🧴"},{n:"Fish Fillet",p:"KES 1,100",c:"Mombasa",t:"Fisheries→B2",e:"🐟"},{n:"Cheese Wheel",p:"KES 2,800",c:"Murang'a",t:"Milk-Dairy→DA5",e:"🧀"},{n:"Aloe Vera Gel",p:"KES 420",c:"Kilifi",t:"Health→K1",e:"🌿"}];
+for(let i=0;i<12;i++){const x=p[i];document.write('<div class=card><div style="height:130px;background:linear-gradient(135deg,#1B1E3F,'+(i%2==0?'#FFCD0510':'#1890D710')+');border-radius:10px;display:flex;align-items:center;justify-content:center;font-size:40px;margin-bottom:12px">'+x.e+'</div><h3 style="font-size:15px;font-weight:700">'+x.n+'</h3><p style="color:#FFCD05;font-size:17px;font-weight:800">'+x.p+'</p><p class=fade style=margin-top:4px>📍 '+x.c+'</p><div style=margin-top:6px;display:flex;gap:4px><span class=badge style=background:#1890D7;color:#fff>'+x.t+'</span></div><button style="margin-top:8px;padding:10px 20px;background:#901C1E;color:#fff;border:none;border-radius:8px;width:100%;font-weight:600">Add to Cart</button></div>');}
+</script></div>
+<div style="text-align:center;margin-top:28px"><a href=# style="background:#901C1E;color:#fff;padding:14px 36px;border-radius:12px;font-weight:700">Load More Products →</a></div>
+</body></html>

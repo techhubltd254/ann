@@ -75,6 +75,9 @@ class KiccAdminController extends Controller
             return redirect()->route('admin.3d.assets');
         }
 
+        // Force-load Eloquent Collection class for cache unserialize
+        try { $c = new \Illuminate\Database\Eloquent\Collection; } catch (\Throwable $e) { /* class now loaded */ }
+
         // Cached 60s (admin TTL); busted by CacheSyncService::kicc() on write.
         $page = (int) $request->get('page', 1);
         $dash = \Illuminate\Support\Facades\Cache::remember(

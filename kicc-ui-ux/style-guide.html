@@ -1,0 +1,86 @@
+<!DOCTYPE html>
+<html lang="en">
+<head><meta charset="utf-8">
+<title>KICC Design System — Style Guide</title>
+<style>
+*{margin:0;padding:0;box-sizing:border-box;font-family:system-ui,-apple-system,sans-serif}
+body{background:#0A1024;color:#fff;padding:40px;max-width:1200px;margin:auto}
+h2{color:#FFCD05;margin:40px 0 20px;font-size:28px;border-bottom:1px solid #FFCD0540}
+.swatch{display:inline-block;width:80px;height:80px;border-radius:12px;margin:8px}
+.info{background:#1B1E3F;padding:20px;border-radius:16px;margin:20px 0}
+.color-grid{display:flex;flex-wrap:wrap;gap:12px}
+.color-item{text-align:center;width:100px}.color-item span{display:block;font-size:11px;color:#888}
+.typo h1{font-size:48px;font-weight:900}.typo h2{font-size:36px;font-weight:700}.typo h3{font-size:24px;font-weight:600}
+.typo p{font-size:16px;line-height:1.6;color:#B0B0C0}
+.btn{padding:14px 28px;border-radius:12px;border:none;cursor:pointer;font-size:15px;font-weight:700;display:inline-block;margin:4px}
+</style>
+<body>
+<h1 style="color:#FFCD05;font-size:48px;font-weight:900">KICC Design System</h1>
+<p style="color:#888;font-size:18px">Complete UI/UX kit for all public pages</p>
+
+<div class="info"><h2 style="color:#FFCD05">Colors</h2>
+<div class="color-grid">
+<div class="color-item"><div class="swatch" style="background:#901C1E"></div><span>KICC Red<br>#901C1E</span></div>
+<div class="color-item"><div class="swatch" style="background:#FFCD05"></div><span>KICC Gold<br>#FFCD05</span></div>
+<div class="color-item"><div class="swatch" style="background:#0B1E57"></div><span>KICC Navy<br>#0B1E57</span></div>
+<div class="color-item"><div class="swatch" style="background:#1890D7"></div><span>KICC Blue<br>#1890D7</span></div>
+<div class="color-item"><div class="swatch" style="background:#0A1024"></div><span>BG Dark<br>#0A1024</span></div>
+<div class="color-item"><div class="swatch" style="background:#1B1E3F"></div><span>BG Card<br>#1B1E3F</span></div>
+<div class="color-item"><div class="swatch" style="background:#5A6480"></div><span>Slate<br>#5A6480</span></div>
+<div class="color-item"><div class="swatch" style="background:#11820B"></div><span>Green<br>#11820B</span></div>
+</div></div>
+
+<div class="info"><h2 style="color:#FFCD05">Typography</h2>
+<div class="typo">
+<h1>Heading 1 — 48px/900</h1>
+<h2>Heading 2 — 36px/700</h2>
+<h3>Heading 3 — 24px/600</h3>
+<p>Body text — 16px/400, line-height 1.6, color #B0B0C0. The quick brown fox jumps over the lazy dog. KICC National Exhibition Platform connects all 47 counties of Kenya through a unified digital marketplace and tourism gateway.</p>
+</div></div>
+
+<div class="info"><h2 style="color:#FFCD05">Components</h2>
+<button class="btn" style="background:#901C1E;color:#fff">Primary Button</button>
+<button class="btn" style="background:#FFCD05;color:#0B1E57">Gold Button</button>
+<button class="btn" style="background:transparent;border:1px solid #5A6480;color:#B0B0C0">Ghost Button</button>
+<button class="btn" style="background:#1890D7;color:#fff">Blue Button</button>
+<div style="margin-top:12px">
+<button style="padding:14px 32px;border-radius:12px;background:linear-gradient(135deg,#901C1E,#7B1618);color:#fff;border:none;font-size:15px;font-weight:700">Gradient Primary</button>
+<button style="padding:14px 32px;border-radius:12px;background:linear-gradient(135deg,#FFCD05,#E6B800);color:#0B1E57;border:none;font-size:15px;font-weight:700">Gradient Gold</button>
+</div></div>
+
+<div class="info"><h2 style="color:#FFCD05">Cards</h2>
+<div style="background:#1B1E3F;border:1px solid #5A648030;border-radius:20px;padding:24px;width:300px">
+<div style="width:100%;height:160px;background:linear-gradient(135deg,#901C1E,#0B1E57);border-radius:16px;margin-bottom:16px"></div>
+<h3 style="color:#fff;font-size:20px;margin-bottom:4px">Card Title</h3>
+<p style="color:#B0B0C0;font-size:14px">Body text with supporting details for the card content here.</p>
+<button style="margin-top:12px;padding:12px 24px;background:#FFCD05;color:#0B1E57;border-radius:10px;border:none;font-weight:700">Action →</button>
+</div></div>
+
+<div class="info"><h2 style="color:#FFCD05">Navigation</h2>
+<nav style="display:flex;gap:32px;padding:16px 32px;background:#0B1E57;border-radius:16px;margin-top:12px">
+<a style="color:#FFCD05;font-size:14px;font-weight:700">Home</a>
+<a style="color:#B0B0C0;font-size:14px">Counties</a><a style="color:#B0B0C0;font-size:14px">Marketplace</a><a style="color:#B0B0C0;font-size:14px">Travel</a>
+<a style="color:#B0B0C0;font-size:14px">Exhibitions</a><a style="color:#B0B0C0;font-size:14px">Venues</a>
+<a style="color:#B0B0C0;font-size:14px">Trade</a><a style="color:#B0B0C0;font-size:14px">3D Experiences</a>
+<a style="color:#901C1E;font-size:14px;font-weight:700;margin-left:auto;background:#FFCD05;padding:10px 20px;border-radius:8px">Sign In</a>
+</nav></div>
+
+<div class="info"><h2 style="color:#FFCD05">Form Elements</h2>
+<div style="display:flex;flex-direction:column;gap:12px;max-width:400px">
+<input placeholder="Email or Phone" style="padding:14px 16px;border-radius:12px;background:#1B1E3F;border:1px solid #5A6480;color:#fff;font-size:15px;outline:none">
+<div style="position:relative"><input type="password" placeholder="Password" style="width:100%;padding:14px 16px 14px 40px;border-radius:12px;background:#1B1E3F;border:1px solid #FFCD0560;color:#fff;font-size:15px;outline:none"><span style="position:absolute;right:14px;top:12px;color:#888;font-size:18px">👁</span></div>
+<label style="display:flex;align-items:center;gap:8px;color:#888;font-size:14px"><input type="checkbox" checked style="width:18px;height:18px;accent-color:#901C1E">Keep me signed in</label>
+<button style="width:100%;padding:14px;background:linear-gradient(135deg,#FFCD05,#E6B800);color:#0B1E57;border:none;border-radius:12px;font-size:16px;font-weight:800">Sign In →</button>
+</div></div>
+
+<div class="info"><h2 style="color:#FFCD05">Footer</h2>
+<footer style="background:#0B1E57;padding:40px 60px;border-radius:20px;margin-top:12px">
+<div style="display:grid;grid-template-columns:repeat(4,1fr);gap:32px">
+<div><h4 style="color:#FFCD05;font-size:14px;margin-bottom:8px">KICC</h4><p style="color:#5A6480;font-size:13px">Kenya International Convention Centre. Connecting all 47 counties through digital trade, tourism, and investment.</p></div>
+<div><h4 style="color:#B0B0C0;font-size:14px;margin-bottom:8px">Explore</h4><p style="color:#5A6480;font-size:13px">Counties<br>Marketplace<br>Exhibitions<br>Travel</p></div>
+<div><h4 style="color:#B0B0C0;font-size:14px;margin-bottom:8px">Resources</h4><p style="color:#5A6480;font-size:13px">Help Centre<br>Trade Agreements<br>Developer API<br>3D Experiences</p></div>
+<div><h4 style="color:#B0B0C0;font-size:14px;margin-bottom:8px">Contact</h4><p style="color:#5A6480;font-size:13px">info@kicctest.org<br>+254 700 123 456<br>Nairobi, Kenya</p></div>
+</div>
+<div style="text-align:center;margin-top:24px;padding-top:16px;border-top:1px solid #5A648020;color:#5A6480;font-size:12px">© 2026 KICC National Exhibition Platform. All rights reserved.</div>
+</footer></div>
+</body></html>

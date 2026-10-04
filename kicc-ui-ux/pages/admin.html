@@ -1,0 +1,45 @@
+<!DOCTYPE html><html lang="en"><head><meta charset="utf-8"><title>KICC — Admin Dashboard</title>
+<style>*{margin:0;padding:0;box-sizing:border-box;font-family:system-ui,-apple-system,sans-serif}body{background:#0A1024;color:#fff;display:flex;min-height:100vh}
+.sidebar{width:260px;background:#0B1E57;padding:24px 16px;position:sticky;top:0;height:100vh}
+.main{flex:1;padding:32px 40px}.card{background:#1B1E3F;border:1px solid #5A648030;border-radius:16px;padding:20px}
+.grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(220px,1fr));gap:16px}.fade{color:#5A6480;font-size:12px}
+.nav-item{padding:10px 16px;border-radius:8px;color:#B0B0C0;font-size:13px;margin:2px 0}.nav-item.active{background:#901C1E30;color:#FFCD05;font-weight:700}
+.kpi{padding:20px;border-radius:14px;background:#1B1E3F;text-align:center}.kpi .value{font-size:32px;font-weight:800;color:#FFCD05}
+.tab{background:#1B1E3F;padding:10px 20px;border-radius:8px;display:inline-block;margin:3px}.tab.active{background:#901C1E;color:#fff}
+table{width:100%;border-collapse:collapse;font-size:13px}td,th{padding:10px 12px;text-align:left;border-bottom:1px solid #5A648020}th{color:#5A6480;font-weight:700}
+</style>
+<div class=sidebar>
+<div style="font-size:22px;font-weight:900;color:#FFCD05;margin-bottom:20px">KICC Admin</div>
+<div class="nav-item active">📊 Overview</div>
+<div class=nav-item>🏛️ Counties</div><div class=nav-item>📦 Products</div><div class=nav-item>📋 Orders</div><div class=nav-item>🔒 Escrow</div>
+<div class=nav-item>💰 Earnings</div><div class=nav-item>📈 Pipelines</div><div class=nav-item>🔍 Search Analytics</div><div class=nav-item>👥 Users</div>
+<div class=nav-item>🎬 Media</div><div class=nav-item>📊 Reports</div><div class=nav-item style="margin-top:12px;border-top:1px solid #5A648030;padding-top:16px">⚙️ Settings</div>
+</div>
+<div class=main>
+<div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:24px">
+<h1 style="font-size:28px;font-weight:800">Mother Admin Dashboard</h1>
+<div style="display:flex;gap:8px">
+<select style="padding:10px 16px;border-radius:10px;background:#0A1024;border:1px solid #5A6480;color:#fff"><option>Last 30 days</option></select>
+<button style="padding:10px 20px;background:#901C1E;color:#fff;border:none;border-radius:10px;font-weight:700">↻ Refresh</button>
+</div>
+</div>
+<div class=grid style="grid-template-columns:repeat(5,1fr)">
+<div class=kpi><div class=value>47</div><div class=fade>Counties</div></div>
+<div class=kpi><div style="font-size:32px;font-weight:800;color:#1890D7">214</div><div class=fade>Pipelines</div></div>
+<div class=kpi><div style="font-size:32px;font-weight:800;color:#11820B">205</div><div class=fade>Built</div></div>
+<div class=kpi><div style="font-size:32px;font-weight:800;color:#5A6480">7</div><div class=fade>Licence Gated</div></div>
+<div class=kpi><div style="font-size:32px;font-weight:800;color:#901C1E">2</div><div class=fade>Blocked</div></div>
+</div>
+<div style="display:flex;gap:4px;flex-wrap:wrap;margin:20px 0"><span class="tab active">📊 Overview</span><span class=tab>🏛️ Counties</span><span class=tab>📦 Products</span><span class=tab>🔒 Escrow</span><span class=tab>💰 Earnings</span><span class=tab>📈 Pipelines</span><span class=tab>🔍 Analytics</span></div>
+<div class=card><h3 style="font-size:18px;font-weight:700;margin-bottom:12px">📊 Pipeline Status</h3>
+<table><thead><tr><th>Code</th><th>Sector</th><th>Phase</th><th>Status</th><th>Take Rate</th><th>Trades</th><th>GMV</th></tr></thead><tbody>
+<script>const ps=[["A1","Trade","1","built","2-5%"],["B1","Agriculture","1","built","3-5%"],["C1","Tourism","1","built","5-8%"],["D1","Investment","2","built","1-2%"],["DA1","Milk-Dairy","3","built","3-4%"]];for(let i=0;i<5;i++){const r=ps[i];document.write('<tr><td style=font-weight:700>'+r[0]+'</td><td>'+r[1]+'</td><td>'+r[2]+'</td><td><span style=color:#11820B>● built</span></td><td>'+r[3]+'</td><td class=fade>0</td><td class=fade>KES 0</td></tr>');}
+document.write('<tr><td colspan=7 style=text-align:center;color:#5A6480;padding:16px>All 214 pipelines shown — use pagination below for more</td></tr>');
+</script></tbody></table></div>
+<div style="display:flex;gap:8px;justify-content:center;margin-top:16px">
+<a style="padding:8px 16px;background:#901C1E;color:#fff;border-radius:8px;font-size:13px">« Prev</a><a style="padding:8px 16px;background:#1B1E3F;color:#B0B0C0;border-radius:8px">1</a>
+<a style="padding:8px 16px;background:#FFCD05;color:#0B1E57;border-radius:8px;font-weight:700">2</a>
+<a style="padding:8px 16px;background:#1B1E3F;color:#B0B0C0;border-radius:8px">3</a><a style="padding:8px 16px;background:#901C1E;color:#fff;border-radius:8px;font-size:13px">Next »</a>
+</div>
+</div>
+</body></html>

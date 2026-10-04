@@ -1,0 +1,17 @@
+<!DOCTYPE html><html lang="en"><head><meta charset="utf-8"><title>KICC — Travel</title>
+<style>*{margin:0;padding:0;box-sizing:border-box;font-family:system-ui,-apple-system,sans-serif}
+body{background:#0A1024;color:#fff;padding:40px}
+.wrap{max-width:1200px;margin:auto}
+.hero{background:linear-gradient(135deg,#0B1E57,#1B1E3F);border-radius:24px;padding:40px;margin-bottom:32px}
+.card{background:#1B1E3F;border:1px solid #5A648030;border-radius:18px;padding:20px}
+.grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(280px,1fr));gap:20px}.fade{color:#5A6480;font-size:13px}
+.tab{background:#1B1E3F;padding:12px 24px;border-radius:10px;display:inline-block;margin:4px}.tab.active{background:#901C1E;color:#fff}
+</style>
+<div class=hero><h1 style="font-size:36px;font-weight:800;color:#1890D7">✈️ Travel Kenya</h1><p class=fade style=margin-top:4px>Discover destinations, find flights, book hotels, and plan your journey across 47 counties</p>
+<div style=display:flex;gap:8px;margin-top:20px><input placeholder="From" style="padding:12px 16px;border-radius:10px;background:#0A1024;border:1px solid #5A6480;color:#fff;width:200px"><input placeholder="To" style="padding:12px 16px;border-radius:10px;background:#0A1024;border:1px solid #5A6480;color:#fff;width:200px"><input placeholder="Date" style="padding:12px 16px;border-radius:10px;background:#0A1024;border:1px solid #5A6480;color:#fff;width:180px"><button style="padding:12px 28px;background:#FFCD05;color:#0B1E57;border:none;border-radius:10px;font-weight:800">Search Flights →</button></div></div>
+<div style="display:flex;gap:6px;flex-wrap:wrap;margin-bottom:24px"><span class="tab active">🔥 Destinations</span><span class=tab>🏨 Hotels</span><span class=tab>✈️ Flights</span><span class=tab>🚗 Transfers</span><span class=tab>🎫 Attractions</span></div>
+<div class=grid><script>
+const d=[{n:"Murang'a",desc:"Tea highlands, waterfalls, rafting",img:"🏔️"},{n:"Mombasa",desc:"Beaches, Fort Jesus, marine parks",img:"🏖️"},{n:"Kajiado",desc:"Rift Valley, Maasai culture",img:"🌋"},{n:"Kilifi",desc:"Coastal resorts, marine life",img:"🏕️"},{n:"Nairobi",desc:"Capital city, national park",img:"🏙️"},{n:"Malindi",desc:"Coral reefs, water sports",img:"🌊"}];
+for(let i=0;i<6;i++){const x=d[i];document.write('<div class=card><div style="height:120px;background:linear-gradient(135deg,'+(i%2==0?'#1890D730':'#11820B30')+',#1B1E3F);border-radius:10px;display:flex;align-items:center;justify-content:center;font-size:40px;margin-bottom:8px">'+x.img+'</div><h3 style=font-size:18px;font-weight:700>'+x.n+'</h3><p class=fade>'+x.desc+'</p><div style=display:flex;gap:4px;margin-top:8px><span style=background:#1890D7;color:#fff;padding:2px 8px;border-radius:4px;font-size:10px>Tourism→C1</span></div><button style=margin-top:8px;padding:10px 20px;background:#901C1E;color:#fff;border:none;border-radius:8px;font-size:12px;font-weight:600>Explore →</button></div>');}
+</script></div>
+</body></html>

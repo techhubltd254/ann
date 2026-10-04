@@ -1,0 +1,12 @@
+<!DOCTYPE html><html lang="en"><head><meta charset="utf-8"><title>KICC — Venues</title>
+<style>*{margin:0;padding:0;box-sizing:border-box;font-family:system-ui,-apple-system,sans-serif}
+body{background:#0A1024;color:#fff;padding:40px}
+.wrap{max-width:1200px;margin:auto}.card{background:#1B1E3F;border:1px solid #5A648030;border-radius:18px;padding:20px}
+.grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(300px,1fr));gap:20px}
+.fade{color:#5A6480;font-size:13px}</style>
+<h1 style="font-size:28px;font-weight:800;color:#FFCD05">🏛️ Venues</h1><p class=fade style=margin-bottom:20px>Conference centres, exhibition halls, and event spaces across Kenya</p>
+<div class=grid><script>
+const v=[{n:"KICC Nairobi",cap:"5,000",type:"Convention Centre",city:"Nairobi",c:"#901C1E"},{n:"Mombasa Convention",cap:"2,000",type:"Exhibition Hall",city:"Mombasa",c:"#1890D7"},{n:"Murang'a Highlands Resort",cap:"500",type:"Resort + Conference",city:"Murang'a",c:"#11820B"},{n:"Kajiado Business Park",cap:"1,200",type:"Business Centre",city:"Kajiado",c:"#FFCD05"},{n:"Kilifi Beach Resort",cap:"400",type:"Resort",city:"Kilifi",c:"#1890D7"},{n:"Eldoret Sports Complex",cap:"3,000",type:"Multi-purpose",city:"Eldoret",c:"#901C1E"}];
+for(let i=0;i<6;i++){const x=v[i];document.write('<div class=card><div style="height:130px;background:linear-gradient(135deg,'+x.c+'40,#1B1E3F);border-radius:12px;display:flex;align-items:center;justify-content:center;font-size:36px;margin-bottom:12px">🏛️</div><h3 style=font-size:18px;font-weight:700>'+x.n+'</h3><p class=fade>📍 '+x.city+'</p><div style=display:flex;gap:8px;margin-top:6px><span style="background:'+x.c+'20;color:#fff;padding:4px 8px;border-radius:6px;font-size:11px">'+x.type+'</span><span style="background:#5A648030;color:#B0B0C0;padding:4px 8px;border-radius:6px;font-size:11px">Cap: '+x.cap+'</span></div><button style=margin-top:10px;padding:10px 24px;background:#901C1E;color:#fff;border:none;border-radius:8px;font-weight:600>Book Venue →</button></div>');}
+</script></div>
+</body></html>
