@@ -358,7 +358,7 @@ The centre also runs public education programmes on waste segregation, circular 
             ],
             'sector_mappings' => [
                 [
-                    'sector_slug' => 'energy',
+                    'sector_slug' => 'environment',
                     'entry_name' => 'Gikono Waste-to-Resource Programme',
                     'entry_type' => 'Circular Economy',
                     'entry_fee' => 0,
