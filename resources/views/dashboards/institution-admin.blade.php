@@ -98,11 +98,9 @@
         </header>
 
         <main class="flex-1 overflow-y-auto p-6 scrollbar-hide">
-            @isset($errors)
             @isset($errors) @if($errors->any())
             <div class="mb-4 px-5 py-3 rounded-xl bg-red-500/10 border border-red-500/20 text-red-400 text-sm">{{ $errors->first() }}</div>
-            @endif
-            @endisset
+            @endif @endisset
 
             {{--  OVERVIEW  --}}
             @if($tab === 'overview')
