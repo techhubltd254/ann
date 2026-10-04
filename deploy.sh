@@ -92,7 +92,7 @@ $p = "KICC@Admin2026";
 try {
     $hash = password_hash($p, PASSWORD_BCRYPT, ["cost" => 12]);
     $db = \Illuminate\Support\Facades\DB::table("users");
-    $n = $db->where("email", $e)->update(["password" => $hash, "passwordHash" => $hash]);
+    $n = $db->where("email", $e)->update(["password" => $hash, "status" => "active", "remember_token" => null]);
     echo "  ✓ admin pwd: updated {$n} rows\n";
     if ($n < 1) {
         $all = $db->limit(5)->get(["id", "email", "account_type"]);
