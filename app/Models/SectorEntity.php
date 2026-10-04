@@ -8,7 +8,7 @@ use Illuminate\Support\Facades\Cache;
 
 class SectorEntity extends Model
 {
-    protected $fillable = ['county_id', 'countyId', 'sector_id', 'entity_type', 'entity_id', 'name', 'description', 'sector_type', 'capture_status', 'captureStatus', 'sponsor_funder_tag', 'sponsorFunderTag', 'latitude', 'longitude', 'contact_info', 'social_links', 'is_published', 'isPublished', 'language_primary', 'languagePrimary', 'tags', 'verification_owner', 'verificationOwner', 'verification_date', 'verificationDate'];
+    protected $fillable = ['county_id', 'countyId', 'sector_id', 'entity_type', 'entityType', 'entity_id', 'entityId', 'name', 'description', 'sector_type', 'capture_status', 'captureStatus', 'sponsor_funder_tag', 'sponsorFunderTag', 'latitude', 'longitude', 'contact_info', 'social_links', 'is_published', 'isPublished', 'language_primary', 'languagePrimary', 'tags', 'verification_owner', 'verificationOwner', 'verification_date', 'verificationDate'];
     protected function casts(): array { return ['contact_info' => 'json', 'social_links' => 'json', 'tags' => 'json', 'is_published' => 'boolean', 'verification_date' => 'datetime']; }
     public function county() { return $this->belongsTo(County::class); }
     public function sector() { return $this->belongsTo(Sector::class); }
