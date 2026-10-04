@@ -15,6 +15,7 @@ use App\Models\Ministry;
 use App\Models\Payment\PaymentIntent;
 use App\Models\Pipeline\DynamicPipeline;
 use App\Models\User;
+use App\Models\Venue;
 use App\Services\AuditLogger;
 use App\Events\EscrowReleased;
 use App\Events\GenericDomainEvent;
