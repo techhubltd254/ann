@@ -19,6 +19,11 @@ class AdminPortalController extends Controller
             abort(403, 'You do not have admin access.');
         }
 
+        // KICC admins go to the KICC admin dashboard with the portals tab open
+        if ($user->hasRole('kicc_admin')) {
+            return redirect()->route('kicc.admin', ['tab' => 'portals']);
+        }
+
         // County admins go directly to their county's professional admin page
         if ($user->hasRole('county_admin') && $user->county_id) {
             $county = \App\Models\County::find($user->county_id);
@@ -35,11 +40,6 @@ class AdminPortalController extends Controller
         // National admins go to their portal
         if ($user->hasRole('national_admin')) {
             return redirect()->route('national.admin');
-        }
-
-        // KICC admins go to the KICC admin dashboard with the portals tab open
-        if ($user->hasRole('kicc_admin')) {
-            return redirect()->route('kicc.admin', ['tab' => 'portals']);
         }
 
         return redirect('/');
