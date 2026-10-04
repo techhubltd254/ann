@@ -19,15 +19,4 @@ class OrderItem extends Model
     public function product() { return $this->belongsTo(Product::class); }
     public function variant() { return $this->belongsTo(ProductVariant::class, 'variant_id'); }
     public function supplier() { return $this->belongsTo(Supplier::class); }
-
-    #[EventListener('saving')]
-    public function syncProductName(): void
-    {
-        if ($this->product_name !== null) return;
-
-        $product = $this->product()->first();
-        if ($product) {
-            $this->product_name = $product->name;
-        }
-    }
 }
