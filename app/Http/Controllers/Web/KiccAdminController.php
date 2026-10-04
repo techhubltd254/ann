@@ -524,6 +524,7 @@ class KiccAdminController extends Controller
             'analytics:trends', 'recommendations:build',
             'db:seed --class=MurangaLiveInstitutionsSeeder',
             'db:seed --class=InstitutionSeeder',
+            'db:seed --class=MurangaAllSectorsSeeder',
             'embeddings:build', 'vendors:score',
         ];
 
