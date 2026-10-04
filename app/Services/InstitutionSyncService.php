@@ -223,6 +223,7 @@ class InstitutionSyncService
             'county_id' => $county->id,
             'countyId' => $county->id,
             'sector_id' => $sector->id,
+            'sectorId' => $sector->id,
             'entity_type' => \App\Models\CountyInstitution::class,
             'entityType' => \App\Models\CountyInstitution::class,
             'entity_id' => $i->id,

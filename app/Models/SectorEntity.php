@@ -21,8 +21,10 @@ class SectorEntity extends Model
             // without defaults. Ensure both snake + camel variants are set.
             $map = [
                 'county_id' => 'countyId',
+                'sector_id' => 'sectorId',
                 'entity_id' => 'entityId',
                 'entity_type' => 'entityType',
+                'sector_type' => 'sectorType',
                 'capture_status' => 'captureStatus',
                 'sponsor_funder_tag' => 'sponsorFunderTag',
                 'is_published' => 'isPublished',
@@ -46,6 +48,47 @@ class SectorEntity extends Model
                 }
                 if ($m->getAttribute($snake) === null && $m->getAttribute($camel) !== null) {
                     $m->setAttribute($snake, $m->getAttribute($camel));
+                }
+            }
+
+            // Generic safety net: fill any remaining NOT NULL column without a
+            // default that this model didn't explicitly set. Introspects the live
+            // TiDB schema once per process (cached) so new camelCase columns
+            // never break the insert again.
+            static $required = null;
+            if ($required === null) {
+                try {
+                    $cols = \Illuminate\Support\Facades\DB::select('SHOW COLUMNS FROM sector_entities');
+                    $required = [];
+                    foreach ($cols as $c) {
+                        $isNull = ($c->Null ?? '') === 'YES';
+                        $hasDefault = isset($c->Default) && $c->Default !== null;
+                        if (!$isNull && !$hasDefault && !in_array($c->Field, ['id', 'created_at', 'updated_at'], true)) {
+                            $required[] = $c->Field;
+                        }
+                    }
+                } catch (\Throwable $e) {
+                    $required = [];
+                }
+            }
+            foreach ($required as $col) {
+                if ($m->getAttribute($col) !== null) continue;
+                $snakeGuess = \Illuminate\Support\Str::snake($col);
+                if ($m->getAttribute($snakeGuess) !== null) {
+                    $m->setAttribute($col, $m->getAttribute($snakeGuess));
+                    continue;
+                }
+                // Type-aware default based on prefix.
+                if (str_contains($col, 'At') || str_contains($col, 'Date')) {
+                    $m->setAttribute($col, now());
+                } elseif (str_contains($col, 'Is') || str_contains($col, 'Enabled') || str_contains($col, 'Published')) {
+                    $m->setAttribute($col, true);
+                } elseif (in_array($col, ['tags', 'contactInfo', 'socialLinks'], true)) {
+                    $m->setAttribute($col, '[]');
+                } elseif (in_array($col, ['captureStatus', 'capture_status', 'sectorType', 'sector_type', 'languagePrimary', 'language_primary'], true)) {
+                    $m->setAttribute($col, $col === 'languagePrimary' || $col === 'language_primary' ? 'en' : 'none');
+                } else {
+                    $m->setAttribute($col, '');
                 }
             }
         });
