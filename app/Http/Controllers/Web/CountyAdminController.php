@@ -137,7 +137,7 @@ class CountyAdminController extends Controller
                     'landmarks' => $landmarks, 'broadcastSchedules' => $broadcastSchedules,
                 ];
             }
-        };
+        ;
 
         try {
             $data = \Illuminate\Support\Facades\Cache::remember(

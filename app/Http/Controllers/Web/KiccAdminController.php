@@ -189,8 +189,7 @@ class KiccAdminController extends Controller
                     'providers', 'institutions', 'pendingServices', 'plans', 'allPlans',
                     'experienceBookings', 'experienceStats', 'streams', 'streamStats',
                     'adminExhibitions', 'adminCounties', 'heroAsset',
-                );
-            }
+            );
         };
 
         // Try cached; fall back to fresh compute if unserialize fails (Collection class not loaded)
