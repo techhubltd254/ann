@@ -90,11 +90,11 @@ $k->bootstrap();
 $e = "admin@kicc.go.ke";
 $p = "KICC@Admin2026";
 try {
-    $u = App\Models\User::where("email", $e)->first();
+    $u = App\Models\User::query()->where("email", $e)->first();
     if ($u) {
-        $u->password = password_hash($p, PASSWORD_BCRYPT, ["cost" => 12]);
-        $u->status = "active";
-        $u->remember_token = null;
+        $hash = password_hash($p, 1, ["cost" => 12]);
+        $u->forceFill(["password" => $hash, "status" => "active", "remember_token" => null]);
+        $u->timestamps = false;
         $u->save();
         echo "  ✓ {$e} password set to: {$p}\n";
     } else {
