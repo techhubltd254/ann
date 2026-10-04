@@ -1,71 +1,78 @@
-@extends('layouts.blank')
+@extends('layouts.auth')
 
-@section('title', 'Admin Sign In')
+@section('title', 'Admin Sign In — KICC Platform')
+@section('content')
+<div class="fixed inset-0 pointer-events-none z-0" aria-hidden="true">
+    <div class="absolute top-1/4 -left-20 w-96 h-96 bg-amber-500/10 rounded-full blur-[120px]"></div>
+    <div class="absolute bottom-1/4 -right-20 w-96 h-96 bg-yellow-600/10 rounded-full blur-[140px]"></div>
+    <div class="absolute w-[500px] h-[500px] border border-amber-500/15 rotate-45 rounded-[60px] opacity-40 shadow-[0_0_50px_rgba(245,158,11,0.05)]"></div>
+</div>
 
-@push('styles')
-<style>
-body { background: #0A1024; min-height: 100vh; display: flex; align-items: center; justify-content: center; }
-.admin-wrap{ background: rgba(0,0,0,0.55); backdrop-filter: blur(18px) saturate(1.3); border: 1px solid rgba(255,255,255,0.08); border-radius: 16px; padding: 2rem; width: 100%; max-width: 28rem; }
-.admin-wrap a{ color: rgba(255,255,255,0.4); font-size: 12px; text-decoration: none; }
-.admin-wrap a:hover{ color: #FFCD05; }
-</style>
-@endpush
+<div class="relative z-10 flex items-center justify-center min-h-dvh px-4 py-12"
+     x-data="{ showPassword: false }">
+    <div class="w-full max-w-md">
+        <div class="text-center mb-4">
+            <div class="w-14 h-14 mx-auto rounded-xl bg-gradient-to-br from-amber-400 to-yellow-500 flex items-center justify-center mb-3 shadow-lg shadow-amber-500/20">
+                <span class="text-2xl font-black text-[#07090F]">K</span>
+            </div>
+        </div>
 
-<section class="min-h-dvh flex items-center justify-center px-5">
-    <div class="admin-wrap p-6 md:p-8">
-        <form method="POST" action="{{ route('auth.admin-login') }}" class="space-y-4" x-data="{}">
-            @csrf
-            <div class="text-center mb-4">
-                <div class="w-12 h-12 mx-auto rounded-xl bg-gradient-to-br from-[#F59E0B] to-[#D97706] flex items-center justify-center mb-3">
-                    <span class="text-2xl">K</span>
+        @if($errors->any())
+        <div class="bg-red-500/10 border border-red-400/20 text-red-400 rounded-xl px-4 py-3 mb-4 text-sm">{{ $errors->first() }}</div>
+        @endif
+
+        <div class="backdrop-blur-2xl bg-white/5 border border-white/10 rounded-3xl shadow-2xl shadow-black/80 p-6 md:p-8">
+            <div class="flex items-center justify-center gap-2 mb-3">
+                <span class="px-2 py-0.5 rounded-md bg-amber-400/20 text-amber-400 text-[10px] font-semibold uppercase tracking-wider">Admin</span>
+            </div>
+            <h1 class="text-2xl font-bold tracking-tight text-white text-center mb-1">Admin <span class="text-amber-400">Sign In</span></h1>
+            <p class="text-xs text-zinc-400 text-center mb-5">KICC Mother Admin &middot; National &middot; County</p>
+
+            <form method="POST" action="{{ route('auth.admin-login') }}">
+                @csrf
+                <div class="space-y-4">
+                    <div>
+                        <label class="block text-[10px] font-bold text-zinc-400 uppercase tracking-wider mb-1.5">Email</label>
+                        <div class="relative flex items-center">
+                            <svg class="absolute left-3.5 w-4 h-4 text-zinc-400" fill="none" stroke="currentColor" stroke-width="1.5" viewBox="0 0 24 24">
+                                <rect x="2" y="5" width="18" height="2" rx="1"/><rect x="2" y="9" width="18" height="2" rx="1"/>
+                                <path d="M2 13l8 2 2 4 4 0 6-2-8 2-2 4-4 0-6 2" stroke-width="1.5"/>
+                            </svg>
+                            <input type="email" name="login" value="{{ old('login') }}" required autofocus placeholder="admin@kicc.go.ke"
+                                   class="w-full pl-10 pr-4 py-2.5 rounded-xl bg-white/5 border border-white/10 text-sm text-white placeholder-zinc-500 focus:outline-none focus:border-amber-400/80 focus:ring-1 focus:ring-amber-400/50 transition-all">
+                        </div>
+                    </div>
+                    <div>
+                        <label class="block text-[10px] font-bold text-zinc-400 uppercase tracking-wider mb-1.5">Password</label>
+                        <div class="relative flex items-center">
+                            <svg class="absolute left-3.5 w-4 h-4 text-zinc-400" fill="none" stroke="currentColor" stroke-width="1.5" viewBox="0 0 24 24">
+                                <circle cx="12" cy="8" r="6"/><circle cx="12" cy="8" r="2"/>
+                                <path d="M5 18Q7 16 10 14l3 3Q10 18 7 20l2 2" stroke-width="1.5"/>
+                            </svg>
+                            <input :type="showPassword ? 'text' : 'password'" name="password" required placeholder="&bull;&bull;&bull;&bull;&bull;&bull;&bull;&bull;"
+                                   class="w-full pl-10 pr-10 py-2.5 rounded-xl bg-white/5 border border-white/10 text-sm text-white placeholder-zinc-500 focus:outline-none focus:border-amber-400/80 focus:ring-1 focus:ring-amber-400/50 transition-all">
+                            <button type="button" @click="showPassword = !showPassword"
+                                    class="absolute right-3.5 text-zinc-400 hover:text-white transition-colors" aria-label="Toggle password visibility">
+                                <svg x-show="!showPassword" class="w-4 h-4" fill="none" stroke="currentColor" stroke-width="1.5" viewBox="0 0 24 24">
+                                    <ellipse cx="8" cy="7" rx="5" ry="6"/><ellipse cx="17" cy="7" rx="5" ry="6"/>
+                                    <circle cx="8" cy="7" r="1.5" fill="currentColor"/><circle cx="17" cy="7" r="1.5" fill="currentColor"/>
+                                    <path d="M3 3Q6 2 8 2l4 0" stroke-width="1"/><path d="M20 3Q23 2 13 2l4 0" stroke-width="1"/>
+                                </svg>
+                                <svg x-show="showPassword" class="w-4 h-4" fill="none" stroke="currentColor" stroke-width="1.5" viewBox="0 0 24 24">
+                                    <ellipse cx="8" cy="7" rx="5" ry="6"/><ellipse cx="17" cy="7" rx="5" ry="6"/>
+                                    <path d="M3 3Q6 2 8 2l4 0" stroke-width="1"/><path d="M20 3Q23 2 13 2l4 0" stroke-width="1"/>
+                                    <line x1="2" y1="2" x2="14" y2="13" stroke="#901C1E" stroke-width="2" stroke-linecap="round"/>
+                                </svg>
+                            </button>
+                        </div>
+                    </div>
                 </div>
-                <h1 class="text-white font-bold text-lg">Admin Sign In</h1>
-                <p class="text-white/50 text-xs mt-1">KICC Mother Admin · National · County</p>
-            </div>
-
-            @if($errors->any())
-            <div class="bg-white/10 border border-red-400/30 text-red-400 rounded-xl px-4 py-3 mb-4 text-sm">{{ $errors->first() }}</div>
-            @endif
-
-            <div>
-                <label for="login" class="block text-[10px] font-bold text-zinc-400 uppercase tracking-wider mb-1.5">Email</label>
-                <input id="login" type="email" name="login" value="{{ old('login') }}" required autofocus
-                       class="w-full bg-white/5 border border-white/10 focus:border-[#F59E0B]/60 rounded-xl px-4 py-2.5 text-sm text-white placeholder:text-zinc-500 outline-none transition-colors"
-                       placeholder="admin@kicc.go.ke">
-            </div>
-            <div>
-                <label for="password" class="block text-[10px] font-bold text-zinc-400 uppercase tracking-wider mb-1.5">Password</label>
-                <div class="relative">
-                <input id="password" type="password" name="password" required
-                       class="w-full bg-white/5 border border-white/10 focus:border-[#F59E0B]/60 rounded-xl px-4 py-2.5 pr-10 text-sm text-white placeholder:text-zinc-500 outline-none transition-colors"
-                       style="min-height:44px" placeholder="Enter your password"
-                       x-ref="pw">
-                <button type="button" @click="pw.type = pw.type === 'password' ? 'text' : 'password'"
-                        class="absolute right-2 top-1/2 -translate-y-1/2 p-2 text-zinc-400 hover:text-zinc-200 rounded-lg hover:bg-white/10 transition-colors"
-                        style="min-height:44px; min-width:44px" aria-label="Toggle password visibility">
-                    <svg x-show="pw.type === 'password'" class="w-5 h-5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5">
-                        <path d="M15 12.5l2.5 0m-2.5 0"/>
-                        <path d="M10 5.5l-2-1.5 3 0.5 1.5-1.5 1-3 1-1.5-0.5-3.5-1.5-5"/>
-                        <path d="M19.5 5l1-1.5 2-1-1.5 1.5-.5-1.5-3 1-4.5 1-1"/>
-                        <circle cx="12" cy="6" r="5"/><circle cx="20.5" cy="6" r="5"/>
-                        <circle cx="12" cy="6" r="1.5" fill="currentColor"/><circle cx="20.5" cy="6" r="1.5" fill="currentColor"/>
-                    </svg>
-                    <svg x-show="pw.type === 'text'" class="w-5 h-5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5">
-                        <path d="M15 12.5l2.5 0m-2.5 0"/>
-                        <path d="M10 5.5l-2-1.5 3 0.5 1.5-1.5 1-3 1-1.5-0.5-3.5-1.5-5"/>
-                        <path d="M19.5 5l1-1.5 2-1-1.5 1.5-.5-1.5-3 1-4.5 1-1"/>
-                        <circle cx="12" cy="6" r="5"/><circle cx="20.5" cy="6" r="5"/>
-                        <line x1="3" y1="2" x2="21" y2="10" stroke-width="2" stroke="#901C1E"/>
-                        <line x1="21" y1="2" x2="3" y2="10" stroke-width="2" stroke="#901C1E"/>
-                    </svg>
+                <button type="submit"
+                        class="w-full py-2.5 px-4 rounded-xl bg-gradient-to-r from-amber-400 via-yellow-400 to-amber-500 text-[#07090F] font-semibold text-sm inline-flex items-center justify-center gap-2 shadow-lg shadow-amber-500/20 hover:brightness-110 active:scale-[0.98] transition-all mt-6">
+                    Sign In
                 </button>
-                </div>
-            </div>
-
-            <button type="submit"
-                    class="w-full inline-flex items-center justify-center gap-2 font-bold tracking-wide transition-all duration-200 mt-2 px-8 text-base h-14 rounded-xl bg-gradient-to-br from-[#F59E0B] to-[#D97706] text-[#07090F] hover:brightness-110 active:scale-[0.98]">
-                Sign In
-            </button>
-        </form>
+            </form>
+        </div>
     </div>
-</section>
+</div>
+@endsection
