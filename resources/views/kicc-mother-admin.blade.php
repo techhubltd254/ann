@@ -749,7 +749,7 @@
                 <div class="grid grid-cols-1 md:grid-cols-2 gap-4 mt-6">
                     <div class="bg-zinc-800/80 rounded-xl border border-zinc-700 p-5">
                         <h3 class="text-sm font-semibold text-white mb-2">Distribution Formula</h3>
-                        <p class="text-xs text-zinc-400 leading-relaxed">weight = contribution&alpha; &times; quality&beta; (default &alpha;=0.7, &beta;=0.3). Holdback {{ $pool->holdback_pct ?? 10 }}% funds dispute reversals. Equalisation {{ $pool->equalisation_pct ?? 0.5 }}% earmarked for foundational/anchor counties per Art. 204(1) precedent.</p>
+                        <p class="text-xs text-zinc-400 leading-relaxed">weight = contribution&alpha; &times; quality&beta; (default &alpha;=0.7, &beta;=0.3). Holdback {{ $pool?->holdback_pct ?? 10 }}% funds dispute reversals. Equalisation {{ $pool?->equalisation_pct ?? 0.5 }}% earmarked for foundational/anchor counties per Art. 204(1) precedent.</p>
                     </div>
                     <div class="bg-zinc-800/80 rounded-xl border border-zinc-700 p-5">
                         <h3 class="text-sm font-semibold text-white mb-2">Quality Scoring</h3>
@@ -817,7 +817,7 @@
                         @forelse($pipelines as $p)
                         <tr class="border-t border-zinc-700/40 text-zinc-300 hover:bg-zinc-700/20">
                             <td class="px-4 py-2.5 font-mono text-[#046bd2] font-semibold">{{ $p->code }}</td>
-                            <td class="px-4 py-2.5 text-white">{{ Str::title(str_replace('-', ' ', $p->slug)) }}</td>
+                            <td class="px-4 py-2.5 text-white">{{ \Illuminate\Support\Str::title(str_replace('-', ' ', $p->slug)) }}</td>
                             <td class="px-4 py-2.5">{{ ucfirst($p->sector) }}</td>
                             <td class="px-4 py-2.5">P{{ $p->phase }}</td>
                             <td class="px-4 py-2.5">
