@@ -41,7 +41,7 @@ class CachePublicResponse
         }
 
         // Never cache auth, admin, or mutation paths
-        foreach (['/login','/register','/cart','/checkout','/kicc-live/admin','/broadcast','/api','/live'] as $no) {
+        foreach (['/login','/register','/cart','/checkout','/kicc-live/admin','/broadcast','/api','/live','/kicc-admin','/portal','/county-admin','/national-admin','/exhibitor-admin','/provider-admin'] as $no) {
             if (str_starts_with($path, $no)) {
                 return $response;
             }
