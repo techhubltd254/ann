@@ -104,7 +104,7 @@ class InstitutionAdminController extends Controller
                 'order_items.quantity',
                 'order_items.total',
                 'orders.payment_status',
-                'orders.placed_at',
+                'orders.created_at as placed_at',
                 'users.name as customer_name'
             )
             ->orderByDesc('order_items.created_at')
