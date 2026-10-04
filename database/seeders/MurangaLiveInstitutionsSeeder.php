@@ -48,7 +48,7 @@ class MurangaLiveInstitutionsSeeder extends Seeder
         if ($institution) {
             $institution->update($data);
         } else {
-            $institution = CountyInstitution::create(array_merge($data, ['county_id' => $county->id]));
+            $institution = CountyInstitution::create(array_merge($data, ['county_id' => $county->id, 'countyId' => $county->id]));
         }
 
         $this->command->info("  ✓ Kakuzi PLC updated (id {$institution->id})");
@@ -189,7 +189,7 @@ Our core values — Moral, Inclusive, Nimble, Diligent, Fair, Utu and Lively —
         if ($institution) {
             $institution->update($data);
         } else {
-            $institution = CountyInstitution::create(array_merge($data, ['county_id' => $county->id]));
+            $institution = CountyInstitution::create(array_merge($data, ['county_id' => $county->id, 'countyId' => $county->id]));
         }
 
         $this->command->info("  ✓ Gatura Greens updated (id {$institution->id})");
@@ -313,7 +313,7 @@ Not stopping there, the family went into tea value addition through BREW IT — 
         if ($institution) {
             $institution->update($data);
         } else {
-            $institution = CountyInstitution::create(array_merge($data, ['county_id' => $county->id]));
+            $institution = CountyInstitution::create(array_merge($data, ['county_id' => $county->id, 'countyId' => $county->id]));
         }
 
         $this->command->info("  ✓ Gikono Landfill & Recycling Centre updated (id {$institution->id})");

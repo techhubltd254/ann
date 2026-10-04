@@ -293,7 +293,7 @@ class MurangaAllSectorsSeeder extends Seeder
             if ($institution) {
                 $institution->update($data);
             } else {
-                $institution = CountyInstitution::create(array_merge($data, ['county_id' => $county->id]));
+                $institution = CountyInstitution::create(array_merge($data, ['county_id' => $county->id, 'countyId' => $county->id]));
             }
 
             try {
@@ -313,6 +313,8 @@ class MurangaAllSectorsSeeder extends Seeder
         return [
             'slug' => $def['slug'],
             'user_id' => $this->ensureInstitutionUser($county, $def['name']),
+            'county_id' => $county->id,
+            'countyId' => $county->id,
             'name' => $def['name'],
             'type' => $def['type'],
             'description' => $def['description'],
