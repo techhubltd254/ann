@@ -10,21 +10,10 @@
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&display=swap" rel="stylesheet">
-    <style>
-        * { font-family: 'Inter', system-ui, sans-serif; }
-        body { background: #070708; color: #ffffff; }
-        .scrollbar-hide { scrollbar-width: none; }
-        .scrollbar-hide::-webkit-scrollbar { display: none; }
-        input:-webkit-autofill,
-        input:-webkit-autofill:hover,
-        input:-webkit-autofill:focus {
-            -webkit-text-fill-color: #ffffff !important;
-            -webkit-box-shadow: 0 0 0px 1000px rgba(0,0,0,0.4) inset !important;
-            transition: background-color 5000s ease-in-out 0s;
-        }
+    <style>*{font-family:'Inter',system-ui,sans-serif}body{background:#070708;color:#fff}.scrollbar-hide{scrollbar-width:none}.scrollbar-hide::-webkit-scrollbar{display:none}input:-webkit-autofill,input:-webkit-autofill:hover,input:-webkit-autofill:focus{-webkit-text-fill-color:#fff!important;-webkit-box-shadow:0 0 0 1000px rgba(0,0,0,.4) inset!important;transition:background-color 5000s ease-in-out 0s}</style>
     @php $alpineUrl = 'https://cdn.jsdelivr.net/npm/alpinejs@' . config('kicc.alpine_version', '3.14.8') . '/dist/cdn.min.js'; @endphp
 </head>
-<body class="antialiased text-white scrollbar-hide">
+<body class="antialiased text-white scrollbar-hide" style="background:#070708;color:#fff">
     @yield('content')
     <script defer src="{{ $alpineUrl }}"></script>
 </body>

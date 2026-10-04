@@ -3,9 +3,8 @@
 @section('title', 'Register — KICC Platform')
 @section('content')
 <div class="fixed inset-0 pointer-events-none z-0" aria-hidden="true">
-    <div class="absolute top-1/4 -left-20 w-96 h-96 bg-amber-500/10 rounded-full blur-[120px]"></div>
-    <div class="absolute bottom-1/4 -right-20 w-96 h-96 bg-yellow-600/10 rounded-full blur-[140px]"></div>
-    <div class="absolute w-[500px] h-[500px] border border-amber-500/15 rotate-45 rounded-[60px] opacity-40 shadow-[0_0_50px_rgba(245,158,11,0.05)]"></div>
+    <div class="absolute top-1/4 -left-20 w-96 h-96 bg-amber-500/10 rounded-full blur-3xl"></div>
+    <div class="absolute bottom-1/4 -right-20 w-96 h-96 bg-yellow-600/10 rounded-full blur-3xl"></div>
 </div>
 
 <div class="relative z-10 flex items-center justify-center min-h-dvh px-4 py-12">
