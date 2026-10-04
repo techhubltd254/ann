@@ -83,21 +83,7 @@ php artisan migrate --force >> "$LOG" 2>&1 || echo "migrate warn" >> "$LOG"
 php artisan db:seed --class=RolePermissionSeeder --force 2>/dev/null || true
 
 # Reset known admin password (shown once during seeding, then lost)
-php -r '
-$app = require "'"$APP_DIR"'/bootstrap/app.php";
-$kernel = $app->make(Illuminate\Contracts\Console\Kernel::class);
-$kernel->bootstrap();
-try {
-    $u = App\Models\User::where("email", "admin@kicc.go.ke")->first();
-    if ($u) {
-        $plain = "KICC@Admin2026";
-        $u->password = bcrypt($plain);
-        $u->passwordHash = bcrypt($plain);
-        $u->save();
-        echo "  ✓ admin@kicc.go.ke password reset to: $plain\n";
-    }
-} catch (\Throwable $e) { echo "  ⚠ admin password reset: " . $e->getMessage() . "\n"; }
-' 2>/dev/null >> "$LOG" || echo "admin password reset warn" >> "$LOG"
+php /opt/kicc-laravel/scripts/reset-admin-password.php 2>/dev/null >> "$LOG" || echo "admin password reset warn" >> "$LOG"
 
 # Assign admin roles automatically
 php -r '
