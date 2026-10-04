@@ -90,13 +90,17 @@ $k->bootstrap();
 $e = "admin@kicc.go.ke";
 $p = "KICC@Admin2026";
 try {
-    $hash = password_hash($p, PASSWORD_BCRYPT, ["cost" => 12]);
-    $db = \Illuminate\Support\Facades\DB::table("users");
-    $n = $db->where("email", $e)->update(["password" => $hash, "status" => "active", "remember_token" => null]);
-    echo "  ✓ admin pwd: updated {$n} rows\n";
-    if ($n < 1) {
-        $all = $db->limit(5)->get(["id", "email", "account_type"]);
-        foreach ($all as $u) { echo "  user {$u->id}: {$u->email} [{$u->account_type}]\n"; }
+    $u = App\Models\User::where("email", $e)->first();
+    if ($u) {
+        $u->password = password_hash($p, PASSWORD_BCRYPT, ["cost" => 12]);
+        $u->status = "active";
+        $u->remember_token = null;
+        $u->save();
+        echo "  ✓ {$e} password set to: {$p}\n";
+    } else {
+        $first = App\Models\User::first();
+        echo "  ✗ {$e} not found. DB has " . App\Models\User::count() . " users. ";
+        echo "First: " . ($first ? $first->email : "none") . "\n";
     }
 } catch (\Throwable $ex) {
     echo "  ✗ ERROR: " . $ex->getMessage() . "\n";
