@@ -140,11 +140,7 @@ class CountyAdminController extends Controller
         ;
 
         try {
-            $data = \Illuminate\Support\Facades\Cache::remember(
-                "county_admin_dash_{$county->id}_{$tab}_{$page}",
-                config('kicc.cache_ttl.admin', 60),
-                $buildCountyDash
-            );
+            $data = $buildCountyDash();
         } catch (\Throwable $e) {
             $data = $buildCountyDash();
         }

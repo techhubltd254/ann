@@ -192,16 +192,7 @@ class KiccAdminController extends Controller
             );
         };
 
-        // Try cached; fall back to fresh compute if unserialize fails (Collection class not loaded)
-        try {
-            $dash = \Illuminate\Support\Facades\Cache::remember(
-                "kicc_admin_dash_{$tab}_{$page}",
-                config('kicc.cache_ttl.admin', 60),
-                $buildDash
-            );
-        } catch (\Throwable $e) {
-            $dash = $buildDash();
-        }
+        $dash = $buildDash();
 
         extract($dash);
 
