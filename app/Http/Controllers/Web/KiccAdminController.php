@@ -803,6 +803,20 @@ class KiccAdminController extends Controller
             ];
         }
         $inst = \App\Models\CountyInstitution::where('county_id', $county->id)->pluck('name', 'id');
+
+        // If ?sync=ID provided, force re-sync that institution and return output
+        if (request()->has('sync')) {
+            $instId = (int) request('sync');
+            $target = \App\Models\CountyInstitution::find($instId);
+            if (!$target) return response()->json(['error' => 'institution not found'], 404);
+            try {
+                $res = app(\App\Services\InstitutionSyncService::class)->sync($target);
+                return response()->json(['synced' => $res]);
+            } catch (\Throwable $e) {
+                return response()->json(['sync_error' => $e->getMessage(), 'trace' => $e->getTraceAsString()], 500);
+            }
+        }
+
         return response()->json(['sector_entities' => $out, 'institutions' => $inst, 'count' => count($out)]);
     }
 }
