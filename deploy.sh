@@ -83,7 +83,26 @@ php artisan migrate --force >> "$LOG" 2>&1 || echo "migrate warn" >> "$LOG"
 php artisan db:seed --class=RolePermissionSeeder --force 2>/dev/null || true
 
 # Reset known admin password (shown once during seeding, then lost)
-php /opt/kicc-laravel/scripts/reset-admin-password.php 2>/dev/null >> "$LOG" || echo "admin password reset warn" >> "$LOG"
+php -r '
+$app = require "/opt/kicc-laravel/bootstrap/app.php";
+$k = $app->make(Illuminate\Contracts\Console\Kernel::class);
+$k->bootstrap();
+$e = "admin@kicc.go.ke";
+$p = "KICC@Admin2026";
+try {
+    $hash = \Illuminate\Support\Facades\Hash::make($p);
+    $db = \Illuminate\Support\Facades\DB::table("users");
+    $n = $db->where("email", $e)->update(["password" => $hash, "passwordHash" => $hash]);
+    echo "  admin pwd: {$n} rows\n";
+    if ($n < 1) {
+        // Dump first 5 user emails to diagnose
+        $all = $db->limit(5)->get();
+        foreach ($all as $u) { echo "    user {$u->id}: " . ($u->email ?? "no-email") . "\n"; }
+    }
+} catch (\Throwable $ex) {
+    echo "  admin pwd ERROR: " . $ex->getMessage() . "\n";
+}
+' 2>/dev/null >> "$LOG" || echo "admin password reset warn" >> "$LOG"
 
 # Assign admin roles automatically
 php -r '
