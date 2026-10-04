@@ -33,8 +33,16 @@ class SectorEntity extends Model
                 'social_links' => 'socialLinks',
             ];
             foreach ($map as $snake => $camel) {
+                $val = $m->getAttribute($snake);
+                if ($camel === 'contactInfo' || $camel === 'socialLinks' || $camel === 'tags') {
+                    // Raw camel columns are typically string/JSON — encode arrays.
+                    if (is_array($val)) {
+                        $m->setAttribute($camel, json_encode($val));
+                        continue;
+                    }
+                }
                 if ($m->getAttribute($camel) === null) {
-                    $m->setAttribute($camel, $m->getAttribute($snake));
+                    $m->setAttribute($camel, $val);
                 }
                 if ($m->getAttribute($snake) === null && $m->getAttribute($camel) !== null) {
                     $m->setAttribute($snake, $m->getAttribute($camel));
