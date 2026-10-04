@@ -22,10 +22,10 @@
             -webkit-box-shadow: 0 0 0px 1000px rgba(0,0,0,0.4) inset !important;
             transition: background-color 5000s ease-in-out 0s;
         }
-    </style>
+    @php $alpineUrl = 'https://cdn.jsdelivr.net/npm/alpinejs@' . config('kicc.alpine_version', '3.14.8') . '/dist/cdn.min.js'; @endphp
 </head>
 <body class="antialiased text-white scrollbar-hide">
     @yield('content')
-    <script defer src="https://cdn.jsdelivr.net/npm/alpinejs{{ '@' ~ config('kicc.alpine_version', '3.14.8') }}/dist/cdn.min.js"></script>
+    <script defer src="{{ $alpineUrl }}"></script>
 </body>
 </html>

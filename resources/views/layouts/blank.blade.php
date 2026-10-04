@@ -13,10 +13,10 @@
         body { background-color: #07090F; color: #ffffff; }
         .scrollbar-hide { scrollbar-width: none; }
         .scrollbar-hide::-webkit-scrollbar { display: none; }
-    </style>
+    @php $alpineUrl = 'https://cdn.jsdelivr.net/npm/alpinejs@' . config('kicc.alpine_version', '3.14.8') . '/dist/cdn.min.js'; @endphp
 </head>
 <body class="antialiased text-gray-900">
     @yield('content')
-    <script defer src="https://cdn.jsdelivr.net/npm/alpinejs{{ '@' ~ config('kicc.alpine_version', '3.14.8') }}/dist/cdn.min.js"></script>
+    <script defer src="{{ $alpineUrl }}"></script>
 </body>
 </html>
