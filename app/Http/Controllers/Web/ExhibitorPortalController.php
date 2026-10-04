@@ -8,9 +8,10 @@ use App\Models\EscrowTransaction;
 use App\Models\Marketplace\Order;
 use App\Models\Marketplace\Product;
 use App\Models\Marketplace\ProductCategory;
+use App\Events\GenericDomainEvent;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
-use Illuminate\Support\Str;
+use Illuminate\Support\Facades\Session;
 
 /**
  * Private Exhibitor Portal — the atomic exhibitor unit.
@@ -66,6 +67,7 @@ class ExhibitorPortalController extends Controller
             ['label' => 'Orders', 'tab' => 'orders', 'icon' => 'M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2'],
             ['label' => 'Escrow Earnings', 'tab' => 'escrow', 'icon' => 'M12 8c-1.657 0-3 .895-3 2s1.343 2 3 2 3 .895 3 2-1.343 2-3 2m0-8c1.11 0 2.08.402 2.599 1M12 8V7m0 1v8m0 0v1m0-1c-1.11 0-2.08-.402-2.599-1'],
             ['label' => 'My Website', 'tab' => 'website', 'icon' => 'M21 12a9 9 0 01-9 9m9-9a9 9 0 00-9-9m9 9H3m9 9a9 9 0 01-9-9m9 9c1.657 0 3-4.03 3-9s-1.343-9-3-9m0 18c-1.657 0-3-4.03-3-9s1.343-9 3-9m-9 9a9 9 0 019-9'],
+            ['label' => 'Upgrade', 'tab' => 'upgrade', 'icon' => 'M12 8c-1.657 0-3 .895-3 2s1.343 2 3 2 3 .895 3 2-1.343 2-3 2m0-8c1.11 0 2.08.402 2.599 1M12 8V7m0 1v8m0 0v1m0-1c-1.11 0-2.08-.402-2.599-1'],
         ];
 
         return view('dashboards.exhibitor', [
@@ -140,5 +142,35 @@ class ExhibitorPortalController extends Controller
         }
 
         return redirect()->route('exhibitor.admin', ['tab' => 'products'])->with('success', 'Product removed.');
+    }
+
+    public function upgrade(Request $request)
+    {
+        $this->authorizeExhibitor();
+        $user = Auth::user();
+        $type = $request->input('upgrade_type');
+        abort_unless(in_array($type, ['custom', 'premium'], true), 422);
+
+        $meta = (array) ($user->metadata ?? []);
+        $meta['upgrade_requested'] = $type;
+        $meta['upgrade_requested_at'] = now()->toIso8601String();
+        $user->metadata = $meta;
+        $user->save();
+
+        event(new GenericDomainEvent('admin_request_created', [
+            'user_id' => $user->id, 'display_name' => $user->name,
+            'type' => $type === 'premium' ? 'premium_shoot' : 'custom_admin',
+            'message' => $type === 'premium'
+                ? 'Exhibitor requests premium video shoot'
+                : 'Exhibitor requests custom admin setup',
+            'business_type' => $meta['business_type'] ?? '',
+            'tagline' => $meta['tagline'] ?? '',
+        ], n8nEventName: 'admin_request_created'));
+
+        session()->flash('success', $type === 'premium'
+            ? 'Shoot request sent. We contact you within 24h.'
+            : 'Custom setup request sent to KICC team.');
+
+        return redirect()->route('exhibitor.admin', ['tab' => 'upgrade']);
     }
 }

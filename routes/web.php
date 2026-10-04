@@ -266,6 +266,7 @@ Route::get('/national-admin/agencies/{agency}/delete', [\App\Http\Controllers\We
     Route::get('/exhibitor-admin', [\App\Http\Controllers\Web\ExhibitorPortalController::class, 'index'])->name('exhibitor.admin');
     Route::post('/exhibitor-admin/products', [\App\Http\Controllers\Web\ExhibitorPortalController::class, 'storeProduct'])->name('exhibitor.admin.products.store');
     Route::post('/exhibitor-admin/products/{id}/delete', [\App\Http\Controllers\Web\ExhibitorPortalController::class, 'deleteProduct'])->name('exhibitor.admin.products.delete');
+    Route::post('/exhibitor-admin/upgrade', [\App\Http\Controllers\Web\ExhibitorPortalController::class, 'upgrade'])->name('exhibitor.admin.upgrade');
     Route::get('/exhibitor-onboarding', [\App\Http\Controllers\Web\ExhibitorOnboardingController::class, 'show'])->name('exhibitor.onboarding');
     Route::post('/exhibitor-onboarding', [\App\Http\Controllers\Web\ExhibitorOnboardingController::class, 'store'])->name('exhibitor.onboarding.store');
 

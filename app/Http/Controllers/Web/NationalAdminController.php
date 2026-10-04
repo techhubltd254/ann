@@ -5,9 +5,10 @@ namespace App\Http\Controllers\Web;
 use App\Http\Controllers\Controller;
 use App\Models\Agency;
 use App\Models\County;
+use App\Models\CountyBulkSlotAllocation;
 use App\Models\MediaAsset;
 use App\Models\Ministry;
-use App\Models\Page;
+use App\Models\User;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Storage;
@@ -69,6 +70,7 @@ class NationalAdminController extends Controller
             ['label' => 'National Flag', 'tab' => 'flag', 'icon' => 'M3 3v18h18M7 16l4-8 4 4 4-6'],
             ['label' => 'Pages', 'tab' => 'pages', 'icon' => 'M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z'],
             ['label' => 'County Classification', 'tab' => 'counties', 'icon' => 'M9 20l-5.447-2.724A1 1 0 013 16.382V5.618a1 1 0 011.447-.894L9 7m0 13l6-3m-6 3V7m6 10l4.553 2.276A1 1 0 0021 18.382V7.618a1 1 0 00-.553-.894L15 4m0 13V4m0 0L9 7'],
+            ['label' => 'Exhibitor Req.', 'tab' => 'exh_requests', 'icon' => 'M12 4.354a4 4 0 110 5.292M15 21H3v-1a6 6 0 0112 0v1zm0 0h6v-1a6 6 0 00-9-5.197'],
         ];
 
         // ── County classification data + pipeline activations (outside cache) ──
@@ -88,11 +90,19 @@ class NationalAdminController extends Controller
             ->selectRaw('pipeline_activations.county_id, pipeline_registrations.code, pipeline_registrations.slug')
             ->get()->groupBy('county_id');
 
+        // Exhibitor requests (custom/premium setups)
+        $exhRequests = User::with('county')
+            ->where('account_type', 'exhibitor')
+            ->where('metadata', 'like', '%"complexity"%')
+            ->where('metadata', 'like', '%"onboarding_complete":true%')
+            ->latest()->take(50)->get();
+
         return view('national.admin', compact(
             'tab', 'navItems', 'ministries', 'agencies', 'nationalPages',
             'stats', 'nationalHero', 'nationalFlag', 'ministryMedia',
             'counties', 'quadrantCounts', 'unclassified',
             'activationCounts', 'activationTotal', 'activeByCounty',
+            'exhRequests',
         ));
     }
 

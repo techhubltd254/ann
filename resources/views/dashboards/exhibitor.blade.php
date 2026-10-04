@@ -189,6 +189,44 @@
                 </div>
             </div>
             @endif
+
+            {{--  UPGRADE REQUEST  --}}
+            @if($tab === 'upgrade')
+            <div class="bg-white border border-gray-200 rounded-2xl p-8 max-w-xl">
+                <h3 class="font-bold text-gray-900 text-lg mb-1">🚀 Upgrade Your Exhibitor Setup</h3>
+                <p class="text-sm text-gray-500 mb-6">Choose how you want to grow your presence on KICC. Our team will handle the rest.</p>
+                <div class="space-y-3">
+                    <div class="border-2 border-gray-200 hover:border-[#FFCD05] rounded-2xl p-5 transition-all cursor-pointer">
+                        <div class="flex items-start gap-4">
+                            <span class="text-3xl">🎨</span>
+                            <div>
+                                <div class="font-bold text-gray-900 text-base">Request a Custom Admin Setup</div>
+                                <p class="text-sm text-gray-500 mt-1">Get a personalized dashboard built by the KICC team. We design and configure it for your specific business needs.</p>
+                            </div>
+                        </div>
+                        <form method="POST" action="{{ route('exhibitor.admin.upgrade') }}" class="inline mt-3">
+                            @csrf
+                            <input type="hidden" name="upgrade_type" value="custom">
+                            <button class="px-5 py-2.5 rounded-xl bg-[#901C1E] text-white text-sm font-bold">Request Custom Setup</button>
+                        </form>
+                    </div>
+                    <div class="border-2 border-gray-200 hover:border-[#FFCD05] rounded-2xl p-5 transition-all cursor-pointer">
+                        <div class="flex items-start gap-4">
+                            <span class="text-3xl">🎬</span>
+                            <div>
+                                <div class="font-bold text-gray-900 text-base">Book a Premium Photo/Video Shoot</div>
+                                <p class="text-sm text-gray-500 mt-1">Our professional team visits your location, captures custom media, and builds a premium storefront with your own photos and videos.</p>
+                            </div>
+                        </div>
+                        <form method="POST" action="{{ route('exhibitor.admin.upgrade') }}" class="inline mt-3">
+                            @csrf
+                            <input type="hidden" name="upgrade_type" value="premium">
+                            <button class="px-5 py-2.5 rounded-xl bg-[#FFCD05] text-[#07090F] text-sm font-bold">Book Premium Shoot</button>
+                        </form>
+                    </div>
+                </div>
+            </div>
+            @endif
             @endisset
             @endisset
 </div>

@@ -1162,6 +1162,39 @@
                 </div>
             </div>
 
+            @elseif($tab === 'exh_requests')
+            <div class="glass-card rounded-2xl p-6">
+                <div class="flex items-center justify-between mb-3">
+                    <h3 class="font-bold text-white text-lg">📋 Exhibitor Requests</h3>
+                    <span class="text-xs text-zinc-400">{{ count($exhRequests) }} in {{ $county->name }}</span>
+                </div>
+                @if(count($exhRequests) > 0)
+                <table class="w-full text-xs">
+                    <thead><tr class="text-zinc-500 uppercase text-[10px] font-bold">
+                        <th class="px-3 py-2 text-left">Exhibitor</th><th class="px-3 py-2 text-center">Complexity</th>
+                        <th class="px-3 py-2 text-left">Business</th><th class="px-3 py-2 text-left">Tagline</th>
+                    </tr></thead>
+                    <tbody>
+                        @foreach($exhRequests as $u)
+                        @php $m = $u->metadata ?? []; @endphp
+                        <tr class="border-t border-white/5">
+                            <td class="px-3 py-2 font-semibold text-white">{{ $u->name }}</td>
+                            <td class="px-3 py-2 text-center">
+                                @if($m['complexity'] === 'premium')<span class="px-2 py-0.5 rounded-full bg-rose-500/15 text-rose-400 text-[10px]">🎬 Premium</span>
+                                @elseif($m['complexity'] === 'custom')<span class="px-2 py-0.5 rounded-full bg-sky-500/15 text-sky-400 text-[10px]">🎨 Custom</span>
+                                @else<span class="px-2 py-0.5 rounded-full bg-emerald-500/15 text-emerald-400 text-[10px]">🚀 Simple</span>@endif
+                            </td>
+                            <td class="px-3 py-2 text-zinc-400 text-[11px]">{{ $m['business_type_label'] ?? '—' }}</td>
+                            <td class="px-3 py-2 text-zinc-500 max-w-[200px] truncate">{{ $m['tagline'] ?? '' }}</td>
+                        </tr>
+                        @endforeach
+                    </tbody>
+                </table>
+                @else
+                <p class="text-zinc-500 text-sm py-4">No exhibitor setup requests from this county.</p>
+                @endif
+            </div>
+
             @endif
         </main>
 

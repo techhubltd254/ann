@@ -168,6 +168,7 @@ class CountyAdminController extends Controller
             ['label' => 'Consent Forms', 'tab' => 'consent', 'icon' => 'M9 12l2 2 4-4m5.618-4.016A11.955 11.955 0 0112 2.944a11.955 11.955 0 01-8.618 3.04A12.02 12.02 0 003 9c0 5.591 3.824 10.29 9 11.622 5.176-1.332 9-6.03 9-11.622 0-1.042-.133-2.052-.382-3.016z'],
             ['label' => 'Voice Notes', 'tab' => 'voice', 'icon' => 'M19 11a7 7 0 01-7 7m0 0a7 7 0 01-7-7m7 7v4m0 0H8m4 0h4m-4-8a3 3 0 01-3-3V5a3 3 0 116 0v6a3 3 0 01-3 3z'],
             ['label' => 'Landmarks', 'tab' => 'landmarks', 'icon' => 'M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z'],
+            ['label' => 'Exhibitor Req.', 'tab' => 'exh_requests', 'icon' => 'M12 4.354a4 4 0 110 5.292M15 21H3v-1a6 6 0 0112 0v1zm0 0h6v-1a6 6 0 00-9-5.197'],
         ];
 
         $analytics = app(\App\Services\AnalyticsService::class)->forCounty($county);
@@ -178,6 +179,12 @@ class CountyAdminController extends Controller
         // All counties for national admin switcher
         $allCounties = County::orderBy('name')->get(['slug', 'name']);
 
+        // County-scoped exhibitor requests
+        $exhRequests = User::where('county_id', $county->id)
+            ->where('account_type', 'exhibitor')
+            ->where('metadata', 'like', '%"complexity"%')
+            ->latest()->take(20)->get();
+
         return view('dashboards.county-admin', compact(
             'county', 'tab', 'navItems', 'stats', 'products', 'attractions',
             'hotels', 'sectorImages', 'plans', 'marketplaceProducts', 'ads',
@@ -186,6 +193,7 @@ class CountyAdminController extends Controller
             'housingProjects', 'droneSequences', 'presidentialAudios', 'floorPlans',
             'consentForms', 'voiceNotes',
             'landmarks', 'broadcastSchedules', 'countyFlagVideo', 'allCounties',
+            'exhRequests',
         ) + ['video4dMap' => $this->video4dMap($county), 'analytics' => $analytics]);
     }
 
