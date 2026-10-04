@@ -47,6 +47,9 @@ class CountyAdminController extends Controller
 
         $page = (int) $request->get('page', 1);
 
+        // Force-load Eloquent Collection class for cache unserialize
+        try { $c = \Illuminate\Database\Eloquent\Collection::class; } catch (\Throwable $e) {}
+
         // Analytics — paginate all entity collections to prevent OOM.
         // Cached 60s (admin TTL) so the dashboard loads fast; busted by syncCounty() on write.
         $data = \Illuminate\Support\Facades\Cache::remember(
