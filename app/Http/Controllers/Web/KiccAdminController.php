@@ -783,4 +783,26 @@ class KiccAdminController extends Controller
         return redirect()->route('kicc.admin', ['tab' => 'venues'])
             ->with('success', "Venue \"{$venue->name}\" updated.");
     }
+
+    /** Temporary diagnostic: inspect sector_entities for Muranga institutions. */
+    public function diagSectorEntities()
+    {
+        $this->authorizeKicc();
+        $county = \App\Models\County::where('slug', 'muranga')->first();
+        $rows = \App\Models\SectorEntity::where('county_id', $county->id)
+            ->whereIn('entity_type', [\App\Models\CountyInstitution::class, 'institution'])
+            ->with('sector:id,slug,name')
+            ->get(['id', 'entity_id', 'entity_type', 'sector_id', 'name', 'is_published']);
+        $out = [];
+        foreach ($rows as $r) {
+            $out[] = [
+                'entity_id' => $r->entity_id,
+                'sector' => $r->sector?->slug,
+                'name' => $r->name,
+                'published' => (bool) $r->is_published,
+            ];
+        }
+        $inst = \App\Models\CountyInstitution::where('county_id', $county->id)->pluck('name', 'id');
+        return response()->json(['sector_entities' => $out, 'institutions' => $inst, 'count' => count($out)]);
+    }
 }
