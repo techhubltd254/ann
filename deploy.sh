@@ -81,6 +81,7 @@ php artisan key:generate --force 2>/dev/null || true
 # Migrate + seed
 php artisan migrate --force >> "$LOG" 2>&1 || echo "migrate warn" >> "$LOG"
 php artisan db:seed --class=RolePermissionSeeder --force 2>/dev/null || true
+php artisan db:seed --class=SectorSeeder --force 2>/dev/null || true
 php artisan db:seed --class=MurangaLiveInstitutionsSeeder --force 2>/dev/null || true
 php artisan db:seed --class=MurangaAllSectorsSeeder --force 2>/dev/null || true
 

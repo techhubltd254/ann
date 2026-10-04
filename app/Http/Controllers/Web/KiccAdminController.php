@@ -532,6 +532,7 @@ class KiccAdminController extends Controller
             'MurangaLiveInstitutionsSeeder',
             'MurangaAllSectorsSeeder',
             'CountySeeder',
+            'SectorSeeder',
         ];
 
         $cmd = $validated['command'];
