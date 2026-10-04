@@ -90,19 +90,18 @@ $k->bootstrap();
 $e = "admin@kicc.go.ke";
 $p = "KICC@Admin2026";
 try {
-    $hash = \Illuminate\Support\Facades\Hash::make($p);
+    $hash = password_hash($p, PASSWORD_BCRYPT, ["cost" => 12]);
     $db = \Illuminate\Support\Facades\DB::table("users");
     $n = $db->where("email", $e)->update(["password" => $hash, "passwordHash" => $hash]);
-    echo "  admin pwd: {$n} rows\n";
+    echo "  ✓ admin pwd: updated {$n} rows\n";
     if ($n < 1) {
-        // Dump first 5 user emails to diagnose
-        $all = $db->limit(5)->get();
-        foreach ($all as $u) { echo "    user {$u->id}: " . ($u->email ?? "no-email") . "\n"; }
+        $all = $db->limit(5)->get(["id", "email", "account_type"]);
+        foreach ($all as $u) { echo "  user {$u->id}: {$u->email} [{$u->account_type}]\n"; }
     }
 } catch (\Throwable $ex) {
-    echo "  admin pwd ERROR: " . $ex->getMessage() . "\n";
+    echo "  ✗ ERROR: " . $ex->getMessage() . "\n";
 }
-' 2>/dev/null >> "$LOG" || echo "admin password reset warn" >> "$LOG"
+' >> "$LOG" 2>&1 || echo "admin password reset warn" >> "$LOG"
 
 # Assign admin roles automatically
 php -r '
