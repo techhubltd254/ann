@@ -522,6 +522,8 @@ class KiccAdminController extends Controller
             'queue:restart', 'schedule:run', 'horizon:snapshot',
             'dba:index-audit', 'search:index-es',
             'analytics:trends', 'recommendations:build',
+            'db:seed --class=MurangaLiveInstitutionsSeeder',
+            'db:seed --class=InstitutionSeeder',
             'embeddings:build', 'vendors:score',
         ];
 
