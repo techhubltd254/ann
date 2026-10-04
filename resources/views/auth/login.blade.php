@@ -37,20 +37,23 @@
                             <button type="button" @click="showPassword = !showPassword"
                                     class="absolute right-2 top-1/2 -translate-y-1/2 p-2 text-gray-400 hover:text-gray-600 rounded-lg hover:bg-gray-100 transition-colors"
                                     style="min-height: 44px; min-width: 44px" aria-label="Toggle password visibility">
-                                <svg x-show="!showPassword" class="w-5 h-5" fill="none" stroke="currentColor" stroke-width="1.5" viewBox="0 0 24 24">
-                                    <circle cx="8" cy="6" r="6" stroke-width="1.5"/>
-                                    <circle cx="8" cy="6" r="2" fill="currentColor"/>
-                                    <circle cx="22" cy="6" r="6" stroke-width="1.5"/>
-                                    <circle cx="22" cy="6" r="2" fill="currentColor"/>
-                                    <path d="M6 16Q8 14 10 12l2 4Q4 18 6 20l2 2" stroke-width="1.5"/>
-                                    <path d="M20 16Q22 14 16 12l2 4Q18 18 20 20l2 2" stroke-width="1.5"/>
+                                <svg x-show="!showPassword" class="w-5 h-5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5">
+                                    <path d="M15 12.5l2.5 0m-2.5 0"/>
+                                    <path d="M10 5.5l-2-1.5 3 0.5 1.5-1.5 1-3 1-1.5-0.5-3.5-1.5-5"/>
+                                    <path d="M19.5 5l1-1.5 2-1-1.5 1.5-.5-1.5-3 1-4.5 1-1"/>
+                                    <circle cx="12" cy="6" r="5"/>
+                                    <circle cx="20.5" cy="6" r="5"/>
+                                    <circle cx="12" cy="6" r="1.5" fill="currentColor"/>
+                                    <circle cx="20.5" cy="6" r="1.5" fill="currentColor"/>
                                 </svg>
-                                <svg x-show="showPassword" class="w-5 h-5" fill="none" stroke="currentColor" stroke-width="1.5" viewBox="0 0 24 24">
-                                    <circle cx="8" cy="6" r="6" stroke-width="1.5"/>
-                                    <circle cx="22" cy="6" r="6" stroke-width="1.5"/>
-                                    <path d="M6 16Q8 14 10 12l2 4Q4 18 6 20l2 2" stroke-width="1.5"/>
-                                    <path d="M20 16Q22 14 16 12l2 4Q18 18 20 20l2 2" stroke-width="1.5"/>
-                                    <line x1="3" y1="3" x2="13" y2="13" stroke="#901C1E" stroke-width="2" stroke-linecap="round"/>
+                                <svg x-show="showPassword" class="w-5 h-5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5">
+                                    <path d="M15 12.5l2.5 0m-2.5 0"/>
+                                    <path d="M10 5.5l-2-1.5 3 0.5 1.5-1.5 1-3 1-1.5-0.5-3.5-1.5-5"/>
+                                    <path d="M19.5 5l1-1.5 2-1-1.5 1.5-.5-1.5-3 1-4.5 1-1"/>
+                                    <circle cx="12" cy="6" r="5"/>
+                                    <circle cx="20.5" cy="6" r="5"/>
+                                    <line x1="3" y1="2" x2="21" y2="10" stroke-width="2" stroke="#901C1E"/>
+                                    <line x1="21" y1="2" x2="3" y2="10" stroke-width="2" stroke="#901C1E"/>
                                 </svg>
                             </button>
                         </div>
