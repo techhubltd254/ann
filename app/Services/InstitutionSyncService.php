@@ -243,6 +243,9 @@ class InstitutionSyncService
             'tags' => [$sector->slug, Str::slug($i->name)],
             'is_published' => $i->is_published,
             'isPublished' => $i->is_published,
+            'language_primary' => 'en',
+            'languagePrimary' => 'en',
+            'capture_target' => 'manual',
         ]);
     }
 
