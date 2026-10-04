@@ -257,6 +257,7 @@ class InstitutionSyncService
 
         $data = [
             'county_id' => $county->id,
+            'countyId' => $county->id,
             'name' => $name,
             'description' => $mapping['description'] ?? $i->story,
             'category' => ucfirst($mapping['entry_type'] ?? 'tour'),
@@ -266,6 +267,7 @@ class InstitutionSyncService
             'longitude' => $i->lng,
             'contact' => $i->phone,
             'is_published' => $i->is_published,
+            'isPublished' => $i->is_published,
         ];
 
         if ($attr) {
