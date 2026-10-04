@@ -76,7 +76,7 @@ class MurangaLiveInstitutionsSeeder extends Seeder
             'founded_year' => 1928,
             'lat' => -0.9956,
             'lng' => 37.1167,
-            'is_published' => true,
+            'is_published' => true, 'isPublished' => true,
             'is_verified_trader' => true,
             'trader_type' => 'exporter',
             'social_links' => [
@@ -217,7 +217,7 @@ Our core values — Moral, Inclusive, Nimble, Diligent, Fair, Utu and Lively —
             'founded_year' => 1959,
             'lat' => -0.8991,
             'lng' => 36.9215,
-            'is_published' => true,
+            'is_published' => true, 'isPublished' => true,
             'is_verified_trader' => true,
             'trader_type' => 'agritourism',
             'social_links' => [
@@ -341,7 +341,7 @@ Not stopping there, the family went into tea value addition through BREW IT — 
             'founded_year' => 2019,
             'lat' => -0.7167,
             'lng' => 37.1500,
-            'is_published' => true,
+            'is_published' => true, 'isPublished' => true,
             'is_verified_trader' => false,
             'trader_type' => 'utility',
             'story' => "The Gikono Landfill and Recycling Centre is Murang'a County's dedicated waste management facility. Established to address the county's growing waste challenge, the centre provides integrated waste collection, segregation, recycling and engineered landfill services.

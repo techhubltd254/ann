@@ -315,6 +315,8 @@ class MurangaAllSectorsSeeder extends Seeder
             'user_id' => $this->ensureInstitutionUser($county, $def['name']),
             'county_id' => $county->id,
             'countyId' => $county->id,
+            'is_published' => true,
+            'isPublished' => true,
             'name' => $def['name'],
             'type' => $def['type'],
             'description' => $def['description'],
@@ -326,7 +328,6 @@ class MurangaAllSectorsSeeder extends Seeder
             'founded_year' => $def['founded_year'] ?? null,
             'lat' => $def['lat'] ?? null,
             'lng' => $def['lng'] ?? null,
-            'is_published' => true,
             'story' => $def['story'],
             'sector_mappings' => [$def['mapping']],
         ];
