@@ -221,12 +221,15 @@ class InstitutionSyncService
 
         return SectorEntity::create([
             'county_id' => $county->id,
+            'countyId' => $county->id,
             'sector_id' => $sector->id,
             'entity_type' => \App\Models\CountyInstitution::class,
             'entity_id' => $i->id,
             'name' => $mapping['entry_name'] ?? $i->name,
             'description' => $description,
             'sector_type' => $sector->slug,
+            'capture_status' => 'none',
+            'captureStatus' => 'none',
             'contact_info' => [
                 'phone' => $i->phone,
                 'email' => $i->email,
@@ -237,6 +240,7 @@ class InstitutionSyncService
             'longitude' => $i->lng,
             'tags' => [$sector->slug, Str::slug($i->name)],
             'is_published' => $i->is_published,
+            'isPublished' => $i->is_published,
         ]);
     }
 
