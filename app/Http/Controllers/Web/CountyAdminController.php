@@ -19,6 +19,7 @@ use App\Models\Marketplace\ProductVariant;
 use App\Models\Sector;
 use App\Models\SectorEntity;
 use App\Models\SubscriptionPlan;
+use App\Models\User;
 use App\Http\Controllers\Concerns\CountyAdminHelpers;
 use App\Services\CacheSyncService;
 use App\Events\GenericDomainEvent;
