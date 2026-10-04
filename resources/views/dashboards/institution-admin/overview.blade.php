@@ -25,7 +25,7 @@
         $prev = $revenuePrevMonth ?: 1;
         $revGrowth = $revenue > 0 ? round((($revenue - $prev) / $prev) * 100, 1) : 0;
         $ordGrowth = $totalOrders > 0 ? round(($orders30d / max($totalOrders,1)) * 100, 1) : 0;
-        $prodNew = $marketplaceProducts->where('created_at', '>=', now()->subDays(30))->count();
+        $prodNew = $marketplaceProducts->filter(fn ($p) => $p->created_at >= now()->subDays(30))->count();
         @endphp
         <x-nexora-kpi title="Total Revenue" :value="'KES ' . number_format($revenue)" :growth="$revGrowth" :sparkline="[12,18,15,22,20,28,25,32,30,38,35,42]" color="emerald" />
         <x-nexora-kpi title="Total Orders" :value="number_format($totalOrders)" :growth="$ordGrowth" :sparkline="[4,8,6,10,12,7,15,11,18,14,20,22]" color="indigo" />
