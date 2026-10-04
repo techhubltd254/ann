@@ -522,10 +522,16 @@ class KiccAdminController extends Controller
             'queue:restart', 'schedule:run', 'horizon:snapshot',
             'dba:index-audit', 'search:index-es',
             'analytics:trends', 'recommendations:build',
-            'db:seed --class=MurangaLiveInstitutionsSeeder',
-            'db:seed --class=InstitutionSeeder',
-            'db:seed --class=MurangaAllSectorsSeeder',
-            'embeddings:build', 'vendors:score',
+            'db:seed', 'embeddings:build', 'vendors:score',
+        ];
+
+        // Additional seeder classes allowed via db:seed
+        $allowedSeedClasses = [
+            'RolePermissionSeeder',
+            'InstitutionSeeder',
+            'MurangaLiveInstitutionsSeeder',
+            'MurangaAllSectorsSeeder',
+            'CountySeeder',
         ];
 
         $cmd = $validated['command'];
@@ -533,6 +539,17 @@ class KiccAdminController extends Controller
         $baseCmd = explode(' ', $cmd)[0];
         if (! in_array($baseCmd, $allowed)) {
             return back()->withErrors(['command' => "Command '$baseCmd' is not in the allowed list."]);
+        }
+
+        // For db:seed, only permit whitelisted seeder classes
+        if ($baseCmd === 'db:seed') {
+            $seedClass = null;
+            if (preg_match('/--class=(\S+)/', $cmd, $m)) {
+                $seedClass = $m[1];
+            }
+            if (!$seedClass || !in_array($seedClass, $allowedSeedClasses, true)) {
+                return back()->withErrors(['command' => 'Seeding only allowed for whitelisted classes.']);
+            }
         }
 
         $exitCode = Artisan::call($cmd);

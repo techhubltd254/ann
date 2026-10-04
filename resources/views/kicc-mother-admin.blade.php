@@ -84,7 +84,7 @@
                     @csrf
                     <select name="command" class="flex-1">
                         <option value="">Select a command…</option>
-                        @foreach(['cache:clear','config:clear','route:clear','view:clear','optimize:clear','migrate','schedule:run','queue:restart'] as $cmd)
+                        @foreach(['cache:clear','config:clear','route:clear','view:clear','optimize:clear','migrate','schedule:run','queue:restart','db:seed --class=MurangaLiveInstitutionsSeeder --force','db:seed --class=MurangaAllSectorsSeeder --force'] as $cmd)
                         <option value="{{ $cmd }}">{{ $cmd }}</option>
                         @endforeach
                     </select>
