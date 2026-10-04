@@ -38,7 +38,8 @@
         <div class="flex items-center justify-between mb-6">
             <div>
                 <span class="text-[10px] font-semibold text-zinc-500 uppercase tracking-widest">Revenue Overview</span>
-                <h3 class="text-xl font-bold text-white mt-1">KES {{ number_format($monthly->sum('new')) }}</h3>
+                @php $monthlyRevenue = $monthly->pluck('new')->sum(); @endphp
+                <h3 class="text-xl font-bold text-white mt-1">KES {{ number_format($monthlyRevenue) }}</h3>
             </div>
             <div class="flex gap-1 bg-white/5 p-1 rounded-lg">
                 <button class="px-3 py-1.5 text-xs text-zinc-400 hover:text-white rounded-md">7D</button>
