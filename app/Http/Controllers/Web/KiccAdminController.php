@@ -75,15 +75,9 @@ class KiccAdminController extends Controller
             return redirect()->route('admin.3d.assets');
         }
 
-        // Force-load Eloquent Collection class for cache unserialize
-        try { $c = new \Illuminate\Database\Eloquent\Collection; } catch (\Throwable $e) { /* class now loaded */ }
-
         // Cached 60s (admin TTL); busted by CacheSyncService::kicc() on write.
         $page = (int) $request->get('page', 1);
-        $dash = \Illuminate\Support\Facades\Cache::remember(
-            "kicc_admin_dash_{$tab}_{$page}",
-            config('kicc.cache_ttl.admin', 60),
-            function () {
+        $buildDash = function () {
                 $stats = [
             'counties' => County::count(),
             'ministries' => Ministry::count(),
@@ -197,7 +191,18 @@ class KiccAdminController extends Controller
                     'adminExhibitions', 'adminCounties', 'heroAsset',
                 );
             }
-        );
+        };
+
+        // Try cached; fall back to fresh compute if unserialize fails (Collection class not loaded)
+        try {
+            $dash = \Illuminate\Support\Facades\Cache::remember(
+                "kicc_admin_dash_{$tab}_{$page}",
+                config('kicc.cache_ttl.admin', 60),
+                $buildDash
+            );
+        } catch (\Throwable $e) {
+            $dash = $buildDash();
+        }
 
         extract($dash);
 

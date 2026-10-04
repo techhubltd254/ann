@@ -47,15 +47,9 @@ class CountyAdminController extends Controller
 
         $page = (int) $request->get('page', 1);
 
-        // Force-load Eloquent Collection class for cache unserialize
-        try { $c = new \Illuminate\Database\Eloquent\Collection; } catch (\Throwable $e) { /* class now loaded */ }
-
         // Analytics — paginate all entity collections to prevent OOM.
         // Cached 60s (admin TTL) so the dashboard loads fast; busted by syncCounty() on write.
-        $data = \Illuminate\Support\Facades\Cache::remember(
-            "county_admin_dash_{$county->id}_{$tab}_{$page}",
-            config('kicc.cache_ttl.admin', 60),
-            function () use ($county) {
+        $buildCountyDash = function () use ($county) {
                 $products = CountyProduct::where('county_id', $county->id)->take(50)->get();
                 $attractions = CountyTourismAttraction::where('county_id', $county->id)->take(50)->get();
                 $hotels = CountyHotel::where('county_id', $county->id)->take(50)->get();
@@ -143,7 +137,17 @@ class CountyAdminController extends Controller
                     'landmarks' => $landmarks, 'broadcastSchedules' => $broadcastSchedules,
                 ];
             }
-        );
+        };
+
+        try {
+            $data = \Illuminate\Support\Facades\Cache::remember(
+                "county_admin_dash_{$county->id}_{$tab}_{$page}",
+                config('kicc.cache_ttl.admin', 60),
+                $buildCountyDash
+            );
+        } catch (\Throwable $e) {
+            $data = $buildCountyDash();
+        }
 
         extract($data);
 
