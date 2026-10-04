@@ -100,7 +100,7 @@ class InstitutionAdminController extends Controller
             ->where('products.user_id', $ownerId ?? -1)
             ->select(
                 'orders.order_number',
-                'order_items.product_name',
+                'products.name as product_name',
                 'order_items.quantity',
                 'order_items.total',
                 'orders.payment_status',
