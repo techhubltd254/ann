@@ -90,6 +90,18 @@ class KiccAdminController extends Controller
             'payments' => PaymentIntent::where('status', 'confirmed')->sum('amount'),
             'escrowHeld' => EscrowTransaction::where('status', 'held')->sum('amount'),
             'escrowTotal' => EscrowTransaction::sum('amount'),
+            'pipelineCount' => DB::table('pipeline_registrations')->count(),
+            'pipelineLicences' => DB::table('pipeline_licences')->count(),
+            'searchAnalyticsCount' => DB::table('search_analytics')->count(),
+            'institutionCount' => \App\Models\CountyInstitution::count(),
+            'venueCount' => \App\Models\Venue::withTrashed()->count(),
+            'releasedEscrow' => EscrowTransaction::where('status', 'released')->sum('amount'),
+            'releasedCount' => EscrowTransaction::where('status', 'released')->count(),
+            'todayUsers' => User::where('created_at', '>=', now()->startOfDay())->count(),
+            'weekUsers' => User::where('created_at', '>=', now()->subDays(7))->count(),
+            'accountTypes' => User::selectRaw('account_type, COUNT(*) as c')->groupBy('account_type')->pluck('c', 'account_type'),
+            'topSectors' => DB::table('pipeline_registrations')
+                ->selectRaw('sector, COUNT(*) as c')->groupBy('sector')->orderByDesc('c')->take(5)->get(),
         ];
 
         // County rollup: trade stats per county — 2 aggregate queries, no N+1
@@ -158,20 +170,6 @@ class KiccAdminController extends Controller
         $adminExhibitions = \App\Models\Exhibition::where('status', 'published')->orderBy('start_date', 'desc')->get();
         $adminCounties = \App\Models\County::orderBy('name')->get(['id', 'name', 'slug']);
 
-        // Extra analytics for the overview dashboard
-        $pipelineCount = \Illuminate\Support\Facades\DB::table('pipeline_registrations')->count();
-        $pipelineLicences = \Illuminate\Support\Facades\DB::table('pipeline_licences')->count();
-        $searchAnalyticsCount = \Illuminate\Support\Facades\DB::table('search_analytics')->count();
-        $institutionCount = \App\Models\CountyInstitution::count();
-        $venueCount = \App\Models\Venue::count();
-        $releasedEscrow = EscrowTransaction::where('status', 'released')->sum('amount');
-        $releasedCount = EscrowTransaction::where('status', 'released')->count();
-        $todayUsers = User::where('created_at', '>=', now()->startOfDay())->count();
-        $weekUsers = User::where('created_at', '>=', now()->subDays(7))->count();
-        $accountTypes = User::selectRaw('account_type, COUNT(*) as c')->groupBy('account_type')->pluck('c', 'account_type');
-        $topSectors = \Illuminate\Support\Facades\DB::table('pipeline_registrations')
-            ->selectRaw('sector, COUNT(*) as c')->groupBy('sector')->orderByDesc('c')->take(5)->get();
-
         $heroAsset = MediaAsset::resolveSlot('landing_page', 1, 'hero_video');
 
         // Subscription plans (Exhibitor Packages)
@@ -203,9 +201,6 @@ class KiccAdminController extends Controller
                     'providers', 'institutions', 'pendingServices', 'plans', 'allPlans',
                     'experienceBookings', 'experienceStats', 'streams', 'streamStats',
                     'adminExhibitions', 'adminCounties', 'heroAsset',
-                    'pipelineCount', 'pipelineLicences', 'searchAnalyticsCount',
-                    'institutionCount', 'venueCount', 'releasedEscrow', 'releasedCount',
-                    'todayUsers', 'weekUsers', 'accountTypes', 'topSectors',
             );
         };
 

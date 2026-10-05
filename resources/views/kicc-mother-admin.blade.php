@@ -60,13 +60,13 @@
                 <x-nexora-kpi title="Counties" :value="number_format($stats['counties'])" growth="47 active portals" color="indigo" :sparkline="[44,45,46,46,47,47,47,47,47,47,47,47]" />
                 <x-nexora-kpi :title="'Users'" :value="number_format($stats['users'])" :growth="$stats['exhibitors'] . ' exhibitors'" color="emerald" />
                 <x-nexora-kpi :title="'Products'" :value="number_format($stats['products'])" :growth="$stats['orders'] . ' orders'" color="amber" />
-                <x-nexora-kpi title="Total Revenue" :value="'KES ' . number_format($stats['payments'] ?: 0)" :growth="'Released: ' . number_format($releasedEscrow ?: 0)" color="emerald" />
+                <x-nexora-kpi title="Total Revenue" :value="'KES ' . number_format($stats['payments'] ?: 0)" :growth="'Released: ' . number_format($stats['releasedEscrow'] ?: 0)" color="emerald" />
             </div>
             <div class="grid grid-cols-2 lg:grid-cols-5 gap-3 mb-4">
-                <x-nexora-kpi title="Pipeline Registrations" :value="number_format($pipelineCount ?: 0)" :growth="$pipelineLicences . ' licences'" color="sky" />
-                <x-nexora-kpi title="Institutions" :value="number_format($institutionCount ?: 0)" :growth="$stats['ministries'] . ' ministries'" color="violet" />
-                <x-nexora-kpi title="Venues" :value="number_format($venueCount ?: 0)" growth="KICC &amp; county venues" color="indigo" />
-                <x-nexora-kpi title="Escrow Volume" :value="'KES ' . number_format($stats['escrowTotal'] ?: 0)" :growth="$releasedCount . ' released'" color="red" />
+                <x-nexora-kpi title="Pipeline Registrations" :value="number_format($stats['pipelineCount'] ?: 0)" :growth="$stats['pipelineLicences'] . ' licences'" color="sky" />
+                <x-nexora-kpi title="Institutions" :value="number_format($stats['institutionCount'] ?: 0)" :growth="$stats['ministries'] . ' ministries'" color="violet" />
+                <x-nexora-kpi title="Venues" :value="number_format($stats['venueCount'] ?: 0)" growth="KICC &amp; county venues" color="indigo" />
+                <x-nexora-kpi title="Escrow Volume" :value="'KES ' . number_format($stats['escrowTotal'] ?: 0)" :growth="$stats['releasedCount'] . ' released'" color="red" />
                 <x-nexora-kpi title="Live Streams" :value="$streamStats['live'] . ' LIVE'" :growth="$streamStats['total'] . ' total'" color="rose" />
             </div>
 
@@ -82,8 +82,8 @@
                     </div>
                     <div class="border-t border-white/5 my-2"></div>
                     <div class="flex items-center justify-center gap-4">
-                        <div class="text-center"><div class="text-2xl font-bold text-emerald-400">{{ number_format($todayUsers) }}</div><div class="text-xs text-zinc-500">Today</div></div>
-                        <div class="text-center"><div class="text-2xl font-bold text-amber-400">{{ number_format($weekUsers) }}</div><div class="text-xs text-zinc-500">This Week</div></div>
+                        <div class="text-center"><div class="text-2xl font-bold text-emerald-400">{{ number_format($stats['todayUsers']) }}</div><div class="text-xs text-zinc-500">Today</div></div>
+                        <div class="text-center"><div class="text-2xl font-bold text-amber-400">{{ number_format($stats['weekUsers']) }}</div><div class="text-xs text-zinc-500">This Week</div></div>
                     </div>
                 </div>
 
@@ -94,26 +94,26 @@
                         <div class="flex justify-between"><span class="text-zinc-400">Products Listed</span><span class="font-semibold text-white">{{ $stats['products'] }}</span></div>
                         <div class="flex justify-between"><span class="text-zinc-400">Escrow Transactions</span><span class="font-semibold text-white">{{ $stats['escrowHeld'] }} held</span></div>
                         <div class="flex justify-between"><span class="text-zinc-400">Total Revenue (Payments)</span><span class="font-semibold text-white">KES {{ number_format($stats['payments'] ?: 0) }}</span></div>
-                        <div class="flex justify-between"><span class="text-zinc-400">Released Escrow</span><span class="font-semibold text-white">KES {{ number_format($releasedEscrow ?: 0) }}</span></div>
-                        <div class="flex justify-between"><span class="text-zinc-400">Search Analytics</span><span class="font-semibold text-white">{{ number_format($searchAnalyticsCount ?: 0) }} searches</span></div>
+                        <div class="flex justify-between"><span class="text-zinc-400">Released Escrow</span><span class="font-semibold text-white">KES {{ number_format($stats['releasedEscrow'] ?: 0) }}</span></div>
+                        <div class="flex justify-between"><span class="text-zinc-400">Search Analytics</span><span class="font-semibold text-white">{{ number_format($stats['searchAnalyticsCount'] ?: 0) }} searches</span></div>
                     </div>
                 </div>
 
                 <div class="glass-card rounded-2xl p-5">
                     <h3 class="text-sm font-bold text-white mb-3">Pipeline Overview</h3>
                     <div class="space-y-2 text-xs">
-                        <div class="flex justify-between"><span class="text-zinc-400">Total Pipelines</span><span class="font-semibold text-white">{{ $pipelineCount ?? 0 }}</span></div>
-                        <div class="flex justify-between"><span class="text-zinc-400">Active Licences</span><span class="font-semibold text-white">{{ $pipelineLicences ?? 0 }}</span></div>
+                        <div class="flex justify-between"><span class="text-zinc-400">Total Pipelines</span><span class="font-semibold text-white">{{ $stats['pipelineCount'] ?? 0 }}</span></div>
+                        <div class="flex justify-between"><span class="text-zinc-400">Active Licences</span><span class="font-semibold text-white">{{ $stats['pipelineLicences'] ?? 0 }}</span></div>
                         <div class="flex justify-between"><span class="text-zinc-400">Live Streams</span><span class="font-semibold text-white">{{ $streamStats['live'] }}/{{ $streamStats['total'] }}</span></div>
                         <div class="flex justify-between"><span class="text-zinc-400">Viewer Count</span><span class="font-semibold text-white">{{ number_format($streamStats['viewers']) }}</span></div>
                         <div class="flex justify-between"><span class="text-zinc-400">Experience Bookings</span><span class="font-semibold text-white">{{ $experienceStats['total'] }}</span></div>
                         <div class="flex justify-between"><span class="text-zinc-400">Experience Revenue</span><span class="font-semibold text-white">KES {{ number_format($experienceStats['revenue'] ?: 0) }}</span></div>
                     </div>
-                    @if($topSectors)
+                    @if(($stats['topSectors'] ?? collect())->isNotEmpty())
                     <div class="border-t border-white/5 my-2"></div>
                     <div class="text-[10px] text-zinc-500">Top Pipeline Sectors</div>
                     <div class="flex flex-wrap gap-1 mt-1">
-                        @foreach($topSectors as $ts)
+                        @foreach($stats['topSectors'] as $ts)
                         <span class="text-[10px] px-2 py-0.5 rounded-full bg-indigo-500/10 text-indigo-400 border border-indigo-500/20">{{ $ts->sector ?? $ts['sector'] }} ({{ $ts->c ?? $ts['c'] }})</span>
                         @endforeach
                     </div>
