@@ -806,17 +806,11 @@ class KiccAdminController extends Controller
         // Debug: attempt one marketplace product create to surface any raw error.
         if (request()->has('try')) {
             $target = \App\Models\CountyInstitution::where('county_id', $county->id)
-                ->whereNotNull('user_id')->first();
+                ->whereNotNull('user_id')->orderByDesc('id')->first();
             if ($target) {
                 try {
-                    $product = \App\Models\Marketplace\Product::create([
-                        'user_id' => $target->user_id,
-                        'county_id' => $county->id,
-                        'name' => 'TEST-' . now()->timestamp,
-                        'slug' => 'test-' . now()->timestamp,
-                        'status' => 'active',
-                    ]);
-                    $out['try'] = ['ok' => true, 'id' => $product->id, 'inst' => $target->name, 'uid' => $target->user_id];
+                    $res = app(\App\Services\InstitutionSyncService::class)->sync($target);
+                    $out['try'] = ['ok' => true, 'sync' => $res, 'inst' => $target->name, 'uid' => $target->user_id];
                 } catch (\Throwable $e) {
                     $out['try'] = ['ok' => false, 'error' => $e->getMessage(), 'inst' => $target->name, 'uid' => $target->user_id];
                 }
