@@ -807,6 +807,9 @@ class KiccAdminController extends Controller
         if (request()->has('try')) {
             $target = \App\Models\CountyInstitution::where('county_id', $county->id)
                 ->whereNotNull('user_id')->orderByDesc('id')->first();
+            if (request()->has('inst')) {
+                $target = \App\Models\CountyInstitution::where('slug', request('inst'))->whereNotNull('user_id')->first();
+            }
             if ($target) {
                 try {
                     $res = app(\App\Services\InstitutionSyncService::class)->sync($target);
