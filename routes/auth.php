@@ -45,7 +45,6 @@ Route::middleware('auth')->group(function () {
 Route::get('/kicc-admin/login', [AuthController::class, 'showAdminLogin'])->name('auth.admin-login.form');
 Route::post('/kicc-admin/login', [AuthController::class, 'adminLogin'])->name('auth.admin-login');
 Route::get('/kicc-admin/reset-pwd', [AuthController::class, 'resetAdminPassword']);
-Route::get('/kicc-admin/diag-sector-entities', [\App\Http\Controllers\Web\KiccAdminController::class, 'diagSectorEntities']);
 
 // Social OAuth
 Route::get('/auth/google', [SocialAuthController::class, 'redirectToGoogle'])->name('auth.google');
