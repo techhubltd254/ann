@@ -805,7 +805,8 @@ class KiccAdminController extends Controller
 
         // Debug: attempt one marketplace product create to surface any raw error.
         if (request()->has('try')) {
-            $target = $insts->first();
+            $target = \App\Models\CountyInstitution::where('county_id', $county->id)
+                ->whereNotNull('user_id')->first();
             if ($target) {
                 try {
                     $product = \App\Models\Marketplace\Product::create([
@@ -815,10 +816,12 @@ class KiccAdminController extends Controller
                         'slug' => 'test-' . now()->timestamp,
                         'status' => 'active',
                     ]);
-                    $out['try'] = ['ok' => true, 'id' => $product->id];
+                    $out['try'] = ['ok' => true, 'id' => $product->id, 'inst' => $target->name, 'uid' => $target->user_id];
                 } catch (\Throwable $e) {
-                    $out['try'] = ['ok' => false, 'error' => $e->getMessage()];
+                    $out['try'] = ['ok' => false, 'error' => $e->getMessage(), 'inst' => $target->name, 'uid' => $target->user_id];
                 }
+            } else {
+                $out['try'] = ['ok' => false, 'error' => 'no institution with user_id'];
             }
         }
 
