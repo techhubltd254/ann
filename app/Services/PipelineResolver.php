@@ -17,7 +17,7 @@ class PipelineResolver
      * with how products are routed to pipelines.
      */
     private const SECTOR_KEYWORDS = [
-        'agriculture' => ['agriculture', 'farm', 'crop', 'agri', 'food', 'grain', 'coffee', 'tea', 'sugar', 'cereal', 'vegetable', 'fruit', 'nuts', 'spice', 'macadamia', 'avocado'],
+        'agriculture' => ['agriculture', 'farm', 'crop', 'agri', 'food', 'grain', 'coffee', 'tea', 'sugar', 'cereal', 'vegetable', 'fruit', 'nuts', 'spice', 'macadamia', 'avocado', 'produce', 'fresh', 'organic', 'horticulture'],
         'fisheries'   => ['fish', 'fishery', 'aquacul', 'seafood', 'prawn', 'shrimp', 'tilapia', 'marine', 'ocean', 'seaweed'],
         'livestock'   => ['livestock', 'animal', 'cattle', 'goat', 'sheep', 'pig', 'poultry', 'chicken', 'egg', 'meat', 'beef', 'mutton', 'leather', 'hide', 'wool', 'dairy', 'milk'],
         'tourism'     => ['tourism', 'travel', 'hotel', 'lodge', 'safari', 'tour', 'attraction', 'hospitality', 'resort', 'camp', 'excursion'],

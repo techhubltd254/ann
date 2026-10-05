@@ -329,22 +329,28 @@ class InstitutionSyncService
             $router = app(\App\Services\PipelineRouter::class);
 
             if ($categoryId) {
-                $cat = \App\Models\Marketplace\ProductCategory::find($categoryId);
-                if ($cat) {
+                $cats = \App\Models\Marketplace\ProductCategory::find($categoryId);
+                if ($cats) {
                     // Route this product to its ledger pipeline.
                     $pipelineCode = $router->forProduct(new Product([
                         'name' => $name,
                         'county_id' => $county->id,
                         'category_id' => $categoryId,
                     ]));
-                    // Persist the sector + pipeline on the category itself so the
-                    // sector → product → pipeline chain is complete.
-                    $catSector = $cat->sector ?: $router->forCategory($cat);
+                    // Resolve a proper *sector* (never a pipeline code) for the
+                    // category so sector → product → pipeline chain is complete.
+                    $resolver = app(\App\Services\PipelineResolver::class);
+                    $catSector = $resolver->forCategory($cats)
+                        ?? ($resolver->forCategory(new \App\Models\Marketplace\ProductCategory(['name' => $cats->name, 'slug' => $cats->slug]))
+                            ?: null);
+                    if (!$catSector) {
+                        $catSector = 'trade';
+                    }
                     if ($catSector) {
-                        $cat->sector = $catSector;
-                        $cat->pipeline_code = $router->forSector($catSector);
-                        $cat->save();
-                        $pipelineCode = $pipelineCode ?: $cat->pipeline_code;
+                        $cats->sector = $catSector;
+                        $cats->pipeline_code = $router->forSector($catSector);
+                        $cats->save();
+                        $pipelineCode = $pipelineCode ?: $cats->pipeline_code;
                     }
                 }
             }
