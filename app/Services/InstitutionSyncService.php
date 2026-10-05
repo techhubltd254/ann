@@ -39,70 +39,99 @@ class InstitutionSyncService
             'attractions' => 0,
             'videos' => 0,
         ];
+        $errors = [];
 
-        DB::transaction(function () use ($institution, $county, &$summary) {
-            $mappings = $institution->sector_mappings ?? [];
-            foreach ($mappings as $mapping) {
-                $sector = $this->resolveSector($mapping['sector_slug'] ?? null);
-                if (!$sector) {
-                    Log::warning("InstitutionSync: sector not found for slug {$mapping['sector_slug']}");
-                    continue;
-                }
 
-                // 1. Link sector to county if missing
-                if (!$county->sectors()->where('sector_id', $sector->id)->exists()) {
-                    $county->sectors()->attach($sector->id, ['display_on_tile' => 'yes']);
-                } else {
-                    $county->sectors()->updateExistingPivot($sector->id, ['display_on_tile' => 'yes']);
-                }
-                $summary['sectors']++;
+        // Each mapping (sector → entity → attraction → video) is independent.
+        // One failing never rolls back another.
+        $mappings = $institution->sector_mappings ?? [];
+        foreach ($mappings as $mapping) {
+            try {
+                DB::transaction(function () use ($institution, $county, $mapping, &$summary) {
+                    $sector = $this->resolveSector($mapping['sector_slug'] ?? null);
+                    if (!$sector) {
+                        throw new \Exception("Sector not found for slug: {$mapping['sector_slug']}");
+                    }
 
-                // 2. Upsert SectorEntity for this mapping
-                $entity = $this->upsertSectorEntity($institution, $county, $sector, $mapping);
-                $summary['entities']++;
+                    if (!$county->sectors()->where('sector_id', $sector->id)->exists()) {
+                        $county->sectors()->attach($sector->id, ['display_on_tile' => 'yes']);
+                    } else {
+                        $county->sectors()->updateExistingPivot($sector->id, ['display_on_tile' => 'yes']);
+                    }
+                    $summary['sectors']++;
 
-                // 3. Attraction from mapping if it has an entry fee
-                if (($mapping['entry_fee'] ?? 0) > 0 && !empty($mapping['entry_name'])) {
-                    $this->upsertAttraction($institution, $county, $mapping);
-                    $summary['attractions']++;
-                }
+                    $entity = $this->upsertSectorEntity($institution, $county, $sector, $mapping);
+                    $summary['entities']++;
 
-                // 4. Videos attached to this entity
-                $summary['videos'] += $this->attachEntityVideos($institution, $entity, $mapping['sector_slug'] ?? null);
+                    if (($mapping['entry_fee'] ?? 0) > 0 && !empty($mapping['entry_name'])) {
+                        $this->upsertAttraction($institution, $county, $mapping);
+                        $summary['attractions']++;
+                    }
+
+                    $summary['videos'] += $this->attachEntityVideos($institution, $entity, $mapping['sector_slug'] ?? null);
+                });
+            } catch (\Throwable $e) {
+                $errors[] = ['mapping' => $mapping['sector_slug'] ?? '?', 'error' => $e->getMessage()];
+                Log::warning("InstitutionSync: sector '{$mapping['sector_slug']}' failed: " . $e->getMessage());
             }
+        }
 
-            // 5. Products → county commerce + global marketplace
-            $products = $institution->products ?? [];
-            foreach ($products as $product) {
-                $this->upsertCountyProduct($institution, $county, $product);
-                $this->upsertMarketplaceProduct($institution, $county, $product);
-                $summary['county_products']++;
-                $summary['marketplace_products']++;
+        // Products — each product is independent
+        $products = $institution->products ?? [];
+        foreach ($products as $product) {
+            try {
+                DB::transaction(function () use ($institution, $county, $product, &$summary) {
+                    $this->upsertCountyProduct($institution, $county, $product);
+                    $summary['county_products']++;
+                });
+                DB::transaction(function () use ($institution, $county, $product, &$summary) {
+                    $this->upsertMarketplaceProduct($institution, $county, $product);
+                    $summary['marketplace_products']++;
+                });
+            } catch (\Throwable $e) {
+                $pn = is_array($product) ? ($product['name'] ?? '?') : '?';
+                $errors[] = ['product' => $pn, 'error' => $e->getMessage()];
+                Log::warning("InstitutionSync: product '" . $pn . "' failed: " . $e->getMessage());
             }
+        }
 
-            // 6. Institution-level videos (no sector target)
+        // Institution-level videos (no sector target) — isolated
+        try {
             $summary['videos'] += $this->attachInstitutionVideos($institution);
+        } catch (\Throwable $e) {
+            $errors[] = ['video' => 'institution_videos', 'error' => $e->getMessage()];
+        }
 
-            // 7. Cleanup stale derived data when mappings/products removed
+        // Cleanup stale derived data — isolated
+        try {
             $this->cleanup($institution, $county);
+        } catch (\Throwable $e) {
+            $errors[] = ['task' => 'cleanup', 'error' => $e->getMessage()];
+        }
 
+        // Update sync timestamp — always last, bare minimum
+        try {
             $institution->syncing = true;
             $institution->forceFill(['synced_at' => now()])->save();
             $institution->syncing = false;
-        });
+        } catch (\Throwable $e) {
+            $errors[] = ['task' => 'save_timestamp', 'error' => $e->getMessage()];
+        }
 
         try {
             event(new GenericDomainEvent('institution_synced', [
                 'institution' => $institution->slug,
                 'county' => $county->slug,
                 'summary' => $summary,
-            ], n8nEventName: 'institution_synced'));;
+                'errors' => $errors,
+            ], n8nEventName: 'institution_synced'));
         } catch (\Throwable $e) {
             Log::warning('N8n fire failed for institution sync: ' . $e->getMessage());
         }
 
         $this->bustCountyCache($county);
 
+        $summary['errors'] = $errors;
         return $summary;
     }
 
@@ -324,7 +353,7 @@ class InstitutionSyncService
         // Interlink the product (and its category) to the ledger pipeline so the
         // sector → product → pipeline chain is complete. PipelineRouter routes by
         // category sector → name keywords → HS code, and returns a pipeline code.
-        $pipelineCode = null;
+
         try {
             $router = app(\App\Services\PipelineRouter::class);
 
