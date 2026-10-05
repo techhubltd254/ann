@@ -783,4 +783,25 @@ class KiccAdminController extends Controller
         return redirect()->route('kicc.admin', ['tab' => 'venues'])
             ->with('success', "Venue \"{$venue->name}\" updated.");
     }
+
+    /** Temporary diagnostic: verify sector→product→pipeline interlink for Muranga. */
+    public function diagInterlink()
+    {
+        $this->authorizeKicc();
+        $county = \App\Models\County::where('slug', 'muranga')->first();
+        $insts = \App\Models\CountyInstitution::where('county_id', $county->id)->get();
+        $out = ['products' => [], 'categories' => []];
+        foreach ($insts as $i) {
+            $prods = \App\Models\Marketplace\Product::where('user_id', $i->user_id)->get(['name', 'pipeline_code', 'category_id']);
+            foreach ($prods as $p) {
+                $out['products'][] = ['inst' => $i->name, 'product' => $p->name, 'pipeline' => $p->pipeline_code ?? 'NULL'];
+            }
+        }
+        $cats = \App\Models\Marketplace\ProductCategory::whereNotNull('sector')->orWhereNotNull('pipeline_code')
+            ->get(['name', 'sector', 'pipeline_code']);
+        foreach ($cats as $c) {
+            $out['categories'][] = ['category' => $c->name, 'sector' => $c->sector, 'pipeline' => $c->pipeline_code];
+        }
+        return response()->json($out);
+    }
 }
