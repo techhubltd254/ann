@@ -55,7 +55,6 @@ class NationalAdminController extends Controller
                 }
 
                 return compact('ministries', 'agencies', 'nationalPages', 'stats', 'nationalHero', 'nationalFlag', 'ministryMedia');
-            }
         };
 
         try {
