@@ -58,11 +58,7 @@ class NationalAdminController extends Controller
         };
 
         try {
-            $data = \Illuminate\Support\Facades\Cache::remember(
-                "national_admin_dash_{$tab}",
-                config('kicc.cache_ttl.admin', 60),
-                $buildDash
-            );
+            $data = $buildDash();
         } catch (\Throwable $e) {
             $data = $buildDash();
         }
