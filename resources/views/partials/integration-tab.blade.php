@@ -70,7 +70,7 @@
                     <td class="py-2.5 pr-3 text-zinc-400">{{ $p['kind'] }}</td>
                     <td class="py-2.5 pr-3 text-zinc-500">{{ implode(', ', $p['lanes']) }}</td>
                     <td class="py-2.5 pr-3">
-                        @if($p['mock'])
+                        @if($p['mock'] ?? false)
                         <span class="text-[10px] font-bold px-2 py-0.5 rounded-full bg-amber-500/20 text-amber-400">MOCK</span>
                         @else
                         <span class="text-[10px] font-bold px-2 py-0.5 rounded-full bg-emerald-500/20 text-emerald-400">LIVE</span>
