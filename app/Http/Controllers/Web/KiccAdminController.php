@@ -802,6 +802,26 @@ class KiccAdminController extends Controller
         foreach ($cats as $c) {
             $out['categories'][] = ['category' => $c->name, 'sector' => $c->sector, 'pipeline' => $c->pipeline_code];
         }
+
+        // Debug: attempt one marketplace product create to surface any raw error.
+        if (request()->has('try')) {
+            $target = $insts->first();
+            if ($target) {
+                try {
+                    $product = \App\Models\Marketplace\Product::create([
+                        'user_id' => $target->user_id,
+                        'county_id' => $county->id,
+                        'name' => 'TEST-' . now()->timestamp,
+                        'slug' => 'test-' . now()->timestamp,
+                        'status' => 'active',
+                    ]);
+                    $out['try'] = ['ok' => true, 'id' => $product->id];
+                } catch (\Throwable $e) {
+                    $out['try'] = ['ok' => false, 'error' => $e->getMessage()];
+                }
+            }
+        }
+
         return response()->json($out);
     }
 }
