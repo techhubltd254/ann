@@ -186,7 +186,7 @@
                     </div>
                     <div class="text-xs text-zinc-500 leading-relaxed">Individual and SME portals: exhibitor onboarding, subscription plans, booth management, marketplace listings, show booking and trade board access.</div>
                 </a>
-                <a href="{{ route('institution.admin') }}" class="glass-card rounded-2xl p-6 group hover:brightness-110 transition-all">
+                <a href="{{ route('kicc.admin', ['tab' => 'institutions']) }}" class="glass-card rounded-2xl p-6 group hover:brightness-110 transition-all">
                     <div class="flex items-center gap-3 mb-3">
                         <div class="w-12 h-12 rounded-xl bg-gradient-to-br from-emerald-500 to-teal-600 flex items-center justify-center text-white font-bold text-sm">I</div>
                         <div><div class="font-bold text-white text-lg">Institution Admin</div><div class="text-xs text-zinc-400">{{ $stats['institutionCount'] ?? 0 }} institutions</div></div>
