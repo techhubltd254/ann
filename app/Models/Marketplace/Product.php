@@ -21,6 +21,7 @@ class Product extends Model
         'video_url', 'videos', 'video_description', 'model_url',
         'moq', 'fob_price', 'incoterm', 'hs_code', 'export_readiness',
         'certifications', 'trade_enquiry_email', 'is_spotlight_product',
+        'pipeline_code',
     ];
 
     protected $casts = [

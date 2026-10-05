@@ -321,6 +321,37 @@ class InstitutionSyncService
             ->first();
 
         $categoryId = $this->resolveCategoryId($product['category'] ?? null);
+        // Interlink the product (and its category) to the ledger pipeline so the
+        // sector → product → pipeline chain is complete. PipelineRouter routes by
+        // category sector → name keywords → HS code, and returns a pipeline code.
+        $pipelineCode = null;
+        try {
+            $router = app(\App\Services\PipelineRouter::class);
+
+            if ($categoryId) {
+                $cat = \App\Models\Marketplace\ProductCategory::find($categoryId);
+                if ($cat) {
+                    // Route this product to its ledger pipeline.
+                    $pipelineCode = $router->forProduct(new Product([
+                        'name' => $name,
+                        'county_id' => $county->id,
+                        'category_id' => $categoryId,
+                    ]));
+                    // Persist the sector + pipeline on the category itself so the
+                    // sector → product → pipeline chain is complete.
+                    $catSector = $cat->sector ?: $router->forCategory($cat);
+                    if ($catSector) {
+                        $cat->sector = $catSector;
+                        $cat->pipeline_code = $router->forSector($catSector);
+                        $cat->save();
+                        $pipelineCode = $pipelineCode ?: $cat->pipeline_code;
+                    }
+                }
+            }
+            $pipelineCode = $pipelineCode ?: $router->forSector('trade');
+        } catch (\Throwable $e) {
+            Log::warning("InstitutionSync: pipeline routing failed for {$name}: " . $e->getMessage());
+        }
 
         $data = [
             'county_id' => $county->id,
@@ -334,6 +365,7 @@ class InstitutionSyncService
             'unit' => $product['unit'] ?? 'unit',
             'status' => 'active',
             'is_featured' => true,
+            'pipeline_code' => $pipelineCode ?? ($mp->pipeline_code ?? null),
             // Preserve existing media when the product array doesn't specify it —
             // otherwise every re-sync wipes uploaded videos.
             'video_url' => array_key_exists('video_url', $product) ? $product['video_url'] : ($mp->video_url ?? null),
