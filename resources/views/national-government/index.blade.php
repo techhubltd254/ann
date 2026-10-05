@@ -4,44 +4,35 @@
 
 @push('styles')
 <style>
-.gov-hero{min-height:60vh;background:#0A1024;position:relative;overflow:hidden}
-.gov-hero::before{content:'';position:absolute;inset:0;
-  background:radial-gradient(ellipse at 30% 50%,rgba(166,25,46,0.12) 0%,transparent 60%),
-    radial-gradient(ellipse at 70% 30%,rgba(255,205,5,0.08) 0%,transparent 50%);
-  pointer-events:none}
-.pillars-section{background:#0A1024;padding:60px 20px;max-width:1200px;margin:0 auto}
-.pillar-card{background:#1B1E3F;border:1px solid rgba(90,100,128,0.19);border-radius:18px;padding:28px;
-  transition:all .4s cubic-bezier(0.34,1.56,0.64,1);opacity:0;transform:translateY(24px) scale(0.97)}
+.pillar-card{background:#1B1E3F;border:1px solid rgba(90,100,128,0.19);border-radius:18px;padding:28px;transition:all .4s cubic-bezier(0.34,1.56,0.64,1);opacity:0;transform:translateY(24px) scale(0.97)}
 .pillar-card.revealed{opacity:1;transform:translateY(0) scale(1)}
-.pillar-card:hover{transform:translateY(-4px);border-color:rgba(255,205,5,0.2);box-shadow:0 8px 24px rgba(255,205,5,0.05)}
-.gov-stats{display:flex;gap:24px;justify-content:center;padding:28px 16px;border-radius:16px;flex-wrap:wrap}
+.pillar-card:hover{transform:translateY(-4px);border-color:#FFCD0540;box-shadow:0 8px 24px rgba(255,205,5,0.05)}
 .gov-stat{text-align:center}
 .gov-stat-num{font-size:28px;font-weight:900;color:#FFCD05;line-height:1}
 .gov-stat-label{color:#5A6480;font-size:11px;margin-top:3px;text-transform:uppercase;letter-spacing:1px}
-.delivery-badge{display:inline-flex;align-items:center;gap:4px;padding:4px 10px;border-radius:6px;font-size:10px;font-weight:700;
-  background:linear-gradient(135deg,#11820B,#0A7530);color:#fff}
-.ministry-card{background:#fff;border-radius:18px;overflow:hidden;border:1px solid #E5E7EB;
-  transition:all .3s cubic-bezier(0.34,1.56,0.64,1);opacity:0;transform:translateY(20px)}
-.ministry-card.revealed{opacity:1;transform:translateY(0)}
-.ministry-card:hover{transform:translateY(-3px);border-color:#FFCD0540;box-shadow:0 6px 20px rgba(255,205,5,0.05)}
 </style>
 @endpush
 
 @section('content')
 @php
-    $heroVideo = $heroVid ?? null;
-    $heroPoster = $heroPoster ?? media('kicc/national-hero.jpeg');
-    $betaPillars = [
-        ['name'=>'Roads', 'emoji'=>'🛣️', 'desc'=>'Highway networks, rural access roads, bridges, and urban transport infrastructure across all 47 counties.', 'color'=>'#901C1E'],
-        ['name'=>'Housing', 'emoji'=>'🏠', 'desc'=>'Affordable housing schemes, slum upgrading, mortgage access, and the Boma Yangu housing initiative.', 'color'=>'#1890D7'],
-        ['name'=>'Agriculture', 'emoji'=>'🌾', 'desc'=>'Food security, farmer cooperatives, irrigation schemes, value addition, and export crop development.', 'color'=>'#11820B'],
-        ['name'=>'Water', 'emoji'=>'💧', 'desc'=>'Bulk water supply, piped last-mile connections, dam construction, and water resource management.', 'color'=>'#0B1E57'],
-        ['name'=>'Energy', 'emoji'=>'⚡', 'desc'=>'Grid connectivity, last-mile electrification, geothermal, solar mini-grids, and clean cooking.', 'color'=>'#FFCD05'],
-    ];
+$heroVideo = $heroVid ?? null;
+$heroPoster = $heroPoster ?? media('kicc/national-hero.jpeg');
+$pillars = [
+['Agriculture & Food Security', 'Transforming Kenyan agriculture from subsistence to technology-driven — boosting food security and farmer incomes through KIAMIS, irrigation, subsidised inputs and market access.',
+  '39% maize production increase; 730% livestock insurance growth; 7.1M+ farmers registered', 'https://delivery.go.ke/pillars'],
+['Affordable Housing', 'Increasing Kenya\'s affordable housing supply from 2% to 50%, creating construction jobs and expanding mortgage access across all 47 counties.',
+  '260,000+ units under construction; 640,000+ construction jobs; KSh 11B ring-fenced', 'https://delivery.go.ke/pillars'],
+['MSME Economy', 'Reducing bureaucracy, providing affordable finance and building a credit culture for 7.4 million businesses through the Hustler Fund and eCitizen integration.',
+  'KSh 82B+ disbursed to 26M+ Kenyans; 67% youth beneficiaries; 6M rated A-B credit', 'https://delivery.go.ke/pillars'],
+['Universal Health Coverage', 'Providing every Kenyan with quality, affordable healthcare through the Social Health Authority — replacing NHIF with a universal, tax-funded model.',
+  '28.5M+ Kenyans registered with SHA; 107,831+ CHPs trained; 8.82M+ households visited', 'https://delivery.go.ke/pillars'],
+['Digital Superhighway & Creative Economy', 'Achieving universal broadband, digitising government services on eCitizen, empowering the creative economy and building a skilled digital workforce.',
+  '23,000+ services digitized; 300,000+ youth employed via Ajira & Jitume; KES 1B daily revenue', 'https://delivery.go.ke/pillars'],
+];
 @endphp
 <div class="pt-20">
     {{-- ─── HERO ─── --}}
-    <div class="gov-hero">
+    <div class="relative min-h-[60vh] md:min-h-[70vh] overflow-hidden bg-[#0A1024]">
         @if($heroVideo)
         <video autoplay muted loop playsinline preload="metadata" class="absolute inset-0 w-full h-full object-cover" poster="{{ $heroPoster }}">
             <source src="{{ $heroVideo }}" type="video/mp4">
@@ -52,18 +43,15 @@
         <div class="absolute inset-0" style="background:linear-gradient(to top,rgba(0,0,0,0.8) 0%,rgba(0,0,0,0.2) 50%,transparent 100%);"></div>
         <div class="absolute bottom-0 left-0 right-0 max-w-7xl mx-auto px-5 pb-10 md:pb-16" style="z-index:5">
             <div class="flex items-center gap-3 mb-3">
-                <span class="h-px w-8" style="background:var(--kicc-gold);"></span>
-                <span class="text-xs font-bold tracking-[0.2em] uppercase" style="color:var(--kicc-gold);">National Government</span>
+                <span class="h-px w-8" style="background:#FFCD05;"></span>
+                <span class="text-xs font-bold tracking-[0.2em] uppercase" style="color:#FFCD05;">National Government</span>
             </div>
             <h1 class="text-4xl md:text-6xl font-black leading-tight text-white" style="text-shadow:0 2px 20px rgba(0,0,0,0.3);">
-                Kenya's <span style="color:var(--kicc-gold);">Government</span>
+                Kenya's <span style="color:#FFCD05;">Government</span>
             </h1>
             <p class="text-white/80 text-lg mt-3 max-w-2xl">Ministries, state departments, agencies, and the 5 BETA delivery pillars powering Kenya's digital economy.</p>
             <div class="flex gap-3 mt-4">
-                <a href="#pillars" class="px-5 py-2.5 rounded-lg font-semibold text-sm inline-flex items-center gap-2" style="background:linear-gradient(135deg,#901C1E,#7B1618);color:white;">
-                    <span>🏛️</span> 5 BETA Pillars
-                </a>
-                <a href="{{ route('national.index') }}" class="px-5 py-2.5 rounded-lg font-semibold text-sm inline-flex items-center gap-2" style="background:var(--kicc-crimson);color:white;">
+                <a href="{{ route('national.index') }}" class="px-5 py-2.5 rounded-lg font-semibold text-sm inline-flex items-center gap-2" style="background:#A6192E;color:white;">
                     <span class="animate-pulse">●</span> Live Exhibition
                 </a>
                 <a href="#ministries" class="px-5 py-2.5 rounded-lg font-semibold text-sm" style="background:rgba(255,255,255,0.15);color:white;backdrop-filter:blur(8px);">Explore Ministries →</a>
@@ -71,89 +59,87 @@
         </div>
     </div>
 
-    {{-- ─── LIVE BOOTH ─── --}}
-    <div class="max-w-7xl mx-auto px-5 mt-6">
-        <x-live-booths-widget county-slug="national" />
-    </div>
-
-    {{-- ═══════════════════ BETA PILLARS ═══════════════════ --}}
-    <section class="pillars-section" id="pillars">
+    {{-- ─── BETA PILLARS ─── --}}
+    <section class="max-w-7xl mx-auto px-5 py-12" id="pillars" style="background:#0A1024;">
         <div class="flex items-center gap-3 mb-6">
-            <span class="h-px w-8" style="background:var(--kicc-gold);"></span>
-            <span class="text-xs font-bold tracking-[0.2em] uppercase" style="color:var(--kicc-gold);">Government Delivery Unit</span>
-            <span class="delivery-badge ml-auto">✓ GDU Verified</span>
+            <span class="h-px w-8" style="background:#FFCD05;"></span>
+            <span class="text-xs font-bold tracking-[0.2em] uppercase" style="color:#FFCD05;">Government Delivery Unit</span>
+            <span class="ml-auto inline-flex items-center gap-2 px-3 py-1 rounded-full text-[10px] font-bold" style="background:#11820B;color:#fff;">Verified Reports</span>
         </div>
-        <h2 class="text-3xl md:text-4xl font-black text-white leading-[1.1]">The 5 <span style="color:var(--kicc-gold);">BETA Pillars</span></h2>
-        <p class="text-gray-400 mt-3 text-base max-w-xl leading-relaxed">
-            Flagship national development sectors tracked by the Government Delivery Unit across all 47 counties.
-            <a href="https://delivery.go.ke/delivery-corner" target="_blank" rel="noopener"
-               class="text-kicc-gold underline hover:text-white transition-colors text-sm">View on Delivery Corner →</a>
+        <h2 class="text-3xl md:text-4xl font-black text-white leading-[1.1] mb-2">The 5 <span style="color:#FFCD05;">BETA Pillars</span></h2>
+        <p class="text-gray-400 text-base max-w-2xl leading-relaxed">
+            Flagship national development sectors tracked by the Government Delivery Unit.
+            <a href="https://delivery.go.ke/delivery-corner" target="_blank" rel="noopener" class="text-[#1890D7] underline hover:text-white transition-colors text-sm">View on Delivery Corner →</a>
         </p>
 
-        {{-- Stats row --}}
-        <div class="gov-stats">
+        {{-- Stats --}}
+        <div class="flex gap-6 justify-center py-6 flex-wrap" style="background:rgba(27,30,63,0.5);border-radius:12px;">
             <div class="gov-stat"><div class="gov-stat-num">247</div><div class="gov-stat-label">Field Reports</div></div>
             <div class="gov-stat"><div class="gov-stat-num">47</div><div class="gov-stat-label">Counties Covered</div></div>
             <div class="gov-stat"><div class="gov-stat-num">5</div><div class="gov-stat-label">Flagship Sectors</div></div>
             <div class="gov-stat"><div class="gov-stat-num">98%</div><div class="gov-stat-label">Verification Rate</div></div>
         </div>
 
-        {{-- Pillar cards --}}
-        <div class="grid sm:grid-cols-2 lg:grid-cols-3 gap-5" id="pillarGrid">
-            @foreach($betaPillars as $i => $p)
-            <div class="pillar-card" style="border-top:3px solid {{ $p['color'] }};transition-delay:{{ 80 + $i * 100 }}ms">
-                <div style="display:flex;align-items:center;gap:12px;margin-bottom:12px">
-                    <span style="font-size:36px">{{ $p['emoji'] }}</span>
-                    <div>
-                        <div style="font-size:18px;font-weight:700;color:#fff">{{ $p['name'] }}</div>
-                        <span class="delivery-badge">BETA Pillar</span>
-                    </div>
+        {{-- Pillar Cards (clickable) --}}
+        <div class="grid sm:grid-cols-2 gap-5" style="margin-top:24px;">
+            @foreach($pillars as $i => $p)
+            <a href="{{ $p[3] }}" target="_blank" rel="noopener"
+               class="pillar-card block text-left no-underline" style="transition-delay:{{ 80 + $i * 120 }}ms">
+                <div class="flex items-center gap-3 mb-3">
+                    <div style="font-size:16px;font-weight:700;color:#FFCD05;">0{{ $i + 1 }}</div>
+                    <div style="font-size:17px;font-weight:700;color:#fff;">{{ $p[0] }}</div>
                 </div>
-                <p style="color:#B0B0C0;font-size:13px;line-height:1.6">{{ $p['desc'] }}</p>
-            </div>
+                <p style="color:#B0B0C0;font-size:13px;line-height:1.6;">{{ $p[1] }}</p>
+                <div style="display:flex;flex-wrap:wrap;gap:4px;margin-top:10px;">
+                    @foreach(explode(';', $p[2]) as $pt)
+                    <span class="text-[10px] px-2 py-0.5 rounded-full font-semibold" style="background:rgba(255,205,5,0.12);color:#FFCD05;">{{ trim($pt) }}</span>
+                    @endforeach
+                </div>
+                <span style="display:inline-flex;align-items:center;gap:6px;margin-top:10px;color:#1890D7;font-size:12px;font-weight:600;">
+                    View on delivery.go.ke
+                    <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M17 8l4 4m0 0l-4 4m4-4H3"/></svg>
+                </span>
+            </a>
             @endforeach
-            {{-- Delivery Corner CTA card --}}
-            <div class="pillar-card" style="transition-delay:580ms;background:linear-gradient(135deg,#0B1E57,#1B1E3F)">
-                <div style="text-align:center;margin-bottom:8px">
-                    <span style="font-size:36px">📋</span>
-                    <div style="font-size:18px;font-weight:700;color:#fff;margin-top:4px">Delivery Corner</div>
-                    <span class="delivery-badge">GDU Verified</span>
+            {{-- Delivery Corner link card --}}
+            <a href="https://delivery.go.ke/delivery-corner" target="_blank" rel="noopener"
+               class="pillar-card block text-left no-underline" style="transition-delay:680ms;background:#0B1E57;border-color:rgba(255,255,255,0.1);">
+                <div style="font-size:17px;font-weight:700;color:#FFCD05;margin-bottom:8px;">Delivery Corner</div>
+                <p style="color:#B0B0C0;font-size:13px;line-height:1.5;">Verified field reports from the GDU Delivery Information Management team. Real sites, real status, real impact — every entry backed by a physical field visit.</p>
+                <div class="flex flex-wrap gap-2 mt-3">
+                    <span class="text-[10px] px-2 py-0.5 rounded-full" style="background:#11820B;color:#fff;">GDU Verified</span>
+                    <span class="text-[10px] px-2 py-0.5 rounded-full" style="background:rgba(90,100,128,0.3);color:#B0B0C0;">247 Reports</span>
+                    <span class="text-[10px] px-2 py-0.5 rounded-full" style="background:rgba(90,100,128,0.3);color:#B0B0C0;">47 Counties</span>
                 </div>
-                <p style="color:#B0B0C0;font-size:13px;line-height:1.6;margin-top:8px">
-                    Verified field reports from the Government Delivery Unit. Real sites, real status, real impact.
-                </p>
-                <a href="https://delivery.go.ke/delivery-corner" target="_blank" rel="noopener"
-                   style="display:inline-block;margin-top:12px;padding:10px 24px;border-radius:10px;
-                          background:linear-gradient(135deg,#FFCD05,#E6B800);color:#0B1E57;font-size:14px;font-weight:800;text-decoration:none">
-                    View All Reports →
-                </a>
-                <div style="display:flex;gap:6px;flex-wrap:wrap;margin-top:12px">
-                    <a href="https://delivery.go.ke/my-county" target="_blank" rel="noopener"
-                       style="color:#1890D7;font-size:12px;font-weight:600;text-decoration:none">My County →</a>
-                    <a href="https://delivery.go.ke/scorecards" target="_blank" rel="noopener"
-                       style="color:#1890D7;font-size:12px;font-weight:600;text-decoration:none">Scorecards →</a>
+                <span style="display:inline-flex;align-items:center;gap:6px;margin-top:10px;color:#1890D7;font-size:12px;font-weight:600;">
+                    Browse all reports →
+                </span>
+                <div class="flex gap-2 mt-2">
+                    <a href="https://delivery.go.ke/my-county" target="_blank" rel="noopener" style="color:#1890D7;font-size:11px;font-weight:600;text-decoration:none;">My County</a>
+                    <span style="color:#5A6480;font-size:11px;">|</span>
+                    <a href="https://delivery.go.ke/scorecards" target="_blank" rel="noopener" style="color:#1890D7;font-size:11px;font-weight:600;text-decoration:none;">Scorecards</a>
+                    <span style="color:#5A6480;font-size:11px;">|</span>
+                    <a href="https://delivery.go.ke/the-brief" target="_blank" rel="noopener" style="color:#1890D7;font-size:11px;font-weight:600;text-decoration:none;">The Brief</a>
                 </div>
-            </div>
+            </a>
         </div>
     </section>
 
-    {{-- ═══════════════════ MINISTRIES ═══════════════════ --}}
-    <section id="ministries" class="max-w-7xl mx-auto px-5 py-12" style="background:#F9FAFB">
+    {{-- ─── MINISTRIES ─── --}}
+    <section id="ministries" class="max-w-7xl mx-auto px-5 py-12" style="background:#F9FAFB;">
         <div class="flex items-center gap-3 mb-8">
-            <span class="h-px w-8" style="background:var(--kicc-gold);"></span>
-            <span class="text-xs font-bold tracking-[0.2em] uppercase" style="color:var(--kicc-navy);">Ministries</span>
-            <span class="text-sm ml-auto" style="color:var(--kicc-text-light);">{{ $stats['ministries'] ?? 0 }} total</span>
+            <span class="h-px w-8" style="background:#FFCD05;"></span>
+            <span class="text-xs font-bold tracking-[0.2em] uppercase" style="color:#0B1E57;">Ministries</span>
+            <span class="text-sm ml-auto" style="color:#8a94a6;">{{ $stats['ministries'] ?? 0 }} total</span>
         </div>
-
         <div class="grid sm:grid-cols-2 lg:grid-cols-3 gap-5">
             @forelse($ministries as $idx => $m)
             @php
                 $tile = $tileMedia[$m['slug']] ?? [];
-                $hasVideo = !empty($tile['videoUrl']);
                 $tileHover = $tile['hoverLoopUrl'] ?? $tile['videoUrl'] ?? null;
                 $tilePoster = $tile['posterUrl'] ?? null;
             @endphp
-            <div class="ministry-card" style="transition-delay:{{ 80 + $idx * 60 }}ms"
+            <div class="bg-white rounded-2xl overflow-hidden border border-gray-200 hover:border-[#FFCD05]/40 transition-all" style="opacity:0;transform:translateY(20px);transition:all .4s cubic-bezier(0.34,1.56,0.64,1),opacity .4s;" data-stagger="{{ $idx }}"
                  x-data="mediaTile()"
                  @mouseenter="onHoverEnter()"
                  @mouseleave="onHoverLeave()">
@@ -175,17 +161,15 @@
                         <div class="absolute inset-0 bg-gradient-to-t from-black/60 via-black/10 to-transparent pointer-events-none"></div>
                     </div>
                     <div class="p-4">
-                        <div class="flex items-center gap-3 mb-2">
-                            <h3 class="font-bold text-sm" style="color:var(--kicc-navy);">{{ $m['name'] }}</h3>
-                        </div>
-                        @if($m['description'])<p class="text-xs" style="color:var(--kicc-text);">{{ Str::limit($m['description'], 100) }}</p>@endif
+                        <h3 class="font-bold text-sm" style="color:#0B1E57;">{{ $m['name'] }}</h3>
+                        @if($m['description'])<p class="text-xs mt-1" style="color:#5A6480;">{{ Str::limit($m['description'], 100) }}</p>@endif
                         @if($m['agencies'])
                         <div class="mt-2 flex flex-wrap gap-1">
                             @foreach(array_slice($m['agencies'], 0, 3) as $a)
-                            <span class="text-[10px] px-1.5 py-0.5 rounded-full" style="background:var(--kicc-bg-alt);color:var(--kicc-text-light);">{{ $a['name'] }}</span>
+                            <span class="text-[10px] px-1.5 py-0.5 rounded-full" style="background:#f0f2f5;color:#8a94a6;">{{ $a['name'] }}</span>
                             @endforeach
                             @if(count($m['agencies']) > 3)
-                            <span class="text-[10px] px-1.5 py-0.5 rounded-full font-semibold" style="color:var(--kicc-crimson);">+{{ count($m['agencies']) - 3 }}</span>
+                            <span class="text-[10px] px-1.5 py-0.5 rounded-full font-semibold" style="color:#A6192E;">+{{ count($m['agencies']) - 3 }}</span>
                             @endif
                         </div>
                         @endif
@@ -193,21 +177,19 @@
                 </a>
             </div>
             @empty
-            <div class="col-span-3 text-center py-16" style="color:var(--kicc-text-light);">
-                <div class="text-4xl mb-3">🏛️</div>
+            <div class="col-span-3 text-center py-16" style="color:#8a94a6;">
                 <p class="text-sm">No ministries listed yet.</p>
             </div>
             @endforelse
         </div>
-
         @if(!empty($agencies))
         <div class="mt-12">
-            <h2 class="text-xl font-bold mb-4" style="color:var(--kicc-navy);">All Agencies ({{ $stats['agencies'] ?? 0 }})</h2>
+            <h2 class="text-xl font-bold mb-4" style="color:#0B1E57;">All Agencies ({{ $stats['agencies'] ?? 0 }})</h2>
             <div class="grid sm:grid-cols-2 lg:grid-cols-4 gap-3">
                 @foreach($agencies as $a)
-                <div class="p-3 rounded-xl" style="background:#F3F4F6;border:1px solid #E5E7EB">
-                    <div class="font-semibold text-sm" style="color:var(--kicc-navy);">{{ $a['name'] }}</div>
-                    <div class="text-xs mt-1" style="color:var(--kicc-text-light);">{{ $a['ministry_name'] }}</div>
+                <div class="p-3 rounded-xl" style="background:#F3F4F6;border:1px solid #E5E7EB;">
+                    <div class="font-semibold text-sm" style="color:#0B1E57;">{{ $a['name'] }}</div>
+                    <div class="text-xs mt-1" style="color:#8a94a6;">{{ $a['ministry_name'] }}</div>
                 </div>
                 @endforeach
             </div>
@@ -215,20 +197,19 @@
         @endif
     </section>
 </div>
-@endsection
 
 @push('scripts')
 <script>
 (function(){
-    /* Stagger pillar cards */
-    document.querySelectorAll('.pillar-card').forEach(function(c,i){
-        var delay = 80 + i * 100;
-        setTimeout(function(){ c.classList.add('revealed'); }, delay);
+    document.querySelectorAll('[data-stagger]').forEach(function(el,i){
+        var delay = 80 + parseInt(el.getAttribute('data-stagger')) * 60;
+        setTimeout(function(){
+            el.style.opacity = '1';
+            el.style.transform = 'translateY(0)';
+        }, delay);
     });
-    /* Stagger ministry cards */
-    document.querySelectorAll('.ministry-card').forEach(function(c,i){
-        var delay = 80 + i * 60;
-        setTimeout(function(){ c.classList.add('revealed'); }, delay);
+    document.querySelectorAll('.pillar-card').forEach(function(c,i){
+        setTimeout(function(){ c.classList.add('revealed'); }, 80 + i * 120);
     });
 })();
 </script>
