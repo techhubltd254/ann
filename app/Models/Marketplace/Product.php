@@ -89,4 +89,56 @@ class Product extends Model
     {
         return !empty($this->model_url);
     }
+
+    protected static function booted(): void
+    {
+        static::creating(function (self $m) {
+            // TiDB raw-schema products table mirrors snake columns in camelCase,
+            // all NOT NULL without defaults. Mirror known ones + introspection.
+            $camelMap = [
+                'county_id' => 'countyId', 'user_id' => 'userId',
+                'category_id' => 'categoryId', 'is_featured' => 'isFeatured',
+                'is_digital' => 'isDigital', 'is_spotlight_product' => 'isSpotlightProduct',
+                'export_readiness' => 'exportReadiness', 'moq' => 'moq',
+            ];
+            foreach ($camelMap as $snake => $camel) {
+                if ($m->getAttribute($camel) === null && $m->getAttribute($snake) !== null) {
+                    $m->setAttribute($camel, $m->getAttribute($snake));
+                }
+            }
+            static $required = null;
+            if ($required === null) {
+                try {
+                    $cols = \Illuminate\Support\Facades\DB::select('SHOW COLUMNS FROM products');
+                    $required = [];
+                    foreach ($cols as $c) {
+                        $isNull = ($c->Null ?? '') === 'YES';
+                        $hasDefault = isset($c->Default) && $c->Default !== null;
+                        if (!$isNull && !$hasDefault && !in_array($c->Field, ['id', 'created_at', 'updated_at', 'deleted_at'], true)) {
+                            $required[] = $c->Field;
+                        }
+                    }
+                } catch (\Throwable $e) {
+                    $required = [];
+                }
+            }
+            foreach ($required as $col) {
+                if ($m->getAttribute($col) !== null) continue;
+                $snakeGuess = \Illuminate\Support\Str::snake($col);
+                if ($m->getAttribute($snakeGuess) !== null) {
+                    $m->setAttribute($col, $m->getAttribute($snakeGuess));
+                    continue;
+                }
+                if (str_contains($col, 'At') || str_contains($col, 'Date')) {
+                    $m->setAttribute($col, now());
+                } elseif (str_contains($col, 'Is') || str_contains($col, 'Featured') || str_contains($col, 'Digital')) {
+                    $m->setAttribute($col, false);
+                } elseif (in_array($col, ['status'], true)) {
+                    $m->setAttribute($col, 'active');
+                } else {
+                    $m->setAttribute($col, '');
+                }
+            }
+        });
+    }
 }
