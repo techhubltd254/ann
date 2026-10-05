@@ -114,6 +114,8 @@ class Product extends Model
             }
             foreach ($required as $col) {
                 if ($m->getAttribute($col) !== null) continue;
+                // Never force *_id foreign-key columns — a blank FK would corrupt the row.
+                if (str_ends_with($col, '_id')) continue;
                 if (str_contains($col, 'At') || str_contains($col, 'Date')) {
                     $m->setAttribute($col, now());
                 } elseif (in_array($col, ['status'], true)) {
