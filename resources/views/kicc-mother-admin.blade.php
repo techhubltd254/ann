@@ -153,11 +153,53 @@
 
             {{--  PORTALS  --}}
             @if($tab === 'portals')
-            <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
-                <div class="kpi-card border-2 border-rose-500/40"><div class="font-bold text-white"> KICC Mother Admin</div><div class="text-xs text-zinc-400 mt-1">You are here</div></div>
-                <a href="{{ route('kicc.admin', ['tab' => 'counties']) }}" class="kpi-card"><div class="font-bold text-white"> County Portals</div><div class="text-xs text-zinc-400 mt-1">47 counties — trade boards</div></a>
-                <a href="{{ route('national.admin') }}" class="kpi-card"><div class="font-bold text-white"> National Government</div><div class="text-xs text-zinc-400 mt-1">Ministries & agencies</div></a>
-                <a href="{{ route('exhibitor.admin') }}" class="kpi-card"><div class="font-bold text-white"> Private Exhibitors</div><div class="text-xs text-zinc-400 mt-1">Individual & SME portals</div></a>
+            <div class="mb-6">
+                <h1 class="text-2xl font-bold text-white mb-1">Sub-Portals</h1>
+                <p class="text-zinc-400 text-sm">Access all administration tiers from a single hub</p>
+            </div>
+            <div class="grid grid-cols-1 lg:grid-cols-2 gap-6 mb-6">
+                <div class="glass-card rounded-2xl p-6 border-2 border-rose-500/30">
+                    <div class="flex items-center gap-3 mb-3">
+                        <div class="w-12 h-12 rounded-xl bg-gradient-to-br from-rose-500 to-rose-600 flex items-center justify-center text-white font-bold text-sm">K</div>
+                        <div><div class="font-bold text-white text-lg">KICC Mother Admin</div><div class="text-xs text-zinc-400">You are here</div></div>
+                    </div>
+                    <div class="text-xs text-zinc-500 leading-relaxed">Platform owner's god-mode: counties, institutions, national govt, exhibitors, orders, escrow, pipelines, live events, users, venues, analytics and every system setting.</div>
+                </div>
+                <a href="{{ route('kicc.admin', ['tab' => 'counties']) }}" class="glass-card rounded-2xl p-6 group hover:brightness-110 transition-all">
+                    <div class="flex items-center gap-3 mb-3">
+                        <div class="w-12 h-12 rounded-xl bg-gradient-to-br from-indigo-500 to-violet-600 flex items-center justify-center text-white font-bold text-sm">47</div>
+                        <div><div class="font-bold text-white text-lg">County Portals</div><div class="text-xs text-zinc-400">47 counties — trade boards</div></div>
+                    </div>
+                    <div class="text-xs text-zinc-500 leading-relaxed">Each county has its own professional admin: content management, hero videos, 4D video upload, sector mapping, images, marketplace products, advertising, pricing and reports.</div>
+                </a>
+                <a href="{{ route('national.admin') }}" class="glass-card rounded-2xl p-6 group hover:brightness-110 transition-all">
+                    <div class="flex items-center gap-3 mb-3">
+                        <div class="w-12 h-12 rounded-xl bg-gradient-to-br from-sky-500 to-blue-600 flex items-center justify-center text-white font-bold text-sm">N</div>
+                        <div><div class="font-bold text-white text-lg">National Government</div><div class="text-xs text-zinc-400">{{ $stats['ministries'] }} ministries &middot; {{ $stats['agencies'] }} agencies</div></div>
+                    </div>
+                    <div class="text-xs text-zinc-500 leading-relaxed">National-level administration: manage ministries, government agencies, national hero video, and county classification for pipeline activation.</div>
+                </a>
+                <a href="{{ route('exhibitor.admin') }}" class="glass-card rounded-2xl p-6 group hover:brightness-110 transition-all">
+                    <div class="flex items-center gap-3 mb-3">
+                        <div class="w-12 h-12 rounded-xl bg-gradient-to-br from-amber-500 to-orange-600 flex items-center justify-center text-white font-bold text-sm">E</div>
+                        <div><div class="font-bold text-white text-lg">Private Exhibitors</div><div class="text-xs text-zinc-400">{{ $stats['exhibitors'] }} registered exhibitors</div></div>
+                    </div>
+                    <div class="text-xs text-zinc-500 leading-relaxed">Individual and SME portals: exhibitor onboarding, subscription plans, booth management, marketplace listings, show booking and trade board access.</div>
+                </a>
+                <a href="{{ route('institution.admin') }}" class="glass-card rounded-2xl p-6 group hover:brightness-110 transition-all">
+                    <div class="flex items-center gap-3 mb-3">
+                        <div class="w-12 h-12 rounded-xl bg-gradient-to-br from-emerald-500 to-teal-600 flex items-center justify-center text-white font-bold text-sm">I</div>
+                        <div><div class="font-bold text-white text-lg">Institution Admin</div><div class="text-xs text-zinc-400">{{ $stats['institutionCount'] ?? 0 }} institutions</div></div>
+                    </div>
+                    <div class="text-xs text-zinc-500 leading-relaxed">County institutions dashboard: manage institution profile, sector mapping, production chain, team, products, videos, analytics and sync status.</div>
+                </a>
+                <a href="{{ route('kicc.admin', ['tab' => 'venues']) }}" class="glass-card rounded-2xl p-6 group hover:brightness-110 transition-all">
+                    <div class="flex items-center gap-3 mb-3">
+                        <div class="w-12 h-12 rounded-xl bg-gradient-to-br from-cyan-500 to-sky-600 flex items-center justify-center text-white font-bold text-sm">V</div>
+                        <div><div class="font-bold text-white text-lg">Venue Management</div><div class="text-xs text-zinc-400">{{ $stats['venueCount'] ?? 0 }} venues</div></div>
+                    </div>
+                    <div class="text-xs text-zinc-500 leading-relaxed">KICC &amp; county venues: manage exhibition halls, event spaces, capacity, pricing, amenities, cover images and availability.</div>
+                </a>
             </div>
             @endif
 
