@@ -74,7 +74,7 @@
                 </div>
             </div>
             @endif
-            @endisset
+
 
             {{--  PRODUCTS  --}}
             @if($tab === 'products')
@@ -116,7 +116,7 @@
                 </div>
             </div>
             @endif
-            @endisset
+
 
             {{--  ORDERS  --}}
             @if($tab === 'orders')
@@ -141,7 +141,7 @@
                 @endforelse
             </div>
             @endif
-            @endisset
+
 
             {{--  ESCROW  --}}
             @if($tab === 'escrow')
@@ -170,7 +170,7 @@
                 @endforelse
             </div>
             @endif
-            @endisset
+
 
             {{--  MY WEBSITE  --}}
             @if($tab === 'website')
@@ -225,8 +225,8 @@
                 </div>
             </div>
             @endif
-            @endisset
-            @endisset
+
+
 </div>
     </div>
 </div>
