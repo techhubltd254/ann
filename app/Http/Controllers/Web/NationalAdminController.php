@@ -8,6 +8,7 @@ use App\Models\County;
 use App\Models\CountyBulkSlotAllocation;
 use App\Models\MediaAsset;
 use App\Models\Ministry;
+use App\Models\Page;
 use App\Models\User;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
@@ -31,10 +32,7 @@ class NationalAdminController extends Controller
         $tab = $request->get('tab', 'ministries');
 
         // Cached 60s (admin TTL); busted by CacheSyncService::national() on write.
-        $data = \Illuminate\Support\Facades\Cache::remember(
-            "national_admin_dash_{$tab}",
-            config('kicc.cache_ttl.admin', 60),
-            function () {
+        $buildDash = function () {
                 $ministries = Ministry::with('agencies')->orderBy('name')->get();
                 $agencies = Agency::with('ministry')->orderBy('name')->get();
                 $nationalPages = Page::whereIn('slug', ['about','mission','vision','history','org-structure','pricing'])->orderBy('sort_order')->get();
@@ -58,7 +56,17 @@ class NationalAdminController extends Controller
 
                 return compact('ministries', 'agencies', 'nationalPages', 'stats', 'nationalHero', 'nationalFlag', 'ministryMedia');
             }
-        );
+        };
+
+        try {
+            $data = \Illuminate\Support\Facades\Cache::remember(
+                "national_admin_dash_{$tab}",
+                config('kicc.cache_ttl.admin', 60),
+                $buildDash
+            );
+        } catch (\Throwable $e) {
+            $data = $buildDash();
+        }
 
         extract($data);
 
