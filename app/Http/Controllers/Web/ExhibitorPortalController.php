@@ -12,6 +12,7 @@ use App\Events\GenericDomainEvent;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Session;
+use Illuminate\Support\Str;
 
 /**
  * Private Exhibitor Portal — the atomic exhibitor unit.
