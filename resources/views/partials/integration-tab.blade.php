@@ -68,7 +68,7 @@
                         <div class="text-[9px] text-zinc-500 font-mono">{{ $p['id'] }}</div>
                     </td>
                     <td class="py-2.5 pr-3 text-zinc-400">{{ $p['kind'] }}</td>
-                    <td class="py-2.5 pr-3 text-zinc-500">{{ implode(', ', $p['lanes']) }}</td>
+                    <td class="py-2.5 pr-3 text-zinc-500">{{ implode(', ', $p['lanes'] ?? []) }}</td>
                     <td class="py-2.5 pr-3">
                         @if($p['mock'] ?? false)
                         <span class="text-[10px] font-bold px-2 py-0.5 rounded-full bg-amber-500/20 text-amber-400">MOCK</span>
@@ -77,8 +77,8 @@
                         @endif
                     </td>
                     <td class="py-2.5">
-                        @if(count($p['missing']) > 0)
-                        <span class="text-[10px] text-rose-400">{{ implode(', ', array_slice($p['missing'], 0, 2)) }}{{ count($p['missing']) > 2 ? ' ...' : '' }}</span>
+                        @if(count($p['missing'] ?? []) > 0)
+                        <span class="text-[10px] text-rose-400">{{ implode(', ', array_slice($p['missing'] ?? [], 0, 2)) }}{{ count($p['missing'] ?? []) > 2 ? ' ...' : '' }}</span>
                         @else
                         <span class="text-[10px] text-emerald-400">Complete</span>
                         @endif
