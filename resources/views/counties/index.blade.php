@@ -39,8 +39,7 @@
 
 .county-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(280px,1fr));gap:20px;padding:0 0 32px}
 .county-card{background:#1B1E3F;border:1px solid rgba(90,100,128,0.19);border-radius:18px;overflow:hidden;
-  transition:all .4s cubic-bezier(0.34,1.56,0.64,1);opacity:0;transform:translateY(30px) scale(0.97)}
-.county-card.revealed{opacity:1;transform:translateY(0) scale(1)}
+  transition:all .4s cubic-bezier(0.34,1.56,0.64,1)}
 .county-card:hover{transform:translateY(-5px) scale(1.01);border-color:rgba(255,205,5,0.25);box-shadow:0 10px 32px rgba(255,205,5,0.06)}
 .county-card-media{height:130px;border-radius:12px;margin:0;overflow:hidden;position:relative}
 .county-card-emoji{position:absolute;inset:0;display:flex;align-items:center;justify-content:center;font-size:44px}
