@@ -3,175 +3,326 @@
 @section('title', 'Explore all 47 Counties of Kenya')
 @section('description', 'Discover economic sectors, investment opportunities, tourism attractions, and trade exhibitions across every county.')
 
+@push('styles')
+<style>
+/* ── Counties 3D Immersive Design ── */
+.counties-3d-hero{min-height:60vh;background:#0A1024;position:relative;overflow:hidden}
+.counties-3d-hero::before{content:'';position:absolute;inset:0;background:radial-gradient(ellipse at 30% 50%,rgba(144,28,30,0.12) 0%,transparent 60%),radial-gradient(ellipse at 70% 30%,rgba(255,205,5,0.08) 0%,transparent 50%);pointer-events:none}
+
+.map-scroll-section{position:relative;height:250vh;background:#0A1024;margin:0}
+.map-scroll-sticky{position:sticky;top:0;height:100vh;overflow:hidden;display:flex;align-items:center;justify-content:center}
+#kenya-3d-canvas{position:absolute;inset:0;width:100%;height:100vh;pointer-events:none}
+.map-overlay-content{position:absolute;z-index:10;text-align:center;width:100%;padding:0 24px;transition:opacity .6s}
+.map-overlay-content h1{font-size:clamp(36px,6vw,72px);font-weight:900;background:linear-gradient(135deg,#FFCD05,#901C1E);-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;line-height:1.1;margin-bottom:12px}
+.map-overlay-content p{color:#B0B0C0;font-size:clamp(14px,1.5vw,18px);max-width:640px;margin:0 auto;line-height:1.6}
+.map-scroll-hint{position:absolute;bottom:32px;left:50%;transform:translateX(-50%);color:#5A6480;font-size:12px;display:flex;flex-direction:column;align-items:center;gap:6px;z-index:20;transition:opacity .6s}
+.map-scroll-hint .arrow{animation:bounce-arrow 2s ease-in-out infinite;width:16px;height:16px}
+@keyframes bounce-arrow{0%,100%{transform:translateY(0)}50%{transform:translateY(6px)}}
+
+.counties-section{padding:60px 20px;max-width:1200px;margin:0 auto;position:relative;z-index:5}
+.section-tag{display:inline-flex;padding:5px 12px;border-radius:8px;font-size:11px;font-weight:700;letter-spacing:1px;text-transform:uppercase;background:#FFCD05;color:#0B1E57;margin-bottom:8px}
+.section-title{font-size:32px;font-weight:700;margin:0 0 8px;color:#fff}
+.section-sub{color:#B0B0C0;font-size:14px;max-width:600px;margin:0 0 28px;line-height:1.5}
+
+.filters-row{display:flex;flex-wrap:wrap;gap:10px;align-items:center;margin-bottom:28px}
+.search-field{width:100%;max-width:340px;padding:12px 16px;border-radius:12px;background:#0A1024;border:1px solid #5A6480;color:#fff;font-size:14px;outline:none;transition:border-color .3s}
+.search-field:focus{border-color:#FFCD05}
+.filter-pills{display:flex;gap:5px;flex-wrap:wrap}
+.filter-pill{padding:5px 12px;border-radius:16px;font-size:11px;font-weight:600;cursor:pointer;transition:all .3s cubic-bezier(0.34,1.56,0.64,1);
+  background:#1B1E3F;border:1px solid rgba(90,100,128,0.19);color:#B0B0C0}
+.filter-pill.active,.filter-pill:hover{background:#901C1E;color:#fff;border-color:#901C1E;transform:translateY(-1px)}
+
+.stats-row{display:flex;gap:32px;justify-content:center;padding:32px 16px;background:linear-gradient(90deg,transparent,#1B1E3F,transparent);margin:0 0 32px;border-radius:16px;flex-wrap:wrap}
+.stat-cell{text-align:center}
+.stat-number{font-size:28px;font-weight:900;color:#FFCD05;line-height:1;font-variant-numeric:tabular-nums}
+.stat-label{color:#5A6480;font-size:12px;margin-top:4px;text-transform:uppercase;letter-spacing:1px}
+
+.county-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(280px,1fr));gap:20px;padding:0 0 32px}
+.county-card{background:#1B1E3F;border:1px solid rgba(90,100,128,0.19);border-radius:18px;overflow:hidden;
+  transition:all .4s cubic-bezier(0.34,1.56,0.64,1);opacity:0;transform:translateY(30px) scale(0.97)}
+.county-card.revealed{opacity:1;transform:translateY(0) scale(1)}
+.county-card:hover{transform:translateY(-5px) scale(1.01);border-color:rgba(255,205,5,0.25);box-shadow:0 10px 32px rgba(255,205,5,0.06)}
+.county-card-media{height:130px;border-radius:12px;margin:0;overflow:hidden;position:relative}
+.county-card-emoji{position:absolute;inset:0;display:flex;align-items:center;justify-content:center;font-size:44px}
+.county-card-play{position:absolute;bottom:6px;right:6px;background:rgba(0,0,0,0.35);backdrop-filter:blur(4px);padding:3px 8px;border-radius:6px;font-size:9px;color:#fff;opacity:0;transition:opacity .3s}
+.county-card:hover .county-card-play{opacity:1}
+.county-card-body{padding:16px 16px 20px}
+.county-card-name{font-size:17px;font-weight:700;color:#fff;margin:0 0 3px}
+.county-card-desc{color:#B0B0C0;font-size:12px;line-height:1.5;margin:0 0 10px}
+.county-card-tags{display:flex;gap:4px;flex-wrap:wrap;margin:0 0 10px}
+.county-card-tag{padding:2px 7px;border-radius:5px;font-size:9px;font-weight:600;background:#901C1E;color:#fff}
+.county-card-tag.gold{background:#FFCD05;color:#0B1E57}
+.county-card-tag.blue{background:#1890D7;color:#fff}
+.county-card-tag.green{background:#11820B;color:#fff}
+
+.cta-3d-section{text-align:center;padding:48px 20px;background:linear-gradient(180deg,#0B1E57,#0A1024);border-radius:24px;margin:32px 0}
+</style>
+@endpush
+
 @section('content')
-<div id="county-index-page">
-    {{-- ─── 3D PARALLAX HERO ─── --}}
-    <section class="relative min-h-[55vh] flex items-center overflow-hidden bg-[#0B0E17]">
-        <div class="absolute inset-0 opacity-20" style="background: radial-gradient(ellipse at 30% 50%, #901C1E 0%, transparent 60%), radial-gradient(ellipse at 70% 30%, #FFCD05 0%, transparent 50%);"></div>
-        <div class="absolute inset-0" style="background-image: url('data:image/svg+xml,%3Csvg width=60 height=60 viewBox=0 0 60 60 xmlns=%22http://www.w3.org/2000/svg%22%3E%3Cg fill=%22none%22 fill-rule=%22evenodd%22%3E%3Cg fill=%22%23ffffff%22 fill-opacity=%220.03%22%3E%3Cpath d=%22M36 34v-4h-2v4h-4v2h4v4h2v-4h4v-2h-4zm0-30V0h-2v4h-4v2h4v4h2V6h4V4h-4zM6 34v-4H4v4H0v2h4v4h2v-4h4v-2H6zM6 4V0H4v4H0v2h4v4h2V6h4V4H6z%22/%3E%3C/g%3E%3C/g%3E%3C/svg%3E');"></div>
-        <div class="max-w-7xl mx-auto px-5 w-full relative z-10 py-20">
-            <div data-reveal="up">
-                <div class="flex items-center gap-3 mb-4">
-                    <div class="h-px w-8 bg-kicc-gold"></div>
-                    <span class="text-kicc-gold text-xs font-bold tracking-[0.2em] uppercase">47 Destinations</span>
-                </div>
-                <h1 class="text-4xl md:text-6xl font-black text-white tracking-tight leading-[1.1]">Explore Kenya's <br><span class="text-kicc-gold">47 Counties</span></h1>
-                <p class="text-gray-400 mt-4 text-base md:text-lg max-w-2xl leading-relaxed">Discover economic sectors, investment opportunities, tourism attractions, and trade exhibitions across every county.</p>
+<div class="counties-3d-hero">
+    <div class="max-w-7xl mx-auto px-5 w-full relative z-10 py-24">
+        <div data-reveal="up">
+            <div class="flex items-center gap-3 mb-4">
+                <div class="h-px w-8 bg-kicc-gold"></div>
+                <span class="text-kicc-gold text-xs font-bold tracking-[0.2em] uppercase">47 Destinations</span>
             </div>
-            <div class="flex flex-col sm:flex-row gap-3 mt-10" data-reveal="up" data-reveal-delay="200">
-                <div class="relative flex-1 max-w-md">
-                    <svg class="absolute left-4 top-1/2 -translate-y-1/2 text-gray-500" xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="8"/><path d="m21 21-4.35-4.35"/></svg>
-                    <input id="county-search-input" placeholder="Search counties…"
-                        class="w-full pl-11 pr-4 h-12 rounded-xl bg-white/10 border border-white/10 text-white text-sm outline-none focus:ring-1 focus:ring-kicc-gold placeholder:text-gray-500 backdrop-blur-sm transition-all">
-                </div>
+            <h1 class="text-4xl md:text-6xl font-black text-white tracking-tight leading-[1.1]">
+                Explore Kenya's <br><span class="text-kicc-gold">47 Counties</span>
+            </h1>
+            <p class="text-gray-400 mt-4 text-base md:text-lg max-w-2xl leading-relaxed">Discover economic sectors, investment opportunities, tourism attractions, and trade exhibitions across every county.</p>
+        </div>
+        <div class="flex flex-col sm:flex-row gap-3 mt-10" data-reveal="up" data-reveal-delay="200">
+            <div class="relative flex-1 max-w-md">
+                <input id="county-search-input" placeholder="Search counties…"
+                    class="search-field w-full pl-11 pr-4 h-12 rounded-xl bg-white/10 border border-white/10 text-white text-sm outline-none focus:ring-1 focus:ring-kicc-gold placeholder:text-gray-500 backdrop-blur-sm transition-all">
             </div>
-            <div class="flex gap-1.5 overflow-x-auto flex-wrap mt-4" data-reveal="up" data-reveal-delay="300">
+        </div>
+        <div class="filters-row mt-4" data-reveal="up" data-reveal-delay="300">
+            <div class="filter-pills" id="region-filters">
                 @foreach(['All','Central','Coast','Eastern','Nairobi','Nyanza','North Eastern','Rift Valley','Western'] as $i => $r)
                 <button data-region="{{ $r }}"
-                    class="shrink-0 px-4 py-2 rounded-lg text-xs font-bold tracking-wide transition-all cursor-pointer {{ $i === 0 ? 'bg-kicc-gold text-gray-900' : 'bg-white/10 text-gray-300 border border-white/10 hover:bg-white/20 hover:text-white' }}">{{ $r }}</button>
+                    class="filter-pill {{ $i === 0 ? 'active' : '' }}">{{ $r }}</button>
                 @endforeach
             </div>
         </div>
-    </section>
-
-    {{-- ─── MAP ─── --}}
-    <section class="bg-[#0B0E17] border-t border-white/5">
-        <div class="max-w-7xl mx-auto px-5 py-8">
-            <div data-reveal="zoom" class="rounded-2xl overflow-hidden border border-white/10 shadow-2xl">
-                <x-all-counties-map :counties="$counties" height="380px" />
-            </div>
-        </div>
-    </section>
-
-    {{-- ─── COUNTY GRID ─── --}}
-    <section class="bg-[#0B0E17] py-10">
-        <div class="max-w-7xl mx-auto px-5">
-            <div class="flex items-center justify-between mb-6">
-                <span id="county-count" class="text-gray-400 text-sm font-medium">{{ $counties->count() }} counties</span>
-            </div>
-
-            @if($counties->count() > 0)
-            <div class="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-6 gap-5" id="county-grid">
-                @foreach($counties as $idx => $c)
-                @php
-                $ch = $countyHeroes[$c->slug] ?? null;
-                $delay = ($idx % 6) * 50;
-                @endphp
-                <a href="{{ route('counties.show', $c->slug) }}"
-                   data-name="{{ strtolower($c->name) }}"
-                   data-region="{{ $c->former_province ?? '' }}"
-                   data-reveal="up"
-                   data-reveal-delay="{{ $delay }}"
-                   data-tilt="6"
-                   class="county-card group bg-[#131724] rounded-2xl overflow-hidden border border-white/5 hover:border-kicc-gold/30 transition-all duration-500">
-                    <div class="h-36 overflow-hidden relative bg-gradient-to-br from-[#1a1f33] to-[#0f1322]">
-                        @if($ch && $ch['video'])
-                        <x-media-tile
-                            :poster="$ch['poster']"
-                            :hover-loop="$ch['hover'] ?? null"
-                            :video-url="$ch['video']"
-                            :title="$c->name"
-                            class="absolute inset-0 w-full h-full"
-                        />
-                        @else
-                        <div class="absolute inset-0 flex items-center justify-center">
-                            <svg class="w-12 h-12 text-gray-600" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1" d="M3.055 11H5a2 2 0 012 2v1a2 2 0 002 2 2 2 0 012 2v2.945M8 3.935V5.5A2.5 2.5 0 0010.5 8h.5a2 2 0 012 2 2 2 0 104 0 2 2 0 012-2h1.064M15 20.488V18a2 2 0 012-2h3.064M21 12a9 9 0 11-18 0 9 9 0 0118 0z"/></svg>
-                        </div>
-                        @endif
-                        {{-- tilt glare overlay --}}
-                        <div class="tilt-glare absolute inset-0 pointer-events-none" style="background: linear-gradient(135deg, rgba(255,255,255,0.08) 0%, transparent 50%);"></div>
-                    </div>
-                    <div class="p-4">
-                        <h3 class="font-bold text-white text-sm leading-tight group-hover:text-kicc-gold transition-colors">{{ $c->name }}</h3>
-                        <p class="text-gray-500 text-xs mt-1.5">
-                            {{ is_array($c->primary_sectors) ? count($c->primary_sectors) : '0' }} sectors · {{ number_format($c->population_2024 ?? 0) }} people
-                        </p>
-                        @if(is_array($c->primary_sectors) && count($c->primary_sectors))
-                        <div class="flex flex-wrap gap-1.5 mt-3">
-                            @foreach(array_slice($c->primary_sectors, 0, 2) as $ps)
-                            <span class="text-[10px] bg-kicc-gold/15 text-kicc-gold px-2 py-0.5 rounded-full font-semibold tracking-wide">{{ $ps }}</span>
-                            @endforeach
-                        </div>
-                        @endif
-                        <div class="mt-3 flex items-center gap-3 text-xs">
-                            <a href="https://www.google.com/maps/search/?api=1&query={{ $c->latitude }},{{ $c->longitude }}" target="_blank" rel="noopener"
-                               class="inline-flex items-center gap-1.5 text-gray-500 hover:text-white transition-colors">
-                                <svg class="w-3.5 h-3.5" fill="currentColor" viewBox="0 0 24 24"><path d="M12 2C8.13 2 5 5.13 5 9c0 5.73 7 13 7 13s7-7.27 7-13c0-3.87-3.13-7-7-7zm0 9.5c-1.38 0-2.5-1.12-2.5-2.5s1.12-2.5 2.5-2.5S14.5 7.62 14.5 9s-1.12 2.5-2.5 2.5z"/></svg>
-                                Map
-                            </a>
-                            <span class="text-gray-700">|</span>
-                            <a href="{{ route('counties.show', $c->slug) }}" class="inline-flex items-center gap-1.5 text-gray-500 hover:text-kicc-gold transition-colors">
-                                <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 7l5 5m0 0l-5 5m5-5H6"/></svg>
-                                Explore
-                            </a>
-                        </div>
-                    </div>
-                </a>
-                @endforeach
-            </div>
-
-            <div class="mt-12 text-center" id="county-no-results" style="display:none">
-                <p class="text-gray-500">No counties match your filter.</p>
-                <button onclick="clearFilters()" class="mt-3 text-kicc-gold text-sm underline hover:text-white transition-colors">Clear filters</button>
-            </div>
-            @else
-            <div class="text-center py-20">
-                <p class="text-gray-500">County data will appear once the system is populated.</p>
-            </div>
-            @endif
-        </div>
-    </section>
+    </div>
 </div>
 
-{{-- ─── FILTER SCRIPT ─── --}}
+{{-- ─── 3D SCROLL-DRIVEN MAP ─── --}}
+<section class="map-scroll-section" id="mapScrollSection">
+    <div class="map-scroll-sticky">
+        <canvas id="kenya-3d-canvas"></canvas>
+        <div class="map-overlay-content" id="mapOverlay">
+            <h1>47 Counties<br><span style="color:#FFCD05;font-size:clamp(18px,2.5vw,30px);font-weight:600">One Kenya</span></h1>
+            <p>From the tea highlands of Murang'a to the coral coast of Mombasa — scroll through every county's products, tourism, and opportunities.</p>
+        </div>
+        <div class="map-scroll-hint" id="scrollHint">
+            <span>Scroll to explore counties</span>
+            <svg class="arrow" viewBox="0 0 24 24" fill="none" stroke="#5A6480" stroke-width="2"><path d="M12 4l-4 4 8 4m-4-4 8 4"/></svg>
+        </div>
+    </div>
+</section>
+
+{{-- ─── COUNTY GRID ─── --}}
+<section class="counties-section" id="countiesSection">
+    <div class="section-tag">Explore Kenya</div>
+    <h2 class="section-title">All <span style="color:#FFCD05">47 Counties</span></h2>
+    <p class="section-sub">Search by name or filter by region — click any county to explore its sectors, businesses, and investment opportunities.</p>
+
+    {{-- Stats --}}
+    <div class="stats-row" id="statsRow">
+        <div class="stat-cell"><div class="stat-number" data-count="47" data-duration="1000">0</div><div class="stat-label">Counties</div></div>
+        <div class="stat-cell"><div class="stat-number" data-count="214" data-duration="1200">0</div><div class="stat-label">Trade Pipelines</div></div>
+        <div class="stat-cell"><div class="stat-number" data-count="20" data-duration="800">0</div><div class="stat-label">Algorithms</div></div>
+        <div class="stat-cell"><div class="stat-number" data-count="341" data-duration="1400">0</div><div class="stat-label">Services</div></div>
+    </div>
+
+    @if($counties->count() > 0)
+    <div class="county-grid" id="countyGrid">
+        @foreach($counties as $idx => $c)
+        @php
+        $ch = $countyHeroes[$c->slug] ?? null;
+        $emojiList = ['🏔️','🏖️','🌋','🏕️','🏙️','🌊','🏞️','🌄','🌲','🏜️','🏘️','🏭','🏝️','🐘','🌿','🌾','🌲','🌋'];
+        $tagList = $c->primary_sectors ?? ['tourism','agriculture'];
+        $tagColors = ['blue','gold','green','','gold','blue','green'];
+        $gradients = ['#901C1E30,#1B1E3F','#1890D730,#1B1E3F','#11820B30,#1B1E3F','#FFCD0530,#1B1E3F','#0B1E5730,#1B1E3F'];
+        $grad = $gradients[$idx % count($gradients)];
+        $emoji = $emojiList[$idx % count($emojiList)];
+        $delay = 80 + $idx * 50;
+        @endphp
+        <a href="{{ route('counties.show', $c->slug) }}"
+           data-name="{{ strtolower($c->name) }}"
+           data-region="{{ $c->former_province ?? '' }}"
+           class="county-card"
+           style="transition-delay:{{ $delay }}ms">
+            <div class="county-card-media" style="background:linear-gradient(135deg,{{ $grad }})">
+                <div class="county-card-emoji">{{ $emoji }}</div>
+                @if($ch && $ch['video'])
+                <x-media-tile
+                    :poster="$ch['poster']"
+                    :hover-loop="$ch['hover'] ?? null"
+                    :video-url="$ch['video']"
+                    :title="$c->name"
+                    class="absolute inset-0 w-full h-full"
+                />
+                @endif
+                <div class="county-card-play">▶ Preview</div>
+            </div>
+            <div class="county-card-body">
+                <div class="county-card-name">{{ $c->name }}</div>
+                <div class="county-card-desc">
+                    {{ is_array($c->primary_sectors) ? count($c->primary_sectors) : '0' }} sectors · {{ number_format($c->population_2024 ?? 0) }} people
+                </div>
+                @if(is_array($c->primary_sectors) && count($c->primary_sectors))
+                <div class="county-card-tags">
+                    @foreach(array_slice($c->primary_sectors, 0, 3) as $i2 => $ps)
+                    <span class="county-card-tag {{ $tagColors[$i2 % count($tagColors)] ?? '' }}">{{ $ps }}</span>
+                    @endforeach
+                </div>
+                @endif
+                <span style="color:#1890D7;font-size:12px;font-weight:600;display:inline-flex;align-items:center;gap:4px">
+                    View County <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M17 8l4 4m0 0l-4 4m4-4H3"/></svg>
+                </span>
+            </div>
+        </a>
+        @endforeach
+    </div>
+
+    <div class="mt-8 text-center py-8" id="countyNoResults" style="display:none">
+        <p class="text-gray-500">No counties match your filter.</p>
+        <button onclick="clearFilters()" class="mt-3 text-kicc-gold text-sm underline hover:text-white transition-colors">Clear filters</button>
+    </div>
+    @else
+    <div class="text-center py-16">
+        <p class="text-gray-500">County data will appear once the system is populated.</p>
+    </div>
+    @endif
+
+    {{-- 3D CTA --}}
+    <div class="cta-3d-section" data-reveal="up">
+        <div style="font-size:40px;margin-bottom:8px">🌍</div>
+        <h2 style="font-size:24px;font-weight:700;color:#fff;margin:0 0 6px">Explore in 3D</h2>
+        <p style="color:#B0B0C0;font-size:14px;max-width:560px;margin:0 auto 16px">View Kenya's 47 counties as an interactive 3D extruded map — fly between regions, discover sectors, and dive into each county's unique profile.</p>
+        <a href="{{ route('exhibition-3d.map') }}" style="display:inline-block;background:linear-gradient(135deg,#FFCD05,#E6B800);color:#0B1E57;padding:14px 32px;border-radius:12px;font-size:15px;font-weight:800;text-decoration:none">Open 3D Map →</a>
+    </div>
+</section>
+@endsection
+
+@push('scripts')
 <script>
-(function() {
+(function(){
+    'use strict';
+
+    /* ── 3D SCROLL-DRIVEN KENYA MAP ── */
+    var kenyaCanvas = document.getElementById('kenya-3d-canvas');
+    if(kenyaCanvas && window.gsap && window.ScrollTrigger){
+        var ctx = kenyaCanvas.getContext('2d');
+        var cw, ch;
+        function resizeCanvas(){cw=kenyaCanvas.width=window.innerWidth;ch=kenyaCanvas.height=window.innerHeight}
+        window.addEventListener('resize',resizeCanvas); resizeCanvas();
+
+        // 47 county positions (procedural distribution)
+        var countyPts = [];
+        for(var i=0;i<47;i++){
+            var angle = i/47 * Math.PI * 2;
+            var r = 0.26 + 0.14 * Math.sin(i * 1.7);
+            countyPts.push({x:0.5 + r*Math.cos(angle), y:0.5 + r*Math.sin(angle), h:0.1+0.12*Math.sin(i*2.3), s:8+18*Math.sin(i*1.3)});
+        }
+
+        ScrollTrigger.create({
+            trigger:'#mapScrollSection', start:'top top', end:'bottom bottom',
+            onUpdate: function(self){
+                var pct = self.progress;
+                var zoom = 1 + pct * 0.7;
+                var dx = -pct * 0.06;
+                var dy = -pct * 0.04;
+                var extrude = Math.min(pct * 2, 1);
+
+                ctx.fillStyle = '#0A1024';
+                ctx.fillRect(0,0,cw,ch);
+
+                // Draw extruded county blobs
+                for(var i=0;i<countyPts.length;i++){
+                    var pt = countyPts[i];
+                    var cx = (pt.x + dx) * cw;
+                    var cy = (pt.y + dy) * ch;
+                    var rw = pt.s * zoom;
+                    var rh = pt.s * zoom * 0.55;
+                    var depth = pt.h * 50 * extrude;
+
+                    // Extrusion side
+                    ctx.fillStyle = 'rgba(144,28,30,'+(0.08+0.06*extrude)+')';
+                    ctx.fillRect(cx - rw/2, cy - rh/2 + depth/2, rw, depth/2);
+
+                    // Top face
+                    ctx.fillStyle = 'rgba(255,205,5,'+(0.06+0.05*extrude)+')';
+                    ctx.beginPath();
+                    ctx.arc(cx, cy - depth, rw/2.2, 0, Math.PI*2);
+                    ctx.fill();
+
+                    // Center glow
+                    ctx.fillStyle = 'rgba(255,205,5,'+(0.015+0.008*extrude)+')';
+                    ctx.beginPath();
+                    ctx.arc(cx, cy - depth, rw * 0.25, 0, Math.PI*2);
+                    ctx.fill();
+                }
+
+                // Overlay fade
+                var titleOpacity = 1 - Math.min(pct * 2.2, 1);
+                var overlay = document.getElementById('mapOverlay');
+                if(overlay) overlay.style.opacity = titleOpacity;
+                var hint = document.getElementById('scrollHint');
+                if(hint) hint.style.opacity = pct < 0.08 ? 1 : 1 - Math.min((pct-0.08)*6, 1);
+            }
+        });
+    }
+
+    /* ── COUNTY CARD STAGGER REVEAL ── */
+    var cards = document.querySelectorAll('.county-card');
+    cards.forEach(function(card, i){
+        var delay = parseInt(card.style.transitionDelay) || (80 + i * 50);
+        setTimeout(function(){
+            card.classList.add('revealed');
+        }, delay);
+    });
+
+    /* ── STATS COUNT-UP ── */
+    document.querySelectorAll('[data-count]').forEach(function(el){
+        var target = parseInt(el.getAttribute('data-count'));
+        var duration = parseInt(el.getAttribute('data-duration')) || 1200;
+        var startTime = null;
+        function tick(now){
+            if(!startTime) startTime = now;
+            var p = Math.min((now - startTime) / duration, 1);
+            var eased = 1 - Math.pow(1 - p, 3);
+            el.textContent = Math.floor(eased * target).toLocaleString();
+            if(p < 1) requestAnimationFrame(tick);
+            else el.textContent = target.toLocaleString();
+        }
+        requestAnimationFrame(tick);
+    });
+
+    /* ── SEARCH + FILTER ── */
     var searchInput = document.getElementById('county-search-input');
-    var regionButtons = document.querySelectorAll('[data-region]');
+    var regionBtns = document.querySelectorAll('.filter-pill');
     var countyCards = document.querySelectorAll('.county-card');
-    var countEl = document.getElementById('county-count');
-    var noResults = document.getElementById('county-no-results');
+    var noResults = document.getElementById('countyNoResults');
     var activeRegion = 'All';
 
-    function filterCounties() {
+    function filterCounties(){
         var query = searchInput ? searchInput.value.toLowerCase() : '';
         var visible = 0;
-        countyCards.forEach(function(card) {
+        countyCards.forEach(function(card){
             var name = card.getAttribute('data-name') || '';
             var region = card.getAttribute('data-region') || '';
             var match = (query === '' || name.includes(query)) &&
                         (activeRegion === 'All' || region === activeRegion);
             card.style.display = match ? '' : 'none';
-            if (match) visible++;
+            if(match) visible++;
         });
-        if (countEl) countEl.textContent = visible + ' counties';
-        if (noResults) noResults.style.display = visible === 0 ? '' : 'none';
+        if(noResults) noResults.style.display = visible === 0 ? '' : 'none';
     }
 
-    window.clearFilters = function() {
-        if (searchInput) searchInput.value = '';
+    window.clearFilters = function(){
+        if(searchInput) searchInput.value = '';
         activeRegion = 'All';
-        regionButtons.forEach(function(b) {
-            var isAll = b.getAttribute('data-region') === 'All';
-            b.className = 'shrink-0 px-4 py-2 rounded-lg text-xs font-bold tracking-wide transition-all cursor-pointer ' +
-                (isAll ? 'bg-kicc-gold text-gray-900' : 'bg-white/10 text-gray-300 border border-white/10 hover:bg-white/20 hover:text-white');
+        regionBtns.forEach(function(b){
+            b.classList.toggle('active', b.getAttribute('data-region') === 'All');
         });
         filterCounties();
     };
 
-    if (searchInput) searchInput.addEventListener('input', filterCounties);
+    if(searchInput) searchInput.addEventListener('input', filterCounties);
 
-    regionButtons.forEach(function(btn) {
-        btn.addEventListener('click', function() {
+    regionBtns.forEach(function(btn){
+        btn.addEventListener('click', function(){
             activeRegion = this.getAttribute('data-region');
-            regionButtons.forEach(function(b) {
-                var isActive = b === btn;
-                b.className = 'shrink-0 px-4 py-2 rounded-lg text-xs font-bold tracking-wide transition-all cursor-pointer ' +
-                    (isActive ? 'bg-kicc-gold text-gray-900' : 'bg-white/10 text-gray-300 border border-white/10 hover:bg-white/20 hover:text-white');
-            });
+            regionBtns.forEach(function(b){ b.classList.remove('active'); });
+            this.classList.add('active');
             filterCounties();
         });
     });
 })();
 </script>
-@endsection
+@endpush
