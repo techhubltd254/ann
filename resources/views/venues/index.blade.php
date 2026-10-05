@@ -118,11 +118,11 @@
 
     {{-- Pagination --}}
     <div class="flex items-center justify-center gap-2 mt-8">
-        @if($venues->previousPage())
+        @if(! $venues->onFirstPage())
         <a href="{{ $venues->previousPageUrl() }}" class="inline-flex items-center gap-1 px-4 py-2 rounded-lg bg-gray-100 text-gray-700 text-sm hover:bg-gray-200 transition-all">← Previous</a>
         @endif
         <span class="text-xs text-gray-400">Page {{ $venues->currentPage() }} of {{ $venues->lastPage() }}</span>
-        @if($venues->hasMorePages())
+        @if(! $venues->onLastPage())
         <a href="{{ $venues->nextPageUrl() }}" class="inline-flex items-center gap-1 px-4 py-2 rounded-lg bg-gray-100 text-gray-700 text-sm hover:bg-gray-200 transition-all">Next →</a>
         @endif
     </div>
