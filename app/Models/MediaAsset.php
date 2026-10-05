@@ -12,6 +12,7 @@ class MediaAsset extends Model
     protected $fillable = [
         'uuid', 'owner_id', 'owner_type', 'slot', 'display_mode', 'disk', 'path', 'original_name',
         'mime', 'kind', 'size_bytes', 'width', 'height', 'status', 'alt_text', 'metadata',
+        'contentType',
     ];
 
     protected function casts(): array
@@ -161,5 +162,49 @@ class MediaAsset extends Model
             ->latest('id')
             ->lockForUpdate()
             ->first();
+    }
+
+    protected static function booted(): void
+    {
+        static::creating(function (self $m) {
+            // TiDB raw-schema duplicates some columns in camelCase NOT NULL
+            // without defaults (contentType mirrors mime). Fill known mirrors
+            // and then schema-introspect for any remaining NOT NULL no-defaults.
+            if ($m->getAttribute('contentType') === null && $m->getAttribute('mime') !== null) {
+                $m->setAttribute('contentType', $m->getAttribute('mime'));
+            }
+
+            static $required = null;
+            if ($required === null) {
+                $required = [];
+                try {
+                    $cols = \Illuminate\Support\Facades\DB::select('SHOW COLUMNS FROM media_assets');
+                    foreach ($cols as $c) {
+                        $isNull = ($c->Null ?? '') === 'YES';
+                        $hasDefault = isset($c->Default) && $c->Default !== null;
+                        if (!$isNull && !$hasDefault && !in_array($c->Field, ['id', 'created_at', 'updated_at', 'uuid'], true)) {
+                            $required[] = $c->Field;
+                        }
+                    }
+                } catch (\Throwable $e) {
+                    $required = [];
+                }
+            }
+            foreach ($required as $col) {
+                if ($m->getAttribute($col) !== null) continue;
+                if (str_ends_with($col, '_id') || str_ends_with($col, 'Id')) continue;
+                if (str_contains($col, 'At') || str_contains($col, 'Date')) {
+                    $m->setAttribute($col, now());
+                } elseif (in_array($col, ['status'], true)) {
+                    $m->setAttribute($col, 'ready');
+                } elseif (in_array($col, ['size_bytes', 'sizeBytes', 'width', 'height'], true)) {
+                    $m->setAttribute($col, 0);
+                } elseif (in_array($col, ['contentType'], true)) {
+                    $m->setAttribute($col, $m->getAttribute('mime') ?? 'application/octet-stream');
+                } else {
+                    $m->setAttribute($col, '');
+                }
+            }
+        });
     }
 }
