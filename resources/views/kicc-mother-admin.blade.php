@@ -56,30 +56,88 @@
 
             {{--  OVERVIEW  --}}
             @if($tab === 'overview')
-            <div class="grid grid-cols-2 lg:grid-cols-4 gap-4 mb-8">
-                <x-nexora-kpi title="Counties" :value="number_format($stats['counties'])" growth="47 active trade boards" color="indigo" :sparkline="[44,45,46,46,47,47,47,47,47,47,47,47]" />
+            <div class="grid grid-cols-2 lg:grid-cols-4 gap-4 mb-4">
+                <x-nexora-kpi title="Counties" :value="number_format($stats['counties'])" growth="47 active portals" color="indigo" :sparkline="[44,45,46,46,47,47,47,47,47,47,47,47]" />
                 <x-nexora-kpi :title="'Users'" :value="number_format($stats['users'])" :growth="$stats['exhibitors'] . ' exhibitors'" color="emerald" />
                 <x-nexora-kpi :title="'Products'" :value="number_format($stats['products'])" :growth="$stats['orders'] . ' orders'" color="amber" />
-                <x-nexora-kpi title="Escrow" :value="'KES ' . number_format($stats['escrowTotal'])" :growth="'Held: ' . number_format($stats['escrowHeld'])" color="red" />
+                <x-nexora-kpi title="Total Revenue" :value="'KES ' . number_format($stats['payments'] ?: 0)" :growth="'Released: ' . number_format($releasedEscrow ?: 0)" color="emerald" />
+            </div>
+            <div class="grid grid-cols-2 lg:grid-cols-5 gap-3 mb-4">
+                <x-nexora-kpi title="Pipeline Registrations" :value="number_format($pipelineCount ?: 0)" :growth="$pipelineLicences . ' licences'" color="sky" />
+                <x-nexora-kpi title="Institutions" :value="number_format($institutionCount ?: 0)" :growth="$stats['ministries'] . ' ministries'" color="violet" />
+                <x-nexora-kpi title="Venues" :value="number_format($venueCount ?: 0)" growth="KICC &amp; county venues" color="indigo" />
+                <x-nexora-kpi title="Escrow Volume" :value="'KES ' . number_format($stats['escrowTotal'] ?: 0)" :growth="$releasedCount . ' released'" color="red" />
+                <x-nexora-kpi title="Live Streams" :value="$streamStats['live'] . ' LIVE'" :growth="$streamStats['total'] . ' total'" color="rose" />
             </div>
 
-            <div class="grid grid-cols-1 md:grid-cols-3 gap-4 mb-8">
-                <a href="{{ route('kicc.admin', ['tab' => 'counties']) }}" class="kpi-card flex items-start gap-4">
-                    <div class="w-12 h-12 rounded-xl bg-gradient-to-br from-indigo-500 to-indigo-600 flex items-center justify-center text-white font-bold text-sm">47</div>
-                    <div><div class="font-bold text-white">County Admins</div><div class="text-xs text-zinc-400">All 47 counties — content, sectors, images, 4D video, ads</div></div>
+            <div class="grid grid-cols-1 lg:grid-cols-3 gap-4 mb-6">
+                <div class="glass-card rounded-2xl p-5">
+                    <h3 class="text-sm font-bold text-white mb-3">User Growth</h3>
+                    <div class="space-y-2 text-xs text-zinc-400">
+                        <div class="flex justify-between"><span>Total Users</span><span class="font-semibold text-white">{{ number_format($stats['users']) }}</span></div>
+                        <div class="flex justify-between"><span>Exhibitors</span><span class="font-semibold text-white">{{ $stats['exhibitors'] }}</span></div>
+                        <div class="flex justify-between"><span>Trade Board Users</span><span class="font-semibold text-white">{{ $stats['tradeBoards'] ?? 0 }}</span></div>
+                        <div class="flex justify-between"><span>Ministries</span><span class="font-semibold text-white">{{ $stats['ministries'] }}</span></div>
+                        <div class="flex justify-between"><span>Agencies</span><span class="font-semibold text-white">{{ $stats['agencies'] }}</span></div>
+                    </div>
+                    <div class="border-t border-white/5 my-2"></div>
+                    <div class="flex items-center justify-center gap-4">
+                        <div class="text-center"><div class="text-2xl font-bold text-emerald-400">{{ number_format($todayUsers) }}</div><div class="text-xs text-zinc-500">Today</div></div>
+                        <div class="text-center"><div class="text-2xl font-bold text-amber-400">{{ number_format($weekUsers) }}</div><div class="text-xs text-zinc-500">This Week</div></div>
+                    </div>
+                </div>
+
+                <div class="glass-card rounded-2xl p-5">
+                    <h3 class="text-sm font-bold text-white mb-3">Platform Activity</h3>
+                    <div class="space-y-2 text-xs">
+                        <div class="flex justify-between"><span class="text-zinc-400">Marketplace Orders</span><span class="font-semibold text-white">{{ $stats['orders'] }}</span></div>
+                        <div class="flex justify-between"><span class="text-zinc-400">Products Listed</span><span class="font-semibold text-white">{{ $stats['products'] }}</span></div>
+                        <div class="flex justify-between"><span class="text-zinc-400">Escrow Transactions</span><span class="font-semibold text-white">{{ $stats['escrowHeld'] }} held</span></div>
+                        <div class="flex justify-between"><span class="text-zinc-400">Total Revenue (Payments)</span><span class="font-semibold text-white">KES {{ number_format($stats['payments'] ?: 0) }}</span></div>
+                        <div class="flex justify-between"><span class="text-zinc-400">Released Escrow</span><span class="font-semibold text-white">KES {{ number_format($releasedEscrow ?: 0) }}</span></div>
+                        <div class="flex justify-between"><span class="text-zinc-400">Search Analytics</span><span class="font-semibold text-white">{{ number_format($searchAnalyticsCount ?: 0) }} searches</span></div>
+                    </div>
+                </div>
+
+                <div class="glass-card rounded-2xl p-5">
+                    <h3 class="text-sm font-bold text-white mb-3">Pipeline Overview</h3>
+                    <div class="space-y-2 text-xs">
+                        <div class="flex justify-between"><span class="text-zinc-400">Total Pipelines</span><span class="font-semibold text-white">{{ $pipelineCount ?? 0 }}</span></div>
+                        <div class="flex justify-between"><span class="text-zinc-400">Active Licences</span><span class="font-semibold text-white">{{ $pipelineLicences ?? 0 }}</span></div>
+                        <div class="flex justify-between"><span class="text-zinc-400">Live Streams</span><span class="font-semibold text-white">{{ $streamStats['live'] }}/{{ $streamStats['total'] }}</span></div>
+                        <div class="flex justify-between"><span class="text-zinc-400">Viewer Count</span><span class="font-semibold text-white">{{ number_format($streamStats['viewers']) }}</span></div>
+                        <div class="flex justify-between"><span class="text-zinc-400">Experience Bookings</span><span class="font-semibold text-white">{{ $experienceStats['total'] }}</span></div>
+                        <div class="flex justify-between"><span class="text-zinc-400">Experience Revenue</span><span class="font-semibold text-white">KES {{ number_format($experienceStats['revenue'] ?: 0) }}</span></div>
+                    </div>
+                    @if($topSectors)
+                    <div class="border-t border-white/5 my-2"></div>
+                    <div class="text-[10px] text-zinc-500">Top Pipeline Sectors</div>
+                    <div class="flex flex-wrap gap-1 mt-1">
+                        @foreach($topSectors as $ts)
+                        <span class="text-[10px] px-2 py-0.5 rounded-full bg-indigo-500/10 text-indigo-400 border border-indigo-500/20">{{ $ts->sector ?? $ts['sector'] }} ({{ $ts->c ?? $ts['c'] }})</span>
+                        @endforeach
+                    </div>
+                    @endif
+                </div>
+            </div>
+
+            <div class="grid grid-cols-1 md:grid-cols-3 gap-3 mb-4">
+                <a href="{{ route('kicc.admin', ['tab' => 'counties']) }}" class="kpi-card flex items-start gap-3 p-4">
+                    <div class="w-10 h-10 rounded-xl bg-gradient-to-br from-indigo-500 to-indigo-600 flex items-center justify-center text-white font-bold text-xs">47</div>
+                    <div><div class="font-bold text-white text-sm">County Admins</div><div class="text-[10px] text-zinc-400">Manage all 47 county portals</div></div>
                 </a>
-                <a href="{{ route('kicc.admin', ['tab' => 'national']) }}" class="kpi-card flex items-start gap-4">
-                    <div class="w-12 h-12 rounded-xl bg-gradient-to-br from-sky-500 to-blue-600 flex items-center justify-center text-white font-bold text-sm">N</div>
-                    <div><div class="font-bold text-white">National Government</div><div class="text-xs text-zinc-400">Ministries & agencies management</div></div>
+                <a href="{{ route('kicc.admin', ['tab' => 'national']) }}" class="kpi-card flex items-start gap-3 p-4">
+                    <div class="w-10 h-10 rounded-xl bg-gradient-to-br from-sky-500 to-blue-600 flex items-center justify-center text-white font-bold text-xs">N</div>
+                    <div><div class="font-bold text-white text-sm">National Government</div><div class="text-[10px] text-zinc-400">{{ $stats['ministries'] }} ministries</div></div>
                 </a>
-                <a href="{{ route('kicc.admin', ['tab' => 'exhibitors']) }}" class="kpi-card flex items-start gap-4">
-                    <div class="w-12 h-12 rounded-xl bg-gradient-to-br from-amber-500 to-orange-600 flex items-center justify-center text-white font-bold text-sm">E</div>
-                    <div><div class="font-bold text-white">Exhibitors</div><div class="text-xs text-zinc-400">{{ $stats['exhibitors'] }} registered exhibitors</div></div>
+                <a href="{{ route('kicc.admin', ['tab' => 'exhibitors']) }}" class="kpi-card flex items-start gap-3 p-4">
+                    <div class="w-10 h-10 rounded-xl bg-gradient-to-br from-amber-500 to-orange-600 flex items-center justify-center text-white font-bold text-xs">E</div>
+                    <div><div class="font-bold text-white text-sm">Exhibitors</div><div class="text-[10px] text-zinc-400">{{ $stats['exhibitors'] }} registered</div></div>
                 </a>
             </div>
 
             <div class="glass-card rounded-2xl p-5">
-                <h3 class="font-bold text-white text-sm mb-3"> Artisan Console</h3>
+                <h3 class="font-bold text-white text-sm mb-3">Artisan Console</h3>
                 <form method="POST" action="{{ route('kicc.admin.artisan') }}" class="flex gap-2">
                     @csrf
                     <select name="command" class="flex-1">
