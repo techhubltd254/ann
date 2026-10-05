@@ -18,25 +18,34 @@ class NationalGovernmentController extends Controller
 
     public function index()
     {
-        $stats = Cache::remember($this->cacheKey('stats'), 3600, fn() => [
-            'ministries' => Ministry::where('is_active', true)->count(),
-            'agencies' => Agency::where('is_active', true)->count(),
-        ]);
+        $stats = [];
+        $ministries = [];
+        $agencies = [];
+        try {
+            $stats = Cache::remember($this->cacheKey('stats'), 3600, fn() => [
+                'ministries' => Ministry::where('is_active', true)->count(),
+                'agencies' => Agency::where('is_active', true)->count(),
+            ]);
+        } catch (\Throwable $e) { $stats = ['ministries' => 0, 'agencies' => 0]; }
 
-        $ministries = Cache::remember($this->cacheKey('ministries'), 3600, function () {
-            return Ministry::with('agencies')->where('is_active', true)->orderBy('name')->get()
-                ->map(fn($m) => [
-                    'id' => $m->id, 'slug' => $m->slug, 'name' => $m->name,
-                    'code' => $m->code, 'color' => $m->color, 'description' => $m->description,
-                    'agencies' => $m->agencies->map(fn($a) => ['id' => $a->id, 'name' => $a->name])->toArray(),
-                ])->toArray();
-        });
+        try {
+            $ministries = Cache::remember($this->cacheKey('ministries'), 3600, function () {
+                return Ministry::with('agencies')->where('is_active', true)->orderBy('name')->get()
+                    ->map(fn($m) => [
+                        'id' => $m->id, 'slug' => $m->slug, 'name' => $m->name,
+                        'code' => $m->code, 'color' => $m->color, 'description' => $m->description,
+                        'agencies' => $m->agencies->map(fn($a) => ['id' => $a->id, 'name' => $a->name])->toArray(),
+                    ])->toArray();
+            });
+        } catch (\Throwable $e) { $ministries = []; }
 
-        $agencies = Cache::remember($this->cacheKey('agencies'), 3600, function () {
-            return Agency::with('ministry')->where('is_active', true)->orderBy('name')->get()
-                ->map(fn($a) => ['id' => $a->id, 'name' => $a->name, 'ministry_name' => $a->ministry?->name ?? ''])
-                ->toArray();
-        });
+        try {
+            $agencies = Cache::remember($this->cacheKey('agencies'), 3600, function () {
+                return Agency::with('ministry')->where('is_active', true)->orderBy('name')->get()
+                    ->map(fn($a) => ['id' => $a->id, 'name' => $a->name, 'ministry_name' => $a->ministry?->name ?? ''])
+                    ->toArray();
+            });
+        } catch (\Throwable $e) { $agencies = []; }
 
         // Hero video
         $heroVid = Cache::remember($this->cacheKey('hero'), 900, function () {
