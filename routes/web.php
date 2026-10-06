@@ -157,6 +157,10 @@ Route::get('/subscriptions', [CountySubscriptionController::class, 'index'])->na
 Route::get('/packages', [\App\Http\Controllers\Web\PackagesController::class, 'index'])->name('packages.index');
 
 // 3-Tier Admin Portals
+// ── R2 Direct Upload (bypasses Cloudflare 100MB Worker limit) ──
+Route::post('/api/r2/presigned-upload', [\x5cApp\x5cHttp\x5cControllers\x5cWeb\x5cMediaLibraryController::class, 'presignedUploadUrl'])->middleware('auth');
+Route::post('/api/r2/confirm-upload', [\x5cApp\x5cHttp\x5cControllers\x5cWeb\x5cMediaLibraryController::class, 'confirmR2Upload'])->middleware('auth');
+
 Route::middleware('auth')->group(function () {
     // Portal selector (choose KICC/National/County/Exhibitor admin)
     Route::get('/portal', [AdminPortalController::class, 'selector'])->name('admin.portal');
@@ -380,6 +384,10 @@ Route::get('/export/success/{reference}', [\App\Http\Controllers\Web\TradeExport
 Route::get('/search', [\App\Http\Controllers\Web\SearchController::class, 'index'])->name('search.index');
 
 // Messaging
+// ── R2 Direct Upload (bypasses Cloudflare 100MB Worker limit) ──
+Route::post('/api/r2/presigned-upload', [\x5cApp\x5cHttp\x5cControllers\x5cWeb\x5cMediaLibraryController::class, 'presignedUploadUrl'])->middleware('auth');
+Route::post('/api/r2/confirm-upload', [\x5cApp\x5cHttp\x5cControllers\x5cWeb\x5cMediaLibraryController::class, 'confirmR2Upload'])->middleware('auth');
+
 Route::middleware('auth')->group(function () {
     Route::get('/messages', [\App\Http\Controllers\Web\MessagingController::class, 'inbox'])->name('messaging.inbox');
     Route::get('/messages/{conversation}', [\App\Http\Controllers\Web\MessagingController::class, 'show'])->name('messaging.show');
@@ -389,6 +397,10 @@ Route::middleware('auth')->group(function () {
 });
 
 // Notifications
+// ── R2 Direct Upload (bypasses Cloudflare 100MB Worker limit) ──
+Route::post('/api/r2/presigned-upload', [\x5cApp\x5cHttp\x5cControllers\x5cWeb\x5cMediaLibraryController::class, 'presignedUploadUrl'])->middleware('auth');
+Route::post('/api/r2/confirm-upload', [\x5cApp\x5cHttp\x5cControllers\x5cWeb\x5cMediaLibraryController::class, 'confirmR2Upload'])->middleware('auth');
+
 Route::middleware('auth')->group(function () {
     Route::get('/notifications', [\App\Http\Controllers\Web\NotificationController::class, 'index'])->name('notifications.index');
     Route::post('/notifications/{notification}/read', [\App\Http\Controllers\Web\NotificationController::class, 'markRead'])->name('notifications.read');
@@ -399,6 +411,10 @@ Route::middleware('auth')->group(function () {
 // Coupons
 Route::post('/cart/coupon', [\App\Http\Controllers\Web\CouponController::class, 'apply'])->name('coupon.apply')->middleware('auth');
 Route::post('/cart/coupon/remove', [\App\Http\Controllers\Web\CouponController::class, 'remove'])->name('coupon.remove')->middleware('auth');
+// ── R2 Direct Upload (bypasses Cloudflare 100MB Worker limit) ──
+Route::post('/api/r2/presigned-upload', [\x5cApp\x5cHttp\x5cControllers\x5cWeb\x5cMediaLibraryController::class, 'presignedUploadUrl'])->middleware('auth');
+Route::post('/api/r2/confirm-upload', [\x5cApp\x5cHttp\x5cControllers\x5cWeb\x5cMediaLibraryController::class, 'confirmR2Upload'])->middleware('auth');
+
 Route::middleware('auth')->group(function () {
     Route::get('/kicc-admin/coupons', [\App\Http\Controllers\Web\CouponController::class, 'adminIndex'])->name('coupon.admin.index')->middleware('admin:kicc');
     Route::post('/kicc-admin/coupons', [\App\Http\Controllers\Web\CouponController::class, 'adminStore'])->name('coupon.admin.store')->middleware('admin:kicc');
@@ -437,6 +453,10 @@ Route::get('/counties/{county}/weather', [\App\Http\Controllers\Web\IntegrationC
 Route::get('/lms', [\App\Http\Controllers\Web\CourseController::class, 'index'])->name('lms.index');
 Route::get('/lms/{course}', [\App\Http\Controllers\Web\CourseController::class, 'show'])->name('lms.show');
 Route::post('/lms/{course}/enroll', [\App\Http\Controllers\Web\CourseController::class, 'enroll'])->name('lms.enroll')->middleware('auth');
+// ── R2 Direct Upload (bypasses Cloudflare 100MB Worker limit) ──
+Route::post('/api/r2/presigned-upload', [\x5cApp\x5cHttp\x5cControllers\x5cWeb\x5cMediaLibraryController::class, 'presignedUploadUrl'])->middleware('auth');
+Route::post('/api/r2/confirm-upload', [\x5cApp\x5cHttp\x5cControllers\x5cWeb\x5cMediaLibraryController::class, 'confirmR2Upload'])->middleware('auth');
+
 Route::middleware('auth')->group(function () {
     Route::get('/my-courses', [\App\Http\Controllers\Web\CourseController::class, 'myCourses'])->name('lms.my-courses');
 });
@@ -532,6 +552,10 @@ Route::post('/api/currency/convert', [\App\Http\Controllers\Web\MultiCurrencyCon
 Route::get('/training', [\App\Http\Controllers\Web\TrainingDocController::class, 'index'])->name('training.index');
 Route::get('/training/admin-manual', [\App\Http\Controllers\Web\TrainingDocController::class, 'admin'])->name('training.admin');
 Route::get('/training/api-docs', [\App\Http\Controllers\Web\TrainingDocController::class, 'api'])->name('training.api');
+// ── R2 Direct Upload (bypasses Cloudflare 100MB Worker limit) ──
+Route::post('/api/r2/presigned-upload', [\x5cApp\x5cHttp\x5cControllers\x5cWeb\x5cMediaLibraryController::class, 'presignedUploadUrl'])->middleware('auth');
+Route::post('/api/r2/confirm-upload', [\x5cApp\x5cHttp\x5cControllers\x5cWeb\x5cMediaLibraryController::class, 'confirmR2Upload'])->middleware('auth');
+
 Route::middleware('auth')->group(function () {
     Route::get('/kicc-admin/trade/enquiries', [\App\Http\Controllers\Web\TradeAdminController::class, 'enquiries'])->name('trade.admin.enquiries')->middleware('admin:kicc');
     Route::post('/kicc-admin/trade/enquiries/{enquiry}', [\App\Http\Controllers\Web\TradeAdminController::class, 'updateStatus'])->name('trade.admin.enquiry.status')->middleware('admin:kicc');
@@ -541,6 +565,10 @@ Route::middleware('auth')->group(function () {
 Route::get('/agents/register', [\App\Http\Controllers\Web\AgentOnboardingController::class, 'register'])->name('agent.register');
 Route::post('/agents/register', [\App\Http\Controllers\Web\AgentOnboardingController::class, 'store'])->name('agent.store');
 Route::get('/agents/success/{agent}', [\App\Http\Controllers\Web\AgentOnboardingController::class, 'success'])->name('agent.onboarding.success');
+// ── R2 Direct Upload (bypasses Cloudflare 100MB Worker limit) ──
+Route::post('/api/r2/presigned-upload', [\x5cApp\x5cHttp\x5cControllers\x5cWeb\x5cMediaLibraryController::class, 'presignedUploadUrl'])->middleware('auth');
+Route::post('/api/r2/confirm-upload', [\x5cApp\x5cHttp\x5cControllers\x5cWeb\x5cMediaLibraryController::class, 'confirmR2Upload'])->middleware('auth');
+
 Route::middleware('auth')->group(function () {
     Route::get('/kicc-admin/agents', [\App\Http\Controllers\Web\AgentAdminController::class, 'index'])->name('agent.admin.index')->middleware('admin:kicc');
     Route::get('/kicc-admin/agents/{agent}', [\App\Http\Controllers\Web\AgentAdminController::class, 'show'])->name('agent.admin.show')->middleware('admin:kicc');
@@ -554,6 +582,10 @@ Route::post('/reviews', [\App\Http\Controllers\Web\ReviewController::class, 'sto
 Route::post('/reviews/{review}/respond', [\App\Http\Controllers\Web\ReviewController::class, 'updateVendorResponse'])->name('review.respond')->middleware('auth', 'throttle:10,1');
 Route::post('/reviews/product', [\App\Http\Controllers\Web\ReviewController::class, 'storeProduct'])->name('product.review.store')->middleware('auth', 'throttle:10,1');
 Route::post('/reviews/entity', [\App\Http\Controllers\Web\ReviewController::class, 'storeEntity'])->name('entity.review.store')->middleware('auth', 'throttle:10,1');
+// ── R2 Direct Upload (bypasses Cloudflare 100MB Worker limit) ──
+Route::post('/api/r2/presigned-upload', [\x5cApp\x5cHttp\x5cControllers\x5cWeb\x5cMediaLibraryController::class, 'presignedUploadUrl'])->middleware('auth');
+Route::post('/api/r2/confirm-upload', [\x5cApp\x5cHttp\x5cControllers\x5cWeb\x5cMediaLibraryController::class, 'confirmR2Upload'])->middleware('auth');
+
 Route::middleware('auth')->group(function () {
     Route::get('/kicc-admin/reviews', [\App\Http\Controllers\Web\ReviewAdminController::class, 'index'])->name('review.admin.index')->middleware('admin:kicc');
     Route::post('/kicc-admin/reviews/{review}/approve', [\App\Http\Controllers\Web\ReviewAdminController::class, 'approve'])->name('review.admin.approve')->middleware('admin:kicc');
@@ -626,6 +658,10 @@ Route::get('/room3d/{id}', [Room3dController::class, 'show'])->name('room3d.show
 Route::get('/room3d/{id}/viewer', [Room3dController::class, 'viewer'])->name('room3d.viewer');
 Route::get('/room3d/{id}/api', [Room3dController::class, 'api'])->name('room3d.api');
 
+
+// ── R2 Direct Upload (bypasses Cloudflare 100MB Worker limit) ──
+Route::post('/api/r2/presigned-upload', [\x5cApp\x5cHttp\x5cControllers\x5cWeb\x5cMediaLibraryController::class, 'presignedUploadUrl'])->middleware('auth');
+Route::post('/api/r2/confirm-upload', [\x5cApp\x5cHttp\x5cControllers\x5cWeb\x5cMediaLibraryController::class, 'confirmR2Upload'])->middleware('auth');
 
 Route::middleware('auth')->group(function () {
 

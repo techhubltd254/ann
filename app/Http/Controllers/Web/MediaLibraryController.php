@@ -231,4 +231,59 @@ class MediaLibraryController extends Controller
 
         return redirect()->route('media.library')->with('success', 'Asset deleted.');
     }
+
+    /** Generate a presigned upload URL for direct R2 upload — bypasses Cloudflare 100MB limit. */
+    public function presignedUploadUrl(Request $request): \Illuminate\Http\JsonResponse
+    {
+        $this->authorizeMediaAccess();
+        $data = $request->validate([
+            'path' => 'required|string|max:500',
+            'mime' => 'required|string|max:100',
+        ]);
+        $svc = app(\App\Services\R2PresignedUploadService::class);
+        $result = $svc->generateUploadPresignedUrl($data['path'], $data['mime']);
+        return response()->json($result);
+    }
+
+    /** Confirm a completed R2 direct upload — create the MediaAsset record. */
+    public function confirmR2Upload(Request $request): \Illuminate\Http\JsonResponse
+    {
+        $this->authorizeMediaAccess();
+        $data = $request->validate([
+            'path' => 'required|string|max:500',
+            'owner_type' => 'required|string|max:200',
+            'owner_id' => 'required|integer',
+            'slot' => 'required|string|max:100',
+            'original_name' => 'required|string|max:255',
+            'mime' => 'required|string|max:100',
+            'size_bytes' => 'required|integer|min:1',
+        ]);
+
+        // Remove old asset in this slot if it exists
+        \App\Models\MediaAsset::forSlot($data['owner_type'], $data['owner_id'], $data['slot'])->delete();
+
+        $asset = \App\Models\MediaAsset::create([
+            'uuid' => (string) \Illuminate\Support\Str::uuid(),
+            'owner_id' => $data['owner_id'],
+            'owner_type' => $data['owner_type'],
+            'slot' => $data['slot'],
+            'disk' => 'r2',
+            'path' => $data['path'],
+            'original_name' => $data['original_name'],
+            'mime' => $data['mime'],
+            'kind' => str_contains($data['mime'], 'video') ? 'video' : 'image',
+            'size_bytes' => $data['size_bytes'],
+            'status' => 'ready',
+        ]);
+        \App\Models\MediaDerivative::create([
+            'media_asset_id' => $asset->id,
+            'kind' => str_contains($data['mime'], 'video') ? 'video_mp4' : 'original',
+            'path' => $data['path'],
+            'mime' => $data['mime'],
+            'size_bytes' => $data['size_bytes'],
+            'variant' => '1080p',
+        ]);
+
+        return response()->json(['asset_id' => $asset->id, 'path' => $data['path']]);
+    }
 }

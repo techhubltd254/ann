@@ -409,7 +409,7 @@
                     <div class="text-xs text-zinc-400 mb-4">{{ $heroAsset->original_name }} · {{ number_format($heroAsset->size_bytes / 1024 / 1024, 1) }} MB</div>
                     @endif
                     <div class="flex gap-3">
-                        <form method="POST" action="{{ route('county.admin.hero.upload', $county->slug) }}" enctype="multipart/form-data" class="flex-1 flex gap-3">
+                        <form method="POST" action="{{ route('county.admin.hero.upload', $county->slug) }}" enctype="multipart/form-data" class="flex-1 flex gap-3" data-r2-upload>
                             @csrf
                             <input type="file" name="video" accept="video/mp4,video/webm" class="flex-1">
                             <button class="btn-primary text-xs">Upload</button>
@@ -1291,5 +1291,11 @@ document.addEventListener('DOMContentLoaded', function() {
     }
 });
 </script>
+<x-r2-large-upload
+    owner-type="App\Models\County"
+    :owner-id="$county->id"
+    r2-path="counties/{{ $county->slug }}/video/hero/hero.mp4"
+    redirect-after="{{ url()->current() }}"
+/>
 @endpush
 @endsection
