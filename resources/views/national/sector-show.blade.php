@@ -48,9 +48,9 @@
                     </div>
                     @endif
                     @if($e->contact_info)
-                    @php $ci = is_array($e->contact_info) ? $e->contact_info : json_decode($e->contact_info, true); @endphp
-                    @if(!empty($ci['phone'] ?? null))
-                    <div class="text-xs text-gray-400 mt-1">📞 {{ $ci['phone'] }}</div>
+                    @php $ci = is_array($e->contact_info) ? $e->contact_info : (is_string($e->contact_info) ? json_decode($e->contact_info, true) : null); @endphp
+                    @if(is_array($ci) && !empty($ci['phone'] ?? null))
+                    <div class="text-xs text-gray-400 mt-1">{{ $ci['phone'] }}</div>
                     @endif
                     @endif
                 </div>
