@@ -16,7 +16,7 @@
 @section('content')
 @php
 $heroVideo = $heroVid ?? null;
-$heroPoster = $heroPoster ?? media('kicc/national-hero.jpeg');
+$heroPoster = $heroPoster ?? \App\Models\MediaAsset::resolveSlot(\App\Models\County::class, 0, 'national_hero_video')?->posterUrl();
 $pillars = [
 ['Agriculture & Food Security', 'Transforming Kenyan agriculture from subsistence to technology-driven — boosting food security and farmer incomes through KIAMIS, irrigation, subsidised inputs and market access.',
   '39% maize production increase; 730% livestock insurance growth; 7.1M+ farmers registered', 'https://delivery.go.ke/pillars'],

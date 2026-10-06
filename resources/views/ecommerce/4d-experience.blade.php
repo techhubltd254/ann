@@ -13,25 +13,31 @@
 
     <div class="grid md:grid-cols-2 lg:grid-cols-3 gap-5">
         @php
-        $videos = [
-            ['title' => 'Drone Aerials', 'subtitle' => 'Murang\'a from above — drone footage', 'file' => 'clips/drone_aerial.mp4', 'sector' => 'tourism'],
-            ['title' => 'Mukurwe wa Nyagathanga', 'subtitle' => 'Kikuyu origin site — cultural heritage', 'file' => 'clips/mukurwe_culture.mp4', 'sector' => 'culture'],
-            ['title' => 'Gorges Canyon', 'subtitle' => 'Murang\'a gorges — natural beauty', 'file' => 'clips/gorges_canyon.mp4', 'sector' => 'tourism'],
-            ['title' => 'Scenic Panorama', 'subtitle' => 'Wide view of Murang\'a landscape', 'file' => 'clips/scenic_wide.mp4', 'sector' => 'tourism'],
-            ['title' => 'Drone Wide Shot', 'subtitle' => 'Aerial panoramic view', 'file' => 'clips/drone_wide.mp4', 'sector' => 'tourism'],
-            ['title' => 'Gorges Wide', 'subtitle' => 'Canyon wide angle', 'file' => 'clips/gorges_wide.mp4', 'sector' => 'tourism'],
-        ];
+        $countySlug = request()->segment(1) ?: '';
+        $county = $countySlug ? \App\Models\County::where('slug', $countySlug)->first() : null;
+        $county4DAssets = $county ? \App\Models\MediaAsset::where('owner_type', \App\Models\County::class)
+            ->where('owner_id', $county->id)
+            ->where('slot', 'like', '4d_%')
+            ->where('kind', 'video')
+            ->where('status', 'ready')
+            ->get() : collect();
+
+        $videos = $county4DAssets->map(fn($a) => [
+            'title'    => $a->alt_text ?? $a->original_name ?? '4D Experience',
+            'subtitle' => $a->slot ?? '',
+            'file'     => $a->path,
+            'poster'   => $a->posterUrl(),
+            'url'      => $a->url(),
+        ])->toArray();
         @endphp
 
         @foreach($videos as $v)
-        @php $exists = \Illuminate\Support\Facades\Storage::disk('public')->exists('kicc/4d/' . $v['file']); @endphp
-        @if($exists)
         <div class="bg-white border border-gray-200 rounded-2xl overflow-hidden group card-hover">
             <div class="aspect-video bg-gray-900 relative overflow-hidden">
                 <video class="w-full h-full object-cover" muted loop playsinline
                     @mouseenter="this.play()" @mouseleave="this.pause();this.currentTime=0"
-                    poster="{{ media('kicc/4d/' . str_replace('.mp4', '.jpg', $v['file'])) }}">
-                    <source src="{{ media('kicc/4d/' . $v['file']) }}" type="video/mp4">
+                    poster="{{ $v['poster'] ?? '' }}">
+                    <source src="{{ $v['url'] }}" type="video/mp4">
                 </video>
                 <div class="absolute inset-0 bg-gradient-to-t from-black/40 to-transparent pointer-events-none"></div>
                 <div class="absolute bottom-3 left-3 right-3 pointer-events-none">

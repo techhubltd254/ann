@@ -35,8 +35,8 @@
         </div>
         @endif
         @php
-            $heroPoster = $countyMedia?->posterUrl() ?? media('counties/' . $county->slug . '/hero.jpeg');
-            $heroPosterImg = $countyMedia?->thumbnailUrl() ?? media('counties/' . $county->slug . '/hero.jpeg');
+            $heroPoster = $countyMedia?->posterUrl();
+            $heroPosterImg = $countyMedia?->thumbnailUrl() ?? $heroPoster;
             $hasHeroVideo = $countyMedia && ($countyMedia->mp4Url() ?? $countyMedia->url());
         @endphp
         @if($hasHeroVideo)

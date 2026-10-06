@@ -117,7 +117,7 @@ class NationalAdminController extends Controller
         $data = $request->validate(['video' => 'required|file|mimes:mp4,webm,mov|max:2048000']);
         $file = $request->file('video');
         $disk = Storage::disk('r2');
-        $r2Path = 'national/hero/hero.mp4';
+        $r2Path = 'national/video/hero/hero.mp4';
         $disk->writeStream($r2Path, fopen($file->getRealPath(), 'r'), ['visibility' => 'public']);
 
         MediaAsset::forSlot(County::class, 0, 'national_hero_video')->delete();

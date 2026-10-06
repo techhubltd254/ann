@@ -110,10 +110,12 @@
 </div>
 @else
 <div class="relative h-[45vh] md:h-[55vh] overflow-hidden bg-black">
-    <img src="{{ $sectorHeroPoster ?? media('counties/' . $county->slug . '/hero.jpeg') }}" alt="{{ $sectorInfo['title'] }}"
+    @if($sectorHeroPoster)
+    <img src="{{ $sectorHeroPoster }}" alt="{{ $sectorInfo['title'] }}"
          class="absolute inset-0 w-full h-full object-cover"
          loading="lazy" decoding="async"
          onerror="this.remove()">
+    @endif
     <div class="absolute inset-0 bg-gradient-to-t from-black/70 via-black/20 to-transparent"></div>
     <div class="absolute bottom-0 left-0 right-0 max-w-7xl mx-auto px-5 pb-10" style="z-index:6">
         <a href="{{ route('counties.show', $county->slug) }}" class="inline-flex items-center gap-1.5 text-white/60 hover:text-white text-sm mb-3 transition-colors">

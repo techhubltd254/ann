@@ -8,7 +8,7 @@
 <section class="relative min-h-screen flex items-center overflow-hidden" id="hero-section">
     @php
         $heroAsset = \App\Models\MediaAsset::resolveSlot('landing_page', 1, 'hero_video');
-        $heroPoster = $heroAsset?->posterUrl() ?? media('kicc/venues/kicc-main-gate.jpg');
+        $heroPoster = $heroAsset?->posterUrl();
     @endphp
     <div class="absolute inset-0 w-full h-full" id="hero-video-container">
         <x-video-player
@@ -291,7 +291,7 @@
 {{-- SCREENS CTA --}}
 <section class="max-w-7xl mx-auto px-5 py-12 md:py-20 section-transition" data-section="screens">
     <div class="relative overflow-hidden rounded-3xl border border-gray-200 bg-gradient-to-br from-[#0D1220] to-[#07090F]" data-reveal="zoom">
-        <img src="{{ media('kicc/gallery/kicc_DSC_6125.jpg') }}" alt="" class="absolute inset-0 w-full h-full object-cover opacity-20">
+        <div class="absolute inset-0 bg-gradient-to-br from-kicc-gold/5 to-transparent opacity-20"></div>
         <div class="relative px-5 md:px-10 py-16 md:py-20 flex flex-col md:flex-row items-center justify-between gap-8">
             <div data-reveal>
                 <span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-[11px] font-semibold tracking-wide border bg-[#FFCD05]/15 text-[#FFCD05] border-[#FFCD05]/30">18 Digital Screens</span>

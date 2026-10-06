@@ -34,7 +34,7 @@ class CountyController extends Controller
             $countyHeroes[$c->slug] = [
                 'video' => $a?->mp4Url() ?? $a?->url(),
                 'hover' => $a?->hoverLoopUrl(),
-                'poster' => $a?->posterUrl() ?? media('counties/' . $c->slug . '/hero.jpeg'),
+                'poster' => $a?->posterUrl(),
             ];
         }
 

@@ -7,7 +7,7 @@
 <div class="pt-20">
     {{-- Weather-aware hero: "someone in cold UK must see a Kenya summer" --}}
     <div class="relative overflow-hidden bg-gradient-to-r from-[#0EA5E9] to-[#0B1E57]">
-        <div class="absolute inset-0 opacity-15"><img src="{{ media('counties/mombasa/hero.jpeg') }}" class="w-full h-full object-cover" alt=""></div>
+        <div class="absolute inset-0 opacity-15 bg-gradient-to-br from-white/10 to-white/5"></div>
         <div class="relative max-w-7xl mx-auto px-5 py-14">
             <div class="flex items-center gap-3 mb-3">
                 <span class="text-gray-700 text-xs font-bold tracking-[0.2em] uppercase">Travel & Tourism</span>
@@ -39,7 +39,7 @@
             @foreach($destinations as $d)
             <div class="bg-white rounded-2xl border border-gray-200 overflow-hidden hover:shadow-xl transition-all group card-hover" x-data="{ date: '{{ now()->addDays(7)->toDateString() }}' }">
                 <div class="h-36 overflow-hidden relative bg-gray-100">
-                    <img src="{{ media('counties/' . ($d->county_slug ?? 'mombasa') . '/hero.jpeg') }}" alt="{{ $d->city }}" class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500" onerror="this.style.display='none'">
+                    <div class="w-full h-full bg-gradient-to-br from-[#0A1024] to-[#1a1a2e] group-hover:scale-105 transition-transform duration-500"></div>
                     <div class="absolute top-3 left-3 bg-white backdrop-blur px-2.5 py-1 rounded-full text-[10px] font-black text-gray-900">{{ $d->iata_code }}</div>
                 </div>
                 <div class="p-5">

@@ -44,10 +44,7 @@
                          <source src="{{ $v }}" type="video/mp4">
                      </video>
                      @endif
-                     <img src="{{ media('counties/' . $c->slug . '/hero.jpeg') }}" alt="{{ $c->name }}"
-                          class="absolute inset-0 w-full h-full object-cover group-hover:scale-110 transition-transform duration-700"
-                          loading="lazy" decoding="async"
-                          onerror="this.remove()">
+                     <div class="absolute inset-0 bg-gradient-to-br from-[#0A1024] to-[#1a1a2e]"></div>
                      <div class="absolute inset-0 bg-gradient-to-t from-black/70 via-black/20 to-transparent"></div>
                     <div class="absolute inset-x-0 bottom-0 p-4">
                         <div class="text-white font-black text-base leading-tight">{{ $c->name }}</div>

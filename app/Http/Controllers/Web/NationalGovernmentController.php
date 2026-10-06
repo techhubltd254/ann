@@ -54,8 +54,7 @@ class NationalGovernmentController extends Controller
                 return $asset?->mp4Url();
             } catch (\Throwable) { return null; }
         });
-        $heroPoster = '';
-        try { $heroPoster = media('kicc/national-hero.jpeg'); } catch (\Throwable) {}
+        $heroPoster = MediaAsset::resolveSlot(\App\Models\County::class, 0, 'national_hero_video')?->posterUrl() ?? '';
 
         // Per-ministry tile media via TileMediaResolver (5-level fallback)
         $resolver = app(TileMediaResolver::class);

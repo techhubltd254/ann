@@ -16,8 +16,8 @@
 }">
     {{-- Hero --}}
     <div class="relative h-80 overflow-hidden">
-        <img src="{{ $attraction->image_url ?? media('counties/' . $attraction->county->slug . '/tourism.jpeg') }}" alt="{{ $attraction->name }}"
-             class="w-full h-full object-cover" onerror="this.onerror=null;this.src='{{ media('counties/' . $attraction->county->slug . '/hero.jpeg') }}'">
+        <img src="{{ $attraction->image_url ?? '' }}" alt="{{ $attraction->name }}"
+             class="w-full h-full object-cover" onerror="this.style.display='none'">
         <div class="absolute inset-0 bg-gradient-to-t from-[#07090F] via-[#07090F]/40 to-transparent"></div>
         <div class="absolute bottom-0 left-0 right-0 max-w-6xl mx-auto px-5 pb-8">
             <a href="{{ route('counties.sector', [$attraction->county->slug, 'tourism']) }}" class="inline-flex items-center gap-1.5 text-gray-500 hover:text-gray-900 text-sm mb-3 transition-colors">
@@ -52,8 +52,11 @@
             @endif
             <div class="grid grid-cols-3 gap-3 mt-6">
                 @foreach(['tourism', 'hero', 'culture'] as $g)
-                <img src="{{ media('counties/' . $attraction->county->slug . '/' . $g . '.jpeg') }}" alt="" loading="lazy"
+                @php $gUrl = \App\Models\MediaAsset::resolveSlot(\App\Models\County::class, $attraction->county->id, "gallery_{$g}")?->url(); @endphp
+                @if($gUrl)
+                <img src="{{ $gUrl }}" alt="" loading="lazy"
                      class="rounded-xl h-28 w-full object-cover" onerror="this.style.display='none'">
+                @endif
                 @endforeach
             </div>
 
