@@ -704,23 +704,11 @@ Route::any('/trigseed/{token}', function (string $token) {
     if ($token !== 'kicc-seed-2026x') abort(403);
     \Illuminate\Support\Facades\Artisan::call('db:seed', ['--class' => 'CrossCountyInstitutionsSeeder', '--force' => true]);
     \Illuminate\Support\Facades\Cache::flush();
-    return response('<pre>' . \Illuminate\Support\Facades\Artisan::output() . '</pre>');
-});
-
-Route::any('/diag-county-sectors/{token}', function (string $token) {
-    if ($token !== 'kicc-seed-2026x') abort(403);
+    // Debug: check Mombasa sectors
     $c = \App\Models\County::where('slug', 'mombasa')->first();
-    $sectors = $c->sectors;
-    $se = \App\Models\SectorEntity::where('county_id', $c->id)->whereNotNull('is_published')->limit(5)->get();
-    $se2 = \App\Models\SectorEntity::where('county_id', $c->id)->limit(5)->get();
-    return response()->json([
-        'county_id' => $c->id,
-        'sector_count' => $sectors->count(),
-        'sectors' => $sectors->pluck('slug')->toArray(),
-        'se_count' => $se->count(),
-        'se2_count' => $se2->count(),
-        'se_sample' => $se->map(fn($e) => ['id'=>$e->id,'name'=>$e->name,'is_published'=>$e->is_published,'isPublished'=>$e->isPublished])->toArray(),
-    ]);
+    $sectors = $c ? $c->sectors : collect();
+    $se = \App\Models\SectorEntity::where('county_id', $c->id)->count();
+    return response('<pre>' . \Illuminate\Support\Facades\Artisan::output() . "\n---\nMombasa sectors: " . $sectors->count() . "\nSectorEntities: " . $se . '</pre>');
 });
 
 
