@@ -136,4 +136,12 @@
         </main>
     </div>
 </div>
+@push('scripts')
+<x-r2-large-upload
+    owner-type="App\\Models\\CountyInstitution"
+    :owner-id="$institution->id"
+    r2-path="institutions/{{ $institution->slug }}/video/hero/hero.mp4"
+/>
+@endpush
+
 @endsection

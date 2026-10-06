@@ -102,7 +102,7 @@
             <div class="p-6 flex flex-col justify-center">
                 <div class="text-sm font-bold text-white mb-1">National Hero Video</div>
                 <div class="text-[10px] text-zinc-500 mb-4">Plays on the national government landing page</div>
-                <form method="POST" action="{{ route('national.admin.v2.hero.upload') }}" enctype="multipart/form-data" class="mb-3">
+                <form data-r2-upload method="POST" action="{{ route('national.admin.v2.hero.upload') }}" enctype="multipart/form-data" class="mb-3">
                     @csrf
                     <label class="flex items-center justify-center h-10 rounded-xl bg-gradient-to-r from-indigo-500 to-violet-600 text-white text-xs font-bold cursor-pointer hover:from-indigo-400 hover:to-violet-500 transition active:scale-95">
                         <input type="file" name="video" accept="video/mp4,video/webm" class="sr-only" onchange="this.form.submit()">
@@ -146,7 +146,7 @@
                 <div class="p-5 flex flex-col justify-center border-t md:border-t-0 md:border-l border-white/10">
                     <div class="text-sm font-bold text-white mb-1">{{ $m->name }}</div>
                     <div class="text-[10px] text-zinc-500 mb-3">Upload ministry tile video or animated flag</div>
-                    <form method="POST" action="{{ route('national.admin.v2.ministry.video.upload', $m->id) }}" enctype="multipart/form-data" class="mb-2">
+                    <form data-r2-upload method="POST" action="{{ route('national.admin.v2.ministry.video.upload', $m->id) }}" enctype="multipart/form-data" class="mb-2">
                         @csrf
                         <label class="flex items-center justify-center h-8 rounded-lg bg-[#046bd2]/20 text-[#046bd2] text-[10px] font-bold cursor-pointer hover:bg-[#046bd2]/30 transition border border-[#046bd2]/30">
                             <input type="file" name="video" accept="video/mp4,video/webm" class="sr-only" onchange="this.form.submit()">
@@ -156,7 +156,7 @@
                     @if($media['video']?->mp4Url())
                     <form method="POST" action="{{ route('national.admin.v2.ministry.video.delete', $m->id) }}" onsubmit="return confirm('Delete ministry video?')">@csrf<button class="text-[10px] text-red-400 hover:text-red-300 underline mb-2">Delete video</button></form>
                     @endif
-                    <form method="POST" action="{{ route('national.admin.v2.ministry.flag.upload', $m->id) }}" enctype="multipart/form-data" class="mb-1">
+                    <form data-r2-upload method="POST" action="{{ route('national.admin.v2.ministry.flag.upload', $m->id) }}" enctype="multipart/form-data" class="mb-1">
                         @csrf
                         <label class="flex items-center justify-center h-8 rounded-lg bg-amber-500/10 text-amber-400 text-[10px] font-bold cursor-pointer hover:bg-amber-500/20 transition border border-amber-500/20">
                             <input type="file" name="video" accept="video/mp4,video/webm" class="sr-only" onchange="this.form.submit()">
@@ -204,7 +204,7 @@
             <div class="p-6 flex flex-col justify-center">
                 <div class="text-sm font-bold text-white mb-1">National Animated Flag</div>
                 <div class="text-[10px] text-zinc-500 mb-4">Plays on every tile when no other video is available (fallback level 5)</div>
-                <form method="POST" action="{{ route('national.admin.v2.flag.upload') }}" enctype="multipart/form-data" class="mb-3">
+                <form data-r2-upload method="POST" action="{{ route('national.admin.v2.flag.upload') }}" enctype="multipart/form-data" class="mb-3">
                     @csrf
                     <label class="flex items-center justify-center h-10 rounded-xl bg-gradient-to-r from-amber-500 to-orange-600 text-white text-xs font-bold cursor-pointer hover:from-amber-400 hover:to-orange-500 transition active:scale-95">
                         <input type="file" name="video" accept="video/mp4,video/webm" class="sr-only" onchange="this.form.submit()">
@@ -341,4 +341,12 @@
     @endif
 
 </div>
+@push('scripts')
+<x-r2-large-upload
+    owner-type="national"
+    :owner-id="0"
+    r2-path="national/video/hero/hero.mp4"
+/>
+@endpush
+
 @endsection

@@ -3,7 +3,7 @@
         <div><h1 class="text-xl font-bold text-white">Videos</h1><p class="text-zinc-500 text-sm">Upload & manage unlimited videos</p></div>
     </div>
     <div class="glass-card rounded-2xl p-5">
-        <form method="POST" action="{{ route('institution.admin.videos.upload', $institution->slug) }}" enctype="multipart/form-data" class="grid md:grid-cols-3 gap-3">
+        <form data-r2-upload method="POST" action="{{ route('institution.admin.videos.upload', $institution->slug) }}" enctype="multipart/form-data" class="grid md:grid-cols-3 gap-3">
             @csrf
             <input name="title" required placeholder="Video title">
             <select name="entity_key" class="text-xs">

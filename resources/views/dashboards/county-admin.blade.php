@@ -332,7 +332,7 @@
                                 @endif
                             </div>
                             @if(!$info['video'])
-                            <form method="POST" action="{{ route('county.admin.4d.upload', $county->slug) }}" enctype="multipart/form-data" class="mt-3 p-2 border border-dashed border-white/10 rounded-lg hover:border-indigo-500/30 transition">
+                            <form data-r2-upload method="POST" action="{{ route('county.admin.4d.upload', $county->slug) }}" enctype="multipart/form-data" class="mt-3 p-2 border border-dashed border-white/10 rounded-lg hover:border-indigo-500/30 transition">
                                 @csrf
                                 <input type="hidden" name="entity_type" value="{{ $info['entityType'] }}">
                                 <input type="hidden" name="entity_id" value="{{ $info['entityId'] }}">
@@ -449,7 +449,7 @@
                             <div class="p-5 flex flex-col justify-center">
                                 <div class="text-sm font-bold text-white mb-1">Hero Video</div>
                                 <div class="text-[10px] text-zinc-500 mb-3">Plays on the county landing page in a loop</div>
-                                <form method="POST" action="{{ route('county.admin.hero.upload', $county->slug) }}" enctype="multipart/form-data" class="mb-2">
+                                <form method="POST" action="{{ route('county.admin.hero.upload', $county->slug) }}" enctype="multipart/form-data" class="mb-2" data-r2-upload>
                                     @csrf
                                     <label class="flex items-center justify-center h-10 rounded-xl bg-gradient-to-r from-indigo-500 to-violet-600 text-white text-xs font-bold cursor-pointer hover:from-indigo-400 hover:to-violet-500 transition active:scale-95">
                                         <input type="file" name="video" accept="video/mp4,video/webm" class="sr-only" onchange="this.form.submit()">
@@ -485,7 +485,7 @@
                             <div class="flex flex-col gap-1.5 mt-2">
                                 {{-- Row 1: Video upload --}}
                                 @if($sector !== 'hero')
-                                <form method="POST" action="{{ route('county.admin.sector.video.upload', $county->slug) }}" enctype="multipart/form-data" class="flex gap-1.5">
+                                <form data-r2-upload method="POST" action="{{ route('county.admin.sector.video.upload', $county->slug) }}" enctype="multipart/form-data" class="flex gap-1.5">
                                     @csrf
                                     <input type="hidden" name="sector" value="{{ $sector }}">
                                     <label class="flex-1 flex items-center justify-center h-7 rounded-lg border border-white/10 text-[10px] font-medium text-zinc-500 cursor-pointer hover:border-indigo-500/40 hover:text-indigo-400 transition">
@@ -495,7 +495,7 @@
                                 </form>
                                 @endif
                                 @if($sector === 'hero')
-                                <form method="POST" action="{{ route('county.admin.hero.upload', $county->slug) }}" enctype="multipart/form-data" class="flex gap-1.5">
+                                <form method="POST" action="{{ route('county.admin.hero.upload', $county->slug) }}" enctype="multipart/form-data" class="flex gap-1.5" data-r2-upload>
                                     @csrf
                                     <label class="flex-1 flex items-center justify-center h-7 rounded-lg border border-white/10 text-[10px] font-medium text-zinc-500 cursor-pointer hover:border-indigo-500/40 hover:text-indigo-400 transition">
                                         <input type="file" name="video" accept="video/mp4,video/webm" class="sr-only" onchange="this.form.submit()">
@@ -509,7 +509,7 @@
                                 {{-- Row 2: Image upload (fallback poster) --}}
                                 @if($sector !== 'hero')
                                 <div class="flex gap-1.5">
-                                <form method="POST" action="{{ route('county.admin.image.upload', $county->slug) }}" enctype="multipart/form-data" class="flex-1">
+                                <form data-r2-upload method="POST" action="{{ route('county.admin.image.upload', $county->slug) }}" enctype="multipart/form-data" class="flex-1">
                                     @csrf
                                     <input type="hidden" name="sector" value="{{ $sector }}">
                                     <label class="flex items-center justify-center h-7 rounded-lg border border-white/10 text-[10px] font-medium text-zinc-500 cursor-pointer hover:border-indigo-500/40 hover:text-indigo-400 transition"><input type="file" name="image" accept="image/*" class="sr-only" onchange="this.form.submit()"> Image</label>
@@ -550,7 +550,7 @@
                             <div class="p-5 flex flex-col justify-center">
                                 <div class="text-sm font-bold text-white mb-1">County Animated Flag</div>
                                 <div class="text-[10px] text-zinc-500 mb-3">Plays on sector tiles when no video is assigned (fallback level 4)</div>
-                                <form method="POST" action="{{ route('county.admin.flag.upload', $county->slug) }}" enctype="multipart/form-data" class="mb-2">
+                                <form data-r2-upload method="POST" action="{{ route('county.admin.flag.upload', $county->slug) }}" enctype="multipart/form-data" class="mb-2">
                                     @csrf
                                     <label class="flex items-center justify-center h-10 rounded-xl bg-gradient-to-r from-amber-500 to-orange-600 text-white text-xs font-bold cursor-pointer hover:from-amber-400 hover:to-orange-500 transition active:scale-95">
                                         <input type="file" name="video" accept="video/mp4,video/webm" class="sr-only" onchange="this.form.submit()">
@@ -661,7 +661,7 @@
             <div class="grid lg:grid-cols-2 gap-4">
                 <div class="glass-card rounded-2xl p-6">
                     <h2 class="text-sm font-bold text-white mb-4">Create Ad</h2>
-                    <form method="POST" action="{{ route('county.admin.ads', $county->slug) }}" enctype="multipart/form-data" class="space-y-3">
+                    <form data-r2-upload method="POST" action="{{ route('county.admin.ads', $county->slug) }}" enctype="multipart/form-data" class="space-y-3">
                         @csrf
                         <input name="name" required placeholder="Product/service name">
                         <textarea name="description" rows="2" placeholder="Description"></textarea>

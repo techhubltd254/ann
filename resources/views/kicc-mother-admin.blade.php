@@ -235,7 +235,7 @@
                         </a>
                         <div class="p-3 flex items-center justify-between gap-2">
                             <a href="{{ route('county.admin.pro', $c->slug) }}" class="text-[10px] font-bold px-3 py-1.5 rounded-lg bg-rose-500/10 text-rose-400 hover:bg-rose-500/20 transition-all shrink-0">Open Admin →</a>
-                            <form method="POST" action="{{ route('kicc.admin.county.hero', $c->slug) }}" enctype="multipart/form-data" class="flex items-center gap-1.5">
+                            <form data-r2-upload method="POST" action="{{ route('kicc.admin.county.hero', $c->slug) }}" enctype="multipart/form-data" class="flex items-center gap-1.5">
                                 @csrf
                                 <input type="file" name="video" accept="video/mp4,video/webm" class="text-[9px] text-zinc-400 w-24">
                                 <button class="text-[10px] font-bold px-2.5 py-1.5 rounded-lg bg-white/5 text-zinc-300 hover:bg-white/10 transition-all" title="Upload hero video">Upload</button>
@@ -697,7 +697,7 @@
                     <div class="text-center text-zinc-500"><svg class="w-12 h-12 mx-auto mb-2" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M15 10l4.553-2.276A1 1 0 0121 8.618v6.764a1 1 0 01-1.447.894L15 14M5 18h8a2 2 0 002-2V8a2 2 0 00-2-2H5a2 2 0 00-2 2v8a2 2 0 002 2z"/></svg><div class="text-sm font-semibold">No hero video</div></div>
                 </div>
                 @endif
-                <form method="POST" action="{{ route('kicc.admin.hero.upload') }}" enctype="multipart/form-data" class="flex gap-3 mt-4">
+                <form data-r2-upload method="POST" action="{{ route('kicc.admin.hero.upload') }}" enctype="multipart/form-data" class="flex gap-3 mt-4">
                     @csrf
                     <input type="file" name="video" accept="video/mp4,video/webm" required class="flex-1">
                     <button class="btn-primary">Upload</button>
@@ -962,4 +962,12 @@
         </main>
     </div>
 </div>
+@push('scripts')
+<x-r2-large-upload
+    owner-type="landing_page"
+    :owner-id="1"
+    r2-path="landing/video/hero/hero.mp4"
+/>
+@endpush
+
 @endsection
