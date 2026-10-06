@@ -700,11 +700,9 @@ Route::post('/__admin/optimize-images', function () {
 })->middleware('auth');
 
 // ── One-shot seeder trigger (run via curl) ──
-Route::get('/--trig-cross-county-seed/{token}', function (string $token) {
+Route::any('/trigseed/{token}', function (string $token) {
     if ($token !== 'kicc-seed-2026x') abort(403);
-    \Illuminate\Support\Facades\Artisan::call('db:seed', ['--class' => 'CrossCountyInstitutionsSeeder', '--force' => true]);
-    \Illuminate\Support\Facades\Cache::flush();
-    return response('<pre>' . \Illuminate\Support\Facades\Artisan::output() . '</pre>');
+    return 'OK — route works';
 });
 
 
