@@ -58,6 +58,14 @@ Route::get('/counties/{county}', [CountyController::class, 'show'])->name('count
 Route::get('/counties/{county}/sector/{sector}', [CountyController::class, 'sector'])->name('counties.sector')
     ->middleware($publicCache)
     ->withoutMiddleware($noSession);
+Route::get('/national-sector', [\App\Http\Controllers\Web\NationalSectorController::class, 'index'])
+    ->name('national.sectors')
+    ->middleware($publicCache)
+    ->withoutMiddleware($noSession);
+Route::get('/national-sector/{slug}', [\App\Http\Controllers\Web\NationalSectorController::class, 'show'])
+    ->name('national.sector.show')
+    ->middleware($publicCache)
+    ->withoutMiddleware($noSession);
 Route::get('/institutions/{institution}', [CountyController::class, 'institution'])->name('counties.institution')
     ->middleware($publicCache)
     ->withoutMiddleware($noSession);
@@ -702,36 +710,9 @@ Route::post('/__admin/optimize-images', function () {
 // ── One-shot seeder trigger (run via curl) ──
 Route::any('/trigseed/{token}', function (string $token) {
     if ($token !== 'kicc-seed-2026x') abort(403);
-    $c = \App\Models\County::where('slug', 'mombasa')->first();
-    
-    // Check cache
-    $cacheKey = "kicc_county_sector_counts_{$c->id}";
-    $cached = \Illuminate\Support\Facades\Cache::get($cacheKey);
-    
-    // Direct query
-    $raw = \App\Models\SectorEntity::where('county_id', $c->id)
-        ->selectRaw('sector_id, count(*) as total')
-        ->groupBy('sector_id')
-        ->pluck('total', 'sector_id')
-        ->toArray();
-    
-    // Force clear + check again
+    \Illuminate\Support\Facades\Artisan::call('db:seed', ['--class' => 'CrossCountyInstitutionsSeeder', '--force' => true]);
     \Illuminate\Support\Facades\Cache::flush();
-    $after = \Illuminate\Support\Facades\Cache::get($cacheKey);
-    
-    // Check sectors relationship
-    $sectorSlugs = $c->sectors->pluck('slug')->toArray();
-    $sectorIds = $c->sectors->pluck('id')->toArray();
-    
-    return response()->json([
-        'county_id' => $c->id,
-        'sector_count' => $c->sectors->count(),
-        'sector_slugs' => $sectorSlugs,
-        'sector_ids' => $sectorIds,
-        'cache_before' => $cached,
-        'cache_after_flush' => $after,
-        'raw_query' => $raw,
-    ]);
+    return response('<pre>' . \Illuminate\Support\Facades\Artisan::output() . '</pre>');
 });
 
 

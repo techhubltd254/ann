@@ -82,7 +82,7 @@
                 <span class="text-[#11820B] text-xs font-bold tracking-[0.2em] uppercase">Economic Sectors</span>
                 <span class="h-px flex-1 bg-gray-200"></span>
             </div>
-            <p class="text-sm text-gray-500 mb-8 max-w-2xl">Every county department across the 47 counties, organized into its major national group.</p>
+            <p class="text-sm text-gray-500 mb-8 max-w-2xl">Every county department across the 47 counties, organized into its major national group. <a href="{{ route('national.sectors') }}" class="text-kicc-gold hover:underline font-medium">View all sectors →</a></p>
 
             <div class="space-y-10">
                 @foreach($sectorGroups as $g)
@@ -96,9 +96,9 @@
                     </div>
                     <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-3">
                         @foreach($g['sectors'] as $s)
-                        <div class="bg-gray-50 border border-gray-100 rounded-xl px-4 py-3 text-sm text-gray-700 font-medium hover:border-[#11820B]/30 hover:bg-white transition-all">
+                        <a href="{{ route('national.sector.show', $s->slug) }}" class="bg-gray-50 border border-gray-100 rounded-xl px-4 py-3 text-sm text-gray-700 font-medium hover:border-[#11820B]/30 hover:bg-white transition-all block">
                             {{ $s->name }}
-                        </div>
+                        </a>
                         @endforeach
                     </div>
                 </section>
