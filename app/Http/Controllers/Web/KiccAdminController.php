@@ -543,6 +543,7 @@ class KiccAdminController extends Controller
             'InstitutionSeeder',
             'MurangaLiveInstitutionsSeeder',
             'MurangaAllSectorsSeeder',
+            'CrossCountyInstitutionsSeeder',
             'CountySeeder',
             'SectorSeeder',
         ];
