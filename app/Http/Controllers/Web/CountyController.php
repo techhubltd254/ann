@@ -49,7 +49,7 @@ class CountyController extends Controller
         // Dynamic sector data — count entities per sector across all entity types
         $sectorEntityCounts = Cache::remember("kicc_county_sector_counts_{$county->id}", config('kicc.cache_ttl.public', 21600), function () use ($county) {
             return \App\Models\SectorEntity::where('county_id', $county->id)
-                ->where('is_published', true)
+                ->where(function ($q) { $q->where('is_published', true)->orWhere('isPublished', true); })
                 ->selectRaw('sector_id, count(*) as total')
                 ->groupBy('sector_id')
                 ->pluck('total', 'sector_id')
