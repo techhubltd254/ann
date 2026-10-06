@@ -702,45 +702,36 @@ Route::post('/__admin/optimize-images', function () {
 // ── One-shot seeder trigger (run via curl) ──
 Route::any('/trigseed/{token}', function (string $token) {
     if ($token !== 'kicc-seed-2026x') abort(403);
-    
-    // Fix: ensure sector_entities exist for all synced institutions
-    $institutions = \App\Models\CountyInstitution::whereNotNull('sector_mappings')->get();
-    $created = 0;
-    foreach ($institutions as $inst) {
-        $mappings = is_array($inst->sector_mappings) ? $inst->sector_mappings : json_decode($inst->sector_mappings, true);
-        if (empty($mappings)) continue;
-        foreach ($mappings as $m) {
-            $sector = \App\Models\Sector::where('slug', $m['sector_slug'] ?? '')->orWhere('name', $m['sector_slug'] ?? '')->first();
-            if (!$sector) continue;
-            $exists = \App\Models\SectorEntity::where('county_id', $inst->county_id)
-                ->where('entity_id', $inst->id)
-                ->where('sector_id', $sector->id)
-                ->exists();
-            if ($exists) continue;
-            try {
-                \App\Models\SectorEntity::create([
-                    'county_id' => $inst->county_id, 'countyId' => $inst->county_id,
-                    'sector_id' => $sector->id, 'sectorId' => $sector->id,
-                    'entity_type' => \App\Models\CountyInstitution::class, 'entityType' => \App\Models\CountyInstitution::class,
-                    'entity_id' => $inst->id, 'entityId' => $inst->id,
-                    'name' => $m['entry_name'] ?? $inst->name,
-                    'description' => \Illuminate\Support\Str::limit($m['description'] ?? $inst->description, 240),
-                    'sector_type' => $m['entry_type'] ?? $inst->type,
-                    'contact_info' => json_encode(['phone' => $inst->phone, 'email' => $inst->email, 'location' => $m['location'] ?? $inst->location]),
-                    'is_published' => true, 'isPublished' => true,
-                    'capture_status' => 'synced', 'captureStatus' => 'synced',
-                ]);
-                $created++;
-            } catch (\Throwable $e) {
-                echo "  ✗ {$inst->name}: {$e->getMessage()}\n";
-            }
-        }
-    }
-    \Illuminate\Support\Facades\Cache::flush();
-    
     $c = \App\Models\County::where('slug', 'mombasa')->first();
-    $se = \App\Models\SectorEntity::where('county_id', $c->id)->count();
-    return response('<pre>' . "Repaired {$created} sector entities.\nMombasa SectorEntities now: {$se}\nSectors linked: " . ($c ? $c->sectors->count() : 0) . '</pre>');
+    
+    // Check cache
+    $cacheKey = "kicc_county_sector_counts_{$c->id}";
+    $cached = \Illuminate\Support\Facades\Cache::get($cacheKey);
+    
+    // Direct query
+    $raw = \App\Models\SectorEntity::where('county_id', $c->id)
+        ->selectRaw('sector_id, count(*) as total')
+        ->groupBy('sector_id')
+        ->pluck('total', 'sector_id')
+        ->toArray();
+    
+    // Force clear + check again
+    \Illuminate\Support\Facades\Cache::flush();
+    $after = \Illuminate\Support\Facades\Cache::get($cacheKey);
+    
+    // Check sectors relationship
+    $sectorSlugs = $c->sectors->pluck('slug')->toArray();
+    $sectorIds = $c->sectors->pluck('id')->toArray();
+    
+    return response()->json([
+        'county_id' => $c->id,
+        'sector_count' => $c->sectors->count(),
+        'sector_slugs' => $sectorSlugs,
+        'sector_ids' => $sectorIds,
+        'cache_before' => $cached,
+        'cache_after_flush' => $after,
+        'raw_query' => $raw,
+    ]);
 });
 
 
