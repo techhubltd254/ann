@@ -114,7 +114,7 @@ class NationalAdminController extends Controller
     public function uploadNationalHero(Request $request)
     {
         abort_if(!Auth::user()?->isAdmin(), 403);
-        $data = $request->validate(['video' => 'required|file|mimes:mp4,webm,mov|max:512000']);
+        $data = $request->validate(['video' => 'required|file|mimes:mp4,webm,mov|max:2048000']);
         $file = $request->file('video');
         $disk = Storage::disk('r2');
         $r2Path = 'national/hero/hero.mp4';
@@ -160,7 +160,7 @@ class NationalAdminController extends Controller
     public function uploadMinistryVideo(Request $request, Ministry $ministry)
     {
         abort_if(!Auth::user()?->isAdmin(), 403);
-        $data = $request->validate(['video' => 'required|file|mimes:mp4,webm,mov|max:512000']);
+        $data = $request->validate(['video' => 'required|file|mimes:mp4,webm,mov|max:2048000']);
         $file = $request->file('video');
         $disk = Storage::disk('r2');
         $filename = $ministry->slug . '.' . $file->getClientOriginalExtension();
@@ -205,7 +205,7 @@ class NationalAdminController extends Controller
     public function uploadMinistryFlag(Request $request, Ministry $ministry)
     {
         abort_if(!Auth::user()?->isAdmin(), 403);
-        $data = $request->validate(['video' => 'required|file|mimes:mp4,webm,mov|max:512000']);
+        $data = $request->validate(['video' => 'required|file|mimes:mp4,webm,mov|max:2048000']);
         $file = $request->file('video');
         $disk = Storage::disk('r2');
         $filename = 'flag.' . $file->getClientOriginalExtension();
@@ -252,7 +252,7 @@ class NationalAdminController extends Controller
     public function uploadNationalFlag(Request $request)
     {
         abort_if(!Auth::user()?->isAdmin(), 403);
-        $data = $request->validate(['video' => 'required|file|mimes:mp4,webm,mov|max:512000']);
+        $data = $request->validate(['video' => 'required|file|mimes:mp4,webm,mov|max:2048000']);
         $file = $request->file('video');
         $disk = Storage::disk('r2');
         $filename = 'national-flag.' . $file->getClientOriginalExtension();

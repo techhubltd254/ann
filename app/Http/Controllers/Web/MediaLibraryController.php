@@ -90,7 +90,7 @@ class MediaLibraryController extends Controller
 
         $request->validate([
             'files' => ['required', 'array', 'max:10'],
-            'files.*' => ['file', 'max:51200'],
+            'files.*' => ['file', 'max:2048000'],
         ]);
 
         foreach ($request->file('files', []) as $file) {

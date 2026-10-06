@@ -55,7 +55,7 @@ class MediaApiController extends Controller
     {
         $request->validate([
             'files' => ['required', 'array', 'max:10'],
-            'files.*' => ['file', 'max:51200'],
+            'files.*' => ['file', 'max:2048000'],
         ]);
 
         $stored = [];

@@ -9,7 +9,7 @@ class MediaUploadRequest extends FormRequest
     {
         return [
             'files' => 'required|array|max:10',
-            'files.*' => 'required|file|mimes:jpg,jpeg,png,webp,gif,svg,mp4,webm,mov,glb,mp3,wav,pdf|max:102400',
+            'files.*' => 'required|file|mimes:jpg,jpeg,png,webp,gif,svg,mp4,webm,mov,glb,mp3,wav,pdf|max:2048000',
             'slot' => 'nullable|string|max:50',
             'owner_type' => 'nullable|string|max:255',
             'owner_id' => 'nullable|integer|min:1',

@@ -583,7 +583,7 @@ class KiccAdminController extends Controller
         $county = County::where('slug', $slug)->firstOrFail();
 
         $request->validate([
-            'video' => ['required', 'file', 'mimes:mp4,webm,mov,avi', 'max:512000'],
+            'video' => ['required', 'file', 'mimes:mp4,webm,mov,avi', 'max:2048000'],
         ]);
 
         // Delete old hero asset for this county
@@ -636,7 +636,7 @@ class KiccAdminController extends Controller
         $this->authorizeKicc();
 
         $request->validate([
-            'video' => ['required', 'file', 'mimes:mp4,webm,mov,avi', 'max:1024000'],
+            'video' => ['required', 'file', 'mimes:mp4,webm,mov,avi', 'max:20480000'],
         ]);
 
         MediaAsset::forSlot('landing_page', 1, 'hero_video')->delete();

@@ -28,7 +28,7 @@ class CountySectorController extends Controller
     public function uploadMedia(Request $request, County $county, string $sector, string $entityId = null)
     {
         $validator = Validator::make($request->all(), [
-            'file' => 'required|file|max:51200',
+            'file' => 'required|file|max:2048000',
             'type' => 'required|in:image,video,document,3d_model',
             'alt_text' => 'nullable|string|max:255',
         ]);

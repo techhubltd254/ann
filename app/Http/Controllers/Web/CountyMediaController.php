@@ -92,7 +92,7 @@ class CountyMediaController extends Controller
         $county = $this->authorizeCounty($slug);
         $data = $request->validate([
             'sector' => 'required|in:tourism,products,education,culture,hotels,farms,transport,health',
-            'video' => 'required|file|mimes:mp4,webm,mov|max:512000',
+            'video' => 'required|file|mimes:mp4,webm,mov|max:2048000',
         ]);
         $file = $request->file('video');
         $slot = 'sector_video_' . $data['sector'];
@@ -135,7 +135,7 @@ class CountyMediaController extends Controller
         $county = County::where('slug', $slug)->firstOrFail();
         abort_if(!$user->isAdmin() && $user->county_id !== $county->id, 403);
         $county = $this->authorizeCounty($slug);
-        $file = $request->validate(['video' => 'required|file|mimes:mp4,webm,mov|max:512000'])['video'];
+        $file = $request->validate(['video' => 'required|file|mimes:mp4,webm,mov|max:2048000'])['video'];
         $disk = Storage::disk('r2');
         $r2Path = "counties/{$county->slug}/video/hero/hero.mp4";
         $disk->writeStream($r2Path, fopen($file->getRealPath(), 'r'), ['visibility' => 'public']);
@@ -170,7 +170,7 @@ class CountyMediaController extends Controller
     public function uploadFlagVideo(Request $request, string $slug)
     {
         $county = $this->authorizeCounty($slug);
-        $file = $request->validate(['video' => 'required|file|mimes:mp4,webm,mov|max:512000'])['video'];
+        $file = $request->validate(['video' => 'required|file|mimes:mp4,webm,mov|max:2048000'])['video'];
         $filename = 'flag.' . $file->getClientOriginalExtension();
         $disk = Storage::disk('r2');
         $r2Path = "counties/{$slug}/flag-video/{$filename}";
@@ -206,7 +206,7 @@ class CountyMediaController extends Controller
         $county = $this->authorizeCounty($slug);
         $data = $request->validate([
             'entity_type' => 'required|in:attraction,hotel,product,sector_entity', 'entity_id' => 'required|integer',
-            'video' => 'required|file|mimes:mp4,webm,mov|max:512000',
+            'video' => 'required|file|mimes:mp4,webm,mov|max:2048000',
         ]);
         $model = match ($data['entity_type']) {
             'attraction' => CountyTourismAttraction::class, 'hotel' => CountyHotel::class,

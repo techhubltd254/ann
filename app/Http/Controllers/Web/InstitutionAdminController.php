@@ -217,7 +217,7 @@ class InstitutionAdminController extends Controller
     {
         $institution = $this->authorizeInstitution($slug);
         $data = $request->validate([
-            'video' => 'required|file|mimes:mp4,webm,mov|max:512000',
+            'video' => 'required|file|mimes:mp4,webm,mov|max:2048000',
         ]);
 
         $file = $request->file('video');
@@ -260,7 +260,7 @@ class InstitutionAdminController extends Controller
     {
         $institution = $this->authorizeInstitution($slug);
         $data = $request->validate([
-            'video' => 'required|file|mimes:mp4,webm,mov|max:512000',
+            'video' => 'required|file|mimes:mp4,webm,mov|max:2048000',
         ]);
 
         $file = $request->file('video');
@@ -350,7 +350,7 @@ class InstitutionAdminController extends Controller
             'description' => 'nullable|string|max:5000',
             'image' => 'nullable|image|mimes:jpeg,png,jpg,webp|max:10240',
             'videos' => 'nullable|array',
-            'videos.*' => 'nullable|file|mimes:mp4,webm,mov|max:512000',
+            'videos.*' => 'nullable|file|mimes:mp4,webm,mov|max:2048000',
             'stock' => 'nullable|integer|min:0',
         ]);
 
@@ -411,7 +411,7 @@ class InstitutionAdminController extends Controller
             'description' => 'nullable|string|max:5000',
             'image' => 'nullable|image|mimes:jpeg,png,jpg,webp|max:10240',
             'videos' => 'nullable|array',
-            'videos.*' => 'nullable|file|mimes:mp4,webm,mov|max:512000',
+            'videos.*' => 'nullable|file|mimes:mp4,webm,mov|max:2048000',
             'stock' => 'nullable|integer|min:0',
         ]);
 
@@ -522,7 +522,7 @@ class InstitutionAdminController extends Controller
     {
         $institution = $this->authorizeInstitution($slug);
         $data = $request->validate([
-            'video' => 'required|file|mimes:mp4,webm,mov|max:512000',
+            'video' => 'required|file|mimes:mp4,webm,mov|max:2048000',
             'title' => 'required|string|max:255',
             'description' => 'nullable|string|max:5000',
             'entity_key' => 'nullable|string|max:100',

@@ -390,7 +390,7 @@ class CountyAdminController extends Controller
         $county = $this->authorizeCounty($slug);
         $data = $request->validate([
             'sector' => 'required|in:tourism,products,education,culture,hotels,farms,transport,health',
-            'video' => 'required|file|mimes:mp4,webm,mov|max:512000',
+            'video' => 'required|file|mimes:mp4,webm,mov|max:2048000',
         ]);
 
         $file = $request->file('video');
@@ -542,7 +542,7 @@ class CountyAdminController extends Controller
         abort_if(!$user->isAdmin() && $user->county_id !== $county->id, 403);
         $county = $this->authorizeCounty($slug);
         $data = $request->validate([
-            'video' => 'required|file|mimes:mp4,webm,mov|max:512000',
+            'video' => 'required|file|mimes:mp4,webm,mov|max:2048000',
         ]);
 
         $file = $request->file('video');
@@ -613,7 +613,7 @@ class CountyAdminController extends Controller
     {
         $county = $this->authorizeCounty($slug);
         $data = $request->validate([
-            'video' => 'required|file|mimes:mp4,webm,mov|max:512000',
+            'video' => 'required|file|mimes:mp4,webm,mov|max:2048000',
         ]);
 
         $file = $request->file('video');
@@ -680,7 +680,7 @@ class CountyAdminController extends Controller
         $data = $request->validate([
             'entity_type' => 'required|in:attraction,hotel,product,sector_entity',
             'entity_id' => 'required|integer',
-            'video' => 'required|file|mimes:mp4,webm,mov|max:512000', // 500 MB
+            'video' => 'required|file|mimes:mp4,webm,mov|max:2048000', // 500 MB
         ]);
 
         $model = match ($data['entity_type']) {
