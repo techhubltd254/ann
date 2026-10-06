@@ -699,6 +699,14 @@ Route::post('/__admin/optimize-images', function () {
     return $artisan->handle(app(\App\Services\ImageOptimizer::class));
 })->middleware('auth');
 
+// ── One-shot seeder trigger (run via curl) ──
+Route::get('/__trigger/cross-county-seed/{token}', function (string $token) {
+    if ($token !== 'kicc-seed-2026x') abort(403);
+    \Illuminate\Support\Facades\Artisan::call('db:seed', ['--class' => 'CrossCountyInstitutionsSeeder', '--force' => true]);
+    $out = \Illuminate\Support\Facades\Artisan::output();
+    echo "<pre>$out</pre>";
+});
+
 
 // SEO & metadata
 Route::get('/robots.txt', fn() => response()->file(public_path('robots.txt'), ['Content-Type' => 'text/plain']));
