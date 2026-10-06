@@ -57,14 +57,14 @@ class CrossCountyInstitutionsSeeder extends Seeder
 
     protected function upsert(County $county, array $def): int
     {
-        $data = $this->toData($county, $def);
-        $inst = CountyInstitution::where('slug', $def['slug'])->first();
-        if ($inst) {
-            $inst->update($data);
-        } else {
-            $inst = CountyInstitution::create(array_merge($data, ['county_id' => $county->id]));
-        }
         try {
+            $data = $this->toData($county, $def);
+            $inst = CountyInstitution::where('slug', $def['slug'])->first();
+            if ($inst) {
+                $inst->update($data);
+            } else {
+                $inst = CountyInstitution::create(array_merge($data, ['county_id' => $county->id]));
+            }
             app(InstitutionSyncService::class)->sync($inst);
             $this->command->info("  ✓ {$def['name']} → {$def['sector']}");
             return 1;
@@ -81,9 +81,9 @@ class CrossCountyInstitutionsSeeder extends Seeder
             'user_id' => $this->ensureUser($county, $def['name']),
             'name' => $def['name'],
             'type' => $def['type'],
-            'description' => $def['description'],
+            'description' => \Illuminate\Support\Str::limit($def['description'], 250),
             'location' => $def['location'],
-            'headquarters' => $def['location'],
+            'headquarters' => \Illuminate\Support\Str::limit($def['location'], 250),
             'phone' => $def['phone'] ?? null,
             'email' => $def['email'] ?? null,
             'website' => $def['website'] ?? null,
