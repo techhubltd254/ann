@@ -62,13 +62,10 @@ Route::get('/national-sector', [\App\Http\Controllers\Web\NationalSectorControll
     ->name('national.sectors')
     ->middleware($publicCache)
     ->withoutMiddleware($noSession);
-Route::get('/national-sector/{slug}', function(string $slug) {
-    try {
-        return app(\App\Http\Controllers\Web\NationalSectorController::class)->show($slug);
-    } catch (\Throwable $e) {
-        return response("<pre>{$e->getMessage()}\n\n{$e->getTraceAsString()}</pre>", 500);
-    }
-})->name('national.sector.show')->middleware($publicCache)->withoutMiddleware($noSession);
+Route::get('/national-sector/{slug}', [\App\Http\Controllers\Web\NationalSectorController::class, 'show'])
+    ->name('national.sector.show')
+    ->middleware($publicCache)
+    ->withoutMiddleware($noSession);
 Route::get('/institutions/{institution}', [CountyController::class, 'institution'])->name('counties.institution')
     ->middleware($publicCache)
     ->withoutMiddleware($noSession);

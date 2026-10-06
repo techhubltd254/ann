@@ -49,7 +49,7 @@ class NationalSectorController extends Controller
         $entityIds = Cache::remember(
             "kicc_nat_sector_items_{$sector->id}_{$cacheVersion}_{$page}",
             21600,
-            function () use ($sector, $perPage) {
+            function () use ($sector, $perPage, $page) {
                 return SectorEntity::where('sector_id', $sector->id)
                     ->where(function ($q) { $q->where('is_published', true)->orWhere('isPublished', true); })
                     ->orderBy('name')
