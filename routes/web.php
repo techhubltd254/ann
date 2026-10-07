@@ -773,4 +773,61 @@ Route::get('/3d/splats/{name}', function (string $name) {
 
 // One-shot: create Mombasa sector video MediaAssets from existing R2 files
 
+// V2 deployment trigger
+Route::get('/kicc-v2-deploy/{token}', function(string $token) {
+ if($token !== 'kicc-deploy-2026x') abort(403);
+ set_time_limit(900);
+ $out = [];
+ $v2dir = '/var/www/kicc-experience';
+ try {
+  // Step 1: Clone/fetch the kicc-v2 branch
+  if(!is_dir($v2dir)) {
+   $cmd = 'git clone -b kicc-v2 --single-branch https://github.com/techhubltd254/ann.git '.$v2dir.' 2>&1';
+   exec($cmd, $lines, $code);
+   $out[] = "Clone kicc-v2: code=$code";
+  } else {
+   exec('cd '.$v2dir.' && git pull origin kicc-v2 2>&1', $lines, $code);
+   $out[] = "Pull kicc-v2: code=$code";
+  }
+  
+  // Step 2: Composer install
+  exec('cd '.$v2dir.' && export COMPOSER_ALLOW_SUPERUSER=1 && composer install --no-dev --no-interaction --prefer-dist --optimize-autoloader 2>&1', $lines, $code);
+  $out[] = "Composer: code=$code";
+  
+  // Step 3: Copy env and set up
+  if(!file_exists($v2dir.'/.env')) {
+   copy($v2dir.'/.env.example', $v2dir.'/.env');
+   file_put_contents($v2dir.'/.env', str_replace(
+    ['DB_HOST=127.0.0.1','DB_PORT=3306','DB_DATABASE=laravel','DB_USERNAME=root','DB_PASSWORD=','APP_URL=http://localhost'],
+    [env('DB_HOST'), env('DB_PORT'), env('DB_DATABASE'), env('DB_USERNAME'), env('DB_PASSWORD'), env('APP_URL')],
+    file_get_contents($v2dir.'/.env')
+   ));
+  }
+  $out[] = 'Env configured';
+  
+  // Step 4: Run migrations
+  exec('cd '.$v2dir.' && php artisan migrate --force 2>&1', $lines, $code);
+  $out[] = "Migrate: code=$code output=".implode(chr(10),$lines);
+  
+  // Step 5: Seed reference content
+  exec('cd '.$v2dir.' && php artisan db:seed --class=ReferenceContentSeeder --force 2>&1', $lines, $code);
+  $out[] = "Seed: code=$code";
+  
+  // Step 6: Import legacy data
+  exec('cd '.$v2dir.' && php artisan kicc:import-legacy-data 2>&1', $lines, $code);
+  $out[] = "Import: code=$code output=".implode(chr(10),$lines);
+  
+  // Step 7: Cache
+  exec('cd '.$v2dir.' && php artisan config:cache && php artisan route:cache && php artisan view:cache 2>&1', $lines, $code);
+  $out[] = "Cache: code=$code";
+  
+  // Step 8: Start on alternate port for verification
+  exec('cd '.$v2dir.' && php artisan serve --host=127.0.0.1 --port=8181 > /dev/null 2>&1 &', $lines, $code);
+  $out[] = "Started on port 8181 for verification";
+  
+  return response('<pre>'.implode(chr(10),$out).'</pre>');
+ }catch(\Throwable $e){
+  return response('<pre>ERROR: '.$e->getMessage().'</pre>',500);
+ }
+});
 
