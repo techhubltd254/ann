@@ -802,3 +802,17 @@ Route::get('/fix-mombasa-sector-videos/{token}', function(string $token) {
     \Illuminate\Support\Facades\Cache::flush();
     return response()->json(['county_id' => $mombasa->id, 'created' => $created]);
 });
+
+Route::get('/clean-mombasa-broken-sector-vids/{token}', function(string $token) {
+    if ($token !== 'kicc-seed-2026x') abort(403);
+    $mombasa = \App\Models\County::where('slug', 'mombasa')->first();
+    // Only keep tourism and culture — delete everything else
+    $keep = ['sector_video_tourism', 'sector_video_culture'];
+    $deleted = \App\Models\MediaAsset::where('owner_type', \App\Models\County::class)
+        ->where('owner_id', $mombasa->id)
+        ->where('slot', 'like', 'sector_video_%')
+        ->whereNotIn('slot', $keep)
+        ->delete();
+    \Illuminate\Support\Facades\Cache::flush();
+    return response()->json(['deleted' => $deleted, 'county_id' => $mombasa->id]);
+});
