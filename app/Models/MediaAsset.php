@@ -12,7 +12,7 @@ class MediaAsset extends Model
     protected $fillable = [
         'uuid', 'owner_id', 'owner_type', 'slot', 'display_mode', 'disk', 'path', 'original_name',
         'mime', 'kind', 'size_bytes', 'width', 'height', 'status', 'alt_text', 'metadata',
-        'contentType',
+        'contentType', 'uploadedByUserId', 'createdAt', 'originalName', 'sizeBytes', 'storageKey',
     ];
 
     protected function casts(): array
@@ -192,13 +192,15 @@ class MediaAsset extends Model
             }
             foreach ($required as $col) {
                 if ($m->getAttribute($col) !== null) continue;
-                if (str_ends_with($col, '_id') || str_ends_with($col, 'Id')) continue;
+                if (str_ends_with($col, '_id') || (str_ends_with($col, 'Id') && $col !== 'uploadedByUserId')) continue;
                 if (str_contains($col, 'At') || str_contains($col, 'Date')) {
                     $m->setAttribute($col, now());
                 } elseif (in_array($col, ['status'], true)) {
                     $m->setAttribute($col, 'ready');
                 } elseif (in_array($col, ['size_bytes', 'sizeBytes', 'width', 'height'], true)) {
                     $m->setAttribute($col, 0);
+                } elseif ($col === 'uploadedByUserId') {
+                    $m->setAttribute($col, auth()->id() ?? 1);
                 } elseif (in_array($col, ['contentType'], true)) {
                     $m->setAttribute($col, $m->getAttribute('mime') ?? 'application/octet-stream');
                 } else {
