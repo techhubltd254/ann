@@ -1,0 +1,92 @@
+{
+  "status": "Runnable fresh Laravel rebuild core; full legacy feature parity PENDING",
+  "stack": "PHP 8.4.26 verified; Laravel 13.35.0; Blade; approved CSS; vanilla JavaScript",
+  "source_counts": {
+    "original_source_counts": {
+      "asset": 92,
+      "controller": 128,
+      "migration": 139,
+      "model": 195,
+      "route": 622,
+      "seeder": 36,
+      "view": 287
+    },
+    "total_original_items": 1499,
+    "design_files": 38,
+    "original_feature_parity": "pending; see every item in INVENTORY.md"
+  },
+  "original_items_all_explicitly_pending": true,
+  "approved_css_identical_to_source_style_blocks": true,
+  "php_tests": 18,
+  "php_assertions": 124,
+  "browser_public_views": 16,
+  "browser_admin_modules": 12,
+  "scoped_axe_contrast_violations": 0,
+  "php_files_linted": 31,
+  "imported_record_counts": [
+    {
+      "type": "agencies",
+      "status": "draft",
+      "count": 10
+    },
+    {
+      "type": "counties",
+      "status": "published",
+      "count": 47
+    },
+    {
+      "type": "faqs",
+      "status": "draft",
+      "count": 5
+    },
+    {
+      "type": "ministries",
+      "status": "draft",
+      "count": 10
+    },
+    {
+      "type": "pages",
+      "status": "draft",
+      "count": 27
+    },
+    {
+      "type": "pages",
+      "status": "published",
+      "count": 1
+    },
+    {
+      "type": "products",
+      "status": "draft",
+      "count": 14
+    },
+    {
+      "type": "sectors",
+      "status": "published",
+      "count": 11
+    },
+    {
+      "type": "services",
+      "status": "draft",
+      "count": 18
+    },
+    {
+      "type": "team",
+      "status": "draft",
+      "count": 5
+    },
+    {
+      "type": "timeline",
+      "status": "draft",
+      "count": 4
+    },
+    {
+      "type": "venues",
+      "status": "draft",
+      "count": 10
+    }
+  ],
+  "production_database_or_r2_modified": false,
+  "commit_or_deployment_performed": false,
+  "live_preview_is_ephemeral": true,
+  "limitations_file": "COVERAGE.md"
+}

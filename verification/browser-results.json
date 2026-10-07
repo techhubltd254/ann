@@ -1,0 +1,295 @@
+{
+  "scope": "Fresh Laravel HTTP browser checks against isolated SQLite; no production database or R2 calls. Source records remain draft where unverified.",
+  "views": [
+    {
+      "route": "/",
+      "theme": "light",
+      "device": "desktop",
+      "http_status": 200,
+      "runtime_errors": [],
+      "overflow": false,
+      "background": "rgb(220, 206, 186)",
+      "loaded_css": 3,
+      "heading": "The whole country,in one room.",
+      "contrast_violations": [],
+      "theme_cycle_reaches_other_theme": true,
+      "orbit_transform_present": true
+    },
+    {
+      "route": "/national-government",
+      "theme": "light",
+      "device": "desktop",
+      "http_status": 200,
+      "runtime_errors": [],
+      "overflow": false,
+      "background": "rgb(220, 206, 186)",
+      "loaded_css": 3,
+      "heading": "The institutionsbehind the nation.",
+      "contrast_violations": []
+    },
+    {
+      "route": "/counties",
+      "theme": "light",
+      "device": "desktop",
+      "http_status": 200,
+      "runtime_errors": [],
+      "overflow": false,
+      "background": "rgb(220, 206, 186)",
+      "loaded_css": 3,
+      "heading": "County portals",
+      "contrast_violations": []
+    },
+    {
+      "route": "/login",
+      "theme": "light",
+      "device": "desktop",
+      "http_status": 200,
+      "runtime_errors": [],
+      "overflow": false,
+      "background": "rgb(220, 206, 186)",
+      "loaded_css": 3,
+      "heading": "Welcome back.",
+      "contrast_violations": []
+    },
+    {
+      "route": "/",
+      "theme": "light",
+      "device": "mobile",
+      "http_status": 200,
+      "runtime_errors": [],
+      "overflow": false,
+      "background": "rgb(220, 206, 186)",
+      "loaded_css": 3,
+      "heading": "The whole country,in one room.",
+      "contrast_violations": [],
+      "theme_cycle_reaches_other_theme": true,
+      "orbit_transform_present": true,
+      "mobile_menu_opens": true,
+      "escape_closes_menu": true
+    },
+    {
+      "route": "/national-government",
+      "theme": "light",
+      "device": "mobile",
+      "http_status": 200,
+      "runtime_errors": [],
+      "overflow": false,
+      "background": "rgb(220, 206, 186)",
+      "loaded_css": 3,
+      "heading": "The institutionsbehind the nation.",
+      "contrast_violations": []
+    },
+    {
+      "route": "/counties",
+      "theme": "light",
+      "device": "mobile",
+      "http_status": 200,
+      "runtime_errors": [],
+      "overflow": false,
+      "background": "rgb(220, 206, 186)",
+      "loaded_css": 3,
+      "heading": "County portals",
+      "contrast_violations": []
+    },
+    {
+      "route": "/login",
+      "theme": "light",
+      "device": "mobile",
+      "http_status": 200,
+      "runtime_errors": [],
+      "overflow": false,
+      "background": "rgb(220, 206, 186)",
+      "loaded_css": 3,
+      "heading": "Welcome back.",
+      "contrast_violations": []
+    },
+    {
+      "route": "/",
+      "theme": "dark",
+      "device": "desktop",
+      "http_status": 200,
+      "runtime_errors": [],
+      "overflow": false,
+      "background": "rgb(24, 17, 15)",
+      "loaded_css": 3,
+      "heading": "The whole country,in one room.",
+      "contrast_violations": [],
+      "theme_cycle_reaches_other_theme": true,
+      "orbit_transform_present": true
+    },
+    {
+      "route": "/national-government",
+      "theme": "dark",
+      "device": "desktop",
+      "http_status": 200,
+      "runtime_errors": [],
+      "overflow": false,
+      "background": "rgb(24, 17, 15)",
+      "loaded_css": 3,
+      "heading": "The institutionsbehind the nation.",
+      "contrast_violations": []
+    },
+    {
+      "route": "/counties",
+      "theme": "dark",
+      "device": "desktop",
+      "http_status": 200,
+      "runtime_errors": [],
+      "overflow": false,
+      "background": "rgb(24, 17, 15)",
+      "loaded_css": 3,
+      "heading": "County portals",
+      "contrast_violations": []
+    },
+    {
+      "route": "/login",
+      "theme": "dark",
+      "device": "desktop",
+      "http_status": 200,
+      "runtime_errors": [],
+      "overflow": false,
+      "background": "rgb(24, 17, 15)",
+      "loaded_css": 3,
+      "heading": "Welcome back.",
+      "contrast_violations": []
+    },
+    {
+      "route": "/",
+      "theme": "dark",
+      "device": "mobile",
+      "http_status": 200,
+      "runtime_errors": [],
+      "overflow": false,
+      "background": "rgb(24, 17, 15)",
+      "loaded_css": 3,
+      "heading": "The whole country,in one room.",
+      "contrast_violations": [],
+      "theme_cycle_reaches_other_theme": true,
+      "orbit_transform_present": true,
+      "mobile_menu_opens": true,
+      "escape_closes_menu": true
+    },
+    {
+      "route": "/national-government",
+      "theme": "dark",
+      "device": "mobile",
+      "http_status": 200,
+      "runtime_errors": [],
+      "overflow": false,
+      "background": "rgb(24, 17, 15)",
+      "loaded_css": 3,
+      "heading": "The institutionsbehind the nation.",
+      "contrast_violations": []
+    },
+    {
+      "route": "/counties",
+      "theme": "dark",
+      "device": "mobile",
+      "http_status": 200,
+      "runtime_errors": [],
+      "overflow": false,
+      "background": "rgb(24, 17, 15)",
+      "loaded_css": 3,
+      "heading": "County portals",
+      "contrast_violations": []
+    },
+    {
+      "route": "/login",
+      "theme": "dark",
+      "device": "mobile",
+      "http_status": 200,
+      "runtime_errors": [],
+      "overflow": false,
+      "background": "rgb(24, 17, 15)",
+      "loaded_css": 3,
+      "heading": "Welcome back.",
+      "contrast_violations": []
+    }
+  ],
+  "authenticated_admin_modules": [
+    {
+      "module": "counties",
+      "http_status": 200,
+      "heading": "County portals",
+      "overflow": false
+    },
+    {
+      "module": "venues",
+      "http_status": 200,
+      "heading": "Venues & rooms",
+      "overflow": false
+    },
+    {
+      "module": "products",
+      "http_status": 200,
+      "heading": "Products",
+      "overflow": false
+    },
+    {
+      "module": "institutions",
+      "http_status": 200,
+      "heading": "Institutions",
+      "overflow": false
+    },
+    {
+      "module": "ministries",
+      "http_status": 200,
+      "heading": "Ministries",
+      "overflow": false
+    },
+    {
+      "module": "agencies",
+      "http_status": 200,
+      "heading": "Agencies",
+      "overflow": false
+    },
+    {
+      "module": "sectors",
+      "http_status": 200,
+      "heading": "Economic sectors",
+      "overflow": false
+    },
+    {
+      "module": "services",
+      "http_status": 200,
+      "heading": "Services",
+      "overflow": false
+    },
+    {
+      "module": "pages",
+      "http_status": 200,
+      "heading": "Page content",
+      "overflow": false
+    },
+    {
+      "module": "faqs",
+      "http_status": 200,
+      "heading": "FAQ",
+      "overflow": false
+    },
+    {
+      "module": "team",
+      "http_status": 200,
+      "heading": "Leadership & team",
+      "overflow": false
+    },
+    {
+      "module": "timeline",
+      "http_status": 200,
+      "heading": "History & timeline",
+      "overflow": false
+    }
+  ],
+  "screenshots": [
+    "light-desktop-home.png",
+    "light-desktop-midscroll.png",
+    "light-mobile-home.png",
+    "light-mobile-midscroll.png",
+    "dark-desktop-home.png",
+    "dark-desktop-midscroll.png",
+    "dark-mobile-home.png",
+    "dark-mobile-midscroll.png",
+    "admin-overview.png",
+    "admin-edit-and-uploader.png"
+  ]
+}

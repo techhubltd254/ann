@@ -1,0 +1,832 @@
+{
+    "venues": {
+        "source_file": "database/seeders/venues_seeder.php",
+        "source_status": "reference, unverified; draft import",
+        "rows": [
+            {
+                "name": "Tsavo Hall",
+                "slug": "tsavo-hall",
+                "venue_type": "Plenary Hall",
+                "capacity": 2400,
+                "description": "Our flagship hall. Hosts up to 2,400 delegates theatre-style. Used for UN assemblies, AU summits, and global conferences.",
+                "amenities": "[\"Stage\",\"LED Walls\",\"Interpretation Booths\",\"VIP Boxes\",\"Backstage\"]",
+                "is_active": true
+            },
+            {
+                "name": "Amphitheatre",
+                "slug": "amphitheatre",
+                "venue_type": "Theatre",
+                "capacity": 700,
+                "description": "Tiered seating for 700. Perfect for keynote speeches, product launches, and performances.",
+                "amenities": "[\"Tiered Seating\",\"Stage\",\"Sound System\",\"Backstage\"]",
+                "is_active": true
+            },
+            {
+                "name": "Aberdares",
+                "slug": "aberdares",
+                "venue_type": "Meeting Room",
+                "capacity": 250,
+                "description": "Executive boardroom for 250. Natural light with city views and built-in AV.",
+                "amenities": "[\"Boardroom\",\"City View\",\"Built-in AV\",\"Natural Light\"]",
+                "is_active": true
+            },
+            {
+                "name": "Lenana Hills",
+                "slug": "lenana-hills",
+                "venue_type": "Boardroom",
+                "capacity": 80,
+                "description": "Intimate boardroom for up to 80 delegates. Ideal for C-suite meetings and private dinners.",
+                "amenities": "[\"Boardroom\",\"City View\",\"Private Dining\"]",
+                "is_active": true
+            },
+            {
+                "name": "Shimba Hills Room",
+                "slug": "shimba-hills",
+                "venue_type": "Meeting Room",
+                "capacity": 120,
+                "description": "Flexible meeting space for 120. Breakout sessions, workshops, and training.",
+                "amenities": "[\"Flexible Layout\",\"Breakout Space\",\"AV Ready\"]",
+                "is_active": true
+            },
+            {
+                "name": "Courtyard",
+                "slug": "courtyard",
+                "venue_type": "Outdoor",
+                "capacity": 500,
+                "description": "Open-air courtyard for 500. Cocktail receptions, garden parties, and networking.",
+                "amenities": "[\"Open Air\",\"Landscaped\",\"Covered Area Available\",\"Lighting\"]",
+                "is_active": true
+            },
+            {
+                "name": "Lawn",
+                "slug": "lawn",
+                "venue_type": "Outdoor",
+                "capacity": 1000,
+                "description": "Expansive lawn for 1,000 delegates. Tented events, galas, and large-scale exhibitions.",
+                "amenities": "[\"Tented Options\",\"Stage\",\"Power Supply\"]",
+                "is_active": true
+            },
+            {
+                "name": "Upper COMESA",
+                "slug": "upper-comesa",
+                "venue_type": "Meeting Room",
+                "capacity": 300,
+                "description": "Upper-level conference room with natural light and Nairobi skyline views.",
+                "amenities": "[\"Conference\",\"City View\",\"Natural Light\"]",
+                "is_active": true
+            },
+            {
+                "name": "Lower COMESA",
+                "slug": "lower-comesa",
+                "venue_type": "Meeting Room",
+                "capacity": 200,
+                "description": "Lower-level conference room for breakout sessions, parallel tracks, and media centre.",
+                "amenities": "[\"Breakout Space\",\"Media Ready\"]",
+                "is_active": true
+            },
+            {
+                "name": "Helipad",
+                "slug": "helipad",
+                "venue_type": "VIP/Events",
+                "capacity": null,
+                "description": "Rooftop helipad with panoramic Nairobi views. Exclusive cocktail events and VIP arrivals.",
+                "amenities": "[\"Panoramic View\",\"VIP\",\"Cocktail Events\"]",
+                "is_active": true
+            }
+        ]
+    },
+    "service_venues": {
+        "source_file": "database/seeders/KiccServicesSeeder.php",
+        "source_status": "reference, unverified; draft import",
+        "rows": [
+            {
+                "name": "Tsavo Hall",
+                "slug": "tsavo-hall",
+                "venue_type": "ballroom",
+                "capacity": 2000,
+                "description": "Grand ballroom — KICC's flagship space. Hosts state banquets, summits, and plenary sessions. Column-free, 2000 pax theatre style.",
+                "amenities": "[\"stage\",\"sound system\",\"projector\",\"air conditioning\",\"backstage\",\"dressing rooms\",\"VIP lounge\"]",
+                "city": "Nairobi",
+                "is_active": true
+            },
+            {
+                "name": "Amphitheatre",
+                "slug": "amphitheatre",
+                "venue_type": "theatre",
+                "capacity": 600,
+                "description": "Indoor amphitheatre with tiered seating. Perfect for presentations, product launches, and performances.",
+                "amenities": "[\"tiered seating\",\"stage\",\"lighting rig\",\"acoustic panels\",\"projector\"]",
+                "city": "Nairobi",
+                "is_active": true
+            },
+            {
+                "name": "Aberdares",
+                "slug": "aberdares",
+                "venue_type": "meeting",
+                "capacity": 80,
+                "description": "Executive boardroom with panoramic Nairobi skyline views. U-shape seating for 80.",
+                "amenities": "[\"boardroom table\",\"video conferencing\",\"whiteboard\",\"refreshment bar\",\"city view\"]",
+                "city": "Nairobi",
+                "is_active": true
+            },
+            {
+                "name": "Lenana Hills",
+                "slug": "lenana-hills",
+                "venue_type": "meeting",
+                "capacity": 60,
+                "description": "Premium meeting room on the helipad floor. Natural light, adjoining terrace.",
+                "amenities": "[\"terrace\",\"natural light\",\"video conference\",\"dedicated WiFi\",\"refreshments\"]",
+                "city": "Nairobi",
+                "is_active": true
+            },
+            {
+                "name": "Shimba Hills Room",
+                "slug": "shimba-hills-room",
+                "venue_type": "meeting",
+                "capacity": 40,
+                "description": "Intimate boardroom with Mount Kenya views. Ideal for VIP briefings and closed sessions.",
+                "amenities": "[\"executive seating\",\"mountain view\",\"silent AC\",\"secure entry\"]",
+                "city": "Nairobi",
+                "is_active": true
+            },
+            {
+                "name": "Courtyard",
+                "slug": "courtyard",
+                "venue_type": "outdoor",
+                "capacity": 400,
+                "description": "Open-air courtyard surrounded by tropical gardens. Cocktail receptions, evening galas.",
+                "amenities": "[\"garden setting\",\"evening lighting\",\"dance floor\",\"catering kitchen\",\"backup tent\"]",
+                "city": "Nairobi",
+                "is_active": true
+            },
+            {
+                "name": "Lawn",
+                "slug": "lawn",
+                "venue_type": "outdoor",
+                "capacity": 1500,
+                "description": "Expansive manicured lawn. Kenya's largest outdoor event space. Tents, exhibitions, open-air concerts.",
+                "amenities": "[\"manicured lawn\",\"tent-ready\",\"power distribution\",\"water points\",\"parking\"]",
+                "city": "Nairobi",
+                "is_active": true
+            },
+            {
+                "name": "Upper COMESA",
+                "slug": "upper-comesa",
+                "venue_type": "meeting",
+                "capacity": 120,
+                "description": "Upper-level COMESA conference room. Soundproofed, divisible into two breakout rooms.",
+                "amenities": "[\"divisible walls\",\"soundproofing\",\"breakout rooms\",\"projector\",\"PA system\"]",
+                "city": "Nairobi",
+                "is_active": true
+            },
+            {
+                "name": "Lower COMESA",
+                "slug": "lower-comesa",
+                "venue_type": "meeting",
+                "capacity": 100,
+                "description": "Ground-level COMESA hall. Direct outdoor access, ideal for exhibitions with meeting component.",
+                "amenities": "[\"outdoor access\",\"exhibition floor\",\"wifi\",\"catering\",\"ADA accessible\"]",
+                "city": "Nairobi",
+                "is_active": true
+            }
+        ]
+    },
+    "ministries": {
+        "source_file": "database/seeders/MinistrySeeder.php",
+        "source_status": "reference, unverified; draft import",
+        "rows": [
+            {
+                "name": "Ministry of Tourism and Wildlife",
+                "code": "MOT",
+                "color": "#0B1E57",
+                "description": "Tourism promotion, wildlife conservation, and hospitality development"
+            },
+            {
+                "name": "Ministry of Agriculture, Livestock and Fisheries",
+                "code": "MOA",
+                "color": "#2D6A4F",
+                "description": "Agricultural development, food security, and livestock management"
+            },
+            {
+                "name": "Ministry of Health",
+                "code": "MOH",
+                "color": "#901C1E",
+                "description": "Healthcare services, public health, and medical research"
+            },
+            {
+                "name": "Ministry of Trade, Investment and Industry",
+                "code": "MOTI",
+                "color": "#E76F51",
+                "description": "Trade promotion, industrialization, and investment facilitation"
+            },
+            {
+                "name": "Ministry of Information, Communications and Digital Economy",
+                "code": "MICDE",
+                "color": "#11820B",
+                "description": "ICT infrastructure, digital economy, and communications"
+            },
+            {
+                "name": "Ministry of Transport and Infrastructure",
+                "code": "MOTI2",
+                "color": "#334155",
+                "description": "Transport systems, roads, railways, and infrastructure development"
+            },
+            {
+                "name": "Ministry of Energy and Petroleum",
+                "code": "MOEP",
+                "color": "#FFCD05",
+                "description": "Energy generation, petroleum, and renewable energy"
+            },
+            {
+                "name": "Ministry of Education",
+                "code": "MOE",
+                "color": "#8a6b00",
+                "description": "Education policy, curriculum, and institutional management"
+            },
+            {
+                "name": "Ministry of Environment, Climate Change and Forestry",
+                "code": "MOECCF",
+                "color": "#11820B",
+                "description": "Environmental protection, climate action, and forest conservation"
+            },
+            {
+                "name": "Ministry of Water, Sanitation and Irrigation",
+                "code": "MOWSI",
+                "color": "#0693e3",
+                "description": "Water resources, sanitation, and irrigation systems"
+            }
+        ]
+    },
+    "agencies": {
+        "source_file": "database/seeders/MinistrySeeder.php",
+        "source_status": "reference, unverified; draft import",
+        "rows": [
+            {
+                "ministry": "MOT",
+                "name": "Kenya Tourism Board",
+                "code": "KTB"
+            },
+            {
+                "ministry": "MOT",
+                "name": "Kenya Wildlife Service",
+                "code": "KWS"
+            },
+            {
+                "ministry": "MOA",
+                "name": "Agriculture and Food Authority",
+                "code": "AFA"
+            },
+            {
+                "ministry": "MOA",
+                "name": "Kenya Plant Health Inspectorate Service",
+                "code": "KEPHIS"
+            },
+            {
+                "ministry": "MOH",
+                "name": "Kenya Medical Research Institute",
+                "code": "KEMRI"
+            },
+            {
+                "ministry": "MOH",
+                "name": "Pharmacy and Poisons Board",
+                "code": "PPB"
+            },
+            {
+                "ministry": "MOTI",
+                "name": "Kenya Export Promotion and Branding Agency",
+                "code": "KEPROBA"
+            },
+            {
+                "ministry": "MICDE",
+                "name": "Communications Authority of Kenya",
+                "code": "CA"
+            },
+            {
+                "ministry": "MOE",
+                "name": "Teachers Service Commission",
+                "code": "TSC"
+            },
+            {
+                "ministry": "MOTI2",
+                "name": "Kenya National Highways Authority",
+                "code": "KeNHA"
+            }
+        ]
+    },
+    "products": {
+        "source_file": "database/seeders/MarketplaceSeeder.php",
+        "source_status": "reference, unverified; draft import",
+        "rows": [
+            {
+                "county": "kilifi",
+                "cat": "agriculture-produce",
+                "name": "Kilifi Cashew Nuts (Raw)",
+                "desc": "Premium sun-dried cashew nuts from smallholder farms in Kilifi County. Rich, buttery taste.",
+                "unit": "kg",
+                "variants": [
+                    {
+                        "name": "1 kg pack",
+                        "price": 950,
+                        "compare": 1200
+                    },
+                    {
+                        "name": "500 g pack",
+                        "price": 520
+                    }
+                ],
+                "featured": true
+            },
+            {
+                "county": "mombasa",
+                "cat": "food-beverage",
+                "name": "Mombasa Spice Blend (Pilau Masala)",
+                "desc": "Authentic Swahili pilau masala ground fresh at Kongowea spice market. Cardamom, cumin, cloves, cinnamon.",
+                "unit": "jar",
+                "variants": [
+                    {
+                        "name": "250 g jar",
+                        "price": 450
+                    },
+                    {
+                        "name": "500 g jar",
+                        "price": 800
+                    }
+                ],
+                "featured": true
+            },
+            {
+                "county": "kisii",
+                "cat": "crafts-artisan",
+                "name": "Kisii Soapstone Sculpture",
+                "desc": "Hand-carved soapstone by Gusii artisans of Tabaka. Each piece is unique.",
+                "unit": "piece",
+                "variants": [
+                    {
+                        "name": "Small (15 cm)",
+                        "price": 1500
+                    },
+                    {
+                        "name": "Large (30 cm)",
+                        "price": 3800
+                    }
+                ],
+                "featured": true
+            },
+            {
+                "county": "narok",
+                "cat": "crafts-artisan",
+                "name": "Maasai Beaded Necklace",
+                "desc": "Traditional Maasai beadwork made by women cooperatives in Narok. Ceremonial patterns.",
+                "unit": "piece",
+                "variants": [
+                    {
+                        "name": "Single strand",
+                        "price": 1200
+                    },
+                    {
+                        "name": "Triple strand",
+                        "price": 2600
+                    }
+                ]
+            },
+            {
+                "county": "nyeri",
+                "cat": "agriculture-produce",
+                "name": "Nyeri AA Coffee Beans",
+                "desc": "High-altitude AA-grade Arabica from the slopes of Mt. Kenya. Washed process, bright acidity.",
+                "unit": "kg",
+                "variants": [
+                    {
+                        "name": "1 kg bag",
+                        "price": 1400,
+                        "compare": 1650
+                    },
+                    {
+                        "name": "250 g bag",
+                        "price": 420
+                    }
+                ]
+            },
+            {
+                "county": "kericho",
+                "cat": "agriculture-produce",
+                "name": "Kericho Purple Tea",
+                "desc": "Rare purple tea cultivar grown only in Kericho highlands. Antioxidant-rich, smooth finish.",
+                "unit": "pack",
+                "variants": [
+                    {
+                        "name": "100 g pack",
+                        "price": 900
+                    }
+                ]
+            },
+            {
+                "county": "kitui",
+                "cat": "food-beverage",
+                "name": "Kitui Wild Honey",
+                "desc": "Raw, unfiltered honey from acacia woodlands of Kitui. Harvested by community beekeepers.",
+                "unit": "jar",
+                "variants": [
+                    {
+                        "name": "500 g jar",
+                        "price": 650
+                    },
+                    {
+                        "name": "1 kg jar",
+                        "price": 1150
+                    }
+                ]
+            },
+            {
+                "county": "lamu",
+                "cat": "home-decor",
+                "name": "Lamu Swahili Carved Door Frame",
+                "desc": "Hand-carved mvule hardwood frame in the Lamu style by island master carpenters.",
+                "unit": "piece",
+                "variants": [
+                    {
+                        "name": "Standard (60 cm)",
+                        "price": 18500
+                    }
+                ]
+            },
+            {
+                "county": "turkana",
+                "cat": "crafts-artisan",
+                "name": "Turkana Woven Basket (Ekiongo)",
+                "desc": "Durable palm-leaf basket woven by Turkana women. Natural dyes, traditional patterns.",
+                "unit": "piece",
+                "variants": [
+                    {
+                        "name": "Medium",
+                        "price": 1800
+                    },
+                    {
+                        "name": "Large",
+                        "price": 2900
+                    }
+                ]
+            },
+            {
+                "county": "kajiado",
+                "cat": "textiles-apparel",
+                "name": "Maasai Shuka Blanket",
+                "desc": "Genuine Maasai shuka in classic red check. Heavyweight cotton, all-weather wrap.",
+                "unit": "piece",
+                "variants": [
+                    {
+                        "name": "Single",
+                        "price": 900
+                    },
+                    {
+                        "name": "Pair",
+                        "price": 1600
+                    }
+                ]
+            },
+            {
+                "county": "kisumu",
+                "cat": "food-beverage",
+                "name": "Lake Victoria Tilapia (Sun-Dried)",
+                "desc": "Sun-dried tilapia from Dunga beach, Kisumu. Clean-packed for long shelf life.",
+                "unit": "pack",
+                "variants": [
+                    {
+                        "name": "500 g pack",
+                        "price": 750
+                    }
+                ]
+            },
+            {
+                "county": "uasin-gishu",
+                "cat": "agriculture-produce",
+                "name": "Eldoret White Maize (Dry)",
+                "desc": "Grade-1 dry white maize from Uasin Gishu plateau farms. Milling quality.",
+                "unit": "bag",
+                "variants": [
+                    {
+                        "name": "10 kg bag",
+                        "price": 700
+                    },
+                    {
+                        "name": "25 kg bag",
+                        "price": 1550
+                    }
+                ]
+            },
+            {
+                "county": "kakamega",
+                "cat": "food-beverage",
+                "name": "Kakamega Banana Crisps",
+                "desc": "Crispy dried banana chips from Western Kenya. No added sugar, kettle-cooked.",
+                "unit": "pack",
+                "variants": [
+                    {
+                        "name": "200 g pack",
+                        "price": 350
+                    }
+                ]
+            },
+            {
+                "county": "baringo",
+                "cat": "crafts-artisan",
+                "name": "Baringo Sisal Kiondo Bag",
+                "desc": "Handwoven sisal kiondo with leather straps from Baringo weavers. Everyday carry.",
+                "unit": "piece",
+                "variants": [
+                    {
+                        "name": "Classic",
+                        "price": 2200
+                    }
+                ]
+            }
+        ]
+    },
+    "cms_pages": {
+        "source_file": "database/seeders/CmsDefaultContentSeeder.php",
+        "source_status": "reference, unverified; draft import",
+        "rows": [
+            {
+                "slug": "about",
+                "title": "About KICC",
+                "category": "about",
+                "sort_order": 1,
+                "content": "<p>The Kenyatta International Convention Centre (KICC) marked its 50th anniversary in September 2023. The magnificent masterpiece has been and still remains the country's icon and symbol since its inception in 1973. The Centre forms part of Kenya's history and a companion that defines and shapes the country's future.</p><p>It is the symbol of Kenya's capital, a symbol of socio-economic power for Kenya within the region. It is a source of identity and a national treasure of the Kenyan people.</p>"
+            },
+            {
+                "slug": "mission",
+                "title": "Mission, Vision & Mandate",
+                "category": "about",
+                "sort_order": 2,
+                "content": "<h2>Vision</h2><p>To be Africa's leading convention centre and a world-class destination for meetings, incentives, conferences and exhibitions.</p><h2>Mission</h2><p>To provide exceptional conference and event experiences that exceed expectations, contribute to Kenya's tourism growth, and position KICC as Africa's premier meeting venue.</p><h2>Mandate</h2><ul><li>Promote and position Kenya as a preferred MICE destination</li><li>Provide world-class conference and exhibition facilities</li><li>Generate revenue through venue hire and related services</li><li>Support Kenya's tourism and economic development goals</li></ul>"
+            },
+            {
+                "slug": "board",
+                "title": "KICC Board",
+                "category": "about",
+                "sort_order": 3,
+                "content": "<p>The KICC Board provides strategic leadership and oversight for Africa's premier convention centre.</p>"
+            },
+            {
+                "slug": "management",
+                "title": "KICC Management",
+                "category": "about",
+                "sort_order": 4,
+                "content": "<p>The KICC management team ensures world-class service delivery across all venues and services.</p>"
+            },
+            {
+                "slug": "history",
+                "title": "KICC History",
+                "category": "about",
+                "sort_order": 5,
+                "content": "<p>KICC marked its 50th anniversary in September 2023. The magnificent masterpiece has been and still remains the country's icon and symbol since its inception in 1973.</p>"
+            },
+            {
+                "slug": "pricing",
+                "title": "Pricing Guideline",
+                "category": "services",
+                "sort_order": 1,
+                "content": "<p>KICC offers competitive rates for its world-class facilities. For detailed pricing, contact our sales team.</p>"
+            },
+            {
+                "slug": "sustainability",
+                "title": "Sustainability",
+                "category": "info",
+                "sort_order": 1,
+                "content": "<p>KICC is committed to sustainable practices in all our operations. We continuously work to reduce our environmental impact through energy efficiency, waste management, and responsible sourcing.</p>"
+            },
+            {
+                "slug": "visitor-facilities",
+                "title": "Visitor Facilities",
+                "category": "info",
+                "sort_order": 2,
+                "content": "<p>KICC offers comprehensive visitor facilities including wheelchair accessibility, parking, information desks, first aid, and catering outlets throughout the venue.</p>"
+            },
+            {
+                "slug": "transport",
+                "title": "Transport",
+                "category": "info",
+                "sort_order": 3,
+                "content": "<p>KICC is located at Harambee Avenue, Nairobi CBD. Accessible by road, taxi, and public transport. Secure on-site parking available.</p>"
+            },
+            {
+                "slug": "helipad",
+                "title": "Helipad Services",
+                "category": "services",
+                "sort_order": 2,
+                "content": "<p>KICC features a rooftop helipad offering convenient helicopter access to and from the convention centre. Ideal for VIP arrivals and executive travel.</p>"
+            },
+            {
+                "slug": "places-to-stay",
+                "title": "Places to Stay",
+                "category": "info",
+                "sort_order": 4,
+                "content": "<p>Nairobi offers a wide range of accommodation options near KICC, from luxury hotels to budget-friendly guesthouses. Our team can assist with recommendations.</p>"
+            },
+            {
+                "slug": "opportunities",
+                "title": "Business Opportunities",
+                "category": "info",
+                "sort_order": 5,
+                "content": "<p>KICC offers partnership and business opportunities for vendors, suppliers, and service providers. Contact our procurement team for current opportunities.</p>"
+            },
+            {
+                "slug": "policy-documents",
+                "title": "Policy Documents",
+                "category": "info",
+                "sort_order": 6,
+                "content": "<p>Access KICC policy documents, terms and conditions, and regulatory compliance information.</p>"
+            },
+            {
+                "slug": "annual-reports",
+                "title": "Annual Reports",
+                "category": "info",
+                "sort_order": 7,
+                "content": "<p>Download KICC annual reports and financial statements.</p>"
+            },
+            {
+                "slug": "publications",
+                "title": "Publications",
+                "category": "info",
+                "sort_order": 8,
+                "content": "<p>KICC publications, brochures, and information materials.</p>"
+            },
+            {
+                "slug": "service-charter",
+                "title": "Service Charter",
+                "category": "about",
+                "sort_order": 6,
+                "content": "<p>KICC is committed to providing quality services to all our clients. Our service charter outlines the standards you can expect.</p><ul><li>Timely response to enquiries within 24 hours</li><li>Professional and courteous service</li><li>Clean and well-maintained facilities</li><li>Transparent pricing</li><li>Accessible facilities for all</li></ul>"
+            },
+            {
+                "slug": "our-departments",
+                "title": "Our Departments",
+                "category": "about",
+                "sort_order": 7,
+                "content": "<p>KICC is organized into several departments working together to deliver world-class service.</p><ul><li>Sales & Marketing</li><li>Events & Operations</li><li>Finance & Administration</li><li>Technical Services</li><li>Catering & Hospitality</li><li>Security & Safety</li><li>Human Resources</li><li>Engineering & Maintenance</li></ul>"
+            }
+        ]
+    },
+    "team": {
+        "source_file": "database/seeders/CmsDefaultContentSeeder.php",
+        "source_status": "reference, unverified; draft import",
+        "rows": [
+            {
+                "name": "CPA Samuel Waweru Mwangi",
+                "category": "board",
+                "title": "Chairperson",
+                "bio": "Seasoned finance professional with extensive experience in accounting, financial management, and operations.",
+                "sort_order": 1
+            },
+            {
+                "name": "James Ochieng'",
+                "category": "leadership",
+                "title": "Chief Executive Officer",
+                "bio": "Leading KICC's vision as Africa's premier convention centre.",
+                "sort_order": 1
+            },
+            {
+                "name": "Grace Nyambura",
+                "category": "leadership",
+                "title": "Director, Sales & Marketing",
+                "bio": "Driving revenue growth and market positioning for KICC.",
+                "sort_order": 2
+            },
+            {
+                "name": "Peter Kamau",
+                "category": "leadership",
+                "title": "Director, Events & Operations",
+                "bio": "Ensuring world-class event delivery across all venues.",
+                "sort_order": 3
+            },
+            {
+                "name": "Dr. Mary Atieno",
+                "category": "leadership",
+                "title": "Director, Finance & Administration",
+                "bio": "Overseeing financial strategy and administrative operations.",
+                "sort_order": 4
+            }
+        ]
+    },
+    "timeline": {
+        "source_file": "database/seeders/CmsDefaultContentSeeder.php",
+        "source_status": "reference, unverified; draft import",
+        "rows": [
+            {
+                "year": "1973",
+                "title": "KICC Inception",
+                "description": "Inception of KICC as a national icon.",
+                "sort_order": 1
+            },
+            {
+                "year": "1985",
+                "title": "KICC Expansion",
+                "description": "Major expansion of KICC facilities.",
+                "sort_order": 2
+            },
+            {
+                "year": "2007",
+                "title": "Prestigious Award",
+                "description": "Best Convention Center in Africa award.",
+                "sort_order": 3
+            },
+            {
+                "year": "2023",
+                "title": "50th Anniversary",
+                "description": "KICC celebrated 50 years of service.",
+                "sort_order": 4
+            }
+        ]
+    },
+    "faqs": {
+        "source_file": "database/seeders/CmsDefaultContentSeeder.php",
+        "source_status": "reference, unverified; draft import",
+        "rows": [
+            {
+                "question": "Which Ministry does KICC fall under?",
+                "answer": "KICC is a state corporation under the Ministry of Tourism and is responsible for promoting and positioning Kenya as a preferred meetings, incentives, conferences/conventions and exhibition destination.",
+                "sort_order": 1
+            },
+            {
+                "question": "How do I book an event at KICC?",
+                "answer": "You can book an event through our online event booking form at /kicc/event-booking or call our sales team at (+254) 20 3261000.",
+                "sort_order": 2
+            },
+            {
+                "question": "What venues are available?",
+                "answer": "KICC offers Tsavo Hall, Amphitheatre, Aberdares, Lenana Hills, Shimba Hills Room, Courtyard, Lawn, Upper COMESA, Lower COMESA, and more.",
+                "sort_order": 3
+            },
+            {
+                "question": "Does KICC offer catering?",
+                "answer": "Yes, KICC provides in-house catering services for all events, from coffee breaks to state banquets.",
+                "sort_order": 4
+            },
+            {
+                "question": "Is there parking at KICC?",
+                "answer": "Yes, secure on-site parking is available for guests and exhibitors.",
+                "sort_order": 5
+            }
+        ]
+    },
+    "cms_services": {
+        "source_file": "database/seeders/CmsDefaultContentSeeder.php",
+        "source_status": "reference, unverified; draft import",
+        "rows": [
+            {
+                "title": "Audio-Visual Equipment",
+                "description": "PA systems, screens, staging and live-streaming gear for all event types.",
+                "icon": "🎧",
+                "sort_order": 1
+            },
+            {
+                "title": "Catering Services",
+                "description": "In-house catering from coffee breaks to state banquets, tailored to your event.",
+                "icon": "🍽️",
+                "sort_order": 2
+            },
+            {
+                "title": "Event Planning & Coordination",
+                "description": "Dedicated coordinators to manage every detail from booking to closing.",
+                "icon": "📋",
+                "sort_order": 3
+            },
+            {
+                "title": "Technical Support",
+                "description": "On-site technical staff for the entire duration of your event.",
+                "icon": "🔧",
+                "sort_order": 4
+            },
+            {
+                "title": "Wi-Fi & Internet Access",
+                "description": "High-density venue Wi-Fi capable of serving thousands of delegates.",
+                "icon": "📶",
+                "sort_order": 5
+            },
+            {
+                "title": "Security Services",
+                "description": "24/7 security, screening, and fire safety compliance.",
+                "icon": "🛡️",
+                "sort_order": 6
+            },
+            {
+                "title": "Parking Facilities",
+                "description": "Secure on-site parking for guests, exhibitors, and VIPs.",
+                "icon": "🅿️",
+                "sort_order": 7
+            },
+            {
+                "title": "Accessibility",
+                "description": "Step-free access, lifts, and accessible facilities throughout the venue.",
+                "icon": "♿",
+                "sort_order": 8
+            },
+            {
+                "title": "Tourist Information",
+                "description": "Visitor desk with city guides, safari information, and travel assistance.",
+                "icon": "🗺️",
+                "sort_order": 9
+            }
+        ]
+    }
+}

@@ -1,0 +1,326 @@
+[
+  {
+    "type": "pages",
+    "slug": "_contact_strip",
+    "name": "_Contact_Strip",
+    "description": "Get in Touch\n\nBook an Event",
+    "payload": {
+      "source_file": "resources/views/kicc-website/_contact_strip.blade.php",
+      "requires_editorial_review": true,
+      "original_view_sha256": "a7bfe126c3dddf732bc3211c943fff001110fbcc5b5367d27919dd98d23b9809"
+    },
+    "status": "draft"
+  },
+  {
+    "type": "pages",
+    "slug": "about",
+    "name": "About Kenyatta International Convention Centre",
+    "description": "About Kenyatta International Convention Centre\n\nAfrica's Premier Meeting Venue — A national icon since 1973.\n\nMission, Vision & Mandate\n\nOur purpose, direction and core mandate.\n\nKICC Board\n\nOur board of directors.\n\nKICC Management\n\nMeet the management team.\n\nKICC History\n\nOur journey since 1973.\n\nOrganisation Structure\n\nHow we are organised.",
+    "payload": {
+      "source_file": "resources/views/kicc-website/about.blade.php",
+      "requires_editorial_review": true,
+      "original_view_sha256": "3107c92f38a872550f584cecc44308fa02e3a4ce20c52d504cd57e46be9ebcb0"
+    },
+    "status": "draft"
+  },
+  {
+    "type": "pages",
+    "slug": "annual-reports",
+    "name": "Annual Reports",
+    "description": "Annual Reports\n\nAccess KICC annual reports and financial statements.\n\nPDF",
+    "payload": {
+      "source_file": "resources/views/kicc-website/annual-reports.blade.php",
+      "requires_editorial_review": true,
+      "original_view_sha256": "ce78231f73bbfd5f5f387f757de393f00ab288f75cbb91d4eb27a5b04e71f737"
+    },
+    "status": "draft"
+  },
+  {
+    "type": "pages",
+    "slug": "board",
+    "name": "Board",
+    "description": "Board information coming soon.\n\nNo board members listed yet.",
+    "payload": {
+      "source_file": "resources/views/kicc-website/board.blade.php",
+      "requires_editorial_review": true,
+      "original_view_sha256": "647ff5ef1e6d197a7a3ad1188ea6d1f51f366658e002368a17bdc13308568ecb"
+    },
+    "status": "draft"
+  },
+  {
+    "type": "pages",
+    "slug": "cms-page",
+    "name": "{{ $page->title ?? 'Page' }}",
+    "description": "Book an Event",
+    "payload": {
+      "source_file": "resources/views/kicc-website/cms-page.blade.php",
+      "requires_editorial_review": true,
+      "original_view_sha256": "81124280633fb2b25bc7d6ba14bd90ec02e099128c3bd580a4fa2a9eb1df4c7b"
+    },
+    "status": "draft"
+  },
+  {
+    "type": "pages",
+    "slug": "event-booking-success",
+    "name": "Event Booking Success",
+    "description": "Event Booking Success\n\nBook an Event",
+    "payload": {
+      "source_file": "resources/views/kicc-website/event-booking-success.blade.php",
+      "requires_editorial_review": true,
+      "original_view_sha256": "02920a0161cac26596f53e308839b0804085fe65193b76c854d4b196051e3f9e"
+    },
+    "status": "draft"
+  },
+  {
+    "type": "pages",
+    "slug": "event-booking",
+    "name": "Book an Event at KICC",
+    "description": "Book an Event at KICC\n\nFill in the form below and our team will get back to you within 24 hours.\n\nContact Information\n\nFirst Name *\n\nLast Name *\n\nOrganization\n\nEmail *\n\nPhone *\n\nEvent Details\n\nEvent Name\n\nEvent Type *\n\nConference\n\nSeminar\n\nWorkshop\n\nOther\n\nExpected Attendees\n\nEvent Date\n\nDuration (days)\n\nPreferred Venue\n\n— Select —\n\nView\n\npricing guidelines\n\n.\n\nAdditional Requirements\n\nCatering needed?\n\nAudio-Visual Equipment needed?\n\nAdditional Information\n\nPrevious\n\nNext\n\nSubmit Enquiry",
+    "payload": {
+      "source_file": "resources/views/kicc-website/event-booking.blade.php",
+      "requires_editorial_review": true,
+      "original_view_sha256": "47860f2f2a3b57becaa08605848d684fb4d00f5e586ba1c85073f21f396c48ae"
+    },
+    "status": "draft"
+  },
+  {
+    "type": "pages",
+    "slug": "faq",
+    "name": "Frequently Asked Questions",
+    "description": "Frequently Asked Questions\n\nNo FAQs yet.",
+    "payload": {
+      "source_file": "resources/views/kicc-website/faq.blade.php",
+      "requires_editorial_review": true,
+      "original_view_sha256": "e5b2e8e584ab25e104cee09d2832c3443049221ec1372056c3728ad71b39cb2e"
+    },
+    "status": "draft"
+  },
+  {
+    "type": "pages",
+    "slug": "helipad",
+    "name": "Helipad",
+    "description": "Helipad\n\nContent coming soon.\n\nBook an Event",
+    "payload": {
+      "source_file": "resources/views/kicc-website/helipad.blade.php",
+      "requires_editorial_review": true,
+      "original_view_sha256": "fc71b07c370d9616dc80bf0f98fb4abffa2ba3084ecd20436b334ffd8293cf16"
+    },
+    "status": "draft"
+  },
+  {
+    "type": "pages",
+    "slug": "history",
+    "name": "History",
+    "description": "No timeline events yet.",
+    "payload": {
+      "source_file": "resources/views/kicc-website/history.blade.php",
+      "requires_editorial_review": true,
+      "original_view_sha256": "4c5a210669017458b01d8dad17cbc592f646ddda0d6965cdded7153097bf9956"
+    },
+    "status": "draft"
+  },
+  {
+    "type": "pages",
+    "slug": "leadership",
+    "name": "KICC Leadership",
+    "description": "KICC Leadership\n\nNo leadership listed yet.",
+    "payload": {
+      "source_file": "resources/views/kicc-website/leadership.blade.php",
+      "requires_editorial_review": true,
+      "original_view_sha256": "1e71e79859e5703b08ca339ef48acaecb55ec4f2f871802fa2d550f008567948"
+    },
+    "status": "draft"
+  },
+  {
+    "type": "pages",
+    "slug": "management",
+    "name": "Management",
+    "description": "Management information coming soon.\n\nNo management team listed yet.",
+    "payload": {
+      "source_file": "resources/views/kicc-website/management.blade.php",
+      "requires_editorial_review": true,
+      "original_view_sha256": "31071d5ebba121c949f507acf8885923263bbdb014ec2cc97fdad5b9e8c29022"
+    },
+    "status": "draft"
+  },
+  {
+    "type": "pages",
+    "slug": "mission",
+    "name": "Mission, Vision & Mandate",
+    "description": "Mission, Vision & Mandate\n\nContent coming soon.",
+    "payload": {
+      "source_file": "resources/views/kicc-website/mission.blade.php",
+      "requires_editorial_review": true,
+      "original_view_sha256": "fc4b836e7b27519dea83a4ebd22989c617a19d3b0af7f50df27940aa522d39de"
+    },
+    "status": "draft"
+  },
+  {
+    "type": "pages",
+    "slug": "opportunities",
+    "name": "Opportunities",
+    "description": "Opportunities\n\nBook an Event",
+    "payload": {
+      "source_file": "resources/views/kicc-website/opportunities.blade.php",
+      "requires_editorial_review": true,
+      "original_view_sha256": "7e9fc9364ba6eb50e34b5c2e4f7a6f0f4c84d577750c75dbbb3c5b316ed5d238"
+    },
+    "status": "draft"
+  },
+  {
+    "type": "pages",
+    "slug": "org-structure",
+    "name": "Org Structure",
+    "description": "Org Structure\n\nBook an Event",
+    "payload": {
+      "source_file": "resources/views/kicc-website/org-structure.blade.php",
+      "requires_editorial_review": true,
+      "original_view_sha256": "82da43ef7a6b26bcdbfdd58c0f7c694f11d186a3268dc180d0e4a17407e031b5"
+    },
+    "status": "draft"
+  },
+  {
+    "type": "pages",
+    "slug": "our-departments",
+    "name": "Our Departments",
+    "description": "Our Departments\n\nKICC is organized into several departments working together to deliver world-class service.\n\nSales & Marketing\n\nEvents & Operations\n\nFinance & Administration\n\nTechnical Services\n\nCatering & Hospitality\n\nSecurity & Safety\n\nHuman Resources\n\nEngineering & Maintenance",
+    "payload": {
+      "source_file": "resources/views/kicc-website/our-departments.blade.php",
+      "requires_editorial_review": true,
+      "original_view_sha256": "8bee27eeebb16ff78fed175b19b8f1fabd9f530e3108a401f90111739232f322"
+    },
+    "status": "draft"
+  },
+  {
+    "type": "pages",
+    "slug": "places-to-stay",
+    "name": "Places To Stay",
+    "description": "Places To Stay\n\nContent coming soon.\n\nBook an Event",
+    "payload": {
+      "source_file": "resources/views/kicc-website/places-to-stay.blade.php",
+      "requires_editorial_review": true,
+      "original_view_sha256": "642d92fad09b91d58dc6c8beef88eab55c753373a09a8690132bebf4da6aa41f"
+    },
+    "status": "draft"
+  },
+  {
+    "type": "pages",
+    "slug": "policy-documents",
+    "name": "Policy Documents",
+    "description": "Policy Documents\n\nContent coming soon.\n\nBook an Event",
+    "payload": {
+      "source_file": "resources/views/kicc-website/policy-documents.blade.php",
+      "requires_editorial_review": true,
+      "original_view_sha256": "1b7d54f7215d66a8f61c3bd0db0bad387a301ba9a631f3c139b939e00d2790c0"
+    },
+    "status": "draft"
+  },
+  {
+    "type": "pages",
+    "slug": "pricing",
+    "name": "Pricing",
+    "description": "For detailed pricing, contact our sales team at\n\nor call\n\n(+254) 20 3261000\n\n.\n\nVenue\n\nCapacity\n\nType\n\nRequest a Quote",
+    "payload": {
+      "source_file": "resources/views/kicc-website/pricing.blade.php",
+      "requires_editorial_review": true,
+      "original_view_sha256": "64bd624e4030d5b6154ac7874cdc0944b1d1285e5acbef7eb9318bdcfe8344b5"
+    },
+    "status": "draft"
+  },
+  {
+    "type": "pages",
+    "slug": "publications",
+    "name": "Publications",
+    "description": "Publications\n\nKICC publications, brochures, and information materials.",
+    "payload": {
+      "source_file": "resources/views/kicc-website/publications.blade.php",
+      "requires_editorial_review": true,
+      "original_view_sha256": "d6b4afd66939a88360687b65eca8f3908531fbca9a26b2076b8d967346500ca8"
+    },
+    "status": "draft"
+  },
+  {
+    "type": "pages",
+    "slug": "service-charter",
+    "name": "Service Charter",
+    "description": "Service Charter\n\nKICC is committed to providing quality services to all our clients. Our service charter outlines the standards you can expect.\n\nTimely response to enquiries within 24 hours\n\nProfessional and courteous service\n\nClean and well-maintained facilities\n\nTransparent pricing\n\nAccessible facilities for all",
+    "payload": {
+      "source_file": "resources/views/kicc-website/service-charter.blade.php",
+      "requires_editorial_review": true,
+      "original_view_sha256": "6de2820e497a8b487575b8bf17be8d1b96b96331e2eccb4e86ed6e03a3680af3"
+    },
+    "status": "draft"
+  },
+  {
+    "type": "pages",
+    "slug": "services",
+    "name": "Coming Soon",
+    "description": "Coming Soon\n\nThis page is under construction.",
+    "payload": {
+      "source_file": "resources/views/kicc-website/services.blade.php",
+      "requires_editorial_review": true,
+      "original_view_sha256": "00aefaafa405ef5f04130f8fed7b773f58e8bd1189b5c8940abd61aaa46a4a9d"
+    },
+    "status": "draft"
+  },
+  {
+    "type": "pages",
+    "slug": "sustainability",
+    "name": "Sustainability",
+    "description": "Sustainability\n\nContent coming soon.\n\nBook an Event",
+    "payload": {
+      "source_file": "resources/views/kicc-website/sustainability.blade.php",
+      "requires_editorial_review": true,
+      "original_view_sha256": "e4655b561fd7e7cbedf42e93232c47f3cd187815b1718fc81bcb00a8950fa684"
+    },
+    "status": "draft"
+  },
+  {
+    "type": "pages",
+    "slug": "transport",
+    "name": "Transport",
+    "description": "Transport\n\nContent coming soon.\n\nBook an Event",
+    "payload": {
+      "source_file": "resources/views/kicc-website/transport.blade.php",
+      "requires_editorial_review": true,
+      "original_view_sha256": "afe47287f78bf2d3fa715534d41eb9d007b3fd74e1172cfd6fea0b0decbdaece"
+    },
+    "status": "draft"
+  },
+  {
+    "type": "pages",
+    "slug": "video-gallery",
+    "name": "Video Gallery",
+    "description": "Video Gallery\n\nNo videos yet.",
+    "payload": {
+      "source_file": "resources/views/kicc-website/video-gallery.blade.php",
+      "requires_editorial_review": true,
+      "original_view_sha256": "88533231c3c394b28342438fe005b73fac93d21b59d90e84f3c47dcf6580ffa3"
+    },
+    "status": "draft"
+  },
+  {
+    "type": "pages",
+    "slug": "virtual-tour",
+    "name": "Virtual Tour of KICC",
+    "description": "Virtual Tour of KICC\n\nExplore KICC's venues through our 360° virtual experience.",
+    "payload": {
+      "source_file": "resources/views/kicc-website/virtual-tour.blade.php",
+      "requires_editorial_review": true,
+      "original_view_sha256": "f3871ce3f82f149e2dd21f2d921bb7b6af9e2082d083ad2e96ed9900b753d6a1"
+    },
+    "status": "draft"
+  },
+  {
+    "type": "pages",
+    "slug": "visitor-facilities",
+    "name": "Visitor Facilities",
+    "description": "Visitor Facilities\n\nContent coming soon.\n\nBook an Event",
+    "payload": {
+      "source_file": "resources/views/kicc-website/visitor-facilities.blade.php",
+      "requires_editorial_review": true,
+      "original_view_sha256": "31482aa4e119591e7ba4750a7b96a4e826e9cb4fdbd3c944b35dd7ced355ec27"
+    },
+    "status": "draft"
+  }
+]

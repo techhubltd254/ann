@@ -1,0 +1,3 @@
+@extends('layouts.experience')
+@section('title',$label.' — KICC')
+@section('content')<section class="wrap rb-page"><p class="eyebrow">KICC · {{ $label }}</p><div class="rb-toolbar"><h1>{{ $label }}</h1><form method="GET"><label class="rb-field">Search {{ strtolower($label) }}<input type="search" name="q" value="{{ request('q') }}"></label><button class="btn gold">Search</button></form></div><p class="muted-xs">{{ $records->total() }} published records. Published original reference content retains its source details.</p><x-gallery :records="$records->getCollection()" :type="$type"/>@include('partials.pagination',['paginator'=>$records])</section>@endsection

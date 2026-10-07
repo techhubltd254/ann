@@ -1,0 +1,51 @@
+{
+  "schema_server": "Local MariaDB/MySQL-compatible QA, NOT TiDB",
+  "commands": [
+    {
+      "command": "php artisan config:clear",
+      "exit": 0
+    },
+    {
+      "command": "php artisan key:generate",
+      "exit": 0
+    },
+    {
+      "command": "php artisan kicc:deployment-check --local-qa",
+      "exit": 0
+    },
+    {
+      "command": "php artisan migrate --pretend",
+      "exit": 0
+    },
+    {
+      "command": "php artisan migrate --force",
+      "exit": 0
+    },
+    {
+      "command": "php artisan db:seed --class=ReferenceContentSeeder --force",
+      "exit": 0
+    },
+    {
+      "command": "php artisan storage:link",
+      "exit": 0
+    },
+    {
+      "command": "php artisan config:cache",
+      "exit": 0
+    },
+    {
+      "command": "php artisan route:cache",
+      "exit": 0
+    },
+    {
+      "command": "php artisan view:cache",
+      "exit": 0
+    }
+  ],
+  "tests_pass": true,
+  "nginx_syntax": true,
+  "fpm_syntax": true,
+  "shell_syntax": true,
+  "live_droplet_deployed": false,
+  "isolated_repo_injection_test": true
+}
