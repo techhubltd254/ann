@@ -274,6 +274,7 @@ class MediaLibraryController extends Controller
             'kind' => str_contains($data['mime'], 'video') ? 'video' : 'image',
             'size_bytes' => $data['size_bytes'],
             'status' => 'ready',
+            'uploadedByUserId' => auth()->id() ?? 1,
         ]);
         \App\Models\MediaDerivative::create([
             'media_asset_id' => $asset->id,
