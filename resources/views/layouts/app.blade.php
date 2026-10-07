@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="{{ str_replace('_', '-', app()->getLocale()) }}" data-theme="dark">
+<html lang="{{ str_replace('_', '-', app()->getLocale()) }}">
 <head>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=5.0, user-scalable=yes">
@@ -70,14 +70,10 @@
     {{-- Suppress Tailwind production warning --}}
     <script>var _cw=console.warn;console.warn=function(m){if(typeof m==="string"&&m.includes("tailwindcss.com"))return;_cw.apply(this,arguments)}</script>
     <script src="{{ asset('js/theme.js') }}"></script>
-    <script defer src="{{ asset('js/rebuild.js') }}"></script>
     <script defer src="https://cdn.jsdelivr.net/npm/hls.js@1.5.13/dist/hls.min.js"></script>
     <script defer src="{{ asset('js/media-tile.js') }}?v={{ filemtime(public_path('js/media-tile.js')) }}"></script>
     <script defer src="{{ asset('js/alpine-data.js') }}"></script>
     <link rel="stylesheet" href="{{ asset('css/colors.css') }}">
-    {{-- V2 Approved Design System --}}
-    <link rel="stylesheet" href="{{ asset('css/approved-design.css') }}">
-    <link rel="stylesheet" href="{{ asset('css/rebuild.css') }}">
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@200;300;400;500;600;700;800;900&display=swap" rel="stylesheet">
@@ -513,12 +509,10 @@ document.addEventListener('DOMContentLoaded', function() {
                 <a href="{{ route('dashboard.index') }}" class="inline-flex items-center gap-3 touch-target font-bold tracking-wide transition-all duration-200 px-4 text-xs h-9 rounded-xl bg-[#901C1E] text-gray-900 hover:bg-[#7a181a]">
                     Dashboard
                 </a>
-                <button class="theme-control inline-flex items-center gap-3 touch-target font-bold tracking-wide transition-all duration-200 px-3 text-xs h-9 rounded-xl border border-gray-200 text-gray-500 hover:bg-gray-100" type="button" data-theme-control>Theme · Dark</button>
                 <form method="POST" action="{{ route('logout') }}" class="inline">@csrf
                     <button type="submit" class="inline-flex items-center gap-3 touch-target font-bold tracking-wide transition-all duration-200 px-3 text-xs h-9 rounded-xl border border-gray-200 text-gray-500 hover:bg-gray-100">Logout</button>
                 </form>
                 @else
-                <button class="theme-control inline-flex items-center gap-3 touch-target font-bold tracking-wide transition-all duration-200 px-3 text-xs h-9 rounded-xl border border-gray-200 text-gray-500 hover:bg-gray-100" type="button" data-theme-control>Theme · Dark</button>
                 <a href="{{ route('login') }}" class="inline-flex items-center gap-3 touch-target font-bold tracking-wide transition-all duration-200 px-4 text-xs h-9 rounded-xl bg-[#FFCD05] text-[#07090F] font-bold hover:bg-[#e6b904]">Sign In</a>
                 @endauth
                 <button @click="open = !open" class="lg:hidden text-[#5A6480] hover:text-[#901C1E] p-3 touch-target" aria-label="Menu">
