@@ -56,10 +56,10 @@
 
             {{-- Sync button --}}
             <div class="pt-3">
-                <a href="{{ route('institution.admin.sync', $institution->slug) }}" class="sidebar-link text-xs bg-indigo-500/10 text-indigo-400 border border-indigo-500/20 hover:bg-indigo-500/20 mb-2">
+                <form method="POST" action="{{ route('institution.admin.sync', $institution->slug) }}" style="display:inline" onsubmit="return confirm('Confirm this action?')">@csrf<button type="submit" class="sidebar-link text-xs bg-indigo-500/10 text-indigo-400 border border-indigo-500/20 hover:bg-indigo-500/20 mb-2">
                     <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15"/></svg>
                     <span>Sync Now</span>
-                </a>
+                </button></form>
                 <div class="px-3 text-[10px] text-zinc-600">{{ $institution->synced_at ? 'Last sync: '.$institution->synced_at->diffForHumans() : 'Never synced' }}</div>
             </div>
 
@@ -86,10 +86,10 @@
                 @if(session('success'))
                 <span class="text-[10px] text-emerald-400 bg-emerald-500/10 border border-emerald-500/20 px-2.5 py-1 rounded-lg">{{ session('success') }}</span>
                 @endif
-                <a href="{{ route('institution.admin.sync', $institution->slug) }}" class="btn-primary text-xs h-8 px-3 py-0">
+                <form method="POST" action="{{ route('institution.admin.sync', $institution->slug) }}" style="display:inline" onsubmit="return confirm('Confirm this action?')">@csrf<button type="submit" class="btn-primary text-xs h-8 px-3 py-0">
                     <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15"/></svg>
                     Sync
-                </a>
+                </button></form>
                 <div class="flex items-center gap-2.5">
                     <div class="text-xs text-zinc-200 font-medium">{{ Auth::user()?->name ?? 'Admin' }}</div>
                     <div class="w-8 h-8 rounded-xl bg-gradient-to-br from-indigo-500 to-violet-600 flex items-center justify-center text-white font-bold text-xs shadow-lg shadow-indigo-500/20">{{ strtoupper(substr(Auth::user()?->name ?? 'A', 0, 1)) }}</div>
