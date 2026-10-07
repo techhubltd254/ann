@@ -12,7 +12,7 @@ class DeployKiccV2Seeder extends Seeder
     {
         $this->command->info('=== KICC V2 Deployment Seeder ===');
 
-        // Step 1: Create the kicc_v2 database
+// Step 1: Create the kicc_v2 database
         try {
             DB::statement('CREATE DATABASE IF NOT EXISTS kicc_v2 CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci');
             $this->command->info('✓ Database kicc_v2 ready');
@@ -20,7 +20,7 @@ class DeployKiccV2Seeder extends Seeder
             $this->command->warn('DB create: ' . $e->getMessage());
         }
 
-        // Step 2: Create tables in kicc_v2 using raw SQL
+        // All V2 tables use kicc_v2. prefix to keep current connection on kicc
         $this->createV2Tables();
 
         // Step 3: Run ReferenceContentSeeder against kicc_v2
@@ -42,10 +42,10 @@ class DeployKiccV2Seeder extends Seeder
         $this->command->info('--- Creating kicc_v2 tables ---');
 
         // Add is_admin to users
-        DB::statement('ALTER TABLE users ADD COLUMN IF NOT EXISTS is_admin TINYINT(1) NOT NULL DEFAULT 0');
+        DB::statement('-- Admin is_admin already exists on current users table (skip) ADD COLUMN IF NOT EXISTS is_admin TINYINT(1) NOT NULL DEFAULT 0');
 
         // Create records table
-        DB::statement('CREATE TABLE IF NOT EXISTS records (
+        DB::statement('CREATE TABLE IF NOT EXISTS kicc_v2.records (
             id CHAR(36) PRIMARY KEY,
             type VARCHAR(32) NOT NULL,
             slug VARCHAR(180) NOT NULL,
@@ -66,7 +66,7 @@ class DeployKiccV2Seeder extends Seeder
         )');
 
         // Create media_assets table
-        DB::statement('CREATE TABLE IF NOT EXISTS media_assets (
+        DB::statement('CREATE TABLE IF NOT EXISTS kicc_v2.media_assets (
             id CHAR(36) PRIMARY KEY,
             record_id CHAR(36) NOT NULL,
             disk VARCHAR(16) NOT NULL,
@@ -85,7 +85,7 @@ class DeployKiccV2Seeder extends Seeder
         )');
 
         // Create audit_events table
-        DB::statement('CREATE TABLE IF NOT EXISTS audit_events (
+        DB::statement('CREATE TABLE IF NOT EXISTS kicc_v2.audit_events (
             id BIGINT UNSIGNED AUTO_INCREMENT PRIMARY KEY,
             user_id BIGINT UNSIGNED NULL,
             action VARCHAR(80) NOT NULL,
@@ -96,7 +96,7 @@ class DeployKiccV2Seeder extends Seeder
         )');
 
         // Create enquiries table
-        DB::statement('CREATE TABLE IF NOT EXISTS enquiries (
+        DB::statement('CREATE TABLE IF NOT EXISTS kicc_v2.enquiries (
             id CHAR(36) PRIMARY KEY,
             record_id CHAR(36) NOT NULL,
             name VARCHAR(180) NOT NULL,
@@ -126,7 +126,7 @@ class DeployKiccV2Seeder extends Seeder
             unset($payload['name'], $payload['slug'], $payload['description'], $payload['desc']);
             $payload['source_file'] = 'database/data/counties.json';
             $payload['requires_editorial_review'] = true;
-            DB::table('records')->updateOrInsert(
+            DB::table('kicc_v2.records')->updateOrInsert(
                 ['type' => 'counties', 'slug' => $c['slug']],
                 [
                     'id' => (string) Str::uuid(),
@@ -151,7 +151,7 @@ class DeployKiccV2Seeder extends Seeder
             $payload = $s;
             unset($payload['name'], $payload['slug'], $payload['description']);
             $payload['source_file'] = 'database/data/sectors.json';
-            DB::table('records')->updateOrInsert(
+            DB::table('kicc_v2.records')->updateOrInsert(
                 ['type' => 'sectors', 'slug' => $s['slug']],
                 [
                     'id' => (string) Str::uuid(),
@@ -177,7 +177,7 @@ class DeployKiccV2Seeder extends Seeder
         $idMap = [];
 
         foreach ($institutions as $inst) {
-            $countyRecord = DB::table('records')
+            $countyRecord = DB::table('kicc_v2.records')
                 ->where('type', 'counties')
                 ->where('payload->source_id', $inst->county_id)
                 ->first();
@@ -201,7 +201,7 @@ class DeployKiccV2Seeder extends Seeder
             ];
 
             $uuid = (string) Str::uuid();
-            DB::table('records')->insert([
+            DB::table('kicc_v2.records')->insert([
                 'id' => $uuid,
                 'type' => 'institutions',
                 'slug' => $inst->slug,
@@ -219,7 +219,7 @@ class DeployKiccV2Seeder extends Seeder
         $this->command->info("  ✓ {$count} institutions imported");
 
         // Import media assets (videos)
-        $assets = DB::table('media_assets')
+        $assets = DB::table('kicc_v2.media_assets')
             ->where('kind', 'video')
             ->where('status', 'ready')
             ->get();
@@ -228,7 +228,7 @@ class DeployKiccV2Seeder extends Seeder
         foreach ($assets as $asset) {
             $recordId = null;
             if (in_array($asset->owner_type, ['App\\Models\\County', 'county'])) {
-                $recordId = DB::table('records')
+                $recordId = DB::table('kicc_v2.records')
                     ->where('type', 'counties')
                     ->where('payload->source_id', $asset->owner_id)
                     ->value('id');
@@ -238,7 +238,7 @@ class DeployKiccV2Seeder extends Seeder
             if (!$recordId) continue;
 
             try {
-                DB::table('media_assets')->insert([
+                DB::table('kicc_v2.media_assets')->insert([
                     'id' => (string) Str::uuid(),
                     'record_id' => $recordId,
                     'disk' => $asset->disk ?? 'r2',
@@ -270,13 +270,13 @@ class DeployKiccV2Seeder extends Seeder
             foreach ($products as $prod) {
                 $name = $prod['name'] ?? 'Product';
                 $slug = Str::slug($name . '-' . substr($instRecordId, 0, 6));
-                $exists = DB::table('records')
+                $exists = DB::table('kicc_v2.records')
                     ->where('type', 'products')
                     ->where('name', $name)
                     ->where('parent_id', $instRecordId)
                     ->exists();
                 if ($exists) continue;
-                DB::table('records')->insert([
+                DB::table('kicc_v2.records')->insert([
                     'id' => (string) Str::uuid(),
                     'type' => 'products',
                     'slug' => $slug,
@@ -302,6 +302,15 @@ class DeployKiccV2Seeder extends Seeder
 
     private function createAdmin(): void
     {
+        // Ensure users table has is_admin column
+        try {
+            DB::statement('ALTER TABLE users ADD COLUMN is_admin TINYINT(1) NOT NULL DEFAULT 0');
+        } catch (\Throwable) {}
+        
+        // Ensure admin user has is_admin flag
+        DB::table('users')->where('email', 'admin@kicc.go.ke')->update(['is_admin' => true]);
+        
+        // Also ensure admin user exists in users table (in case of clean DB)
         $exists = DB::table('users')->where('email', 'admin@kicc.go.ke')->exists();
         if (!$exists) {
             DB::table('users')->insert([
@@ -314,8 +323,7 @@ class DeployKiccV2Seeder extends Seeder
             ]);
             $this->command->info('✓ Admin user created');
         } else {
-            DB::table('users')->where('email', 'admin@kicc.go.ke')->update(['is_admin' => true]);
-            $this->command->info('✓ Admin user updated (is_admin=true)');
+            $this->command->info('✓ Admin user confirmed (is_admin=true)');
         }
     }
 }
