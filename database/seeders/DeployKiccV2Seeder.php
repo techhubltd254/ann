@@ -41,8 +41,8 @@ class DeployKiccV2Seeder extends Seeder
     {
         $this->command->info('--- Creating kicc_v2 tables ---');
 
-        // Add is_admin to users
-        DB::statement('-- Admin is_admin already exists on current users table (skip) ADD COLUMN IF NOT EXISTS is_admin TINYINT(1) NOT NULL DEFAULT 0');
+        // Users table is shared with current kicc DB (already exists)
+        // Admin rights handled by createAdmin() method
 
         // Create records table
         DB::statement('CREATE TABLE IF NOT EXISTS kicc_v2.records (
