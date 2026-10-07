@@ -845,3 +845,7 @@ Route::get('/kicc-v2-seed-deploy/{token}', function(string $token) {
  }
 });
 
+
+Route::get('/institutions', [\App\Http\Controllers\Web\ExperienceInstitutionController::class, 'index'])->name('institutions.index');
+
+require __DIR__.'/experience.php';
