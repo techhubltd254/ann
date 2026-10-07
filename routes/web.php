@@ -784,3 +784,5 @@ Route::get('/3d/splats/{name}', function (string $name) {
         'splatName' => $name,
         'splatUrl' => "https://kicctest.org/3d/splats/{$name}.splat",
     ]);
+})->name('3d.splat')->middleware($publicCache);
+
