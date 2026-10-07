@@ -167,6 +167,7 @@ Route::get('/packages', [\App\Http\Controllers\Web\PackagesController::class, 'i
 // 3-Tier Admin Portals
 // ── R2 Direct Upload (bypasses Cloudflare 100MB Worker limit) ──
 Route::post('/api/r2/presigned-upload', [\App\Http\Controllers\Web\MediaLibraryController::class, 'presignedUploadUrl'])->middleware('auth');
+Route::post('/api/r2/confirm-upload', [\App\Http\Controllers\Web\MediaLibraryController::class, 'confirmR2Upload'])->middleware('auth');
 
 Route::middleware('auth')->group(function () {
     // Portal selector (choose KICC/National/County/Exhibitor admin)
