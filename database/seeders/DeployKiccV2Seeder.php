@@ -302,15 +302,11 @@ class DeployKiccV2Seeder extends Seeder
 
     private function createAdmin(): void
     {
-        // Ensure users table has is_admin column
-        try {
-            DB::statement('ALTER TABLE users ADD COLUMN is_admin TINYINT(1) NOT NULL DEFAULT 0');
-        } catch (\Throwable) {}
+        // Ensure admin has is_admin flag (column must exist first)
+        try { DB::statement('ALTER TABLE users ADD COLUMN is_admin TINYINT(1) NOT NULL DEFAULT 0'); } catch (\Throwable) {}
         
-        // Ensure admin user has is_admin flag
         DB::table('users')->where('email', 'admin@kicc.go.ke')->update(['is_admin' => true]);
         
-        // Also ensure admin user exists in users table (in case of clean DB)
         $exists = DB::table('users')->where('email', 'admin@kicc.go.ke')->exists();
         if (!$exists) {
             DB::table('users')->insert([
