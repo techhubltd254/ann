@@ -773,46 +773,4 @@ Route::get('/3d/splats/{name}', function (string $name) {
 
 // One-shot: create Mombasa sector video MediaAssets from existing R2 files
 
-Route::get('/fix-mombasa-sector-videos/{token}', function(string $token) {
-    if ($token !== 'kicc-seed-2026x') abort(403);
-    $mombasa = \App\Models\County::where('slug', 'mombasa')->first();
-    $uid = auth()->id() ?? 1;
-    $ownerType = \App\Models\County::class;
-    $created = [];
-    
-    // Only sectors that have institution hero videos already uploaded
-    $sectors = [
-        'tourism' => 'institutions/tamarind-mombasa/hero/tamarind-mombasa-hero.mp4',
-        'culture' => 'institutions/bombolulu-workshop/hero/bombolulu-workshop-hero.mp4',
-    ];
-    
-    foreach ($sectors as $slug => $r2path) {
-        \App\Models\MediaAsset::forSlot($ownerType, $mombasa->id, "sector_video_{$slug}")->delete();
-        $asset = \App\Models\MediaAsset::create([
-            'uuid' => (string) \Illuminate\Support\Str::uuid(),
-            'owner_id' => $mombasa->id, 'owner_type' => $ownerType,
-            'slot' => "sector_video_{$slug}", 'disk' => 'r2', 'path' => $r2path,
-            'original_name' => "{$slug}.mp4", 'mime' => 'video/mp4',
-            'kind' => 'video', 'size_bytes' => 0, 'status' => 'ready',
-            'uploadedByUserId' => $uid, 'contentType' => 'video/mp4',
-        ]);
-        $created[] = "{$slug}: #{$asset->id}";
-    }
-    
-    \Illuminate\Support\Facades\Cache::flush();
-    return response()->json(['county_id' => $mombasa->id, 'created' => $created]);
-});
 
-Route::get('/clean-mombasa-broken-sector-vids/{token}', function(string $token) {
-    if ($token !== 'kicc-seed-2026x') abort(403);
-    $mombasa = \App\Models\County::where('slug', 'mombasa')->first();
-    // Only keep tourism and culture — delete everything else
-    $keep = ['sector_video_tourism', 'sector_video_culture'];
-    $deleted = \App\Models\MediaAsset::where('owner_type', \App\Models\County::class)
-        ->where('owner_id', $mombasa->id)
-        ->where('slot', 'like', 'sector_video_%')
-        ->whereNotIn('slot', $keep)
-        ->delete();
-    \Illuminate\Support\Facades\Cache::flush();
-    return response()->json(['deleted' => $deleted, 'county_id' => $mombasa->id]);
-});
