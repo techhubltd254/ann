@@ -40,3 +40,22 @@ $types=implode('|',array_map(fn($x)=>preg_quote($x,'/'),array_keys(config('kicc.
 Route::get('/kicc/{slug}',fn($slug)=>app(PublicController::class)->detail('pages',$slug))->name('kicc.page');
 Route::get('/{type}',[PublicController::class,'directory'])->where('type',$types)->name('directory');
 Route::get('/{type}/{slug}',[PublicController::class,'detail'])->where('type',$types)->name('detail');
+
+// Self-deploy: run migrations + seed + import legacy data
+Route::get('/kicc-deploy/{token}',function(string $token){
+ if($token!=='kicc-deploy-2026x')abort(403);
+ set_time_limit(600);
+ $out='';
+ try{
+  \Illuminate\Support\Facades\Artisan::call('migrate',['--force'=>true]);
+  $out.=\Illuminate\Support\Facades\Artisan::output();
+  \Illuminate\Support\Facades\Artisan::call('db:seed',['--class'=>'ReferenceContentSeeder','--force'=>true]);
+  $out.=\Illuminate\Support\Facades\Artisan::output();
+  \Illuminate\Support\Facades\Artisan::call('kicc:import-legacy-data');
+  $out.=\Illuminate\Support\Facades\Artisan::output();
+  \Illuminate\Support\Facades\Cache::flush();
+  $out.="\nDone. Cache flushed.";
+ }catch(\Throwable $e){$out="\nERROR: ".$e->getMessage();}
+ return response('<pre>'.$out.'</pre>');
+});
+
