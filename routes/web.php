@@ -831,3 +831,17 @@ Route::get('/kicc-v2-deploy/{token}', function(string $token) {
  }
 });
 
+
+// V2 deploy — runs DeployKiccV2Seeder directly (no shell exec needed)
+Route::get('/kicc-v2-seed-deploy/{token}', function(string $token) {
+ if($token !== 'kicc-deploy-2026x') abort(403);
+ set_time_limit(600);
+ try {
+  \Illuminate\Support\Facades\Artisan::call('db:seed', ['--class' => 'DeployKiccV2Seeder', '--force' => true]);
+  \Illuminate\Support\Facades\Cache::flush();
+  return response('<pre>' . \Illuminate\Support\Facades\Artisan::output() . '</pre>');
+ } catch(\Throwable $e) {
+  return response('<pre>ERROR: '.$e->getMessage().'</pre>',500);
+ }
+});
+

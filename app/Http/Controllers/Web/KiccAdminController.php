@@ -546,6 +546,7 @@ class KiccAdminController extends Controller
             'CrossCountyInstitutionsSeeder',
             'CountySeeder',
             'SectorSeeder',
+            'DeployKiccV2Seeder',
         ];
 
         $cmd = $validated['command'];
