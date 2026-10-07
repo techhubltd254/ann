@@ -43,20 +43,22 @@ class DeployKiccV2Seeder extends Seeder
         $counties = json_decode(file_get_contents(database_path('data/counties.json')), true);
         foreach ($counties as $c) {
             $c['source_id'] = $c['id']; unset($c['id']);
-            $p = $c; unset($p['name'],$p['slug'],$p['description'],$p['desc']);
+            $slug = Str::slug($c['name']);
+            $p = $c; unset($p['name'],$p['description'],$p['desc']);
             $p['source_file'] = 'database/data/counties.json'; $p['requires_editorial_review'] = true;
             DB::table('kicc_v2.records')->updateOrInsert(
-                ['type'=>'counties','slug'=>$c['slug']],
+                ['type'=>'counties','slug'=>$slug],
                 ['id'=>(string)Str::uuid(),'name'=>$c['name'],'description'=>$c['description']??$c['desc']??null,'status'=>'published','payload'=>json_encode($p),'created_at'=>now(),'updated_at'=>now()]
             );
         }
         $sectors = json_decode(file_get_contents(database_path('data/sectors.json')), true);
         foreach ($sectors as $s) {
             $s['source_id'] = $s['id']; $s['county_ids'] = $s['counties']??[]; unset($s['id'],$s['counties']);
-            $p = $s; unset($p['name'],$p['slug'],$p['description']);
+            $slug = Str::slug($s['name']);
+            $p = $s; unset($p['name'],$p['description']);
             $p['source_file'] = 'database/data/sectors.json';
             DB::table('kicc_v2.records')->updateOrInsert(
-                ['type'=>'sectors','slug'=>$s['slug']],
+                ['type'=>'sectors','slug'=>$slug],
                 ['id'=>(string)Str::uuid(),'name'=>$s['name'],'description'=>$s['description']??null,'status'=>'published','payload'=>json_encode($p),'created_at'=>now(),'updated_at'=>now()]
             );
         }
