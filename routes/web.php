@@ -785,3 +785,15 @@ Route::get('/3d/splats/{name}', function (string $name) {
         'splatUrl' => "https://kicctest.org/3d/splats/{$name}.splat",
     ]);
 })->name('3d.splat')->middleware($publicCache);
+
+// Temp: get institution IDs
+Route::get('/diag-inst-ids/{token}', function(string $token) {
+    if ($token !== 'kicc-seed-2026x') abort(403);
+    $slugs = ['tamarind-mombasa','akamba-handicraft','bombolulu-workshop','kakuzi-plc','gatura-greens','eliper-hotel','guka-cucu-coffee-farm','muranga-university-of-science-and-technology','sagana-raid-hotel','kimakia-fishing-grounds'];
+    $result = [];
+    foreach ($slugs as $s) {
+        $inst = \App\Models\CountyInstitution::where('slug', $s)->first();
+        $result[$s] = $inst ? ['id'=>$inst->id, 'name'=>$inst->name, 'county_id'=>$inst->county_id] : null;
+    }
+    return response()->json($result);
+});
