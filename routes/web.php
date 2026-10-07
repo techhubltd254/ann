@@ -772,47 +772,31 @@ Route::get('/3d/splats/{name}', function (string $name) {
 
 
 // One-shot: create Mombasa sector video MediaAssets from existing R2 files
+
 Route::get('/fix-mombasa-sector-videos/{token}', function(string $token) {
     if ($token !== 'kicc-seed-2026x') abort(403);
     $mombasa = \App\Models\County::where('slug', 'mombasa')->first();
-    if (!$mombasa) return 'county not found';
+    $uid = auth()->id() ?? 1;
+    $ownerType = \App\Models\County::class;
+    $created = [];
     
+    // Only sectors that have institution hero videos already uploaded
     $sectors = [
-        'tourism'  => 'institutions/tamarind-mombasa/hero/tamarind-mombasa-hero.mp4',
-        'culture'  => 'institutions/bombolulu-workshop/hero/bombolulu-workshop-hero.mp4',
-        'health'   => 'institutions/coast-general-hospital/hero/coast-general-hospital-hero.mp4',
-        'education'=> 'institutions/kemfri-mombasa/hero/kemfri-mombasa-hero.mp4',
-        'industry' => 'institutions/kenya-suitcase-manufacturers/hero/kenya-suitcase-manufacturers-hero.mp4',
-        'commerce' => 'institutions/kongowea-market/hero/kongowea-market-hero.mp4',
+        'tourism' => 'institutions/tamarind-mombasa/hero/tamarind-mombasa-hero.mp4',
+        'culture' => 'institutions/bombolulu-workshop/hero/bombolulu-workshop-hero.mp4',
     ];
     
-    $created = [];
-    $ownerType = \App\Models\County::class;
-    $uid = auth()->id() ?? 1;
-    
     foreach ($sectors as $slug => $r2path) {
-        // Delete old
         \App\Models\MediaAsset::forSlot($ownerType, $mombasa->id, "sector_video_{$slug}")->delete();
-        try {
-            $asset = \App\Models\MediaAsset::create([
-                'uuid' => (string) \Illuminate\Support\Str::uuid(),
-                'owner_id' => $mombasa->id,
-                'owner_type' => $ownerType,
-                'slot' => "sector_video_{$slug}",
-                'disk' => 'r2',
-                'path' => $r2path,
-                'original_name' => "{$slug}.mp4",
-                'mime' => 'video/mp4',
-                'kind' => 'video',
-                'size_bytes' => 0,
-                'status' => 'ready',
-                'uploadedByUserId' => $uid,
-                'contentType' => 'video/mp4',
-            ]);
-            $created[] = "{$slug}: #{$asset->id} → {$r2path}";
-        } catch (\Throwable $e) {
-            $created[] = "{$slug}: FAILED — {$e->getMessage()}";
-        }
+        $asset = \App\Models\MediaAsset::create([
+            'uuid' => (string) \Illuminate\Support\Str::uuid(),
+            'owner_id' => $mombasa->id, 'owner_type' => $ownerType,
+            'slot' => "sector_video_{$slug}", 'disk' => 'r2', 'path' => $r2path,
+            'original_name' => "{$slug}.mp4", 'mime' => 'video/mp4',
+            'kind' => 'video', 'size_bytes' => 0, 'status' => 'ready',
+            'uploadedByUserId' => $uid, 'contentType' => 'video/mp4',
+        ]);
+        $created[] = "{$slug}: #{$asset->id}";
     }
     
     \Illuminate\Support\Facades\Cache::flush();
