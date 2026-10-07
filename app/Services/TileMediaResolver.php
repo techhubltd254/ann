@@ -294,12 +294,15 @@ class TileMediaResolver
         $sector = Sector::where('slug', $sectorSlug)->first();
         if (!$sector) return null;
 
-        $entityIds = SectorEntity::where('county_id', $county->id)
+        $entities = SectorEntity::where('county_id', $county->id)
             ->where('sector_id', $sector->id)
-            ->pluck('id');
+            ->where(function ($q) { $q->where('is_published', true)->orWhere('isPublished', true); })
+            ->get();
 
-        if ($entityIds->isEmpty()) return null;
+        if ($entities->isEmpty()) return null;
 
+        // 1. 4d_video on SectorEntity (highest priority — explicitly placed media)
+        $entityIds = $entities->pluck('id');
         $asset = MediaAsset::where('owner_type', SectorEntity::class)
             ->whereIn('owner_id', $entityIds)
             ->where('slot', '4d_video')
@@ -307,8 +310,22 @@ class TileMediaResolver
             ->with('derivatives')
             ->inRandomOrder()
             ->first();
+        if ($asset) return $asset;
 
-        return $asset;
+        // 2. Institution hero videos for institutions with entities in this sector
+        $instIds = $entities->where('entity_type', CountyInstitution::class)->pluck('entity_id')->unique();
+        if ($instIds->isNotEmpty()) {
+            $asset = MediaAsset::where('owner_type', CountyInstitution::class)
+                ->whereIn('owner_id', $instIds)
+                ->where('slot', 'hero_video')
+                ->ready()
+                ->with('derivatives')
+                ->inRandomOrder()
+                ->first();
+            if ($asset) return $asset;
+        }
+
+        return null;
     }
 
     /**
