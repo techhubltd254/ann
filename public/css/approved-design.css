@@ -27,7 +27,7 @@
   --sidebar-w:264px;
 }
 *,*::before,*::after{box-sizing:border-box}
-html,body{margin:0;padding:0;background:var(--bg-deep-black)
+html,body{margin:0;padding:0}
 html{scroll-behavior:smooth}
 body{
   background:var(--dark-canvas); color:var(--text);
@@ -3023,41 +3023,3 @@ html[data-theme] .tm-gallery :is(.tm-copy p,.tm-note){color:var(--ui-muted)!impo
 @media(min-width:1000px){.tm-tile:hover{transform:translateY(-4px)}}
 @media(max-width:760px){.tm-head{display:block}.tm-head .btn{margin-top:25px}.tm-tile,.tm-gallery[data-tm-table="products"] .tm-tile{flex-basis:91%}.tm-track{gap:16px}.tm-window{border-radius:22px}.tm-copy{display:block}.tm-price{margin-top:17px}.tm-copy h3{font-size:30px}.tm-head h2{font-size:clamp(32px,10vw,52px)!important}.tm-admin-record{grid-template-columns:1fr}.tm-admin-preview{max-width:260px}.tm-dialog{padding:22px}.tm-badge{top:13px;left:13px;font-size:9px}.tm-open-film{left:13px;bottom:13px}#chapter-makers .tm-tile:nth-child(even){margin-top:0}.tm-mode{max-width:170px;line-height:1.6;text-align:right}}
 @media(prefers-reduced-motion:reduce){.tm-track{scroll-behavior:auto!important}.tm-tile{transition:none;transform:none!important}#chapter-makers .tm-tile:nth-child(even){margin-top:0}}
-/* ════════════════════════════════════════════════════════
-   KICC GLOSSY BLACK — 2026 Redesign
-   ════════════════════════════════════════════════════════ */
-:root{
-  --bg-deep-black:#08080a;
-  --bg-gloss-surface:radial-gradient(120% 80% at 50% 0%, #221316 0%, #0d0a0b 60%, #050505 100%);
-  --kicc-red:#d32f2f; --kicc-red-glow:rgba(211,47,47,0.45);
-  --kicc-amber:#f59e0b; --kicc-amber-bright:#fbbf24;
-  --text-pure-white:#ffffff; --text-muted:#e2e8f0;
-  --border-gloss:rgba(255,255,255,0.14);
-  --glass-bg:rgba(255,255,255,0.06);
-  --glass-blur:blur(22px) saturate(1.4);
-  --shadow-card:0 24px 60px rgba(211,47,47,0.25);
-  --shadow-gold:0 0 60px rgba(251,191,36,0.35);
-  --radius:20px; --radius-sm:12px; --radius-xs:8px;
-  --ease-out:cubic-bezier(0.22,1,0.36,1);
-  --font-head:"Montserrat",sans-serif;
-  --font-ui:"Inter",system-ui,-apple-system,sans-serif;
-}
-.hero-wrapper{min-height:100vh;width:100%;background:var(--bg-gloss-surface);position:relative;overflow:hidden;display:flex;flex-direction:column;align-items:center;justify-content:center}
-.kicc-logo-fullscreen{width:100%;max-width:95vw;height:auto;display:block;margin:0 auto;filter:drop-shadow(0 15px 35px var(--kicc-red-glow))}
-.nav-glass{position:fixed;top:0;left:0;right:0;z-index:100;background:rgba(8,8,10,0.85);backdrop-filter:var(--glass-blur);-webkit-backdrop-filter:var(--glass-blur);border-bottom:1px solid var(--border-gloss);padding:12px 28px;display:flex;align-items:center;justify-content:space-between}
-.nav-glass .nav-links{display:flex;gap:8px;align-items:center}
-.nav-glass .nav-links a{padding:8px 16px;font-size:13px;font-weight:500;color:var(--text-muted);border-radius:var(--radius-xs);transition:all .2s var(--ease-out)}
-.nav-glass .nav-links a:hover{background:rgba(255,255,255,0.06);color:var(--text-pure-white)}
-.nav-glass .nav-cta{display:flex;gap:8px;align-items:center}
-.hero-content{position:relative;z-index:2;text-align:center;padding:120px 28px 60px}
-.hero-content .tagline{font-family:var(--font-head);font-weight:900;font-size:clamp(2.4rem,5.5vw,4.6rem);color:var(--text-pure-white);line-height:1.08;margin:30px 0 0;letter-spacing:-.02em}
-.hero-content .tagline em{color:var(--kicc-red);text-shadow:0 0 25px var(--kicc-red-glow)}
-.hero-content .subtitle{color:var(--text-muted);font-size:clamp(1rem,2vw,1.25rem);max-width:720px;margin:20px auto 0;line-height:1.6}
-.hero-content .cta-buttons{display:flex;flex-wrap:wrap;gap:14px;justify-content:center;margin-top:46px}
-.hero-content .cta-buttons .btn{display:inline-flex;align-items:center;gap:8px;padding:12px 28px;border-radius:var(--radius-sm);font-size:14px;font-weight:600;transition:all .3s var(--ease-out);cursor:pointer}
-.hero-content .cta-buttons .btn.gold{background:linear-gradient(135deg,var(--kicc-amber-bright),var(--kicc-amber));color:var(--bg-deep-black);box-shadow:0 4px 20px rgba(251,191,36,0.3)}
-.hero-content .cta-buttons .btn.gold:hover{box-shadow:0 8px 35px rgba(251,191,36,0.5);transform:translateY(-2px)}
-.hero-content .cta-buttons .btn.ghost{background:rgba(255,255,255,0.06);border:1px solid var(--border-gloss);color:var(--text-pure-white);backdrop-filter:blur(8px)}
-.hero-content .cta-buttons .btn.ghost:hover{background:rgba(255,255,255,0.12);border-color:rgba(255,255,255,0.3);transform:translateY(-2px)}
-.hero-sheen{position:absolute;inset:0;pointer-events:none;background:radial-gradient(circle at 70% 15%,rgba(255,255,255,0.04) 0%,transparent 50%)}
-.hero-sheen::after{content:"";position:absolute;inset:0;background:radial-gradient(circle at 30% 85%,rgba(211,47,47,0.03) 0%,transparent 50%)}
