@@ -64,7 +64,6 @@
              @if(isset($errors) && $errors->any())
             <div class="mb-4 px-5 py-3 rounded-xl bg-red-500/10 border border-red-500/20 text-red-400 text-sm">{{ $errors->first() }}</div>
             @endif
-            @endisset
 
             {{--  OVERVIEW  --}}
             <div x-show="tab === 'overview'" x-transition:enter.duration.200ms>
