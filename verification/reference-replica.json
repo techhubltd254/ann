@@ -1,6 +1,6 @@
 {
   "reference_sha256": "9862880f9e9fdf2ed422a05c1a8635a9f1c968b13e50038a56bd20cc0ab8e070",
-  "release": "reference-replica-v2",
+  "release": "reference-replica-v3",
   "canonical_sections": [
     "chapter-top",
     "chapter-nation",

@@ -85,8 +85,8 @@ jobs:
             # The checkout SHA, not stale server Git metadata, identifies the rsync payload.
             test -s .deploy-source-sha
             SOURCE_SHA=$(cat .deploy-source-sha)
-            printf '{"commit":"%s","branch":"main","ui_release":"reference-replica-v2"}\n' "$SOURCE_SHA" > public/RELEASE.json
+            printf '{"commit":"%s","branch":"main","ui_release":"reference-replica-v3"}\n' "$SOURCE_SHA" > public/RELEASE.json
             systemctl reload php8.4-fpm
             curl --fail --retry 5 --retry-delay 2 --max-time 30 -s http://127.0.0.1/counties -H 'Host: kicctest.org' -o /tmp/kicc-deploy-smoke.html
-            grep -q 'reference-replica-v2' /tmp/kicc-deploy-smoke.html
+            grep -q 'reference-replica-v3' /tmp/kicc-deploy-smoke.html
             echo "=== deployed source $SOURCE_SHA ==="

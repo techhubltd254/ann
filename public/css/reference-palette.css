@@ -78,3 +78,9 @@ html[data-theme] #app .tile-body,html[data-theme] #app .tile-body :is(.muted-xs,
 html[data-theme] #app .tile-body .badge.grey{background:color-mix(in srgb,var(--brand-black) 85%,transparent)!important;color:var(--brand-white)!important}
 html[data-theme] #app .tile-body .badge.gold{background:var(--brand-yellow)!important;color:var(--brand-black)!important;-webkit-text-fill-color:var(--brand-black)!important}
 .county-image-disclosure,.product-image-disclosure{display:block;font-size:10px;line-height:1.5;margin-top:6px}.product-image-disclosure{color:var(--ui-muted)!important}
+
+/* Legacy body-local variables must not override the approved root palette. */
+html:root[data-theme] body.experience-world{--ui-bg:var(--x-bg)!important;--ui-surface:var(--x-surface)!important;--ui-raised:var(--x-card)!important;--ui-glass:linear-gradient(145deg,var(--x-card),var(--x-surface))!important;--ui-ink:var(--x-ink)!important;--ui-muted:var(--x-muted)!important}
+html:root[data-theme] #chapter-halls.ed-plate{--stage-ink:var(--ui-ink)!important;background:var(--ui-surface)!important;color:var(--ui-ink)!important}
+html:root[data-theme] #app #chapter-halls.ed-plate :is(h1,h2,h3,h4,p,.ed-label,.ed-chapter-num,.ed-lead){color:var(--ui-ink)!important;-webkit-text-fill-color:var(--ui-ink)!important}
+html:root[data-theme] body.experience-world :is(.ex-shot,.rb-fallback,.ex-empty){background:var(--ui-surface)!important;color:var(--ui-ink)!important}
