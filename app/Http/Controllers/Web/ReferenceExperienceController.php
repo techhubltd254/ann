@@ -59,7 +59,12 @@ class ReferenceExperienceController extends Controller
           ['Transfers','⇄','Active airport transfer providers and quoted rates.',$transfers->map(fn($t)=>[$t->provider_name.' · '.$t->vehicle_type,'KES '.number_format($t->price)])->all()],
           ['Rentals','◎','Rental offers must be published by their responsible provider.',[]]
         ];
-        return $tables;
+        $secure = function ($value) use (&$secure) {
+            if (is_array($value)) return array_map($secure, $value);
+            if (is_string($value)) return preg_replace('~^http://kicctest\\.org(?=/|$)~', 'https://kicctest.org', $value);
+            return $value;
+        };
+        return $secure($tables);
     }
 
     public function data()
