@@ -182,7 +182,7 @@ document.addEventListener('alpine:init', () => {
 
     <div class="absolute inset-0 bg-black/60" @click="$store.pd.close()"></div>
 
-    <div class="absolute right-0 top-0 h-full w-full max-w-2xl bg-[#161A22]/95 backdrop-blur-md border-l border-white/10 overflow-y-auto p-6 shadow-2xl"
+    <div class="absolute right-0 top-0 h-full w-full max-w-2xl bg-[#0B0B0B]/95 backdrop-blur-md border-l border-white/10 overflow-y-auto p-6 shadow-2xl"
          @click.stop>
         <div class="flex items-center justify-between pb-4 border-b border-white/10 mb-5">
             <div>
@@ -218,7 +218,7 @@ document.addEventListener('alpine:init', () => {
                 </div>
             </div>
 
-            <div x-show="!$store.pd.previewVideo && $store.pd.previewImage" class="h-48 bg-[#0B0D11] rounded-xl overflow-hidden mb-5" style="pointer-events:none">
+            <div x-show="!$store.pd.previewVideo && $store.pd.previewImage" class="h-48 bg-[#0B0B0B] rounded-xl overflow-hidden mb-5" style="pointer-events:none">
                 <img :src="$store.pd.previewImage" class="w-full h-full object-cover" style="pointer-events:none">
             </div>
 

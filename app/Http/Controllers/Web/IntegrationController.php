@@ -12,7 +12,7 @@ class IntegrationController extends Controller
     // ─── GIS MAPS ───
     public function map(County $county)
     {
-        return view('integrations.map', compact('county'));
+        return view('experience.pages.integrations.map', compact('county'));
     }
 
     // ─── WEATHER ───
@@ -33,7 +33,7 @@ class IntegrationController extends Controller
                 \Illuminate\Support\Facades\Log::warning("Weather for {$county->slug}: " . $e->getMessage());
             }
         }
-        return view('integrations.weather', compact('county', 'weather'));
+        return view('experience.pages.integrations.weather', compact('county', 'weather'));
     }
 
     // ─── INTEGRATION SETTINGS (admin) ───
@@ -51,7 +51,7 @@ class IntegrationController extends Controller
             ['name' => 'M-Pesa Payments', 'status' => 'active', 'config' => 'STK Push via Daraja API'],
             ['name' => 'Stripe Payments', 'status' => env('STRIPE_KEY') ? 'active' : 'inactive', 'config' => env('STRIPE_KEY') ? 'Live mode' : 'Not configured'],
         ];
-        return view('integrations.settings', compact('integrations'));
+        return view('experience.pages.integrations.settings', compact('integrations'));
     }
 
     public function updateWeatherKey(Request $request)

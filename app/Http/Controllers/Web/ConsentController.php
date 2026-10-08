@@ -17,7 +17,7 @@ class ConsentController extends Controller
     public function show($slug)
     {
         $form = ConsentForm::where('slug', $slug)->where('is_active', true)->firstOrFail();
-        return view('consent.show', compact('form'));
+        return view('experience.pages.consent.show', compact('form'));
     }
 
     /**
@@ -97,7 +97,7 @@ class ConsentController extends Controller
         $form = ConsentForm::where('slug', $slug)->firstOrFail();
         $record = ConsentRecord::findOrFail($record);
 
-        return view('consent.confirmation', compact('form', 'record'));
+        return view('experience.pages.consent.confirmation', compact('form', 'record'));
     }
 
     /**
@@ -107,7 +107,7 @@ class ConsentController extends Controller
     {
         $request->validate(['reference' => 'required|integer|exists:consent_records,id']);
         $record = ConsentRecord::with('consentForm')->findOrFail($request->reference);
-        return view('consent.verify', compact('record'));
+        return view('experience.pages.consent.verify', compact('record'));
     }
 
     /**
@@ -115,6 +115,6 @@ class ConsentController extends Controller
      */
     public function physical()
     {
-        return view('consent.physical');
+        return view('experience.pages.consent.physical');
     }
 }

@@ -21,21 +21,21 @@ class KiccWebsiteController extends Controller
         $articles = Article::published()->latest('published_at')->paginate(12);
         $categories = Article::published()->select('category')->distinct()->pluck('category');
         $featured = Article::published()->latest('published_at')->first();
-        return view('kicc-website.news.index', compact('articles', 'categories', 'featured'));
+        return view('experience.pages.kicc-website.news.index', compact('articles', 'categories', 'featured'));
     }
 
     public function newsShow($slug)
     {
         $article = Article::published()->where('slug', $slug)->firstOrFail();
         $related = Article::published()->where('category', $article->category)->where('id', '!=', $article->id)->take(3)->get();
-        return view('kicc-website.news.show', compact('article', 'related'));
+        return view('experience.pages.kicc-website.news.show', compact('article', 'related'));
     }
 
     // ─── ABOUT US (delegated to CmsController) ───
     public function eventBookingForm()
     {
         $venues = Venue::orderBy('name')->get();
-        return view('kicc-website.event-booking', compact('venues'));
+        return view('experience.pages.kicc-website.event-booking', compact('venues'));
     }
 
     public function eventBookingStore(Request $request)
@@ -66,19 +66,19 @@ class KiccWebsiteController extends Controller
     public function eventBookingSuccess($reference)
     {
         $booking = EventBooking::where('reference', $reference)->firstOrFail();
-        return view('kicc-website.event-booking-success', compact('booking'));
+        return view('experience.pages.kicc-website.event-booking-success', compact('booking'));
     }
 
     // ─── JOBS ───
     public function jobs()
     {
         $jobs = JobListing::where('is_active', true)->where(function ($q) { $q->whereNull('closing_date')->orWhere('closing_date', '>=', now()); })->latest()->paginate(25);
-        return view('kicc-website.jobs.index', compact('jobs'));
+        return view('experience.pages.kicc-website.jobs.index', compact('jobs'));
     }
 
     public function jobsShow(JobListing $job)
     {
-        return view('kicc-website.jobs.show', compact('job'));
+        return view('experience.pages.kicc-website.jobs.show', compact('job'));
     }
 
     public function jobsApply(Request $request, JobListing $job)
@@ -114,21 +114,21 @@ class KiccWebsiteController extends Controller
     public function faq() { return app(\App\Http\Controllers\Web\CmsController::class)->faq(); }
     public function videoGallery() { return app(\App\Http\Controllers\Web\CmsController::class)->videoGallery(); }
     public function services() { return app(\App\Http\Controllers\Web\CmsController::class)->services(); }
-    public function sustainability() { $page = \App\Models\Page::where('slug','sustainability')->firstOrNew([]); return view('kicc-website.sustainability', compact('page')); }
-    public function visitorFacilities() { $page = \App\Models\Page::where('slug','visitor-facilities')->firstOrNew([]); return view('kicc-website.visitor-facilities', compact('page')); }
-    public function transport() { $page = \App\Models\Page::where('slug','transport')->firstOrNew([]); return view('kicc-website.transport', compact('page')); }
-    public function helipad() { $page = \App\Models\Page::where('slug','helipad')->firstOrNew([]); return view('kicc-website.helipad', compact('page')); }
-    public function placesToStay() { $page = \App\Models\Page::where('slug','places-to-stay')->firstOrNew([]); return view('kicc-website.places-to-stay', compact('page')); }
-    public function opportunities() { $page = \App\Models\Page::where('slug','opportunities')->firstOrNew([]); return view('kicc-website.opportunities', compact('page')); }
-    public function policyDocuments() { $page = \App\Models\Page::where('slug','policy-documents')->firstOrNew([]); return view('kicc-website.policy-documents', compact('page')); }
-    public function virtualTour() { return view('kicc-website.virtual-tour'); }
-    public function orgStructure() { return view('kicc-website.org-structure'); }
+    public function sustainability() { $page = \App\Models\Page::where('slug','sustainability')->firstOrNew([]); return view('experience.pages.kicc-website.sustainability', compact('page')); }
+    public function visitorFacilities() { $page = \App\Models\Page::where('slug','visitor-facilities')->firstOrNew([]); return view('experience.pages.kicc-website.visitor-facilities', compact('page')); }
+    public function transport() { $page = \App\Models\Page::where('slug','transport')->firstOrNew([]); return view('experience.pages.kicc-website.transport', compact('page')); }
+    public function helipad() { $page = \App\Models\Page::where('slug','helipad')->firstOrNew([]); return view('experience.pages.kicc-website.helipad', compact('page')); }
+    public function placesToStay() { $page = \App\Models\Page::where('slug','places-to-stay')->firstOrNew([]); return view('experience.pages.kicc-website.places-to-stay', compact('page')); }
+    public function opportunities() { $page = \App\Models\Page::where('slug','opportunities')->firstOrNew([]); return view('experience.pages.kicc-website.opportunities', compact('page')); }
+    public function policyDocuments() { $page = \App\Models\Page::where('slug','policy-documents')->firstOrNew([]); return view('experience.pages.kicc-website.policy-documents', compact('page')); }
+    public function virtualTour() { return view('experience.pages.kicc-website.virtual-tour'); }
+    public function orgStructure() { return view('experience.pages.kicc-website.org-structure'); }
 
     // ─── NEW KICC PAGES ───
-    public function annualReports() { $page = \App\Models\Page::where('slug','annual-reports')->firstOrNew([]); return view('kicc-website.annual-reports', compact('page')); }
-    public function publications() { $page = \App\Models\Page::where('slug','publications')->firstOrNew([]); return view('kicc-website.publications', compact('page')); }
-    public function serviceCharter() { $page = \App\Models\Page::where('slug','service-charter')->firstOrNew([]); return view('kicc-website.service-charter', compact('page')); }
-    public function leadership() { $members = \App\Models\TeamMember::where('is_active',true)->orderBy('sort_order')->get(); return view('kicc-website.leadership', compact('members')); }
-    public function ourDepartments() { $page = \App\Models\Page::where('slug','our-departments')->firstOrNew([]); return view('kicc-website.our-departments', compact('page')); }
+    public function annualReports() { $page = \App\Models\Page::where('slug','annual-reports')->firstOrNew([]); return view('experience.pages.kicc-website.annual-reports', compact('page')); }
+    public function publications() { $page = \App\Models\Page::where('slug','publications')->firstOrNew([]); return view('experience.pages.kicc-website.publications', compact('page')); }
+    public function serviceCharter() { $page = \App\Models\Page::where('slug','service-charter')->firstOrNew([]); return view('experience.pages.kicc-website.service-charter', compact('page')); }
+    public function leadership() { $members = \App\Models\TeamMember::where('is_active',true)->orderBy('sort_order')->get(); return view('experience.pages.kicc-website.leadership', compact('members')); }
+    public function ourDepartments() { $page = \App\Models\Page::where('slug','our-departments')->firstOrNew([]); return view('experience.pages.kicc-website.our-departments', compact('page')); }
 
 }

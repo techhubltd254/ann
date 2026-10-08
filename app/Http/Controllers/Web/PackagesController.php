@@ -22,6 +22,6 @@ class PackagesController extends Controller
             ['name' => 'Corporate', 'price' => 500000, 'slots' => 'White-label', 'features' => ['White-label platform', 'Multi-county', 'AI pipeline access', 'Enterprise SLA']],
         ];
 
-        return view('packages.index', compact('plans', 'countyPackages'));
+        return view('experience.pages.packages.index', compact('plans', 'countyPackages'));
     }
 }

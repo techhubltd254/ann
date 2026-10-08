@@ -36,7 +36,7 @@ class DashboardController extends Controller
 
         $recentOrders = Order::where('user_id', $user->id)->latest()->take(5)->get();
 
-        return view('dashboard.index', compact('stats', 'recentOrders'));
+        return view('experience.pages.dashboard.index', compact('stats', 'recentOrders'));
     }
 
     public function exhibitions()
@@ -45,7 +45,7 @@ class DashboardController extends Controller
         $exhibitions = Exhibition::where('organizer_info->email', $user->email)
             ->orderBy('created_at', 'desc')
             ->paginate(10);
-        return view('dashboard.exhibitions', compact('exhibitions'));
+        return view('experience.pages.dashboard.exhibitions', compact('exhibitions'));
     }
 
     public function bookings()
@@ -54,12 +54,12 @@ class DashboardController extends Controller
             ->where('user_id', auth()->id())
             ->orderBy('created_at', 'desc')
             ->paginate(10);
-        return view('dashboard.bookings', compact('bookings'));
+        return view('experience.pages.dashboard.bookings', compact('bookings'));
     }
 
     public function profile()
     {
-        return view('dashboard.profile');
+        return view('experience.pages.dashboard.profile');
     }
 
     public function updateProfile(Request $request)
@@ -78,7 +78,7 @@ class DashboardController extends Controller
     {
         $user = auth()->user();
         $addresses = $user->metadata['addresses'] ?? [];
-        return view('dashboard.addresses', compact('addresses'));
+        return view('experience.pages.dashboard.addresses', compact('addresses'));
     }
 
     public function saveAddress(Request $request)
@@ -128,7 +128,7 @@ class DashboardController extends Controller
     public function security()
     {
         $user = auth()->user();
-        return view('dashboard.security', compact('user'));
+        return view('experience.pages.dashboard.security', compact('user'));
     }
 
     public function toggle2fa(Request $request)
@@ -146,7 +146,7 @@ class DashboardController extends Controller
     {
         $reviews = Review::where('user_id', auth()->id())
             ->latest()->paginate(10);
-        return view('dashboard.reviews', compact('reviews'));
+        return view('experience.pages.dashboard.reviews', compact('reviews'));
     }
 
     // ── REFERRALS ──
@@ -159,7 +159,7 @@ class DashboardController extends Controller
         $referralCount = $user->metadata['referral_count'] ?? 0;
         $referralEarnings = $user->metadata['referral_earnings'] ?? 0;
 
-        return view('dashboard.referrals', compact('referralCode', 'referralUrl', 'referralCount', 'referralEarnings'));
+        return view('experience.pages.dashboard.referrals', compact('referralCode', 'referralUrl', 'referralCount', 'referralEarnings'));
     }
 
     // ── GIFT CARDS ──
@@ -170,7 +170,7 @@ class DashboardController extends Controller
             ->where('balance', '>', 0)
             ->latest()
             ->get();
-        return view('dashboard.gift-cards', compact('cards'));
+        return view('experience.pages.dashboard.gift-cards', compact('cards'));
     }
 
     // ── SELLER DASHBOARD ──
@@ -190,6 +190,6 @@ class DashboardController extends Controller
             ->limit(5)
             ->get();
 
-        return view('dashboard.seller', compact('products', 'orders', 'earnings', 'topProducts'));
+        return view('experience.pages.dashboard.seller', compact('products', 'orders', 'earnings', 'topProducts'));
     }
 }

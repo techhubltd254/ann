@@ -55,7 +55,7 @@ class AdminPortalController extends Controller
         $agencies = Agency::with('ministry')->paginate(50);
         $sectors = Sector::withCount('counties')->orderBy('name')->get();
         $counties = County::all();
-        return view('admin.national', compact('ministries', 'agencies', 'sectors', 'counties'));
+        return view('experience.pages.admin.national', compact('ministries', 'agencies', 'sectors', 'counties'));
     }
 
     public function county()

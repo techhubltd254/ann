@@ -72,17 +72,31 @@ class Product extends Model
         return $this->variants->min('price');
     }
 
+    /**
+     * A stored URL is only usable if it still resolves. The legacy Worker host
+     * (kicc-r2-media.*.workers.dev) is retired and returns 404, and the old
+     * `products.jpeg` seed stills were never uploaded — treat both as absent so
+     * the resolver can supply a real, entity-bound image instead of a broken
+     * <img>.
+     */
+    public static function usableImageUrl(?string $url): ?string
+    {
+        if (! $url || $url === '') {
+            return null;
+        }
+        foreach (['workers.dev', 'products.jpeg', 'products.jpg', 'localhost', 'data:', '.svg'] as $dead) {
+            if (str_contains($url, $dead)) {
+                return null;
+            }
+        }
+
+        return $url;
+    }
+
     public function getImageUrlAttribute(): string
     {
-        $img = $this->images->first()?->url;
-        if ($img && !str_contains($img, 'products.jpeg') && !str_contains($img, 'localhost') && !str_contains($img, 'svg')) return $img;
-        $variantImg = $this->variants->first()?->image_url;
-        if ($variantImg && !str_contains($variantImg, 'svg')) return $variantImg;
-        try {
-            return app(\App\Services\MediaFallbackResolver::class)->resolve($this);
-        } catch (\Throwable $e) {
-            return \App\Services\ThumbnailService::placeholder($this->name, $this->category?->name);
-        }
+        $media = app(\App\Services\ProductMediaResolver::class)->resolve($this);
+        return $media['url'] ?? \App\Services\ThumbnailService::placeholder($this->name, $this->category?->name);
     }
 
     public function hasModel(): bool

@@ -2,14 +2,14 @@
 
 @php
 $colors = [
-    'indigo' => ['from' => '#6366F1', 'to' => '#6366F1'],
-    'emerald' => ['from' => '#10B981', 'to' => '#10B981'],
-    'amber' => ['from' => '#F59E0B', 'to' => '#F59E0B'],
-    'violet' => ['from' => '#8B5CF6', 'to' => '#8B5CF6'],
-    'red' => ['from' => '#EF4444', 'to' => '#EF4444'],
-    'cyan' => ['from' => '#06B6D4', 'to' => '#06B6D4'],
-    'rose' => ['from' => '#F43F5E', 'to' => '#F43F5E'],
-    'sky' => ['from' => '#0EA5E9', 'to' => '#0EA5E9'],
+    'indigo' => ['from' => '#0B0B0B', 'to' => '#0B0B0B'],
+    'emerald' => ['from' => '#0B0B0B', 'to' => '#0B0B0B'],
+    'amber' => ['from' => '#FFCD05', 'to' => '#FFCD05'],
+    'violet' => ['from' => '#0B0B0B', 'to' => '#0B0B0B'],
+    'red' => ['from' => '#B3261E', 'to' => '#B3261E'],
+    'cyan' => ['from' => '#0B0B0B', 'to' => '#0B0B0B'],
+    'rose' => ['from' => '#B3261E', 'to' => '#B3261E'],
+    'sky' => ['from' => '#0B0B0B', 'to' => '#0B0B0B'],
 ];
 $c = $colors[$color] ?? $colors['indigo'];
 $pos = $growth !== null && $growth > 0;

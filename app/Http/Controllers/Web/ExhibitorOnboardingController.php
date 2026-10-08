@@ -38,7 +38,7 @@ class ExhibitorOnboardingController extends Controller
         $user = Auth::user();
         abort_unless($user?->hasAnyRole(['exhibitor', 'kicc_admin']) || $user?->account_type === 'exhibitor', 403);
 
-        return view('exhibitor.onboarding', [
+        return view('experience.pages.exhibitor.onboarding', [
             'user' => $user,
             'businessTypes' => self::BUSINESS_TYPES,
             'counties' => County::orderBy('name')->get(['id', 'name']),

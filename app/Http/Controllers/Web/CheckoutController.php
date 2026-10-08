@@ -40,7 +40,7 @@ class CheckoutController extends Controller
         if (!$cart || $cart->items->isEmpty()) {
             return redirect()->route('cart.index')->with('error', 'Your cart is empty.');
         }
-        return view('checkout.index', compact('cart'));
+        return view('experience.pages.checkout.index', compact('cart'));
     }
 
     public function store(Request $request)
@@ -234,7 +234,7 @@ class CheckoutController extends Controller
                 Log::warning('activate gift card: ' . $e->getMessage());
             }
         }
-        return view('checkout.success', compact('order'));
+        return view('experience.pages.checkout.success', compact('order'));
     }
 
     public function mpesaCallback(Request $r)

@@ -100,7 +100,7 @@ class NationalAdminController extends Controller
             ->where('metadata', 'like', '%"onboarding_complete":true%')
             ->latest()->take(50)->get();
 
-        return view('national.admin', compact(
+        return view('experience.pages.national.admin', compact(
             'tab', 'navItems', 'ministries', 'agencies', 'nationalPages',
             'stats', 'nationalHero', 'nationalFlag', 'ministryMedia',
             'counties', 'quadrantCounts', 'unclassified',

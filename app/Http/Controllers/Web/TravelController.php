@@ -89,7 +89,7 @@ class TravelController extends Controller
             ->map(fn ($h) => tap($h, fn ($x) => $x->rooms = HotelRoom::query()->where('hotel_id', $h->id)->where('is_active', 1)->orderBy('price_per_night')->get()));
         $transfers = AirportTransfer::query()->where('airport_id', $destination->id)->where('is_active', 1)->orderBy('price')->get();
 
-        return view('travel.flights', [
+        return view('experience.pages.travel.flights', [
             'origin' => $origin, 'destination' => $destination, 'date' => $data['date'],
             'flights' => $flights, 'hotels' => $hotels, 'transfers' => $transfers,
         ]);
@@ -215,7 +215,7 @@ class TravelController extends Controller
 
         $total = $flight->total + ($hotel->total ?? 0) + ($transfer->total ?? 0);
 
-        return view('travel.receipt', compact('groupRef', 'flight', 'hotel', 'transfer', 'flightDetail', 'hotelDetail', 'transferDetail', 'total'));
+        return view('experience.pages.travel.receipt', compact('groupRef', 'flight', 'hotel', 'transfer', 'flightDetail', 'hotelDetail', 'transferDetail', 'total'));
     }
 
     /** Current weather for an origin city (cached, graceful fallback). */

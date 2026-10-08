@@ -74,7 +74,7 @@ class NationalSectorController extends Controller
 
         $allSectors = Sector::where('is_active', true)->orderBy('name')->get();
 
-        return view('national.sector-show', compact(
+        return view('experience.pages.national.sector-show', compact(
             'sector', 'entities', 'total', 'page', 'hasMore', 'allSectors'
         ));
     }

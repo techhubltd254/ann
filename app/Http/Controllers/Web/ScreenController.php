@@ -34,7 +34,7 @@ class ScreenController extends Controller
             return $screen;
         });
 
-        return view('screens.index', compact('screens'));
+        return view('experience.pages.screens.index', compact('screens'));
     }
 
     public function show(Screen $screen)
@@ -46,7 +46,7 @@ class ScreenController extends Controller
             : null;
         $screen->immersive_url = $this->immersiveUrl($screen);
 
-        return view('screens.show', [
+        return view('experience.pages.screens.show', [
             'screen' => $screen,
             'adPackages' => self::adPackages(),
         ]);

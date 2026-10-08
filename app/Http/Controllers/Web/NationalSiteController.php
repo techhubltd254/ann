@@ -33,12 +33,12 @@ class NationalSiteController extends Controller
             ])
             ->values();
 
-        return view('national.index', compact('ministries', 'sectorGroups'));
+        return view('experience.pages.national.index', compact('ministries', 'sectorGroups'));
     }
 
     public function show(string $slug)
     {
         $ministry = Ministry::with('agencies')->where('slug', $slug)->where('is_active', true)->firstOrFail();
-        return view('national.site', compact('ministry'));
+        return view('experience.pages.national.site', compact('ministry'));
     }
 }

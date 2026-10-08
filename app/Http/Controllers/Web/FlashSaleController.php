@@ -11,11 +11,11 @@ class FlashSaleController extends Controller {
         $active = FlashSale::where('is_active', true)->where('starts_at', '<=', now())->where('ends_at', '>=', now())
             ->with(['products' => fn($q) => $q->with('images')->where('status','active')])->paginate(50);
         $upcoming = FlashSale::where('starts_at', '>', now())->with('products')->latest('starts_at')->paginate(50);
-        return view('ecommerce.flash-sales', compact('active','upcoming'));
+        return view('experience.pages.ecommerce.flash-sales', compact('active','upcoming'));
     }
     public function admin() {
         $sales = FlashSale::with('products')->latest()->paginate(20);
-        return view('ecommerce.admin.flash-sales', compact('sales'));
+        return view('experience.pages.ecommerce.admin.flash-sales', compact('sales'));
     }
     public function store(Request $r) {
         $data = $r->validate([

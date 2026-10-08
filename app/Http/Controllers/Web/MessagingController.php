@@ -22,7 +22,7 @@ class MessagingController extends Controller
             })
             ->latest('last_message_at')
             ->paginate(25);
-        return view('messaging.inbox', compact('conversations'));
+        return view('experience.pages.messaging.inbox', compact('conversations'));
     }
 
     public function show(Conversation $conversation)
@@ -34,7 +34,7 @@ class MessagingController extends Controller
             ->where('user_id', '!=', Auth::id())
             ->where('is_read', false)
             ->update(['is_read' => true]);
-        return view('messaging.show', compact('conversation', 'messages'));
+        return view('experience.pages.messaging.show', compact('conversation', 'messages'));
     }
 
     public function start(Request $request)

@@ -17,7 +17,7 @@ class TradeExportController extends Controller
     {
         $categories = ProductCategory::active()->orderBy('name')->get();
         $blocs = TradingBloc::where('is_active', true)->orderBy('name')->get();
-        return view('trade-agreements.eligibility-index', compact('categories', 'blocs'));
+        return view('experience.pages.trade-agreements.eligibility-index', compact('categories', 'blocs'));
     }
 
     public function checkEligibility(Request $request)
@@ -51,13 +51,13 @@ class TradeExportController extends Controller
         $matches = $query->latest()->paginate(50);
         $blocs = TradingBloc::where('is_active', true)->orderBy('name')->get();
 
-        return view('trade-agreements.eligibility-results', compact('matches', 'appliedCategory', 'appliedDestination', 'blocs'));    }
+        return view('experience.pages.trade-agreements.eligibility-results', compact('matches', 'appliedCategory', 'appliedDestination', 'blocs'));    }
 
     public function applyForm($slug)
     {
         $agreement = TradeAgreement::where('slug', $slug)->firstOrFail();
         $counties = County::orderBy('name')->get();
-        return view('trade-agreements.apply', compact('agreement', 'counties'));
+        return view('experience.pages.trade-agreements.apply', compact('agreement', 'counties'));
     }
 
     public function storeEnquiry(Request $request)
@@ -102,6 +102,6 @@ class TradeExportController extends Controller
     public function enquirySuccess($reference)
     {
         $enquiry = TradeEnquiry::where('reference', $reference)->firstOrFail();
-        return view('trade-agreements.enquiry-success', compact('enquiry'));
+        return view('experience.pages.trade-agreements.enquiry-success', compact('enquiry'));
     }
 }

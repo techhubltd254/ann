@@ -24,7 +24,7 @@ class MfaController extends Controller
             $user->email,
             $secret
         );
-        return view('auth.mfa-setup', compact('secret', 'qrCode'));
+        return view('experience.pages.auth.mfa-setup', compact('secret', 'qrCode'));
     }
 
     public function confirmSetup(Request $request)
@@ -49,7 +49,7 @@ class MfaController extends Controller
         if (!session('mfa_user_id')) {
             return redirect()->route('login');
         }
-        return view('auth.mfa-challenge');
+        return view('experience.pages.auth.mfa-challenge');
     }
 
     public function verifyChallenge(Request $request)

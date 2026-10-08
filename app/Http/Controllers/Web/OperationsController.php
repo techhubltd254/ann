@@ -41,7 +41,7 @@ class OperationsController extends Controller
             $pages = collect();
         }
 
-        return view('operations.index', compact('campaigns', 'couriers', 'zones', 'pages') + [
+        return view('experience.pages.operations.index', compact('campaigns', 'couriers', 'zones', 'pages') + [
             'automationTree' => $tree->getTree(),
         ]);
     }

@@ -1,3 +1,2 @@
-@extends('layouts.app')
-@section('title', 'Car Rentals')
-@section('content')<div class="pt-24 max-w-7xl mx-auto px-5 py-10"><h1 class="text-2xl font-black text-gray-900 mb-6">Car Rentals</h1>@if($rentals->isEmpty())<p class="text-gray-400">No car rentals listed yet.</p>@else<div class="grid sm:grid-cols-2 lg:grid-cols-3 gap-4">@foreach($rentals as $r)<div class="bg-white border border-gray-200 rounded-2xl p-4"><div class="font-bold text-gray-900">{{ $r->company_name }}</div><div class="text-xs text-gray-400">{{ ucfirst($r->vehicle_type) }} · KES {{ number_format($r->price_per_day) }}/day</div></div>@endforeach</div><div class="mt-6">{{ $rentals->links() }}</div>@endif</div>@endsection
+{{-- Compatibility name; renders the shared bright experience, not a second UI. --}}
+@extends('experience.pages.tourism.rentals')

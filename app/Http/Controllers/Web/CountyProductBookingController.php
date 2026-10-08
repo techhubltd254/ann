@@ -15,7 +15,7 @@ class CountyProductBookingController extends Controller
         abort_if($product->county_id !== $county->id, 404);
         abort_if(!$product->is_published || !$product->price, 404);
 
-        return view('counties.product-booking', compact('county', 'product'));
+        return view('experience.pages.counties.product-booking', compact('county', 'product'));
     }
 
     public function book(Request $request, County $county, CountyProduct $product)
@@ -58,6 +58,6 @@ class CountyProductBookingController extends Controller
             ->where('county_product_id', $product->id)
             ->firstOrFail();
 
-        return view('counties.product-booking-success', compact('county', 'product', 'booking'));
+        return view('experience.pages.counties.product-booking-success', compact('county', 'product', 'booking'));
     }
 }

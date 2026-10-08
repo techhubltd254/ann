@@ -13,13 +13,13 @@ class SafetyController extends Controller
         $alerts = \App\Models\SafetyAlert::with('county')->where('is_active', true)->where(function ($q) {
             $q->whereNull('expires_at')->orWhere('expires_at', '>', now());
         })->latest()->get();
-        return view('safety.alerts', compact('alerts'));
+        return view('experience.pages.safety.alerts', compact('alerts'));
     }
 
     public function reportForm()
     {
         $counties = \App\Models\County::orderBy('name')->get();
-        return view('safety.report', compact('counties'));
+        return view('experience.pages.safety.report', compact('counties'));
     }
 
     public function submitReport(Request $request)

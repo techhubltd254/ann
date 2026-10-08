@@ -45,7 +45,7 @@ class CouponController extends Controller
     public function adminIndex()
     {
         $coupons = Coupon::latest()->paginate(25);
-        return view('coupons.admin-index', compact('coupons'));
+        return view('experience.pages.coupons.admin-index', compact('coupons'));
     }
 
     public function adminStore(Request $request)

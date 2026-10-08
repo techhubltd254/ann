@@ -1,0 +1,660 @@
+[
+  {
+    "id": "01",
+    "label": "Home",
+    "prototype": "/",
+    "layout": "Shader vortex \u2192 HLS hero \u2192 content sections",
+    "interaction": "HLS hero + media-tile per section"
+  },
+  {
+    "id": "02",
+    "label": "Counties Index",
+    "prototype": "/counties",
+    "layout": "County video strip tunnel",
+    "interaction": "47 media-tile cards with hover video"
+  },
+  {
+    "id": "03",
+    "label": "County Detail",
+    "prototype": "/counties/{slug}",
+    "layout": "Terrain flyover landing \u2192 HLS hero",
+    "interaction": "HLS hero + sector media-tiles"
+  },
+  {
+    "id": "04",
+    "label": "Institution Detail",
+    "prototype": "/institutions/{slug}",
+    "layout": "4D hologram \u2192 splat \u2192 parallax video",
+    "interaction": "4D parallax depth-map + GLTF/GLB"
+  },
+  {
+    "id": "05",
+    "label": "Marketplace Index",
+    "prototype": "/marketplace",
+    "layout": "Golden vortex \u2192 product video grid",
+    "interaction": "Media-tile per product"
+  },
+  {
+    "id": "06",
+    "label": "Marketplace Show",
+    "prototype": "/marketplace/{slug}",
+    "layout": "Product zoom \u2192 3D model reveal",
+    "interaction": "GLTF model OR product video"
+  },
+  {
+    "id": "07",
+    "label": "Exhibitions Index",
+    "prototype": "/exhibitions",
+    "layout": "Card grid with live stream preview",
+    "interaction": "Media-tile per exhibition"
+  },
+  {
+    "id": "08",
+    "label": "Exhibition Show",
+    "prototype": "/exhibitions/{slug}",
+    "layout": "Booth 3D scene \u2192 live stream",
+    "interaction": "Booth 3D scene OR HLS live stream"
+  },
+  {
+    "id": "09",
+    "label": "Venues Index",
+    "prototype": "/venues",
+    "layout": "Orbit view of KICC campus \u2192 venue cards",
+    "interaction": "Shader backdrop"
+  },
+  {
+    "id": "10",
+    "label": "Venue Show",
+    "prototype": "/venues/{slug}",
+    "layout": "Single venue detail",
+    "interaction": "Shader backdrop"
+  },
+  {
+    "id": "11",
+    "label": "Screens Directory",
+    "prototype": "/screens",
+    "layout": "18 screen card gallery",
+    "interaction": "Shader backdrop"
+  },
+  {
+    "id": "12",
+    "label": "Screen Show",
+    "prototype": "/screens/{slug}",
+    "layout": "Single screen detail",
+    "interaction": "Shader backdrop"
+  },
+  {
+    "id": "13",
+    "label": "Streams Index",
+    "prototype": "/streams",
+    "layout": "Live stream grid",
+    "interaction": "HLS thumbnails"
+  },
+  {
+    "id": "14",
+    "label": "Stream Show",
+    "prototype": "/streams/{slug}",
+    "layout": "Full HLS stream world",
+    "interaction": "HLS player (full-viewport)"
+  },
+  {
+    "id": "15",
+    "label": "Travel Index",
+    "prototype": "/travel",
+    "layout": "Transport hub",
+    "interaction": "Shader backdrop"
+  },
+  {
+    "id": "16",
+    "label": "Travel Receipt",
+    "prototype": "/travel/receipt/{ref}",
+    "layout": "Booking confirmation",
+    "interaction": "Shader backdrop"
+  },
+  {
+    "id": "17",
+    "label": "3D Kenya Map",
+    "prototype": "/exhibition-3d/map",
+    "layout": "47 extruded counties",
+    "interaction": "THREE.js r170 + GSAPDirector"
+  },
+  {
+    "id": "18",
+    "label": "3D Booth Viewer",
+    "prototype": "/exhibition-3d/booth",
+    "layout": "Virtual exhibition hall",
+    "interaction": "THREE.js r170 + GSAPDirector"
+  },
+  {
+    "id": "19",
+    "label": "3D Sector Map",
+    "prototype": "/exhibition-3d/sector",
+    "layout": "Mombasa & Kilifi sector flyover",
+    "interaction": "THREE.js r170 + GSAPDirector"
+  },
+  {
+    "id": "20",
+    "label": "3D Terrain Explorer",
+    "prototype": "/exhibition-3d/terrain",
+    "layout": "Full Kenya terrain flyover",
+    "interaction": "Custom THREE.js + Simplex noise"
+  },
+  {
+    "id": "21",
+    "label": "3D Room Viewer",
+    "prototype": "/room3d/{id}/viewer",
+    "layout": "Virtual room photosphere",
+    "interaction": "THREE.js"
+  },
+  {
+    "id": "22",
+    "label": "3D Splat Viewer",
+    "prototype": "/3d/splats/{name}",
+    "layout": "Gaussian splat point-cloud",
+    "interaction": "Custom WebGL2 (zero deps)"
+  },
+  {
+    "id": "23",
+    "label": "Login",
+    "prototype": "/login",
+    "layout": "Glass card floats on minimal shader",
+    "interaction": "Card pivots from right"
+  },
+  {
+    "id": "24",
+    "label": "Admin Login",
+    "prototype": "/kicc-admin/login",
+    "layout": "EXTENDS layouts.blank \u00b7 dark minimal \u00b7 K logo (gold gradient)",
+    "interaction": "Heavy concrete door pivot, gold glow"
+  },
+  {
+    "id": "25",
+    "label": "Register",
+    "prototype": "/register",
+    "layout": "Multi-step horizontal carousel: email \u2192 6-digit code \u2192 details",
+    "interaction": "Each step slides from right"
+  },
+  {
+    "id": "26",
+    "label": "Forgot Password",
+    "prototype": "/forgot-password",
+    "layout": "Simple email form",
+    "interaction": "Form slides in"
+  },
+  {
+    "id": "27",
+    "label": "Reset Password",
+    "prototype": "/reset-password/{token}",
+    "layout": "Token + new password form",
+    "interaction": "Form slides in"
+  },
+  {
+    "id": "28",
+    "label": "User Dashboard",
+    "prototype": "/dashboard",
+    "layout": "Golden ring from login point \u2192 stats cards float in (100ms stagger)",
+    "interaction": "8 tabs: Profile, Bookings, Exhibitions, Reviews, Security, Addresses, Gift Cards, Referrals"
+  },
+  {
+    "id": "29",
+    "label": "KICC Mother Admin \u2014 overview",
+    "prototype": "/kicc-admin/overview",
+    "layout": "8+ glassmorphic KPI cards with sparkline mini-charts",
+    "interaction": "blur 18px"
+  },
+  {
+    "id": "30",
+    "label": "portals",
+    "prototype": "/kicc-admin/portals",
+    "layout": "Sub-portal links",
+    "interaction": "Portal picker cards"
+  },
+  {
+    "id": "31",
+    "label": "counties",
+    "prototype": "/kicc-admin/counties",
+    "layout": "Paginated table",
+    "interaction": "Search, per-page"
+  },
+  {
+    "id": "32",
+    "label": "institutions",
+    "prototype": "/kicc-admin/institutions",
+    "layout": "Institution cards (CountyInstitution + KICC)",
+    "interaction": "Link to per-institution admin"
+  },
+  {
+    "id": "33",
+    "label": "national",
+    "prototype": "/kicc-admin/national",
+    "layout": "Ministry cards, agency table",
+    "interaction": "Link to national admin"
+  },
+  {
+    "id": "34",
+    "label": "exhibitors",
+    "prototype": "/kicc-admin/exhibitors",
+    "layout": "Exhibitor user table",
+    "interaction": "Pagination"
+  },
+  {
+    "id": "35",
+    "label": "orders",
+    "prototype": "/kicc-admin/orders",
+    "layout": "Order table with items",
+    "interaction": "Pagination"
+  },
+  {
+    "id": "36",
+    "label": "providers",
+    "prototype": "/kicc-admin/providers",
+    "layout": "Provider certification queue",
+    "interaction": "Approve/deny actions"
+  },
+  {
+    "id": "37",
+    "label": "escrow",
+    "prototype": "/kicc-admin/escrow",
+    "layout": "Escrow table with buyer/seller",
+    "interaction": "Release button"
+  },
+  {
+    "id": "38",
+    "label": "3d_assets",
+    "prototype": "/kicc-admin/3d-assets",
+    "layout": "Upload / attach / delete",
+    "interaction": "Redirects from 3d_assets tab"
+  },
+  {
+    "id": "39",
+    "label": "pool",
+    "prototype": "/kicc-admin/pool",
+    "layout": "Selling pool balance",
+    "interaction": "Distribution status"
+  },
+  {
+    "id": "40",
+    "label": "pipelines",
+    "prototype": "/kicc-admin/pipelines",
+    "layout": "202-registered pipeline registry",
+    "interaction": "Sector filter, search, status breakdown"
+  },
+  {
+    "id": "41",
+    "label": "experiences",
+    "prototype": "/kicc-admin/experiences",
+    "layout": "Experience booking table",
+    "interaction": "Stats + total"
+  },
+  {
+    "id": "42",
+    "label": "live_events",
+    "prototype": "/kicc-admin/live_events",
+    "layout": "Stream management grid",
+    "interaction": "CRUD + stats"
+  },
+  {
+    "id": "43",
+    "label": "venues (NEW)",
+    "prototype": "/kicc-admin/venues",
+    "layout": "Paginated venue table + quick-create slide drawer",
+    "interaction": "Drawer bg var(--nv-850), spring overshoot"
+  },
+  {
+    "id": "44",
+    "label": "users",
+    "prototype": "/kicc-admin/users",
+    "layout": "User table with roles",
+    "interaction": "Pagination"
+  },
+  {
+    "id": "45",
+    "label": "hero_media",
+    "prototype": "/kicc-admin/hero_media",
+    "layout": "Landing hero video upload",
+    "interaction": "Upload form"
+  },
+  {
+    "id": "46",
+    "label": "packages",
+    "prototype": "/kicc-admin/packages",
+    "layout": "Subscription plan editor",
+    "interaction": "CRUD"
+  },
+  {
+    "id": "47",
+    "label": "analytics",
+    "prototype": "/kicc-admin/analytics",
+    "layout": "Full analytics dashboard",
+    "interaction": "Charts, stats, forecasts"
+  },
+  {
+    "id": "48",
+    "label": "integration",
+    "prototype": "/kicc-admin/integration",
+    "layout": "Service integration status",
+    "interaction": "Provider checks"
+  },
+  {
+    "id": "49",
+    "label": "pipeline-creator",
+    "prototype": "/kicc-admin/pipeline-creator",
+    "layout": "Dynamic pipeline builder",
+    "interaction": "Pipeline code/config"
+  },
+  {
+    "id": "50",
+    "label": "earnings",
+    "prototype": "/kicc-admin/earnings",
+    "layout": "Revenue dashboard",
+    "interaction": "Earnings stats, pool data"
+  },
+  {
+    "id": "51",
+    "label": "search-analytics",
+    "prototype": "/kicc-admin/search-analytics",
+    "layout": "Search query log",
+    "interaction": "Trends, frequency"
+  },
+  {
+    "id": "52",
+    "label": "cache",
+    "prototype": "/kicc-admin/cache",
+    "layout": "Cache management",
+    "interaction": "Stats, flush buttons"
+  },
+  {
+    "id": "53",
+    "label": "licence-queue",
+    "prototype": "/kicc-admin/licence-queue",
+    "layout": "Licence approval queue",
+    "interaction": "Queue management"
+  },
+  {
+    "id": "54",
+    "label": "pipeline-settings",
+    "prototype": "/kicc-admin/pipeline-settings",
+    "layout": "Pipeline configuration",
+    "interaction": "Activation settings"
+  },
+  {
+    "id": "55",
+    "label": "National Admin",
+    "prototype": "/national-admin",
+    "layout": "Ministry/agency management",
+    "interaction": "Sidebar slides, KPIs float"
+  },
+  {
+    "id": "56",
+    "label": "County Admin \u2014 overview",
+    "prototype": "/county-admin/{slug}/pro/overview",
+    "layout": "8-card KPI grid",
+    "interaction": "Nexora theme"
+  },
+  {
+    "id": "57",
+    "label": "content",
+    "prototype": "/county-admin/{slug}/pro/content",
+    "layout": "Content editor",
+    "interaction": "\u2014"
+  },
+  {
+    "id": "58",
+    "label": "images",
+    "prototype": "/county-admin/{slug}/pro/images",
+    "layout": "Image upload",
+    "interaction": "\u2014"
+  },
+  {
+    "id": "59",
+    "label": "prices",
+    "prototype": "/county-admin/{slug}/pro/prices",
+    "layout": "Price table",
+    "interaction": "\u2014"
+  },
+  {
+    "id": "60",
+    "label": "sectors",
+    "prototype": "/county-admin/{slug}/pro/sectors",
+    "layout": "Sector tiles toggle",
+    "interaction": "\u2014"
+  },
+  {
+    "id": "61",
+    "label": "products",
+    "prototype": "/county-admin/{slug}/pro/products",
+    "layout": "Product grid CRUD",
+    "interaction": "\u2014"
+  },
+  {
+    "id": "62",
+    "label": "4d",
+    "prototype": "/county-admin/{slug}/pro/4d",
+    "layout": "4D video upload",
+    "interaction": "\u2014"
+  },
+  {
+    "id": "63",
+    "label": "ads",
+    "prototype": "/county-admin/{slug}/pro/ads",
+    "layout": "Ad management",
+    "interaction": "\u2014"
+  },
+  {
+    "id": "64",
+    "label": "packages",
+    "prototype": "/county-admin/{slug}/pro/packages",
+    "layout": "Subscription plans",
+    "interaction": "\u2014"
+  },
+  {
+    "id": "65",
+    "label": "reports",
+    "prototype": "/county-admin/{slug}/pro/reports",
+    "layout": "County reports",
+    "interaction": "\u2014"
+  },
+  {
+    "id": "66",
+    "label": "housing",
+    "prototype": "/county-admin/{slug}/pro/housing",
+    "layout": "Housing projects",
+    "interaction": "\u2014"
+  },
+  {
+    "id": "67",
+    "label": "drone",
+    "prototype": "/county-admin/{slug}/pro/drone",
+    "layout": "Drone sequences",
+    "interaction": "\u2014"
+  },
+  {
+    "id": "68",
+    "label": "floor",
+    "prototype": "/county-admin/{slug}/pro/floor",
+    "layout": "Floor plans",
+    "interaction": "\u2014"
+  },
+  {
+    "id": "69",
+    "label": "consent",
+    "prototype": "/county-admin/{slug}/pro/consent",
+    "layout": "Consent form management",
+    "interaction": "\u2014"
+  },
+  {
+    "id": "70",
+    "label": "voice",
+    "prototype": "/county-admin/{slug}/pro/voice",
+    "layout": "Voice notes",
+    "interaction": "\u2014"
+  },
+  {
+    "id": "71",
+    "label": "landmark",
+    "prototype": "/county-admin/{slug}/pro/landmark",
+    "layout": "Landmarks",
+    "interaction": "\u2014"
+  },
+  {
+    "id": "72",
+    "label": "broadcast",
+    "prototype": "/county-admin/{slug}/pro/broadcast",
+    "layout": "Broadcast schedule",
+    "interaction": "\u2014"
+  },
+  {
+    "id": "73",
+    "label": "trade-hub",
+    "prototype": "/county-admin/{slug}/pro/trade-hub",
+    "layout": "Trade contacts/volumes",
+    "interaction": "\u2014"
+  },
+  {
+    "id": "74",
+    "label": "spotlight",
+    "prototype": "/county-admin/{slug}/pro/spotlight",
+    "layout": "Trader spotlights/WhatsApp",
+    "interaction": "\u2014"
+  },
+  {
+    "id": "75",
+    "label": "Institution Admin",
+    "prototype": "/institution-admin/{institution}",
+    "layout": "10 tabs: overview, profile, products, videos, sectors, team, analytics, transactions, customers, production",
+    "interaction": "Logo scales from center"
+  },
+  {
+    "id": "76",
+    "label": "Exhibitor Admin",
+    "prototype": "/exhibitor-admin",
+    "layout": "Products, orders, analytics",
+    "interaction": "Golden ring \u2192 exhibitor world"
+  },
+  {
+    "id": "77",
+    "label": "Exhibitor Onboarding",
+    "prototype": "/exhibitor-onboarding",
+    "layout": "3-question wizard \u2192 storefront created",
+    "interaction": "Step carousel, 500ms"
+  },
+  {
+    "id": "78",
+    "label": "Portal Picker",
+    "prototype": "/portal",
+    "layout": "Card grid: KICC (gold) / National (sky) / County (ocean) / Exhibitor (green)",
+    "interaction": "Cards float from different vectors"
+  },
+  {
+    "id": "79",
+    "label": "Media Library",
+    "prototype": "/media",
+    "layout": "Shader backdrop \u00b7 upload + asset grid",
+    "interaction": "\u2014"
+  },
+  {
+    "id": "80",
+    "label": "Admin Media",
+    "prototype": "/kicc-admin/media",
+    "layout": "Upload, manage, pipeline dispatch",
+    "interaction": "\u2014"
+  },
+  {
+    "id": "81",
+    "label": "Admin 3D Assets",
+    "prototype": "/kicc-admin/3d-assets",
+    "layout": "Upload splat/GLB, attach, delete",
+    "interaction": "\u2014"
+  },
+  {
+    "id": "82",
+    "label": "Admin Ecommerce",
+    "prototype": "/kicc-admin/ecommerce/*",
+    "layout": "Products, orders, analytics, import",
+    "interaction": "\u2014"
+  },
+  {
+    "id": "83",
+    "label": "Admin Live",
+    "prototype": "/kicc-admin/live",
+    "layout": "Booth auth, monitoring, system health",
+    "interaction": "\u2014"
+  },
+  {
+    "id": "84",
+    "label": "Pipeline Management",
+    "prototype": "/pipelines",
+    "layout": "Table with 50ms row stagger entry",
+    "interaction": "\u2014"
+  },
+  {
+    "id": "85",
+    "label": "Pipeline Sector",
+    "prototype": "/pipelines/{sector}",
+    "layout": "Filtered pipeline cards",
+    "interaction": "\u2014"
+  },
+  {
+    "id": "86",
+    "label": "Room3D Create",
+    "prototype": "/room3d/create",
+    "layout": "Photo upload form",
+    "interaction": "\u2014"
+  },
+  {
+    "id": "87",
+    "label": "Room3D Index",
+    "prototype": "/room3d",
+    "layout": "Room cards",
+    "interaction": "\u2014"
+  },
+  {
+    "id": "88",
+    "label": "Room3D Show",
+    "prototype": "/room3d/{id}",
+    "layout": "Room info, images",
+    "interaction": "\u2014"
+  },
+  {
+    "id": "89",
+    "label": "Operations",
+    "prototype": "/operations",
+    "layout": "Platform ops metrics",
+    "interaction": "\u2014"
+  },
+  {
+    "id": "90",
+    "label": "Reviews Admin",
+    "prototype": "/reviews",
+    "layout": "Moderation queue \u2014 approve/reject/spam",
+    "interaction": "\u2014"
+  },
+  {
+    "id": "91",
+    "label": "Trade Agreements",
+    "prototype": "/trade-agreements",
+    "layout": "B2B partnership listings",
+    "interaction": "\u2014"
+  },
+  {
+    "id": "92",
+    "label": "Consent Form",
+    "prototype": "/consent/{slug}",
+    "layout": "DPA 2019 + GDPR digital consent",
+    "interaction": "\u2014"
+  },
+  {
+    "id": "93",
+    "label": "Consent Verify",
+    "prototype": "/consent/verify",
+    "layout": "Reference lookup form",
+    "interaction": "\u2014"
+  },
+  {
+    "id": "94",
+    "label": "Consent Physical",
+    "prototype": "/consent/physical",
+    "layout": "Printable QR consent form",
+    "interaction": "\u2014"
+  }
+]

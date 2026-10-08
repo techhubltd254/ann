@@ -159,23 +159,23 @@ document.addEventListener('DOMContentLoaded', function() {
                     {
                         label: 'Actual',
                         data: forecastData.map(function(d) { return d.actual; }),
-                        borderColor: '#6366F1',
-                        backgroundColor: 'rgba(99,102,241,0.1)',
+                        borderColor: '#0B0B0B',
+                        backgroundColor: 'rgba(11,11,11,0.1)',
                         fill: true,
                         tension: 0.4,
                         pointRadius: 4,
-                        pointBackgroundColor: '#6366F1',
+                        pointBackgroundColor: '#0B0B0B',
                         borderWidth: 2,
                     },
                     {
                         label: 'Forecast',
                         data: forecastData.map(function(d) { return d.forecast; }),
-                        borderColor: '#8B5CF6',
-                        backgroundColor: 'rgba(139,92,246,0.05)',
+                        borderColor: '#0B0B0B',
+                        backgroundColor: 'rgba(11,11,11,0.05)',
                         fill: true,
                         tension: 0.4,
                         pointRadius: 3,
-                        pointBorderColor: '#8B5CF6',
+                        pointBorderColor: '#0B0B0B',
                         pointBorderWidth: 2,
                         pointBackgroundColor: 'transparent',
                         borderWidth: 2,
@@ -187,12 +187,12 @@ document.addEventListener('DOMContentLoaded', function() {
                 responsive: true, maintainAspectRatio: false,
                 interaction: { intersect: false, mode: 'index' },
                 plugins: {
-                    legend: { labels: { color: '#A1A1AA', usePointStyle: true, font: { size: 11 } } },
-                    tooltip: { backgroundColor: 'rgba(22,25,32,0.95)', titleColor: '#E2E8F0', bodyColor: '#A1A1AA', borderColor: 'rgba(255,255,255,0.06)', borderWidth: 1, padding: 12, cornerRadius: 8 }
+                    legend: { labels: { color: '#FFFFFF', usePointStyle: true, font: { size: 11 } } },
+                    tooltip: { backgroundColor: 'rgba(11,11,11,0.95)', titleColor: '#FFFFFF', bodyColor: '#FFFFFF', borderColor: 'rgba(255,255,255,0.06)', borderWidth: 1, padding: 12, cornerRadius: 8 }
                 },
                 scales: {
-                    x: { grid: { color: 'rgba(255,255,255,0.03)' }, ticks: { color: '#71717A', font: { size: 10 } } },
-                    y: { grid: { color: 'rgba(255,255,255,0.03)' }, ticks: { color: '#71717A', font: { size: 10 } } }
+                    x: { grid: { color: 'rgba(255,255,255,0.03)' }, ticks: { color: '#0B0B0B', font: { size: 10 } } },
+                    y: { grid: { color: 'rgba(255,255,255,0.03)' }, ticks: { color: '#0B0B0B', font: { size: 10 } } }
                 }
             }
         });
@@ -208,7 +208,7 @@ document.addEventListener('DOMContentLoaded', function() {
                 labels: sourceData.map(function(d) { return d.label; }),
                 datasets: [{
                     data: sourceData.map(function(d) { return d.value; }),
-                    backgroundColor: ['#6366F1', '#10B981', '#F59E0B', '#8B5CF6', '#EC4899', '#06B6D4'],
+                    backgroundColor: ['#0B0B0B', '#0B0B0B', '#FFCD05', '#0B0B0B', '#B3261E', '#0B0B0B'],
                     borderWidth: 0,
                 }]
             },
@@ -216,8 +216,8 @@ document.addEventListener('DOMContentLoaded', function() {
                 responsive: true, maintainAspectRatio: false,
                 cutout: '65%',
                 plugins: {
-                    legend: { position: 'bottom', labels: { color: '#A1A1AA', padding: 12, usePointStyle: true, font: { size: 10 } } },
-                    tooltip: { backgroundColor: 'rgba(22,25,32,0.95)', titleColor: '#E2E8F0', bodyColor: '#A1A1AA', borderColor: 'rgba(255,255,255,0.06)', borderWidth: 1, padding: 12 }
+                    legend: { position: 'bottom', labels: { color: '#FFFFFF', padding: 12, usePointStyle: true, font: { size: 10 } } },
+                    tooltip: { backgroundColor: 'rgba(11,11,11,0.95)', titleColor: '#FFFFFF', bodyColor: '#FFFFFF', borderColor: 'rgba(255,255,255,0.06)', borderWidth: 1, padding: 12 }
                 }
             }
         });
@@ -235,23 +235,23 @@ document.addEventListener('DOMContentLoaded', function() {
                     {
                         label: 'Revenue',
                         data: perfData.map(function(d) { return d.revenue; }),
-                        backgroundColor: 'rgba(99,102,241,0.7)',
+                        backgroundColor: 'rgba(11,11,11,0.7)',
                         borderRadius: 4,
                     },
                     {
                         label: 'Orders',
                         data: perfData.map(function(d) { return d.orders; }),
-                        backgroundColor: 'rgba(16,185,129,0.7)',
+                        backgroundColor: 'rgba(11,11,11,0.7)',
                         borderRadius: 4,
                     }
                 ]
             },
             options: {
                 responsive: true, maintainAspectRatio: false,
-                plugins: { legend: { labels: { color: '#A1A1AA', usePointStyle: true, font: { size: 10 } } } },
+                plugins: { legend: { labels: { color: '#FFFFFF', usePointStyle: true, font: { size: 10 } } } },
                 scales: {
-                    x: { grid: { color: 'rgba(255,255,255,0.03)' }, ticks: { color: '#71717A', font: { size: 10 } } },
-                    y: { grid: { color: 'rgba(255,255,255,0.03)' }, ticks: { color: '#71717A', font: { size: 10 } } }
+                    x: { grid: { color: 'rgba(255,255,255,0.03)' }, ticks: { color: '#0B0B0B', font: { size: 10 } } },
+                    y: { grid: { color: 'rgba(255,255,255,0.03)' }, ticks: { color: '#0B0B0B', font: { size: 10 } } }
                 }
             }
         });

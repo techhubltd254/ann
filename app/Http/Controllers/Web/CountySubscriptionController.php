@@ -25,6 +25,6 @@ class CountySubscriptionController extends Controller
         $subscribers = CountySubscriber::with('user', 'plan')->where('county_id', $county->id)->paginate(50);
         $transactions = WalletTransaction::where('county_id', $county->id)->latest('created_at')->limit(20)->get();
 
-        return view('county-subscriptions.index', compact('county', 'plan', 'config', 'allocation', 'subscribers', 'transactions'));
+        return view('experience.pages.county-subscriptions.index', compact('county', 'plan', 'config', 'allocation', 'subscribers', 'transactions'));
     }
 }

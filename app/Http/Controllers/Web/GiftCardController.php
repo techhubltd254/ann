@@ -16,7 +16,7 @@ class GiftCardController extends Controller {
         $this->payments = $payments;
     }
 
-    public function index() { return view('ecommerce.gift-cards.index'); }
+    public function index() { return view('experience.pages.ecommerce.gift-cards.index'); }
 
     public function purchase(Request $r) {
         $data = $r->validate(['amount'=>'required|numeric|min:100|max:100000','quantity'=>'integer|min:1|max:10']);

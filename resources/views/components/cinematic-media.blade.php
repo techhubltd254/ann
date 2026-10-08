@@ -16,7 +16,7 @@
     $glbUrl = $model ?? ($asset ? $asset->glbUrl() : null);
 @endphp
 
-<div class="relative overflow-hidden bg-[#0D1220] {{ $className }}"
+<div class="relative overflow-hidden bg-[#0B0B0B] {{ $className }}"
      x-data="cinematicMedia({
         video: @js($videoUrl),
         poster: @js($posterUrl),

@@ -20,12 +20,12 @@ class Room3dController extends Controller
             Log::warning('Room3d index query failed: ' . $e->getMessage());
             $rooms = new \Illuminate\Pagination\LengthAwarePaginator([], 0, 12);
         }
-        return view('room3d.index', compact('rooms'));
+        return view('experience.pages.room3d.index', compact('rooms'));
     }
 
     public function create()
     {
-        return view('room3d.create');
+        return view('experience.pages.room3d.create');
     }
 
     public function store(Request $request)
@@ -69,7 +69,7 @@ class Room3dController extends Controller
         if (!$room3d->isReady()) {
             abort(404);
         }
-        return view('room3d.show', compact('room3d'));
+        return view('experience.pages.room3d.show', compact('room3d'));
     }
 
     public function viewer(string $id)
@@ -83,7 +83,7 @@ class Room3dController extends Controller
         if (!$room3d->isReady()) {
             abort(404);
         }
-        return view('room3d.viewer', compact('room3d'));
+        return view('experience.pages.room3d.viewer', compact('room3d'));
     }
 
     public function api(string $id)

@@ -20,7 +20,7 @@ class TradeAdminController extends Controller
         $status = $request->get('status');
         if ($status) $query->where('status', $status);
         $enquiries = $query->paginate(25);
-        return view('trade-agreements.admin-enquiries', compact('enquiries', 'status'));
+        return view('experience.pages.trade-agreements.admin-enquiries', compact('enquiries', 'status'));
     }
 
     public function updateStatus(Request $request, TradeEnquiry $enquiry)

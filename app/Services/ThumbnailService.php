@@ -127,10 +127,7 @@ class ThumbnailService
     /** Generate a deterministic branded SVG placeholder (no external service). */
     public static function placeholder(string $name, ?string $category = null): string
     {
-        $palettes = [
-            ['#0b0b0b', '#1a3070'], ['#b3261e', '#b71c1c'], ['#0b0b0b', '#1a1a2e'],
-            ['#046bd2', '#0EA5E9'], ['#2D6A4F', '#40916C'], ['#8B6914', '#FFCD05'],
-        ];
+        $palettes = [['#FFFFFF', '#FFFFFF']];
         $hash = crc32($name);
         [$from, $to] = $palettes[$hash % count($palettes)];
         $initials = strtoupper(substr(trim($name), 0, 2) ?: 'KC');
@@ -142,8 +139,8 @@ class ThumbnailService
             . "<rect width=\"800\" height=\"600\" fill=\"url(#g)\"/>"
             . "<circle cx=\"650\" cy=\"80\" r=\"160\" fill=\"rgba(255,255,255,0.05)\"/>"
             . "<circle cx=\"100\" cy=\"520\" r=\"120\" fill=\"rgba(255,255,255,0.04)\"/>"
-            . "<text x=\"400\" y=\"280\" text-anchor=\"middle\" font-family=\"Inter,sans-serif\" font-size=\"140\" font-weight=\"800\" fill=\"rgba(255,255,255,0.85)\">{$initials}</text>"
-            . "<text x=\"400\" y=\"360\" text-anchor=\"middle\" font-family=\"Inter,sans-serif\" font-size=\"28\" font-weight=\"600\" fill=\"rgba(255,255,255,0.6)\">{$cat}</text>"
+            . "<text x=\"400\" y=\"280\" text-anchor=\"middle\" font-family=\"Inter,sans-serif\" font-size=\"140\" font-weight=\"800\" fill=\"rgba(179,38,30,1)\">{$initials}</text>"
+            . "<text x=\"400\" y=\"360\" text-anchor=\"middle\" font-family=\"Inter,sans-serif\" font-size=\"28\" font-weight=\"600\" fill=\"rgba(11,11,11,0.8)\">{$cat}</text>"
             . '</svg>';
 
         return 'data:image/svg+xml;base64,' . base64_encode($svg);

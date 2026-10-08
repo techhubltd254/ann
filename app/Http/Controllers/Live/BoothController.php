@@ -16,7 +16,7 @@ class BoothController extends Controller
             ->orderBy('created_at', 'desc')
             ->paginate(20);
 
-        return view('live.booths.index', compact('booths'));
+        return view('experience.pages.live.booths.index', compact('booths'));
     }
 
     public function show(Booth $booth)
@@ -24,7 +24,7 @@ class BoothController extends Controller
         $booth->load('authorization', 'liveStreams', 'meetingBookings');
         $health = app(HeartbeatService::class)->getHeartbeatHealth($booth->id);
 
-        return view('live.booths.show', compact('booth', 'health'));
+        return view('experience.pages.live.booths.show', compact('booth', 'health'));
     }
 
     public function store(Request $request)

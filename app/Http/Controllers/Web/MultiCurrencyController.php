@@ -10,7 +10,7 @@ class MultiCurrencyController extends Controller
     public function settings()
     {
         $currencies = ['KES' => 1, 'USD' => 0.0078, 'EUR' => 0.0072, 'GBP' => 0.0062, 'UGX' => 28.5, 'TZS' => 18.2, 'RWF' => 10.1];
-        return view('multi-currency.settings', compact('currencies'));
+        return view('experience.pages.multi-currency.settings', compact('currencies'));
     }
 
     public function convert(Request $request)

@@ -35,7 +35,7 @@
         <div class="border-b border-gray-100 pb-3 last:border-0">
             <div class="flex items-center justify-between mb-1">
                 <div class="flex items-center gap-2">
-                    <div class="w-7 h-7 rounded-full bg-[#0b0b0b] text-white flex items-center justify-center text-[10px] font-bold">
+                    <div class="w-7 h-7 rounded-full bg-[#0B0B0B] text-white flex items-center justify-center text-[10px] font-bold">
                         {{ strtoupper(substr($review->user_name ?? ($review->user?->name ?? 'V'), 0, 1)) }}
                     </div>
                     <div>

@@ -5,7 +5,7 @@
     'width' => 640,
     'quality' => 75,
     'blur' => null,
-    'placeholderColor' => '#e5e7eb',
+    'placeholderColor' => '#FFFFFF',
     'aspect' => null,
     'priority' => false,
 ])

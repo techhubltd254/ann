@@ -17,7 +17,7 @@ class TourismEntityController extends Controller
         if ($q = $request->get('q')) $query->where('name', 'like', "%{$q}%");
         if ($c = $request->get('county')) $query->where('county_id', $c);
         $guides = $query->paginate(20);
-        return view('tourism.guides', compact('guides'));
+        return view('experience.pages.tourism.guides', compact('guides'));
     }
 
     public function rentals(Request $request)
@@ -26,7 +26,7 @@ class TourismEntityController extends Controller
         if ($q = $request->get('q')) $query->where('company_name', 'like', "%{$q}%")->orWhere('vehicle_type', 'like', "%{$q}%");
         if ($c = $request->get('county')) $query->where('county_id', $c);
         $rentals = $query->paginate(20);
-        return view('tourism.rentals', compact('rentals'));
+        return view('experience.pages.tourism.rentals', compact('rentals'));
     }
 
     public function restaurants(Request $request)
@@ -35,12 +35,12 @@ class TourismEntityController extends Controller
         if ($q = $request->get('q')) $query->where('name', 'like', "%{$q}%")->orWhere('cuisine_type', 'like', "%{$q}%");
         if ($c = $request->get('county')) $query->where('county_id', $c);
         $restaurants = $query->paginate(20);
-        return view('tourism.restaurants', compact('restaurants'));
+        return view('experience.pages.tourism.restaurants', compact('restaurants'));
     }
 
     public function organizers(Request $request)
     {
         $organizers = EventOrganizer::where('is_active', true)->paginate(20);
-        return view('tourism.organizers', compact('organizers'));
+        return view('experience.pages.tourism.organizers', compact('organizers'));
     }
 }

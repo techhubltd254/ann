@@ -17,7 +17,7 @@ class AuthController extends Controller
 {
     public function showRegister()
     {
-        return view('auth.register');
+        return view('experience.pages.auth.register');
     }
 
     public function sendCode(Request $request)
@@ -62,7 +62,7 @@ class AuthController extends Controller
         if (!session('reg_email')) {
             return redirect()->route('register');
         }
-        return view('auth.verify', ['email' => session('reg_email')]);
+        return view('experience.pages.auth.verify', ['email' => session('reg_email')]);
     }
 
     public function verifyCode(Request $request)
@@ -113,7 +113,7 @@ class AuthController extends Controller
             return redirect()->route('dashboard.index');
         }
 
-        return view('auth.details', ['email' => $email]);
+        return view('experience.pages.auth.details', ['email' => $email]);
     }
 
     public function completeRegistration(Request $request)
@@ -166,7 +166,7 @@ class AuthController extends Controller
         if (Auth::check()) {
             return app(\App\Services\Auth\LoginRedirectService::class)->redirect(Auth::user());
         }
-        return view('auth.login');
+        return view('experience.pages.auth.login');
     }
 
     /** Hidden admin login page (accessible at /kicc-admin/login — no public link). */
@@ -175,7 +175,7 @@ class AuthController extends Controller
         if (Auth::check()) {
             return app(\App\Services\Auth\LoginRedirectService::class)->redirect(Auth::user());
         }
-        return view('auth.admin-login');
+        return view('experience.pages.auth.admin-login');
     }
 
     /** Hidden admin login POST — authenticates and redirects by role. */
@@ -357,7 +357,7 @@ class AuthController extends Controller
         if (!session('login_code_email')) {
             return redirect()->route('login');
         }
-        return view('auth.login-code', ['email' => session('login_code_email')]);
+        return view('experience.pages.auth.login-code', ['email' => session('login_code_email')]);
     }
 
     public function verifyLoginCode(Request $request)
@@ -402,7 +402,7 @@ class AuthController extends Controller
     /** Show the forgot-password form. */
     public function showForgotPassword()
     {
-        return view('auth.forgot-password');
+        return view('experience.pages.auth.forgot-password');
     }
 
     /** Send password reset link (mock — logs the link instead of sending mail). */
@@ -435,7 +435,7 @@ class AuthController extends Controller
     /** Show the reset-password form. */
     public function showResetForm(string $token)
     {
-        return view('auth.reset-password', ['token' => $token]);
+        return view('experience.pages.auth.reset-password', ['token' => $token]);
     }
 
     /** Actually reset the password. */

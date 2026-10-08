@@ -16,6 +16,6 @@ class SellerAnalyticsController extends Controller {
         $totalOrders = $orders->count();
         $totalProducts = $products->count();
         $topProducts = $products->sortByDesc(fn($p) => $orders->filter(fn($o) => $o->items->contains('product_id', $p->id))->count())->take(5);
-        return view('ecommerce.seller.analytics', compact('products','orders','totalSales','totalOrders','totalProducts','topProducts'));
+        return view('experience.pages.ecommerce.seller.analytics', compact('products','orders','totalSales','totalOrders','totalProducts','topProducts'));
     }
 }

@@ -16,10 +16,26 @@
     "skipLibCheck": true,
     "baseUrl": ".",
     "paths": {
-      "@/*": ["./src/*"],
-      "@components/*": ["./src/app/components/*"]
-    }
+      "@/*": [
+        "resources/js/*",
+        "src/*"
+      ],
+      "@components/*": [
+        "./src/app/components/*"
+      ]
+    },
+    "types": [
+      "vite/client"
+    ]
   },
-  "include": ["src/**/*.ts", "src/**/*.tsx", "resources/js/**/*.ts", "resources/js/**/*.tsx"],
-  "exclude": ["node_modules", "vendor"]
+  "include": [
+    "src/**/*.ts",
+    "src/**/*.tsx",
+    "resources/js/**/*.ts",
+    "resources/js/**/*.tsx"
+  ],
+  "exclude": [
+    "node_modules",
+    "vendor"
+  ]
 }

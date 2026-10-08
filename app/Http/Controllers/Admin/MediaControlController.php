@@ -138,7 +138,7 @@ class MediaControlController extends Controller
             return $a;
         });
 
-        return view('admin.media.manager', [
+        return view('experience.pages.admin.media.manager', [
             'assets' => $assets,
             'targets' => $this->targets(),
             'scope' => $scope,
@@ -348,7 +348,7 @@ class MediaControlController extends Controller
 
         $report = $this->orphanReport();
 
-        return view('admin.media.orphans', [
+        return view('experience.pages.admin.media.orphans', [
             'report' => $report,
             'assets' => null,
         ]);

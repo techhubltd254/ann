@@ -58,7 +58,7 @@ class MediaLibraryController extends Controller
             'exhibitions' => Exhibition::orderBy('name')->pluck('name', 'id'),
         ];
 
-        return view('admin.media.index', compact('assets', 'counts', 'attachables', 'kind', 'search', 'status'));
+        return view('experience.pages.admin.media.index', compact('assets', 'counts', 'attachables', 'kind', 'search', 'status'));
     }
 
     protected function attachmentOptions(): array
@@ -81,7 +81,7 @@ class MediaLibraryController extends Controller
     {
         $this->authorizeMediaAccess();
 
-        return view('admin.media.upload');
+        return view('experience.pages.admin.media.upload');
     }
 
     public function store(Request $request, MediaLibraryService $library): RedirectResponse
@@ -125,7 +125,7 @@ class MediaLibraryController extends Controller
             $entities[$class] = $class::orderBy('name')->pluck('name', 'id');
         }
 
-        return view('admin.media.show', compact('asset', 'engines', 'attachmentOptions', 'slots', 'entities'));
+        return view('experience.pages.admin.media.show', compact('asset', 'engines', 'attachmentOptions', 'slots', 'entities'));
     }
 
     public function attach(Request $request, MediaAsset $asset): RedirectResponse

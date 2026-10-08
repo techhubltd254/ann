@@ -18,7 +18,11 @@ class CountyController extends Controller
     public function index()
     {
         $countyIds = Cache::remember('kicc_counties_index', config('kicc.cache_ttl.public', 21600), fn () => County::orderBy('name')->pluck('id')->all());
-        $counties = County::withCount('sectors')->whereIn('id', $countyIds)->orderBy('name')->get();
+        $query = County::withCount('sectors')->whereIn('id', $countyIds);
+        $search = trim((string) request('q', ''));
+        if ($search !== '') $query->where(fn($q) => $q->where('name', 'like', '%' . $search . '%')->orWhere('capital', 'like', '%' . $search . '%'));
+        if (request('region')) $query->where('region', request('region'));
+        $counties = $query->orderBy('name')->get();
 
         // Hero media per county card — resolved through the strict mapping rule:
         // a county only plays footage whose R2 key carries its own slug. A shared
@@ -162,6 +166,9 @@ class CountyController extends Controller
             $countyHeroFallback = $fallback;
         }
 
+        // Prefer the entity's own still instead of any related borrowed footage.
+        if ($countyHeroImage) $countyHeroFallback = [];
+
         // Entity media — video pipeline for attractions, hotels, products (batched)
         $entityMedia = [];
         $resolver = app(\App\Services\TileMediaResolver::class);
@@ -218,7 +225,7 @@ class CountyController extends Controller
             return $result;
         });
 
-        return view('counties.show', compact(
+        return view('experience.pages.counties.show', compact(
             'county', 'sectors', 'sectorData',
             'featuredAttractions', 'featuredHotels', 'countyProducts',
             'exhibitions', 'linkedSectors', 'countyMedia', 'countyHeroImage', 'countyHeroFallback', 'tileMedia',
@@ -363,7 +370,7 @@ class CountyController extends Controller
 
         $services = collect();
 
-        return view('counties.sector', compact(
+        return view('experience.pages.counties.sector', compact(
             'county', 'items', 'sector', 'sectorInfo', 'sectorModel',
             'fourDVideo', 'entityVideos', 'entityPosters', 'entityHoverLoops', 'entitySplats',
             'institutionHeroVideos', 'productCounts',
@@ -539,7 +546,7 @@ class CountyController extends Controller
         } catch (\Throwable $e) {
         }
 
-        return view('counties.institution', compact(
+        return view('experience.pages.counties.institution', compact(
             'institution', 'county', 'heroAsset', 'heroVideo', 'heroHls', 'heroPoster', 'heroSplat', 'products', 'sectorEntities', 'libraryVideos',
             'institutionReviews', 'institutionReviewSeed', 'institutionReviewAvg', 'institutionReviewCount',
             'tripRecommendations', 'institutionFallbackVideos',

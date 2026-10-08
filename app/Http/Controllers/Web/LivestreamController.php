@@ -10,13 +10,13 @@ class LivestreamController extends Controller
     public function index()
     {
         $channels = DB::table('livestream_channels')->orderBy('name')->get();
-        return view('livestreams.index', compact('channels'));
+        return view('experience.pages.livestreams.index', compact('channels'));
     }
 
     public function show(string $slug)
     {
         $channel = DB::table('livestream_channels')->where('slug', $slug)->first();
         abort_unless($channel, 404);
-        return view('livestreams.show', compact('channel'));
+        return view('experience.pages.livestreams.show', compact('channel'));
     }
 }

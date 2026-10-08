@@ -32,6 +32,10 @@ class MediaFallbackResolver
 
     public function resolve($entity, string $size = 'card'): string
     {
+        if ($entity instanceof Product) {
+            $media = app(ProductMediaResolver::class)->resolve($entity);
+            return $media['url'] ?? $this->defaultUrl($entity);
+        }
         $key = $this->cacheKey($entity, $size);
         $url = Cache::remember($key, self::CACHE_TTL, function () use ($entity, $size) {
             $url = $this->resolveTree($entity, $size, 0);
@@ -77,13 +81,11 @@ class MediaFallbackResolver
     public function ownMedia($entity): ?string
     {
         if ($entity instanceof Product) {
-            $img = $entity->images()->first()?->url;
-            if ($img && !str_contains($img, 'products.jpeg') && !str_contains($img, 'localhost') && !str_contains($img, 'svg')) return $img;
-            // Skip the image_url accessor if it returns a placeholder (data URI)
-            if ($entity->images()->count() === 0) {
-                $variantImg = $entity->variants->first()?->image_url;
-                if ($variantImg && !str_contains($variantImg, 'svg')) return $variantImg;
-            }
+            // Retired-Worker URLs and never-uploaded seed stills are not usable media.
+            $img = Product::usableImageUrl($entity->images()->first()?->url);
+            if ($img) return $img;
+            $variantImg = Product::usableImageUrl($entity->variants->first()?->image_url);
+            if ($variantImg) return $variantImg;
         }
         if ($entity instanceof CountyInstitution) {
             if ($entity->logo_url && !str_contains($entity->logo_url, 'svg')) return $entity->logo_url;
@@ -255,10 +257,36 @@ class MediaFallbackResolver
 
         $hero = MediaAsset::resolveSlot(County::class, $countyId, 'hero_video');
         if ($hero) {
-            $poster = $hero->posterUrl() ?? $hero->thumbnailUrl();
-            if ($poster) return $poster;
-            $videoUrl = $hero->mp4Url() ?? $hero->url();
-            if ($videoUrl) return $this->extractFrame($videoUrl, $hero);
+            // A derivative row is not proof the object exists: the landing stand-in
+            // carries a poster path that was never uploaded. Only return a poster
+            // whose key is actually in the bucket, otherwise fall through.
+            foreach (['poster', 'thumb', 'webp'] as $kind) {
+                $d = $hero->derivatives->firstWhere('kind', $kind);
+                if ($d && $d->path && \App\Support\MediaMapping::inR2($d->path)) {
+                    return media_url() . '/' . ltrim($d->path, '/');
+                }
+            }
+            // Never extract a frame from the shared landing stand-in film.
+            if (! str_starts_with((string) $hero->path, 'landing/')) {
+                $videoUrl = $hero->mp4Url() ?? $hero->url();
+                if ($videoUrl) {
+                    $frame = $this->extractFrame($videoUrl, $hero);
+                    if ($frame) return $frame;
+                }
+            }
+        }
+
+        // The county's own still (slot fallback_image) is bound for all 47 counties,
+        // so a product never falls through to a generic placeholder tile.
+        $still = MediaAsset::where('owner_type', County::class)->where('owner_id', $countyId)
+            ->whereIn('slot', ['fallback_image', 'hero_image'])->where('status', 'ready')
+            ->latest('id')->first();
+        if ($still && \App\Support\MediaMapping::inR2($still->path)) {
+            $url = $still->thumbnailUrl();
+            if (! $url || ! \App\Support\MediaMapping::inR2($still->path)) {
+                $url = media_url() . '/' . ltrim($still->path, '/');
+            }
+            if ($url) return $url;
         }
 
         $county = County::find($countyId);

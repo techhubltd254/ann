@@ -84,7 +84,7 @@ class CountyPortalController extends Controller
 
         $countySiteUrl = route('counties.show', $county->slug);
 
-        return view('dashboards.county-exhibitor', compact(
+        return view('experience.pages.dashboards.county-exhibitor', compact(
             'county', 'tab', 'navItems', 'stats', 'products', 'exhibitors', 'orders', 'escrows', 'countySiteUrl'
         ));
     }

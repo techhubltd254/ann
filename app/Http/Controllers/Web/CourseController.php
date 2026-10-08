@@ -12,13 +12,13 @@ class CourseController extends Controller
     public function index()
     {
         $courses = Course::where('is_published', true)->paginate(12);
-        return view('lms.index', compact('courses'));
+        return view('experience.pages.lms.index', compact('courses'));
     }
 
     public function show(Course $course)
     {
         $enrolled = Auth::check() ? CourseEnrollment::where('user_id', Auth::id())->where('course_id', $course->id)->exists() : false;
-        return view('lms.show', compact('course', 'enrolled'));
+        return view('experience.pages.lms.show', compact('course', 'enrolled'));
     }
 
     public function enroll(Course $course)
@@ -31,6 +31,6 @@ class CourseController extends Controller
     public function myCourses()
     {
         $enrollments = CourseEnrollment::with('course')->where('user_id', Auth::id())->latest()->get();
-        return view('lms.my-courses', compact('enrollments'));
+        return view('experience.pages.lms.my-courses', compact('enrollments'));
     }
 }

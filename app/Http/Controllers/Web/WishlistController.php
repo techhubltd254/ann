@@ -8,7 +8,7 @@ use Illuminate\Http\Request;
 class WishlistController extends Controller {
     public function index() {
         $items = Wishlist::byUser(auth()->id())->with('wishlistable')->latest()->paginate(24);
-        return view('ecommerce.wishlist', compact('items'));
+        return view('experience.pages.ecommerce.wishlist', compact('items'));
     }
     public function toggle(Request $r) {
         $data = $r->validate(['wishlistable_type' => 'required|string', 'wishlistable_id' => 'required|integer']);

@@ -9,10 +9,10 @@ use Illuminate\Http\Request;
 class AuctionController extends Controller {
     public function index() {
         $active = Auction::active()->with('product.images','seller')->latest('ends_at')->paginate(20);
-        return view('ecommerce.auctions.index', compact('active'));
+        return view('experience.pages.ecommerce.auctions.index', compact('active'));
     }
     public function show(Auction $auction) {
-        return view('ecommerce.auctions.show', compact('auction'));
+        return view('experience.pages.ecommerce.auctions.show', compact('auction'));
     }
     public function bid(Request $r, Auction $auction) {
         if ($auction->ends_at < now()) {
@@ -26,7 +26,7 @@ class AuctionController extends Controller {
         return redirect()->back()->with('success', 'Bid placed!');
     }
     public function create() {
-        return view('ecommerce.auctions.create');
+        return view('experience.pages.ecommerce.auctions.create');
     }
     public function store(Request $r) {
         $data = $r->validate([

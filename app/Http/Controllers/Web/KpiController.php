@@ -23,7 +23,7 @@ class KpiController extends Controller
         $totalReviews = Review::where('status', 'approved')->count();
         $revenue = Order::sum('grand_total');
 
-        return view('kpi.dashboard', compact(
+        return view('experience.pages.kpi.dashboard', compact(
             'uptime', 'avgPageLoad', 'apiResponse', 'bookingCompletion',
             'paymentSuccess', 'mobileCrashRate', 'userSatisfaction',
             'totalOrders', 'totalProducts', 'totalCounties', 'totalAgents', 'totalReviews', 'revenue'

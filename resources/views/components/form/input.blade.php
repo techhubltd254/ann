@@ -11,7 +11,7 @@
            value="{{ $value ?? old($name) }}"
            @if($required) required @endif
            placeholder="{{ $placeholder }}"
-           class="w-full bg-[#F9FAFB] border {{ $errors->has($name) ? 'border-red-300' : 'border-gray-200' }} focus:border-[#F59E0B]/60 rounded-xl px-4 py-2.5 text-sm text-gray-900 placeholder:text-[#5A6480]/50 outline-none transition-colors touch-target">
+           class="w-full bg-[#FFFFFF] border {{ $errors->has($name) ? 'border-red-300' : 'border-gray-200' }} focus:border-[#FFCD05]/60 rounded-xl px-4 py-2.5 text-sm text-gray-900 placeholder:text-[#0B0B0B]/50 outline-none transition-colors touch-target">
     @error($name)
     <p class="text-red-500 text-xs mt-1">{{ $message }}</p>
     @enderror

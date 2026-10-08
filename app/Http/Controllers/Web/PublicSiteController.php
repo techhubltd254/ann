@@ -29,20 +29,20 @@ class PublicSiteController extends Controller
         });
         $featuredExhibitions = Exhibition::where('status', 'published')->latest()->take(6)->get();
         $featuredCounties     = County::orderBy('name')->take(8)->get();
-        return view('public.home', compact('stats', 'featuredExhibitions', 'featuredCounties'));
+        return view('experience.pages.public.home', compact('stats', 'featuredExhibitions', 'featuredCounties'));
     }
 
     public function counties()
     {
         $counties = County::orderBy('name')->paginate(24);
-        return view('public.counties', compact('counties'));
+        return view('experience.pages.public.counties', compact('counties'));
     }
 
     public function county($slug)
     {
         $county = County::where('slug', $slug)->firstOrFail();
         $products = Product::active()->where('county_id', $county->id)->take(8)->get();
-        return view('public.county', compact('county', 'products'));
+        return view('experience.pages.public.county', compact('county', 'products'));
     }
 
     public function marketplace(Request $request)
@@ -59,24 +59,24 @@ class PublicSiteController extends Controller
             });
         }
         $products = $q->paginate(18);
-        return view('public.marketplace', compact('products'));
+        return view('experience.pages.public.marketplace', compact('products'));
     }
 
     public function exhibitions()
     {
         $exhibitions = Exhibition::whereIn('status', ['published', 'upcoming'])->latest()->paginate(18);
-        return view('public.exhibitions', compact('exhibitions'));
+        return view('experience.pages.public.exhibitions', compact('exhibitions'));
     }
 
     public function venues()
     {
         $venues = Venue::where('is_active', true)->orderBy('name')->paginate(18);
-        return view('public.venues', compact('venues'));
+        return view('experience.pages.public.venues', compact('venues'));
     }
 
     public function tradeAgreements()
     {
-        return view('public.trade-agreements');
+        return view('experience.pages.public.trade-agreements');
     }
 
     public function siteMap()

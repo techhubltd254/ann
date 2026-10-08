@@ -1,0 +1,3 @@
+@extends('layouts.app')
+@section('title', 'Annual Reports — KICC')
+@section('content')<div class="pt-20 max-w-4xl mx-auto px-5 py-10 prose prose-sm max-w-none"><h1>Annual Reports</h1><div>{!! $page->content ?? '<p>Access KICC annual reports and financial statements.</p>' !!}</div><div class="grid sm:grid-cols-2 gap-4 mt-6">@foreach(range(2020,2026) as $y)<div class="bg-white border border-gray-200 rounded-2xl p-5 flex items-center justify-between"><span class="font-bold text-gray-900">Annual Report {{ $y }}</span><span class="text-xs text-gray-400">PDF</span></div>@endforeach</div></div>@endsection

@@ -50,7 +50,7 @@
                     </video>
                 </div>
                 @else
-                <div class="aspect-video bg-[#0B0D11] rounded-xl mb-3 flex items-center justify-center">
+                <div class="aspect-video bg-[#0B0B0B] rounded-xl mb-3 flex items-center justify-center">
                     <svg class="w-8 h-8 text-zinc-600" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 10l4.553-2.276A1 1 0 0121 8.618v6.764a1 1 0 01-1.447.894L15 14M5 18h8a2 2 0 002-2V8a2 2 0 00-2-2H5a2 2 0 00-2 2v8a2 2 0 002 2z"/></svg>
                 </div>
                 @endif

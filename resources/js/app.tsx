@@ -1,10 +1,11 @@
+import type { ComponentType, ReactNode } from 'react';
 import { createInertiaApp } from '@inertiajs/react';
 import { createRoot, hydrateRoot } from 'react-dom/client';
 import AdminLayout from './layouts/admin-layout';
 
 createInertiaApp({
   resolve: (name) => {
-    const pages = import.meta.glob('/src/**/*.tsx', { eager: true });
+    const pages = import.meta.glob<{ default: ComponentType & { layout?: (page: ReactNode) => ReactNode } }>('/src/**/*.tsx', { eager: true });
     let page = pages[`/src/${name}.tsx`];
     if (!page) page = pages[`/src/app/${name}.tsx`];
     if (!page) throw new Error(`Page not found: ${name}`);

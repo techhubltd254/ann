@@ -30,7 +30,7 @@ class NationalExhibitionController extends Controller
             'authorized' => $pillars->filter(fn($b) => $b->authorization?->status === 'AUTHORIZED')->count(),
         ];
 
-        return view('live.national.index', compact('pillars', 'stats'));
+        return view('experience.pages.live.national.index', compact('pillars', 'stats'));
     }
 
     public function show($slug)
@@ -45,6 +45,6 @@ class NationalExhibitionController extends Controller
                 ->where('booth_id', $booth->id)->exists()
             : false;
 
-        return view('live.national.show', compact('booth', 'health', 'isFavourite'));
+        return view('experience.pages.live.national.show', compact('booth', 'health', 'isFavourite'));
     }
 }

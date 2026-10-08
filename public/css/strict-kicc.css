@@ -11,27 +11,27 @@
         orbit, footer, admin surfaces) onto that palette, in the glass
         idiom: frosted white glass on black, black glass on white.
    Layout, spacing, typography, routes and behaviour are NOT touched here.
-   Retired: ochre #c79a00, amber #ffcd05, terracotta #b3261e, brown #1c1c1c,
-            cream #f1eee8, navy #0b0b0b, gold #FFCD05-as-text-on-white.
+   Retired: ochre #FFCD05, amber #FFCD05, terracotta #B3261E, brown #0B0B0B,
+            cream #FFCD05, navy #0B0B0B, gold #FFCD05-as-text-on-white.
    ===================================================================== */
 
 :root{
   /* ---- the four ---- */
   --s-white:#FFFFFF;
-  --s-white-2:#FAF9F7;
-  --s-sand:#F1EEE8;
+  --s-white-2:#FFCD05;
+  --s-sand:#FFCD05;
   --s-black:#0B0B0B;
-  --s-black-2:#141414;
-  --s-black-3:#1C1C1C;
+  --s-black-2:#0B0B0B;
+  --s-black-3:#0B0B0B;
   --s-red:#B3261E;
-  --s-red-hover:#8E1C16;
-  --s-red-deep:#6E1512;
+  --s-red-hover:#B3261E;
+  --s-red-deep:#B3261E;
   --s-yellow:#FFCD05;
-  --s-yellow-soft:#FFE066;
-  --s-yellow-deep:#C79A00;
-  --s-yellow-ink:#8A6A00;   /* yellow family AS TEXT on white/sand — 5.1:1 AA */
+  --s-yellow-soft:#FFCD05;
+  --s-yellow-deep:#FFCD05;
+  --s-yellow-ink:#FFCD05;   /* yellow family AS TEXT on white/sand — 5.1:1 AA */
   /* ---- ink & lines ---- */
-  --s-ink:#111111;
+  --s-ink:#0B0B0B;
   --s-ink-muted:rgba(17,17,17,.66);
   --s-hairline:rgba(17,17,17,.14);
   --s-hairline-soft:rgba(17,17,17,.07);
@@ -81,16 +81,16 @@ body.light-world *,
   --ochre-deep:var(--s-yellow-deep);
   --shadow-gold:0 0 60px rgba(255,205,5,.28);
   /* the four families */
-  --cr-900:var(--s-red-deep); --cr-800:#7E1A14; --cr-700:var(--s-red-hover);
-  --cr-600:var(--s-red);      --cr-500:#C73028; --cr-400:#D4564E;
-  --cr-300:#E48C86;           --cr-200:#F4CFCC;
+  --cr-900:var(--s-red-deep); --cr-800:#B3261E; --cr-700:var(--s-red-hover);
+  --cr-600:var(--s-red);      --cr-500:#B3261E; --cr-400:#B3261E;
+  --cr-300:#B3261E;           --cr-200:#B3261E;
   --au-900:var(--s-yellow-ink); --au-800:var(--s-yellow-ink);
-  --au-700:var(--s-yellow-deep); --au-600:#c79a00;
+  --au-700:var(--s-yellow-deep); --au-600:#FFCD05;
   --au-500:var(--s-yellow-soft); --au-400:var(--s-yellow);
-  --au-300:#FFE9A3;              --au-200:#FFF6D9;
+  --au-300:#FFCD05;              --au-200:#FFCD05;
   --nv-950:var(--s-black); --nv-900:var(--s-black); --nv-850:var(--s-black-2);
-  --nv-800:var(--s-black-3); --nv-700:#2A2A2A; --nv-600:#4A4A4A;
-  --nv-500:#6E6E6E; --nv-400:#9A9A9A;
+  --nv-800:var(--s-black-3); --nv-700:#0B0B0B; --nv-600:#0B0B0B;
+  --nv-500:#0B0B0B; --nv-400:#FFFFFF;
   /* grounds */
   --dark-canvas:var(--s-white);
   --surface:var(--s-white-2);
@@ -100,31 +100,31 @@ body.light-world *,
   --warm-canvas:var(--s-white);
   --warm-surface:var(--s-white);
   --warm-sand:var(--s-sand);
-  --warm-sand-2:#E8E4DC;
+  --warm-sand-2:#FFCD05;
   --kicc-paper:var(--s-white);
   --kicc-ivory:var(--s-white-2);
   --kicc-bg:var(--s-white); --kicc-bg-alt:var(--s-sand);
   --kicc-border:var(--s-hairline);
   --kicc-dark:var(--s-black); --kicc-navy:var(--s-black-3);
   --kicc-navy-light:var(--s-black-3); --kicc-navy-deep:var(--s-black);
-  --kicc-navy-soft:#4A4A4A; --navy-hover:#2A2A2A;
-  --kicc-text:#4A4A4A; --kicc-text-light:#6E6E6E;
-  --kicc-info:var(--s-black-3); --kicc-success:#1F6F3F; --kicc-warning:var(--s-yellow-deep);
+  --kicc-navy-soft:#0B0B0B; --navy-hover:#0B0B0B;
+  --kicc-text:#0B0B0B; --kicc-text-light:#0B0B0B;
+  --kicc-info:var(--s-black-3); --kicc-success:#0B0B0B; --kicc-warning:var(--s-yellow-deep);
   --kicc-error:var(--s-red);
   /* ink / text */
   --text:var(--s-ink); --text-muted:var(--s-ink-muted);
   --ink:var(--s-ink); --bone:var(--s-ink); --bone-dim:var(--s-ink-muted);
   --paper:var(--s-white);
-  --acacia:var(--s-black-3); --acacia-lift:#4A4A4A;
+  --acacia:var(--s-black-3); --acacia-lift:#0B0B0B;
   --hairline:var(--s-hairline); --hairline-soft:var(--s-hairline-soft);
   --line-graded:linear-gradient(90deg,transparent,var(--s-hairline),transparent);
   --stage:var(--s-black); --stage-2:var(--s-black);
   --on-dark:var(--s-on-dark); --on-dark-muted:var(--s-on-dark-muted);
   /* yellow/red as TEXT — never raw yellow on white */
-  --au-ink:var(--s-yellow-ink); --au-ink-deep:#6E5200;
+  --au-ink:var(--s-yellow-ink); --au-ink-deep:#FFCD05;
   --au-ink-warm:var(--s-yellow-ink); --aa-label:var(--s-yellow-ink);
   --cr-ink:var(--s-red); --cr-ink-deep:var(--s-red-deep);
-  --green-ink:#1F6F3F;
+  --green-ink:#0B0B0B;
   /* ui aliases used by the integration layer */
   --ui-ink:var(--s-ink); --ui-muted:var(--s-hairline); --ui-surface:var(--s-white-2);
   --ui-glass:var(--s-glass-2); --ui-line:var(--s-hairline); --ui-accent:var(--s-red);
@@ -142,7 +142,7 @@ body.light-world *,
 
 /* =====================================================================
    1b · THE ui-* / w-* LAYER — the real ground source
-   approved-design.css:2783-2785 declares --ui-bg:#f1eee8 (cream) on
+   approved-design.css:2783-2785 declares --ui-bg:#FFCD05 (cream) on
    html[data-theme] and re-derives --w-cream / --light-bg / --dark-canvas /
    --paper / --hairline from it, then paints html, body, #app and .footer with
    `background:var(--ui-bg)!important`. Because html[data-theme] out-specifies
@@ -163,7 +163,7 @@ html[data-theme="dark"]{
   --ui-glass:var(--s-glass-2);
   --ui-soft:var(--s-sand);
   --ui-shadow:var(--s-shadow);
-  --ui-success:#1F6F3F;
+  --ui-success:#0B0B0B;
   --ui-danger:var(--s-red);
   /* the re-derived family */
   --text:var(--s-ink); --ink:var(--s-ink); --bone:var(--s-ink);
@@ -175,9 +175,9 @@ html[data-theme="dark"]{
   --glass-bg:var(--s-glass); --glass-bg-soft:var(--s-sand);
   --glass-border:var(--s-glass-line); --glass-shadow:var(--s-shadow);
   --glass-edge:inset 0 1px 0 var(--s-glass-line);
-  --au-ink:var(--s-yellow-ink); --au-ink-deep:#6E5200;
+  --au-ink:var(--s-yellow-ink); --au-ink-deep:#FFCD05;
   --cr-ink:var(--s-red); --cr-ink-deep:var(--s-red-deep);
-  --green-ink:#1F6F3F;
+  --green-ink:#0B0B0B;
   --warm-canvas:var(--s-white); --warm-sand:var(--s-sand);
   --aa-label:var(--s-yellow-ink); --aa-on-accent:var(--s-white);
 }
@@ -240,7 +240,7 @@ html[data-theme] :focus-visible{outline:3px solid var(--s-red);outline-offset:4p
 .ed-interlude.ed-flat{background:var(--s-white)}
 .ed-chapter.ed-flat .ed-chapter-num,
 .ed-chapter.ed-flat .ed-label,
-.ed-interlude.ed-flat .ed-label{color:#6E5200}
+.ed-interlude.ed-flat .ed-label{color:#FFCD05}
 .ed-chapter.ed-flat h1,.ed-chapter.ed-flat h2,.ed-chapter.ed-flat h3{color:var(--s-ink)}
 .ed-chapter.ed-flat .ed-lead{color:var(--s-ink-muted)}
 .ed-flat::before,.ed-interlude::before{background:var(--s-hairline) !important}
@@ -400,9 +400,9 @@ a{color:inherit}
 }
 .sx-glass h1,.sx-glass h2,.sx-glass h3{color:var(--s-ink)}
 .sx-glass .ed-lead{color:rgba(17,17,17,.80)}
-/* yellow as TEXT on the frosted plate: #6E5200 holds 6.2:1 on near-white glass
+/* yellow as TEXT on the frosted plate: #FFCD05 holds 6.2:1 on near-white glass
    (raw yellow is 1.5:1 on white and is never used as type) */
-.sx-glass .ed-label{color:#6E5200}
+.sx-glass .ed-label{color:#FFCD05}
 .sx-glass--dark{
   background:var(--s-glass-dark-2);
   border-color:var(--s-glass-dark-line);

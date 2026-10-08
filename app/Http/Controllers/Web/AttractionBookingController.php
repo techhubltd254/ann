@@ -50,7 +50,7 @@ class AttractionBookingController extends Controller
 
         $entryFee = ($attraction->entry_fee && $attraction->entry_fee > 0) ? $attraction->entry_fee : 500;
 
-        return view('attractions.show', [
+        return view('experience.pages.attractions.show', [
             'attraction' => $attraction,
             'recommended' => $recommended,
             'entryFee' => $entryFee,
@@ -109,7 +109,7 @@ class AttractionBookingController extends Controller
             'type' => 'attraction', 'reference' => $ref, 'attraction' => $attraction->name,
             'total' => $total, 'addons' => $chosenAddons,
         ], n8nEventName: 'booking_created'));;
-        return view('attractions.success', [
+        return view('experience.pages.attractions.success', [
             'attraction' => $attraction,
             'reference' => $ref,
             'guests' => $guests,

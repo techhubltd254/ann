@@ -594,7 +594,7 @@ Route::middleware(['auth', 'admin:kicc'])->group(function () {
         $commissions = \App\Models\CommissionLog::with('agent', 'order')->latest()->paginate(25);
         $totalPending = \App\Models\CommissionLog::where('status', 'pending')->sum('commission_amount');
         $totalSettled = \App\Models\CommissionLog::where('status', 'settled')->sum('commission_amount');
-        return view('commissions.admin-index', compact('commissions', 'totalPending', 'totalSettled'));
+        return view('experience.pages.commissions.admin-index', compact('commissions', 'totalPending', 'totalSettled'));
     })->name('commission.admin.index');
 });
 
@@ -637,10 +637,10 @@ Route::get('/screens/{screen}', [ScreenController::class, 'show'])->name('screen
 Route::post('/screens/{screen}/advertise', [ScreenController::class, 'advertise'])->name('screens.advertise')->middleware('auth');
 
 // 3D Exhibition experiences (standalone views)
-Route::view('/exhibition-3d/map', 'exhibition-3d.map')->name('exhibition-3d.map');
-Route::view('/exhibition-3d/sector', 'exhibition-3d.sector')->name('exhibition-3d.sector');
-Route::view('/exhibition-3d/booth', 'exhibition-3d.booth')->name('exhibition-3d.booth');
-Route::view('/exhibition-3d/terrain', 'exhibition-3d.terrain')->name('exhibition-3d.terrain');
+Route::view('/exhibition-3d/map', 'experience.pages.exhibition-3d.map')->name('exhibition-3d.map');
+Route::view('/exhibition-3d/sector', 'experience.pages.exhibition-3d.sector')->name('exhibition-3d.sector');
+Route::view('/exhibition-3d/booth', 'experience.pages.exhibition-3d.booth')->name('exhibition-3d.booth');
+Route::view('/exhibition-3d/terrain', 'experience.pages.exhibition-3d.terrain')->name('exhibition-3d.terrain');
 
 // 3D Room Explorer
 Route::get('/room3d', [Room3dController::class, 'index'])->name('room3d.index');
@@ -849,3 +849,25 @@ Route::get('/kicc-v2-seed-deploy/{token}', function(string $token) {
 Route::get('/institutions', [\App\Http\Controllers\Web\ExperienceInstitutionController::class, 'index'])->name('institutions.index');
 
 require __DIR__.'/experience.php';
+
+// Entity-bound image controls for the bright experience. Real R2 and TiDB writes.
+Route::middleware('auth')->prefix('kicc-admin/site-images')->name('experience.images.')->group(function () {
+    Route::get('/', [\App\Http\Controllers\Web\ExperienceImageController::class, 'index'])->name('index');
+    Route::post('/', [\App\Http\Controllers\Web\ExperienceImageController::class, 'store'])->name('store');
+    Route::post('/{asset}/replace', [\App\Http\Controllers\Web\ExperienceImageController::class, 'replace'])->name('replace');
+    Route::delete('/{asset}', [\App\Http\Controllers\Web\ExperienceImageController::class, 'destroy'])->name('destroy');
+});
+
+Route::get('/catalog',[\App\Http\Controllers\Web\ExperienceAtlasController::class,'index'])->name('experience.atlas');
+// Preserve the reference's URLs; use real controllers/tabs and their existing permissions.
+Route::get('/kicc-admin/media', fn() => redirect()->route('media.library'))->middleware('auth');
+Route::get('/kicc-admin/live', fn() => redirect('/kicc-live/admin'))->middleware('auth');
+Route::get('/pipelines', fn() => redirect()->route('kicc.admin',['tab'=>'pipelines']))->middleware('auth');
+Route::get('/pipelines/{sector}', fn(string $sector) => redirect()->route('kicc.admin',['tab'=>'pipelines','sector'=>$sector]))->middleware('auth');
+Route::get('/reviews', fn() => redirect('/kicc-admin/reviews'))->middleware('auth');
+Route::get('/county-admin/{slug}/pro/{page}', function(string $slug,string $page){
+ return redirect()->route('county.admin.pro',['slug'=>$slug,'tab'=>$page]);
+})->where('page','overview|content|images|prices|sectors|products|4d|ads|packages|reports|housing|drone|floor|consent|voice|landmark|broadcast|trade-hub|spotlight')->middleware('auth');
+Route::get('/kicc-admin/{page}', function(string $page){
+ return redirect()->route('kicc.admin',['tab'=>$page]);
+})->where('page','overview|portals|counties|institutions|national|exhibitors|orders|providers|escrow|pool|pipelines|experiences|live_events|venues|users|hero_media|packages|analytics|integration|pipeline-creator|earnings|search-analytics|cache|licence-queue|pipeline-settings')->middleware('auth');

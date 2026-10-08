@@ -2,7 +2,7 @@
 @props(['label' => 'Submit', 'loading' => false])
 
 <button type="submit" :disabled="{{ $loading ? 'true' : 'false' }}"
-        class="w-full inline-flex items-center justify-center gap-2 font-bold tracking-wide transition-all duration-200 mt-6 px-8 text-base rounded-xl bg-[#b3261e] text-white hover:bg-[#7b1618] disabled:opacity-60 touch-target">
+        class="w-full inline-flex items-center justify-center gap-2 font-bold tracking-wide transition-all duration-200 mt-6 px-8 text-base rounded-xl bg-[#B3261E] text-white hover:bg-[#B3261E] disabled:opacity-60 touch-target">
     @if($loading)
     <svg class="w-5 h-5 animate-spin" fill="none" viewBox="0 0 24 24">
         <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"/>

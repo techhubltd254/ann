@@ -14,7 +14,7 @@ class NotificationController extends Controller
     public function index()
     {
         $notifications = UserNotification::where('user_id', Auth::id())->latest()->paginate(25);
-        return view('notifications.index', compact('notifications'));
+        return view('experience.pages.notifications.index', compact('notifications'));
     }
 
     public function markRead(UserNotification $notification)

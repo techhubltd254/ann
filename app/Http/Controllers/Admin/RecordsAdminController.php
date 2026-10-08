@@ -41,7 +41,7 @@ class RecordsAdminController extends Controller
 
     public function index()
     {
-        return view('admin.index', [
+        return view('experience.pages.admin.index', [
             'counts' => Record::selectRaw('type,status,count(*) as total')->groupBy('type', 'status')->get(),
             'mediaCount' => RecordMedia::count(),
             'newEnquiries' => Enquiry::where('status', 'new')->count(),
@@ -56,7 +56,7 @@ class RecordsAdminController extends Controller
             $query->where('name', 'like', '%' . $r->string('q') . '%');
         }
 
-        return view('admin.list', [
+        return view('experience.pages.admin.list', [
             'type' => $type,
             'label' => config('kicc.types')[$type],
             'records' => $query->paginate(30)->withQueryString(),
@@ -67,7 +67,7 @@ class RecordsAdminController extends Controller
     {
         $this->type($type);
 
-        return view('admin.edit', [
+        return view('experience.pages.admin.edit', [
             'record' => new Record(['type' => $type, 'status' => 'draft']),
             'parents' => Record::whereIn('type', ['counties', 'institutions', 'ministries', 'sectors'])
                 ->orderBy('name')->get(),
@@ -76,7 +76,7 @@ class RecordsAdminController extends Controller
 
     public function edit(Record $record)
     {
-        return view('admin.edit', [
+        return view('experience.pages.admin.edit', [
             'record' => $record->load('media'),
             'parents' => Record::where('id', '!=', $record->id)
                 ->whereIn('type', ['counties', 'institutions', 'ministries', 'sectors'])
@@ -278,7 +278,7 @@ class RecordsAdminController extends Controller
 
     public function enquiries()
     {
-        return view('admin.enquiries', ['enquiries' => Enquiry::with('record')->latest()->paginate(30)]);
+        return view('experience.pages.admin.enquiries', ['enquiries' => Enquiry::with('record')->latest()->paginate(30)]);
     }
 
     public function enquiryStatus(Request $r, Enquiry $enquiry)
@@ -295,6 +295,6 @@ class RecordsAdminController extends Controller
 
     public function auditLog()
     {
-        return view('admin.audit', ['events' => DB::table('audit_events')->orderByDesc('id')->paginate(50)]);
+        return view('experience.pages.admin.audit', ['events' => DB::table('audit_events')->orderByDesc('id')->paginate(50)]);
     }
 }

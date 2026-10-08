@@ -1,13 +1,2 @@
-@extends('layouts.blank')
-
-@section('title', 'Interactive Terrain Explorer — Kenya Circuit — KICC')
-
-@push('styles')
-<style>
-  body { margin: 0; overflow: hidden; background: #0a0a12; }
-</style>
-@endpush
-
-@section('content')
-<iframe src="{{ asset('3d/terrain_explorer.html') }}" style="width:100vw;height:100vh;border:none;display:block;"></iframe>
-@endsection
+{{-- Compatibility name; renders the shared bright experience, not a second UI. --}}
+@extends('experience.pages.exhibition-3d.terrain')

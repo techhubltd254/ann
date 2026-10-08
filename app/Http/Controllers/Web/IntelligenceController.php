@@ -66,7 +66,7 @@ class IntelligenceController extends Controller
             ->orderBy('date')
             ->get();
 
-        return view('intelligence.dashboard', compact(
+        return view('experience.pages.intelligence.dashboard', compact(
             'period', 'totalOrders', 'totalRevenue', 'orderGrowth',
             'totalHotels', 'totalAttractions', 'products', 'agents', 'pendingAgents',
             'totalReviews', 'avgRating',

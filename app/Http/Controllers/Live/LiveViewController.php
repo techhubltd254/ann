@@ -15,12 +15,12 @@ class LiveViewController extends Controller
         $isFavourite = auth()->check() ? FavouriteBooth::where('user_id', auth()->id())
             ->where('booth_id', $booth->id)->exists() : false;
 
-        return view('live.viewer.show', compact('booth', 'isFavourite'));
+        return view('experience.pages.live.viewer.show', compact('booth', 'isFavourite'));
     }
 
     public function chat(Booth $booth)
     {
         // TODO: load chat messages
-        return view('live.viewer.chat', compact('booth'));
+        return view('experience.pages.live.viewer.chat', compact('booth'));
     }
 }

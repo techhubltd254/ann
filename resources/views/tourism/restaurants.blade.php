@@ -1,3 +1,2 @@
-@extends('layouts.app')
-@section('title', 'Restaurants')
-@section('content')<div class="pt-24 max-w-7xl mx-auto px-5 py-10"><h1 class="text-2xl font-black text-gray-900 mb-6">Restaurants</h1>@if($restaurants->isEmpty())<p class="text-gray-400">No restaurants listed yet.</p>@else<div class="grid sm:grid-cols-2 lg:grid-cols-3 gap-4">@foreach($restaurants as $r)<div class="bg-white border border-gray-200 rounded-2xl p-4"><div class="font-bold text-gray-900">{{ $r->name }}</div><div class="text-xs text-gray-400">{{ $r->cuisine_type ?? '—' }} · {{ $r->county?->name ?? '' }}</div></div>@endforeach</div><div class="mt-6">{{ $restaurants->links() }}</div>@endif</div>@endsection
+{{-- Compatibility name; renders the shared bright experience, not a second UI. --}}
+@extends('experience.pages.tourism.restaurants')

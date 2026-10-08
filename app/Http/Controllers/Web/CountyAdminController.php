@@ -189,7 +189,7 @@ class CountyAdminController extends Controller
             ->where('metadata', 'like', '%"complexity"%')
             ->latest()->take(20)->get();
 
-        return view('dashboards.county-admin', compact(
+        return view('experience.pages.dashboards.county-admin', compact(
             'county', 'tab', 'navItems', 'stats', 'products', 'attractions',
             'hotels', 'sectorImages', 'plans', 'marketplaceProducts', 'ads',
             'sectors', 'linkedSectors', 'tileSectors', 'allSectors', 'sectorEntities',

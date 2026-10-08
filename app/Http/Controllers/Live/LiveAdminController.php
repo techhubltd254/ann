@@ -35,7 +35,7 @@ class LiveAdminController extends Controller
             ->orderBy('stream_status', 'desc')
             ->paginate(50);
 
-        return view('live.admin.dashboard', compact('stats', 'booths'));
+        return view('experience.pages.live.admin.dashboard', compact('stats', 'booths'));
     }
 
     public function booths()
@@ -44,7 +44,7 @@ class LiveAdminController extends Controller
             ->orderBy('created_at', 'desc')
             ->paginate(20);
 
-        return view('live.admin.booths', compact('booths'));
+        return view('experience.pages.live.admin.booths', compact('booths'));
     }
 
     public function authorize(Booth $booth, Request $request)
@@ -110,7 +110,7 @@ class LiveAdminController extends Controller
                 return $booth;
             });
 
-        return view('live.admin.monitor', compact('liveBooths'));
+        return view('experience.pages.live.admin.monitor', compact('liveBooths'));
     }
 
     public function analytics()
@@ -123,7 +123,7 @@ class LiveAdminController extends Controller
             'peak_concurrent' => ExhibitorStudioSession::where('stream_status', 'live')->count(),
         ];
 
-        return view('live.admin.analytics', compact('data'));
+        return view('experience.pages.live.admin.analytics', compact('data'));
     }
 
     public function systemHealth()

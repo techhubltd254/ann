@@ -2,7 +2,7 @@
 <html><head><meta charset="utf-8"><title>Invoice {{ $order->order_number }}</title>
 <style>body{font-family:sans-serif;max-width:600px;margin:0 auto;padding:20px}
 table{width:100%;border-collapse:collapse;margin:20px 0}
-th,td{padding:8px 12px;border-bottom:1px solid #ddd;text-align:left}
+th,td{padding:8px 12px;border-bottom:1px solid #FFFFFF;text-align:left}
 .total{font-weight:bold;font-size:1.2em}</style></head>
 <body>
 <h1>KICC Marketplace Invoice</h1>

@@ -17,7 +17,7 @@ class ReviewAdminController extends Controller
         $status = $request->get('status');
         if ($status) $query->where('status', $status);
         $reviews = $query->paginate(25);
-        return view('reviews.admin-index', compact('reviews', 'status'));
+        return view('experience.pages.reviews.admin-index', compact('reviews', 'status'));
     }
 
     public function approve(Request $request, Review $review)

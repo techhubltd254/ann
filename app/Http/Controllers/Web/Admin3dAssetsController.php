@@ -71,7 +71,7 @@ class Admin3dAssetsController extends Controller
             ? Room3d::where('entity_type', CountyInstitution::class)->where('entity_id', $inst->id)->latest()->get()
             : Room3d::latest()->take(50)->get();
 
-        return view('admin.3d.index', compact('assets', 'institutions', 'room3ds', 'inst', 'institution'));
+        return view('experience.pages.admin.3d.index', compact('assets', 'institutions', 'room3ds', 'inst', 'institution'));
     }
 
     // ── Upload 3D asset form + POST ──
@@ -84,7 +84,7 @@ class Admin3dAssetsController extends Controller
         if ($request->isMethod('get')) {
             $institutions = CountyInstitution::orderBy('name')->get(['id', 'name', 'slug']);
             $products = $inst ? $this->loadInstitutionProducts($inst) : [];
-            return view('admin.3d.upload', compact('institutions', 'products', 'inst'));
+            return view('experience.pages.admin.3d.upload', compact('institutions', 'products', 'inst'));
         }
 
         // POST — handle file upload

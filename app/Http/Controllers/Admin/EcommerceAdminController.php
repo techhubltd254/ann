@@ -67,7 +67,7 @@ class EcommerceAdminController extends Controller
             DB::raw('SUM(total) as revenue'), DB::raw('COUNT(*) as orders')
         )->groupBy('year', 'month')->orderByDesc('year')->orderByDesc('month')->take(12)->get();
 
-        return view('admin.ecommerce.dashboard', compact(
+        return view('experience.pages.admin.ecommerce.dashboard', compact(
             'stats', 'recentOrders', 'topProducts', 'salesByCounty', 'monthlyRevenue'
         ));
     }
@@ -84,7 +84,7 @@ class EcommerceAdminController extends Controller
         if ($category = $request->get('category')) $query->where('category_id', $category);
         if (($status = $request->get('status')) && $status !== 'all') $query->where('status', $status);
 
-        return view('admin.ecommerce.products', [
+        return view('experience.pages.admin.ecommerce.products', [
             'products' => $query->latest()->paginate(24),
             'categories' => ProductCategory::active()->get(),
             'counties' => County::orderBy('name')->get(),
@@ -95,7 +95,7 @@ class EcommerceAdminController extends Controller
     public function productEdit($id = null)
     {
         $product = $id ? Product::with(['variants', 'images', 'county', 'category'])->findOrFail($id) : new Product();
-        return view('admin.ecommerce.product-form', [
+        return view('experience.pages.admin.ecommerce.product-form', [
             'product' => $product,
             'categories' => ProductCategory::active()->get(),
             'counties' => County::orderBy('name')->get(),
@@ -178,7 +178,7 @@ class EcommerceAdminController extends Controller
     // ─── Import ───
     public function importForm()
     {
-        return view('admin.ecommerce.import', [
+        return view('experience.pages.admin.ecommerce.import', [
             'sources' => ['amazon', 'ebay', 'kilimall', 'jumia', 'kicc'],
             'categories' => ProductCategory::active()->get(),
             'counties' => County::orderBy('name')->get(),
@@ -257,14 +257,14 @@ class EcommerceAdminController extends Controller
             elseif ($status === 'delivered') $query->where('fulfillment_status', 'delivered');
             elseif ($status === 'cancelled') $query->where('fulfillment_status', 'cancelled');
         }
-        return view('admin.ecommerce.orders', ['orders' => $query->latest()->paginate(20)]);
+        return view('experience.pages.admin.ecommerce.orders', ['orders' => $query->latest()->paginate(20)]);
     }
 
     public function orderShow($id)
     {
         $order = Order::with(['user', 'items.product', 'items.variant', 'items.supplier',
             'statusHistory', 'paymentIntents'])->findOrFail($id);
-        return view('admin.ecommerce.order-detail', compact('order'));
+        return view('experience.pages.admin.ecommerce.order-detail', compact('order'));
     }
 
     public function orderUpdateStatus(Request $request, $id)
@@ -349,7 +349,7 @@ class EcommerceAdminController extends Controller
             ->select(DB::raw('HOUR(created_at) as hour, SUM(total) as revenue, COUNT(*) as orders'))
             ->groupBy('hour')->orderBy('hour')->get();
 
-        return view('admin.ecommerce.analytics', compact(
+        return view('experience.pages.admin.ecommerce.analytics', compact(
             'revenue', 'topProducts', 'ordersByCounty', 'statusBreakdown', 'dailySales', 'period'
         ));
     }

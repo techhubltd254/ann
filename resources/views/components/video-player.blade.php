@@ -20,7 +20,7 @@
     $videoId = $id;
 @endphp
 
-<div class="absolute inset-0 {{ $class }}" id="{{ $videoId }}-container" style="background:#0b0b0b">
+<div class="absolute inset-0 {{ $class }}" id="{{ $videoId }}-container" style="background:#FFFFFF">
     @if($posterUrl)
     <img src="{{ $posterUrl }}" alt="Video poster"
          class="absolute inset-0 w-full h-full object-cover"

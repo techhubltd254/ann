@@ -26,6 +26,6 @@ class ExhibitorSiteController extends Controller
 
         $totalStock = $products->sum(fn ($p) => $p->variants->sum('stock'));
 
-        return view('exhibitor.site', compact('exhibitor', 'products', 'totalStock'));
+        return view('experience.pages.exhibitor.site', compact('exhibitor', 'products', 'totalStock'));
     }
 }

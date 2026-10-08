@@ -60,7 +60,7 @@ class NationalPortalController extends Controller
 
         $analytics = app(\App\Services\AnalyticsService::class)->forNational($stats);
 
-        return view('dashboards.national-exhibitor', [
+        return view('experience.pages.dashboards.national-exhibitor', [
             'tab' => $tab, 'navItems' => $navItems, 'stats' => $stats,
             'ministries' => $ministries, 'agencies' => $agencies,
             'user' => Auth::user(), 'analytics' => $analytics,

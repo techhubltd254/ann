@@ -19,7 +19,7 @@ class ScreenBroadcastController extends Controller
 
         $regions = $screens->groupBy('location');
 
-        return view('live.screens.broadcast', compact('screens', 'groups', 'liveStreams', 'activeDestinations', 'regions'));
+        return view('experience.pages.live.screens.broadcast', compact('screens', 'groups', 'liveStreams', 'activeDestinations', 'regions'));
     }
 
     public function routeToScreen(Request $request)

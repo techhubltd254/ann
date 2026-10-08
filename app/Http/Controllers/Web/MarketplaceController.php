@@ -193,7 +193,7 @@ class MarketplaceController extends Controller
             $flashSaleProduct = $activeSale->products()->where('product_id', $product->id)->first();
         }
 
-        return view('marketplace.show', compact('product', 'related', 'tripRecommendations', 'tradeAgreements', 'questions', 'flashSaleProduct', 'productReviews', 'reviewScore', 'reviewSeed'));
+        return view('experience.pages.marketplace.show', compact('product', 'related', 'tripRecommendations', 'tradeAgreements', 'questions', 'flashSaleProduct', 'productReviews', 'reviewScore', 'reviewSeed'));
     }
 
     public function compare(Request $request)
@@ -202,6 +202,6 @@ class MarketplaceController extends Controller
         if (!is_array($ids)) $ids = explode(',', $ids);
         $products = Product::with(['variants', 'images', 'county', 'category'])
             ->whereIn('id', array_slice($ids, 0, 4))->active()->get();
-        return view('marketplace.compare', compact('products'));
+        return view('experience.pages.marketplace.compare', compact('products'));
     }
 }

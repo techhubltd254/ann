@@ -19,7 +19,7 @@ class CmsController extends Controller
     public function page($slug)
     {
         $page = Page::where('slug', $slug)->where('is_published', true)->firstOrFail();
-        return view('kicc-website.cms-page', compact('page'));
+        return view('experience.pages.kicc-website.cms-page', compact('page'));
     }
 
     public function about()
@@ -27,60 +27,60 @@ class CmsController extends Controller
         $page = Page::where('slug', 'about')->firstOrNew(['title' => 'About KICC']);
         $boardMembers = TeamMember::board()->where('is_active', true)->orderBy('sort_order')->get();
         $managementTeam = TeamMember::management()->where('is_active', true)->orderBy('sort_order')->get();
-        return view('kicc-website.about', compact('page', 'boardMembers', 'managementTeam'));
+        return view('experience.pages.kicc-website.about', compact('page', 'boardMembers', 'managementTeam'));
     }
 
     public function mission()
     {
         $page = Page::where('slug', 'mission')->firstOrNew(['title' => 'Mission, Vision & Mandate']);
-        return view('kicc-website.mission', compact('page'));
+        return view('experience.pages.kicc-website.mission', compact('page'));
     }
 
     public function history()
     {
         $page = Page::where('slug', 'history')->firstOrNew(['title' => 'KICC History']);
         $events = TimelineEvent::orderBy('sort_order')->orderBy('year')->get();
-        return view('kicc-website.history', compact('page', 'events'));
+        return view('experience.pages.kicc-website.history', compact('page', 'events'));
     }
 
     public function board()
     {
         $page = Page::where('slug', 'board')->firstOrNew(['title' => 'KICC Board']);
         $members = TeamMember::board()->where('is_active', true)->orderBy('sort_order')->get();
-        return view('kicc-website.board', compact('page', 'members'));
+        return view('experience.pages.kicc-website.board', compact('page', 'members'));
     }
 
     public function management()
     {
         $page = Page::where('slug', 'management')->firstOrNew(['title' => 'KICC Management']);
         $members = TeamMember::management()->where('is_active', true)->orderBy('sort_order')->get();
-        return view('kicc-website.management', compact('page', 'members'));
+        return view('experience.pages.kicc-website.management', compact('page', 'members'));
     }
 
     public function faq()
     {
         $faqs = FaqItem::where('is_published', true)->orderBy('sort_order')->get();
         $categories = FaqItem::where('is_published', true)->select('category')->distinct()->pluck('category');
-        return view('kicc-website.faq', compact('faqs', 'categories'));
+        return view('experience.pages.kicc-website.faq', compact('faqs', 'categories'));
     }
 
     public function pricing()
     {
         $page = Page::where('slug', 'pricing')->firstOrNew(['title' => 'Pricing Guideline']);
         $venues = Venue::orderBy('name')->get();
-        return view('kicc-website.pricing', compact('page', 'venues'));
+        return view('experience.pages.kicc-website.pricing', compact('page', 'venues'));
     }
 
     public function videoGallery()
     {
         $videos = VideoItem::where('is_published', true)->orderBy('sort_order')->get();
-        return view('kicc-website.video-gallery', compact('videos'));
+        return view('experience.pages.kicc-website.video-gallery', compact('videos'));
     }
 
     public function services()
     {
         $services = ServiceItem::where('is_published', true)->orderBy('sort_order')->get();
-        return view('kicc-website.services', compact('services'));
+        return view('experience.pages.kicc-website.services', compact('services'));
     }
 
     // ─── ADMIN CMS ───
@@ -93,7 +93,7 @@ class CmsController extends Controller
         $faqs = FaqItem::orderBy('sort_order')->get();
         $services = ServiceItem::orderBy('sort_order')->get();
         $videos = VideoItem::orderBy('sort_order')->get();
-        return view('cms.admin-index', compact('pages', 'teamMembers', 'timelineEvents', 'faqs', 'services', 'videos'));
+        return view('experience.pages.cms.admin-index', compact('pages', 'teamMembers', 'timelineEvents', 'faqs', 'services', 'videos'));
     }
 
     public function updatePage(Request $request, Page $page)

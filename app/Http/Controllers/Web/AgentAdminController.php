@@ -21,13 +21,13 @@ class AgentAdminController extends Controller
         $status = $request->get('status');
         if ($status) $query->where('status', $status);
         $agents = $query->paginate(25);
-        return view('agents.admin-index', compact('agents', 'status'));
+        return view('experience.pages.agents.admin-index', compact('agents', 'status'));
     }
 
     public function show(Agent $agent)
     {
         $agent->load('user', 'county', 'documents');
-        return view('agents.admin-show', compact('agent'));
+        return view('experience.pages.agents.admin-show', compact('agent'));
     }
 
     public function approve(Request $request, Agent $agent)

@@ -15,7 +15,7 @@
 
 <section id="{{ $sectionId }}" class="relative w-full overflow-hidden scroll-video-section" style="height: 300vh;">
     {{-- Sticky video container — fills viewport during scroll --}}
-    <div class="sticky top-0 left-0 w-full h-screen overflow-hidden bg-[#0b0b0b]">
+    <div class="sticky top-0 left-0 w-full h-screen overflow-hidden bg-[#0B0B0B]">
         @if($videoUrl)
         <video id="{{ $id }}" class="absolute inset-0 w-full h-full object-cover" 
                muted playsinline preload="auto"
@@ -59,7 +59,7 @@
             @if($ctaUrl)
             <div class="scroll-text mt-8" data-scroll-start="0.65" data-scroll-end="0.85" style="opacity:0; transform:translateY(20px);">
                 <a href="{{ $ctaUrl }}" 
-                   class="inline-flex items-center gap-2 font-bold text-sm h-12 px-8 rounded-xl bg-[#FFCD05] text-black hover:bg-[#e6b904] transition-all active:scale-95">
+                   class="inline-flex items-center gap-2 font-bold text-sm h-12 px-8 rounded-xl bg-[#FFCD05] text-black hover:bg-[#FFCD05] transition-all active:scale-95">
                     {{ $ctaText }}
                     <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 8l4 4m0 0l-4 4m4-4H3"/></svg>
                 </a>

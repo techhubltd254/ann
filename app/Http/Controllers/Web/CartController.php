@@ -36,7 +36,7 @@ class CartController extends Controller
 
     public function index(Request $request)
     {
-        return view('cart.index', ['cart' => $this->currentCart($request)]);
+        return view('experience.pages.cart.index', ['cart' => $this->currentCart($request)]);
     }
 
     public function add(Request $request)

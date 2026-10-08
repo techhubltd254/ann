@@ -107,7 +107,7 @@ class SearchController extends Controller
 
         $results = $results->sortByDesc('price');
 
-        return view('search.index', compact(
+        return view('experience.pages.search.index', compact(
             'results', 'q', 'type', 'county', 'category',
             'minPrice', 'maxPrice', 'rating', 'sort',
             'counties', 'categories', 'total', 'searchTerm'

@@ -1,0 +1,3 @@
+@extends('layouts.app')
+@section('title', 'Service Charter — KICC')
+@section('content')<div class="pt-20 max-w-4xl mx-auto px-5 py-10 prose prose-sm max-w-none"><h1>Service Charter</h1><div>{!! $page->content ?? '<p>KICC is committed to providing quality services to all our clients. Our service charter outlines the standards you can expect.</p><ul><li>Timely response to enquiries within 24 hours</li><li>Professional and courteous service</li><li>Clean and well-maintained facilities</li><li>Transparent pricing</li><li>Accessible facilities for all</li></ul>' !!}</div></div>@endsection

@@ -60,7 +60,7 @@ class AIController extends Controller
 
     public function chatPage()
     {
-        return view('ai.chat');
+        return view('experience.pages.ai.chat');
     }
 
     // ─── SMART ITINERARY ───
@@ -83,7 +83,7 @@ class AIController extends Controller
 
     public function itineraryPage()
     {
-        return view('ai.itinerary');
+        return view('experience.pages.ai.itinerary');
     }
 
     // ─── PERSONALIZED RECOMMENDATIONS ───

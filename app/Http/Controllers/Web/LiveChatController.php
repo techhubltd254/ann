@@ -13,7 +13,7 @@ class LiveChatController extends Controller {
         );
         $conversation->touch('last_message_at');
         $messages = $conversation->messages()->with('user')->latest()->take(50)->get()->reverse();
-        return view('ecommerce.live-chat', compact('conversation', 'messages', 'vendorId'));
+        return view('experience.pages.ecommerce.live-chat', compact('conversation', 'messages', 'vendorId'));
     }
     public function send(Request $r, $vendorId) {
         $conversation = Conversation::firstOrCreate(

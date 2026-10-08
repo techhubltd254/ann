@@ -33,12 +33,16 @@
     <div class="ex-grid">
       @forelse($products as $p)
         @php
-          $img = $p->images->first()->url ?? $p->images->first()->path ?? null;
+          $resolvedMedia = app(\App\Services\ProductMediaResolver::class)->resolve($p);
+          $img = $resolvedMedia['url'];
           $county = $p->county->name ?? null;
-        @endphp
+                @endphp
         <x-experience.card
           :href="route('marketplace.show',$p->slug)"
-          :media="$img"
+          :media="$assigned['video'] ?? $img"
+          :media-type="!empty($assigned['video']) ? 'video' : 'image'"
+          :poster="$img"
+          :illustrative="$assigned['illustrative'] ?? false"
           :tag="$p->is_featured ? 'Featured' : ($p->is_spotlight_product ? 'Spotlight' : null)"
           :tag-tone="$p->is_spotlight_product ? 'red' : null"
           :meta="collect([$county, $p->category->name ?? null, $p->unit])->filter()->implode(' · ')"
@@ -46,8 +50,8 @@
           :copy="\Illuminate\Support\Str::limit(strip_tags($p->short_description ?? $p->description ?? ''),130)"
           action="View listing"
           :initials="strtoupper(substr($p->name,0,2))"
-          :admin="auth()->check() ? 'Replace or delete this image' : null"
-          :admin-href="auth()->check() ? route('admin.media.index') : null"
+          :admin="auth()->user()?->isAdmin() ? 'Add, replace or delete product image' : null"
+          :admin-href="auth()->user()?->isAdmin() ? route('experience.images.index', ['owner_type'=>'product', 'owner_id'=>$p->id]) : null"
         />
       @empty
         <div class="ex-empty"><strong>No listings match</strong>Try another county or clear the filters.</div>

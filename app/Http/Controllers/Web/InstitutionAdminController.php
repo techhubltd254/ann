@@ -161,7 +161,7 @@ class InstitutionAdminController extends Controller
 
         $analytics = app(\App\Services\AnalyticsService::class)->forInstitution($institution);
 
-        return view('dashboards.institution-admin', compact(
+        return view('experience.pages.dashboards.institution-admin', compact(
             'institution', 'tab', 'navItems',
             'revenue', 'revenuePrevMonth', 'totalOrders', 'orderGrowth', 'orders30d',
             'marketplaceProducts', 'countyProducts', 'videos', 'transactions',

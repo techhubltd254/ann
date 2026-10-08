@@ -46,7 +46,7 @@ class ExhibitionController extends Controller
             ->latest()
             ->first();
 
-        return view('exhibitions.show', compact('exhibition', 'liveStream'));
+        return view('experience.pages.exhibitions.show', compact('exhibition', 'liveStream'));
     }
 
     public function venues(Request $request)

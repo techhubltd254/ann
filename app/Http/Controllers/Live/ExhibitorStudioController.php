@@ -27,7 +27,7 @@ class ExhibitorStudioController extends Controller
     {
         $auth = $booth->authorization;
         if (!$auth || $auth->status !== 'AUTHORIZED') {
-            return view('live.exhibitor.lockout', ['booth' => $booth, 'reason' => 'unauthorized']);
+            return view('experience.pages.live.exhibitor.lockout', ['booth' => $booth, 'reason' => 'unauthorized']);
         }
 
         $session = ExhibitorStudioSession::firstOrCreate(
@@ -43,7 +43,7 @@ class ExhibitorStudioController extends Controller
         );
 
         $activeStream = LiveStream::where('booth_id', $booth->id)->where('isLive', true)->latest()->first();
-        return view('live.exhibitor.studio', compact('booth', 'auth', 'session', 'activeStream'));
+        return view('experience.pages.live.exhibitor.studio', compact('booth', 'auth', 'session', 'activeStream'));
     }
 
     public function goLive(Booth $booth, Request $request)

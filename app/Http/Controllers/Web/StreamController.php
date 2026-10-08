@@ -44,13 +44,13 @@ class StreamController extends Controller
     public function show(LiveStream $stream)
     {
         $stream->load('exhibition', 'county', 'user');
-        return view('streams.show', compact('stream'));
+        return view('experience.pages.streams.show', compact('stream'));
     }
 
     public function create()
     {
         $exhibitions = Exhibition::where('status', 'published')->orderBy('start_date', 'desc')->get();
-        return view('streams.create', compact('exhibitions'));
+        return view('experience.pages.streams.create', compact('exhibitions'));
     }
 
     public function store(Request $request, CloudflareStreamService $cf)
@@ -155,7 +155,7 @@ class StreamController extends Controller
         $exhibitions = Exhibition::where('status', 'published')->orderBy('start_date', 'desc')->get();
         $counties = \App\Models\County::orderBy('name')->get(['id', 'name', 'slug']);
 
-        return view('streams.admin', compact('streams', 'exhibitions', 'counties'));
+        return view('experience.pages.streams.admin', compact('streams', 'exhibitions', 'counties'));
     }
 
     public function setThumbnail(Request $request, LiveStream $stream, CloudflareStreamService $cf)

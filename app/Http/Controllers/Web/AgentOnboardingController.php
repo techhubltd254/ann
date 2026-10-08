@@ -16,7 +16,7 @@ class AgentOnboardingController extends Controller
     public function register()
     {
         $counties = County::orderBy('name')->get();
-        return view('agents.register', compact('counties'));
+        return view('experience.pages.agents.register', compact('counties'));
     }
 
     public function store(Request $request)
@@ -80,7 +80,7 @@ class AgentOnboardingController extends Controller
 
     public function success(Agent $agent)
     {
-        return view('agents.success', compact('agent'));
+        return view('experience.pages.agents.success', compact('agent'));
     }
 
     protected function inferDocumentType(string $filename): string

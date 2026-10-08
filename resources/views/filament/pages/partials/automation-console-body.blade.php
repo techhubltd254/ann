@@ -1,15 +1,15 @@
     <style>
         .kicc-wrap{font-size:13px}
         .kicc-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(190px,1fr));gap:10px;margin-bottom:16px}
-        .kicc-card{background:#fff;border:1px solid #e5e7eb;border-radius:10px;padding:12px 14px}
-        .kicc-card .k{font-size:11px;text-transform:uppercase;letter-spacing:.04em;color:#6b7280}
-        .kicc-card .v{font-size:22px;font-weight:700;color:#111827;margin-top:2px}
-        .kicc-h{font-size:14px;font-weight:700;margin:18px 0 8px;color:#111827}
-        table.kicc{width:100%;border-collapse:collapse;background:#fff;border:1px solid #e5e7eb;border-radius:8px;overflow:hidden}
-        table.kicc th{background:#f9fafb;text-align:left;padding:7px 9px;font-size:11px;text-transform:uppercase;color:#6b7280;border-bottom:1px solid #e5e7eb}
-        table.kicc td{padding:7px 9px;border-bottom:1px solid #f3f4f6}
+        .kicc-card{background:#FFFFFF;border:1px solid #FFFFFF;border-radius:10px;padding:12px 14px}
+        .kicc-card .k{font-size:11px;text-transform:uppercase;letter-spacing:.04em;color:#0B0B0B}
+        .kicc-card .v{font-size:22px;font-weight:700;color:#0B0B0B;margin-top:2px}
+        .kicc-h{font-size:14px;font-weight:700;margin:18px 0 8px;color:#0B0B0B}
+        table.kicc{width:100%;border-collapse:collapse;background:#FFFFFF;border:1px solid #FFFFFF;border-radius:8px;overflow:hidden}
+        table.kicc th{background:#FFFFFF;text-align:left;padding:7px 9px;font-size:11px;text-transform:uppercase;color:#0B0B0B;border-bottom:1px solid #FFFFFF}
+        table.kicc td{padding:7px 9px;border-bottom:1px solid #FFFFFF}
         .pill{display:inline-block;padding:1px 8px;border-radius:999px;font-size:11px;font-weight:600}
-        .ok{background:#d1fae5;color:#065f46}.bad{background:#ffe4e6;color:#9f1239}.warn{background:#fef3c7;color:#92400e}.mut{background:#e5e7eb;color:#374151}
+        .ok{background:#FFFFFF;color:#0B0B0B}.bad{background:#B3261E;color:#B3261E}.warn{background:#FFCD05;color:#B3261E}.mut{background:#FFFFFF;color:#0B0B0B}
     </style>
 
     <div class="kicc-wrap">
@@ -37,13 +37,13 @@
             <tr><th style="width:150px">Action</th><th>Input</th><th style="width:130px"></th></tr>
             <tr>
                 <td>Settle &amp; cascade</td>
-                <td><input wire:model="rootPipelines" placeholder="1" style="width:100%;padding:5px 8px;border:1px solid #d1d5db;border-radius:6px"></td>
+                <td><input wire:model="rootPipelines" placeholder="1" style="width:100%;padding:5px 8px;border:1px solid #FFFFFF;border-radius:6px"></td>
                 <td><button wire:click="triggerCascade" class="pill ok" style="padding:5px 12px">Run cascade</button></td>
             </tr>
             <tr>
                 <td>Run automation node</td>
                 <td>
-                    <select wire:model="nodeKey" style="width:100%;padding:5px 8px;border:1px solid #d1d5db;border-radius:6px">
+                    <select wire:model="nodeKey" style="width:100%;padding:5px 8px;border:1px solid #FFFFFF;border-radius:6px">
                         <option value="">— select —</option>
                         @foreach($nodes as $n)<option value="{{ $n['key'] }}">{{ $n['name'] }}</option>@endforeach
                     </select>
@@ -52,7 +52,7 @@
             </tr>
             <tr>
                 <td>Retry dead-letter</td>
-                <td><input wire:model="dlqKey" placeholder="pipeline id" style="width:100%;padding:5px 8px;border:1px solid #d1d5db;border-radius:6px"></td>
+                <td><input wire:model="dlqKey" placeholder="pipeline id" style="width:100%;padding:5px 8px;border:1px solid #FFFFFF;border-radius:6px"></td>
                 <td><button wire:click="retryDlq" class="pill warn" style="padding:5px 12px">Retry</button></td>
             </tr>
         </table>
@@ -65,7 +65,7 @@
                     <td><strong>{{ $n['name'] }}</strong><br><span class="mut pill">{{ $n['key'] }}</span></td>
                     <td>{{ $n['schedule'] }}</td>
                     <td>{{ $n['workflow'] }}</td>
-                    <td><input wire:model="nodePipelineIds.{{ $n['key'] }}" style="width:100%;padding:4px 7px;border:1px solid #d1d5db;border-radius:6px"></td>
+                    <td><input wire:model="nodePipelineIds.{{ $n['key'] }}" style="width:100%;padding:4px 7px;border:1px solid #FFFFFF;border-radius:6px"></td>
                     <td><input type="checkbox" wire:model="nodeEnabled.{{ $n['key'] }}"></td>
                 </tr>
             @endforeach
@@ -86,7 +86,7 @@
                     <td>{{ optional($r->started_at)->diffForHumans() }}</td>
                 </tr>
             @empty
-                <tr><td colspan="7" style="color:#6b7280">No runs recorded yet.</td></tr>
+                <tr><td colspan="7" style="color:#0B0B0B">No runs recorded yet.</td></tr>
             @endforelse
         </table>
 
@@ -102,7 +102,7 @@
                     <td><code style="font-size:11px">{{ $row['correlationId'] ?? '—' }}</code></td>
                 </tr>
             @empty
-                <tr><td colspan="5" style="color:#6b7280">Ledger empty — run a cascade.</td></tr>
+                <tr><td colspan="5" style="color:#0B0B0B">Ledger empty — run a cascade.</td></tr>
             @endforelse
         </table>
 
@@ -112,7 +112,7 @@
             @forelse($dlq as $row)
                 <tr><td>#{{ $row['key'] ?? '—' }}</td><td>{{ $row['reason'] ?? '—' }}</td></tr>
             @empty
-                <tr><td colspan="2" style="color:#6b7280">DLQ empty — no failed triggers.</td></tr>
+                <tr><td colspan="2" style="color:#0B0B0B">DLQ empty — no failed triggers.</td></tr>
             @endforelse
         </table>
     </div>

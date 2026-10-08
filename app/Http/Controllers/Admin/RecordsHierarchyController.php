@@ -51,7 +51,7 @@ class RecordsHierarchyController extends Controller
             ? Record::where('type', 'institutions')->where('parent_id', $selectedSector->id)->orderBy('name')->get()
             : collect();
 
-        return view('admin.hierarchy', [
+        return view('experience.pages.admin.hierarchy', [
             'counties' => $counties,
             'selectedCounty' => $selectedCounty,
             'sectors' => $sectors,

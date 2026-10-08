@@ -15,10 +15,15 @@
         @php
           $isLive = in_array($x->id, $liveStreams ?? [], true);
           $img = $x->cover_image ? (str_starts_with($x->cover_image,'http') ? $x->cover_image : '/media/video/'.$x->cover_image) : null;
+          $assigned = \App\Support\LiveExperienceMedia::resolve($x, 'exhibitions');
+          $img = $assigned['poster'] ?? $img;
         @endphp
         <x-experience.card
           :href="route('exhibitions.show',$x->slug)"
-          :media="$img"
+          :media="$assigned['video'] ?? $img"
+          :media-type="!empty($assigned['video']) ? 'video' : 'image'"
+          :poster="$img"
+          :illustrative="$assigned['illustrative'] ?? false"
           :tag="$isLive ? 'Live now' : ($x->is_featured ? 'Featured' : null)"
           :tag-tone="$isLive ? 'red' : null"
           :meta="collect([$x->county->name ?? null, $x->start_date ? \Illuminate\Support\Carbon::parse($x->start_date)->format('d M Y') : null, $x->booths_count.' booths'])->filter()->implode(' · ')"

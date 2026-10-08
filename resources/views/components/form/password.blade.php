@@ -10,7 +10,7 @@
     <div class="relative">
         <input :type="show ? 'text' : 'password'" name="{{ $name }}" id="{{ $name }}"
                @if($required) required @endif
-               class="w-full bg-[#F9FAFB] border {{ $errors->has($name) ? 'border-red-300' : 'border-gray-200' }} focus:border-[#F59E0B]/60 rounded-xl px-4 py-2.5 pr-10 text-sm text-gray-900 placeholder:text-[#5A6480]/50 outline-none transition-colors touch-target">
+               class="w-full bg-[#FFFFFF] border {{ $errors->has($name) ? 'border-red-300' : 'border-gray-200' }} focus:border-[#FFCD05]/60 rounded-xl px-4 py-2.5 pr-10 text-sm text-gray-900 placeholder:text-[#0B0B0B]/50 outline-none transition-colors touch-target">
         <button type="button" @click="show = !show"
                 class="absolute right-2 top-1/2 -translate-y-1/2 p-2 text-gray-400 hover:text-gray-600 rounded-lg hover:bg-gray-100 transition-colors touch-target"
                 aria-label="Toggle password visibility">

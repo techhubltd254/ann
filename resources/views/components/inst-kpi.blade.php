@@ -1,6 +1,6 @@
 @props(['title', 'value', 'growth' => '', 'label' => '', 'accent' => false])
 
-<div class="bg-[#18181B] border border-zinc-800/80 rounded-xl p-4 flex justify-between items-center">
+<div class="bg-[#0B0B0B] border border-zinc-800/80 rounded-xl p-4 flex justify-between items-center">
     <div>
         <p class="text-[10px] font-medium text-zinc-500 uppercase tracking-wider">{{ $title }}</p>
         <p class="text-xl font-bold text-white mt-1">{{ $value }}</p>

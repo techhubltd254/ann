@@ -26,7 +26,7 @@ class PipelineController extends Controller
             'locked' => $sectors->sum('locked'),
         ];
 
-        return view('pipelines.index', compact('sectors', 'totals'));
+        return view('experience.pages.pipelines.index', compact('sectors', 'totals'));
     }
 
     public function sector(string $sector, PipelineRouter $resolver)
@@ -47,7 +47,7 @@ class PipelineController extends Controller
             ->where('status', 'released')
             ->sum('amount');
 
-        return view('pipelines.sector', compact(
+        return view('experience.pages.pipelines.sector', compact(
             'pipelines', 'sector', 'sectorName',
             'defaultFeeRate', 'totalGmv'
         ));
@@ -68,7 +68,7 @@ class PipelineController extends Controller
             ->selectRaw('COUNT(*) as trades, SUM(amount) as gmv, SUM(IF(synthetic=1,1,0)) as synthetic_trades')
             ->first();
 
-        return view('pipelines.show', compact(
+        return view('experience.pages.pipelines.show', compact(
             'pipeline', 'economics', 'regulators', 'feeRate', 'earnings'
         ));
     }

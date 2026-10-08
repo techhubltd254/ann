@@ -13,11 +13,11 @@ class OrderTrackingController extends Controller {
         $order = Order::where('order_number', $orderNumber)->with(['items.product','items.variant','statusHistory.user'])->firstOrFail();
         abort_if($order->user_id !== auth()->id() && !auth()->user()?->isAdmin(), 403);
         $returns = ReturnRequest::where('order_id', $order->id)->get();
-        return view('ecommerce.order-tracking', compact('order','returns'));
+        return view('experience.pages.ecommerce.order-tracking', compact('order','returns'));
     }
     public function myOrders() {
         $orders = Order::where('user_id', auth()->id())->with('items')->latest()->paginate(15);
-        return view('ecommerce.my-orders', compact('orders'));
+        return view('experience.pages.ecommerce.my-orders', compact('orders'));
     }
     public function requestReturn(Request $r, $orderNumber) {
         $order = Order::where('order_number', $orderNumber)->where('user_id', auth()->id())->firstOrFail();

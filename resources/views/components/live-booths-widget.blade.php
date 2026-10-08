@@ -27,7 +27,7 @@
                     <p class="font-medium text-sm truncate" style="color: var(--kicc-navy);" x-text="booth.name"></p>
                     <p class="text-xs" style="color: var(--kicc-text-light);" x-text="booth.pillar"></p>
                 </div>
-                <span class="ml-2 px-2 py-0.5 rounded-full text-xs font-medium" style="background: rgba(5,150,105,0.1); color: #059669;">
+                <span class="ml-2 px-2 py-0.5 rounded-full text-xs font-medium" style="background: rgba(11,11,11,0.1); color: #0B0B0B;">
                     <span class="animate-pulse">●</span> LIVE
                 </span>
             </a>

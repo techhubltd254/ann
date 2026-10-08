@@ -21,7 +21,7 @@ class VenueController extends Controller
             ->take(6)
             ->get();
 
-        return view('venues.show', compact('venue', 'upcomingExhibitions'));
+        return view('experience.pages.venues.show', compact('venue', 'upcomingExhibitions'));
     }
 
     public function inquire(Request $request, Venue $venue)

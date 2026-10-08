@@ -8,16 +8,16 @@ class TrainingDocController extends Controller
 {
     public function index()
     {
-        return view('training.index');
+        return view('experience.pages.training.index');
     }
 
     public function admin()
     {
-        return view('training.admin-manual');
+        return view('experience.pages.training.admin-manual');
     }
 
     public function api()
     {
-        return view('training.api-docs');
+        return view('experience.pages.training.api-docs');
     }
 }

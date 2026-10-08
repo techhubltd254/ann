@@ -39,15 +39,15 @@ document.addEventListener('DOMContentLoaded', function() {
         if (!p.lat || !p.lng) return;
         var marker = L.circleMarker([p.lat, p.lng], {
             radius: 8,
-            fillColor: '#b3261e',
-            color: '#fff',
+            fillColor: '#B3261E',
+            color: '#FFFFFF',
             weight: 2,
             opacity: 1,
             fillOpacity: 0.8,
         }).addTo(map);
         marker.bindPopup(
-            '<a href="/counties/' + p.slug + '" style="font-weight:700;color:#b3261e;text-decoration:none;">' +
-            p.name + '</a><br><span style="font-size:11px;color:#666;">' + p.sectors + ' sectors</span>'
+            '<a href="/counties/' + p.slug + '" style="font-weight:700;color:#B3261E;text-decoration:none;">' +
+            p.name + '</a><br><span style="font-size:11px;color:#0B0B0B;">' + p.sectors + ' sectors</span>'
         );
         bounds.push([p.lat, p.lng]);
     });

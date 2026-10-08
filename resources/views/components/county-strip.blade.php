@@ -5,24 +5,24 @@
 <div id="kicc-county-strip" class="overflow-hidden">
     <div class="flex flex-col sm:flex-row gap-3 mb-6">
         <div class="relative flex-1 max-w-sm">
-            <svg class="absolute left-3.5 top-1/2 -translate-y-1/2 text-[#5A6480]" xmlns="http://www.w3.org/2000/svg" width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="8"/><path d="m21 21-4.35-4.35"/></svg>
+            <svg class="absolute left-3.5 top-1/2 -translate-y-1/2 text-[#0B0B0B]" xmlns="http://www.w3.org/2000/svg" width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="8"/><path d="m21 21-4.35-4.35"/></svg>
             <input id="kicc-search-input" placeholder="Search county name…"
-                class="w-full pl-10 pr-12 h-11 rounded-xl bg-white border border-gray-200 text-gray-900 text-sm outline-none focus:ring-1 focus:ring-[#FFCD05] placeholder:text-[#5A6480]/50 transition-all"
+                class="w-full pl-10 pr-12 h-11 rounded-xl bg-white border border-gray-200 text-gray-900 text-sm outline-none focus:ring-1 focus:ring-[#FFCD05] placeholder:text-[#0B0B0B]/50 transition-all"
                 data-voice-search>
         </div>
         <div class="flex gap-1.5 overflow-x-auto pb-1 flex-wrap sm:flex-nowrap" id="kicc-region-buttons">
             @foreach($regions as $i => $r)
             <button data-region="{{ $r }}"
-                class="shrink-0 px-3 py-1.5 rounded-lg text-[11px] font-bold transition-all cursor-pointer {{ $i === 0 ? 'bg-[#b3261e] text-white' : 'bg-white text-[#5A6480] border border-gray-200 hover:border-[#b3261e]/30' }}">{{ $r }}</button>
+                class="shrink-0 px-3 py-1.5 rounded-lg text-[11px] font-bold transition-all cursor-pointer {{ $i === 0 ? 'bg-[#B3261E] text-white' : 'bg-white text-[#0B0B0B] border border-gray-200 hover:border-[#B3261E]/30' }}">{{ $r }}</button>
             @endforeach
         </div>
     </div>
 
     <div class="flex items-center justify-between mb-3">
-        <span id="kicc-county-count" class="text-[#5A6480] text-xs font-semibold">{{ count($counties) }} counties</span>
+        <span id="kicc-county-count" class="text-[#0B0B0B] text-xs font-semibold">{{ count($counties) }} counties</span>
         <div class="flex gap-2" id="kicc-scroll-buttons">
-            <button onclick="document.getElementById('kicc-county-strip-inner').scrollBy({left: -320, behavior: 'smooth'})" class="w-8 h-8 rounded-full border border-gray-200 text-[#5A6480] hover:border-[#FFCD05] hover:text-[#FFCD05] flex items-center justify-center transition-all cursor-pointer">&larr;</button>
-            <button onclick="document.getElementById('kicc-county-strip-inner').scrollBy({left: 320, behavior: 'smooth'})" class="w-8 h-8 rounded-full border border-gray-200 text-[#5A6480] hover:border-[#FFCD05] hover:text-[#FFCD05] flex items-center justify-center transition-all cursor-pointer">&rarr;</button>
+            <button onclick="document.getElementById('kicc-county-strip-inner').scrollBy({left: -320, behavior: 'smooth'})" class="w-8 h-8 rounded-full border border-gray-200 text-[#0B0B0B] hover:border-[#FFCD05] hover:text-[#FFCD05] flex items-center justify-center transition-all cursor-pointer">&larr;</button>
+            <button onclick="document.getElementById('kicc-county-strip-inner').scrollBy({left: 320, behavior: 'smooth'})" class="w-8 h-8 rounded-full border border-gray-200 text-[#0B0B0B] hover:border-[#FFCD05] hover:text-[#FFCD05] flex items-center justify-center transition-all cursor-pointer">&rarr;</button>
         </div>
     </div>
 
@@ -44,7 +44,7 @@
                          <source src="{{ $v }}" type="video/mp4">
                      </video>
                      @endif
-                     <div class="absolute inset-0 bg-gradient-to-br from-[#0b0b0b] to-[#1a1a2e]"></div>
+                     <div class="absolute inset-0 bg-gradient-to-br from-[#0B0B0B] to-[#0B0B0B]"></div>
                      <div class="absolute inset-0 bg-gradient-to-t from-black/70 via-black/20 to-transparent"></div>
                     <div class="absolute inset-x-0 bottom-0 p-4">
                         <div class="text-white font-black text-base leading-tight">{{ $c->name }}</div>
@@ -176,7 +176,7 @@
             regionButtons.forEach(function(b) {
                 var isActive = b === btn;
                 b.className = 'shrink-0 px-3 py-1.5 rounded-lg text-[11px] font-bold transition-all cursor-pointer ' +
-                    (isActive ? 'bg-[#b3261e] text-white' : 'bg-white text-[#5A6480] border border-gray-200 hover:border-[#b3261e]/30');
+                    (isActive ? 'bg-[#B3261E] text-white' : 'bg-white text-[#0B0B0B] border border-gray-200 hover:border-[#B3261E]/30');
             });
             filterCounties();
         });

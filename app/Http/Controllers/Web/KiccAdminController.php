@@ -400,7 +400,7 @@ class KiccAdminController extends Controller
             ->take(50)
             ->get();
 
-        return view('kicc-mother-admin', compact(
+        return view('experience.pages.kicc-mother-admin', compact(
             'stats', 'counties', 'exhibitors', 'ministries',
             'orders', 'escrows', 'users', 'providers', 'institutions',
             'pendingServices', 'navItems', 'tab', 'heroAsset', 'analytics',
