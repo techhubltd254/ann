@@ -431,10 +431,40 @@ class MediaControlController extends Controller
 
         $report = $this->orphanReport();
         $allowed = array_intersect($data['groups'], array_keys($report['orphan_groups']));
-        $victims = array_values(array_filter(
+
+        // SAFETY (2026-10-08): "unreferenced by media_assets" is NOT the same as
+        // "safe to delete". An audit of the live bucket showed the orphan list
+        // contains objects the site still needs:
+        //   * HLS renditions (v360/v480/v720/v1080 init.mp4, playlist.m3u8,
+        //     seg_*.m4s) whose master.m3u8 IS referenced and is fetched by the
+        //     live county pages -> deleting them breaks playback;
+        //   * db-backups/ hourly database archives;
+        //   * icons/ + kicc/ logos referenced from views;
+        //   * img/ real photographs (Eliper Hotel, Mombasa landmark) awaiting
+        //     mapping to their entity.
+        // Those are skipped and reported instead of deleted. Only media objects
+        // that are genuinely unreferenced can be purged.
+        $protected = function (string $key): bool {
+            if (str_contains($key, '/hls/') || preg_match('#\.(m4s|m3u8)$#i', $key)) {
+                return true;
+            }
+
+            foreach (['db-backups/', 'icons/', 'kicc/', 'img/'] as $prefix) {
+                if (str_starts_with($key, $prefix)) {
+                    return true;
+                }
+            }
+
+            return false;
+        };
+
+        $candidates = array_values(array_filter(
             $report['orphans'],
             fn ($o) => in_array($this->classify($o), $allowed, true)
         ));
+
+        $victims = array_values(array_filter($candidates, fn ($o) => ! $protected($o)));
+        $skipped = count($candidates) - count($victims);
 
         $deleted = 0;
         $failed = 0;
@@ -448,7 +478,7 @@ class MediaControlController extends Controller
             }
         }
 
-        return back()->with('success', "Removed {$deleted} unreferenced R2 object(s)" . ($failed ? " ({$failed} failed — see logs)" : '') . '.');
+        return back()->with('success', "Removed {$deleted} unreferenced R2 object(s)" . ($failed ? " ({$failed} failed — see logs)" : '') . ($skipped ? " — {$skipped} protected object(s) kept (HLS renditions, backups, logos, unmapped photos)." : '') . '.');
     }
 
     /** Drop admin rows whose R2 object is gone. Never touches R2. */

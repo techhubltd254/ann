@@ -10,7 +10,7 @@
     <meta property="og:title" content="@yield('title', 'KICC') - Global Exhibition Platform">
     <meta property="og:description" content="@yield('description', "Africa's Premier Meeting Venue. A national icon since 1973.")">
     <meta property="og:url" content="{{ url()->current() }}">
-    <meta property="og:image" content="@yield('og_image', media('kicc/kicc-logo.png'))">
+    <meta property="og:image" content="@yield('og_image', asset('kicclogo.png'))">
     <meta property="og:site_name" content="KICC Global Exhibition Platform">
     <meta name="twitter:card" content="summary_large_image">
     <meta name="theme-color" content="#901C1E">
@@ -474,7 +474,7 @@ document.addEventListener('DOMContentLoaded', function() {
             <a href="/" class="flex items-center gap-3 shrink-0 group">
                 <div class="flex items-center gap-3 touch-target.5">
                     <div class="rounded-xl bg-[#901C1E] px-2.5 py-1.5 flex items-center justify-center shadow-lg shadow-[#901C1E]/25">
-                        <img src="{{ media('kicc/kicc-logo.png') }}" alt="KICC" class="h-7 w-auto">
+                        <img src="{{ asset('kicclogo.png') }}" alt="KICC" class="h-7 w-auto">
                     </div>
                     <div class="leading-tight">
                         <div class="font-black text-[#901C1E] text-sm tracking-tight group-hover:text-[#FFCD05] transition-colors uppercase">KICC</div>
@@ -555,7 +555,7 @@ document.addEventListener('DOMContentLoaded', function() {
             <div>
                 <div class="flex items-center gap-3 touch-target.5 mb-3">
                     <div class="rounded-xl bg-[#901C1E] px-2.5 py-1.5 flex items-center justify-center">
-                        <img src="{{ media('kicc/kicc-logo.png') }}" alt="KICC" class="h-7 w-auto">
+                        <img src="{{ asset('kicclogo.png') }}" alt="KICC" class="h-7 w-auto">
                     </div>
                     <div class="leading-tight">
                         <div class="font-black text-white text-sm tracking-tight uppercase">KICC</div>
