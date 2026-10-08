@@ -3,15 +3,15 @@
    DESIGN TOKENS — transcribed verbatim from KICC-UIUX-COMPLETE.md
    ============================================================ */
 :root{
-  --dark-canvas:var(--nv-900);
-  --surface:var(--nv-850);
+  --dark-canvas:#0A0A0A;
+  --surface:#141414;
   --card:rgba(239,228,210,0.34);   /* overridden by the brand layer */
   --kicc-red:#B4432A;      --kicc-red-hover:#93331b;
   --kicc-gold:#E0A22B;     --gold-soft:var(--au-500);
-  --kicc-navy:var(--nv-800);     --navy-hover:var(--nv-700);
+  --kicc-navy:#1E1E1E;     --navy-hover:#2A2A2A;
   --text:#2E2118;          --text-muted:rgba(46,33,24,0.70);
-  --light-bg:var(--kicc-paper);      --sand-alt:#EFE4D2;
-  --info-blue:var(--nv-400);
+  --light-bg:#FFFFFF;      --sand-alt:#E8E8E8;
+  --info-blue:#5A5A5A;
   --green:var(--kicc-green);
   --glass-bg:rgba(255,253,248,0.72);
   --glass-border:rgba(46,33,24,0.11);
@@ -35,7 +35,7 @@ body{
   -webkit-font-smoothing:antialiased; overflow-x:hidden;
   min-height:100vh;
 }
-body.light-world{background:var(--light-bg);color:var(--nv-900)}
+body.light-world{background:var(--light-bg);color:#0A0A0A}
 h1,h2,h3,h4,h5{font-family:var(--font-head);font-weight:800;line-height:1.08;margin:0;letter-spacing:-.02em}
 h1{font-weight:900;font-size:clamp(2.4rem,5.5vw,4.6rem)}
 h2{font-size:clamp(1.7rem,3vw,2.6rem)}
@@ -45,7 +45,7 @@ a{color:inherit;text-decoration:none}
 button{font-family:inherit;cursor:pointer;border:none;background:none;color:inherit}
 input,select,textarea{font-family:inherit;font-size:14px}
 img{max-width:100%;display:block}
-::selection{background:var(--kicc-gold);color:var(--nv-900)}
+::selection{background:var(--kicc-gold);color:#0A0A0A}
 ::-webkit-scrollbar{width:10px;height:10px}
 ::-webkit-scrollbar-track{background:rgba(46,33,24,.05)}
 ::-webkit-scrollbar-thumb{background:rgba(46,33,24,.20);border-radius:8px}
@@ -96,7 +96,7 @@ img{max-width:100%;display:block}
   background:var(--glass-light-bg);
   backdrop-filter:blur(18px) saturate(1.5); -webkit-backdrop-filter:blur(18px) saturate(1.5);
   border:1px solid var(--glass-light-border); border-radius:var(--radius);
-  color:var(--nv-900); box-shadow:0 18px 50px color-mix(in srgb, var(--ui-raised) 12.0%, transparent);
+  color:#0A0A0A; box-shadow:0 18px 50px color-mix(in srgb, var(--ui-raised) 12.0%, transparent);
 }
 .card{background:var(--card);border:1px solid var(--glass-border);border-radius:var(--radius)}
 .panel{background:var(--surface);border:1px solid var(--glass-border);border-radius:var(--radius)}
@@ -115,7 +115,7 @@ img{max-width:100%;display:block}
 }
 .btn:hover{background:var(--kicc-red-hover);box-shadow:0 10px 30px rgba(180,67,42,.5)}
 .btn:active{transform:scale(.92)}
-.btn.gold{background:var(--kicc-gold);color:var(--nv-900)}
+.btn.gold{background:var(--kicc-gold);color:#0A0A0A}
 .btn.gold:hover{background:var(--gold-soft);box-shadow:0 10px 34px rgba(224,162,43,.5)}
 .btn.ghost{background:transparent;border:1px solid var(--glass-border);color:var(--text)}
 .btn.ghost:hover{border-color:var(--kicc-gold);color:var(--kicc-gold)}
@@ -133,13 +133,13 @@ img{max-width:100%;display:block}
 .badge.gold{background:rgba(224,162,43,.16);color:var(--kicc-gold);border:1px solid rgba(224,162,43,.32)}
 .badge.red{background:rgba(180,67,42,.22);color:var(--cr-300);border:1px solid rgba(180,67,42,.5)}
 .badge.green{background:rgba(79,122,70,.18);color:var(--kicc-green);border:1px solid rgba(79,122,70,.42)}
-.badge.blue{background:rgba(90,124,140,.16);color:var(--nv-400);border:1px solid rgba(90,124,140,.4)}
+.badge.blue{background:rgba(90,124,140,.16);color:#5A5A5A;border:1px solid rgba(90,124,140,.4)}
 .badge.grey{background:color-mix(in srgb, var(--ui-raised) 7.0%, transparent);color:var(--ui-muted);border:1px solid var(--glass-border)}
 .live-dot{width:8px;height:8px;border-radius:50%;background:var(--cr-500);display:inline-block;animation:pulseGlow 1.6s infinite}
 @keyframes pulseGlow{0%{box-shadow:0 0 0 0 rgba(255,59,48,.7)}70%{box-shadow:0 0 0 11px rgba(255,59,48,0)}100%{box-shadow:0 0 0 0 rgba(255,59,48,0)}}
 .pill{padding:8px 16px;border-radius:100px;font-size:13px;font-weight:500;background:color-mix(in srgb, var(--ui-raised) 6.0%, transparent);border:1px solid var(--glass-border);cursor:pointer;transition:all .22s}
 .pill:hover{border-color:var(--kicc-gold);color:var(--kicc-gold)}
-.pill.active{background:var(--kicc-gold);color:var(--nv-900);border-color:var(--kicc-gold);font-weight:600}
+.pill.active{background:var(--kicc-gold);color:#0A0A0A;border-color:var(--kicc-gold);font-weight:600}
 
 /* ============================================================
    FORM CONTROLS
@@ -215,7 +215,7 @@ select.input{appearance:none;background-image:url("data:image/svg+xml,%3Csvg xml
 .logo{display:flex;align-items:center;gap:12px;font-family:var(--font-head);font-weight:900;letter-spacing:-.02em}
 .logo .mark{
   width:38px;height:38px;border-radius:11px;display:grid;place-items:center;
-  background:linear-gradient(135deg,var(--kicc-gold),var(--au-700));color:var(--nv-900);
+  background:linear-gradient(135deg,var(--kicc-gold),var(--au-700));color:#0A0A0A;
   font-weight:900;font-size:17px;box-shadow:0 6px 20px rgba(224,162,43,.35);
 }
 .logo small{display:block;font-family:var(--font-ui);font-weight:500;font-size:10.5px;letter-spacing:.16em;text-transform:uppercase;color:var(--ui-muted)}
@@ -286,11 +286,11 @@ select.input{appearance:none;background-image:url("data:image/svg+xml,%3Csvg xml
 .media-tile .tile-body{position:absolute;inset:0;z-index:2;padding:18px;display:flex;flex-direction:column;justify-content:flex-end;overflow:hidden}
 .media-tile .tile-ratio{aspect-ratio:16/10}
 .media-tile .tile-ratio.tall{aspect-ratio:4/5}
-.media-tile .play-fab{position:absolute;top:50%;left:50%;transform:translate(-50%,-50%) scale(.7);width:54px;height:54px;border-radius:50%;background:rgba(224,162,43,.92);color:var(--nv-900);display:grid;place-items:center;opacity:0;transition:all .35s var(--ease-out);z-index:3;font-size:18px}
+.media-tile .play-fab{position:absolute;top:50%;left:50%;transform:translate(-50%,-50%) scale(.7);width:54px;height:54px;border-radius:50%;background:rgba(224,162,43,.92);color:#0A0A0A;display:grid;place-items:center;opacity:0;transition:all .35s var(--ease-out);z-index:3;font-size:18px}
 .media-tile:hover .play-fab{opacity:1;transform:translate(-50%,-50%) scale(1)}
 .media-tile .tile-live{position:absolute;top:12px;left:12px;z-index:3}
 
-.hls-stage{position:relative;border-radius:var(--radius);overflow:hidden;background:var(--nv-950);border:1px solid var(--glass-border);aspect-ratio:16/9}
+.hls-stage{position:relative;border-radius:var(--radius);overflow:hidden;background:#050505;border:1px solid var(--glass-border);aspect-ratio:16/9}
 .hls-stage .poster{position:absolute;inset:0;background-size:cover;background-position:center}
 .hls-stage .poster.blurred{filter:blur(32px);transform:scale(1.15)}
 .hls-stage .scanlines{position:absolute;inset:0;background:repeating-linear-gradient(0deg,rgba(58,42,30,.16) 0 2px,transparent 2px 4px);opacity:.5;pointer-events:none}
@@ -302,14 +302,14 @@ select.input{appearance:none;background-image:url("data:image/svg+xml,%3Csvg xml
 .quality-pills .pill{padding:5px 11px;font-size:11px}
 .stream-off{position:absolute;inset:0;display:grid;place-items:center;background:radial-gradient(circle,rgba(180,67,42,.25),rgba(36,26,18,.96));text-align:center;padding:20px}
 
-.viewer3d{position:relative;border-radius:var(--radius);overflow:hidden;background:linear-gradient(180deg,var(--nv-950),var(--nv-900));border:1px solid var(--glass-border);aspect-ratio:16/9;cursor:grab}
+.viewer3d{position:relative;border-radius:var(--radius);overflow:hidden;background:linear-gradient(180deg,#050505,#0A0A0A);border:1px solid var(--glass-border);aspect-ratio:16/9;cursor:grab}
 .viewer3d:active{cursor:grabbing}
 .viewer3d canvas{display:block;width:100%;height:100%}
 .viewer3d .v3d-hud{position:absolute;left:14px;bottom:14px;font-size:11px;font-family:ui-monospace,monospace;color:var(--kicc-gold);background:rgba(36,26,18,.7);padding:8px 12px;border-radius:9px;border:1px solid var(--glass-border);line-height:1.7}
 .viewer3d .v3d-tag{position:absolute;right:14px;top:14px;font-size:11px;background:rgba(36,26,18,.7);padding:6px 11px;border-radius:100px;border:1px solid var(--glass-border);color:var(--on-dark-muted)}
 .viewer3d .v3d-ctrls{position:absolute;left:14px;top:14px;display:flex;gap:6px;flex-wrap:wrap;max-width:60%}
 
-.hologram{position:relative;aspect-ratio:1/1;border-radius:50%;overflow:hidden;background:radial-gradient(circle at 50% 60%,rgba(224,162,43,.14),transparent 65%),var(--nv-950);border:1px solid rgba(224,162,43,.2);display:grid;place-items:center}
+.hologram{position:relative;aspect-ratio:1/1;border-radius:50%;overflow:hidden;background:radial-gradient(circle at 50% 60%,rgba(224,162,43,.14),transparent 65%),#050505;border:1px solid rgba(224,162,43,.2);display:grid;place-items:center}
 .hologram .rings{position:absolute;inset:0;display:grid;place-items:center}
 .hologram .rings i{position:absolute;border:1px solid rgba(224,162,43,.3);border-radius:50%;animation:ringSpin 7s linear infinite}
 .hologram .rings i:nth-child(1){width:60%;height:60%}
@@ -333,7 +333,7 @@ table.tbl tbody tr:last-child td{border-bottom:none}
 .pager{display:flex;gap:6px;align-items:center;justify-content:flex-end;padding:14px 4px 0}
 .pager button{min-width:34px;height:34px;border-radius:9px;background:color-mix(in srgb, var(--ui-raised) 5.0%, transparent);border:1px solid var(--glass-border);font-size:13px;transition:all .2s}
 .pager button:hover{border-color:var(--kicc-gold);color:var(--kicc-gold)}
-.pager button.on{background:var(--kicc-gold);color:var(--nv-900);border-color:var(--kicc-gold);font-weight:700}
+.pager button.on{background:var(--kicc-gold);color:#0A0A0A;border-color:var(--kicc-gold);font-weight:700}
 
 /* ============================================================
    TABS (admin + detail pages) — gold spring underline
@@ -423,7 +423,7 @@ table.tbl tbody tr:last-child td{border-bottom:none}
 @keyframes doorOpen{from{opacity:0;transform:perspective(1200px) rotateY(-22deg) translateX(70px);box-shadow:-40px 0 80px rgba(58,42,30,.8)}to{opacity:1;transform:none}}
 .auth-alt{display:flex;align-items:center;gap:14px;margin:20px 0;color:var(--ui-muted);font-size:12px}
 .auth-alt::before,.auth-alt::after{content:"";flex:1;height:1px;background:var(--glass-border)}
-.g-btn{display:flex;align-items:center;justify-content:center;gap:11px;width:100%;padding:13px;border-radius:var(--radius-sm);background:var(--ui-raised);color:var(--nv-950);font-weight:600;font-size:14px;transition:transform .15s,box-shadow .25s}
+.g-btn{display:flex;align-items:center;justify-content:center;gap:11px;width:100%;padding:13px;border-radius:var(--radius-sm);background:var(--ui-raised);color:#050505;font-weight:600;font-size:14px;transition:transform .15s,box-shadow .25s}
 .g-btn:hover{box-shadow:0 8px 26px rgba(58,42,30,.4)}
 .g-btn:active{transform:scale(.97)}
 .steps{display:flex;gap:8px;margin-bottom:26px}
@@ -456,7 +456,7 @@ table.tbl tbody tr:last-child td{border-bottom:none}
 /* ============================================================
    MAP (CSS 2.5D Kenya county map)
    ============================================================ */
-.map-stage{position:relative;border-radius:var(--radius);overflow:hidden;border:1px solid var(--glass-border);background:radial-gradient(circle at 50% 40%,var(--nv-900),var(--nv-950));aspect-ratio:16/11}
+.map-stage{position:relative;border-radius:var(--radius);overflow:hidden;border:1px solid var(--glass-border);background:radial-gradient(circle at 50% 40%,#0A0A0A,#050505);aspect-ratio:16/11}
 .map-grid{position:absolute;inset:0;background-image:linear-gradient(rgba(224,162,43,.05) 1px,transparent 1px),linear-gradient(90deg,rgba(224,162,43,.05) 1px,transparent 1px);background-size:44px 44px}
 .county-node{position:absolute;transform:translate(-50%,-50%);display:flex;flex-direction:column;align-items:center;gap:4px;cursor:pointer;transition:transform .35s var(--ease-out);z-index:4}
 .county-node:hover{transform:translate(-50%,-50%) scale(1.22);z-index:9}
@@ -465,7 +465,7 @@ table.tbl tbody tr:last-child td{border-bottom:none}
 .county-node .lbl{font-size:10.5px;font-weight:600;white-space:nowrap;background:rgba(36,26,18,.78);padding:2px 8px;border-radius:100px;border:1px solid var(--glass-border);opacity:0;transition:opacity .25s;pointer-events:none}
 .county-node:hover .lbl{opacity:1}
 .waypoint-pill{position:absolute;padding:6px 12px;border-radius:100px;background:rgba(224,162,43,.14);border:1px solid rgba(224,162,43,.4);color:var(--kicc-gold);font-size:11px;font-weight:600;cursor:pointer;transition:all .25s;backdrop-filter:blur(8px)}
-.waypoint-pill:hover{background:var(--kicc-gold);color:var(--nv-900)}
+.waypoint-pill:hover{background:var(--kicc-gold);color:#0A0A0A}
 
 /* ============================================================
    TIMELINE / PIPELINE MESH
@@ -487,8 +487,8 @@ table.tbl tbody tr:last-child td{border-bottom:none}
 .portal-card::before{content:"";position:absolute;inset:0;opacity:.16;transition:opacity .4s}
 .portal-card:hover::before{opacity:.3}
 .pc-kicc::before{background:linear-gradient(135deg,var(--kicc-gold),var(--au-700))}
-.pc-nat::before{background:linear-gradient(135deg,var(--nv-400),var(--nv-800))}
-.pc-county::before{background:linear-gradient(135deg,var(--kicc-green),var(--nv-800))}
+.pc-nat::before{background:linear-gradient(135deg,#5A5A5A,#1E1E1E)}
+.pc-county::before{background:linear-gradient(135deg,var(--kicc-green),#1E1E1E)}
 .pc-exh::before{background:linear-gradient(135deg,var(--kicc-green),var(--kicc-green))}
 .portal-card>*{position:relative;z-index:2}
 
@@ -515,7 +515,7 @@ table.tbl tbody tr:last-child td{border-bottom:none}
 .sidebar-nav{position:sticky;top:96px;align-self:start}
 .toggle-group{display:inline-flex;background:color-mix(in srgb, var(--ui-raised) 5.0%, transparent);border:1px solid var(--glass-border);border-radius:100px;padding:4px}
 .toggle-group button{padding:8px 16px;border-radius:100px;font-size:12.5px;font-weight:500;transition:all .25s}
-.toggle-group button.on{background:var(--kicc-gold);color:var(--nv-900);font-weight:600}
+.toggle-group button.on{background:var(--kicc-gold);color:#0A0A0A;font-weight:600}
 .notice{padding:14px 18px;border-radius:var(--radius-sm);border-left:3px solid var(--kicc-gold);background:rgba(224,162,43,.07);font-size:13.5px}
 .notice.red{border-left-color:var(--kicc-red);background:rgba(180,67,42,.1)}
 .notice.green{border-left-color:var(--green);background:rgba(79,122,70,.1)}
@@ -633,10 +633,10 @@ table.tbl tbody tr:last-child td{border-bottom:none}
 /* ── 1 · TOKENS: retuned to the place, not to a startup palette ─────────── */
 :root{
   /* warm near-black — burnt acacia, not navy */
-  --dark-canvas:var(--nv-900);
-  --surface:var(--nv-850);
+  --dark-canvas:#0A0A0A;
+  --surface:#141414;
   --card:rgba(239,228,210,0.34);
-  --ink:var(--nv-900);
+  --ink:#0A0A0A;
 
   /* bone paper, not white */
   --bone:#2E2118;
@@ -655,7 +655,7 @@ table.tbl tbody tr:last-child td{border-bottom:none}
   --hairline:rgba(46,33,24,0.14);
   --hairline-soft:rgba(46,33,24,0.07);
 
-  --light-bg:#FFFBF4;      --sand-alt:#EFE4D2;
+  --light-bg:#FFFBF4;      --sand-alt:#E8E8E8;
   --info-blue:#4A7C8C;
   --green:#4F6B47;
 
@@ -1447,7 +1447,7 @@ body.rail-on .nav-inner{border-bottom-color:transparent}
   --kicc-navy-deep:#3A2A1D;
   --kicc-navy-soft:#7A6553;
   --kicc-green:#4F7A46;
-  --kicc-paper:#FFFBF4;        /* cream, not white */
+  #0A0A0A /* was kicc-paper */:#FFFBF4;        /* cream, not white */
 
   /* ── 2 · TERRACOTTA RAMP — sun-fired clay, not poster red ─────────── */
   --cr-900:#5E1F12;
@@ -1511,7 +1511,7 @@ body.rail-on .nav-inner{border-bottom-color:transparent}
   --hairline-soft:rgba(46,33,24,0.08);
 
   --light-bg:#F7F0E3;
-  --sand-alt:#EFE4D2;
+  --sand-alt:#E8E8E8;
   --info-blue:#5A7C8C;
   --green:var(--kicc-green);
 
@@ -1565,7 +1565,7 @@ body::before{
     radial-gradient(900px 520px at 8% 4%,   color-mix(in srgb, var(--ui-raised) 42.0%, transparent), transparent 68%),
     radial-gradient(1200px 700px at 50% 108%, rgba(168,122,24,0.10), transparent 70%);
 }
-body.light-world{background:var(--kicc-paper); color:var(--nv-900)}
+body.light-world{background:var(#0A0A0A /* was kicc-paper */); color:#0A0A0A}
 
 /* ══════════════════════════════════════════════════════════════════════════
    GLASS — the primary surface. Replaces the old hairline rectangles.
@@ -1644,7 +1644,7 @@ body.light-world{background:var(--kicc-paper); color:var(--nv-900)}
 }
 .btn.red, .btn.crimson{
   background:linear-gradient(135deg, var(--cr-500) 0%, var(--cr-600) 55%, var(--cr-800) 100%);
-  color:var(--kicc-paper);
+  color:var(#0A0A0A /* was kicc-paper */);
   box-shadow:var(--shadow-cr), inset 0 1px 0 color-mix(in srgb, var(--ui-raised) 18.0%, transparent);
 }
 /* the sheen that crosses a button on hover */
