@@ -1,0 +1,58 @@
+/* KICC refined experience layer — warm, alternating, editorial; never a blank white wall.
+   Brand stays the four user colours: warm-white glass / black / red / yellow. */
+:root{
+  --rf-cream:#FAF6EE;            /* warm off-white ground (mix of white+tiny black, not a brand colour) */
+  --rf-cream-2:#F4EDE0;          /* alternating band */
+  --rf-ink:#0B0B0B;
+  --rf-red:#B3261E;
+  --rf-yellow:#FFCD05;
+  --rf-line:rgba(11,11,11,.10);
+  --rf-card:rgba(255,255,255,.72);
+  --rf-shadow:0 18px 50px rgba(11,11,11,.06);
+}
+html[data-theme="light"] body.experience-world{background:var(--rf-cream)!important;color:var(--rf-ink)!important;}
+html[data-theme="dark"] body.experience-world{background:#0B0B0B!important;color:#FFFFFF!important;}
+html[data-theme="dark"] body.experience-world{--rf-cream:#0B0B0B;--rf-cream-2:#141312;--rf-ink:#FFFFFF;--rf-card:rgba(255,255,255,.05);--rf-line:rgba(255,255,255,.14);--rf-shadow:0 20px 60px rgba(0,0,0,.4);}
+
+/* Alternating section bands kill the blank-white wall. */
+html[data-theme] body.experience-world main>section:nth-of-type(odd),
+html[data-theme] body.experience-world .ed-flat:nth-of-type(odd),
+html[data-theme] body.experience-world .ex-page:nth-of-type(odd){background:var(--rf-cream)!important;}
+html[data-theme] body.experience-world main>section:nth-of-type(even),
+html[data-theme] body.experience-world .ed-flat:nth-of-type(even),
+html[data-theme] body.experience-world .ex-page:nth-of-type(even){background:var(--rf-cream-2)!important;}
+
+/* Warm glass cards, hairline borders — editorial, not sterile. */
+html[data-theme] body.experience-world :is(.ex-card,.glass-card,.panel,.rb-panel,.ra-card,.admin-module,.tm-tile){
+  background:var(--rf-card)!important;border:1px solid var(--rf-line)!important;
+  border-radius:18px;box-shadow:var(--rf-shadow);backdrop-filter:blur(16px);
+}
+html[data-theme] body.experience-world .ex-shot{border-radius:14px 14px 0 0;overflow:hidden;}
+html[data-theme] body.experience-world .ex-shot img{transition:transform .6s cubic-bezier(.22,1,.36,1);}
+html[data-theme] body.experience-world .ex-card:hover .ex-shot img{transform:scale(1.04);}
+
+/* Display type + labels for the editorial reference feel. */
+html[data-theme] body.experience-world h1,html[data-theme] body.experience-world .ex-hero h1,html[data-theme] body.experience-world .sx-hero h1{
+  font-family:Fraunces,Georgia,serif;font-weight:600;letter-spacing:-.015em;line-height:1.04;
+}
+html[data-theme] body.experience-world :is(.ex-label,.ed-label,.ra-eyebrow,.eyebrow){
+  font-family:'Inter Tight',sans-serif;font-weight:600;letter-spacing:.18em;text-transform:uppercase;font-size:11px;color:var(--rf-red);
+}
+html[data-theme] body.experience-world p,html[data-theme] body.experience-world .ex-lead{
+  font-family:'Inter Tight',sans-serif;color:color-mix(in srgb,var(--rf-ink) 78%,transparent);line-height:1.6;
+}
+html[data-theme="dark"] body.experience-world :is(h1,h2,h3,h4,p,label,summary,.ex-meta,.ex-count,.ex-lead){color:#FFFFFF!important;}
+html[data-theme="dark"] body.experience-world :is(.ex-label,.ed-label,.eyebrow){color:var(--rf-yellow)!important;}
+
+/* Sequential media browser */
+.rf-flow{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:16px;margin:22px 0;}
+.rf-flow>div{display:grid;gap:8px;}
+.rf-flow select,.rf-flow input,.rf-flow button{padding:12px;border:1px solid var(--rf-line);border-radius:12px;background:var(--rf-card);color:var(--rf-ink);font:inherit;width:100%;}
+.rf-media-current{display:flex;gap:18px;align-items:flex-start;flex-wrap:wrap;padding:18px;border:1px solid var(--rf-line);border-radius:16px;background:var(--rf-card);margin-top:16px;}
+.rf-media-current video,.rf-media-current img{max-width:min(420px,100%);border-radius:12px;box-shadow:var(--rf-shadow);}
+.rf-media-current .rf-meta{min-width:240px;flex:1;}
+.rf-badge{display:inline-block;padding:3px 10px;border-radius:80px;font-size:11px;font-weight:600;background:var(--rf-yellow);color:var(--rf-ink);}
+.rf-badge.red{background:var(--rf-red);color:#fff;}
+.rf-actions{display:flex;gap:10px;flex-wrap:wrap;margin-top:14px;}
+.rf-status{font-size:13px;min-height:1.2em;}
+@media(max-width:860px){.rf-flow{grid-template-columns:1fr;}}

@@ -880,3 +880,5 @@ Route::middleware('auth')->group(function () {
     Route::get('/portal/components', [\App\Http\Controllers\Web\UnifiedAdminController::class, 'components'])->name('admin.components.ui');
     Route::get('/kicc-admin/components', [\App\Http\Controllers\Web\UnifiedAdminController::class, 'components'])->name('admin.components.reference');
 });
+
+Route::middleware("auth")->group(function(){Route::get("/portal/media-flow",[\App\Http\Controllers\Web\MediaFlowController::class,"index"])->name("admin.mediaflow");Route::get("/portal/media-flow/{institution}/sectors",[\App\Http\Controllers\Web\MediaFlowController::class,"sectors"])->whereNumber("institution")->name("admin.mediaflow.sectors");Route::get("/portal/media-flow/{institution}/media",[\App\Http\Controllers\Web\MediaFlowController::class,"media"])->whereNumber("institution")->name("admin.mediaflow.media");});
