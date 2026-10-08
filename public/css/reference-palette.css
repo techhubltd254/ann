@@ -61,3 +61,14 @@ html[data-theme] :is(.nav,.footer) :is(a:not(.btn),h4,p,small){color:var(--ui-in
 html[data-theme] #app :is(.orbit-caption,.hls-stage,.viewer3d,.splat-gate) :is(h2,h3,p,.lbl,.num){color:var(--brand-white)!important;-webkit-text-fill-color:var(--brand-white)!important}
 html[data-theme] #app :is(.btn,.badge) *{-webkit-text-fill-color:currentColor!important}
 html[data-theme] #app .tm-price span{color:var(--ui-muted)!important;-webkit-text-fill-color:var(--ui-muted)!important}
+
+/* Defeat the old all-white guards on retained native backend pages, in both modes. */
+html:root[data-theme]{--x-bg:var(--ui-bg)!important;--x-surface:var(--ui-surface)!important;--x-card:var(--ui-raised)!important;--x-ink:var(--ui-ink)!important;--x-muted:var(--ui-muted)!important;--x-line:var(--ui-line)!important}
+html:root[data-theme] body.experience-world,html:root[data-theme] body.experience-world #app{background:var(--ui-bg)!important;color:var(--ui-ink)!important}
+html:root[data-theme] body.experience-world :is(.ex-hero,.ed-flat,.ed-interlude,.sx-close,.sx-archive,.ex-page,.page-head,#chapter-close,.admin-pane,.stat-strip,.sector-stats,footer.footer,footer.rb-footer){background:var(--ui-bg)!important;color:var(--ui-ink)!important}
+html:root[data-theme] body.experience-world :is(.ex-card,.glass-card,.glass-card-dark,.sx-glass,.rb-panel,.ra-card,.ra-card-dark,.admin-module,.glass-nav,.glass-header,.ra-table-wrap,.ra-tree-item,.ra-kpi,.ra-nav a,.ra-notice){background:var(--ui-glass)!important;color:var(--ui-ink)!important;border-color:var(--ui-line)!important}
+html:root[data-theme] body.experience-world :is(.ra-btn,.ra-btn-ghost,.ra-nav a[aria-current=page]){background:var(--brand-yellow)!important;color:var(--brand-black)!important;border-color:var(--ui-line)!important}
+html:root[data-theme] body.experience-world :is(.rb-nav,.mobile-menu){background:var(--ui-surface)!important;color:var(--ui-ink)!important}
+html:root[data-theme] body.experience-world :is(h1,h2,h3,h4,p,.ex-meta,.ex-count,.ex-lead,.sidebar-link,.logo,.muted-xs,.ra-muted,.nav-links a,footer a){color:var(--ui-ink)!important;-webkit-text-fill-color:currentColor!important}
+
+html[data-theme] body.experience-world :is(.sx-glass,.ex-head,.ex-section,.ex-card,.ex-empty,.rb-footer){background:var(--ui-surface)!important;color:var(--ui-ink)!important}html[data-theme] body.experience-world :is(h1,h2,h3,p,label,td,th){color:var(--ui-ink);-webkit-text-fill-color:var(--ui-ink)}

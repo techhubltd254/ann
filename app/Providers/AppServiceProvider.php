@@ -42,7 +42,7 @@ class AppServiceProvider extends ServiceProvider
         // The literal approved renderer reads these same models. Upload/delete
         // events invalidate its projection immediately, not after a browser refresh TTL.
         $referenceBust = fn () => \Illuminate\Support\Facades\Cache::forget('reference.native.v1');
-        foreach ([County::class, CountyInstitution::class, Product::class, Venue::class, Exhibition::class, MediaAsset::class, \App\Models\MediaDerivative::class, \App\Models\Screen::class, \App\Models\LiveStream::class] as $model) {
+        foreach ([County::class, CountyInstitution::class, Product::class, Venue::class, Exhibition::class, MediaAsset::class, \App\Models\MediaDerivative::class, \App\Models\Screen::class, \App\Models\LiveStream::class, \App\Models\Travel\Airport::class, \App\Models\Travel\FlightInventory::class, \App\Models\Travel\Hotel::class, \App\Models\Travel\HotelRoom::class, \App\Models\Travel\AirportTransfer::class] as $model) {
             $model::saved($referenceBust);
             $model::deleted($referenceBust);
         }

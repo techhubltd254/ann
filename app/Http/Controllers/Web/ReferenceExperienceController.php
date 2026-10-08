@@ -13,12 +13,12 @@ class ReferenceExperienceController extends Controller
 {
     public function tables(): array
     {
-        return \Illuminate\Support\Facades\Cache::remember('reference.native.v1', 60, fn () => $this->buildTables());
+        return \Illuminate\Support\Facades\Cache::remember('reference.native.v1', 300, fn () => $this->buildTables());
     }
 
     private function buildTables(): array
     {
-        $tables = array_fill_keys(['counties','institutions','products','venues','exhibitions','screens','streams','content','media','analytics'], []);
+        $tables = array_fill_keys(['counties','institutions','products','venues','exhibitions','screens','streams','content','media','analytics','travel_groups','airports'], []);
         $counties = County::with('sectors')->orderBy('code')->get();
         $countyNames = $counties->pluck('name', 'id');
         foreach ($counties as $c) {
@@ -36,7 +36,7 @@ class ReferenceExperienceController extends Controller
         $resolver = app(ProductMediaResolver::class);
         foreach (Product::with('county','images','variants')->where('status','active')->orderBy('name')->get() as $p) {
             $image = $resolver->resolve($p);
-            $tables['products'][] = ['id'=>(string)$p->id,'slug'=>$p->slug,'institutionId'=>(string)$p->institution_id,'n'=>$p->name,'name'=>$p->name,'c'=>$p->county?->name ?? '', 'cat'=>$p->category?->name ?? 'Product','p'=>(float)$p->price,'unit'=>$p->unit ?? '', 'r'=>0,'rv'=>0,'moq'=>(int)$p->moq,'incoterm'=>$p->incoterm,'v'=>'image','description'=>$p->short_description ?? $p->description,'image'=>$image['url'],'mediaLabel'=>$image['label'],'nativeUrl'=>route('marketplace.show',$p->slug),'status'=>'published','tileMedia'=>$image['url']?['state'=>'published','kind'=>'image','url'=>$image['url'],'alt'=>$image['label'] ?? $p->name]:['state'=>'empty']];
+            $tables['products'][] = ['id'=>(string)$p->id,'slug'=>$p->slug,'institutionId'=>(string)$p->institution_id,'n'=>$p->name,'name'=>$p->name,'c'=>$p->county?->name ?? '', 'cat'=>$p->category?->name ?? 'Product','p'=>(float)$p->price,'unit'=>$p->unit ?? '', 'r'=>0,'rv'=>0,'moq'=>(int)$p->moq,'incoterm'=>$p->incoterm,'v'=>'image','description'=>$p->short_description ?? $p->description,'image'=>$image['url'],'mediaLabel'=>$image['label'],'nativeUrl'=>route('marketplace.show',$p->slug),'status'=>'published','tileMedia'=>$image['url']?['state'=>'published','kind'=>'image','url'=>$image['url'],'description'=>$image['label'] ?? $p->name,'alt'=>$image['label'] ?? $p->name]:['state'=>'empty']];
         }
         foreach (Venue::where('is_active',true)->orderBy('name')->get() as $v) {
             $asset = MediaAsset::where('owner_type',Venue::class)->where('owner_id',$v->id)->where('status','ready')->latest('id')->first();
@@ -47,6 +47,18 @@ class ReferenceExperienceController extends Controller
         foreach (Exhibition::whereNotIn('status',['draft','cancelled'])->with('venue')->get() as $e) $tables['exhibitions'][]=['id'=>(string)$e->id,'slug'=>$e->slug,'n'=>$e->name,'d'=>(string)$e->start_date,'venue'=>$e->venue?->name ?? '', 'availability'=>$e->status,'status'=>'published','booths'=>0,'reg'=>0];
         foreach (Screen::where('active',true)->get() as $s) $tables['screens'][]=['id'=>(string)$s->id,'slug'=>(string)$s->id,'n'=>$s->label,'loc'=>$s->location,'dim'=>'Dimensions on enquiry','pitch'=>$s->terminal_type,'price'=>'Rate on enquiry','tier'=>'screen','status'=>'published'];
         foreach (LiveStream::whereIn('status',['live','scheduled','upcoming'])->get() as $s) $tables['streams'][]=['id'=>(string)$s->id,'slug'=>(string)$s->id,'n'=>$s->name,'venue'=>'','q'=>'Auto','viewers'=>(int)$s->viewer_count,'url'=>$s->hls_url ?? $s->playback_url,'availability'=>$s->status,'status'=>'published'];
+        $airports = \App\Models\Travel\Airport::where('is_active', true)->orderBy('name')->get();
+        $tables['airports'] = $airports->map(fn($a)=>['code'=>$a->iata_code,'name'=>$a->name])->all();
+        $flights = \App\Models\Travel\FlightInventory::query()->join('flights','flight_inventory.flight_id','=','flights.id')->join('airports','flights.destination_airport_id','=','airports.id')->where('flight_inventory.is_active',true)->where('flight_inventory.date','>=',now()->toDateString())->where('flight_inventory.available_seats','>',0)->orderBy('flight_inventory.price')->limit(4)->get(['flights.flight_number','airports.name','flight_inventory.price']);
+        $hotels = \App\Models\Travel\Hotel::where('is_active',true)->orderBy('name')->limit(4)->get();
+        $hotelRows = $hotels->map(function($h){$price=\App\Models\Travel\HotelRoom::where('hotel_id',$h->id)->where('is_active',true)->min('price_per_night');return [$h->name,$price?'KES '.number_format($price).' / night':'Rates on enquiry'];})->all();
+        $transfers = \App\Models\Travel\AirportTransfer::where('is_active',true)->orderBy('price')->limit(4)->get();
+        $tables['travel_groups'] = [
+          ['Flights','✈','Upcoming flight inventory from the native booking service.',$flights->map(fn($f)=>[$f->flight_number.' · '.$f->name,'KES '.number_format($f->price)])->all()],
+          ['Hotels','⌂','Published accommodation and active room rates.',$hotelRows],
+          ['Transfers','⇄','Active airport transfer providers and quoted rates.',$transfers->map(fn($t)=>[$t->provider_name.' · '.$t->vehicle_type,'KES '.number_format($t->price)])->all()],
+          ['Rentals','◎','Rental offers must be published by their responsible provider.',[]]
+        ];
         return $tables;
     }
 
@@ -58,7 +70,19 @@ class ReferenceExperienceController extends Controller
     public function html(Request $request): string
     {
         $html = file_get_contents(resource_path('experience/reference-production.html'));
-        $boot = json_encode(['path'=>$request->getPathInfo(),'tables'=>$this->tables()], JSON_HEX_TAG|JSON_HEX_AMP|JSON_HEX_APOS|JSON_HEX_QUOT|JSON_THROW_ON_ERROR);
+        $payload = ['path'=>$request->getPathInfo(),'tables'=>$this->tables()];
+        if ($request->path() === 'travel') {
+            $travel = app(TravelController::class)->index($request)->getData();
+            $destinations = $travel['destinations']->map(fn ($d) => [$d->name, 'KES '.number_format((float)$d->from_price)])->values()->all();
+            $hotels = $travel['hotels']->map(fn ($h) => [$h->name, 'Enquire for live room rates'])->values()->all();
+            $payload['travelGroups'] = [
+                ['Flights','✈','Available destinations from the native flight inventory.',$destinations],
+                ['Hotels','⌂','Published partner hotels from the native database.',$hotels],
+                ['Transfers','⇄','Use the native flight/package search for destination-specific transfers.',[]],
+                ['Rentals','◎','Enquire with registered providers; no unverified prices are displayed.',[]],
+            ];
+        }
+        $boot = json_encode($payload, JSON_HEX_TAG|JSON_HEX_AMP|JSON_HEX_APOS|JSON_HEX_QUOT|JSON_THROW_ON_ERROR);
         // This inserts JSON only; the approved document is never compiled as Blade.
         return str_replace('/*__KICC_NATIVE_BOOT__*/', 'window.KICC_NATIVE='.$boot.';', $html);
     }

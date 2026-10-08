@@ -594,7 +594,7 @@ table.tbl tbody tr:last-child td{border-bottom:none}
 #countyFull .media-tile .tile-body,
 #countyGrid .media-tile .tile-body{justify-content:flex-end;padding:13px}
 </style>
-<link rel="stylesheet" href="/css/reference-palette.css?v=reference-replica-v1">
+<link rel="stylesheet" href="/css/reference-palette.css?v=reference-replica-v2">
 </head>
 <style>
 /* ============================================================================
@@ -3037,7 +3037,7 @@ html[data-theme] .tm-gallery :is(.tm-copy p,.tm-note){color:var(--ui-muted)!impo
 @media(max-width:760px){.tm-head{display:block}.tm-head .btn{margin-top:25px}.tm-tile,.tm-gallery[data-tm-table="products"] .tm-tile{flex-basis:91%}.tm-track{gap:16px}.tm-window{border-radius:22px}.tm-copy{display:block}.tm-price{margin-top:17px}.tm-copy h3{font-size:30px}.tm-head h2{font-size:clamp(32px,10vw,52px)!important}.tm-admin-record{grid-template-columns:1fr}.tm-admin-preview{max-width:260px}.tm-dialog{padding:22px}.tm-badge{top:13px;left:13px;font-size:9px}.tm-open-film{left:13px;bottom:13px}#chapter-makers .tm-tile:nth-child(even){margin-top:0}.tm-mode{max-width:170px;line-height:1.6;text-align:right}}
 @media(prefers-reduced-motion:reduce){.tm-track{scroll-behavior:auto!important}.tm-tile{transition:none;transform:none!important}#chapter-makers .tm-tile:nth-child(even){margin-top:0}}
 </style>
-<body data-ui-release="reference-replica-v1">
+<body data-ui-release="reference-replica-v2">
 <a href="#app" style="position:absolute;left:-9999px">Skip to content</a>
 
 <!-- ══ PIPELINE 6: SHADER BACKDROP (WebGL2 ribbon/helix · UnrealBloomPass equivalent) ══ -->
@@ -3838,7 +3838,7 @@ const Router = (() => {
   }
   function paint(){
     const path=parse();
-    if(!/^\/(?:$|counties(?:\/|$)|institutions(?:\/|$)|marketplace(?:\/|$)|venues(?:\/|$)|exhibitions(?:\/|$)|screens(?:\/|$)|streams(?:\/|$))/.test(path)){
+    if(!/^\/(?:$|counties(?:\/|$)|institutions(?:\/|$)|marketplace(?:\/|$)|venues(?:\/|$)|exhibitions(?:\/|$)|screens(?:\/|$)|streams(?:\/|$)|travel$)/.test(path)){
       const native=path==='/catalog'?'/portal':path.startsWith('/studio')?'/portal/media-flow':path;
       location.assign(native);return;
     }
@@ -6427,36 +6427,22 @@ Router.register('/travel', () => ({title:'Travel', html:`
 </div>
 <div class="wrap section-sm">
   <div class="grid g2">
-    ${[
-      ['Flights','✈','NBO Jomo Kenyatta International — 18 km from KICC. Direct connections to 42 international destinations.',[['Nairobi → Mombasa','KES 12,400'],['Nairobi → Kisumu','KES 9,800'],['London → Nairobi','KES 96,500'],['Dubai → Nairobi','KES 58,200']]],
-      ['Hotels','⌂','Partner accommodation within 2 km of City Square, from 3-star business to 5-star executive.',[['Sarova Stanley','KES 18,400 / night'],['Hilton Nairobi','KES 22,900 / night'],['Radisson Blu Upper Hill','KES 19,600 / night'],['City Lodge','KES 11,200 / night']]],
-      ['Transfers','⇄','Airport-to-KICC executive transfers with meet-and-greet and delegate tracking.',[['Sedan (1–3 pax)','KES 4,500'],['Van (4–7 pax)','KES 7,800'],['Coach (8–30 pax)','KES 16,400'],['VIP convoy','KES 34,000']]],
-      ['Rentals','◎','Self-drive and chauffeured vehicles, inclusive of comprehensive insurance.',[['Compact SUV / day','KES 8,200'],['Executive sedan / day','KES 13,600'],['Minibus / day','KES 17,900'],['Chauffeured / day','KES 15,300']]],
-    ].map(([t,ic,d,rows],k)=>`<div class="glass-card pad-l" data-reveal="${k%2?'right':'left'}">
+    ${REPO.list('travel_groups').map(([t,ic,d,rows],k)=>`<div class="glass-card pad-l" data-reveal="${k%2?'right':'left'}">
       <div class="center" style="gap:12px"><span style="font-size:24px;color:var(--au-ink)">${ic}</span><h3>${t}</h3></div>
       <p class="muted-xs" style="margin-top:10px">${d}</p>
-      <div class="mt">${rows.map(([a,b])=>`<div class="fee-row"><span class="muted">${a}</span><span class="gold">${b}</span></div>`).join('')}</div>
+      <div class="mt">${rows.length?rows.map(([a,b])=>`<div class="fee-row"><span class="muted">${a}</span><span>${b}</span></div>`).join(''):'<p class="muted-xs">No active offers published.</p>'}</div>
       <button class="btn gold sm mt" data-action="toast" data-msg="${t} search opened — results filtered to KICC dates">Search ${t.toLowerCase()}</button>
     </div>`).join('')}
   </div>
   <div class="glass-card pad-l mt-l" data-reveal>
     <h3>Booking summary</h3>
-    <div class="grid g2 mt">
+    <form method="get" action="/travel/flights" class="grid g2 mt" data-native-booking>
       <div>
-        <div class="field"><label>Full name</label><input class="input" placeholder="Delegate name"></div>
-        <div class="field"><label>Email</label><input class="input" type="email" placeholder="delegate@example.co.ke"></div>
-        <div class="field"><label>Arrival date</label><input class="input" type="date" value="2026-11-11"></div>
-        <div class="field"><label>Departure date</label><input class="input" type="date" value="2026-11-19"></div>
+        <div class="field"><label>Destination airport</label><select class="input" name="to" required>${REPO.list('airports').filter(a=>!['NBO','WIL'].includes(a.code)).map(a=>`<option value="${a.code}">${a.name} · ${a.code}</option>`).join('')}</select></div>
+        <div class="field"><label>Departure date</label><input class="input" name="date" type="date" required min="${new Date().toISOString().slice(0,10)}" value="${new Date().toISOString().slice(0,10)}"></div>
       </div>
-      <div>
-        <div class="fee-row"><span class="muted">Return flight (2 pax)</span><span>KES 24,800</span></div>
-        <div class="fee-row"><span class="muted">Hotel (8 nights)</span><span>KES 147,200</span></div>
-        <div class="fee-row"><span class="muted">Airport transfers</span><span>KES 9,000</span></div>
-        <div class="fee-row"><span class="muted">Service fee</span><span>KES 3,620</span></div>
-        <div class="fee-total"><span>Total</span><span class="gold">KES 184,620</span></div>
-        <button class="btn gold block mt" data-action="link" data-toast="Booking confirmed — reference TRV-2026-88421" data-href="/travel/receipt/TRV-2026-88421">Confirm &amp; get receipt</button>
-      </div>
-    </div>
+      <div><p class="muted">Search the actual flight inventory, then choose accommodation and transfers. No booking, payment or receipt is simulated here.</p><input type="hidden" name="from" value="NBO"><button class="btn gold block mt" type="submit" ${REPO.list('airports').length?'':'disabled'}>Find flights &amp; packages</button></div>
+    </form>
   </div>
 </div>
 `}));
@@ -9253,7 +9239,7 @@ const PUBLISH = (()=>{
  root.querySelector('[data-cms-import]')?.addEventListener('change',async e=>{try{const raw=JSON.parse(await e.target.files[0].text());if(!raw.version||raw.version!==1)throw Error('Unsupported backup');const d=document.createElement('dialog');d.className='cms-dialog';d.innerHTML='<h2>Replace local content?</h2><p style="margin:20px 0">Import overwrites current local records. Export a backup first.</p><button class="btn gold" data-confirm>Replace records</button> <button class="btn ghost" data-cancel>Cancel</button>';document.body.append(d);d.showModal();d.querySelector('[data-cancel]').onclick=()=>d.remove();d.querySelector('[data-confirm]').onclick=()=>{try{REPO.restore(raw);d.remove();Router.render()}catch(err){d.remove();notify(err.message)}}}catch(err){notify(err.message)}});
  }
  let orbitCleanup=()=>{};
- function orbitHtml(){return `<div class="county-orbit" data-county-orbit tabindex="0" role="region" aria-label="County media carousel. Left and right arrows navigate; space pauses."><div class="orbit-stage" data-orbit-stage></div><div class="orbit-controls"><button class="btn ghost" data-orbit-prev aria-label="Previous county">←</button><button class="btn ghost" data-orbit-pause>Pause rotation</button><button class="btn ghost" data-orbit-next aria-label="Next county">→</button><span class="orbit-status" data-orbit-status aria-live="off"></span><a href="#/counties" class="btn ghost">Explore all counties →</a></div><p class="orbit-note">Admin-published county films play here. Until supplied, shared demonstration posters are shown—not county-specific footage. Population: existing 2019 census dataset.</p></div>`}
+ function orbitHtml(){return `<div class="county-orbit" data-county-orbit tabindex="0" role="region" aria-label="County media carousel. Left and right arrows navigate; space pauses."><div class="orbit-stage" data-orbit-stage></div><div class="orbit-controls"><button class="btn ghost" data-orbit-prev aria-label="Previous county">←</button><button class="btn ghost" data-orbit-pause>Pause rotation</button><button class="btn ghost" data-orbit-next aria-label="Next county">→</button><span class="orbit-status" data-orbit-status aria-live="off"></span><a href="#/counties" class="btn ghost">Explore all counties →</a></div><p class="orbit-note">County-owned films and fallback images are selected by entity ID. Unavailable footage is withheld. Population: 2024 database values.</p></div>`}
  function mountOrbit(root){const rows=REPO.list('counties',true);if(!rows.length){root.innerHTML='<p>No counties published.</p>';return}const stage=root.querySelector('[data-orbit-stage]');let index=0,manual=reduced.matches,hover=false,focus=false,inView=true,disposed=false,timer;
  const paint=()=>{if(disposed)return;const retained=new Set();for(let offset=-2;offset<=2;offset++){const c=rows[(index+offset+rows.length)%rows.length];let card=[...stage.children].find(el=>el.dataset.county===c.slug);const fresh=!card;if(fresh){card=document.createElement('article');card.className='orbit-screen';card.dataset.county=c.slug;card.style.transform=`translate3d(${offset<0?-600:600}px,90px,-430px)`;card.style.opacity='0';stage.append(card)}retained.add(card);const x=offset===0?0:Math.sign(offset)*(Math.abs(offset)===1?300:490),z=offset===0?95:Math.abs(offset)===1?-130:-330,y=offset===0?0:Math.abs(offset)===1?32:74;requestAnimationFrame(()=>{card.style.transform=`translate3d(${x}px,${y}px,${z}px) rotateY(${-offset*18}deg)`;card.style.opacity=offset===0?'1':Math.abs(offset)===1?'.78':'.45'});card.style.zIndex=String(5-Math.abs(offset));if(fresh)card.innerHTML=`<img src="${esc(KICC.imgFor(c))}" alt="Entity-owned image or unpublished media placeholder"><a class="orbit-open" href="#/counties/${esc(c.slug)}" ${offset!==0?'tabindex="-1"':''}>Explore →</a><div class="orbit-caption"><span class="orbit-code">${esc(c.code)} / ${esc(c.region)}</span><h3>${esc(c.name)}</h3><p>${esc(c.sectors?.join(' · '))}</p><p class="orbit-pop">${Number(c.pop).toLocaleString('en-KE')} people · 2024 database</p></div>`;const a=card.querySelector('.orbit-open');if(a)a.tabIndex=offset===0?0:-1;const media=REPO.list('media',true).find(m=>m.target==='/counties/'+c.slug&&(m.role==='county'||m.kind==='video'));if(media&&fresh)(async()=>{const url=media.assetId?await ASSETS.url(media.assetId):safeUrl(media.url);if(!url||disposed||!card.isConnected)return;const el=document.createElement(media.kind==='video'?'video':'img');el.src=url;if(media.kind==='video'){el.muted=true;el.loop=true;el.playsInline=true;el.preload='metadata';el.poster=safeUrl(media.poster);if(offset===0&&!manual&&!hover&&!focus&&inView)el.play().catch(()=>{})}else el.alt=media.description||media.name;card.querySelector('img').replaceWith(el)})().catch(()=>{})}for(const old of [...stage.children])if(!retained.has(old)){old.querySelector('video')?.pause();old.remove()}
  root.querySelector('[data-orbit-status]').textContent=`${String(index+1).padStart(2,'0')} / ${rows.length} · ${rows[index].name}`;updatePause()};
@@ -9614,7 +9600,7 @@ function PAGE_EVENTS(path){
  const media=window.KICC_NATIVE.tables.media;
  T.hls=o=>{const path=location.hash.replace(/^#/,'')||'/';const m=media.find(x=>x.target===path&&x.kind==='video');return `<div class="hls-stage" data-native-owner="${esc(m?.ownerId||'')}">${m?`<video controls playsinline preload="metadata" ${m.poster?'poster="'+esc(m.poster)+'"':''} src="${esc(m.url)}" style="width:100%;height:100%;object-fit:cover"></video>`:`<div class="poster" style="background-image:url('${esc(o.img||'')}')"></div><div class="hud"><div><h3>${esc(o.title)}</h3><p>No entity-owned video published. Add one in the Admin portal.</p></div></div>`}</div>`;};
  for(const t of ['exhibitions','screens','streams']){const old=Router.PAGES['/'+t];Router.PAGES['/'+t]=(rest,path)=>!window.KICC_NATIVE.tables[t].length?{title:t,html:`<section class="wrap section"><div class="eyebrow">${esc(t)}</div><h1>${t==='screens'?'Digital Screens':t==='streams'?'Live Streams':'Exhibitions'}</h1><div class="reference-empty mt-l">No published ${esc(t)} records in the database. The collection is empty, not populated with demonstration listings.</div></section>`}:old(rest,path);}
- document.addEventListener('click',e=>{const a=e.target.closest('[data-action="toast"],[data-action="link"]');if(!a)return;e.preventDefault();e.stopImmediatePropagation();const path=location.hash.replace(/^#/,'');let target='/portal';if(path.startsWith('/marketplace/')){const slug=path.split('/')[2];const p=window.KICC_NATIVE.tables.products.find(x=>REPO.slug(x.n).slice(0,44)===slug||x.slug===slug);if(p)target=p.nativeUrl+'?native=1';}else if(path.startsWith('/venues/'))target=path+'?native=1';location.assign(target);},true);
+ document.addEventListener('click',e=>{const a=e.target.closest('[data-action="toast"],[data-action="link"]');if(!a)return;e.preventDefault();e.stopImmediatePropagation();const path=location.hash.replace(/^#/,'');let target='/portal';if(path.startsWith('/marketplace/')){const slug=path.split('/')[2];const p=window.KICC_NATIVE.tables.products.find(x=>REPO.slug(x.n).slice(0,44)===slug||x.slug===slug);if(p)target=p.nativeUrl+'?native=1';}else if(path.startsWith('/venues/'))target=path+'?native=1';else if(path==='/travel')target='/travel?native=1';location.assign(target);},true);
  document.querySelectorAll('a[href="#/login"],a[href="#/register"]').forEach(a=>{a.href=a.getAttribute('href').slice(1);a.removeAttribute('data-link');});
  let path=window.KICC_NATIVE.path==='/'?'/':window.KICC_NATIVE.path;if(/^\/counties\/[^/]+\/institutions\//.test(path))path='/institutions/'+path.split('/').pop();
  if(!location.hash.startsWith('#/'))history.replaceState(null,'',location.pathname+location.search+'#'+path);
