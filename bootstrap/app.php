@@ -11,6 +11,12 @@ return Application::configure(basePath: dirname(__DIR__))
         api: __DIR__.'/../routes/api.php',
         commands: __DIR__.'/../routes/console.php',
         health: '/up',
+        then: function () {
+            // Legacy records-admin surface (ported from the kicc-v2 branch).
+            // Kept in its own file so it can never disturb routes/web.php.
+            Illuminate\Support\Facades\Route::middleware('web')
+                ->group(base_path('routes/admin_records.php'));
+        },
     )
     ->withMiddleware(function (Middleware $middleware): void {
         // Origin is only reachable through the Cloudflare edge worker — trust the
@@ -65,7 +71,7 @@ return Application::configure(basePath: dirname(__DIR__))
     })
     ->withExceptions(function (Exceptions $exceptions): void {
         $exceptions->shouldRenderJsonWhen(
-            fn (Request $request) => $request->is('api/*', 'experience/api/*'),
+            fn (Request $request) => $request->is('api/*'),
         );
         // Breadcrumb on every 500 for production debugging
         $exceptions->reportable(function (\Throwable $e) {
