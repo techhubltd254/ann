@@ -160,3 +160,45 @@ button.btn.gold{
 ::selection{background:var(--kicc-red) !important;color:#FFF7F2 !important}
 /* deep-red accents */
 .tag,.badge.red,.chip.red{background:var(--kicc-red) !important;color:#FFF7F2 !important}
+
+/* =====================================================================
+   Closer-ancestor scopes  (appended 2026-10-08)
+   approved-design.css re-declares the retired gold inside body.light-world
+   / .shader-dark, i.e. on a CLOSER ancestor than :root. A later :root block
+   cannot win that cascade, which is why the CTA still rendered ochre. This
+   re-points the tokens (and the source tokens they derive from) in every
+   scope that declares them.
+   ===================================================================== */
+body,
+body.light-world,
+body.light-world *,
+.light-world,
+.shader-dark,
+.shader-dark *,
+html[data-theme="light"],
+html[data-theme="light"] body,
+html[data-theme="dark"],
+html[data-theme="dark"] body{
+  --kicc-gold:#6B4A2F;
+  --gold-soft:#8A6446;
+  --ochre-deep:#553A24;
+  --kicc-red:#7A1E1E;
+  --kicc-red-hover:#5E1414;
+  --au-400:#6B4A2F;
+  --au-500:#8A6446;
+  --cr-600:#7A1E1E;
+  --shadow-gold:0 0 60px rgba(107,74,47,.28);
+}
+body .btn.gold,
+body.light-world .btn.gold,
+.shader-dark .btn.gold{
+  background:#6B4A2F !important;
+  border-color:#6B4A2F !important;
+  color:#FFF7F2 !important;
+}
+body .btn.gold:hover,
+body.light-world .btn.gold:hover,
+.shader-dark .btn.gold:hover{
+  background:#553A24 !important;border-color:#553A24 !important;
+}
+body .btn.ghost:hover{color:#6B4A2F !important;border-color:#6B4A2F !important}
