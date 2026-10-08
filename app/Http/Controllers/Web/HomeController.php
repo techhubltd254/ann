@@ -58,7 +58,35 @@ class HomeController extends Controller
         $heroAsset = MediaAsset::resolveSlot('landing_page', 1, 'hero_video');
         $heroVideo = $heroAsset?->bestVideoUrl();
         $heroWebm = $heroAsset?->webmUrl();
-        $heroPoster = $heroAsset?->posterUrl();
+
+        // The poster derivative row can outlive its R2 object — the seedance
+        // poster was purged from the bucket, so publishing that URL served a
+        // 404 and the hero reported itself unavailable. Verify the object first.
+        $heroPoster = null;
+        try {
+            $posterDerivative = $heroAsset?->derivatives->firstWhere('kind', 'poster');
+            if ($posterDerivative && \Illuminate\Support\Facades\Storage::disk('r2')->exists($posterDerivative->path)) {
+                $heroPoster = $heroAsset->posterUrl();
+            }
+        } catch (\Throwable $e) {
+            \Illuminate\Support\Facades\Log::warning('hero poster check: ' . $e->getMessage());
+        }
+
+        // A real still to sit under the film, so the hero keeps a frame even
+        // where the film cannot be decoded. Prefer a published poster, else the
+        // first ready image in the store.
+        $heroStill = $heroPoster;
+        if (! $heroStill) {
+            try {
+                $stillAsset = MediaAsset::query()
+                    ->where('status', 'ready')->where('kind', 'image')
+                    ->whereNotNull('path')->orderBy('id')->first();
+                if ($stillAsset) {
+                    $heroStill = $stillAsset->url();
+                }
+            } catch (\Throwable $e) {
+            }
+        }
 
         // Live streams for the "Live Now" carousel
         $liveStreams = LiveStream::with('exhibition')
@@ -161,7 +189,7 @@ class HomeController extends Controller
 
         return view('home', compact(
             'featuredExhibitions', 'counties', 'products', 'venues',
-            'tradeAgreementsHome', 'heroVideo', 'heroWebm', 'heroPoster',
+            'tradeAgreementsHome', 'heroVideo', 'heroWebm', 'heroPoster', 'heroStill',
             'countyHeroVideos', 'countyHeroStates', 'liveStreams',
             'archive', 'hallsCount', 'makersCount', 'exhibitionCount',
             'archiveCount', 'institutionCount', 'rooms3d',

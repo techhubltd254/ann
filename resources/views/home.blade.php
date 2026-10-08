@@ -10,7 +10,7 @@
     {{-- The published still sits under the film: if the film ever fails to
          load, the viewer keeps a frame instead of a dead black box. --}}
     <div class="ed-bleed" data-depth>
-      @if($heroPoster??null)<img class="sx-hero-still" src="{{ $heroPoster }}" alt="KICC">@endif
+      @if($heroStill??null)<img class="sx-hero-still" src="{{ $heroStill }}" alt="KICC">@endif
       <video muted playsinline loop autoplay preload="auto" data-preview aria-label="KICC published hero" @if($heroPoster??null) poster="{{ $heroPoster }}" @endif><source src="{{ $heroVideo }}"></video>
     </div>
   @elseif($heroPoster??null)
