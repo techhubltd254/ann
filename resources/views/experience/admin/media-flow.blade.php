@@ -3,7 +3,7 @@
 @push('styles')<link rel="stylesheet" href="/css/media-flow.css?v=owner-video-v1">@endpush
 @section('content')
 <x-experience.head eyebrow="County → Institution → Sector → Media" title="Control the right owner's media." lead="The existing county_sector and sector_entities relationships determine every choice. Files are changed by stable media ID, never by their position in a list." />
-<section class="wrap admin-module" data-media-flow data-base="{{ secure_url('/portal/media-flow') }}">
+<section class="wrap admin-module" data-media-flow data-base="/portal/media-flow">
  <div class="media-flow-selectors">
   <label>1 · County<select data-flow-county><option value="">Choose county</option>@foreach($counties as $c)<option value="{{ $c->id }}">{{ $c->name }}</option>@endforeach</select></label>
   <label>2 · Institution<select data-flow-institution disabled><option value="">Choose county first</option>@foreach($institutions as $i)<option value="{{ $i->id }}" data-county="{{ $i->county_id }}" data-slug="{{ $i->slug }}">{{ $i->name }}</option>@endforeach</select></label>
