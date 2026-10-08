@@ -26,7 +26,9 @@ if (!function_exists('img_url')) {
     {
         if (!$path) return '';
 
-        $storage = rtrim((string) config('media.cdn_url'), '/');
+        // Public-disk assets (storage/app/public → public/storage symlink):
+        // a CDN base wins when configured, otherwise same-origin /storage.
+        $storage = rtrim((string) config('media.cdn_url'), '/') ?: url('storage');
 
         if ($format === 'webp') {
             $webpPath = preg_replace('/\.(jpg|jpeg|png)$/i', '.webp', $path);
@@ -68,7 +70,7 @@ if (!function_exists('img_srcset')) {
         $dir = dirname($path);
         $name = pathinfo($path, PATHINFO_FILENAME);
         $ext = pathinfo($path, PATHINFO_EXTENSION);
-        $storage = rtrim((string) config('media.cdn_url'), '/');
+        $storage = rtrim((string) config('media.cdn_url'), '/') ?: url('storage');
 
         $srcset = [];
         foreach ($sizes as $w) {
