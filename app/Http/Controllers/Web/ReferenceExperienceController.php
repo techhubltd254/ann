@@ -70,6 +70,9 @@ class ReferenceExperienceController extends Controller
     public function html(Request $request): string
     {
         $html = file_get_contents(resource_path('experience/reference-production.html'));
+        // A changed palette must never reuse an immutable browser/edge cache key.
+        $paletteHash = substr(hash_file('sha256', public_path('css/reference-palette.css')), 0, 12);
+        $html = str_replace('/css/reference-palette.css?v=reference-replica-v2', '/css/reference-palette.css?v='.$paletteHash, $html);
         $payload = ['path'=>$request->getPathInfo(),'tables'=>$this->tables()];
         $boot = json_encode($payload, JSON_HEX_TAG|JSON_HEX_AMP|JSON_HEX_APOS|JSON_HEX_QUOT|JSON_THROW_ON_ERROR);
         // This inserts JSON only; the approved document is never compiled as Blade.
