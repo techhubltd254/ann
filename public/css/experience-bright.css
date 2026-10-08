@@ -611,3 +611,14 @@ html[data-theme="light"] body.experience-world :is(.btn.gold,.btn-gold,.ex-tag,.
 .ex-hero.page-head h1 { font-size:clamp(2rem,4vw,3.2rem); margin-top:12px; max-width:100%; }
 .ex-illustration-note { z-index:4; max-width:calc(100% - 20px); background:#FFFFFF; color:#0B0B0B; font-size:10px; line-height:1.4; }
 @media(max-width:760px) { .ex-breadcrumb { margin-top:90px; } .ex-hero.page-head { padding-top:20px; } }
+
+/* Remove the actual dark pseudo-element scrims, not only their parent grounds. */
+html[data-theme="light"] body.experience-world :is(.sx-hero,.ed-bleed,.ed-plate,.orbit-screen,.tm-window,.ex-shot,.hero-video,.viewer3d)::before,
+html[data-theme="light"] body.experience-world :is(.sx-hero,.ed-bleed,.ed-plate,.orbit-screen,.tm-window,.ex-shot,.hero-video,.viewer3d)::after{background:none!important;background-image:none!important;box-shadow:none!important;}
+html[data-theme="light"] body.experience-world header.sx-hero{background:#FFFFFF!important;}
+html[data-theme="light"] body.experience-world header.sx-hero .ed-bleed{background:#FFFFFF!important;}
+html[data-theme="light"] body.experience-world header.sx-hero .ed-bleed video,
+html[data-theme="light"] body.experience-world header.sx-hero .ed-bleed img{opacity:.15!important;filter:brightness(1.35)!important;}
+html[data-theme="light"] body.experience-world header.sx-hero .ed-layer{background:transparent!important;}
+html[data-theme="light"] body.experience-world .orbit-caption :is(h3,p,a){color:#0B0B0B!important;}
+html[data-theme="light"] body.experience-world .orbit-screen{box-shadow:0 10px 30px rgba(11,11,11,.08)!important;}
