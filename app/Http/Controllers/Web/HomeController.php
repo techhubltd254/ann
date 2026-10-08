@@ -73,12 +73,35 @@ class HomeController extends Controller
         // named owner, read live from the store — never a hardcoded list.
         $archive = collect();
         try {
-            $archive = MediaAsset::query()
+            // Read a pool, then interleave by owner so the strip shows a spread
+            // of the store (counties, institutions, sectors, KICC) instead of
+            // the twenty-four newest rows, which all share one owner.
+            $pool = MediaAsset::query()
                 ->where('status', 'ready')
                 ->whereNotNull('owner_type')
                 ->orderByDesc('id')
-                ->take(24)
-                ->get()
+                ->take(160)
+                ->get();
+
+            $buckets = $pool->groupBy('owner_type')->map(fn ($g) => $g->values())->values();
+            $picked = collect();
+            for ($i = 0; $picked->count() < 24 && $i < 60; $i++) {
+                $added = false;
+                foreach ($buckets as $bucket) {
+                    if (isset($bucket[$i])) {
+                        $picked->push($bucket[$i]);
+                        $added = true;
+                    }
+                    if ($picked->count() >= 24) {
+                        break 2;
+                    }
+                }
+                if (! $added) {
+                    break;
+                }
+            }
+
+            $archive = $picked
                 ->map(function (MediaAsset $a) {
                     $ownerName = 'KICC';
                     $ownerType = 'National';
