@@ -377,6 +377,9 @@ Route::get('/api/streams/live', [\App\Http\Controllers\Web\StreamController::cla
 
 // Trade Agreements & Trading Blocs
 Route::get('/trade-agreements', [\App\Http\Controllers\Web\TradeAgreementController::class, 'index'])->name('trade.agreements.index');
+Route::get('/trade-agreements/apply', [\App\Http\Controllers\Web\TradeAgreementController::class, 'index'])->name('trade.agreements.apply')->middleware('auth');
+Route::get('/trade-agreements/blocs', fn() => redirect()->route('trade.blocs.index'))->name('trade.agreements.blocs');
+Route::get('/trade-agreements/eligibility-index', fn() => redirect()->route('trade.eligibility'))->name('trade.agreements.eligibility');
 Route::get('/trade-agreements/{slug}', [\App\Http\Controllers\Web\TradeAgreementController::class, 'show'])->name('trade.agreements.show');
 Route::get('/trading-blocs', [\App\Http\Controllers\Web\TradeAgreementController::class, 'blocs'])->name('trade.blocs.index');
 Route::get('/trading-blocs/{slug}', [\App\Http\Controllers\Web\TradeAgreementController::class, 'blocShow'])->name('trade.blocs.show');
@@ -902,9 +905,6 @@ Route::redirect('/splat', '/exhibition-3d', 301);        // never built → 3D v
 Route::redirect('/national-admin/v2', '/national-admin', 301);
 
 // Trade agreements: full legacy URL set onto the existing controller.
-Route::get('/trade-agreements/apply', [\App\Http\Controllers\Web\TradeAgreementController::class, 'index'])->name('trade.agreements.apply')->middleware('auth');
-Route::get('/trade-agreements/blocs', fn() => redirect()->route('trade.blocs.index'))->name('trade.agreements.blocs');
-Route::get('/trade-agreements/eligibility-index', fn() => redirect()->route('trade.eligibility'))->name('trade.agreements.eligibility');
 
 // Tourism legacy aliases onto the existing TourismEntityController methods.
 Route::get('/tourism/organizers', [\App\Http\Controllers\Web\TourismEntityController::class, 'organizers'])->name('tourism.organizers.legacy');
