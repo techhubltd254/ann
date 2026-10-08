@@ -48,10 +48,14 @@ class HomeController extends Controller
         // instead of another place's film.
         $countyHeroVideos = [];
         $countyHeroStates = [];
+        $countyHeroImages = [];
+        $countyHeroHover = [];
         foreach ($counties as $c) {
             $hero = \App\Support\MediaMapping::countyHero($c);
             $countyHeroVideos[$c->slug] = $hero['video'];
             $countyHeroStates[$c->slug] = $hero['state'];
+            $countyHeroHover[$c->slug] = $hero['hover'] ?? null;
+            $countyHeroImages[$c->slug] = \App\Support\MediaMapping::countyFallbackImage($c);
         }
 
         // Resolve the pipeline-managed hero video (fall back to hardcoded path).

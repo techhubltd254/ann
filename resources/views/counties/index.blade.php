@@ -145,6 +145,10 @@
                     :title="$c->name"
                     class="absolute inset-0 w-full h-full"
                 />
+                @elseif($ch && !empty($ch['image']))
+                {{-- No county film of its own: this county's own still, not another county's film --}}
+                <img src="{{ $ch['image'] }}" alt="{{ $c->name }}"
+                     loading="lazy" class="absolute inset-0 w-full h-full object-cover" />
                 @endif
                 <div class="county-card-play">▶ Preview</div>
             </div>

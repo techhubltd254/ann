@@ -20,21 +20,19 @@ class CountyController extends Controller
         $countyIds = Cache::remember('kicc_counties_index', config('kicc.cache_ttl.public', 21600), fn () => County::orderBy('name')->pluck('id')->all());
         $counties = County::withCount('sectors')->whereIn('id', $countyIds)->orderBy('name')->get();
 
-        // Hero media per county card — YouTube-style play on hover/in-view
+        // Hero media per county card — resolved through the strict mapping rule:
+        // a county only plays footage whose R2 key carries its own slug. A shared
+        // stand-in (e.g. the landing seedance film) is withheld, and the county's
+        // own fallback image is used instead of borrowing another place's film.
         $countyHeroes = [];
-        $heroAssets = MediaAsset::where('owner_type', County::class)
-            ->whereIn('owner_id', $countyIds)
-            ->where('slot', 'hero_video')
-            ->where('status', 'ready')
-            ->with('derivatives')
-            ->get()
-            ->keyBy('owner_id');
         foreach ($counties as $c) {
-            $a = $heroAssets->get($c->id);
+            $hero = \App\Support\MediaMapping::countyHero($c);
             $countyHeroes[$c->slug] = [
-                'video' => $a?->mp4Url() ?? $a?->url(),
-                'hover' => $a?->hoverLoopUrl(),
-                'poster' => $a?->posterUrl(),
+                'video' => $hero['video'],
+                'hover' => $hero['hover'] ?? null,
+                'poster' => $hero['poster'],
+                'image' => \App\Support\MediaMapping::countyFallbackImage($c),
+                'state' => $hero['state'],
             ];
         }
 
@@ -134,6 +132,18 @@ class CountyController extends Controller
         $countyMediaId = Cache::remember("resolve:county_hero_id_" . $county->id, config('kicc.cache_ttl.public', 21600), fn() => MediaAsset::resolveSlot(County::class, $county->id, 'hero_video')?->id);
         $countyMedia = $countyMediaId ? MediaAsset::with('derivatives')->find($countyMediaId) : null;
 
+        // Strict rule: this county's hero may only be footage whose R2 key carries
+        // its own slug. A shared stand-in (the landing seedance film, or any asset
+        // bound to another place) is withheld, so the hero renders this county's own
+        // still instead of borrowing another county's film.
+        if ($countyMedia) {
+            $heroVerdict = \App\Support\MediaMapping::classify($countyMedia, (string) $county->slug, (int) $county->id, $county->code ?? null);
+            if ($heroVerdict['state'] !== \App\Support\MediaMapping::DISTINCT) {
+                $countyMedia = null;
+            }
+        }
+        $countyHeroImage = \App\Support\MediaMapping::countyFallbackImage($county);
+
         // Sector tile media — unified 5-level fallback via TileMediaResolver (batched: 3 queries total)
         $tileResolver = app(\App\Services\TileMediaResolver::class);
         $tileMedia = $tileResolver->forAllCountySectors($county, $sectorData);
@@ -211,7 +221,7 @@ class CountyController extends Controller
         return view('counties.show', compact(
             'county', 'sectors', 'sectorData',
             'featuredAttractions', 'featuredHotels', 'countyProducts',
-            'exhibitions', 'linkedSectors', 'countyMedia', 'countyHeroFallback', 'tileMedia',
+            'exhibitions', 'linkedSectors', 'countyMedia', 'countyHeroImage', 'countyHeroFallback', 'tileMedia',
             'sectorPitches', 'attractionThumbs', 'hotelThumbs', 'productThumbs',
             'mapPins', 'sectorPins', 'countyFlagUri', 'entityMedia',
         ));

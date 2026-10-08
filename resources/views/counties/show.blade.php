@@ -36,7 +36,7 @@
         @endif
         @php
             $heroPoster = $countyMedia?->posterUrl();
-            $heroPosterImg = $countyMedia?->thumbnailUrl() ?? $heroPoster;
+            $heroPosterImg = $countyMedia?->thumbnailUrl() ?? $heroPoster ?? ($countyHeroImage ?? null);
             $hasHeroVideo = $countyMedia && ($countyMedia->mp4Url() ?? $countyMedia->url());
         @endphp
         @if($hasHeroVideo)

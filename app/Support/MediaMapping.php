@@ -102,10 +102,39 @@ class MediaMapping
         return [
             'video' => $asset->mp4Url(),
             'poster' => $asset->posterUrl(),
+            'hover' => $asset->hoverLoopUrl(),
             'state' => self::DISTINCT,
             'reason' => $verdict['reason'],
             'path' => $asset->path,
         ];
+    }
+
+    /**
+     * The county's own fallback still image (slot `fallback_image`), used on the
+     * tile whenever the county has no DISTINCT film of its own. Returns null when
+     * no image is bound, so the caller falls back to its branded gradient tile.
+     */
+    public static function countyFallbackImage(County $county): ?string
+    {
+        $asset = MediaAsset::query()
+            ->where('owner_type', County::class)
+            ->where('owner_id', $county->id)
+            ->whereIn('slot', ['fallback_image', 'hero_image'])
+            ->where('status', 'ready')
+            ->latest('id')
+            ->first();
+
+        if (! $asset || ! self::inR2($asset->path)) {
+            return null;
+        }
+
+        return $asset->thumbnailUrl() ?? $asset->url();
+    }
+
+    /** The landing-page stand-in film — never footage of any individual county. */
+    public static function standInPaths(): array
+    {
+        return ['landing/hero/seedance-hero.mp4', 'landing/hero/seedance-hero.webm'];
     }
 
     /** Same rule for institutions. */
