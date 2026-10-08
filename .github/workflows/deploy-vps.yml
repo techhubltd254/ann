@@ -36,6 +36,7 @@ jobs:
       # deploy/seed-site-components.php). Deleting them breaks the admin.
       - name: Sync tracked files to VPS
         run: |
+          printf '%s\n' "$GITHUB_SHA" > .deploy-source-sha
           rsync -az --no-perms --no-owner --no-group \
             --exclude '.git/' --exclude '.github/' \
             --exclude 'node_modules/' --exclude 'vendor/' \
@@ -59,21 +60,33 @@ jobs:
             export COMPOSER_ALLOW_SUPERUSER=1
 
             if command -v composer >/dev/null 2>&1; then
-              composer install --no-interaction --no-dev --prefer-dist --optimize-autoloader || true
+              rm -f bootstrap/cache/packages.php bootstrap/cache/services.php
+              composer install --no-interaction --no-dev --prefer-dist --optimize-autoloader
             fi
 
             # Vite build for the @vite-driven views
             if [ -f package.json ]; then
-              if [ ! -d node_modules ]; then npm ci --no-audit --no-fund || npm install --no-audit --no-fund; fi
-              npx --yes vite build || echo "vite build skipped"
+              npm ci --no-audit --no-fund
+              npm run typecheck
+              npm run build
             fi
 
-            php artisan migrate --force
+            # UI-only release: no schema changes or automatic data migration.
 
             php artisan config:clear
             php artisan route:clear
             php artisan view:clear
-            php artisan optimize:clear || true
+            php artisan optimize:clear
+            php artisan view:cache
+            php artisan route:cache
+            chown -R www-data:www-data storage/framework bootstrap/cache
+            chmod -R ug+rwX storage/framework bootstrap/cache
 
-            systemctl restart php8.4-fpm
-            echo "=== deployed $(git -C /opt/kicc-laravel rev-parse --short HEAD 2>/dev/null || echo n/a) ==="
+            # The checkout SHA, not stale server Git metadata, identifies the rsync payload.
+            test -s .deploy-source-sha
+            SOURCE_SHA=$(cat .deploy-source-sha)
+            printf '{"commit":"%s","branch":"main","ui_release":"experience-full-bright-v4"}\n' "$SOURCE_SHA" > public/RELEASE.json
+            systemctl reload php8.4-fpm
+            curl --fail --retry 5 --retry-delay 2 --max-time 30 -s http://127.0.0.1/counties -H 'Host: kicctest.org' -o /tmp/kicc-deploy-smoke.html
+            grep -q 'experience-full-bright-v4' /tmp/kicc-deploy-smoke.html
+            echo "=== deployed source $SOURCE_SHA ==="

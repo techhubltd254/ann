@@ -3,7 +3,7 @@
 @section('content')
 <x-experience.head
   eyebrow="What the counties send to market"
-  title="Goods, produce<br>and people."
+  title="Golden Vortex Product Grid"
   lead="Every listing belongs to a county and an institution. Filter by county or category and open the ones you want to trade."
   :stats="['listings' => number_format($products->total()), 'counties' => $counties->count()]"
 />
@@ -39,10 +39,9 @@
                 @endphp
         <x-experience.card
           :href="route('marketplace.show',$p->slug)"
-          :media="$assigned['video'] ?? $img"
-          :media-type="!empty($assigned['video']) ? 'video' : 'image'"
+          :media="$img"
+          :media-note="$resolvedMedia['label']"
           :poster="$img"
-          :illustrative="$assigned['illustrative'] ?? false"
           :tag="$p->is_featured ? 'Featured' : ($p->is_spotlight_product ? 'Spotlight' : null)"
           :tag-tone="$p->is_spotlight_product ? 'red' : null"
           :meta="collect([$county, $p->category->name ?? null, $p->unit])->filter()->implode(' · ')"
