@@ -1,6 +1,11 @@
 (()=>{'use strict';
-// Preserve reference-document deep links while using real Laravel routes.
-if(location.hash.startsWith('#/')&&location.hash.length>2){const path=location.hash.slice(1);if(!path.startsWith('//')){location.replace(location.origin+path);return;}}
+// Preserve reference deep links; release-keyed navigation bypasses stale CDN HTML.
+const release=document.querySelector('[data-ui-release]')?.dataset.uiRelease||'experience-full-bright-v6';
+function followReferenceHash(){if(!location.hash.startsWith('#/')||location.hash.length<=2)return false;const path=location.hash.slice(1);if(path.startsWith('//'))return false;const url=new URL(path,location.origin);url.searchParams.set('ui',release);location.replace(url.href);return true;}
+if(followReferenceHash())return;
+addEventListener('hashchange',followReferenceHash);
+document.querySelectorAll('a[href]').forEach(a=>{const raw=a.getAttribute('href');if(!raw||raw.startsWith('#')||a.hasAttribute('download'))return;const url=new URL(a.href,location.origin);if(url.origin!==location.origin||/^\/(media|storage|css|js|build|api)\//.test(url.pathname))return;url.searchParams.set('ui',release);a.href=url.href;});
+document.querySelectorAll('form').forEach(form=>{if((form.method||'get').toLowerCase()!=='get')return;const url=new URL(form.action||location.href,location.origin);if(url.origin!==location.origin)return;let input=form.querySelector('input[name="ui"]');if(!input){input=document.createElement('input');input.type='hidden';input.name='ui';form.append(input);}input.value=release;});
 
 const reduce=matchMedia('(prefers-reduced-motion: reduce)');
 document.querySelectorAll('.nav-links a').forEach(a=>{if(location.pathname===a.pathname||(a.pathname!=='/'&&location.pathname.startsWith(a.pathname+'/')))a.setAttribute('aria-current','page');});
