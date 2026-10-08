@@ -72,3 +72,9 @@ html:root[data-theme] body.experience-world :is(.rb-nav,.mobile-menu){background
 html:root[data-theme] body.experience-world :is(h1,h2,h3,h4,p,.ex-meta,.ex-count,.ex-lead,.sidebar-link,.logo,.muted-xs,.ra-muted,.nav-links a,footer a){color:var(--ui-ink)!important;-webkit-text-fill-color:currentColor!important}
 
 html[data-theme] body.experience-world :is(.sx-glass,.ex-head,.ex-section,.ex-card,.ex-empty,.rb-footer){background:var(--ui-surface)!important;color:var(--ui-ink)!important}html[data-theme] body.experience-world :is(h1,h2,h3,p,label,td,th){color:var(--ui-ink);-webkit-text-fill-color:var(--ui-ink)}
+
+/* All photographic-card overlays stay readable over the darkest and brightest frames. */
+html[data-theme] #app .tile-body,html[data-theme] #app .tile-body :is(.muted-xs,a,.county-image-disclosure){color:var(--brand-white)!important;-webkit-text-fill-color:var(--brand-white)!important}
+html[data-theme] #app .tile-body .badge.grey{background:color-mix(in srgb,var(--brand-black) 85%,transparent)!important;color:var(--brand-white)!important}
+html[data-theme] #app .tile-body .badge.gold{background:var(--brand-yellow)!important;color:var(--brand-black)!important;-webkit-text-fill-color:var(--brand-black)!important}
+.county-image-disclosure,.product-image-disclosure{display:block;font-size:10px;line-height:1.5;margin-top:6px}.product-image-disclosure{color:var(--ui-muted)!important}
