@@ -9602,10 +9602,18 @@ function PAGE_EVENTS(path){
  document.addEventListener('input',e=>{if(e.target.id==='prodSearch'){e.stopImmediatePropagation();filter();}},true);
  document.addEventListener('change',e=>{if(['productCounty','productSort'].includes(e.target.id)){e.stopImmediatePropagation();filter();}},true);
 })();
+
+(function heroAutoplay(){
+ document.addEventListener('DOMContentLoaded',()=>{
+  const io=new IntersectionObserver(es=>es.forEach(en=>{const v=en.target;if(en.isIntersecting){v.play().catch(()=>{});}else v.pause();}),{threshold:.25});
+  const watch=()=>document.querySelectorAll('video[data-hero-autoplay]').forEach(v=>{if(!v.dataset.ioWatched){v.dataset.ioWatched='1';io.observe(v);}});
+  watch();new MutationObserver(watch).observe(document.getElementById('app')||document.body,{childList:true,subtree:true});
+ });
+})();
 (function nativeAdapters(){
  const esc=x=>String(x??'').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
  const media=window.KICC_NATIVE.tables.media;
- T.hls=o=>{const path=location.hash.replace(/^#/,'')||'/';const m=media.find(x=>x.target===path&&x.kind==='video');return `<div class="hls-stage" data-native-owner="${esc(m?.ownerId||'')}">${m?`<video controls playsinline preload="metadata" ${m.poster?'poster="'+esc(m.poster)+'"':''} src="${esc(m.url)}" style="width:100%;height:100%;object-fit:cover"></video>`:`<div class="poster" style="background-image:url('${esc(o.img||'')}')"></div><div class="hud"><div><h3>${esc(o.title)}</h3><p>No entity-owned video published. Add one in the Admin portal.</p></div></div>`}</div>`;};
+ T.hls=o=>{const path=location.hash.replace(/^#/,'')||'/';const m=media.find(x=>x.target===path&&x.kind==='video');return `<div class="hls-stage" data-native-owner="${esc(m?.ownerId||'')}">${m?`<video muted loop playsinline autoplay preload="metadata" ${m.poster?'poster="'+esc(m.poster)+'"':''} src="${esc(m.url)}" style="width:100%;height:100%;object-fit:cover" data-hero-autoplay></video>`:`<div class="poster" style="background-image:url('${esc(o.img||'')}')"></div><div class="hud"><div><h3>${esc(o.title)}</h3><p>No entity-owned video published. Add one in the Admin portal.</p></div></div>`}</div>`;};
  for(const t of ['exhibitions','screens','streams']){const old=Router.PAGES['/'+t];Router.PAGES['/'+t]=(rest,path)=>!window.KICC_NATIVE.tables[t].length?{title:t,html:`<section class="wrap section"><div class="eyebrow">${esc(t)}</div><h1>${t==='screens'?'Digital Screens':t==='streams'?'Live Streams':'Exhibitions'}</h1><div class="reference-empty mt-l">No published ${esc(t)} records in the database. The collection is empty, not populated with demonstration listings.</div></section>`}:old(rest,path);}
  document.addEventListener('click',e=>{const a=e.target.closest('[data-action="toast"],[data-action="link"]');if(!a)return;e.preventDefault();e.stopImmediatePropagation();const path=location.hash.replace(/^#/,'');let target='/portal';const card=a.closest('[data-native-product]');if(card){const p=window.KICC_NATIVE.tables.products.find(x=>x.slug===card.dataset.nativeProduct);if(p)target=p.nativeUrl+'?native=1';}else if(path.startsWith('/marketplace/')){const slug=path.split('/')[2];const p=window.KICC_NATIVE.tables.products.find(x=>REPO.slug(x.n).slice(0,44)===slug||x.slug===slug);if(p)target=p.nativeUrl+'?native=1';}else if(path.startsWith('/venues/'))target=path+'?native=1';else if(path==='/travel')target='/travel?native=1';location.assign(target);},true);
  document.querySelectorAll('a[href="#/login"],a[href="#/register"]').forEach(a=>{a.href=a.getAttribute('href').slice(1);a.removeAttribute('data-link');});
