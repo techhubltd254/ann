@@ -71,17 +71,6 @@ class ReferenceExperienceController extends Controller
     {
         $html = file_get_contents(resource_path('experience/reference-production.html'));
         $payload = ['path'=>$request->getPathInfo(),'tables'=>$this->tables()];
-        if ($request->path() === 'travel') {
-            $travel = app(TravelController::class)->index($request)->getData();
-            $destinations = $travel['destinations']->map(fn ($d) => [$d->name, 'KES '.number_format((float)$d->from_price)])->values()->all();
-            $hotels = $travel['hotels']->map(fn ($h) => [$h->name, 'Enquire for live room rates'])->values()->all();
-            $payload['travelGroups'] = [
-                ['Flights','✈','Available destinations from the native flight inventory.',$destinations],
-                ['Hotels','⌂','Published partner hotels from the native database.',$hotels],
-                ['Transfers','⇄','Use the native flight/package search for destination-specific transfers.',[]],
-                ['Rentals','◎','Enquire with registered providers; no unverified prices are displayed.',[]],
-            ];
-        }
         $boot = json_encode($payload, JSON_HEX_TAG|JSON_HEX_AMP|JSON_HEX_APOS|JSON_HEX_QUOT|JSON_THROW_ON_ERROR);
         // This inserts JSON only; the approved document is never compiled as Blade.
         return str_replace('/*__KICC_NATIVE_BOOT__*/', 'window.KICC_NATIVE='.$boot.';', $html);
