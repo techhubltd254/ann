@@ -53,7 +53,7 @@ class TravelController extends Controller
         // Weather-aware recommendation ("someone in cold UK must see a Kenya summer")
         $weather = $this->originWeather($request->query('from', 'London'));
 
-        return view('travel.index', compact('attractions', 'hotels', 'counties', 'destinations', 'weather'));
+        return view('experience.travel', compact('attractions', 'hotels', 'counties', 'destinations', 'weather'));
     }
 
     /** Available flights + package builder for a destination & date. */

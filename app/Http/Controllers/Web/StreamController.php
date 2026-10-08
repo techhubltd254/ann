@@ -38,7 +38,7 @@ class StreamController extends Controller
             ->take(6)
             ->get();
 
-        return view('streams.index', compact('live', 'upcoming', 'ended', 'upcomingExhibitions'));
+        return view('experience.streams', compact('live', 'upcoming', 'ended', 'upcomingExhibitions'));
     }
 
     public function show(LiveStream $stream)

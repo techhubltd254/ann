@@ -35,7 +35,7 @@ class NationalSectorController extends Controller
                 'count'       => $aggregated[$s->id] ?? 0,
             ]);
 
-        return view('national.sectors', compact('sectors'));
+        return view('experience.sectors', compact('sectors'));
     }
 
     public function show(string $slug)

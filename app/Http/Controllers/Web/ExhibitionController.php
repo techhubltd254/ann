@@ -25,7 +25,7 @@ class ExhibitionController extends Controller
             ->values()
             ->all();
 
-        return view('exhibitions.index', compact('exhibitions', 'liveStreams'));
+        return view('experience.exhibitions', compact('exhibitions', 'liveStreams'));
     }
 
     public function show(string $slug)
@@ -69,6 +69,6 @@ class ExhibitionController extends Controller
             ->whereNotNull('venue_type')
             ->pluck('venue_type')->toArray();
 
-        return view('venues.index', compact('venues', 'counties', 'venueTypes'));
+        return view('experience.venues', compact('venues', 'counties', 'venueTypes'));
     }
 }

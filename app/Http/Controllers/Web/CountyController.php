@@ -36,7 +36,7 @@ class CountyController extends Controller
             ];
         }
 
-        return view('counties.index', compact('counties', 'countyHeroes'));
+        return view('experience.counties', compact('counties', 'countyHeroes'));
     }
 
     public function show(County $county)

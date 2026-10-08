@@ -1,0 +1,517 @@
+/* ============================================================================
+   KICC — EXPERIENCE BRIGHT LAYER
+   ----------------------------------------------------------------------------
+   One job: the whole platform renders BRIGHT, in exactly four colours, on every
+   page and every tab — no brown, no murky dark grounds.
+
+       white   #FFFFFF   (ground, frosted glass tiles)
+       black   #0B0B0B   (ink and small solid accents only — never a page ground)
+       red     #B3261E   (primary accent)
+       yellow  #FFCD05   (secondary accent)
+
+   Loaded last, so it out-specifies approved-design.css, glass-kicc.css and
+   strict-kicc.css. It also neutralises the leftover Tailwind dark utilities on
+   the detail pages that still carry their original markup, so those pages go
+   bright without being rewritten.
+   ========================================================================== */
+
+/* ── 1. force the light world, whatever the stored preference says ───────── */
+html,
+html[data-theme],
+html[data-theme="light"],
+html[data-theme="dark"],
+html[data-theme="system"],
+html[data-theme="auto"] {
+  color-scheme: light !important;
+  background: #FFFFFF !important;
+
+  /* re-derive every legacy token family onto the four colours */
+  --ui-bg: #FFFFFF;
+  --ui-surface: #FFFFFF;
+  --ui-raised: #FFFFFF;
+  --ui-glass: rgba(255, 255, 255, .62);
+  --ui-line: rgba(17, 17, 17, .14);
+  --ui-muted: rgba(17, 17, 17, .66);
+  --ui-ink: #111111;
+  --ui-accent: #B3261E;
+
+  --dark-canvas: #FFFFFF;
+  --surface: #FFFFFF;
+  --card: #FFFFFF;
+  --light-bg: #FFFFFF;
+  --sand-alt: #F1EEE8;
+  --warm-canvas: #FFFFFF;
+  --warm-surface: #FFFFFF;
+  --warm-sand: #F1EEE8;
+  --warm-sand-2: #FAF9F7;
+  --kicc-paper: #FFFFFF;
+  --paper: #FFFFFF;
+  --stage: #FFFFFF;
+  --stage-2: #FAF9F7;
+
+  --kicc-navy: #111111;
+  --kicc-navy-deep: #111111;
+  --kicc-navy-soft: rgba(17, 17, 17, .66);
+  --nv-950: #FFFFFF; --nv-900: #FFFFFF; --nv-850: #FAF9F7;
+  --nv-800: #FFFFFF; --nv-700: #FFFFFF; --nv-500: rgba(17, 17, 17, .6);
+  --nv-400: #111111;
+
+  --text: #111111;
+  --text-muted: rgba(17, 17, 17, .66);
+  --ink: #111111;
+  --bone: #111111;
+  --bone-dim: rgba(17, 17, 17, .66);
+
+  --glass-bg: rgba(255, 255, 255, .72);
+  --glass-border: rgba(17, 17, 17, .12);
+  --glass-light-bg: rgba(255, 255, 255, .86);
+  --glass-light-border: rgba(255, 255, 255, .6);
+
+  --on-dark: #111111;
+  --on-dark-muted: rgba(17, 17, 17, .66);
+}
+
+body,
+html[data-theme] body,
+body.light-world {
+  background: #FFFFFF !important;
+  color: #111111 !important;
+}
+
+html[data-theme] #app,
+html[data-theme] main#app,
+#app {
+  background: #FFFFFF !important;
+  color: #111111 !important;
+}
+
+/* ── 2. every page ground goes bright ────────────────────────────────────── */
+.ed-chapter,
+.ed-chapter.ed-flat,
+.ed-chapter.ed-plate,
+.ed-interlude,
+.ed-interlude.ed-flat,
+.ed-flat,
+.ed-plate,
+.sx-archive,
+.sx-close,
+#chapter-close,
+#chapter-close > .wrap,
+#chapter-archive,
+#chapter-halls,
+#chapter-makers,
+#chapter-programme,
+#chapter-government,
+#chapter-inside,
+.chapter-pad {
+  background: #FFFFFF !important;
+  color: #111111 !important;
+}
+
+/* the two "interlude" bands get the soft sand tint so chapters still read as
+   distinct movements without ever going dark */
+.ed-interlude,
+.ed-interlude.ed-flat,
+.sx-archive {
+  background: #FAF9F7 !important;
+}
+
+.footer,
+.footer.rb-footer,
+.rb-footer {
+  background: #FFFFFF !important;
+  color: #111111 !important;
+  border-top: 1px solid rgba(17, 17, 17, .12) !important;
+}
+
+/* ── 3. hero: bright plate, never a black film ground ────────────────────── */
+.sx-hero,
+.sx-hero .ed-layer {
+  background: #FFFFFF !important;
+}
+
+.sx-hero .ed-bleed,
+.ed-bleed {
+  background: #F1EEE8 !important;
+}
+
+/* the film itself stays legible but is held back so the plate reads bright */
+.sx-hero video,
+.sx-hero img.sx-hero-still {
+  opacity: .28 !important;
+  filter: saturate(.95) brightness(1.12) !important;
+}
+
+.sx-hero .sx-glass,
+.sx-glass {
+  background: rgba(255, 255, 255, .86) !important;
+  border: 1px solid rgba(17, 17, 17, .10) !important;
+  backdrop-filter: blur(22px) saturate(1.25) !important;
+  box-shadow: 0 24px 60px rgba(11, 11, 11, .10) !important;
+}
+
+/* ── 4. cards, panels, tiles: frosted white glass ────────────────────────── */
+.card,
+.panel,
+.sx-3d,
+.sx-glass,
+.rb-panel,
+.rb-notice,
+.tm-tile,
+.tm-copy {
+  background: rgba(255, 255, 255, .88) !important;
+  border: 1px solid rgba(17, 17, 17, .10) !important;
+  color: #111111 !important;
+  box-shadow: 0 18px 44px rgba(11, 11, 11, .07) !important;
+}
+
+.rb-notice {
+  background: #FAF9F7 !important;
+  border-left: 4px solid #B3261E !important;
+}
+
+/* ── 5. type ─────────────────────────────────────────────────────────────── */
+h1, h2, h3, h4, h5,
+.ed-chapter h1, .ed-chapter h2, .ed-chapter h3 {
+  color: #111111 !important;
+}
+
+.ed-chapter-num,
+.eyebrow,
+.ed-label {
+  color: #B3261E !important;
+}
+
+.ed-lead,
+.muted,
+.muted-xs,
+.content-copy,
+.tm-metadata,
+.rb-status {
+  color: rgba(17, 17, 17, .70) !important;
+}
+
+h1 em, h2 em, h3 em, .red {
+  color: #B3261E !important;
+  font-style: italic;
+}
+
+.gold { color: #8A6A00 !important; }
+
+/* ── 6. buttons: red primary, yellow secondary, hairline ghost ───────────── */
+.btn {
+  background: #B3261E !important;
+  color: #FFFFFF !important;
+  border: 1px solid #B3261E !important;
+  border-radius: 80px !important;
+  font-weight: 600 !important;
+}
+.btn:hover { background: #8E1C16 !important; border-color: #8E1C16 !important; }
+
+.btn.gold {
+  background: #FFCD05 !important;
+  color: #0B0B0B !important;
+  border-color: #FFCD05 !important;
+}
+.btn.gold:hover { background: #C79A00 !important; border-color: #C79A00 !important; }
+
+.btn.ghost,
+.btn.dark {
+  background: transparent !important;
+  color: #111111 !important;
+  border: 1px solid rgba(17, 17, 17, .22) !important;
+}
+.btn.ghost:hover,
+.btn.dark:hover {
+  color: #B3261E !important;
+  border-color: #B3261E !important;
+  background: rgba(179, 38, 30, .04) !important;
+}
+
+/* nav */
+.rb-nav, .nav {
+  background: rgba(255, 255, 255, .92) !important;
+  border-bottom: 1px solid rgba(17, 17, 17, .10) !important;
+  backdrop-filter: blur(18px) saturate(1.2) !important;
+}
+.nav-links a { color: rgba(17, 17, 17, .66) !important; }
+.nav-links a:hover { color: #111111 !important; background: rgba(17, 17, 17, .05) !important; }
+.nav-links a.active,
+.nav-links a[aria-current="page"] { color: #B3261E !important; }
+.nav-links a.active::after { background: #FFCD05 !important; }
+
+.mobile-menu {
+  background: #FFFFFF !important;
+  color: #111111 !important;
+  border-left: 1px solid rgba(17, 17, 17, .12) !important;
+}
+.mobile-menu a { color: #111111 !important; }
+.mobile-menu a:hover { color: #B3261E !important; }
+
+.chapter-rail a { color: rgba(17, 17, 17, .5) !important; }
+.chapter-rail a:hover,
+.chapter-rail a.is-active { color: #B3261E !important; }
+
+/* ── 7. chips, tags, badges ──────────────────────────────────────────────── */
+.sx-chip, .sx-chip--light, .rb-badge, .tag, .chip {
+  background: rgba(255, 255, 255, .9) !important;
+  border: 1px solid rgba(17, 17, 17, .14) !important;
+  color: #111111 !important;
+}
+.sx-chip b { color: #B3261E !important; }
+
+/* ── 8. the handoff markers between chapters ─────────────────────────────── */
+.ed-handoff { color: rgba(17, 17, 17, .55) !important; }
+.ed-handoff .n { color: #B3261E !important; }
+.ed-handoff .ln { background: rgba(17, 17, 17, .18) !important; }
+
+/* ── 9. media windows (the tile media the admin controls) ────────────────── */
+.tm-window {
+  background: #F1EEE8 !important;
+  border: 1px solid rgba(17, 17, 17, .10) !important;
+  border-radius: 18px !important;
+  overflow: hidden !important;
+}
+.tm-window img,
+.tm-window video { display: block; width: 100%; height: 100%; object-fit: cover; }
+.rb-play {
+  background: #FFFFFF !important;
+  color: #111111 !important;
+  border: 1px solid rgba(17, 17, 17, .18) !important;
+}
+.rb-play:hover { background: #FFCD05 !important; border-color: #FFCD05 !important; }
+.rb-fallback { background: #FAF9F7 !important; color: #111111 !important; }
+.rb-fallback span { color: #B3261E !important; }
+
+/* ── 10. neutralise leftover dark Tailwind utilities on detail pages ─────── */
+[class*="bg-black"],
+[class*="bg-[#0b0b0b]"],
+[class*="bg-[#0B0B0B]"],
+[class*="bg-[#111]"],
+[class*="bg-[#141414]"],
+[class*="bg-gray-9"],
+[class*="bg-zinc-9"],
+[class*="bg-neutral-9"],
+[class*="bg-slate-9"],
+[class*="bg-stone-9"],
+[class*="bg-kicc-navy"],
+[class*="bg-[#1a1a2e]"] {
+  background-color: #FFFFFF !important;
+  color: #111111 !important;
+}
+
+/* gradient overlays that only exist to darken a photo — drop them */
+[class*="from-black"],
+[class*="via-black"],
+[class*="to-black"] { background-image: none !important; }
+
+/* inline gradient grounds written into style attributes */
+[style*="linear-gradient(135deg,#0b0b0b"],
+[style*="linear-gradient(135deg, #0b0b0b"],
+[style*="background:#0b0b0b"],
+[style*="background: #0b0b0b"],
+[style*="background:#000"],
+[style*="background: #000"] { background: #FAF9F7 !important; }
+
+/* text that was white-on-dark now needs ink */
+[class*="bg-black"] h1, [class*="bg-black"] h2, [class*="bg-black"] h3,
+[class*="bg-gray-9"] h1, [class*="bg-gray-9"] h2, [class*="bg-gray-9"] h3,
+[class*="bg-black"] p, [class*="bg-black"] span, [class*="bg-black"] li,
+[class*="bg-gray-9"] p, [class*="bg-gray-9"] span, [class*="bg-gray-9"] li {
+  color: #111111 !important;
+}
+
+/* tables and admin surfaces */
+.rb-table td, .rb-table th {
+  color: #111111 !important;
+  border-bottom-color: rgba(17, 17, 17, .12) !important;
+}
+.rb-sidebar a { color: rgba(17, 17, 17, .68) !important; }
+.rb-sidebar a[aria-current="page"] { background: #FAF9F7 !important; color: #B3261E !important; }
+
+input, select, textarea {
+  background: #FFFFFF !important;
+  color: #111111 !important;
+  border: 1px solid rgba(17, 17, 17, .18) !important;
+}
+
+/* ═══════════════════════════════════════════════════════════════════════════
+   11. THE EXPERIENCE PAGE SYSTEM — one shape for every tab
+   ═════════════════════════════════════════════════════════════════════════ */
+
+.ex-page { background: #FFFFFF; padding: 0 0 110px; }
+
+.ex-hero {
+  position: relative;
+  padding: 150px 0 70px;
+  background: #FFFFFF;
+  border-bottom: 1px solid rgba(17, 17, 17, .10);
+}
+.ex-hero::after {
+  content: "";
+  position: absolute; left: 0; right: 0; bottom: 0; height: 3px;
+  background: linear-gradient(90deg, #B3261E 0%, #B3261E 34%, #FFCD05 34%, #FFCD05 66%, #0B0B0B 66%, #0B0B0B 100%);
+  opacity: .9;
+}
+.ex-eyebrow {
+  font: 700 11.5px/1 'JetBrains Mono', monospace;
+  letter-spacing: .24em; text-transform: uppercase; color: #B3261E;
+}
+.ex-hero h1 {
+  font-family: 'Fraunces', serif;
+  font-weight: 300;
+  font-size: clamp(38px, 6.2vw, 82px);
+  line-height: 1.02;
+  letter-spacing: -.03em;
+  margin: 22px 0 0;
+  max-width: 19ch;
+}
+.ex-hero h1 em { color: #B3261E; }
+.ex-hero .ex-lead {
+  margin-top: 26px; max-width: 60ch;
+  font-size: 17px; line-height: 1.75; color: rgba(17, 17, 17, .70);
+}
+.ex-stats { display: flex; flex-wrap: wrap; gap: 12px; margin-top: 34px; }
+.ex-stat {
+  background: rgba(255, 255, 255, .9);
+  border: 1px solid rgba(17, 17, 17, .12);
+  border-radius: 80px; padding: 10px 20px;
+  font-size: 13px; font-weight: 500; color: #111111;
+}
+.ex-stat b { color: #B3261E; font-weight: 700; margin-right: 5px; }
+
+.ex-bar {
+  display: flex; flex-wrap: wrap; gap: 14px; align-items: center;
+  justify-content: space-between;
+  padding: 26px 0; border-bottom: 1px solid rgba(17, 17, 17, .10);
+}
+.ex-bar form { display: flex; gap: 10px; flex-wrap: wrap; flex: 1 1 320px; }
+.ex-bar input, .ex-bar select {
+  min-height: 46px; padding: 0 18px; border-radius: 80px; font-size: 14px;
+}
+.ex-bar input { flex: 1 1 220px; }
+
+.ex-section { padding: 62px 0 0; }
+.ex-section-head {
+  display: flex; align-items: baseline; justify-content: space-between;
+  gap: 20px; flex-wrap: wrap; margin-bottom: 32px;
+}
+.ex-section-head h2 {
+  font-family: 'Fraunces', serif; font-weight: 300;
+  font-size: clamp(26px, 3.2vw, 42px); letter-spacing: -.02em; margin: 0;
+}
+.ex-section-head .ex-count {
+  font: 500 12px/1 'JetBrains Mono', monospace;
+  letter-spacing: .16em; text-transform: uppercase; color: rgba(17, 17, 17, .55);
+}
+
+.ex-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+  gap: 30px;
+}
+.ex-grid--wide { grid-template-columns: repeat(auto-fill, minmax(400px, 1fr)); }
+
+.ex-card {
+  display: flex; flex-direction: column;
+  background: rgba(255, 255, 255, .9);
+  border: 1px solid rgba(17, 17, 17, .10);
+  border-radius: 22px;
+  overflow: hidden;
+  transition: transform .32s cubic-bezier(.22,1,.36,1), box-shadow .32s, border-color .32s;
+}
+.ex-card:hover {
+  transform: translateY(-5px);
+  border-color: rgba(179, 38, 30, .38);
+  box-shadow: 0 26px 60px rgba(11, 11, 11, .11);
+}
+.ex-card .ex-shot {
+  position: relative; aspect-ratio: 16 / 10; background: #F1EEE8; overflow: hidden;
+}
+.ex-card .ex-shot img, .ex-card .ex-shot video {
+  width: 100%; height: 100%; object-fit: cover; display: block;
+}
+.ex-card .ex-shot::after {
+  content: ""; position: absolute; inset: 0;
+  box-shadow: inset 0 -60px 60px -50px rgba(11, 11, 11, .35);
+  pointer-events: none;
+}
+.ex-card .ex-tag {
+  position: absolute; top: 14px; left: 14px; z-index: 3;
+  background: #FFCD05; color: #0B0B0B;
+  font: 700 10.5px/1 'JetBrains Mono', monospace;
+  letter-spacing: .1em; text-transform: uppercase;
+  padding: 8px 13px; border-radius: 80px;
+}
+.ex-card .ex-tag--red { background: #B3261E; color: #FFFFFF; }
+.ex-card .ex-body { padding: 22px 24px 26px; display: flex; flex-direction: column; flex: 1; }
+.ex-card .ex-meta {
+  font: 500 11px/1 'JetBrains Mono', monospace;
+  letter-spacing: .12em; text-transform: uppercase;
+  color: rgba(17, 17, 17, .5); margin-bottom: 12px;
+}
+.ex-card h3 {
+  font-family: 'Fraunces', serif; font-weight: 400;
+  font-size: 24px; line-height: 1.18; letter-spacing: -.015em; margin: 0 0 12px;
+}
+.ex-card p { font-size: 14.5px; line-height: 1.68; color: rgba(17, 17, 17, .68); margin: 0 0 20px; }
+.ex-card .ex-go {
+  margin-top: auto; display: inline-flex; align-items: center; gap: 9px;
+  font-size: 13.5px; font-weight: 600; color: #B3261E;
+}
+.ex-card .ex-go:hover { color: #8E1C16; }
+.ex-card .ex-go::after { content: "→"; transition: transform .25s; }
+.ex-card:hover .ex-go::after { transform: translateX(5px); }
+
+.ex-empty {
+  grid-column: 1 / -1;
+  background: #FAF9F7; border: 1px dashed rgba(17, 17, 17, .2);
+  border-radius: 22px; padding: 60px 30px; text-align: center;
+  color: rgba(17, 17, 17, .62); font-size: 15px; line-height: 1.7;
+}
+.ex-empty strong { color: #111111; display: block; font-size: 19px; margin-bottom: 10px; }
+
+.ex-pager { display: flex; justify-content: center; margin-top: 54px; }
+.ex-pager nav { display: flex; gap: 8px; }
+.ex-pager a, .ex-pager span {
+  min-width: 44px; min-height: 44px; display: inline-flex; align-items: center;
+  justify-content: center; padding: 0 16px; border-radius: 80px;
+  border: 1px solid rgba(17, 17, 17, .14); font-size: 13.5px; color: #111111;
+}
+.ex-pager a:hover { border-color: #B3261E; color: #B3261E; }
+.ex-pager [aria-current="page"] { background: #B3261E; border-color: #B3261E; color: #FFFFFF; }
+
+/* admin affordance attached to each editable tile */
+.ex-admin {
+  display: inline-flex; align-items: center; gap: 8px;
+  font: 600 11px/1 'JetBrains Mono', monospace;
+  letter-spacing: .1em; text-transform: uppercase;
+  color: rgba(17, 17, 17, .55);
+  border: 1px solid rgba(17, 17, 17, .16);
+  border-radius: 80px; padding: 8px 14px; margin-top: 14px;
+}
+.ex-admin:hover { color: #B3261E; border-color: #B3261E; background: rgba(179, 38, 30, .04); }
+
+/* the inline film viewer the tiles open */
+.ex-film {
+  position: fixed; inset: 0; z-index: 9000;
+  background: rgba(11, 11, 11, .86);
+  display: flex; align-items: center; justify-content: center; padding: 5vh 5vw;
+}
+.ex-film video { max-width: 100%; max-height: 90vh; border-radius: 18px; background: #0B0B0B; }
+.ex-film button {
+  position: absolute; top: 26px; right: 26px;
+  background: #FFFFFF; color: #111111; border-radius: 80px;
+  padding: 12px 22px; font-weight: 600;
+}
+
+@media (max-width: 900px) {
+  .ex-hero { padding: 118px 0 54px; }
+  .ex-grid, .ex-grid--wide { grid-template-columns: 1fr; gap: 22px; }
+  .ex-section { padding-top: 44px; }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .ex-card, .ex-card .ex-go::after { transition: none !important; }
+  .ex-card:hover { transform: none; }
+}

@@ -107,7 +107,7 @@ class MarketplaceController extends Controller
         $activeFlashSale = FlashSale::where('is_active', true)
             ->where('starts_at', '<=', now())->where('ends_at', '>=', now())->first();
 
-        return view('marketplace.index', [
+        return view('experience.marketplace', [
             'products' => new \Illuminate\Pagination\LengthAwarePaginator(
                 $products, $total, $perPage, $page, ['path' => \Illuminate\Support\Facades\Request::url(), 'query' => $request->query()]
             ),

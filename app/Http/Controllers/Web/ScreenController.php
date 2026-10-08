@@ -171,7 +171,7 @@ class ScreenController extends Controller
             return $screen;
         });
 
-        return view('screens.directory', compact('screens'));
+        return view('experience.screens', compact('screens'));
     }
 }
 
