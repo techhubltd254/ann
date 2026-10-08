@@ -595,3 +595,11 @@ html[data-theme] {--s-white:#FFFFFF;--s-black:#0B0B0B;--s-red:#B3261E;--s-yellow
 [data-county-results][data-view="strip"]>.ex-card{flex:0 0 min(78vw,400px);scroll-snap-align:start;}
 @media(max-width:1200px){.rb-nav .nav-links{display:none!important}.rb-nav .burger{display:block!important}.ex-light-label{display:none;}}
 @media(max-width:760px){.experience-admin-shell{flex-direction:column}.experience-admin-shell>.glass-nav{position:relative!important;top:auto!important;width:100%!important;height:auto!important;max-height:280px;}.experience-world .ex-hero{padding-top:85px;}.rb-nav .nav-cta a{display:inline-flex!important;}}
+
+/* Specificity gate: no higher-specificity legacy selector may darken the shell. */
+html[data-theme="light"] body.experience-world :is(footer.footer,footer.rb-footer,#chapter-close,.sx-close,.sx-archive,.ed-flat,.ed-plate,.ed-interlude,.orbit-screen,.mobile-menu,.tm-dialog,.tm-player,.ex-film){background:#FFFFFF!important;color:#0B0B0B!important;}
+html[data-theme="light"] body.experience-world footer :is(a,p,span,small,.muted-xs,.logo){color:#0B0B0B!important;}
+html[data-theme="light"] body.experience-world footer a:hover{color:#B3261E!important;}
+html[data-theme="light"] body.experience-world :is(.tm-dialog,.ex-film)::backdrop{background:rgba(255,255,255,.85)!important;}
+html[data-theme="light"] body.experience-world :is(.glass-card-dark,.shader-dark,.admin-pane,.stat-strip,.sector-stats){background:#FFFFFF!important;color:#0B0B0B!important;}
+html[data-theme="light"] body.experience-world :is(.btn.gold,.btn-gold,.ex-tag,.badge.gold){background:#FFCD05!important;color:#0B0B0B!important;}

@@ -871,3 +871,5 @@ Route::get('/county-admin/{slug}/pro/{page}', function(string $slug,string $page
 Route::get('/kicc-admin/{page}', function(string $page){
  return redirect()->route('kicc.admin',['tab'=>$page]);
 })->where('page','overview|portals|counties|institutions|national|exhibitors|orders|providers|escrow|pool|pipelines|experiences|live_events|venues|users|hero_media|packages|analytics|integration|pipeline-creator|earnings|search-analytics|cache|licence-queue|pipeline-settings')->middleware('auth');
+
+Route::redirect('/admin','/kicc-admin');
