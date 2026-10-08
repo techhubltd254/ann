@@ -36,12 +36,24 @@ class CountyMediaController extends Controller
                 $asset = MediaAsset::resolveSlot(\App\Models\County::class, $county->id, 'sector_video_' . $s);
                 $images[$s]['video'] = $asset?->mp4Url();
                 $images[$s]['video_name'] = $asset?->original_name;
+                $imgAsset = MediaAsset::resolveSlot(\App\Models\County::class, $county->id, 'sector_image_' . $s);
+                if ($imgAsset) {
+                    $images[$s]['exists'] = true;
+                    $images[$s]['path'] = $imgAsset->path;
+                    $images[$s]['url'] = $imgAsset->thumbnailUrl() ?? $imgAsset->url();
+                }
             }
         }
         if ($county) {
             $heroAsset = MediaAsset::resolveSlot(\App\Models\County::class, $county->id, 'hero_video');
             $images['hero']['video'] = $heroAsset?->mp4Url();
             $images['hero']['video_name'] = $heroAsset?->original_name;
+            $imgAsset = MediaAsset::resolveSlot(\App\Models\County::class, $county->id, 'fallback_image');
+            if ($imgAsset) {
+                $images['hero']['exists'] = true;
+                $images['hero']['path'] = $imgAsset->path;
+                $images['hero']['url'] = $imgAsset->thumbnailUrl() ?? $imgAsset->url();
+            }
         }
         return $images;
     }
@@ -57,17 +69,72 @@ class CountyMediaController extends Controller
             'image' => 'required|image|mimes:jpeg,png,jpg,webp|max:10240',
         ]);
         $file = $request->file('image');
-        $filename = "{$data['sector']}.{$file->extension()}";
-        $path = $file->storeAs("counties/{$slug}", $filename, 'public');
-        if ($file->extension() !== 'jpeg') {
-            $jpegPath = storage_path("app/public/counties/{$slug}/{$data['sector']}.jpeg");
-            @copy(storage_path("app/public/{$path}"), $jpegPath);
+        $ext  = $file->extension() ?: 'webp';
+        $hash = substr(sha1_file($file->getRealPath()), 0, 10);
+        $r2Path = "counties/{$county->slug}/image/{$data['sector']}-{$hash}.{$ext}";
+
+        // The bytes must live in R2 and the row must live in media_assets. A
+        // local-disk write is invisible to the public site, which resolves every
+        // county tile through MediaAsset — that was why uploads never appeared.
+        $disk = Storage::disk('r2');
+        $disk->writeStream($r2Path, fopen($file->getRealPath(), 'r'), ['visibility' => 'public']);
+
+        if (! $disk->exists($r2Path)) {
+            return back()->withErrors(['image' => 'R2 write failed; nothing was published.']);
         }
-        event(new GenericDomainEvent('county_image_updated', [
-            'county' => $slug, 'sector' => $data['sector'],
-        ], n8nEventName: 'county_image_updated'));
+
+        // `hero` is the county's own still — the image a county shows when it has
+        // no film of its own. Other sectors keep their own slot.
+        $slot = $data['sector'] === 'hero' ? 'fallback_image' : 'sector_image_' . $data['sector'];
+
+        foreach (MediaAsset::forSlot(County::class, $county->id, $slot)->get() as $old) {
+            if ($old->disk === 'r2') {
+                foreach ($old->derivatives as $d) { $disk->delete($d->path); }
+                $disk->delete($old->path);
+            }
+            $old->derivatives()->delete();
+            $old->delete();
+        }
+
+        $dim = @getimagesize($file->getRealPath()) ?: [null, null];
+
+        $asset = MediaAsset::create([
+            'uuid'          => (string) Str::uuid(),
+            'owner_id'      => $county->id,
+            'owner_type'    => County::class,
+            'slot'          => $slot,
+            'disk'          => 'r2',
+            'path'          => $r2Path,
+            'original_name' => $file->getClientOriginalName(),
+            'mime'          => $file->getMimeType(),
+            'kind'          => 'image',
+            'size_bytes'    => $file->getSize(),
+            'width'         => $dim[0] ?? null,
+            'height'        => $dim[1] ?? null,
+            'status'        => 'ready',
+            'alt_text'      => $county->name . ' county',
+        ]);
+
+        // A `thumb` derivative lets MediaAsset::thumbnailUrl() resolve the image
+        // the same way every other tile does.
+        $asset->derivatives()->create([
+            'kind'       => 'thumb',
+            'path'       => $r2Path,
+            'mime'       => $file->getMimeType(),
+            'size_bytes' => $file->getSize(),
+            'variant'    => 'source',
+        ]);
+
+        try {
+            event(new GenericDomainEvent('county_image_updated', [
+                'county' => $slug, 'sector' => $data['sector'], 'path' => $r2Path,
+            ], n8nEventName: 'county_image_updated'));
+        } catch (\Throwable $e) {
+            \Illuminate\Support\Facades\Log::warning('county_image_updated event failed: ' . $e->getMessage());
+        }
+
         $this->syncCounty($county);
-        return back()->with('success', "{$data['sector']} image updated.");
+        return back()->with('success', "{$data['sector']} image published to R2 and bound to the county.");
     }
 
     public function deleteImage(string $slug, string $sector)
@@ -76,12 +143,27 @@ class CountyMediaController extends Controller
         $county = County::where('slug', $slug)->firstOrFail();
         abort_if(!$user->isAdmin() && $user->county_id !== $county->id, 403);
         $county = $this->authorizeCounty($slug);
-        $path = storage_path("app/public/counties/{$slug}/{$sector}.jpeg");
-        if (file_exists($path)) @unlink($path);
-        $altPath = storage_path("app/public/counties/{$slug}/{$sector}.jpg");
-        if (file_exists($altPath)) @unlink($altPath);
+
+        // Remove the R2 object and its media_assets row — the local-disk copy was
+        // never what the public site read.
+        $slot = $sector === 'hero' ? 'fallback_image' : 'sector_image_' . $sector;
+        foreach (MediaAsset::forSlot(County::class, $county->id, $slot)->get() as $a) {
+            if ($a->disk === 'r2') {
+                foreach ($a->derivatives as $d) { Storage::disk('r2')->delete($d->path); }
+                Storage::disk('r2')->delete($a->path);
+            }
+            $a->derivatives()->delete();
+            $a->delete();
+        }
+
+        // clear any legacy local-disk copies too
+        foreach (['jpeg', 'jpg', 'png', 'webp'] as $ext) {
+            $legacy = storage_path("app/public/counties/{$slug}/{$sector}.{$ext}");
+            if (file_exists($legacy)) @unlink($legacy);
+        }
+
         $this->syncCounty($county);
-        return back()->with('success', "{$sector} image removed.");
+        return back()->with('success', "{$sector} image removed from R2 and unbound.");
     }
 
     public function uploadSectorVideo(Request $request, string $slug)
@@ -190,10 +272,16 @@ class CountyMediaController extends Controller
 
     public function deleteFlagVideo(string $slug)
     {
-        $this->authorizeCounty($slug);
-        $countyId = County::where('slug', $slug)->value('id');
-        $assets = MediaAsset::forSlot(County::class, $countyId, 'county_flag_video')->get();
-        foreach ($assets as $a) { if ($a->disk === 'r2') Storage::disk('r2')->delete($a->path); $a->derivatives()->delete(); $a->delete(); }
+        $county = $this->authorizeCounty($slug);
+        $assets = MediaAsset::forSlot(County::class, $county->id, 'county_flag_video')->get();
+        foreach ($assets as $a) {
+            if ($a->disk === 'r2') {
+                foreach ($a->derivatives as $d) { Storage::disk('r2')->delete($d->path); }
+                Storage::disk('r2')->delete($a->path);
+            }
+            $a->derivatives()->delete();
+            $a->delete();
+        }
         $this->syncCounty($county);
         return back()->with('success', 'County animated flag removed.');
     }
