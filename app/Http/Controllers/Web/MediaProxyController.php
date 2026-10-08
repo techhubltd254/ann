@@ -72,8 +72,20 @@ class MediaProxyController extends Controller
             $result = $client->getObject($args);
             $body   = $result['Body'];
         } catch (\Throwable $e) {
-            \Illuminate\Support\Facades\Log::error('media-proxy getObject failed', ['key' => $key, 'msg' => $e->getMessage()]);
-            abort(502, 'Media source unavailable');
+            // Streaming the SDK body is an optimisation only. If it is not
+            // available (no getClient(), SDK/credential quirk, or a body that
+            // cannot be read), hand the browser a short-lived signed R2 URL
+            // instead: R2 then serves the bytes itself, natively ranged.
+            \Illuminate\Support\Facades\Log::warning('media-proxy: falling back to signed R2 redirect', [
+                'key' => $key,
+                'msg' => $e->getMessage(),
+            ]);
+            try {
+                return redirect()->away($disk->temporaryUrl($key, now()->addHour()));
+            } catch (\Throwable $e2) {
+                \Illuminate\Support\Facades\Log::error('media-proxy: signed URL failed too', ['key' => $key, 'msg' => $e2->getMessage()]);
+                abort(502, 'Media source unavailable');
+            }
         }
 
         if ($partial) {
