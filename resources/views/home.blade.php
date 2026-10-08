@@ -7,7 +7,12 @@
 {{-- ═══ HERO — black film ground, frosted white glass plate ═══ --}}
 <header class="sx-hero" id="chapter-top">
   @if($heroVideo??null)
-    <div class="ed-bleed" data-depth><video muted playsinline loop autoplay data-preview aria-label="KICC published hero" @if($heroPoster??null) poster="{{ $heroPoster }}" @endif><source src="{{ $heroVideo }}"></video></div>
+    {{-- The published still sits under the film: if the film ever fails to
+         load, the viewer keeps a frame instead of a dead black box. --}}
+    <div class="ed-bleed" data-depth>
+      @if($heroPoster??null)<img class="sx-hero-still" src="{{ $heroPoster }}" alt="KICC">@endif
+      <video muted playsinline loop autoplay preload="auto" data-preview aria-label="KICC published hero" @if($heroPoster??null) poster="{{ $heroPoster }}" @endif><source src="{{ $heroVideo }}"></video>
+    </div>
   @elseif($heroPoster??null)
     <div class="ed-bleed"><img src="{{ $heroPoster }}" alt="KICC"></div>
   @endif
@@ -92,10 +97,15 @@
       @forelse($archive as $a)
         <article class="sx-slide" role="listitem">
           <div class="sx-slide-media">
+            {{-- preload="none": a 24-tile strip must not open 24 film requests
+                 at once; the existing observer plays a tile only once it is
+                 on screen. --}}
             @if($a['video'])
-              <video muted loop playsinline preload="metadata" data-preview @if($a['image']) poster="{{ $a['image'] }}" @endif><source src="{{ $a['video'] }}"></video>
+              <video muted loop playsinline preload="none" data-preview @if($a['image']) poster="{{ $a['image'] }}" @endif><source src="{{ $a['video'] }}"></video>
             @elseif($a['image'])
               <img src="{{ $a['image'] }}" alt="{{ $a['owner'] }}" loading="lazy">
+            @else
+              <div class="rb-fallback"><span>{{ strtoupper(substr($a['owner'],0,2)) }}</span></div>
             @endif
             <span class="sx-kind">{{ $a['kind'] }}</span>
           </div>

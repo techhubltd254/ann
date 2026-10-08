@@ -141,6 +141,59 @@ body.light-world *,
 }
 
 /* =====================================================================
+   1b · THE ui-* / w-* LAYER — the real ground source
+   approved-design.css:2783-2785 declares --ui-bg:#DCCEBA (cream) on
+   html[data-theme] and re-derives --w-cream / --light-bg / --dark-canvas /
+   --paper / --hairline from it, then paints html, body, #app and .footer with
+   `background:var(--ui-bg)!important`. Because html[data-theme] out-specifies
+   :root, the remap above cannot reach it — so it is re-pointed here, at equal
+   specificity and later in the cascade. This is why Chapter 01 was still cream.
+   ===================================================================== */
+html[data-theme],
+html[data-theme="light"],
+html[data-theme="dark"]{
+  --ui-bg:var(--s-white);
+  --ui-surface:var(--s-white-2);
+  --ui-raised:var(--s-white);
+  --ui-ink:var(--s-ink);
+  --ui-muted:var(--s-ink-muted);
+  --ui-accent:var(--s-red);
+  --ui-amber:var(--s-yellow-ink);
+  --ui-line:var(--s-hairline);
+  --ui-glass:var(--s-glass-2);
+  --ui-soft:var(--s-sand);
+  --ui-shadow:var(--s-shadow);
+  --ui-success:#1F6F3F;
+  --ui-danger:var(--s-red);
+  /* the re-derived family */
+  --text:var(--s-ink); --ink:var(--s-ink); --bone:var(--s-ink);
+  --text-muted:var(--s-ink-muted); --bone-dim:var(--s-ink-muted);
+  --w-cream:var(--s-white); --w-paper:var(--s-white-2); --paper:var(--s-white);
+  --light-bg:var(--s-white); --sand-alt:var(--s-sand);
+  --dark-canvas:var(--s-white); --surface:var(--s-white-2); --card:var(--s-glass-dark);
+  --hairline:var(--s-hairline); --hairline-soft:var(--s-hairline-soft);
+  --glass-bg:var(--s-glass); --glass-bg-soft:var(--s-sand);
+  --glass-border:var(--s-glass-line); --glass-shadow:var(--s-shadow);
+  --glass-edge:inset 0 1px 0 var(--s-glass-line);
+  --au-ink:var(--s-yellow-ink); --au-ink-deep:#6E5200;
+  --cr-ink:var(--s-red); --cr-ink-deep:var(--s-red-deep);
+  --green-ink:#1F6F3F;
+  --warm-canvas:var(--s-white); --warm-sand:var(--s-sand);
+  --aa-label:var(--s-yellow-ink); --aa-on-accent:var(--s-white);
+}
+/* ground repaints that carry !important in approved-design.css */
+html[data-theme],html[data-theme] body{background:var(--s-white)!important;color:var(--s-ink)}
+html[data-theme] #app{background:var(--s-white)!important;color:var(--s-ink)}
+html[data-theme] .footer.rb-footer,html[data-theme] .footer{
+  background:var(--s-black)!important;color:var(--s-on-dark)!important;
+}
+html[data-theme] #chapter-close,html[data-theme] #chapter-close>.wrap{
+  background:var(--s-black)!important;
+}
+html[data-theme] #app[data-route^="/marketplace/"],
+html[data-theme] #app[data-route^="/screens/"]{background:var(--s-white)!important;color:var(--s-ink)}
+
+/* =====================================================================
    2 · GROUNDS
    ===================================================================== */
 body,
@@ -279,20 +332,31 @@ header.nav{
   color:var(--s-red) !important;
   background:rgba(179,38,30,.04) !important;
 }
+/* ghost on a DARK ground only (plate chapters + the close band).
+   The hero's ghost button sits inside the light glass plate, so it must stay
+   ink-on-white — it is deliberately NOT in this list. */
 .ed-chapter.ed-plate .btn.ghost,
-.sx-hero .btn.ghost,
-.sx-close .btn.ghost,
-.sx-archive .btn.ghost{
+.sx-close .btn.ghost{
   border-color:var(--s-glass-dark-line) !important;
   color:var(--s-on-dark) !important;
   background:var(--s-glass-dark) !important;
   backdrop-filter:var(--s-blur);-webkit-backdrop-filter:var(--s-blur);
 }
 .ed-chapter.ed-plate .btn.ghost:hover,
-.sx-hero .btn.ghost:hover,
 .sx-close .btn.ghost:hover{
   border-color:var(--s-yellow) !important;
   color:var(--s-yellow) !important;
+}
+/* the hero plate is light glass: its controls are ink, not white */
+.sx-hero .sx-glass .btn.ghost{
+  border-color:var(--s-hairline) !important;
+  color:var(--s-ink) !important;
+  background:transparent !important;
+}
+.sx-hero .sx-glass .btn.ghost:hover{
+  border-color:var(--s-red) !important;
+  color:var(--s-red) !important;
+  background:rgba(179,38,30,.05) !important;
 }
 .pill,.tag,.badge,.chip{
   border-radius:80px;
@@ -315,6 +379,10 @@ a{color:inherit}
 .sx-hero{position:relative;min-height:100vh;display:flex;align-items:center;overflow:hidden}
 .sx-hero .ed-bleed{position:absolute;inset:0;z-index:0}
 .sx-hero .ed-bleed video,.sx-hero .ed-bleed img{width:100%;height:100%;object-fit:cover}
+/* the published still sits under the film so a failed film still shows a frame */
+.sx-hero .ed-bleed{position:absolute;inset:0;z-index:0}
+.sx-hero .sx-hero-still{position:absolute;inset:0;z-index:0}
+.sx-hero .ed-bleed video{position:relative;z-index:1}
 .sx-hero::after{
   content:"";position:absolute;inset:0;z-index:1;pointer-events:none;
   background:linear-gradient(180deg,rgba(11,11,11,.62) 0%,rgba(11,11,11,.40) 42%,rgba(11,11,11,.86) 100%);
@@ -464,6 +532,11 @@ a{color:inherit}
    9 · ARCHIVE INTERLUDE — glass strip on black
    ===================================================================== */
 .sx-archive{position:relative;padding:96px 0}
+/* the interlude sits on the black ground: its copy is light, its eyebrow yellow */
+.sx-archive h2,.sx-archive h3{color:var(--s-on-dark)}
+.sx-archive .ed-lead{color:var(--s-on-dark-muted)}
+.sx-archive .ed-figure{color:var(--s-yellow)}
+.sx-archive .ed-figure small{color:var(--s-on-dark-muted)}
 .sx-strip{
   display:grid;grid-auto-flow:column;grid-auto-columns:minmax(210px,1fr);
   gap:16px;overflow-x:auto;padding:6px 4px 22px;
