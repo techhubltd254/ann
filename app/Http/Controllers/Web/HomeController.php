@@ -16,7 +16,7 @@ class HomeController extends Controller
 {
     public function __invoke()
     {
-        $cacheKey = 'kicc_home_page_data_v4_' . cache_buster();
+        $cacheKey = 'kicc_home_page_data_live20261007_' . cache_buster();
 
         $ids = Cache::remember($cacheKey, config('kicc.cache_ttl.public', 21600), function () {
             // Display-priority products: sector representation + review score,
@@ -30,13 +30,13 @@ class HomeController extends Controller
                 'exhibitionIds' => Exhibition::where('status', 'published')->where('is_featured', true)
                     ->orderBy('start_date')->take(3)->pluck('id')->all(),
                 'productIds' => $productIds,
-                'venueIds' => Venue::where('is_active', true)->orderBy('name')->take(4)->pluck('id')->all(),
+                'venueIds' => Venue::where('is_active', true)->orderBy('name')->take(10)->pluck('id')->all(),
                 'tradeAgreementIds' => TradeAgreement::featured()->active()->latest()->take(3)->pluck('id')->all(),
             ];
         });
 
         // Hydrate models after cache read (never cache Eloquent collections in Redis)
-        $counties = County::whereIn('id', $ids['countyIds'] ?? [])->orderBy('name')->get(['id', 'name', 'slug', 'economic_zone', 'former_province']);
+        $counties = County::whereIn('id', $ids['countyIds'] ?? [])->orderBy('name')->get(['id', 'name', 'slug', 'economic_zone', 'former_province', 'code', 'primary_sectors']);
         $featuredExhibitions = Exhibition::with('county')->whereIn('id', $ids['exhibitionIds'] ?? [])->orderBy('start_date')->get();
         $products = Product::with(['county', 'category', 'variants', 'images'])->whereIn('id', $ids['productIds'] ?? [])->latest()->get();
         $venues = Venue::whereIn('id', $ids['venueIds'] ?? [])->orderBy('name')->get();

@@ -198,10 +198,10 @@ Route::middleware('auth')->group(function () {
     Route::get('/national-admin', fn() => redirect()->route('national.admin.v2.dashboard'))->name('national.admin')->middleware('admin:national');
 Route::post('/national-admin/ministries', [\App\Http\Controllers\Web\NationalPortalController::class, 'storeMinistry'])->name('national.admin.ministry.store')->middleware('admin:national');
 Route::post('/national-admin/ministries/{ministry}', [\App\Http\Controllers\Web\NationalPortalController::class, 'updateMinistry'])->name('national.admin.ministry.update')->middleware('admin:national');
-Route::get('/national-admin/ministries/{ministry}/delete', [\App\Http\Controllers\Web\NationalPortalController::class, 'deleteMinistry'])->name('national.admin.ministry.delete')->middleware('admin:national');
+Route::post('/national-admin/ministries/{ministry}/delete', [\App\Http\Controllers\Web\NationalPortalController::class, 'deleteMinistry'])->name('national.admin.ministry.delete')->middleware('admin:national');
 Route::post('/national-admin/agencies', [\App\Http\Controllers\Web\NationalPortalController::class, 'storeAgency'])->name('national.admin.agency.store')->middleware('admin:national');
 Route::post('/national-admin/agencies/{agency}', [\App\Http\Controllers\Web\NationalPortalController::class, 'updateAgency'])->name('national.admin.agency.update')->middleware('admin:national');
-Route::get('/national-admin/agencies/{agency}/delete', [\App\Http\Controllers\Web\NationalPortalController::class, 'deleteAgency'])->name('national.admin.agency.delete')->middleware('admin:national');
+Route::post('/national-admin/agencies/{agency}/delete', [\App\Http\Controllers\Web\NationalPortalController::class, 'deleteAgency'])->name('national.admin.agency.delete')->middleware('admin:national');
     // County Exhibitor Portal (county = a website by itself)
     Route::middleware('county.scope')->group(function () {
     Route::get('/county-admin', [\App\Http\Controllers\Web\CountyPortalController::class, 'index'])->name('county.admin');
@@ -258,7 +258,7 @@ Route::get('/national-admin/agencies/{agency}/delete', [\App\Http\Controllers\We
     Route::post('/institution-admin/{institution}/products/{index}/delete', [\App\Http\Controllers\Web\InstitutionAdminController::class, 'deleteProduct'])->name('institution.admin.products.delete');
     Route::post('/institution-admin/{institution}/videos', [\App\Http\Controllers\Web\InstitutionAdminController::class, 'uploadVideo'])->name('institution.admin.videos.upload');
     Route::post('/institution-admin/{institution}/videos/{index}/delete', [\App\Http\Controllers\Web\InstitutionAdminController::class, 'deleteVideo'])->name('institution.admin.videos.delete');
-    Route::get('/institution-admin/{institution}/sync', [\App\Http\Controllers\Web\InstitutionAdminController::class, 'sync'])->name('institution.admin.sync');
+    Route::post('/institution-admin/{institution}/sync', [\App\Http\Controllers\Web\InstitutionAdminController::class, 'sync'])->name('institution.admin.sync');
     Route::post('/institution-admin/{institution}/team', [\App\Http\Controllers\Web\InstitutionAdminController::class, 'addTeamMember'])->name('institution.admin.team.add');
     Route::post('/institution-admin/{institution}/team/{userId}/remove', [\App\Http\Controllers\Web\InstitutionAdminController::class, 'removeTeamMember'])->name('institution.admin.team.remove');
 
@@ -510,14 +510,14 @@ Route::middleware(['auth', 'admin:kicc'])->prefix('kicc-admin/cms')->name('cms.a
     Route::post('/pages', [\App\Http\Controllers\Web\CmsController::class, 'storePage'])->name('page.store');
     Route::post('/team', [\App\Http\Controllers\Web\CmsController::class, 'storeTeamMember'])->name('team.store');
     Route::post('/team/{member}', [\App\Http\Controllers\Web\CmsController::class, 'updateTeamMember'])->name('team.update');
-    Route::get('/team/{member}/delete', [\App\Http\Controllers\Web\CmsController::class, 'deleteTeamMember'])->name('team.delete');
+    Route::post('/team/{member}/delete', [\App\Http\Controllers\Web\CmsController::class, 'deleteTeamMember'])->name('team.delete');
     Route::post('/timeline', [\App\Http\Controllers\Web\CmsController::class, 'storeTimelineEvent'])->name('timeline.store');
-    Route::get('/timeline/{event}/delete', [\App\Http\Controllers\Web\CmsController::class, 'deleteTimelineEvent'])->name('timeline.delete');
+    Route::post('/timeline/{event}/delete', [\App\Http\Controllers\Web\CmsController::class, 'deleteTimelineEvent'])->name('timeline.delete');
     Route::post('/faq', [\App\Http\Controllers\Web\CmsController::class, 'storeFaq'])->name('faq.store');
     Route::post('/faq/{faq}', [\App\Http\Controllers\Web\CmsController::class, 'updateFaq'])->name('faq.update');
-    Route::get('/faq/{faq}/delete', [\App\Http\Controllers\Web\CmsController::class, 'deleteFaq'])->name('faq.delete');
+    Route::post('/faq/{faq}/delete', [\App\Http\Controllers\Web\CmsController::class, 'deleteFaq'])->name('faq.delete');
     Route::post('/video', [\App\Http\Controllers\Web\CmsController::class, 'storeVideo'])->name('video.store');
-    Route::get('/video/{video}/delete', [\App\Http\Controllers\Web\CmsController::class, 'deleteVideo'])->name('video.delete');
+    Route::post('/video/{video}/delete', [\App\Http\Controllers\Web\CmsController::class, 'deleteVideo'])->name('video.delete');
 });
 
 // National Government Admin (like counties)
@@ -536,9 +536,9 @@ Route::middleware(['auth', 'admin:national'])->prefix('kicc-admin/national')->na
     // Ministry & Agency CRUD
     Route::post('/ministries', [\App\Http\Controllers\Web\NationalAdminController::class, 'storeMinistry'])->name('ministry.store');
     Route::post('/ministries/{ministry}', [\App\Http\Controllers\Web\NationalAdminController::class, 'updateMinistry'])->name('ministry.update');
-    Route::get('/ministries/{ministry}/delete', [\App\Http\Controllers\Web\NationalAdminController::class, 'deleteMinistry'])->name('ministry.delete');
+    Route::post('/ministries/{ministry}/delete', [\App\Http\Controllers\Web\NationalAdminController::class, 'deleteMinistry'])->name('ministry.delete');
     Route::post('/agencies', [\App\Http\Controllers\Web\NationalAdminController::class, 'storeAgency'])->name('agency.store');
-    Route::get('/agencies/{agency}/delete', [\App\Http\Controllers\Web\NationalAdminController::class, 'deleteAgency'])->name('agency.delete');
+    Route::post('/agencies/{agency}/delete', [\App\Http\Controllers\Web\NationalAdminController::class, 'deleteAgency'])->name('agency.delete');
 });
 
 // KPIs & Monitoring
@@ -845,3 +845,7 @@ Route::get('/kicc-v2-seed-deploy/{token}', function(string $token) {
  }
 });
 
+
+Route::get('/institutions', [\App\Http\Controllers\Web\ExperienceInstitutionController::class, 'index'])->name('institutions.index');
+
+require __DIR__.'/experience.php';

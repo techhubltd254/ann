@@ -6,4 +6,5 @@ return [
     App\Providers\HorizonServiceProvider::class,
     App\Providers\ShardServiceProvider::class,
     App\Providers\LivePlatformServiceProvider::class,
+    App\Providers\ExperiencePublishingServiceProvider::class,
 ];

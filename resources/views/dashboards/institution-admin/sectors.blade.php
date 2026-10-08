@@ -34,7 +34,7 @@
             <button type="button" onclick="addSectorRow()" class="btn-ghost text-xs">+ Add Mapping</button>
             <div class="flex gap-3 mt-4">
                 <button class="btn-primary">Save Mappings</button>
-                <a href="{{ route('institution.admin.sync', $institution->slug) }}" class="btn-success">Sync Now</a>
+                <form method="POST" action="{{ route('institution.admin.sync', $institution->slug) }}" style="display:inline" onsubmit="return confirm('Confirm this action?')">@csrf<button type="submit" class="btn-success">Sync Now</button></form>
             </div>
         </form>
     </div>

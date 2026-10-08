@@ -125,7 +125,7 @@
 
                 <div class="mt-3">
                     @php
-                        $resolver = app(\App\Services\PipelineResolver::class);
+                        $resolver = app(\App\Services\PipelineRouter::class);
                         $prodPipeline = $resolver->forProduct($product);
                         $prodFeeRate = $resolver->feeRate($prodPipeline);
                         $prodIsLocked = \App\Models\Pipeline\PipelineLicence::where('pipeline_code', $prodPipeline)
@@ -189,7 +189,7 @@
         $prodPipeline = $router->forProduct($product);
         $prodMesh = $router->mesh($prodPipeline);
     @endphp
-    @if(count($prodMesh['upstream']) > 0 || count($prodMesh['downstream']) > 0)
+    @if(\Illuminate\Support\Facades\Route::has('pipelines.sector') && (count($prodMesh['upstream']) > 0 || count($prodMesh['downstream']) > 0))
     <div class="mt-8">
         @include('components.pipeline-mesh', ['mesh' => $prodMesh, 'pipelineCode' => $prodPipeline])
     </div>

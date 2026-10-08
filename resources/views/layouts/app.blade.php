@@ -412,6 +412,10 @@
         .shader-dark { background: #0a0a14; }
         .shader-dark .glass-card-dark { background: rgba(10,10,20,0.65); border: 1px solid rgba(255,255,255,0.08); }
     </style>
+    <link rel="stylesheet" href="/css/approved-design.css?v=kicc-live-20261007-r2">
+    <link rel="stylesheet" href="/css/rebuild.css?v=kicc-live-20261007-r2">
+    <link rel="stylesheet" href="/css/live-compat.css?v=kicc-live-20261007-r2">
+    <script>try{var m=localStorage.getItem('kicc.theme')||'system';document.documentElement.dataset.theme=m==='system'?(matchMedia('(prefers-color-scheme: dark)').matches?'dark':'light'):m}catch(e){document.documentElement.dataset.theme='light'}</script>
     @stack('styles')
 <script>
 document.addEventListener('DOMContentLoaded', function() {
@@ -458,7 +462,7 @@ document.addEventListener('DOMContentLoaded', function() {
     gtag('set', 'page_referrer', document.referrer);
 </script>
 </head>
-<body class="antialiased text-gray-900 bg-[#F9FAFB]">
+<body class="antialiased text-gray-900 bg-[#F9FAFB] live-compat">
     <a href="#main-content" class="skip-link" aria-label="Skip to main content">Skip to main content</a>
     <div id="kicc-3d-bg"></div>
     {{-- NAV --}}

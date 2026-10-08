@@ -3023,3 +3023,6 @@ html[data-theme] .tm-gallery :is(.tm-copy p,.tm-note){color:var(--ui-muted)!impo
 @media(min-width:1000px){.tm-tile:hover{transform:translateY(-4px)}}
 @media(max-width:760px){.tm-head{display:block}.tm-head .btn{margin-top:25px}.tm-tile,.tm-gallery[data-tm-table="products"] .tm-tile{flex-basis:91%}.tm-track{gap:16px}.tm-window{border-radius:22px}.tm-copy{display:block}.tm-price{margin-top:17px}.tm-copy h3{font-size:30px}.tm-head h2{font-size:clamp(32px,10vw,52px)!important}.tm-admin-record{grid-template-columns:1fr}.tm-admin-preview{max-width:260px}.tm-dialog{padding:22px}.tm-badge{top:13px;left:13px;font-size:9px}.tm-open-film{left:13px;bottom:13px}#chapter-makers .tm-tile:nth-child(even){margin-top:0}.tm-mode{max-width:170px;line-height:1.6;text-align:right}}
 @media(prefers-reduced-motion:reduce){.tm-track{scroll-behavior:auto!important}.tm-tile{transition:none;transform:none!important}#chapter-makers .tm-tile:nth-child(even){margin-top:0}}
+
+/* Force nav logo size */
+.nav .logo img, .rb-footer .logo img{max-height:28px;width:auto;max-width:120px}

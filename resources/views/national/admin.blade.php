@@ -42,7 +42,7 @@
                     </div>
                     <div class="flex gap-1">
                         <button onclick="this.nextElementSibling.classList.toggle('hidden')" class="text-xs px-2 py-1 rounded border border-white/10 text-zinc-400 hover:text-white">Edit</button>
-                        <a href="{{ route('national.admin.v2.ministry.delete', $m->id) }}" class="text-xs px-2 py-1 rounded border border-red-500/30 text-red-400 hover:bg-red-500/10" onclick="return confirm('Delete?')">×</a>
+                        <form method="POST" action="{{ route('national.admin.v2.ministry.delete', $m->id) }}" style="display:inline" onsubmit="return confirm('Confirm this action?')">@csrf<button type="submit" class="text-xs px-2 py-1 rounded border border-red-500/30 text-red-400 hover:bg-red-500/10">×</button></form>
                     </div>
                 </div>
                 @if($m->description)<p class="text-xs text-zinc-500 mt-2">{{ Str::limit($m->description, 120) }}</p>@endif
@@ -73,7 +73,7 @@
             @foreach($agencies as $a)
             <div class="flex items-center justify-between border border-white/10 rounded-xl p-3">
                 <div><span class="font-semibold text-white text-sm">{{ $a->name }}</span><div class="text-xs text-zinc-500">{{ $a->ministry?->name }}</div></div>
-                <a href="{{ route('national.admin.v2.agency.delete', $a->id) }}" class="text-xs px-2 py-1 rounded border border-red-500/30 text-red-400 hover:bg-red-500/10" onclick="return confirm('Delete?')">×</a>
+                <form method="POST" action="{{ route('national.admin.v2.agency.delete', $a->id) }}" style="display:inline" onsubmit="return confirm('Confirm this action?')">@csrf<button type="submit" class="text-xs px-2 py-1 rounded border border-red-500/30 text-red-400 hover:bg-red-500/10">×</button></form>
             </div>
             @endforeach
         </div>
