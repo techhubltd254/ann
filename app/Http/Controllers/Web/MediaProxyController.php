@@ -101,3 +101,4 @@ class MediaProxyController extends Controller
             }
         }, $status, $headers);
     }
+}
