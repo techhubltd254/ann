@@ -120,3 +120,43 @@ body.light-world{background:var(--light-bg);color:#17150F}
 .gk-danger{border:1px solid var(--kicc-red);background:rgba(122,30,30,.14);color:var(--ui-ink);
   padding:12px 16px;border-radius:12px}
 @media(max-width:760px){.gk-mgrid{grid-template-columns:1fr}}
+
+/* =====================================================================
+   Legacy-token override layer  (appended 2026-10-08)
+   approved-design.css still defines the retired ochre/gold system
+   (--kicc-gold:#fbbf24, rgba(224,162,43,…) glows). This block re-points
+   every legacy token and hard-coded gold affordance at the brown/deep-red
+   palette so the glass skin wins without touching page logic or layout.
+   ===================================================================== */
+:root,
+html[data-theme],
+html[data-theme="dark"],
+html[data-theme="light"]{
+  --kicc-gold:#6B4A2F;          /* retired yellow → brown */
+  --gold-soft:#8A6440;
+  --ochre-deep:#573A24;
+  --kicc-red:#7A1E1E;           /* deep red */
+  --kicc-red-hover:#5E1616;
+  --shadow-gold:0 0 60px rgba(107,74,47,.30);
+}
+/* gold buttons / pills / toggles → brown, white text */
+.btn.gold,
+a.btn.gold,
+button.btn.gold{
+  background:var(--kicc-gold) !important;
+  border-color:var(--kicc-gold) !important;
+  color:#FFF7F2 !important;
+  box-shadow:0 10px 30px rgba(87,58,36,.35) !important;
+}
+.btn.gold:hover,a.btn.gold:hover,button.btn.gold:hover{
+  background:var(--ochre-deep) !important;border-color:var(--ochre-deep) !important;
+}
+.pill.active,.pager button.on,.toggle-group button.on,.seg button.on{
+  background:var(--kicc-gold) !important;color:#FFF7F2 !important;border-color:var(--kicc-gold) !important;
+}
+/* hard-coded ochre literals in approved-design.css */
+.media-tile .play-fab{background:rgba(107,74,47,.94) !important;color:#FFF7F2 !important}
+.hologram{background:radial-gradient(circle at 50% 45%, rgba(107,74,47,.35), transparent 60%) !important}
+::selection{background:var(--kicc-red) !important;color:#FFF7F2 !important}
+/* deep-red accents */
+.tag,.badge.red,.chip.red{background:var(--kicc-red) !important;color:#FFF7F2 !important}
