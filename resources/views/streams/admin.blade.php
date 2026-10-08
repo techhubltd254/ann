@@ -8,7 +8,7 @@
             <h1 class="text-3xl font-black text-gray-900">Manage Live Events</h1>
             <p class="text-gray-400 text-sm mt-1">Create, start, end, and manage live streams for events and exhibitions.</p>
         </div>
-        <a href="{{ route('streams.create') }}" class="inline-flex items-center gap-2 font-bold text-sm h-11 px-5 rounded-xl bg-[#901C1E] text-white hover:bg-[#7b1618]">Start a Stream</a>
+        <a href="{{ route('streams.create') }}" class="inline-flex items-center gap-2 font-bold text-sm h-11 px-5 rounded-xl bg-[#b3261e] text-white hover:bg-[#7b1618]">Start a Stream</a>
     </div>
 
     {{-- Stats bar --}}

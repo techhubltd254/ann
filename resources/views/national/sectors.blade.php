@@ -16,7 +16,7 @@
         @foreach($sectors as $s)
         <a href="{{ route('national.sector.show', $s['slug']) }}"
            class="group bg-white border border-gray-200 hover:border-kicc-gold/40 rounded-2xl overflow-hidden transition-all block card-hover">
-            <div class="aspect-[4/3] bg-gradient-to-br from-[#0A1024] to-[#1a1a2e] flex items-center justify-center relative overflow-hidden">
+            <div class="aspect-[4/3] bg-gradient-to-br from-[#0b0b0b] to-[#1a1a2e] flex items-center justify-center relative overflow-hidden">
                 <div class="absolute inset-0 bg-gradient-to-t from-black/60 via-black/10 to-black/30 pointer-events-none"></div>
                 @if($s['emoji'])
                 <span class="text-5xl relative z-10">{{ $s['emoji'] }}</span>

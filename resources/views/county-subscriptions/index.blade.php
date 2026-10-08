@@ -15,10 +15,10 @@
     {{-- Overview cards --}}
     <div class="grid grid-cols-2 lg:grid-cols-4 gap-4 mb-10">
         @foreach([
-            ['Available Slots', $allocation->sum('availableSlots'), 'of ' . $allocation->sum('total_slots') . ' total', '#1890D7'],
-            ['Active Subscribers', $subscribers->where('status', 'active')->count(), 'businesses in your county', '#901C1E'],
+            ['Available Slots', $allocation->sum('availableSlots'), 'of ' . $allocation->sum('total_slots') . ' total', '#2a2a2a'],
+            ['Active Subscribers', $subscribers->where('status', 'active')->count(), 'businesses in your county', '#b3261e'],
             ['Revenue Share', $config->revenue_share_pct . '%', 'to ' . $county->name, '#FFCD05'],
-            ['Wallet Balance', 'KES ' . number_format($config->wallet_balance), 'lifetime: KES ' . number_format($config->lifetime_earnings ?? 0), '#11820B'],
+            ['Wallet Balance', 'KES ' . number_format($config->wallet_balance), 'lifetime: KES ' . number_format($config->lifetime_earnings ?? 0), '#2a2a2a'],
         ] as $i => $c)
         <div class="bg-white border border-gray-200 rounded-2xl p-5 card-hover" data-tilt="6" data-reveal data-reveal-delay="{{ $i * 70 }}">
             <div class="tilt-glare"></div>

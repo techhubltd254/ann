@@ -2,7 +2,7 @@
     'boothId' => 'booth-3d-' . uniqid(),
     'width' => '100%',
     'height' => '400px',
-    'backgroundColor' => '#0B1E57',
+    'backgroundColor' => '#0b0b0b',
 ])
 
 <div class="relative overflow-hidden rounded-xl" style="width: {{ $width }}; height: {{ $height }}; background: {{ $backgroundColor }}"

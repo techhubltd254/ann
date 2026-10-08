@@ -9,7 +9,7 @@
 
 @php
     $src = app(\App\Services\MediaFallbackResolver::class)->resolve($entity, $size);
-    $fallback = 'data:image/svg+xml;base64,' . base64_encode('<svg xmlns="http://www.w3.org/2000/svg" width="800" height="600"><rect width="800" height="600" fill="#0B1E57"/><text x="400" y="300" text-anchor="middle" font-family="sans-serif" font-size="40" font-weight="bold" fill="white">' . e($alt ?: 'KICC') . '</text></svg>');
+    $fallback = 'data:image/svg+xml;base64,' . base64_encode('<svg xmlns="http://www.w3.org/2000/svg" width="800" height="600"><rect width="800" height="600" fill="#0b0b0b"/><text x="400" y="300" text-anchor="middle" font-family="sans-serif" font-size="40" font-weight="bold" fill="white">' . e($alt ?: 'KICC') . '</text></svg>');
 @endphp
 
 <x-fast-image

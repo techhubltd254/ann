@@ -18,7 +18,7 @@
                     <p class="text-[#5A6480] mt-2 text-sm max-w-xl">Every image, video and 3D model on the platform lives here. Upload once, then choose which cinematic pipeline to run — or attach straight to a page.</p>
                 </div>
                 <div class="flex gap-2 shrink-0">
-                    <a href="{{ route('media.upload') }}" data-magnetic class="inline-flex items-center justify-center gap-2 font-bold tracking-wide transition-all duration-200 px-6 text-sm h-12 rounded-xl bg-[#901C1E] text-white hover:bg-[#7b1618] active:scale-[0.97]">
+                    <a href="{{ route('media.upload') }}" data-magnetic class="inline-flex items-center justify-center gap-2 font-bold tracking-wide transition-all duration-200 px-6 text-sm h-12 rounded-xl bg-[#b3261e] text-white hover:bg-[#7b1618] active:scale-[0.97]">
                         <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M7 16a4 4 0 01-.88-7.903A5 5 0 1115.9 6L16 6a5 5 0 011 9.9M15 13l-3-3m0 0l-3 3m3-3v12"/></svg>
                         Upload Media
                     </a>
@@ -35,7 +35,7 @@
                 ['l' => 'Images', 'v' => $counts['image'], 'c' => 'text-sky-600'],
                 ['l' => 'Videos', 'v' => $counts['video'], 'c' => 'text-kicc-gold'],
                 ['l' => '3D Models', 'v' => $counts['model'], 'c' => 'text-emerald-600'],
-                ['l' => 'Processing', 'v' => $counts['processing'], 'c' => 'text-[#901C1E]'],
+                ['l' => 'Processing', 'v' => $counts['processing'], 'c' => 'text-[#b3261e]'],
             ]; @endphp
             @foreach($chips as $i => $chip)
             <div class="bg-white border border-gray-200 rounded-2xl p-4 card-hover" data-reveal data-reveal-delay="{{ $i * 50 }}">
@@ -91,7 +91,7 @@
                     <div class="font-bold text-gray-900 text-xs truncate">{{ $asset->original_name }}</div>
                     <div class="flex items-center justify-between mt-2">
                         <span class="text-[10px] font-bold uppercase tracking-widest 
-                            {{ $asset->status === 'ready' ? 'text-emerald-600' : ($asset->status === 'processing' ? 'text-kicc-gold' : ($asset->status === 'failed' ? 'text-[#901C1E]' : 'text-gray-400')) }}">
+                            {{ $asset->status === 'ready' ? 'text-emerald-600' : ($asset->status === 'processing' ? 'text-kicc-gold' : ($asset->status === 'failed' ? 'text-[#b3261e]' : 'text-gray-400')) }}">
                             {{ ucfirst($asset->status) }}
                         </span>
                         <span class="text-[10px] text-gray-400">{{ round($asset->size_bytes / 1024) }} KB</span>
@@ -99,7 +99,7 @@
                     @php $latestJob = $asset->pipelineJobs->first(); @endphp
                     @if($latestJob && $latestJob->status === 'running')
                     <div class="mt-2 h-1 bg-gray-100 rounded-full overflow-hidden">
-                        <div class="h-full bg-gradient-to-r from-kicc-gold to-[#901C1E] transition-all" style="width: {{ $latestJob->progress }}%"></div>
+                        <div class="h-full bg-gradient-to-r from-kicc-gold to-[#b3261e] transition-all" style="width: {{ $latestJob->progress }}%"></div>
                     </div>
                     @endif
                 </div>
@@ -112,7 +112,7 @@
             <div class="text-5xl mb-4"></div>
             <h3 class="text-lg font-black text-gray-900 mb-1">No media yet</h3>
             <p class="text-[#5A6480] text-sm mb-5">Upload your first image to start the cinematic pipeline.</p>
-            <a href="{{ route('media.upload') }}" class="inline-flex items-center justify-center gap-2 font-bold tracking-wide transition-all duration-200 px-6 h-12 rounded-xl bg-[#901C1E] text-white hover:bg-[#7b1618]">Upload Media</a>
+            <a href="{{ route('media.upload') }}" class="inline-flex items-center justify-center gap-2 font-bold tracking-wide transition-all duration-200 px-6 h-12 rounded-xl bg-[#b3261e] text-white hover:bg-[#7b1618]">Upload Media</a>
         </div>
         @endif
     </div>

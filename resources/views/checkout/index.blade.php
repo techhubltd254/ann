@@ -70,7 +70,7 @@
             @endif
 
             <button type="submit" data-magnetic
-                    class="w-full inline-flex items-center justify-center gap-2 font-bold tracking-wide transition-all duration-200 mt-6 px-8 text-base h-14 rounded-xl bg-[#901C1E] text-white hover:bg-[#7b1618] active:scale-[0.97]">Place Order</button>
+                    class="w-full inline-flex items-center justify-center gap-2 font-bold tracking-wide transition-all duration-200 mt-6 px-8 text-base h-14 rounded-xl bg-[#b3261e] text-white hover:bg-[#7b1618] active:scale-[0.97]">Place Order</button>
         </form>
 
         <div class="lg:col-span-2 space-y-5">

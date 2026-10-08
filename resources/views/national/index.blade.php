@@ -6,7 +6,7 @@
 @section('content')
 <div class="pt-20">
     {{-- Hero --}}
-    <div class="bg-[#0A1024] text-white">
+    <div class="bg-[#0b0b0b] text-white">
         <div class="max-w-7xl mx-auto px-5 py-14 md:py-20">
             <div class="flex items-center gap-3 mb-6">
                 <img src="{{ media('kicc/kicc-logo.png') }}" alt="KICC" class="h-9 w-auto" style="filter: brightness(0) invert(1);">
@@ -40,7 +40,7 @@
         @else
         <div class="grid sm:grid-cols-2 lg:grid-cols-3 gap-5">
             @foreach($ministries as $m)
-            @php $color = $m->color ?: '#901C1E'; @endphp
+            @php $color = $m->color ?: '#b3261e'; @endphp
             <a href="{{ route('national.site', $m->slug) }}"
                class="group bg-white border border-gray-200 rounded-2xl overflow-hidden hover:shadow-lg hover:-translate-y-0.5 transition-all block">
                 <div class="h-2" style="background: {{ $color }}"></div>
@@ -55,7 +55,7 @@
                             @endif
                         </div>
                         <div class="min-w-0">
-                            <h2 class="font-bold text-gray-900 text-sm leading-snug group-hover:text-[#901C1E] transition-colors">{{ $m->name }}</h2>
+                            <h2 class="font-bold text-gray-900 text-sm leading-snug group-hover:text-[#b3261e] transition-colors">{{ $m->name }}</h2>
                             <div class="text-xs text-gray-400 mt-1">
                                 {{ $m->agencies_count }} {{ Str::plural('agency', $m->agencies_count) }}
                             </div>
@@ -65,8 +65,8 @@
                     <p class="text-xs text-gray-500 leading-relaxed mt-3 line-clamp-2">{{ $m->description }}</p>
                     @endif
                     <div class="flex items-center justify-between mt-4 pt-3 border-t border-gray-100">
-                        <span class="text-xs font-bold text-[#901C1E] group-hover:underline">Visit pavilion</span>
-                        <span class="text-gray-300 group-hover:text-[#901C1E] group-hover:translate-x-0.5 transition-all">&rarr;</span>
+                        <span class="text-xs font-bold text-[#b3261e] group-hover:underline">Visit pavilion</span>
+                        <span class="text-gray-300 group-hover:text-[#b3261e] group-hover:translate-x-0.5 transition-all">&rarr;</span>
                     </div>
                 </div>
             </a>
@@ -78,8 +78,8 @@
         @if(($sectorGroups ?? collect())->isNotEmpty())
         <div class="mt-16">
             <div class="flex items-center gap-3 mb-3">
-                <span class="h-px w-8 bg-[#11820B]"></span>
-                <span class="text-[#11820B] text-xs font-bold tracking-[0.2em] uppercase">Economic Sectors</span>
+                <span class="h-px w-8 bg-[#2a2a2a]"></span>
+                <span class="text-[#2a2a2a] text-xs font-bold tracking-[0.2em] uppercase">Economic Sectors</span>
                 <span class="h-px flex-1 bg-gray-200"></span>
             </div>
             <p class="text-sm text-gray-500 mb-8 max-w-2xl">Every county department across the 47 counties, organized into its major national group. <a href="{{ route('national.sectors') }}" class="text-kicc-gold hover:underline font-medium">View all sectors →</a></p>
@@ -88,7 +88,7 @@
                 @foreach($sectorGroups as $g)
                 <section id="group-{{ $g['key'] }}" class="scroll-mt-24">
                     <div class="flex items-center gap-3 mb-4">
-                        <div class="w-10 h-10 rounded-xl bg-[#11820B]/10 flex items-center justify-center text-xl">{{ $g['icon'] }}</div>
+                        <div class="w-10 h-10 rounded-xl bg-[#2a2a2a]/10 flex items-center justify-center text-xl">{{ $g['icon'] }}</div>
                         <div>
                             <h2 class="font-bold text-gray-900">{{ $g['name'] }}</h2>
                             <div class="text-xs text-gray-400">{{ $g['sectors']->count() }} county {{ Str::plural('department', $g['sectors']->count()) }}</div>
@@ -96,7 +96,7 @@
                     </div>
                     <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-3">
                         @foreach($g['sectors'] as $s)
-                        <a href="{{ route('national.sector.show', $s->slug) }}" class="bg-gray-50 border border-gray-100 rounded-xl px-4 py-3 text-sm text-gray-700 font-medium hover:border-[#11820B]/30 hover:bg-white transition-all block">
+                        <a href="{{ route('national.sector.show', $s->slug) }}" class="bg-gray-50 border border-gray-100 rounded-xl px-4 py-3 text-sm text-gray-700 font-medium hover:border-[#2a2a2a]/30 hover:bg-white transition-all block">
                             {{ $s->name }}
                         </a>
                         @endforeach
@@ -113,19 +113,19 @@
                 <div>
                     <div class="text-[10px] font-bold uppercase tracking-widest text-gray-400 mb-1">Explore</div>
                     <div class="font-bold text-gray-900">47 County Websites</div>
-                </div><span class="text-gray-300 text-xl group-hover:text-[#901C1E] transition-colors">&nearr;</span>
+                </div><span class="text-gray-300 text-xl group-hover:text-[#b3261e] transition-colors">&nearr;</span>
             </a>
             <a href="{{ route('exhibitions.index') }}" class="bg-white border border-gray-200 rounded-2xl p-6 hover:shadow-md transition-all flex items-center justify-between group">
                 <div>
                     <div class="text-[10px] font-bold uppercase tracking-widest text-gray-400 mb-1">Showcasing at</div>
                     <div class="font-bold text-gray-900">KICC Exhibitions</div>
-                </div><span class="text-gray-300 text-xl group-hover:text-[#901C1E] transition-colors">&nearr;</span>
+                </div><span class="text-gray-300 text-xl group-hover:text-[#b3261e] transition-colors">&nearr;</span>
             </a>
             <a href="{{ route('marketplace.index') }}" class="bg-white border border-gray-200 rounded-2xl p-6 hover:shadow-md transition-all flex items-center justify-between group">
                 <div>
                     <div class="text-[10px] font-bold uppercase tracking-widest text-gray-400 mb-1">Trade on</div>
                     <div class="font-bold text-gray-900">National Marketplace</div>
-                </div><span class="text-gray-300 text-xl group-hover:text-[#901C1E] transition-colors">&nearr;</span>
+                </div><span class="text-gray-300 text-xl group-hover:text-[#b3261e] transition-colors">&nearr;</span>
             </a>
         </div>
     </div>

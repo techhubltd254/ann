@@ -13,7 +13,7 @@
         <div class="flex gap-1.5 overflow-x-auto pb-1 flex-wrap sm:flex-nowrap" id="kicc-region-buttons">
             @foreach($regions as $i => $r)
             <button data-region="{{ $r }}"
-                class="shrink-0 px-3 py-1.5 rounded-lg text-[11px] font-bold transition-all cursor-pointer {{ $i === 0 ? 'bg-[#901C1E] text-white' : 'bg-white text-[#5A6480] border border-gray-200 hover:border-[#901C1E]/30' }}">{{ $r }}</button>
+                class="shrink-0 px-3 py-1.5 rounded-lg text-[11px] font-bold transition-all cursor-pointer {{ $i === 0 ? 'bg-[#b3261e] text-white' : 'bg-white text-[#5A6480] border border-gray-200 hover:border-[#b3261e]/30' }}">{{ $r }}</button>
             @endforeach
         </div>
     </div>
@@ -44,7 +44,7 @@
                          <source src="{{ $v }}" type="video/mp4">
                      </video>
                      @endif
-                     <div class="absolute inset-0 bg-gradient-to-br from-[#0A1024] to-[#1a1a2e]"></div>
+                     <div class="absolute inset-0 bg-gradient-to-br from-[#0b0b0b] to-[#1a1a2e]"></div>
                      <div class="absolute inset-0 bg-gradient-to-t from-black/70 via-black/20 to-transparent"></div>
                     <div class="absolute inset-x-0 bottom-0 p-4">
                         <div class="text-white font-black text-base leading-tight">{{ $c->name }}</div>
@@ -176,7 +176,7 @@
             regionButtons.forEach(function(b) {
                 var isActive = b === btn;
                 b.className = 'shrink-0 px-3 py-1.5 rounded-lg text-[11px] font-bold transition-all cursor-pointer ' +
-                    (isActive ? 'bg-[#901C1E] text-white' : 'bg-white text-[#5A6480] border border-gray-200 hover:border-[#901C1E]/30');
+                    (isActive ? 'bg-[#b3261e] text-white' : 'bg-white text-[#5A6480] border border-gray-200 hover:border-[#b3261e]/30');
             });
             filterCounties();
         });

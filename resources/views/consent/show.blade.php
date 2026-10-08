@@ -90,7 +90,7 @@
             <p>@lang('Kenya Data Protection Act 2019 §30(a) — Consent. Biometric data (photographs, video) is processed under §44 (sensitive data). GDPR Art. 6(1)(a), Art. 9(2)(a). Data Controller: Kenyatta International Convention Centre, P.O. Box 30746-00100, Nairobi. DPO: dpo@kicc.go.ke')</p>
         </div>
 
-        <button type="submit" class="w-full bg-[#901C1E] text-white py-3.5 rounded-xl font-bold text-sm hover:bg-[#7b1618] transition-all active:scale-[0.98]">
+        <button type="submit" class="w-full bg-[#b3261e] text-white py-3.5 rounded-xl font-bold text-sm hover:bg-[#7b1618] transition-all active:scale-[0.98]">
             {{ $form->language === 'sw' ? 'Saini Idhini' : 'Sign Consent' }}
         </button>
 

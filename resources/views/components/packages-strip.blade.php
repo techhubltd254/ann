@@ -3,7 +3,7 @@
     $stripPlans = \App\Models\SubscriptionPlan::where('is_active', true)->orderBy('sort_order')->get();
 @endphp
 @if($stripPlans->isNotEmpty())
-<div class="bg-[#1890D7] rounded-2xl overflow-hidden">
+<div class="bg-[#2a2a2a] rounded-2xl overflow-hidden">
     <div class="px-6 pt-6 pb-2 flex items-center justify-between">
         <div class="flex items-center gap-3">
             <img src="{{ media('kicc/kicc-logo.png') }}" alt="KICC" class="h-6 w-auto">
@@ -13,7 +13,7 @@
     </div>
     <div class="grid sm:grid-cols-2 lg:grid-cols-4 gap-px bg-gray-100 mt-4">
         @foreach($stripPlans as $p)
-        <a href="{{ route('packages.index') }}" class="bg-[#1890D7] p-5 hover:bg-[#12276b] transition-colors group">
+        <a href="{{ route('packages.index') }}" class="bg-[#2a2a2a] p-5 hover:bg-[#12276b] transition-colors group">
             <div class="text-[10px] font-bold uppercase tracking-widest {{ $p->slug === 'exhibitor-pro' ? 'text-[#FFCD05]' : 'text-gray-400' }} mb-1">{{ $p->name }}</div>
             <div class="text-gray-900 font-black">KES {{ number_format($p->price) }}<span class="text-[10px] font-medium text-gray-400">/mo</span></div>
             <div class="text-[10px] text-gray-400 mt-1 group-hover:text-gray-500 transition-colors">{{ $p->max_booths >= 999 ? 'Unlimited' : $p->max_booths }} booth{{ $p->max_booths > 1 ? 's' : '' }} &nearr;</div>

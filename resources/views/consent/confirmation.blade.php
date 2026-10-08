@@ -30,7 +30,7 @@
 
     <div class="flex gap-4 justify-center">
         <a href="{{ route('consent.verify', ['reference' => $record->id]) }}" class="bg-gray-100 text-gray-700 px-6 py-3 rounded-xl font-bold text-sm hover:bg-gray-200">@lang('Verify This Consent')</a>
-        <a href="/" class="bg-[#0B1E57] text-white px-6 py-3 rounded-xl font-bold text-sm hover:bg-[#0D2A7A]">@lang('Continue to Site')</a>
+        <a href="/" class="bg-[#0b0b0b] text-white px-6 py-3 rounded-xl font-bold text-sm hover:bg-[#0D2A7A]">@lang('Continue to Site')</a>
     </div>
 </div>
 @endsection

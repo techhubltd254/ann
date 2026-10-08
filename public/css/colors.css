@@ -1,16 +1,16 @@
 @charset "UTF-8";
 /* KICC colors.css — brand palette tokens (served as static CSS to avoid MIME errors) */
 :root {
-    --kicc-navy: #0B1E57;
+    --kicc-navy: #0b0b0b;
     --kicc-navy-light: #1a3070;
-    --kicc-red: #901C1E;
+    --kicc-red: #b3261e;
     --kicc-red-light: #b71c1c;
     --kicc-crimson: #A6192E;
     --kicc-crimson-dark: #7A1122;
     --kicc-gold: #FFCD05;
     --kicc-gold-soft: #FFD966;
     --kicc-gold-light: #ffe44d;
-    --kicc-dark: #0A1024;
+    --kicc-dark: #0b0b0b;
     --kicc-ivory: #FAF7F2;
     --kicc-text: #5A6480;
     --kicc-text-light: #8a94a6;

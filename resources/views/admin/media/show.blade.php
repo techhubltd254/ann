@@ -82,15 +82,15 @@
                             <div class="flex-1">
                                 <div class="flex items-center gap-2">
                                     <span class="text-xs font-black text-gray-900">{{ $job->engine }}</span>
-                                    <span class="text-[10px] font-bold uppercase tracking-widest px-2 py-0.5 rounded-full {{ $job->status === 'completed' ? 'bg-emerald-50 text-emerald-600' : ($job->status === 'failed' ? 'bg-red-50 text-[#901C1E]' : 'bg-kicc-gold/15 text-kicc-gold') }}">{{ $job->status }}</span>
+                                    <span class="text-[10px] font-bold uppercase tracking-widest px-2 py-0.5 rounded-full {{ $job->status === 'completed' ? 'bg-emerald-50 text-emerald-600' : ($job->status === 'failed' ? 'bg-red-50 text-[#b3261e]' : 'bg-kicc-gold/15 text-kicc-gold') }}">{{ $job->status }}</span>
                                 </div>
                                 <div class="text-[10px] text-gray-400 mt-1">{{ $job->pipeline }} · {{ $job->created_at->diffForHumans() }}</div>
                                 <div class="mt-2 h-1.5 bg-gray-100 rounded-full overflow-hidden">
-                                    <div class="h-full bg-gradient-to-r from-kicc-gold to-[#901C1E] transition-all" data-job-progress style="width: {{ $job->progress }}%"></div>
+                                    <div class="h-full bg-gradient-to-r from-kicc-gold to-[#b3261e] transition-all" data-job-progress style="width: {{ $job->progress }}%"></div>
                                 </div>
                                 <div class="text-[10px] text-gray-400 mt-1" data-job-stage>{{ $job->stage ?? '' }}</div>
                                 @if($job->error)
-                                <div class="mt-2 text-[11px] text-[#901C1E] bg-red-50 border border-red-100 rounded-lg px-3 py-2">{{ $job->error }}</div>
+                                <div class="mt-2 text-[11px] text-[#b3261e] bg-red-50 border border-red-100 rounded-lg px-3 py-2">{{ $job->error }}</div>
                                 @endif
                             </div>
                             <div class="flex flex-col items-end gap-1 shrink-0 ml-3">
@@ -98,7 +98,7 @@
                                 @if(in_array($job->status, ['queued', 'running']))
                                 <form method="POST" action="{{ route('media.job.cancel', $job) }}">
                                     @csrf
-                                    <button type="submit" class="text-[10px] font-bold text-[#5A6480] hover:text-[#901C1E] transition-colors">Cancel</button>
+                                    <button type="submit" class="text-[10px] font-bold text-[#5A6480] hover:text-[#b3261e] transition-colors">Cancel</button>
                                 </form>
                                 @endif
                             </div>
@@ -119,7 +119,7 @@
                         <template x-if="true">
                             <div class="flex items-center gap-2 flex-1">
                                 <div class="w-7 h-7 rounded-full flex items-center justify-center text-[10px] font-black transition-all"
-                                     :class="step >= {{ $i }} ? 'bg-[#901C1E] text-white' : 'bg-gray-100 text-gray-400'">
+                                     :class="step >= {{ $i }} ? 'bg-[#b3261e] text-white' : 'bg-gray-100 text-gray-400'">
                                     <span x-show="step > {{ $i }}"></span>
                                     <span x-show="step <= {{ $i }}">{{ $i + 1 }}</span>
                                 </div>
@@ -142,7 +142,7 @@
                                 <label class="block">
                                     <input type="radio" value="cinematic_video" x-model="pipeline" class="sr-only">
                                     <div class="flex items-center gap-3 p-4 rounded-xl border-2 cursor-pointer transition-all"
-                                         :class="pipeline === 'cinematic_video' ? 'border-[#901C1E] bg-[#901C1E]/5' : 'border-gray-200 hover:border-gray-300'">
+                                         :class="pipeline === 'cinematic_video' ? 'border-[#b3261e] bg-[#b3261e]/5' : 'border-gray-200 hover:border-gray-300'">
                                         <div class="w-10 h-10 rounded-xl flex items-center justify-center text-lg bg-kicc-gold/15 shrink-0"></div>
                                         <div>
                                             <div class="font-bold text-gray-900 text-sm">Cinematic Video</div>
@@ -153,7 +153,7 @@
                                 <label class="block">
                                     <input type="radio" value="image_to_3d" x-model="pipeline" class="sr-only">
                                     <div class="flex items-center gap-3 p-4 rounded-xl border-2 cursor-pointer transition-all"
-                                         :class="pipeline === 'image_to_3d' ? 'border-[#901C1E] bg-[#901C1E]/5' : 'border-gray-200 hover:border-gray-300'">
+                                         :class="pipeline === 'image_to_3d' ? 'border-[#b3261e] bg-[#b3261e]/5' : 'border-gray-200 hover:border-gray-300'">
                                         <div class="w-10 h-10 rounded-xl flex items-center justify-center text-lg bg-emerald-500/15 shrink-0"></div>
                                         <div>
                                             <div class="font-bold text-gray-900 text-sm">3D Model (.glb)</div>
@@ -162,7 +162,7 @@
                                     </div>
                                 </label>
                             </div>
-                            <button type="button" @click="next()" class="mt-5 w-full inline-flex items-center justify-center gap-2 font-bold tracking-wide transition-all duration-200 px-6 h-12 rounded-xl bg-[#901C1E] text-white hover:bg-[#7b1618]" data-magnetic>Continue</button>
+                            <button type="button" @click="next()" class="mt-5 w-full inline-flex items-center justify-center gap-2 font-bold tracking-wide transition-all duration-200 px-6 h-12 rounded-xl bg-[#b3261e] text-white hover:bg-[#7b1618]" data-magnetic>Continue</button>
                         </div>
 
                         {{-- Step 2: Choose engine (recommended first — Hick's Law) --}}
@@ -175,14 +175,14 @@
                                 <label class="block" x-show="pipeline === '{{ $e['pipeline'][0] ?? '' }}'">
                                     <input type="radio" :value="'{{ $e['key'] }}'" x-model="engine" value="{{ $e['key'] }}" class="sr-only">
                                     <div class="p-4 rounded-xl border-2 cursor-pointer transition-all relative"
-                                         :class="engine === '{{ $e['key'] }}' ? 'border-[#901C1E] bg-[#901C1E]/5' : 'border-gray-200 hover:border-gray-300'">
+                                         :class="engine === '{{ $e['key'] }}' ? 'border-[#b3261e] bg-[#b3261e]/5' : 'border-gray-200 hover:border-gray-300'">
                                         <div class="flex items-center justify-between gap-2">
                                             <div class="font-bold text-gray-900 text-sm">{{ $e['label'] }}</div>
                                             <span class="text-[9px] font-black uppercase tracking-widest px-1.5 py-0.5 rounded-full {{ $e['cost'] === 'free' ? 'bg-emerald-50 text-emerald-600' : ($e['cost'] === 'local' ? 'bg-sky-50 text-sky-600' : 'bg-kicc-gold/15 text-kicc-gold') }}">{{ $e['cost'] }}</span>
                                         </div>
                                         <p class="text-[11px] text-[#5A6480] mt-1 leading-relaxed">{{ $e['description'] }}</p>
                                         @if(!$e['available'])
-                                        <p class="text-[10px] mt-1.5 text-[#901C1E]"> {{ $e['note'] }}</p>
+                                        <p class="text-[10px] mt-1.5 text-[#b3261e]"> {{ $e['note'] }}</p>
                                         @endif
                                     </div>
                                 </label>
@@ -191,7 +191,7 @@
                             </div>
                             <div class="flex gap-2 mt-5">
                                 <button type="button" @click="step = 1" class="h-12 px-4 rounded-xl border border-gray-200 text-sm font-bold text-[#5A6480] hover:text-gray-900 transition-all">Back</button>
-                                <button type="button" @click="next()" class="flex-1 inline-flex items-center justify-center gap-2 font-bold tracking-wide transition-all duration-200 px-6 h-12 rounded-xl bg-[#901C1E] text-white hover:bg-[#7b1618]" data-magnetic>Continue</button>
+                                <button type="button" @click="next()" class="flex-1 inline-flex items-center justify-center gap-2 font-bold tracking-wide transition-all duration-200 px-6 h-12 rounded-xl bg-[#b3261e] text-white hover:bg-[#7b1618]" data-magnetic>Continue</button>
                             </div>
                         </div>
 
@@ -261,7 +261,7 @@
                         </div>
                         <form method="POST" action="{{ route('media.detach', $asset) }}">
                             @csrf
-                            <button type="submit" class="text-[10px] font-bold text-emerald-700/70 hover:text-[#901C1E] transition-colors shrink-0">Detach</button>
+                            <button type="submit" class="text-[10px] font-bold text-emerald-700/70 hover:text-[#b3261e] transition-colors shrink-0">Detach</button>
                         </form>
                     </div>
                     @else

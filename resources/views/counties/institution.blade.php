@@ -282,7 +282,7 @@ onerror="this.remove()">
                     @if($institution->website)
                     <div class="mt-5 pt-4 border-t border-gray-100">
                         <a href="{{ $institution->website }}" target="_blank" rel="noopener"
-                           class="w-full inline-flex items-center justify-center gap-2 font-bold tracking-wide transition-all duration-200 px-4 text-sm h-10 rounded-xl bg-[#0B1E57] text-white hover:bg-[#16275f]">
+                           class="w-full inline-flex items-center justify-center gap-2 font-bold tracking-wide transition-all duration-200 px-4 text-sm h-10 rounded-xl bg-[#0b0b0b] text-white hover:bg-[#16275f]">
                             <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 12a9 9 0 01-9 9m9-9a9 9 0 00-9-9m9 9H3m9 9a9 9 0 01-9-9m9 9c1.657 0 3-4.03 3-9s-1.343-9-3-9m0 18c-1.657 0-3-4.03-3-9s1.343-9 3-9"/></svg>
                             Visit Official Website
                         </a>
@@ -304,7 +304,7 @@ onerror="this.remove()">
                     @endif
 
                     <div class="mt-5 pt-4 border-t border-gray-100">
-                        <a href="{{ route('counties.show', $county->slug) }}" class="w-full inline-flex items-center justify-center gap-2 font-bold tracking-wide transition-all duration-200 px-4 text-sm h-10 rounded-xl bg-[#901C1E] text-gray-900 hover:bg-[#7b1618]">
+                        <a href="{{ route('counties.show', $county->slug) }}" class="w-full inline-flex items-center justify-center gap-2 font-bold tracking-wide transition-all duration-200 px-4 text-sm h-10 rounded-xl bg-[#b3261e] text-gray-900 hover:bg-[#7b1618]">
                             Browse {{ $county->name }} County
                             <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 8l4 4m0 0l-4 4m4-4H3"/></svg>
                         </a>
@@ -397,7 +397,7 @@ onerror="this.remove()">
                         </div>
                     </div>
                     @if($t['price'])<div class="font-black text-kicc-gold text-sm mt-1">KES {{ number_format($t['price']) }}/{{ $t['unit'] ?? 'trip' }}</div>@endif
-                    @if($t['booking_url'])<a href="{{ $t['booking_url'] }}" target="_blank" rel="noopener" class="w-full mt-2 text-center py-1.5 rounded-lg bg-[#0B1E57] text-white text-xs font-bold hover:bg-[#16275f] transition-all">Book Now</a>@endif
+                    @if($t['booking_url'])<a href="{{ $t['booking_url'] }}" target="_blank" rel="noopener" class="w-full mt-2 text-center py-1.5 rounded-lg bg-[#0b0b0b] text-white text-xs font-bold hover:bg-[#16275f] transition-all">Book Now</a>@endif
                 </div>
                 @endforeach
             </div>
@@ -405,7 +405,7 @@ onerror="this.remove()">
         @endif
 
         <div class="mt-4 text-center" x-show="!loaded && !loading" x-cloak>
-            <button @click="loadMore()" class="inline-flex items-center gap-2 text-xs font-bold text-[#0B1E57] hover:text-[#901C1E] transition-colors">
+            <button @click="loadMore()" class="inline-flex items-center gap-2 text-xs font-bold text-[#0b0b0b] hover:text-[#b3261e] transition-colors">
                 <span x-show="!loading">Load more recommendations</span>
                 <span x-show="loading" class="flex items-center gap-2"><svg class="w-4 h-4 animate-spin" fill="none" viewBox="0 0 24 24"><circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"/><path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8v4a4 4 0 00-4 4H4z"/></svg> Loading...</span>
             </button>

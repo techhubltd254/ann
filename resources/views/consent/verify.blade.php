@@ -6,7 +6,7 @@
 
     <form method="GET" action="{{ route('consent.verify') }}" class="flex gap-3 mb-8">
         <input name="reference" placeholder="@lang('Enter Reference Number (e.g. KICC-CS-000001)')" class="border border-gray-300 rounded-xl flex-1 px-4 py-2.5 text-sm" value="{{ request('reference') }}">
-        <button class="bg-[#0B1E57] text-white px-6 py-2.5 rounded-xl font-bold text-sm hover:bg-[#0D2A7A]">@lang('Verify')</button>
+        <button class="bg-[#0b0b0b] text-white px-6 py-2.5 rounded-xl font-bold text-sm hover:bg-[#0D2A7A]">@lang('Verify')</button>
     </form>
 
     @if(isset($record))

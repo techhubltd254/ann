@@ -46,7 +46,7 @@
                     @endforeach
                 </div>
                 <button type="button" @click="business_type && (step = 2)" :disabled="!business_type"
-                        class="w-full mt-6 h-12 rounded-xl bg-[#901C1E] text-white font-bold hover:bg-[#7b1618] transition-all disabled:opacity-40" data-magnetic>Continue →</button>
+                        class="w-full mt-6 h-12 rounded-xl bg-[#b3261e] text-white font-bold hover:bg-[#7b1618] transition-all disabled:opacity-40" data-magnetic>Continue →</button>
             </div>
 
             {{-- STEP 2: Business details --}}
@@ -54,12 +54,12 @@
                 <h2 class="text-gray-900 font-black text-lg mb-4 text-center" data-split>2 · Your business details</h2>
                 <div class="bg-white border border-gray-200 rounded-2xl p-6 space-y-4">
                     <div>
-                        <label class="block text-[10px] font-bold text-gray-400 uppercase tracking-wider mb-1.5">Display name <span class="text-[#901C1E]">*</span></label>
+                        <label class="block text-[10px] font-bold text-gray-400 uppercase tracking-wider mb-1.5">Display name <span class="text-[#b3261e]">*</span></label>
                         <input type="text" name="display_name" value="{{ old('display_name', $user->name) }}" required placeholder="e.g. Westlands Studio Apartments"
                                class="w-full h-11 px-4 rounded-xl bg-[#F9FAFB] border border-gray-200 text-gray-900 text-sm placeholder:text-[#5A6480]/50 outline-none focus:ring-2 focus:ring-[#FFCD05]/60">
                     </div>
                     <div>
-                        <label class="block text-[10px] font-bold text-gray-400 uppercase tracking-wider mb-1.5">County <span class="text-[#901C1E]">*</span></label>
+                        <label class="block text-[10px] font-bold text-gray-400 uppercase tracking-wider mb-1.5">County <span class="text-[#b3261e]">*</span></label>
                         <select name="county_id" required class="w-full h-11 px-4 rounded-xl bg-[#F9FAFB] border border-gray-200 text-gray-900 text-sm outline-none focus:ring-2 focus:ring-[#FFCD05]/60">
                             <option value="">— Choose county —</option>
                             @foreach($counties as $c)
@@ -68,19 +68,19 @@
                         </select>
                     </div>
                     <div>
-                        <label class="block text-[10px] font-bold text-gray-400 uppercase tracking-wider mb-1.5">Tagline <span class="text-[#901C1E]">*</span></label>
+                        <label class="block text-[10px] font-bold text-gray-400 uppercase tracking-wider mb-1.5">Tagline <span class="text-[#b3261e]">*</span></label>
                         <textarea name="tagline" required rows="2" placeholder="e.g. Premium furnished apartments in Westlands"
                                   class="w-full px-4 py-3 rounded-xl bg-[#F9FAFB] border border-gray-200 text-gray-900 text-sm placeholder:text-[#5A6480]/50 outline-none focus:ring-2 focus:ring-[#FFCD05]/60">{{ old('tagline') }}</textarea>
                     </div>
                     <div>
-                        <label class="block text-[10px] font-bold text-gray-400 uppercase tracking-wider mb-1.5">Phone <span class="text-[#901C1E]">*</span></label>
+                        <label class="block text-[10px] font-bold text-gray-400 uppercase tracking-wider mb-1.5">Phone <span class="text-[#b3261e]">*</span></label>
                         <input type="tel" name="phone" value="{{ old('phone', $user->phone) }}" required placeholder="+254…"
                                class="w-full h-11 px-4 rounded-xl bg-[#F9FAFB] border border-gray-200 text-gray-900 text-sm placeholder:text-[#5A6480]/50 outline-none focus:ring-2 focus:ring-[#FFCD05]/60">
                     </div>
                 </div>
                 <div class="flex gap-3 mt-6">
                     <button type="button" @click="step = 1" class="h-12 px-6 rounded-xl border border-gray-200 text-gray-500 font-bold hover:bg-gray-50 transition-all">← Back</button>
-                    <button type="button" @click="step = 3" class="flex-1 h-12 rounded-xl bg-[#901C1E] text-white font-bold hover:bg-[#7b1618] transition-all" data-magnetic>Continue →</button>
+                    <button type="button" @click="step = 3" class="flex-1 h-12 rounded-xl bg-[#b3261e] text-white font-bold hover:bg-[#7b1618] transition-all" data-magnetic>Continue →</button>
                 </div>
             </div>
 
@@ -103,7 +103,7 @@
                 <div class="flex gap-3 mt-6">
                     <button type="button" @click="step = 2" class="h-12 px-6 rounded-xl border border-gray-200 text-gray-500 font-bold hover:bg-gray-50 transition-all">← Back</button>
                     <button type="button" @click="package_slug && (step = 4)" :disabled="!package_slug"
-                            class="flex-1 h-12 rounded-xl bg-[#901C1E] text-white font-bold hover:bg-[#7b1618] transition-all disabled:opacity-40" data-magnetic>Continue →</button>
+                            class="flex-1 h-12 rounded-xl bg-[#b3261e] text-white font-bold hover:bg-[#7b1618] transition-all disabled:opacity-40" data-magnetic>Continue →</button>
                 </div>
             </div>
 
@@ -123,15 +123,15 @@
                             @if($key === 'premium')
                             <div class="flex items-center gap-2 mt-2">
                                 <span class="inline-flex items-center gap-1 text-[10px] bg-[#FFCD05]/10 text-[#FFCD05] font-bold px-2 py-0.5 rounded-full">📸 Professional shoot</span>
-                                <span class="inline-flex items-center gap-1 text-[10px] bg-[#1890D7]/10 text-[#1890D7] font-bold px-2 py-0.5 rounded-full">🎬 Video production</span>
+                                <span class="inline-flex items-center gap-1 text-[10px] bg-[#2a2a2a]/10 text-[#2a2a2a] font-bold px-2 py-0.5 rounded-full">🎬 Video production</span>
                             </div>
                             @elseif($key === 'custom')
                             <div class="flex items-center gap-2 mt-2">
-                                <span class="inline-flex items-center gap-1 text-[10px] bg-[#901C1E]/10 text-[#901C1E] font-bold px-2 py-0.5 rounded-full">🛠️ Personalized dashboard</span>
+                                <span class="inline-flex items-center gap-1 text-[10px] bg-[#b3261e]/10 text-[#b3261e] font-bold px-2 py-0.5 rounded-full">🛠️ Personalized dashboard</span>
                             </div>
                             @else
                             <div class="flex items-center gap-2 mt-2">
-                                <span class="inline-flex items-center gap-1 text-[10px] bg-[#11820B]/10 text-[#11820B] font-bold px-2 py-0.5 rounded-full">⚡ Instant setup</span>
+                                <span class="inline-flex items-center gap-1 text-[10px] bg-[#2a2a2a]/10 text-[#2a2a2a] font-bold px-2 py-0.5 rounded-full">⚡ Instant setup</span>
                             </div>
                             @endif
                         </div>

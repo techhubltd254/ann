@@ -41,10 +41,10 @@
         popup += '<br><span style="font-size:12px">{{ $location }}</span>';
         @endif
         @if($website)
-        popup += '<br><a href="{{ $website }}" target="_blank" rel="noopener" style="font-size:12px;color:#0B1E57;text-decoration:underline">Official Website</a>';
+        popup += '<br><a href="{{ $website }}" target="_blank" rel="noopener" style="font-size:12px;color:#0b0b0b;text-decoration:underline">Official Website</a>';
         @endif
         @if($location || $website)
-        popup += '<br><a href="https://www.google.com/maps/search/?api=1&query={{ $lat }},{{ $lng }}" target="_blank" rel="noopener" style="font-size:12px;color:#0B1E57;text-decoration:underline"> View on Google Maps</a>';
+        popup += '<br><a href="https://www.google.com/maps/search/?api=1&query={{ $lat }},{{ $lng }}" target="_blank" rel="noopener" style="font-size:12px;color:#0b0b0b;text-decoration:underline"> View on Google Maps</a>';
         @endif
         marker.bindPopup(popup).openPopup();
     }

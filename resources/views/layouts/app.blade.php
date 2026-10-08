@@ -13,7 +13,7 @@
     <meta property="og:image" content="@yield('og_image', asset('kicclogo.png'))">
     <meta property="og:site_name" content="KICC Global Exhibition Platform">
     <meta name="twitter:card" content="summary_large_image">
-    <meta name="theme-color" content="#901C1E">
+    <meta name="theme-color" content="#b3261e">
     <link rel="canonical" href="{{ url()->current() }}">
     <link rel="icon" type="image/x-icon" href="{{ asset('favicon.ico') }}">
     {{-- GSAP + ScrollTrigger for scroll-driven cinematic experiences --}}
@@ -127,7 +127,7 @@
         .reveal-init[data-reveal="zoom"].revealed { transform: none; }
 
         .card-hover { transition: transform 0.25s cubic-bezier(0.22,1,0.36,1), box-shadow 0.25s, border-color 0.25s; }
-        .card-hover:hover { transform: translateY(-4px); box-shadow: 0 8px 25px rgba(11,30,87,0.08); }
+        .card-hover:hover { transform: translateY(-4px); box-shadow: 0 8px 25px rgba(11,11,11,0.08); }
 
         [data-tilt] { position: relative; transform-style: preserve-3d; }
         .tilt-glare { position: absolute; inset: 0; border-radius: inherit; pointer-events: none; }
@@ -227,7 +227,7 @@
             background: linear-gradient(135deg, #FFCD05 0%, #F59E0B 50%, #F97316 100%);
         }
         .grad-cta {
-            background: linear-gradient(135deg, #901C1E 0%, #7b1618 100%);
+            background: linear-gradient(135deg, #b3261e 0%, #7b1618 100%);
         }
 
         /* Progressive blur frame — 0 → 90px masked by a smooth gradient.
@@ -288,21 +288,21 @@
         /* UX LAW: Hick's Law — recommended option ring */
         .opt-recommended {
             border-color: rgba(144, 28, 30, 0.55);
-            background: linear-gradient(135deg, rgba(144,28,30,0.06), rgba(255,205,5,0.08));
+            background: linear-gradient(135deg, rgba(179,38,30,0.06), rgba(255,205,5,0.08));
         }
 
         /*  KICC BRAND DESIGN TOKENS (sourced from kicc.co.ke)  */
         :root {
-            --kicc-navy: #0B1E57;
+            --kicc-navy: #0b0b0b;
             --kicc-navy-light: #1a3070;
-            --kicc-red: #901C1E;
+            --kicc-red: #b3261e;
             --kicc-red-light: #b71c1c;
             --kicc-crimson: #A6192E;
             --kicc-crimson-dark: #7A1122;
             --kicc-gold: #FFCD05;
             --kicc-gold-soft: #FFD966;
             --kicc-gold-light: #ffe44d;
-            --kicc-dark: #0A1024;
+            --kicc-dark: #0b0b0b;
             --kicc-ivory: #FAF7F2;
             --kicc-text: #5A6480;
             --kicc-text-light: #8a94a6;
@@ -348,19 +348,19 @@
         .btn-kicc-gold { background: var(--kicc-gold); color: var(--kicc-dark); box-shadow: var(--shadow-sm); }
         .btn-kicc-gold:hover { background: var(--kicc-gold-light); box-shadow: var(--shadow-md); transform: translateY(-1px); }
         .btn-kicc-outline { background: transparent; color: var(--kicc-navy); border: 1.5px solid var(--kicc-border); }
-        .btn-kicc-outline:hover { border-color: var(--kicc-red); color: var(--kicc-red); background: rgba(144,28,30,0.04); }
+        .btn-kicc-outline:hover { border-color: var(--kicc-red); color: var(--kicc-red); background: rgba(179,38,30,0.04); }
         .btn-kicc-ghost { background: transparent; color: var(--kicc-text); border: none; }
         .btn-kicc-ghost:hover { background: var(--kicc-bg-alt); color: var(--kicc-dark); }
 
         /*  KICC CARD VARIANTS  */
         .card-kicc { background: white; border: 1px solid var(--kicc-border); border-radius: var(--radius-lg); box-shadow: var(--shadow-sm); transition: all 0.25s; }
-        .card-kicc:hover { box-shadow: var(--shadow-md); border-color: rgba(144,28,30,0.2); }
+        .card-kicc:hover { box-shadow: var(--shadow-md); border-color: rgba(179,38,30,0.2); }
         .card-kicc-flush { border-radius: var(--radius-lg); overflow: hidden; }
         .card-kicc-glass { background: rgba(255,255,255,0.72); backdrop-filter: blur(18px) saturate(1.5); border: 1px solid rgba(255,255,255,0.55); box-shadow: var(--shadow-md); }
 
         /*  KICC BADGES  */
         .badge-kicc { display: inline-flex; align-items: center; padding: 0.125rem 0.625rem; border-radius: 9999px; font-size: 0.6875rem; font-weight: 700; text-transform: uppercase; letter-spacing: 0.05em; }
-        .badge-kicc-red { background: rgba(144,28,30,0.1); color: var(--kicc-red); border: 1px solid rgba(144,28,30,0.2); }
+        .badge-kicc-red { background: rgba(179,38,30,0.1); color: var(--kicc-red); border: 1px solid rgba(179,38,30,0.2); }
         .badge-kicc-gold { background: rgba(255,205,5,0.15); color: #8B6914; border: 1px solid rgba(255,205,5,0.3); }
         .badge-kicc-green { background: rgba(5,150,105,0.1); color: var(--kicc-success); border: 1px solid rgba(5,150,105,0.2); }
         .badge-kicc-blue { background: rgba(2,132,199,0.1); color: var(--kicc-info); border: 1px solid rgba(2,132,199,0.2); }
@@ -372,7 +372,7 @@
 
         /*  FORM ELEMENTS  */
         .input-kicc { width: 100%; padding: 0.625rem 0.875rem; border: 1.5px solid var(--kicc-border); border-radius: var(--radius-md); font-size: 0.875rem; color: var(--kicc-dark); background: white; transition: border-color 0.2s, box-shadow 0.2s; min-height: 44px; }
-        .input-kicc:focus { border-color: var(--kicc-red); box-shadow: 0 0 0 3px rgba(144,28,30,0.12); outline: none; }
+        .input-kicc:focus { border-color: var(--kicc-red); box-shadow: 0 0 0 3px rgba(179,38,30,0.12); outline: none; }
         .input-kicc::placeholder { color: var(--kicc-text-light); }
         .label-kicc { display: block; font-size: 0.75rem; font-weight: 600; color: var(--kicc-text); text-transform: uppercase; letter-spacing: 0.05em; margin-bottom: 0.375rem; }
 
@@ -380,7 +380,7 @@
         .table-kicc { width: 100%; border-collapse: collapse; font-size: 0.8125rem; }
         .table-kicc th { text-align: left; padding: 0.75rem 1rem; font-weight: 600; color: var(--kicc-text); text-transform: uppercase; font-size: 0.6875rem; letter-spacing: 0.05em; border-bottom: 1px solid var(--kicc-border); background: var(--kicc-bg); }
         .table-kicc td { padding: 0.75rem 1rem; border-bottom: 1px solid var(--kicc-border); color: var(--kicc-dark); }
-        .table-kicc tr:hover td { background: rgba(144,28,30,0.02); }
+        .table-kicc tr:hover td { background: rgba(179,38,30,0.02); }
         .table-kicc-wrap { overflow-x: auto; border-radius: var(--radius-lg); border: 1px solid var(--kicc-border); }
 
         /*  RESPONSIVE UTILITIES  */
@@ -404,7 +404,7 @@
         .scroll-3d-sticky { position: sticky; top: 0; height: 100vh; overflow: hidden; }
         .scroll-3d-overlay { position: absolute; inset: 0; z-index: 10; display: flex; flex-direction: column; justify-content: flex-end; padding: 4rem; pointer-events: none; }
         .scroll-3d-overlay > * { pointer-events: auto; max-width: 32rem; }
-        .scroll-progress { position: fixed; bottom: 2rem; left: 50%; transform: translateX(-50%); z-index: 20; height: 2px; background: rgba(144,28,30,0.3); border-radius: 1px; width: 200px; }
+        .scroll-progress { position: fixed; bottom: 2rem; left: 50%; transform: translateX(-50%); z-index: 20; height: 2px; background: rgba(179,38,30,0.3); border-radius: 1px; width: 200px; }
         .scroll-progress-bar { height: 100%; background: var(--kicc-red); border-radius: 1px; width: 0%; transition: width 0.1s linear; }
 
         /*  SHADER BACKDROP VARIANTS (RFEQ-style)  */
@@ -412,10 +412,10 @@
         .shader-dark { background: #0a0a14; }
         .shader-dark .glass-card-dark { background: rgba(10,10,20,0.65); border: 1px solid rgba(255,255,255,0.08); }
     </style>
-    <link rel="stylesheet" href="/css/approved-design.css?v=kicc-live-20261007-r2">
-    <link rel="stylesheet" href="/css/rebuild.css?v=kicc-live-20261007-r2">
-    <link rel="stylesheet" href="/css/live-compat.css?v=kicc-live-20261007-r2">
-<link rel="stylesheet" href="/css/glass-kicc.css?v=kicc-glass-20261008">
+    <link rel="stylesheet" href="/css/approved-design.css?v=kicc-live-20261007-r3">
+    <link rel="stylesheet" href="/css/rebuild.css?v=kicc-live-20261007-r3">
+    <link rel="stylesheet" href="/css/live-compat.css?v=kicc-live-20261007-r3">
+<link rel="stylesheet" href="/css/glass-kicc.css?v=kicc-glass-20261008b">
     <script>try{var m=localStorage.getItem('kicc.theme')||'system';document.documentElement.dataset.theme=m==='system'?(matchMedia('(prefers-color-scheme: dark)').matches?'dark':'light'):m}catch(e){document.documentElement.dataset.theme='light'}</script>
     @stack('styles')
 <script>
@@ -473,45 +473,45 @@ document.addEventListener('DOMContentLoaded', function() {
         <div class="max-w-7xl mx-auto px-5 h-full flex items-center justify-between gap-4">
             <a href="/" class="flex items-center gap-3 shrink-0 group">
                 <div class="flex items-center gap-3 touch-target.5">
-                    <div class="rounded-xl bg-[#901C1E] px-2.5 py-1.5 flex items-center justify-center shadow-lg shadow-[#901C1E]/25">
+                    <div class="rounded-xl bg-[#b3261e] px-2.5 py-1.5 flex items-center justify-center shadow-lg shadow-[#b3261e]/25">
                         <img src="{{ asset('kicclogo.png') }}" alt="KICC" class="h-7 w-auto">
                     </div>
                     <div class="leading-tight">
-                        <div class="font-black text-[#901C1E] text-sm tracking-tight group-hover:text-[#FFCD05] transition-colors uppercase">KICC</div>
+                        <div class="font-black text-[#b3261e] text-sm tracking-tight group-hover:text-[#FFCD05] transition-colors uppercase">KICC</div>
                         <div class="text-[8px] text-[#FFCD05] font-bold tracking-[0.15em] uppercase leading-tight">Global Exhibition</div>
                     </div>
                 </div>
             </a>
             <nav class="hidden lg:flex items-center gap-1">
-                <a href="{{ route('counties.index') }}" class="px-3.5 py-2 text-sm font-semibold rounded-lg transition-all {{ request()->routeIs('counties.*') ? 'bg-[#901C1E] text-white' : 'text-[#901C1E] hover:text-[#FFCD05] hover:bg-gray-100' }}">Counties</a>
-                <a href="{{ route('national-government.index') }}" class="px-3.5 py-2 text-sm font-semibold rounded-lg transition-all {{ request()->routeIs('national-government.*') ? 'bg-[#901C1E] text-white' : 'text-[#901C1E] hover:text-[#FFCD05] hover:bg-gray-100' }}">National</a>
-                <a href="{{ route('marketplace.index') }}" class="px-3.5 py-2 text-sm font-semibold rounded-lg transition-all {{ request()->routeIs('marketplace.*') ? 'bg-[#901C1E] text-white' : 'text-[#901C1E] hover:text-[#FFCD05] hover:bg-gray-100' }}">Marketplace</a>
-                <a href="{{ route('exhibitions.index') }}" class="px-3.5 py-2 text-sm font-semibold rounded-lg transition-all {{ request()->routeIs('exhibitions.*') ? 'bg-[#901C1E] text-white' : 'text-[#901C1E] hover:text-[#FFCD05] hover:bg-gray-100' }}">Exhibitions</a>
-                <a href="{{ route('venues.index') }}" class="px-3.5 py-2 text-sm font-semibold rounded-lg transition-all {{ request()->routeIs('venues.*') ? 'bg-[#901C1E] text-white' : 'text-[#901C1E] hover:text-[#FFCD05] hover:bg-gray-100' }}">Venues</a>
-                <a href="{{ route('streams.index') }}" class="px-3.5 py-2 text-sm font-semibold rounded-lg transition-all {{ request()->routeIs('streams.*') ? 'bg-[#901C1E] text-white' : 'text-[#901C1E] hover:text-[#FFCD05] hover:bg-gray-100' }}">Live Events</a>
+                <a href="{{ route('counties.index') }}" class="px-3.5 py-2 text-sm font-semibold rounded-lg transition-all {{ request()->routeIs('counties.*') ? 'bg-[#b3261e] text-white' : 'text-[#b3261e] hover:text-[#FFCD05] hover:bg-gray-100' }}">Counties</a>
+                <a href="{{ route('national-government.index') }}" class="px-3.5 py-2 text-sm font-semibold rounded-lg transition-all {{ request()->routeIs('national-government.*') ? 'bg-[#b3261e] text-white' : 'text-[#b3261e] hover:text-[#FFCD05] hover:bg-gray-100' }}">National</a>
+                <a href="{{ route('marketplace.index') }}" class="px-3.5 py-2 text-sm font-semibold rounded-lg transition-all {{ request()->routeIs('marketplace.*') ? 'bg-[#b3261e] text-white' : 'text-[#b3261e] hover:text-[#FFCD05] hover:bg-gray-100' }}">Marketplace</a>
+                <a href="{{ route('exhibitions.index') }}" class="px-3.5 py-2 text-sm font-semibold rounded-lg transition-all {{ request()->routeIs('exhibitions.*') ? 'bg-[#b3261e] text-white' : 'text-[#b3261e] hover:text-[#FFCD05] hover:bg-gray-100' }}">Exhibitions</a>
+                <a href="{{ route('venues.index') }}" class="px-3.5 py-2 text-sm font-semibold rounded-lg transition-all {{ request()->routeIs('venues.*') ? 'bg-[#b3261e] text-white' : 'text-[#b3261e] hover:text-[#FFCD05] hover:bg-gray-100' }}">Venues</a>
+                <a href="{{ route('streams.index') }}" class="px-3.5 py-2 text-sm font-semibold rounded-lg transition-all {{ request()->routeIs('streams.*') ? 'bg-[#b3261e] text-white' : 'text-[#b3261e] hover:text-[#FFCD05] hover:bg-gray-100' }}">Live Events</a>
                 <a href="{{ route('national.index') }}" class="px-3.5 py-1.5 text-sm font-bold rounded-lg transition-all inline-flex items-center gap-1.5" style="background: #DC2626; color: white; animation: pulse-live 2s infinite;">
                     <span class="w-2 h-2 rounded-full bg-white"></span> LIVE
                 </a>
-                <a href="{{ route('screens.directory') }}" class="px-3.5 py-2 text-sm font-semibold rounded-lg transition-all {{ request()->routeIs('screens.*') ? 'bg-[#901C1E] text-white' : 'text-[#901C1E] hover:text-[#FFCD05] hover:bg-gray-100' }}">Screens</a>
-                <a href="{{ route('packages.index') }}" class="px-3.5 py-2 text-sm font-semibold rounded-lg transition-all {{ request()->routeIs('packages.*') ? 'bg-[#901C1E] text-white' : 'text-[#901C1E] hover:text-[#FFCD05] hover:bg-gray-100' }}">Packages</a>
+                <a href="{{ route('screens.directory') }}" class="px-3.5 py-2 text-sm font-semibold rounded-lg transition-all {{ request()->routeIs('screens.*') ? 'bg-[#b3261e] text-white' : 'text-[#b3261e] hover:text-[#FFCD05] hover:bg-gray-100' }}">Screens</a>
+                <a href="{{ route('packages.index') }}" class="px-3.5 py-2 text-sm font-semibold rounded-lg transition-all {{ request()->routeIs('packages.*') ? 'bg-[#b3261e] text-white' : 'text-[#b3261e] hover:text-[#FFCD05] hover:bg-gray-100' }}">Packages</a>
             </nav>
             <div class="flex items-center gap-3 touch-target">
-                <a href="{{ route('cart.index') }}" class="relative p-3 touch-target text-[#5A6480] hover:text-[#901C1E] transition-colors" aria-label="Cart">
+                <a href="{{ route('cart.index') }}" class="relative p-3 touch-target text-[#5A6480] hover:text-[#b3261e] transition-colors" aria-label="Cart">
                     <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 3h2l.4 2M7 13h10l4-8H5.4M7 13L5.4 5M7 13l-2.293 2.293c-.63.63-.184 1.707.707 1.707H17m0 0a2 2 0 100 4 2 2 0 000-4zm-8 2a2 2 0 11-4 0 2 2 0 014 0z"/></svg>
                     @if(auth()->check())
                     @php try { $cartBadge = \App\Models\Marketplace\ShoppingCart::where('user_id', auth()->id())->latest('id')->first(); } catch (\Throwable $e) { $cartBadge = null; } @endphp
                     @if($cartBadge && $cartBadge->items()->count() > 0)
-                    <span class="absolute -top-0.5 -right-0.5 w-4 h-4 rounded-full bg-[#901C1E] text-white text-[9px] font-bold flex items-center justify-center leading-none">{{ $cartBadge->items()->sum('quantity') > 9 ? '9+' : $cartBadge->items()->sum('quantity') }}</span>
+                    <span class="absolute -top-0.5 -right-0.5 w-4 h-4 rounded-full bg-[#b3261e] text-white text-[9px] font-bold flex items-center justify-center leading-none">{{ $cartBadge->items()->sum('quantity') > 9 ? '9+' : $cartBadge->items()->sum('quantity') }}</span>
                     @endif
                     @else
                     @php try { $cartBadge = \App\Models\Marketplace\ShoppingCart::where('session_id', session()->getId())->latest('id')->first(); } catch (\Throwable $e) { $cartBadge = null; } @endphp
                     @if($cartBadge && $cartBadge->items()->count() > 0)
-                    <span class="absolute -top-0.5 -right-0.5 w-4 h-4 rounded-full bg-[#901C1E] text-white text-[9px] font-bold flex items-center justify-center leading-none">{{ $cartBadge->items()->sum('quantity') > 9 ? '9+' : $cartBadge->items()->sum('quantity') }}</span>
+                    <span class="absolute -top-0.5 -right-0.5 w-4 h-4 rounded-full bg-[#b3261e] text-white text-[9px] font-bold flex items-center justify-center leading-none">{{ $cartBadge->items()->sum('quantity') > 9 ? '9+' : $cartBadge->items()->sum('quantity') }}</span>
                     @endif
                     @endif
                 </a>
                 @auth
-                <a href="{{ route('dashboard.index') }}" class="inline-flex items-center gap-3 touch-target font-bold tracking-wide transition-all duration-200 px-4 text-xs h-9 rounded-xl bg-[#901C1E] text-gray-900 hover:bg-[#7a181a]">
+                <a href="{{ route('dashboard.index') }}" class="inline-flex items-center gap-3 touch-target font-bold tracking-wide transition-all duration-200 px-4 text-xs h-9 rounded-xl bg-[#b3261e] text-gray-900 hover:bg-[#7a181a]">
                     Dashboard
                 </a>
                 <form method="POST" action="{{ route('logout') }}" class="inline">@csrf
@@ -520,7 +520,7 @@ document.addEventListener('DOMContentLoaded', function() {
                 @else
                 <a href="{{ route('login') }}" class="inline-flex items-center gap-3 touch-target font-bold tracking-wide transition-all duration-200 px-4 text-xs h-9 rounded-xl bg-[#FFCD05] text-[#07090F] font-bold hover:bg-[#e6b904]">Sign In</a>
                 @endauth
-                <button @click="open = !open" class="lg:hidden text-[#5A6480] hover:text-[#901C1E] p-3 touch-target" aria-label="Menu">
+                <button @click="open = !open" class="lg:hidden text-[#5A6480] hover:text-[#b3261e] p-3 touch-target" aria-label="Menu">
                     <svg class="w-5 h-5" x-show="!open" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16"/></svg>
                     <svg class="w-5 h-5" x-show="open" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"/></svg>
                 </button>
@@ -540,7 +540,7 @@ document.addEventListener('DOMContentLoaded', function() {
             @auth
             <a href="{{ route('dashboard.index') }}" class="text-left px-4 py-3 text-sm font-semibold text-kicc-gold hover:bg-gray-100 rounded-lg">Dashboard</a>
             @else
-            <a href="{{ route('login') }}" class="text-left px-4 py-3 text-sm font-semibold text-[#5A6480] hover:text-[#901C1E] hover:bg-sky-50 rounded-lg">Sign In</a>
+            <a href="{{ route('login') }}" class="text-left px-4 py-3 text-sm font-semibold text-[#5A6480] hover:text-[#b3261e] hover:bg-sky-50 rounded-lg">Sign In</a>
             @endauth
         </div>
     </nav>
@@ -550,11 +550,11 @@ document.addEventListener('DOMContentLoaded', function() {
     </main>
 
     {{-- FOOTER --}}
-    <footer class="bg-[#0B1E57] mt-20">
+    <footer class="bg-[#0b0b0b] mt-20">
         <div class="max-w-7xl mx-auto px-5 py-14 grid grid-cols-1 md:grid-cols-4 gap-10">
             <div>
                 <div class="flex items-center gap-3 touch-target.5 mb-3">
-                    <div class="rounded-xl bg-[#901C1E] px-2.5 py-1.5 flex items-center justify-center">
+                    <div class="rounded-xl bg-[#b3261e] px-2.5 py-1.5 flex items-center justify-center">
                         <img src="{{ asset('kicclogo.png') }}" alt="KICC" class="h-7 w-auto">
                     </div>
                     <div class="leading-tight">

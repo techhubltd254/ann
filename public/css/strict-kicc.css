@@ -11,8 +11,8 @@
         orbit, footer, admin surfaces) onto that palette, in the glass
         idiom: frosted white glass on black, black glass on white.
    Layout, spacing, typography, routes and behaviour are NOT touched here.
-   Retired: ochre #C08F1E, amber #E0A22B, terracotta #B4432A, brown #6B4A2F,
-            cream #F7F0E3, navy #0B1E57, gold #FFCD05-as-text-on-white.
+   Retired: ochre #c79a00, amber #ffcd05, terracotta #b3261e, brown #1c1c1c,
+            cream #f1eee8, navy #0b0b0b, gold #FFCD05-as-text-on-white.
    ===================================================================== */
 
 :root{
@@ -85,7 +85,7 @@ body.light-world *,
   --cr-600:var(--s-red);      --cr-500:#C73028; --cr-400:#D4564E;
   --cr-300:#E48C86;           --cr-200:#F4CFCC;
   --au-900:var(--s-yellow-ink); --au-800:var(--s-yellow-ink);
-  --au-700:var(--s-yellow-deep); --au-600:#E0B400;
+  --au-700:var(--s-yellow-deep); --au-600:#c79a00;
   --au-500:var(--s-yellow-soft); --au-400:var(--s-yellow);
   --au-300:#FFE9A3;              --au-200:#FFF6D9;
   --nv-950:var(--s-black); --nv-900:var(--s-black); --nv-850:var(--s-black-2);
@@ -142,7 +142,7 @@ body.light-world *,
 
 /* =====================================================================
    1b · THE ui-* / w-* LAYER — the real ground source
-   approved-design.css:2783-2785 declares --ui-bg:#DCCEBA (cream) on
+   approved-design.css:2783-2785 declares --ui-bg:#f1eee8 (cream) on
    html[data-theme] and re-derives --w-cream / --light-bg / --dark-canvas /
    --paper / --hairline from it, then paints html, body, #app and .footer with
    `background:var(--ui-bg)!important`. Because html[data-theme] out-specifies

@@ -23,7 +23,7 @@
             </div>
         </div>
 
-        <a href="{{ route('counties.show', $county->slug) }}" class="inline-flex items-center justify-center gap-2 mt-8 h-12 px-6 rounded-xl bg-[#901C1E] text-white text-sm font-black hover:bg-[#7b1618] transition-all">
+        <a href="{{ route('counties.show', $county->slug) }}" class="inline-flex items-center justify-center gap-2 mt-8 h-12 px-6 rounded-xl bg-[#b3261e] text-white text-sm font-black hover:bg-[#7b1618] transition-all">
             Back to {{ $county->name }}
         </a>
     </div>

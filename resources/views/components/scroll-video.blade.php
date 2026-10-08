@@ -15,7 +15,7 @@
 
 <section id="{{ $sectionId }}" class="relative w-full overflow-hidden scroll-video-section" style="height: 300vh;">
     {{-- Sticky video container — fills viewport during scroll --}}
-    <div class="sticky top-0 left-0 w-full h-screen overflow-hidden bg-[#0B1E57]">
+    <div class="sticky top-0 left-0 w-full h-screen overflow-hidden bg-[#0b0b0b]">
         @if($videoUrl)
         <video id="{{ $id }}" class="absolute inset-0 w-full h-full object-cover" 
                muted playsinline preload="auto"

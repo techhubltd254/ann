@@ -70,7 +70,7 @@
             </video>
         </div>
         @else
-        <div class="absolute inset-0 w-full h-full" style="background:linear-gradient(135deg,#0A1024,#1a1a2e)"></div>
+        <div class="absolute inset-0 w-full h-full" style="background:linear-gradient(135deg,#0b0b0b,#1a1a2e)"></div>
         @endif
         <div class="absolute inset-0 bg-gradient-to-t from-black/40 via-black/10 to-transparent" style="z-index:3"></div>
         <div class="absolute bottom-0 left-0 right-0 max-w-7xl mx-auto px-5 pb-10 md:pb-16" style="z-index:5">
@@ -80,7 +80,7 @@
             </a>
         </div>
         {{-- Floating stats bar — continuous scroll at 0.75 speed --}}
-        <div class="absolute bottom-0 left-0 right-0 z-10 overflow-hidden bg-[#0B1E57]/70 backdrop-blur-sm border-t border-[#FFCD05]/20 pointer-events-none" style="height: 40px;">
+        <div class="absolute bottom-0 left-0 right-0 z-10 overflow-hidden bg-[#0b0b0b]/70 backdrop-blur-sm border-t border-[#FFCD05]/20 pointer-events-none" style="height: 40px;">
             <div class="floating-stats whitespace-nowrap py-[9px]">
                 <span class="floating-stat-text text-[13px] font-medium text-white/90 tracking-wide px-4">
                      Capital: {{ $county->capital ?? '—' }} &nbsp;·&nbsp;  Population: {{ $county->population_2024 ? number_format($county->population_2024) : '—' }} &nbsp;·&nbsp;  Area: {{ $county->area_km2 ? number_format($county->area_km2) . ' km²' : '—' }} &nbsp;·&nbsp;  Economic Zone: {{ $county->economic_zone ?? '—' }}
@@ -114,10 +114,10 @@
                 @endif
 </div>
             <div class="flex gap-2">
-                <a href="{{ route('marketplace.index', ['county' => $county->slug]) }}" class="px-4 py-2 rounded-xl bg-[#901C1E] text-white text-xs font-bold hover:bg-[#7b1618] transition-all">View Products</a>
+                <a href="{{ route('marketplace.index', ['county' => $county->slug]) }}" class="px-4 py-2 rounded-xl bg-[#b3261e] text-white text-xs font-bold hover:bg-[#7b1618] transition-all">View Products</a>
                 @auth
                     @if(auth()->user()->hasAnyRole(['county_admin','kicc_admin']) && (auth()->user()->county_id == $county->id || auth()->user()->hasRole('kicc_admin')))
-                    <a href="{{ route('county.admin.pro', $county->slug) }}" class="px-4 py-2 rounded-xl bg-[#0B1E57] text-white text-xs font-bold hover:bg-[#0D2A7A] transition-all">County Admin</a>
+                    <a href="{{ route('county.admin.pro', $county->slug) }}" class="px-4 py-2 rounded-xl bg-[#0b0b0b] text-white text-xs font-bold hover:bg-[#0D2A7A] transition-all">County Admin</a>
                     @endif
                 @endauth
             </div>
@@ -157,7 +157,7 @@
                    @mouseenter="onHoverEnter()"
                    @mouseleave="onHoverLeave()"
                    data-tilt="6" data-reveal data-reveal-delay="{{ $loop->index * 80 }}">
-                    <div class="aspect-[4/3] overflow-hidden relative bg-gradient-to-br from-[#0A1024] to-[#1a1a2e]">
+                    <div class="aspect-[4/3] overflow-hidden relative bg-gradient-to-br from-[#0b0b0b] to-[#1a1a2e]">
                         @if($hoverLoop)
                         <video x-ref="video" muted loop playsinline preload="auto"
                                class="absolute inset-0 w-full h-full object-cover transition-opacity duration-500"
@@ -186,9 +186,9 @@
                 <div class="px-4 pb-4 space-y-1.5 border-t border-gray-100 mt-1 pt-3">
                     @foreach($sectorPins[$s['sector_slug']] as $pin)
                     <div class="flex items-center gap-1.5">
-                        <span class="w-1.5 h-1.5 rounded-full bg-[#0B1E57]/40 shrink-0"></span>
+                        <span class="w-1.5 h-1.5 rounded-full bg-[#0b0b0b]/40 shrink-0"></span>
                         <a href="{{ $pin['pin_url'] }}" target="_blank" rel="noopener"
-                           class="text-[10px] font-medium text-gray-600 hover:text-[#0B1E57] transition-colors truncate">
+                           class="text-[10px] font-medium text-gray-600 hover:text-[#0b0b0b] transition-colors truncate">
                             {{ $pin['name'] }}
                         </a>
                     </div>
@@ -275,7 +275,7 @@
                 @endforeach
             </div>
             <div class="mt-5 text-center">
-                <a href="{{ route('marketplace.index', ['county' => $county->slug]) }}" class="inline-flex items-center gap-2 text-sm font-bold text-[#0B1E57] hover:text-[#901C1E] transition-colors">
+                <a href="{{ route('marketplace.index', ['county' => $county->slug]) }}" class="inline-flex items-center gap-2 text-sm font-bold text-[#0b0b0b] hover:text-[#b3261e] transition-colors">
                     Browse full {{ $county->name }} marketplace
                     <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 8l4 4m0 0l-4 4m4-4H3"/></svg>
                 </a>

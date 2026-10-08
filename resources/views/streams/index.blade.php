@@ -4,7 +4,7 @@
 @section('description', 'Watch live streams from exhibitions and events across Kenya')
 
 @section('content')
-<div class="bg-[#0B1E57] pt-20 pb-16 md:pb-20">
+<div class="bg-[#0b0b0b] pt-20 pb-16 md:pb-20">
     <div class="max-w-7xl mx-auto px-5">
         <div data-reveal>
             <div class="flex items-center gap-3 mb-3">
@@ -29,7 +29,7 @@
         <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
             @foreach($live as $stream)
             <a href="{{ route('streams.show', $stream) }}" class="group bg-white border border-gray-200 rounded-2xl overflow-hidden hover:border-red-500/40 transition-all card-hover">
-                <div class="aspect-video bg-[#0B1E57] relative overflow-hidden">
+                <div class="aspect-video bg-[#0b0b0b] relative overflow-hidden">
                     @if($stream->thumbnail_url)
                     <img src="{{ $stream->thumbnail_url }}" alt="{{ $stream->name }}" class="w-full h-full object-cover" loading="lazy">
                     @endif
@@ -56,7 +56,7 @@
             <span class="text-red-500 text-xs font-bold tracking-[0.2em] uppercase">Live Now</span>
             <span class="h-px flex-1 bg-gray-200"></span>
         </div>
-        <div class="bg-gradient-to-br from-[#0B1E57] to-[#0A1024] rounded-2xl p-8 md:p-12 text-center">
+        <div class="bg-gradient-to-br from-[#0b0b0b] to-[#0b0b0b] rounded-2xl p-8 md:p-12 text-center">
             <div class="w-16 h-16 rounded-full bg-white/10 mx-auto mb-4 flex items-center justify-center">
                 <svg class="w-8 h-8 text-white/60" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M15 10l4.553-2.276A1 1 0 0121 8.618v6.764a1 1 0 01-1.447.894L15 14M5 18h8a2 2 0 002-2V8a2 2 0 00-2-2H5a2 2 0 00-2 2v8a2 2 0 002 2z"/></svg>
             </div>
@@ -82,7 +82,7 @@
                     <img src="{{ $exhibition->cover_image }}" alt="{{ $exhibition->name }}" class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-700" loading="lazy">
                 </div>
                 @else
-                <div class="h-40 bg-gradient-to-br from-[#0B1E57] to-[#0A1024] flex items-center justify-center">
+                <div class="h-40 bg-gradient-to-br from-[#0b0b0b] to-[#0b0b0b] flex items-center justify-center">
                     <span class="text-white/20 text-4xl font-black">{{ substr($exhibition->name, 0, 2) }}</span>
                 </div>
                 @endif
@@ -98,7 +98,7 @@
             @endforeach
         </div>
         <div class="mt-6 text-center">
-            <a href="{{ route('exhibitions.index') }}" class="inline-flex items-center gap-2 text-sm font-bold text-[#0B1E57] hover:text-kicc-gold transition-colors">
+            <a href="{{ route('exhibitions.index') }}" class="inline-flex items-center gap-2 text-sm font-bold text-[#0b0b0b] hover:text-kicc-gold transition-colors">
                 View all exhibitions
                 <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 8l4 4m0 0l-4 4m4-4H3"/></svg>
             </a>

@@ -24,8 +24,8 @@
   /* ── deep red ───────────────────────────────────────────────────────── */
   --kicc-red:#7A1E1E;      --kicc-red-hover:#5E1414;
   /* ── brown — retires the yellow ─────────────────────────────────────── */
-  --kicc-gold:#6B4A2F;     --gold-soft:#8A6446;   --ochre-deep:#553A24;
-  --brown-deep:#3E2A1B;    --brown-lift:#8A6446;  --acacia:#6B4A2F;  --acacia-lift:#8A6446;
+  --kicc-gold:#1c1c1c;     --gold-soft:#8A6446;   --ochre-deep:#553A24;
+  --brown-deep:#3E2A1B;    --brown-lift:#8A6446;  --acacia:#1c1c1c;  --acacia-lift:#8A6446;
 
   --text:#F4F1EC;          --text-muted:rgba(244,241,236,.66);
   --hairline:rgba(255,255,255,.16);  --hairline-soft:rgba(255,255,255,.09);
@@ -37,7 +37,7 @@
   --radius:22px; --radius-sm:14px; --radius-xs:10px;
   --ease-out:cubic-bezier(.16,1,.3,1);
   --shadow-card:0 24px 70px rgba(0,0,0,.55);
-  --shadow-gold:0 0 60px rgba(107,74,47,.35);
+  --shadow-gold:0 0 60px rgba(28,28,28,.35);
 
   /* ── ui-* tokens consumed by rebuild.css (defined here so the rb-*
         components are never unstyled when 00.core.css is absent) ──────── */
@@ -91,14 +91,14 @@ body.light-world{background:var(--light-bg);color:#17150F}
 .btn.primary:hover,.btn.red:hover{background:var(--kicc-red-hover)}
 
 /* ── 4 · fallback tile — used when an entity has no verified video ─────── */
-.rb-fallback{display:grid;place-items:center;height:100%;background:linear-gradient(160deg,#121214,#241A12);color:#EFE1C8;text-align:center;padding:25px}
+.rb-fallback{display:grid;place-items:center;height:100%;background:linear-gradient(160deg,#121214,#0b0b0b);color:#EFE1C8;text-align:center;padding:25px}
 .rb-fallback span{font:italic 100px var(--font-display);color:var(--brown-lift)}
 .gk-tile-media{position:relative;overflow:hidden;border-radius:var(--radius);aspect-ratio:16/10;background:#121214}
 .gk-tile-media img,.gk-tile-media video{width:100%;height:100%;object-fit:cover;display:block}
 .gk-badge{position:absolute;left:12px;bottom:12px;z-index:3;font:11px var(--font-mono);
   padding:6px 10px;border-radius:999px;background:rgba(11,11,13,.72);color:#EFE1C8;
   border:1px solid var(--glass-border);-webkit-backdrop-filter:var(--glass-blur);backdrop-filter:var(--glass-blur)}
-.gk-badge.rep{background:rgba(107,74,47,.82)}
+.gk-badge.rep{background:rgba(28,28,28,.82)}
 .gk-badge.vid{background:rgba(122,30,30,.86)}
 
 /* ── 5 · admin media manager ──────────────────────────────────────────── */
@@ -112,7 +112,7 @@ body.light-world{background:var(--light-bg);color:#17150F}
 .gk-pill{display:inline-block;font:10px var(--font-mono);padding:3px 8px;border-radius:999px;
   border:1px solid var(--glass-border);color:var(--ui-ink)}
 .gk-pill.ready{background:rgba(79,107,71,.35)} .gk-pill.failed{background:rgba(122,30,30,.35)}
-.gk-pill.missing{background:rgba(107,74,47,.35)}
+.gk-pill.missing{background:rgba(28,28,28,.35)}
 .gk-toolbar{display:flex;gap:14px;align-items:end;flex-wrap:wrap;margin:22px 0}
 .gk-toolbar label{font-size:12px;color:var(--ui-muted);display:block;margin-bottom:6px}
 .gk-toolbar input,.gk-toolbar select{padding:11px;border-radius:12px;border:1px solid var(--ui-line);
@@ -124,7 +124,7 @@ body.light-world{background:var(--light-bg);color:#17150F}
 /* =====================================================================
    Legacy-token override layer  (appended 2026-10-08)
    approved-design.css still defines the retired ochre/gold system
-   (--kicc-gold:#fbbf24, rgba(224,162,43,…) glows). This block re-points
+   (--kicc-gold:#fbbf24, rgba(255,205,5,…) glows). This block re-points
    every legacy token and hard-coded gold affordance at the brown/deep-red
    palette so the glass skin wins without touching page logic or layout.
    ===================================================================== */
@@ -132,12 +132,12 @@ body.light-world{background:var(--light-bg);color:#17150F}
 html[data-theme],
 html[data-theme="dark"],
 html[data-theme="light"]{
-  --kicc-gold:#6B4A2F;          /* retired yellow → brown */
+  --kicc-gold:#1c1c1c;          /* retired yellow → brown */
   --gold-soft:#8A6440;
   --ochre-deep:#573A24;
   --kicc-red:#7A1E1E;           /* deep red */
   --kicc-red-hover:#5E1616;
-  --shadow-gold:0 0 60px rgba(107,74,47,.30);
+  --shadow-gold:0 0 60px rgba(28,28,28,.30);
 }
 /* gold buttons / pills / toggles → brown, white text */
 .btn.gold,
@@ -155,8 +155,8 @@ button.btn.gold{
   background:var(--kicc-gold) !important;color:#FFF7F2 !important;border-color:var(--kicc-gold) !important;
 }
 /* hard-coded ochre literals in approved-design.css */
-.media-tile .play-fab{background:rgba(107,74,47,.94) !important;color:#FFF7F2 !important}
-.hologram{background:radial-gradient(circle at 50% 45%, rgba(107,74,47,.35), transparent 60%) !important}
+.media-tile .play-fab{background:rgba(28,28,28,.94) !important;color:#FFF7F2 !important}
+.hologram{background:radial-gradient(circle at 50% 45%, rgba(28,28,28,.35), transparent 60%) !important}
 ::selection{background:var(--kicc-red) !important;color:#FFF7F2 !important}
 /* deep-red accents */
 .tag,.badge.red,.chip.red{background:var(--kicc-red) !important;color:#FFF7F2 !important}
@@ -179,21 +179,21 @@ html[data-theme="light"],
 html[data-theme="light"] body,
 html[data-theme="dark"],
 html[data-theme="dark"] body{
-  --kicc-gold:#6B4A2F;
+  --kicc-gold:#1c1c1c;
   --gold-soft:#8A6446;
   --ochre-deep:#553A24;
   --kicc-red:#7A1E1E;
   --kicc-red-hover:#5E1414;
-  --au-400:#6B4A2F;
+  --au-400:#1c1c1c;
   --au-500:#8A6446;
   --cr-600:#7A1E1E;
-  --shadow-gold:0 0 60px rgba(107,74,47,.28);
+  --shadow-gold:0 0 60px rgba(28,28,28,.28);
 }
 body .btn.gold,
 body.light-world .btn.gold,
 .shader-dark .btn.gold{
-  background:#6B4A2F !important;
-  border-color:#6B4A2F !important;
+  background:#1c1c1c !important;
+  border-color:#1c1c1c !important;
   color:#FFF7F2 !important;
 }
 body .btn.gold:hover,
@@ -201,4 +201,4 @@ body.light-world .btn.gold:hover,
 .shader-dark .btn.gold:hover{
   background:#553A24 !important;border-color:#553A24 !important;
 }
-body .btn.ghost:hover{color:#6B4A2F !important;border-color:#6B4A2F !important}
+body .btn.ghost:hover{color:#1c1c1c !important;border-color:#1c1c1c !important}

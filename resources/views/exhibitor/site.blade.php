@@ -3,10 +3,10 @@
 @section('title', $exhibitor->name . ' — Official Storefront')
 
 @section('content')
-@php $accent = '#11820B'; @endphp
+@php $accent = '#2a2a2a'; @endphp
 
 {{-- Hero --}}
-<div class="bg-[#1890D7] text-gray-900">
+<div class="bg-[#2a2a2a] text-gray-900">
     <div class="max-w-6xl mx-auto px-5 py-14">
         <div class="flex items-center gap-3 mb-6">
             <img src="{{ media('kicc/kicc-logo.png') }}" alt="KICC" class="h-9 w-auto" style="filter: brightness(0) invert(1);">

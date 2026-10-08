@@ -5,7 +5,7 @@
 
 @section('content')
 <div class="bg-white border-b border-gray-200 py-14 relative overflow-hidden">
-    <div class="absolute w-96 h-96 rounded-full bg-[#901C1E]/10 blur-3xl -top-20 right-0"></div>
+    <div class="absolute w-96 h-96 rounded-full bg-[#b3261e]/10 blur-3xl -top-20 right-0"></div>
     <div class="max-w-7xl mx-auto px-5 relative" data-reveal>
         <div class="flex items-center gap-3 mb-3">
             <div class="h-px w-8 bg-kicc-gold"></div>
@@ -21,7 +21,7 @@
     <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-5">
         @foreach($exhibitions as $i => $exhibition)
         <a href="{{ route('exhibitions.show', $exhibition->slug) }}"
-           class="bg-white rounded-2xl overflow-hidden border border-gray-200 hover:border-[#901C1E]/50 transition-all group card-hover block" data-tilt="5" data-reveal data-reveal-delay="{{ ($i % 3) * 90 }}">
+           class="bg-white rounded-2xl overflow-hidden border border-gray-200 hover:border-[#b3261e]/50 transition-all group card-hover block" data-tilt="5" data-reveal data-reveal-delay="{{ ($i % 3) * 90 }}">
             <div class="tilt-glare"></div>
             @if($exhibition->cover_image)
             <div class="h-48 overflow-hidden relative">
@@ -30,7 +30,7 @@
             @else
             <div class="w-full h-48 bg-gradient-to-br from-[#141B2E] to-[#0D1220] flex items-center justify-center text-5xl relative">
                 <span class="opacity-30"></span>
-                <div class="absolute w-32 h-32 rounded-full bg-[#901C1E]/15 blur-2xl"></div>
+                <div class="absolute w-32 h-32 rounded-full bg-[#b3261e]/15 blur-2xl"></div>
             </div>
             @endif
             @if(in_array($exhibition->id, $liveStreams ?? []))
@@ -48,7 +48,7 @@
                 </div>
                 @if($exhibition->venue)
                 <a href="https://www.google.com/maps/search/?api=1&query={{ urlencode($exhibition->venue->name . ', ' . ($exhibition->venue->city ?? $exhibition->county?->name ?? '')) }}" target="_blank" rel="noopener"
-                   class="inline-flex items-center gap-1 text-[10px] text-[#5A6480] hover:text-[#901C1E] transition-colors mb-1">
+                   class="inline-flex items-center gap-1 text-[10px] text-[#5A6480] hover:text-[#b3261e] transition-colors mb-1">
                     <svg class="w-3 h-3" fill="currentColor" viewBox="0 0 24 24"><path d="M12 2C8.13 2 5 5.13 5 9c0 5.73 7 13 7 13s7-7.27 7-13c0-3.87-3.13-7-7-7zm0 9.5c-1.38 0-2.5-1.12-2.5-2.5s1.12-2.5 2.5-2.5S14.5 7.62 14.5 9s-1.12 2.5-2.5 2.5z"/></svg>
                     {{ $exhibition->venue->name }}@if($exhibition->venue->city), {{ $exhibition->venue->city }}@endif
                 </a>

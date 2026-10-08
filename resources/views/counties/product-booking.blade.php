@@ -5,7 +5,7 @@
 @section('content')
 <div class="pt-28 pb-16">
     <div class="max-w-xl mx-auto px-5">
-        <a href="{{ route('counties.show', $county->slug) }}" class="inline-flex items-center gap-1.5 text-gray-500 hover:text-[#901C1E] text-sm mb-6 transition-colors">
+        <a href="{{ route('counties.show', $county->slug) }}" class="inline-flex items-center gap-1.5 text-gray-500 hover:text-[#b3261e] text-sm mb-6 transition-colors">
             <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 19l-7-7 7-7"/></svg>
             Back to {{ $county->name }}
         </a>
@@ -63,7 +63,7 @@
                     <div class="text-xs text-gray-400">Total due</div>
                     <div class="text-xl font-black text-[#046bd2]" x-text="'KES ' + (qty * price).toLocaleString()">KES {{ number_format($product->price) }}</div>
                 </div>
-                <button type="submit" class="h-12 px-6 rounded-xl bg-[#901C1E] text-white text-sm font-black hover:bg-[#7b1618] transition-all active:scale-[0.98]">Place Booking</button>
+                <button type="submit" class="h-12 px-6 rounded-xl bg-[#b3261e] text-white text-sm font-black hover:bg-[#7b1618] transition-all active:scale-[0.98]">Place Booking</button>
             </div>
         </form>
     </div>

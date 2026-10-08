@@ -131,7 +131,7 @@
     <div class="border-t border-gray-200 pt-12">
         <div class="flex items-center gap-3 mb-8" data-reveal>
             <h2 class="text-2xl font-black text-gray-900 tracking-tight" data-split>Accreditations</h2>
-            <span class="h-px flex-1 bg-[#1890D7]/8"></span>
+            <span class="h-px flex-1 bg-[#2a2a2a]/8"></span>
         </div>
         <div class="grid grid-cols-2 md:grid-cols-5 gap-4">
             @foreach(['ICCA','ISO 27001','AIPC','UNWTO','MPI'] as $i => $p)

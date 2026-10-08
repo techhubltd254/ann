@@ -45,13 +45,13 @@
                 <div class="text-gray-400 text-sm">Venue</div>
 
                 {{-- Booking package (kicc.co.ke venue hire model) --}}
-                <div class="mt-5 bg-[#901C1E]/5 border border-[#901C1E]/15 rounded-xl p-4">
-                    <div class="text-[10px] font-black uppercase tracking-widest text-[#901C1E] mb-2">Booking Package</div>
+                <div class="mt-5 bg-[#b3261e]/5 border border-[#b3261e]/15 rounded-xl p-4">
+                    <div class="text-[10px] font-black uppercase tracking-widest text-[#b3261e] mb-2">Booking Package</div>
                     <div class="space-y-1.5 text-xs text-[#5A6480]">
                         <div class="flex justify-between"><span>Full-day hire</span><span class="font-bold text-gray-900">KES {{ number_format(max(($venue->capacity ?? 50) * 350, 25000)) }}</span></div>
                         <div class="flex justify-between"><span>Half-day hire</span><span class="font-bold text-gray-900">KES {{ number_format(max(($venue->capacity ?? 50) * 200, 15000)) }}</span></div>
                     </div>
-                    <div class="mt-3 pt-2 border-t border-[#901C1E]/10 text-[10px] text-[#5A6480] leading-relaxed">
+                    <div class="mt-3 pt-2 border-t border-[#b3261e]/10 text-[10px] text-[#5A6480] leading-relaxed">
                         Includes: PA system · AV equipment · security · technical support · internet. Catering quoted per event.
                     </div>
                 </div>
@@ -66,8 +66,8 @@
                 </div>
 
                 <div class="mt-6 space-y-3" id="kicc-booking-modal">
-                    <button onclick="document.getElementById('kicc-booking-overlay').style.display='flex'; document.body.style.overflow='hidden';" class="w-full inline-flex items-center justify-center gap-2 font-bold tracking-wide transition-all duration-200 px-8 text-base h-14 rounded-xl bg-[#901C1E] text-gray-900 hover:bg-[#7b1618] active:scale-[0.97]" data-magnetic>Request Booking</button>
-                    <a href="{{ route('packages.index') }}" class="w-full inline-flex items-center justify-center gap-2 font-bold tracking-wide transition-all duration-200 px-4 text-xs h-11 rounded-xl border border-[#901C1E]/30 text-[#901C1E] hover:bg-[#901C1E]/5" data-magnetic>See Exhibitor Packages</a>
+                    <button onclick="document.getElementById('kicc-booking-overlay').style.display='flex'; document.body.style.overflow='hidden';" class="w-full inline-flex items-center justify-center gap-2 font-bold tracking-wide transition-all duration-200 px-8 text-base h-14 rounded-xl bg-[#b3261e] text-gray-900 hover:bg-[#7b1618] active:scale-[0.97]" data-magnetic>Request Booking</button>
+                    <a href="{{ route('packages.index') }}" class="w-full inline-flex items-center justify-center gap-2 font-bold tracking-wide transition-all duration-200 px-4 text-xs h-11 rounded-xl border border-[#b3261e]/30 text-[#b3261e] hover:bg-[#b3261e]/5" data-magnetic>See Exhibitor Packages</a>
 
                     {{-- Booking inquiry modal --}}
                     <div id="kicc-booking-overlay" class="fixed inset-0 z-[100] items-center justify-center p-5" style="display:none; background: rgba(0,0,0,0.7); backdrop-filter: blur(4px);">
@@ -103,7 +103,7 @@
                                        class="w-full h-11 px-4 rounded-xl bg-[#F9FAFB] border border-gray-200 text-gray-900 text-sm outline-none focus:ring-2 focus:ring-kicc-gold/60 [color-scheme:dark]">
                                 <textarea name="message" rows="3" placeholder="Tell us about your event (requirements, catering, AV…)"
                                           class="w-full px-4 py-3 rounded-xl bg-[#F9FAFB] border border-gray-200 text-gray-900 text-sm placeholder:text-[#5A6480] outline-none focus:ring-2 focus:ring-kicc-gold/60"></textarea>
-                                <button type="submit" class="w-full h-12 rounded-xl bg-[#901C1E] text-gray-900 font-bold text-sm hover:bg-[#7b1618] transition-colors active:scale-[0.98]" data-magnetic>
+                                <button type="submit" class="w-full h-12 rounded-xl bg-[#b3261e] text-gray-900 font-bold text-sm hover:bg-[#7b1618] transition-colors active:scale-[0.98]" data-magnetic>
                                     Send Booking Inquiry
                                 </button>
                                 <p class="text-[#5A6480] text-[11px] text-center">Same process as kicc.co.ke — our events team responds within 24 hours.</p>

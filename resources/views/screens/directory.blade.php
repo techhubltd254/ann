@@ -23,8 +23,8 @@
         @if(($grouped['national'] ?? collect())->isNotEmpty() || ($grouped['national_sector'] ?? collect())->isNotEmpty() || ($grouped['agency'] ?? collect())->isNotEmpty())
         <div class="mb-12">
             <div class="flex items-center gap-3 mb-6">
-                <span class="h-px w-8 bg-[#1890D7]"></span>
-                <span class="text-[#1890D7] text-xs font-bold tracking-[0.2em] uppercase">National Pavilion</span>
+                <span class="h-px w-8 bg-[#2a2a2a]"></span>
+                <span class="text-[#2a2a2a] text-xs font-bold tracking-[0.2em] uppercase">National Pavilion</span>
                 <span class="h-px flex-1 bg-gray-200"></span>
             </div>
             @foreach(['national', 'national_sector', 'agency'] as $g)

@@ -48,7 +48,7 @@
                     <span class="px-2 py-1 text-[10px] font-bold rounded-full
                         @if($room->status === 'ready') bg-emerald-500/20 text-emerald-400
                         @elseif($room->status === 'processing') bg-yellow-500/20 text-yellow-400
-                        @elseif($room->status === 'failed') bg-[#901C1E]/20 text-[#e86f71]
+                        @elseif($room->status === 'failed') bg-[#b3261e]/20 text-[#e86f71]
                         @else bg-sky-100 text-[#5A6480] @endif">
                         {{ ucfirst($room->status) }}
                     </span>
@@ -65,7 +65,7 @@
                     </a>
                     @endif
                     <a href="{{ route('room3d.show', $room) }}"
-                       class="flex-1 text-center px-3 py-2 bg-[#1890D7]/8 text-[#5A6480] rounded-lg text-xs font-bold hover:bg-[#1890D7]/15 transition-colors">
+                       class="flex-1 text-center px-3 py-2 bg-[#2a2a2a]/8 text-[#5A6480] rounded-lg text-xs font-bold hover:bg-[#2a2a2a]/15 transition-colors">
                         Details
                     </a>
                 </div>

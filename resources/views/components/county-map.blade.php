@@ -61,13 +61,13 @@
             if (!p.lat || !p.lng) return;
             var icon = L.divIcon({
                 className: '',
-                html: '<div style="width:14px;height:14px;background:#0B1E57;border:2px solid #fff;border-radius:50%;box-shadow:0 2px 6px rgba(0,0,0,.4)"></div>',
+                html: '<div style="width:14px;height:14px;background:#0b0b0b;border:2px solid #fff;border-radius:50%;box-shadow:0 2px 6px rgba(0,0,0,.4)"></div>',
                 iconSize: [14, 14], iconAnchor: [7, 7]
             });
             var html = '<strong>' + p.name + '</strong>';
             if (p.loc) html += '<br><span style="font-size:12px">' + p.loc + '</span>';
-            if (p.web) html += '<br><a href="' + p.web + '" target="_blank" rel="noopener" style="font-size:12px;color:#0B1E57;text-decoration:underline">Official Website</a>';
-            if (p.lat && p.lng) html += '<br><a href="https://www.google.com/maps/search/?api=1&query=' + p.lat + ',' + p.lng + '" target="_blank" rel="noopener" style="font-size:12px;color:#0B1E57;text-decoration:underline"> View on Google Maps</a>';
+            if (p.web) html += '<br><a href="' + p.web + '" target="_blank" rel="noopener" style="font-size:12px;color:#0b0b0b;text-decoration:underline">Official Website</a>';
+            if (p.lat && p.lng) html += '<br><a href="https://www.google.com/maps/search/?api=1&query=' + p.lat + ',' + p.lng + '" target="_blank" rel="noopener" style="font-size:12px;color:#0b0b0b;text-decoration:underline"> View on Google Maps</a>';
             var m = L.marker([p.lat, p.lng], { icon: icon }).addTo(map).bindPopup(html);
             if (first) { m.openPopup(); first = false; }
         });

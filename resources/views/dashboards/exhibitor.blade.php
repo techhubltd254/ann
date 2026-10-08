@@ -90,7 +90,7 @@
                         </div>
                         <div class="text-sm font-bold text-gray-900">KES {{ number_format($p->price ?? 0) }}</div>
                         <a href="{{ route('marketplace.show', $p->slug) }}" class="text-[10px] font-bold text-gray-400 hover:text-gray-900">VIEW</a>
-                        <form method="POST" action="{{ route('exhibitor.admin.products.delete', $p->id) }}" onsubmit="return confirm('Remove this product?')">@csrf<button class="text-[10px] font-bold text-[#901C1E] hover:underline" data-magnetic>DELETE</button></form>
+                        <form method="POST" action="{{ route('exhibitor.admin.products.delete', $p->id) }}" onsubmit="return confirm('Remove this product?')">@csrf<button class="text-[10px] font-bold text-[#b3261e] hover:underline" data-magnetic>DELETE</button></form>
                     </div>
                     @empty
                     <p class="text-gray-400 text-sm py-6 text-center">No products yet — list your first product &rarr;</p>
@@ -205,7 +205,7 @@
                         <form method="POST" action="{{ route('exhibitor.admin.upgrade') }}" class="inline mt-3">
                             @csrf
                             <input type="hidden" name="upgrade_type" value="custom">
-                            <button class="px-5 py-2.5 rounded-xl bg-[#901C1E] text-white text-sm font-bold">Request Custom Setup</button>
+                            <button class="px-5 py-2.5 rounded-xl bg-[#b3261e] text-white text-sm font-bold">Request Custom Setup</button>
                         </form>
                     </div>
                     <div class="border-2 border-gray-200 hover:border-[#FFCD05] rounded-2xl p-5 transition-all cursor-pointer">

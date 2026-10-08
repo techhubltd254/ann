@@ -12,7 +12,7 @@
         @if($item->isExperience() && $item->itemable)
             @php $booking = $item->itemable; $summary = $booking->displaySummary(); @endphp
             <div class="bg-white rounded-2xl border border-gray-100 p-5 flex mobile-stack items-center gap-5 card-hover" data-reveal>
-                <div class="w-16 h-16 rounded-xl bg-[#0B1E57]/10 flex items-center justify-center text-2xl shrink-0"></div>
+                <div class="w-16 h-16 rounded-xl bg-[#0b0b0b]/10 flex items-center justify-center text-2xl shrink-0"></div>
                 <div class="flex-1 min-w-0">
                     <div class="font-bold text-gray-900 text-sm">Experience: {{ $summary['destination_name'] }}</div>
                     <div class="text-gray-400 text-xs mt-0.5">
@@ -63,7 +63,7 @@
             <span class="font-black text-kicc-gold text-2xl">KES {{ number_format($cart->items->sum(fn($i) => $i->unit_price * $i->quantity)) }}</span>
         </div>
         <a href="{{ route('checkout.index') }}" data-magnetic
-           class="w-full inline-flex items-center justify-center gap-2 font-bold tracking-wide transition-all duration-200 px-8 text-base h-14 rounded-xl bg-[#901C1E] text-gray-900 hover:bg-[#7b1618] active:scale-[0.97]">
+           class="w-full inline-flex items-center justify-center gap-2 font-bold tracking-wide transition-all duration-200 px-8 text-base h-14 rounded-xl bg-[#b3261e] text-gray-900 hover:bg-[#7b1618] active:scale-[0.97]">
             Proceed to Checkout
             <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 8l4 4m0 0l-4 4m4-4H3"/></svg>
         </a>

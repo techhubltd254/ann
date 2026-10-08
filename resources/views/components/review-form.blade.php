@@ -47,12 +47,12 @@
                    class="px-3 py-2 rounded-xl bg-gray-50 border border-gray-200 text-sm focus:ring-1 focus:ring-[#FFCD05] outline-none">
         </div>
         <input type="file" name="photos[]" multiple accept="image/jpeg,image/png,image/webp"
-               class="block w-full text-xs text-gray-400 mb-3 file:mr-3 file:px-3 file:py-1.5 file:rounded-lg file:border-0 file:bg-[#0B1E57] file:text-white file:text-xs">
+               class="block w-full text-xs text-gray-400 mb-3 file:mr-3 file:px-3 file:py-1.5 file:rounded-lg file:border-0 file:bg-[#0b0b0b] file:text-white file:text-xs">
         @endif
 
         <div class="cf-turnstile" data-site-key="{{ config('services.turnstile.site_key', '1x00000000000000000000AAAAAAAA') }}"></div>
         <input type="hidden" name="cf-turnstile-response" value="{{ config('services.turnstile.site_key', '1x00000000000000000000AAAAAAAA') }}">
-        <button type="submit" class="w-full h-10 rounded-xl bg-[#0B1E57] text-white text-sm font-bold hover:bg-[#16275f] transition-all">
+        <button type="submit" class="w-full h-10 rounded-xl bg-[#0b0b0b] text-white text-sm font-bold hover:bg-[#16275f] transition-all">
             Submit Review
         </button>
         <p class="text-[10px] text-gray-400 mt-2 text-center">Reviews appear after moderation.</p>

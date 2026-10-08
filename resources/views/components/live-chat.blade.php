@@ -18,7 +18,7 @@
     <div class="flex-1 overflow-y-auto p-3 space-y-2" x-ref="chatBox">
         <template x-for="msg in messages" :key="msg.id">
             <div class="flex items-start gap-2">
-                <div class="w-6 h-6 rounded-full bg-[#0B1E57]/10 flex items-center justify-center text-[10px] font-bold text-[#0B1E57] shrink-0"
+                <div class="w-6 h-6 rounded-full bg-[#0b0b0b]/10 flex items-center justify-center text-[10px] font-bold text-[#0b0b0b] shrink-0"
                      x-text="(msg.user_name || 'G')[0].toUpperCase()"></div>
                 <div class="flex-1 min-w-0">
                     <div class="flex items-center gap-1.5">
@@ -38,7 +38,7 @@
                    class="flex-1 h-9 rounded-xl bg-gray-50 border border-gray-200 text-xs px-3 outline-none focus:ring-1 focus:ring-[#FFCD05]"
                    maxlength="500">
             <button type="submit" :disabled="!newMessage.trim()"
-                    class="h-9 px-4 rounded-xl bg-[#0B1E57] text-white text-xs font-bold hover:bg-[#16275f] transition-all disabled:opacity-50">
+                    class="h-9 px-4 rounded-xl bg-[#0b0b0b] text-white text-xs font-bold hover:bg-[#16275f] transition-all disabled:opacity-50">
                 Send
             </button>
         </form>

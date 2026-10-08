@@ -26,17 +26,17 @@
             </a>
             <h1 class="text-4xl font-black text-gray-900" data-split>{{ $attraction->name }}</h1>
             <div class="flex flex-wrap items-center gap-3 mt-2">
-                <span class="text-[#0B1E57] text-xs font-bold uppercase tracking-widest">{{ $attraction->category ?? 'Attraction' }}</span>
+                <span class="text-[#0b0b0b] text-xs font-bold uppercase tracking-widest">{{ $attraction->category ?? 'Attraction' }}</span>
                 @if($attraction->latitude && $attraction->longitude)
                 <a href="https://www.google.com/maps/search/?api=1&query={{ $attraction->latitude }},{{ $attraction->longitude }}" target="_blank" rel="noopener"
-                   class="inline-flex items-center gap-1 text-sm text-gray-500 hover:text-[#901C1E] transition-colors">
+                   class="inline-flex items-center gap-1 text-sm text-gray-500 hover:text-[#b3261e] transition-colors">
                     <svg class="w-3.5 h-3.5" fill="currentColor" viewBox="0 0 24 24"><path d="M12 2C8.13 2 5 5.13 5 9c0 5.73 7 13 7 13s7-7.27 7-13c0-3.87-3.13-7-7-7zm0 9.5c-1.38 0-2.5-1.12-2.5-2.5s1.12-2.5 2.5-2.5S14.5 7.62 14.5 9s-1.12 2.5-2.5 2.5z"/></svg>
                     {{ $attraction->location ?? 'View on Map' }}
                 </a>
                 @elseif($attraction->location)
                 <span class="text-gray-500 text-sm flex items-center gap-1">
                     <svg class="w-3.5 h-3.5" fill="currentColor" viewBox="0 0 24 24"><path d="M12 2C8.13 2 5 5.13 5 9c0 5.73 7 13 7 13s7-7.27 7-13c0-3.87-3.13-7-7-7zm0 9.5c-1.38 0-2.5-1.12-2.5-2.5s1.12-2.5 2.5-2.5S14.5 7.62 14.5 9s-1.12 2.5-2.5 2.5z"/></svg>
-                    <a href="https://www.google.com/maps/search/?api=1&query={{ urlencode($attraction->location) }}" target="_blank" rel="noopener" class="hover:text-[#901C1E] transition-colors">{{ $attraction->location }}</a>
+                    <a href="https://www.google.com/maps/search/?api=1&query={{ urlencode($attraction->location) }}" target="_blank" rel="noopener" class="hover:text-[#b3261e] transition-colors">{{ $attraction->location }}</a>
                 </span>
                 @endif
                 @if($attraction->opening_hours)<span class="text-gray-500 text-sm"> {{ $attraction->opening_hours }}</span>@endif
@@ -65,8 +65,8 @@
             <h3 class="text-gray-900 font-black mt-10 mb-4">Complete your day in {{ $attraction->county->name }}</h3>
             <div class="grid sm:grid-cols-3 gap-4">
                 @foreach($recommended as $r)
-                <a href="{{ route('attractions.show', $r->id) }}" class="bg-gray-50 border border-gray-200 rounded-2xl p-4 hover:border-[#0B1E57]/40 transition-all group">
-                    <div class="font-bold text-gray-900 text-sm group-hover:text-[#0B1E57] transition-colors">{{ $r->name }}</div>
+                <a href="{{ route('attractions.show', $r->id) }}" class="bg-gray-50 border border-gray-200 rounded-2xl p-4 hover:border-[#0b0b0b]/40 transition-all group">
+                    <div class="font-bold text-gray-900 text-sm group-hover:text-[#0b0b0b] transition-colors">{{ $r->name }}</div>
                     <div class="text-gray-400 text-xs mt-1">Also bookable · from KES {{ number_format(($r->entry_fee ?: 500)) }}</div>
                 </a>
                 @endforeach
@@ -81,7 +81,7 @@
                     <div class="text-2xl font-black text-gray-900">KES {{ number_format($entryFee) }}</div>
                     <div class="text-xs text-gray-400">per guest entry</div>
                 </div>
-                <div class="text-[10px] font-bold uppercase tracking-widest text-[#0B1E57] mb-5">Instant booking · escrow protected</div>
+                <div class="text-[10px] font-bold uppercase tracking-widest text-[#0b0b0b] mb-5">Instant booking · escrow protected</div>
 
                 @if($errors->any())
                 <div class="bg-red-50 border border-red-200 text-red-600 rounded-xl px-4 py-2.5 mb-4 text-xs">{{ $errors->first() }}</div>
@@ -89,9 +89,9 @@
 
                 <form method="POST" action="{{ route('attractions.book', $attraction->id) }}" class="space-y-3">
                     @csrf
-                    <input type="text" name="name" required placeholder="Your full name *" class="w-full h-11 px-4 rounded-xl bg-[#F9FAFB] border border-gray-200 text-sm outline-none focus:ring-2 focus:ring-[#0B1E57]/60">
-                    <input type="email" name="email" required placeholder="Email *" class="w-full h-11 px-4 rounded-xl bg-[#F9FAFB] border border-gray-200 text-sm outline-none focus:ring-2 focus:ring-[#0B1E57]/60">
-                    <input type="tel" name="phone" required placeholder="Phone (M-Pesa) *" class="w-full h-11 px-4 rounded-xl bg-[#F9FAFB] border border-gray-200 text-sm outline-none focus:ring-2 focus:ring-[#0B1E57]/60">
+                    <input type="text" name="name" required placeholder="Your full name *" class="w-full h-11 px-4 rounded-xl bg-[#F9FAFB] border border-gray-200 text-sm outline-none focus:ring-2 focus:ring-[#0b0b0b]/60">
+                    <input type="email" name="email" required placeholder="Email *" class="w-full h-11 px-4 rounded-xl bg-[#F9FAFB] border border-gray-200 text-sm outline-none focus:ring-2 focus:ring-[#0b0b0b]/60">
+                    <input type="tel" name="phone" required placeholder="Phone (M-Pesa) *" class="w-full h-11 px-4 rounded-xl bg-[#F9FAFB] border border-gray-200 text-sm outline-none focus:ring-2 focus:ring-[#0b0b0b]/60">
                     <div class="grid grid-cols-2 gap-2">
                         <div>
                             <label class="text-[10px] font-bold text-gray-400 uppercase">Visit date</label>
@@ -108,8 +108,8 @@
                         <div class="text-[10px] font-bold text-gray-400 uppercase tracking-wider mb-2">Suggested for this trip — optional</div>
                         <div class="space-y-2">
                             @foreach($addons as $key => $a)
-                            <label class="flex items-start gap-3 border border-gray-200 rounded-xl p-3 cursor-pointer hover:border-[#0B1E57]/40 transition-all">
-                                <input type="checkbox" name="addons[]" value="{{ $key }}" x-model="addons.{{ $key }}" class="mt-1 accent-[#0B1E57]">
+                            <label class="flex items-start gap-3 border border-gray-200 rounded-xl p-3 cursor-pointer hover:border-[#0b0b0b]/40 transition-all">
+                                <input type="checkbox" name="addons[]" value="{{ $key }}" x-model="addons.{{ $key }}" class="mt-1 accent-[#0b0b0b]">
                                 <span class="flex-1">
                                     <span class="block text-xs font-bold text-gray-900">{{ $a['label'] }}</span>
                                     <span class="block text-[10px] text-gray-400">{{ $a['desc'] }}</span>
@@ -127,7 +127,7 @@
                     <a href="{{ route('experience.plan', ['type' => 'attraction', 'id' => $attraction->id]) }}" class="w-full h-12 rounded-xl bg-emerald-600 text-white font-black text-sm hover:bg-emerald-700 transition-all active:scale-[0.98] flex items-center justify-center mb-2">
                         🎯 Build Your Full Experience
                     </a>
-                    <button type="submit" class="w-full h-12 rounded-xl bg-[#0B1E57] text-white font-black text-sm hover:bg-[#0D2A7A] transition-all active:scale-[0.98]">
+                    <button type="submit" class="w-full h-12 rounded-xl bg-[#0b0b0b] text-white font-black text-sm hover:bg-[#0D2A7A] transition-all active:scale-[0.98]">
                         Book &amp; Pay
                     </button>
                     <p class="text-gray-400 text-[10px] text-center">M-Pesa · Card · Escrow protected until your visit</p>

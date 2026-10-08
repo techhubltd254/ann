@@ -61,7 +61,7 @@
 
     <div class="rounded-2xl overflow-hidden h-80 bg-[#F9FAFB] {{ $allVideos->isNotEmpty() ? 'hidden' : '' }}" id="product-image-container">
         @if($product->video_description)
-        <div class="w-full h-full bg-gradient-to-br from-[#0B1E57] to-[#1a1a2e] p-6 flex flex-col justify-center">
+        <div class="w-full h-full bg-gradient-to-br from-[#0b0b0b] to-[#1a1a2e] p-6 flex flex-col justify-center">
             <span class="text-[10px] font-bold text-[#FFCD05] uppercase tracking-widest mb-2"> Video being produced</span>
             <p class="text-white/90 text-sm leading-relaxed">{{ $product->video_description }}</p>
         </div>
@@ -72,7 +72,7 @@
         @elseif($product->images->first()->url ?? null)
         <x-fast-image :src="$product->images->first()->url" :alt="$product->name" :width="960" :quality="80" class="w-full h-full" />
         @else
-        <div class="w-full h-full flex items-center justify-center bg-gradient-to-br from-[#0B1E57] to-[#1a1a2e]">
+        <div class="w-full h-full flex items-center justify-center bg-gradient-to-br from-[#0b0b0b] to-[#1a1a2e]">
             <span class="text-white/30 text-8xl font-black">{{ strtoupper(substr($product->name, 0, 2)) }}</span>
         </div>
         @endif
@@ -157,7 +157,7 @@
                     <input type="hidden" name="variant_id" value="{{ $product->variants->first()->id ?? '' }}">
                     <input type="number" name="quantity" value="1" min="1" max="99"
                            class="w-full h-11 rounded-xl bg-[#F9FAFB] border border-gray-200 text-gray-700 text-center outline-none focus:ring-1 focus:ring-kicc-gold">
-                    <button type="submit" class="w-full inline-flex items-center justify-center gap-2 font-bold tracking-wide transition-all duration-200 px-8 text-base h-14 rounded-xl bg-[#901C1E] text-gray-900 hover:bg-[#7b1618] active:scale-[0.97]" data-magnetic>
+                    <button type="submit" class="w-full inline-flex items-center justify-center gap-2 font-bold tracking-wide transition-all duration-200 px-8 text-base h-14 rounded-xl bg-[#b3261e] text-gray-900 hover:bg-[#7b1618] active:scale-[0.97]" data-magnetic>
                         Add to Cart
                     </button>
                 </form>
@@ -319,7 +319,7 @@
                     @endif
                     @if($t['booking_url'])
                     <a href="{{ $t['booking_url'] }}" target="_blank" rel="noopener"
-                       class="w-full mt-1 text-center py-1.5 rounded-lg bg-[#0B1E57] text-white text-xs font-bold hover:bg-[#16275f] transition-all">
+                       class="w-full mt-1 text-center py-1.5 rounded-lg bg-[#0b0b0b] text-white text-xs font-bold hover:bg-[#16275f] transition-all">
                         Book Now
                     </a>
                     @endif
@@ -331,7 +331,7 @@
 
         {{-- AJAX more link --}}
         <div class="mt-4 text-center" x-show="!loaded && !loading" x-cloak>
-            <button @click="loadMore()" class="inline-flex items-center gap-2 text-xs font-bold text-[#0B1E57] hover:text-[#901C1E] transition-colors">
+            <button @click="loadMore()" class="inline-flex items-center gap-2 text-xs font-bold text-[#0b0b0b] hover:text-[#b3261e] transition-colors">
                 <span x-show="!loading">Load more recommendations</span>
                 <span x-show="loading" class="flex items-center gap-2">
                     <svg class="w-4 h-4 animate-spin" fill="none" viewBox="0 0 24 24"><circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"/><path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8v4a4 4 0 00-4 4H4z"/></svg>

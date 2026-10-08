@@ -25,10 +25,10 @@
 
     <div class="max-w-7xl mx-auto px-5 py-10">
         <div class="flex flex-wrap items-center gap-2 mb-8">
-            <a href="{{ route('marketplace.index') }}" class="px-4 py-2 rounded-xl text-xs font-bold transition-all {{ !$activeCategory && !$activeCounty ? 'bg-[#901C1E] text-gray-900' : 'bg-[#F9FAFB] text-[#5A6480] hover:text-gray-900 border border-gray-200 hover:border-gray-200' }} card-hover" data-magnetic>All</a>
+            <a href="{{ route('marketplace.index') }}" class="px-4 py-2 rounded-xl text-xs font-bold transition-all {{ !$activeCategory && !$activeCounty ? 'bg-[#b3261e] text-gray-900' : 'bg-[#F9FAFB] text-[#5A6480] hover:text-gray-900 border border-gray-200 hover:border-gray-200' }} card-hover" data-magnetic>All</a>
             @foreach($categories as $cat)
             <a href="{{ route('marketplace.index', ['category' => $cat->slug]) }}"
-               class="px-4 py-2 rounded-xl text-xs font-bold transition-all {{ $activeCategory === $cat->slug ? 'bg-[#901C1E] text-gray-900' : 'bg-[#F9FAFB] text-[#5A6480] hover:text-gray-900 border border-gray-200 hover:border-gray-200' }}">
+               class="px-4 py-2 rounded-xl text-xs font-bold transition-all {{ $activeCategory === $cat->slug ? 'bg-[#b3261e] text-gray-900' : 'bg-[#F9FAFB] text-[#5A6480] hover:text-gray-900 border border-gray-200 hover:border-gray-200' }}">
                 {{ $cat->name }} <span class="text-[#5A6480]">({{ $cat->products_count }})</span>
             </a>
             @endforeach
@@ -70,10 +70,10 @@
                         <span class="text-[10px] font-bold text-kicc-gold uppercase tracking-widest">{{ $product->county->name }}</span>
                         @endif
                         @if($product->is_featured)
-                        <span class="text-[10px] font-bold text-[#5A6480] bg-[#1890D7]/8 px-1.5 py-0.5 rounded">Featured</span>
+                        <span class="text-[10px] font-bold text-[#5A6480] bg-[#2a2a2a]/8 px-1.5 py-0.5 rounded">Featured</span>
                         @endif
                         @if($product->video_description && str_contains($product->video_description, 'ADVERT'))
-                        <span class="text-[10px] font-bold text-white bg-[#901C1E] px-1.5 py-0.5 rounded">5s Advert</span>
+                        <span class="text-[10px] font-bold text-white bg-[#b3261e] px-1.5 py-0.5 rounded">5s Advert</span>
                         @endif
                     </div>
                     <h3 class="font-bold text-gray-900 text-sm leading-snug line-clamp-2">{{ $product->name }}</h3>

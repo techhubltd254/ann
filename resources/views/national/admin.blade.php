@@ -37,7 +37,7 @@
             <div class="border border-white/10 rounded-xl p-4">
                 <div class="flex items-start justify-between">
                     <div class="flex items-center gap-3">
-                        <div class="w-8 h-8 rounded-lg flex items-center justify-center text-xs font-black text-white" style="background: {{ $m->color ?: '#1890D7' }}">{{ $m->code ?? substr($m->name, 0, 3) }}</div>
+                        <div class="w-8 h-8 rounded-lg flex items-center justify-center text-xs font-black text-white" style="background: {{ $m->color ?: '#2a2a2a' }}">{{ $m->code ?? substr($m->name, 0, 3) }}</div>
                         <div><div class="font-bold text-white text-sm">{{ $m->name }}</div><div class="text-xs text-zinc-500">{{ $m->agencies->count() }} agencies</div></div>
                     </div>
                     <div class="flex gap-1">
@@ -137,7 +137,7 @@
                     @else
                     <div class="absolute inset-0 flex items-center justify-center">
                         <div class="text-center">
-                            <div class="w-12 h-12 mx-auto rounded-xl flex items-center justify-center text-white text-lg font-black" style="background: {{ $m->color ?: '#1890D7' }}">{{ $m->code ?? substr($m->name, 0, 3) }}</div>
+                            <div class="w-12 h-12 mx-auto rounded-xl flex items-center justify-center text-white text-lg font-black" style="background: {{ $m->color ?: '#2a2a2a' }}">{{ $m->code ?? substr($m->name, 0, 3) }}</div>
                             <div class="text-xs text-zinc-500 mt-2">No video or flag</div>
                         </div>
                     </div>

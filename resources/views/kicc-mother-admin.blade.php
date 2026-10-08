@@ -2,7 +2,7 @@
 
 @section('title', 'KICC Mother Admin — Nexora Control')
 
-@php $accent = '#901C1E'; @endphp
+@php $accent = '#b3261e'; @endphp
 
 @section('content')
 <div class="flex h-screen overflow-hidden" x-data="{ tab: '{{ $tab ?? 'overview' }}', drawer: null, setTab(t) { this.tab = t; history.replaceState(null,'','?tab='+t); } }">
@@ -216,7 +216,7 @@
                 <div class="grid sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-4">
                     @foreach($counties as $c)
                     <div class="glass-card rounded-2xl overflow-hidden hover-scale">
-                        <a href="{{ route('county.admin.pro', $c->slug) }}" class="block relative aspect-[16/9] bg-gradient-to-br from-[#0A1024] to-[#1a1a2e] overflow-hidden">
+                        <a href="{{ route('county.admin.pro', $c->slug) }}" class="block relative aspect-[16/9] bg-gradient-to-br from-[#0b0b0b] to-[#1a1a2e] overflow-hidden">
                             @if($c->hero_video_url)
                             <video autoplay muted loop playsinline preload="metadata" class="w-full h-full object-cover" onerror="this.style.display='none'">
                                 <source src="{{ $c->hero_video_url }}" type="video/mp4">
@@ -523,7 +523,7 @@
             <div class="glass-card rounded-2xl p-6">
                 <div class="flex items-center justify-between mb-6">
                     <h3 class="font-bold text-white text-lg">Live Events Management</h3>
-                    <a href="{{ route('streams.create') }}" class="text-[11px] font-bold px-3 py-1.5 rounded-lg bg-[#901C1E] text-white hover:bg-[#7b1618] transition-all">+ New Stream</a>
+                    <a href="{{ route('streams.create') }}" class="text-[11px] font-bold px-3 py-1.5 rounded-lg bg-[#b3261e] text-white hover:bg-[#7b1618] transition-all">+ New Stream</a>
                 </div>
 
                 <div class="grid grid-cols-2 md:grid-cols-5 gap-3 mb-6">

@@ -5,8 +5,8 @@
 @section('content')
 <div class="pt-20 min-h-screen flex items-center justify-center px-5 py-12">
     <div class="w-full max-w-lg text-center" data-reveal>
-        <div class="w-20 h-20 rounded-full bg-[#0B1E57]/15 border-2 border-[#0B1E57] flex items-center justify-center mx-auto mb-6">
-            <svg class="w-10 h-10 text-[#0B1E57]" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M5 13l4 4L19 7"/></svg>
+        <div class="w-20 h-20 rounded-full bg-[#0b0b0b]/15 border-2 border-[#0b0b0b] flex items-center justify-center mx-auto mb-6">
+            <svg class="w-10 h-10 text-[#0b0b0b]" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M5 13l4 4L19 7"/></svg>
         </div>
         <h1 class="text-3xl font-black text-gray-900 mb-2" data-split>Booking Confirmed!</h1>
         <p class="text-gray-400 text-sm mb-8">Your trip is reserved. Payment confirmation follows shortly via M-Pesa.</p>
@@ -27,13 +27,13 @@
             </div>
             <div class="flex justify-between items-center pt-4 mt-4 border-t border-gray-100">
                 <span class="text-gray-900 font-bold">Total</span>
-                <span class="text-[#0B1E57] font-black text-xl">KES {{ number_format($total) }}</span>
+                <span class="text-[#0b0b0b] font-black text-xl">KES {{ number_format($total) }}</span>
             </div>
         </div>
 
         <div class="grid grid-cols-2 gap-3 mt-6">
             <a href="{{ route('counties.sector', [$attraction->county->slug, 'tourism']) }}" class="h-11 inline-flex items-center justify-center rounded-xl border border-gray-200 text-gray-600 text-sm font-bold hover:bg-gray-50 transition-all">More in {{ $attraction->county->name }}</a>
-            <a href="{{ route('travel.index') }}" class="h-11 inline-flex items-center justify-center rounded-xl bg-[#901C1E] text-gray-900 text-sm font-bold hover:bg-[#7b1618] transition-all" data-magnetic>Plan Full Trip</a>
+            <a href="{{ route('travel.index') }}" class="h-11 inline-flex items-center justify-center rounded-xl bg-[#b3261e] text-gray-900 text-sm font-bold hover:bg-[#7b1618] transition-all" data-magnetic>Plan Full Trip</a>
         </div>
     </div>
 </div>

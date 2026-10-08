@@ -2,7 +2,7 @@
 
 @section('title', 'National Government Portal — Nexora Control')
 
-@php $accent = '#1890D7'; @endphp
+@php $accent = '#2a2a2a'; @endphp
 
 @section('content')
 <div class="flex h-screen overflow-hidden" x-data="{ tab: '{{ $tab ?? 'overview' }}', drawer: null, setTab(t) { this.tab = t; history.replaceState(null,'','?tab='+t); } }">
@@ -96,7 +96,7 @@
                     @foreach($ministries as $m)
                     <div class="glass-card rounded-2xl p-5">
                         <div class="flex items-start justify-between mb-3">
-                            <div class="w-10 h-10 rounded-xl flex items-center justify-center text-white font-black text-sm" style="background: {{ $m->color ?: '#1890D7' }}">{{ $m->code }}</div>
+                            <div class="w-10 h-10 rounded-xl flex items-center justify-center text-white font-black text-sm" style="background: {{ $m->color ?: '#2a2a2a' }}">{{ $m->code }}</div>
                             <div class="flex gap-2">
                                 <button @click="$el.nextElementSibling.classList.toggle('hidden')" class="btn-ghost text-xs py-1 px-2"></button>
                                 <a href="{{ route('national.site', $m->slug) }}" class="btn-ghost text-xs py-1 px-2">Website ↗</a>
@@ -137,7 +137,7 @@
                         <tbody class="divide-y divide-white/5">
                         @foreach($agencies as $a)
                         <tr class="hover:bg-white/5 transition">
-                            <td class="py-3"><span class="text-[10px] font-black px-2 py-1 rounded-md text-white" style="background: {{ $a->ministry?->color ?: '#1890D7' }}">{{ $a->code }}</span></td>
+                            <td class="py-3"><span class="text-[10px] font-black px-2 py-1 rounded-md text-white" style="background: {{ $a->ministry?->color ?: '#2a2a2a' }}">{{ $a->code }}</span></td>
                             <td class="py-3 font-medium text-zinc-200">{{ $a->name }}</td>
                             <td class="py-3 text-zinc-500 text-xs">{{ $a->ministry?->name }}</td>
                             <td class="py-3 text-right">

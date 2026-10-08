@@ -5,7 +5,7 @@
 
 @section('content')
 {{-- Hero --}}
-<div class="relative bg-[#1890D7] overflow-hidden">
+<div class="relative bg-[#2a2a2a] overflow-hidden">
     <div class="absolute inset-0">
         <img src="{{ media('kicc/tower-night.jpg') }}" alt="" class="w-full h-full object-cover opacity-20">
     </div>
@@ -29,11 +29,11 @@
     <div class="grid sm:grid-cols-2 lg:grid-cols-4 gap-5">
         @foreach($plans as $i => $p)
         @php $featured = $p->slug === 'exhibitor-pro'; @endphp
-        <div class="relative bg-white rounded-2xl border {{ $featured ? 'border-[#901C1E] shadow-xl shadow-[#901C1E]/10' : 'border-gray-200' }} p-6 flex flex-col card-hover">
+        <div class="relative bg-white rounded-2xl border {{ $featured ? 'border-[#b3261e] shadow-xl shadow-[#b3261e]/10' : 'border-gray-200' }} p-6 flex flex-col card-hover">
             @if($featured)
-            <span class="absolute -top-3 left-1/2 -translate-x-1/2 bg-[#901C1E] text-gray-900 text-[10px] font-black uppercase tracking-widest px-3 py-1 rounded-full">Most Popular</span>
+            <span class="absolute -top-3 left-1/2 -translate-x-1/2 bg-[#b3261e] text-gray-900 text-[10px] font-black uppercase tracking-widest px-3 py-1 rounded-full">Most Popular</span>
             @endif
-            <div class="text-xs font-bold uppercase tracking-widest {{ $featured ? 'text-[#901C1E]' : 'text-gray-400' }} mb-2">{{ $p->name }}</div>
+            <div class="text-xs font-bold uppercase tracking-widest {{ $featured ? 'text-[#b3261e]' : 'text-gray-400' }} mb-2">{{ $p->name }}</div>
             <div class="mb-1">
                 <span class="text-3xl font-black text-gray-900">KES {{ number_format($p->price) }}</span>
                 <span class="text-sm text-gray-400">/mo</span>
@@ -42,12 +42,12 @@
             <ul class="space-y-2 mb-6 flex-1">
                 @foreach($p->features ?? [] as $f)
                 <li class="flex items-start gap-2 text-xs text-gray-600">
-                    <svg class="w-3.5 h-3.5 mt-0.5 shrink-0 {{ $featured ? 'text-[#901C1E]' : 'text-[#11820B]' }}" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M5 13l4 4L19 7"/></svg>
+                    <svg class="w-3.5 h-3.5 mt-0.5 shrink-0 {{ $featured ? 'text-[#b3261e]' : 'text-[#2a2a2a]' }}" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M5 13l4 4L19 7"/></svg>
                     {{ $f }}
                 </li>
                 @endforeach
             </ul>
-            <a href="{{ route('register') }}" class="block text-center py-2.5 rounded-xl text-sm font-bold transition-all {{ $featured ? 'bg-[#901C1E] text-gray-900 hover:bg-[#7b1618]' : 'border border-[#901C1E]/30 text-[#901C1E] hover:bg-[#901C1E]/5' }}" data-magnetic>
+            <a href="{{ route('register') }}" class="block text-center py-2.5 rounded-xl text-sm font-bold transition-all {{ $featured ? 'bg-[#b3261e] text-gray-900 hover:bg-[#7b1618]' : 'border border-[#b3261e]/30 text-[#b3261e] hover:bg-[#b3261e]/5' }}" data-magnetic>
                 {{ $p->price == 0 ? 'Start Free' : 'Get ' . $p->name }}
             </a>
         </div>
@@ -66,21 +66,21 @@
         <div class="grid sm:grid-cols-2 lg:grid-cols-4 gap-5">
             @foreach($countyPackages as $cp)
             <div class="bg-white rounded-2xl border border-gray-200 p-6 flex flex-col card-hover">
-                <div class="text-xs font-bold uppercase tracking-widest text-[#901C1E] mb-2">{{ $cp['name'] }}</div>
+                <div class="text-xs font-bold uppercase tracking-widest text-[#b3261e] mb-2">{{ $cp['name'] }}</div>
                 <div class="mb-1">
                     <span class="text-3xl font-black text-gray-900">KES {{ number_format($cp['price']) }}</span>
                     <span class="text-sm text-gray-400">/mo</span>
                 </div>
-                <div class="text-xs font-bold text-[#901C1E] mb-4">{{ $cp['slots'] }}</div>
+                <div class="text-xs font-bold text-[#b3261e] mb-4">{{ $cp['slots'] }}</div>
                 <ul class="space-y-2 mb-6 flex-1">
                     @foreach($cp['features'] as $f)
                     <li class="flex items-start gap-2 text-xs text-gray-600">
-                        <svg class="w-3.5 h-3.5 mt-0.5 shrink-0 text-[#901C1E]" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M5 13l4 4L19 7"/></svg>
+                        <svg class="w-3.5 h-3.5 mt-0.5 shrink-0 text-[#b3261e]" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M5 13l4 4L19 7"/></svg>
                         {{ $f }}
                     </li>
                     @endforeach
                 </ul>
-                <a href="{{ route('counties.index') }}" class="block text-center py-2.5 rounded-xl text-sm font-bold border border-[#901C1E]/30 text-[#901C1E] hover:bg-[#901C1E]/5 transition-all">Contact County Desk</a>
+                <a href="{{ route('counties.index') }}" class="block text-center py-2.5 rounded-xl text-sm font-bold border border-[#b3261e]/30 text-[#b3261e] hover:bg-[#b3261e]/5 transition-all">Contact County Desk</a>
             </div>
             @endforeach
         </div>

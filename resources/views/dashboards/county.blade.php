@@ -9,10 +9,10 @@ $activeSubs = $subscribers->where('status', 'active')->count();
 @section('content')
 <div class="flex min-h-screen bg-[#F9FAFB]">
     <div x-data="{ collapsed: false }" class="flex">
-        <div class="w-[230px] bg-[#1890D7] border-r border-gray-200 flex flex-col shrink-0 min-h-screen">
+        <div class="w-[230px] bg-[#2a2a2a] border-r border-gray-200 flex flex-col shrink-0 min-h-screen">
             <div class="flex items-center justify-between px-4 border-b border-gray-200 h-16">
                 <div class="flex items-center gap-2">
-                    <div class="rounded-lg bg-[#901C1E] px-2 py-1 flex items-center justify-center">
+                    <div class="rounded-lg bg-[#b3261e] px-2 py-1 flex items-center justify-center">
                         <img src="{{ media('kicc/kicc-logo.png') }}" alt="KICC" class="h-6 w-auto">
                     </div>
                     <div class="text-[#FFCD05] text-[9px] font-black tracking-[0.15em] uppercase leading-tight">Global<br>Exhibition</div>
@@ -21,7 +21,7 @@ $activeSubs = $subscribers->where('status', 'active')->count();
             <div class="flex-1 py-3 overflow-y-auto">
                 @foreach($navItems as $item)
                 <a href="{{ route('dashboard.county', ['tab' => $item['tab']]) }}" class="w-full flex items-center gap-3 px-4 py-2.5 text-sm font-semibold transition-all text-gray-400 hover:bg-sky-50 hover:text-gray-900"
-                   style="{{ $tab === $item['tab'] ? 'background: #1890D722; border-right: 2px solid #1890D7; color: white' : '' }}">
+                   style="{{ $tab === $item['tab'] ? 'background: #2a2a2a22; border-right: 2px solid #2a2a2a; color: white' : '' }}">
                     @if(isset($item['icon']))
                     <svg class="w-4 h-4 shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="{{ $item['icon'] }}"/></svg>
                     @endif
@@ -36,25 +36,25 @@ $activeSubs = $subscribers->where('status', 'active')->count();
         </div>
     </div>
     <div class="flex-1 flex flex-col overflow-hidden">
-        <div class="bg-[#1890D7] border-b border-gray-200 px-6 h-16 flex items-center justify-between shrink-0">
+        <div class="bg-[#2a2a2a] border-b border-gray-200 px-6 h-16 flex items-center justify-between shrink-0">
             <div>
                 <div class="font-black text-gray-900 text-sm">{{ $county->name }} County Administration</div>
-                <div class="text-[10px] font-bold uppercase tracking-widest" style="color: #1890D7">COUNTY ADMIN</div>
+                <div class="text-[10px] font-bold uppercase tracking-widest" style="color: #2a2a2a">COUNTY ADMIN</div>
             </div>
             <div class="flex items-center gap-3">
-                <div class="w-8 h-8 rounded-full flex items-center justify-center text-gray-900 font-black text-xs" style="background: #1890D7">{{ substr($county->name,0,2) }}</div>
+                <div class="w-8 h-8 rounded-full flex items-center justify-center text-gray-900 font-black text-xs" style="background: #2a2a2a">{{ substr($county->name,0,2) }}</div>
             </div>
         </div>
         <div class="flex-1 overflow-y-auto p-6 space-y-8">
             {{-- KPI Cards (always visible) --}}
             <div class="grid grid-cols-2 lg:grid-cols-4 gap-4">
                 <div class="bg-white border border-gray-200 rounded-2xl p-5">
-                    <div class="flex items-start justify-between mb-4"><div class="p-2.5 rounded-xl" style="background: #1890D722"><svg class="w-4 h-4 text-gray-900" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2"/></svg></div></div>
+                    <div class="flex items-start justify-between mb-4"><div class="p-2.5 rounded-xl" style="background: #2a2a2a22"><svg class="w-4 h-4 text-gray-900" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2"/></svg></div></div>
                     <div class="text-2xl font-black text-gray-900">{{ $totalSlots - $usedSlots }}</div>
                     <div class="text-xs text-gray-400 mt-1 font-medium">Available Slots</div>
                 </div>
                 <div class="bg-white border border-gray-200 rounded-2xl p-5">
-                    <div class="flex items-start justify-between mb-4"><div class="p-2.5 rounded-xl" style="background: #901C1E22"><svg class="w-4 h-4 text-[#901C1E]" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4.354a4 4 0 110 5.292M15 21H3v-1a6 6 0 0112 0v1zm0 0h6v-1a6 6 0 00-9-5.197"/></svg></div></div>
+                    <div class="flex items-start justify-between mb-4"><div class="p-2.5 rounded-xl" style="background: #b3261e22"><svg class="w-4 h-4 text-[#b3261e]" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4.354a4 4 0 110 5.292M15 21H3v-1a6 6 0 0112 0v1zm0 0h6v-1a6 6 0 00-9-5.197"/></svg></div></div>
                     <div class="text-2xl font-black text-gray-900">{{ $activeSubs }}</div>
                     <div class="text-xs text-gray-400 mt-1 font-medium">Active Subscribers</div>
                 </div>
@@ -64,7 +64,7 @@ $activeSubs = $subscribers->where('status', 'active')->count();
                     <div class="text-xs text-gray-400 mt-1 font-medium">Revenue Share</div>
                 </div>
                 <div class="bg-white border border-gray-200 rounded-2xl p-5">
-                    <div class="flex items-start justify-between mb-4"><div class="p-2.5 rounded-xl" style="background: #11820B22"><svg class="w-4 h-4 text-[#11820B]" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 6V4m0 2a2 2 0 100 4m0-4a2 2 0 110 4m-6 8a2 2 0 100-4m0 4a2 2 0 110-4m0 4v2m0-6V4m6 6v10m6-2a2 2 0 100-4m0 4a2 2 0 110-4m0 4v2m0-6V4"/></svg></div></div>
+                    <div class="flex items-start justify-between mb-4"><div class="p-2.5 rounded-xl" style="background: #2a2a2a22"><svg class="w-4 h-4 text-[#2a2a2a]" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 6V4m0 2a2 2 0 100 4m0-4a2 2 0 110 4m-6 8a2 2 0 100-4m0 4a2 2 0 110-4m0 4v2m0-6V4m6 6v10m6-2a2 2 0 100-4m0 4a2 2 0 110-4m0 4v2m0-6V4"/></svg></div></div>
                     <div class="text-2xl font-black text-gray-900">KES {{ number_format($config->wallet_balance) }}</div>
                     <div class="text-xs text-gray-400 mt-1 font-medium">Wallet Balance</div>
                 </div>

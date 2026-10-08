@@ -10,13 +10,13 @@
             <p class="text-[#5A6480] mt-1">Manage ministries, agencies, and national content</p>
         </div>
         <div class="flex gap-2">
-            <a href="{{ route('admin.portal') }}" class="px-4 py-2 text-sm font-semibold text-[#5A6480] hover:text-[#901C1E] rounded-lg hover:bg-gray-100 transition-colors" data-magnetic>&larr; Portal</a>
+            <a href="{{ route('admin.portal') }}" class="px-4 py-2 text-sm font-semibold text-[#5A6480] hover:text-[#b3261e] rounded-lg hover:bg-gray-100 transition-colors" data-magnetic>&larr; Portal</a>
         </div>
     </div>
 
     <div class="flex gap-1 bg-white border border-gray-200 rounded-xl p-1 mb-8 overflow-x-auto">
         @foreach(['overview' => 'Overview', 'ministries' => 'Ministries', 'agencies' => 'Agencies', 'sectors' => 'Sectors', 'content' => 'Content'] as $key => $label)
-        <button @click="tab = '{{ $key }}'" :class="tab === '{{ $key }}' ? 'bg-[#1890D7] text-gray-900' : 'text-[#5A6480] hover:text-gray-900' px-4 py-2 text-sm font-bold rounded-lg transition-all shrink-0">{{ $label }}</button>
+        <button @click="tab = '{{ $key }}'" :class="tab === '{{ $key }}' ? 'bg-[#2a2a2a] text-gray-900' : 'text-[#5A6480] hover:text-gray-900' px-4 py-2 text-sm font-bold rounded-lg transition-all shrink-0">{{ $label }}</button>
         @endforeach
     </div>
 
@@ -39,8 +39,8 @@
         <div class="bg-white rounded-2xl border border-gray-200 p-6 card-hover">
             <h3 class="font-bold text-gray-900 mb-4">Quick Actions</h3>
             <div class="flex flex-wrap gap-3">
-                <a href="/admin/ministries" class="px-4 py-2 text-sm font-bold bg-[#901C1E] text-gray-900 rounded-xl hover:bg-[#7a181a] transition-colors" data-magnetic>Manage Ministries</a>
-                <a href="/admin/agencies" class="px-4 py-2 text-sm font-bold bg-[#1890D7] text-gray-900 rounded-xl hover:bg-[#0a1a4a] transition-colors">Manage Agencies</a>
+                <a href="/admin/ministries" class="px-4 py-2 text-sm font-bold bg-[#b3261e] text-gray-900 rounded-xl hover:bg-[#7a181a] transition-colors" data-magnetic>Manage Ministries</a>
+                <a href="/admin/agencies" class="px-4 py-2 text-sm font-bold bg-[#2a2a2a] text-gray-900 rounded-xl hover:bg-[#0a1a4a] transition-colors">Manage Agencies</a>
                 <a href="/admin/sectors" class="px-4 py-2 text-sm font-bold bg-[#FFCD05] text-gray-900 rounded-xl hover:bg-[#FFCD05] transition-colors" data-magnetic>Manage Sectors</a>
                 <a href="/admin/counties" class="px-4 py-2 text-sm font-bold border border-gray-200 text-gray-900 rounded-xl hover:bg-gray-50 transition-colors">View Counties</a>
             </div>
@@ -51,7 +51,7 @@
     <div x-show="tab === 'ministries'" x-cloak x-data="{ q: '', showDropdown: false }">
         <div class="flex items-center justify-between mb-6">
             <h2 class="text-xl font-black text-gray-900" data-split>Ministries</h2>
-            <a href="/admin/ministries/create" class="px-4 py-2 text-sm font-bold bg-[#901C1E] text-gray-900 rounded-xl hover:bg-[#7a181a] transition-colors" data-magnetic>+ Add Ministry</a>
+            <a href="/admin/ministries/create" class="px-4 py-2 text-sm font-bold bg-[#b3261e] text-gray-900 rounded-xl hover:bg-[#7a181a] transition-colors" data-magnetic>+ Add Ministry</a>
         </div>
         <div class="relative mb-6" @click.away="showDropdown = false">
             <div class="relative">
@@ -76,7 +76,7 @@
                 <div class="flex items-start justify-between mb-3">
                     <div class="w-12 h-12 rounded-xl flex items-center justify-center text-gray-900 font-black text-lg" style="background: {{ $ministry->color }}">{{ $ministry->code[0] }}</div>
                     <div class="flex gap-1">
-                        <a href="/admin/ministries/{{ $ministry->id }}/edit" class="p-1.5 text-[#5A6480] hover:text-[#901C1E] hover:bg-gray-100 rounded-lg transition-colors" title="Edit">
+                        <a href="/admin/ministries/{{ $ministry->id }}/edit" class="p-1.5 text-[#5A6480] hover:text-[#b3261e] hover:bg-gray-100 rounded-lg transition-colors" title="Edit">
                             <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z"/></svg>
                         </a>
                         <form method="POST" action="/admin/ministries/{{ $ministry->id }}" onsubmit="return confirm('Delete?')">@csrf @method('DELETE')
@@ -102,7 +102,7 @@
     <div x-show="tab === 'agencies'" x-cloak x-data="{ q: '', showDropdown: false }">
         <div class="flex items-center justify-between mb-6">
             <h2 class="text-xl font-black text-gray-900" data-split>Agencies</h2>
-            <a href="/admin/agencies/create" class="px-4 py-2 text-sm font-bold bg-[#1890D7] text-gray-900 rounded-xl hover:bg-[#0a1a4a] transition-colors">+ Add Agency</a>
+            <a href="/admin/agencies/create" class="px-4 py-2 text-sm font-bold bg-[#2a2a2a] text-gray-900 rounded-xl hover:bg-[#0a1a4a] transition-colors">+ Add Agency</a>
         </div>
         <div class="relative mb-6" @click.away="showDropdown = false">
             <div class="relative">
@@ -136,9 +136,9 @@
                     <tr x-show="q === '' || '{{ strtolower($agency->name) }}'.includes(q.toLowerCase()) || '{{ strtolower($agency->ministry->name ?? '') }}'.includes(q.toLowerCase())" class="hover:bg-[#F9FAFB] transition-colors">
                         <td class="px-5 py-3 font-semibold text-gray-900">{{ $agency->name }}</td>
                         <td class="px-5 py-3 text-[#5A6480]">{{ $agency->ministry?->name }}</td>
-                        <td class="px-5 py-3"><span class="px-2 py-1 bg-[#1890D7]/10 text-[#1890D7] text-xs font-bold rounded">{{ $agency->code }}</span></td>
+                        <td class="px-5 py-3"><span class="px-2 py-1 bg-[#2a2a2a]/10 text-[#2a2a2a] text-xs font-bold rounded">{{ $agency->code }}</span></td>
                         <td class="px-5 py-3"><span class="text-xs font-bold {{ $agency->is_active ? 'text-emerald-500' : 'text-red-500' }}">{{ $agency->is_active ? 'Active' : 'Inactive' }}</span></td>
-                        <td class="px-5 py-3 text-right"><a href="/admin/agencies/{{ $agency->id }}/edit" class="text-[#5A6480] hover:text-[#901C1E] text-sm font-semibold">Edit</a></td>
+                        <td class="px-5 py-3 text-right"><a href="/admin/agencies/{{ $agency->id }}/edit" class="text-[#5A6480] hover:text-[#b3261e] text-sm font-semibold">Edit</a></td>
                     </tr>
                     @endforeach
                 </tbody>
@@ -175,7 +175,7 @@
                 <div class="text-2xl mb-3">{{ $sector->icon ?? '' }}</div>
                 <h3 class="font-black text-gray-900 text-sm">{{ $sector->name }}</h3>
                 <div class="text-[#5A6480] text-xs mt-1">{{ $sector->counties_count }} counties</div>
-                <div class="mt-3 flex gap-1"><a href="/admin/sectors/{{ $sector->id }}/edit" class="text-xs text-[#5A6480] hover:text-[#901C1E] font-semibold">Edit</a></div>
+                <div class="mt-3 flex gap-1"><a href="/admin/sectors/{{ $sector->id }}/edit" class="text-xs text-[#5A6480] hover:text-[#b3261e] font-semibold">Edit</a></div>
             </div>
             @endforeach
         </div>
@@ -194,9 +194,9 @@
                     ['/admin/products','','Products','Manage marketplace products'],
                     ['/admin/bookings','','Bookings','View all bookings'],
                 ] as $l)
-                <a href="{{ $l[0] }}" class="p-5 bg-[#F9FAFB] rounded-2xl border border-gray-200 hover:border-[#901C1E]/30 transition-all group card-hover" data-magnetic>
+                <a href="{{ $l[0] }}" class="p-5 bg-[#F9FAFB] rounded-2xl border border-gray-200 hover:border-[#b3261e]/30 transition-all group card-hover" data-magnetic>
                     <div class="text-2xl mb-3">{{ $l[1] }}</div>
-                    <h3 class="font-bold text-gray-900 group-hover:text-[#901C1E]">{{ $l[2] }}</h3>
+                    <h3 class="font-bold text-gray-900 group-hover:text-[#b3261e]">{{ $l[2] }}</h3>
                     <p class="text-[#5A6480] text-xs mt-1">{{ $l[3] }}</p>
                 </a>
                 @endforeach

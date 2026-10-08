@@ -574,7 +574,7 @@
             <div class="glass-card rounded-2xl p-6">
                 <div class="flex items-center justify-between mb-6">
                     <h2 class="text-sm font-bold text-white">Live Events</h2>
-                    <a href="{{ route('streams.create') }}" class="text-[11px] font-bold px-3 py-1.5 rounded-lg bg-[#901C1E] text-white hover:bg-[#7b1618]">+ New Stream</a>
+                    <a href="{{ route('streams.create') }}" class="text-[11px] font-bold px-3 py-1.5 rounded-lg bg-[#b3261e] text-white hover:bg-[#7b1618]">+ New Stream</a>
                 </div>
                 <p class="text-zinc-400 text-xs mb-4">Manage live streams for this county's events and exhibitions.</p>
                 <a href="{{ route('streams.admin') }}" class="inline-flex items-center gap-2 text-xs font-bold text-indigo-400 hover:text-indigo-300">
@@ -597,7 +597,7 @@
                                 <td class="py-2 pr-3">
                                     @if($p->video_description)
                                     <span class="text-[10px] text-zinc-400 line-clamp-2 max-w-[220px] block">{{ $p->video_description }}</span>
-                                    <span class="inline-block mt-1 text-[9px] font-bold px-1.5 py-0.5 rounded {{ str_contains($p->video_description ?? '', 'ADVERT') ? 'bg-[#901C1E]/30 text-red-300' : 'bg-emerald-500/20 text-emerald-300' }}">{{ str_contains($p->video_description ?? '', 'ADVERT') ? '5s Advert' : 'Video brief' }}</span>
+                                    <span class="inline-block mt-1 text-[9px] font-bold px-1.5 py-0.5 rounded {{ str_contains($p->video_description ?? '', 'ADVERT') ? 'bg-[#b3261e]/30 text-red-300' : 'bg-emerald-500/20 text-emerald-300' }}">{{ str_contains($p->video_description ?? '', 'ADVERT') ? '5s Advert' : 'Video brief' }}</span>
                                     @else
                                     <span class="text-[10px] text-zinc-600">No video brief — add in institution JSON</span>
                                     @endif

@@ -45,7 +45,7 @@
             <div class="space-y-3">
                 @forelse($couriers ?? [] as $c)
                 <div class="flex items-center gap-2">
-                    <span class="w-2 h-2 rounded-full {{ $c->is_active ? 'bg-emerald-400' : 'bg-[#1890D7]/20' }}"></span>
+                    <span class="w-2 h-2 rounded-full {{ $c->is_active ? 'bg-emerald-400' : 'bg-[#2a2a2a]/20' }}"></span>
                     <span class="text-sm text-gray-700">{{ $c->name }}</span>
                 </div>
                 @empty
@@ -88,7 +88,7 @@
         <div class="relative pl-8 border-l-2 border-[#FFCD05]/25 space-y-6">
             @foreach($automationTree['children'] as $sector)
             <div class="relative" data-reveal>
-                <div class="absolute -left-10 mt-1.5 w-4 h-4 rounded-full {{ $loop->first ? 'bg-kicc-gold' : 'bg-[#1890D7]/20' }} border-2 border-[#07090F]"></div>
+                <div class="absolute -left-10 mt-1.5 w-4 h-4 rounded-full {{ $loop->first ? 'bg-kicc-gold' : 'bg-[#2a2a2a]/20' }} border-2 border-[#07090F]"></div>
                 <div class="bg-white rounded-2xl border border-gray-200 p-5 hover:border-kicc-gold/30 transition-all card-hover">
                     <div class="flex items-start justify-between mb-2">
                         <div>

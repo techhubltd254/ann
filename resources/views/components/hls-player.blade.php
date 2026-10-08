@@ -8,7 +8,7 @@
     'muted' => false,
 ])
 
-<div class="relative bg-[#0B1E57] overflow-hidden rounded-xl {{ $class }}"
+<div class="relative bg-[#0b0b0b] overflow-hidden rounded-xl {{ $class }}"
      x-data="hlsPlayer('{{ $hlsUrl }}', '{{ $id }}')"
      x-init="init()">
     @if($poster)

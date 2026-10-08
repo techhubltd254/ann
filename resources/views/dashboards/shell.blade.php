@@ -1,10 +1,10 @@
-@props(['title' => 'Dashboard', 'role' => 'User', 'accent' => '#901C1E', 'initials' => 'JK', 'navItems' => []])
+@props(['title' => 'Dashboard', 'role' => 'User', 'accent' => '#b3261e', 'initials' => 'JK', 'navItems' => []])
 <div class="flex min-h-screen bg-[#F9FAFB] pt-0">
     <div x-data="{ collapsed: false }" class="flex">
-        <div :style="'width: ' + (collapsed ? '64px' : '230px')" class="bg-[#1890D7] border-r border-gray-200 flex flex-col overflow-hidden shrink-0 transition-all duration-300" x-init="$el.style.width='230px'">
+        <div :style="'width: ' + (collapsed ? '64px' : '230px')" class="bg-[#2a2a2a] border-r border-gray-200 flex flex-col overflow-hidden shrink-0 transition-all duration-300" x-init="$el.style.width='230px'">
             <div class="flex items-center justify-between px-4 border-b border-gray-200 h-16 shrink-0">
                 <div x-show="!collapsed" class="flex items-center gap-2">
-                    <div class="rounded-lg bg-[#901C1E] px-2 py-1 flex items-center justify-center">
+                    <div class="rounded-lg bg-[#b3261e] px-2 py-1 flex items-center justify-center">
                         <img src="{{ media('kicc/kicc-logo.png') }}" alt="KICC" class="h-6 w-auto">
                     </div>
                     <div class="text-[#FFCD05] text-[9px] font-black tracking-[0.15em] uppercase leading-tight">Global<br>Exhibition</div>
@@ -33,7 +33,7 @@
         </div>
     </div>
     <div class="flex-1 flex flex-col overflow-hidden">
-        <div class="bg-[#1890D7] border-b border-gray-200 px-6 h-16 flex items-center justify-between shrink-0">
+        <div class="bg-[#2a2a2a] border-b border-gray-200 px-6 h-16 flex items-center justify-between shrink-0">
             <div>
                 <div class="font-black text-gray-900 text-sm">{{ $title }}</div>
                 <div class="text-[10px] font-bold uppercase tracking-widest" style="color: {{ $accent }}">{{ $role }}</div>

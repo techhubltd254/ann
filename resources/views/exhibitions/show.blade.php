@@ -5,7 +5,7 @@
 
 @section('content')
 <div class="bg-white border-b border-gray-200 py-12 relative overflow-hidden">
-    <div class="absolute w-96 h-96 rounded-full bg-[#901C1E]/10 blur-3xl -top-20 right-0"></div>
+    <div class="absolute w-96 h-96 rounded-full bg-[#b3261e]/10 blur-3xl -top-20 right-0"></div>
     <div class="max-w-7xl mx-auto px-5 relative">
         <a href="{{ route('exhibitions.index') }}" class="text-[#5A6480] hover:text-kicc-gold text-sm mb-4 inline-block transition-colors" data-magnetic>&larr; Back to Exhibitions</a>
         <div class="flex flex-col lg:flex-row lg:items-end lg:justify-between gap-4" data-reveal>
@@ -15,9 +15,9 @@
                 <p class="text-lg text-[#5A6480]">{{ $exhibition->tagline }}</p>
                 @endif
                 <div class="flex flex-wrap gap-3 mt-4">
-                    <span class="bg-[#1890D7]/8 border border-gray-200 text-[#5A6480] px-3 py-1 rounded-lg text-xs font-semibold">{{ $exhibition->start_date->format('M d, Y') }} - {{ $exhibition->end_date->format('M d, Y') }}</span>
+                    <span class="bg-[#2a2a2a]/8 border border-gray-200 text-[#5A6480] px-3 py-1 rounded-lg text-xs font-semibold">{{ $exhibition->start_date->format('M d, Y') }} - {{ $exhibition->end_date->format('M d, Y') }}</span>
                     @if($exhibition->county)
-                    <a href="{{ route('counties.show', $exhibition->county->slug) }}" class="bg-[#1890D7]/8 border border-gray-200 text-[#5A6480] px-3 py-1 rounded-lg text-xs font-semibold hover:border-kicc-gold/40 hover:text-kicc-gold transition-colors">{{ $exhibition->county->name }}</a>
+                    <a href="{{ route('counties.show', $exhibition->county->slug) }}" class="bg-[#2a2a2a]/8 border border-gray-200 text-[#5A6480] px-3 py-1 rounded-lg text-xs font-semibold hover:border-kicc-gold/40 hover:text-kicc-gold transition-colors">{{ $exhibition->county->name }}</a>
                     @endif
                     <span class="bg-emerald-500/15 border border-emerald-500/25 text-emerald-400 px-3 py-1 rounded-lg text-xs font-semibold">{{ ucfirst($exhibition->status) }}</span>
                     @if(isset($liveStream) && $liveStream->isLive())
@@ -34,7 +34,7 @@
                 </a>
                 @endif
                 @if($exhibition->status === 'published')
-                <a href="#booking" class="inline-flex items-center justify-center gap-2 font-bold tracking-wide transition-all duration-200 px-8 text-base h-14 rounded-xl bg-[#901C1E] text-gray-900 hover:bg-[#7b1618] active:scale-[0.97] shrink-0">Book a Booth</a>
+                <a href="#booking" class="inline-flex items-center justify-center gap-2 font-bold tracking-wide transition-all duration-200 px-8 text-base h-14 rounded-xl bg-[#b3261e] text-gray-900 hover:bg-[#7b1618] active:scale-[0.97] shrink-0">Book a Booth</a>
                 @endif
             </div>
         </div>
@@ -55,7 +55,7 @@
         @foreach($tabs as $key => $label)
         <button @click="tab = '{{ $key }}'; history.replaceState(null, '', '?tab={{ $key }}')"
                 class="shrink-0 px-4 py-2 rounded-xl text-xs font-bold transition-all"
-                :class="tab === '{{ $key }}' ? 'bg-[#0B1E57] text-white' : 'bg-gray-100 text-gray-600 hover:bg-gray-200'">
+                :class="tab === '{{ $key }}' ? 'bg-[#0b0b0b] text-white' : 'bg-gray-100 text-gray-600 hover:bg-gray-200'">
             {{ $label }}
         </button>
         @endforeach
@@ -104,13 +104,13 @@
                         <a href="{{ route('venues.show', $exhibition->venue->slug) }}" class="text-kicc-gold hover:underline font-bold">{{ $exhibition->venue->name }}</a>
                         @if($exhibition->venue->latitude && $exhibition->venue->longitude)
                         <a href="https://www.google.com/maps/search/?api=1&query={{ $exhibition->venue->latitude }},{{ $exhibition->venue->longitude }}" target="_blank" rel="noopener"
-                           class="inline-flex items-center gap-1 text-[10px] text-[#5A6480] hover:text-[#901C1E] transition-colors" title="View on Google Maps">
+                           class="inline-flex items-center gap-1 text-[10px] text-[#5A6480] hover:text-[#b3261e] transition-colors" title="View on Google Maps">
                             <svg class="w-3 h-3" fill="currentColor" viewBox="0 0 24 24"><path d="M12 2C8.13 2 5 5.13 5 9c0 5.73 7 13 7 13s7-7.27 7-13c0-3.87-3.13-7-7-7zm0 9.5c-1.38 0-2.5-1.12-2.5-2.5s1.12-2.5 2.5-2.5S14.5 7.62 14.5 9s-1.12 2.5-2.5 2.5z"/></svg>
                             Map
                         </a>
                         @else
                         <a href="https://www.google.com/maps/search/?api=1&query={{ urlencode($exhibition->venue->name . ', ' . ($exhibition->venue->city ?? '')) }}" target="_blank" rel="noopener"
-                           class="inline-flex items-center gap-1 text-[10px] text-[#5A6480] hover:text-[#901C1E] transition-colors" title="Search on Google Maps">
+                           class="inline-flex items-center gap-1 text-[10px] text-[#5A6480] hover:text-[#b3261e] transition-colors" title="Search on Google Maps">
                             <svg class="w-3 h-3" fill="currentColor" viewBox="0 0 24 24"><path d="M12 2C8.13 2 5 5.13 5 9c0 5.73 7 13 7 13s7-7.27 7-13c0-3.87-3.13-7-7-7zm0 9.5c-1.38 0-2.5-1.12-2.5-2.5s1.12-2.5 2.5-2.5S14.5 7.62 14.5 9s-1.12 2.5-2.5 2.5z"/></svg>
                             Map
                         </a>
@@ -186,7 +186,7 @@
                 @auth
                 <a href="{{ route('dashboard.bookings') }}" class="mt-5 w-full inline-flex items-center justify-center gap-2 font-bold tracking-wide transition-all duration-200 px-4 text-sm h-11 rounded-xl bg-kicc-gold text-[#07090F] hover:bg-[#FFCD05]">Book Your Booth</a>
                 @else
-                <a href="{{ route('login') }}" class="mt-5 w-full inline-flex items-center justify-center gap-2 font-bold tracking-wide transition-all duration-200 px-4 text-sm h-11 rounded-xl bg-[#901C1E] text-gray-900 hover:bg-[#7b1618]">Sign In to Book</a>
+                <a href="{{ route('login') }}" class="mt-5 w-full inline-flex items-center justify-center gap-2 font-bold tracking-wide transition-all duration-200 px-4 text-sm h-11 rounded-xl bg-[#b3261e] text-gray-900 hover:bg-[#7b1618]">Sign In to Book</a>
                 @endauth
                 @else
                 <p class="text-[#5A6480] text-sm">No booths available yet.</p>
@@ -213,7 +213,7 @@
                 @auth
                 <a href="{{ route('dashboard.bookings') }}" class="mt-5 w-full inline-flex items-center justify-center gap-2 font-bold tracking-wide transition-all duration-200 px-4 text-sm h-11 rounded-xl bg-kicc-gold text-[#07090F] hover:bg-[#FFCD05]">Buy Tickets</a>
                 @else
-                <a href="{{ route('login') }}" class="mt-5 w-full inline-flex items-center justify-center gap-2 font-bold tracking-wide transition-all duration-200 px-4 text-sm h-11 rounded-xl bg-[#901C1E] text-gray-900 hover:bg-[#7b1618]">Sign In to Buy</a>
+                <a href="{{ route('login') }}" class="mt-5 w-full inline-flex items-center justify-center gap-2 font-bold tracking-wide transition-all duration-200 px-4 text-sm h-11 rounded-xl bg-[#b3261e] text-gray-900 hover:bg-[#7b1618]">Sign In to Buy</a>
                 @endauth
             </div>
             @endif

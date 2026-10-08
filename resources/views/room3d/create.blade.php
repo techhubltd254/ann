@@ -13,7 +13,7 @@
         </div>
 
         @if($errors->any())
-        <div class="mx-6 md:mx-8 mt-6 bg-[#901C1E]/15 border border-[#901C1E]/30 text-[#e86f71] rounded-xl px-5 py-4 text-sm">
+        <div class="mx-6 md:mx-8 mt-6 bg-[#b3261e]/15 border border-[#b3261e]/30 text-[#e86f71] rounded-xl px-5 py-4 text-sm">
             <div class="font-bold mb-1">Please fix the following:</div>
             <ul class="list-disc list-inside space-y-0.5">
                 @foreach($errors->all() as $error)

@@ -3,7 +3,7 @@
 @section('title', 'KICC Pipelines — Revenue Infrastructure')
 
 @section('content')
-<div class="min-h-screen bg-[#0A1024] text-white">
+<div class="min-h-screen bg-[#0b0b0b] text-white">
     <div class="max-w-7xl mx-auto px-5 py-12">
         <div class="flex items-center justify-between mb-8">
             <div>

@@ -6,39 +6,39 @@
 @push('styles')
 <style>
 /* ── Counties 3D Immersive Design ── */
-.counties-3d-hero{min-height:60vh;background:#0A1024;position:relative;overflow:hidden}
-.counties-3d-hero::before{content:'';position:absolute;inset:0;background:radial-gradient(ellipse at 30% 50%,rgba(144,28,30,0.12) 0%,transparent 60%),radial-gradient(ellipse at 70% 30%,rgba(255,205,5,0.08) 0%,transparent 50%);pointer-events:none}
+.counties-3d-hero{min-height:60vh;background:#0b0b0b;position:relative;overflow:hidden}
+.counties-3d-hero::before{content:'';position:absolute;inset:0;background:radial-gradient(ellipse at 30% 50%,rgba(179,38,30,0.12) 0%,transparent 60%),radial-gradient(ellipse at 70% 30%,rgba(255,205,5,0.08) 0%,transparent 50%);pointer-events:none}
 
-.map-scroll-section{position:relative;height:250vh;background:#0A1024;margin:0}
+.map-scroll-section{position:relative;height:250vh;background:#0b0b0b;margin:0}
 .map-scroll-sticky{position:sticky;top:0;height:100vh;overflow:hidden;display:flex;align-items:center;justify-content:center}
 #kenya-3d-canvas{position:absolute;inset:0;width:100%;height:100vh;pointer-events:none}
 .map-overlay-content{position:absolute;z-index:10;text-align:center;width:100%;padding:0 24px;transition:opacity .6s}
-.map-overlay-content h1{font-size:clamp(36px,6vw,72px);font-weight:900;background:linear-gradient(135deg,#FFCD05,#901C1E);-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;line-height:1.1;margin-bottom:12px}
+.map-overlay-content h1{font-size:clamp(36px,6vw,72px);font-weight:900;background:linear-gradient(135deg,#FFCD05,#b3261e);-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;line-height:1.1;margin-bottom:12px}
 .map-overlay-content p{color:#B0B0C0;font-size:clamp(14px,1.5vw,18px);max-width:640px;margin:0 auto;line-height:1.6}
 .map-scroll-hint{position:absolute;bottom:32px;left:50%;transform:translateX(-50%);color:#5A6480;font-size:12px;display:flex;flex-direction:column;align-items:center;gap:6px;z-index:20;transition:opacity .6s}
 .map-scroll-hint .arrow{animation:bounce-arrow 2s ease-in-out infinite;width:16px;height:16px}
 @keyframes bounce-arrow{0%,100%{transform:translateY(0)}50%{transform:translateY(6px)}}
 
 .counties-section{padding:60px 20px;max-width:1200px;margin:0 auto;position:relative;z-index:5}
-.section-tag{display:inline-flex;padding:5px 12px;border-radius:8px;font-size:11px;font-weight:700;letter-spacing:1px;text-transform:uppercase;background:#FFCD05;color:#0B1E57;margin-bottom:8px}
+.section-tag{display:inline-flex;padding:5px 12px;border-radius:8px;font-size:11px;font-weight:700;letter-spacing:1px;text-transform:uppercase;background:#FFCD05;color:#0b0b0b;margin-bottom:8px}
 .section-title{font-size:32px;font-weight:700;margin:0 0 8px;color:#fff}
 .section-sub{color:#B0B0C0;font-size:14px;max-width:600px;margin:0 0 28px;line-height:1.5}
 
 .filters-row{display:flex;flex-wrap:wrap;gap:10px;align-items:center;margin-bottom:28px}
-.search-field{width:100%;max-width:340px;padding:12px 16px;border-radius:12px;background:#0A1024;border:1px solid #5A6480;color:#fff;font-size:14px;outline:none;transition:border-color .3s}
+.search-field{width:100%;max-width:340px;padding:12px 16px;border-radius:12px;background:#0b0b0b;border:1px solid #5A6480;color:#fff;font-size:14px;outline:none;transition:border-color .3s}
 .search-field:focus{border-color:#FFCD05}
 .filter-pills{display:flex;gap:5px;flex-wrap:wrap}
 .filter-pill{padding:5px 12px;border-radius:16px;font-size:11px;font-weight:600;cursor:pointer;transition:all .3s cubic-bezier(0.34,1.56,0.64,1);
-  background:#1B1E3F;border:1px solid rgba(90,100,128,0.19);color:#B0B0C0}
-.filter-pill.active,.filter-pill:hover{background:#901C1E;color:#fff;border-color:#901C1E;transform:translateY(-1px)}
+  background:#141414;border:1px solid rgba(90,100,128,0.19);color:#B0B0C0}
+.filter-pill.active,.filter-pill:hover{background:#b3261e;color:#fff;border-color:#b3261e;transform:translateY(-1px)}
 
-.stats-row{display:flex;gap:32px;justify-content:center;padding:32px 16px;background:linear-gradient(90deg,transparent,#1B1E3F,transparent);margin:0 0 32px;border-radius:16px;flex-wrap:wrap}
+.stats-row{display:flex;gap:32px;justify-content:center;padding:32px 16px;background:linear-gradient(90deg,transparent,#141414,transparent);margin:0 0 32px;border-radius:16px;flex-wrap:wrap}
 .stat-cell{text-align:center}
 .stat-number{font-size:28px;font-weight:900;color:#FFCD05;line-height:1;font-variant-numeric:tabular-nums}
 .stat-label{color:#5A6480;font-size:12px;margin-top:4px;text-transform:uppercase;letter-spacing:1px}
 
 .county-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(280px,1fr));gap:20px;padding:0 0 32px}
-.county-card{background:#1B1E3F;border:1px solid rgba(90,100,128,0.19);border-radius:18px;overflow:hidden;
+.county-card{background:#141414;border:1px solid rgba(90,100,128,0.19);border-radius:18px;overflow:hidden;
   transition:all .4s cubic-bezier(0.34,1.56,0.64,1)}
 .county-card:hover{transform:translateY(-5px) scale(1.01);border-color:rgba(255,205,5,0.25);box-shadow:0 10px 32px rgba(255,205,5,0.06)}
 .county-card-media{height:130px;border-radius:12px;margin:0;overflow:hidden;position:relative}
@@ -49,12 +49,12 @@
 .county-card-name{font-size:17px;font-weight:700;color:#fff;margin:0 0 3px}
 .county-card-desc{color:#B0B0C0;font-size:12px;line-height:1.5;margin:0 0 10px}
 .county-card-tags{display:flex;gap:4px;flex-wrap:wrap;margin:0 0 10px}
-.county-card-tag{padding:2px 7px;border-radius:5px;font-size:9px;font-weight:600;background:#901C1E;color:#fff}
-.county-card-tag.gold{background:#FFCD05;color:#0B1E57}
-.county-card-tag.blue{background:#1890D7;color:#fff}
-.county-card-tag.green{background:#11820B;color:#fff}
+.county-card-tag{padding:2px 7px;border-radius:5px;font-size:9px;font-weight:600;background:#b3261e;color:#fff}
+.county-card-tag.gold{background:#FFCD05;color:#0b0b0b}
+.county-card-tag.blue{background:#2a2a2a;color:#fff}
+.county-card-tag.green{background:#2a2a2a;color:#fff}
 
-.cta-3d-section{text-align:center;padding:48px 20px;background:linear-gradient(180deg,#0B1E57,#0A1024);border-radius:24px;margin:32px 0}
+.cta-3d-section{text-align:center;padding:48px 20px;background:linear-gradient(180deg,#0b0b0b,#0b0b0b);border-radius:24px;margin:32px 0}
 </style>
 @endpush
 
@@ -125,7 +125,7 @@
         $emojiList = ['🏔️','🏖️','🌋','🏕️','🏙️','🌊','🏞️','🌄','🌲','🏜️','🏘️','🏭','🏝️','🐘','🌿','🌾','🌲','🌋'];
         $tagList = $c->primary_sectors ?? ['tourism','agriculture'];
         $tagColors = ['blue','gold','green','','gold','blue','green'];
-        $gradients = ['#901C1E30,#1B1E3F','#1890D730,#1B1E3F','#11820B30,#1B1E3F','#FFCD0530,#1B1E3F','#0B1E5730,#1B1E3F'];
+        $gradients = ['#b3261e30,#141414','#2a2a2a30,#141414','#2a2a2a30,#141414','#FFCD0530,#141414','#0b0b0b30,#141414'];
         $grad = $gradients[$idx % count($gradients)];
         $emoji = $emojiList[$idx % count($emojiList)];
         $delay = 80 + $idx * 50;
@@ -164,7 +164,7 @@
                     @endforeach
                 </div>
                 @endif
-                <span style="color:#1890D7;font-size:12px;font-weight:600;display:inline-flex;align-items:center;gap:4px">
+                <span style="color:#2a2a2a;font-size:12px;font-weight:600;display:inline-flex;align-items:center;gap:4px">
                     View County <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M17 8l4 4m0 0l-4 4m4-4H3"/></svg>
                 </span>
             </div>
@@ -187,7 +187,7 @@
         <div style="font-size:40px;margin-bottom:8px">🌍</div>
         <h2 style="font-size:24px;font-weight:700;color:#fff;margin:0 0 6px">Explore in 3D</h2>
         <p style="color:#B0B0C0;font-size:14px;max-width:560px;margin:0 auto 16px">View Kenya's 47 counties as an interactive 3D extruded map — fly between regions, discover sectors, and dive into each county's unique profile.</p>
-        <a href="{{ route('exhibition-3d.map') }}" style="display:inline-block;background:linear-gradient(135deg,#FFCD05,#E6B800);color:#0B1E57;padding:14px 32px;border-radius:12px;font-size:15px;font-weight:800;text-decoration:none">Open 3D Map →</a>
+        <a href="{{ route('exhibition-3d.map') }}" style="display:inline-block;background:linear-gradient(135deg,#FFCD05,#E6B800);color:#0b0b0b;padding:14px 32px;border-radius:12px;font-size:15px;font-weight:800;text-decoration:none">Open 3D Map →</a>
     </div>
 </section>
 @endsection
@@ -222,7 +222,7 @@
                 var dy = -pct * 0.04;
                 var extrude = Math.min(pct * 2, 1);
 
-                ctx.fillStyle = '#0A1024';
+                ctx.fillStyle = '#0b0b0b';
                 ctx.fillRect(0,0,cw,ch);
 
                 // Draw extruded county blobs
@@ -235,7 +235,7 @@
                     var depth = pt.h * 50 * extrude;
 
                     // Extrusion side
-                    ctx.fillStyle = 'rgba(144,28,30,'+(0.08+0.06*extrude)+')';
+                    ctx.fillStyle = 'rgba(179,38,30,'+(0.08+0.06*extrude)+')';
                     ctx.fillRect(cx - rw/2, cy - rh/2 + depth/2, rw, depth/2);
 
                     // Top face

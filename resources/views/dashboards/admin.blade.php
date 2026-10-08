@@ -4,11 +4,11 @@
 
 @section('content')
 <div class="flex min-h-screen bg-[#F9FAFB]">
-    <div class="w-56 bg-[#1890D7] border-r border-gray-200 flex flex-col shrink-0 min-h-screen">
+    <div class="w-56 bg-[#2a2a2a] border-r border-gray-200 flex flex-col shrink-0 min-h-screen">
         <div class="flex items-center gap-3 px-4 border-b border-gray-200 h-16">
             <a href="{{ route('admin.portal') }}" class="text-gray-400 hover:text-gray-900 text-xs">&larr; Back</a>
             <div class="flex items-center gap-2">
-                <div class="rounded-lg bg-[#901C1E] px-2 py-1 flex items-center justify-center">
+                <div class="rounded-lg bg-[#b3261e] px-2 py-1 flex items-center justify-center">
                     <img src="{{ media('kicc/kicc-logo.png') }}" alt="KICC" class="h-6 w-auto">
                 </div>
                 <div class="text-[#FFCD05] text-[9px] font-black tracking-[0.15em] uppercase leading-tight">National<br>Admin</div>
@@ -17,7 +17,7 @@
         <div class="flex-1 py-3 overflow-y-auto">
             @foreach($navItems as $item)
             <a href="{{ route('dashboard.admin', ['tab' => $item['tab']]) }}" 
-               class="w-full flex items-center gap-3 px-4 py-2.5 text-sm font-semibold transition-all {{ $tab === $item['tab'] ? 'text-gray-900 bg-[#901C1E]/15 border-r-2 border-[#901C1E]' : 'text-gray-400 hover:bg-sky-50 hover:text-gray-900' }}">
+               class="w-full flex items-center gap-3 px-4 py-2.5 text-sm font-semibold transition-all {{ $tab === $item['tab'] ? 'text-gray-900 bg-[#b3261e]/15 border-r-2 border-[#b3261e]' : 'text-gray-400 hover:bg-sky-50 hover:text-gray-900' }}">
                 <svg class="w-4 h-4 shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="{{ $item['icon'] }}"/></svg>
                 <span class="truncate text-xs">{{ $item['label'] }}</span>
             </a>
@@ -30,10 +30,10 @@
     </div>
 
     <div class="flex-1 flex flex-col overflow-hidden">
-        <div class="bg-[#1890D7] border-b border-gray-200 px-6 h-16 flex items-center justify-between shrink-0">
+        <div class="bg-[#2a2a2a] border-b border-gray-200 px-6 h-16 flex items-center justify-between shrink-0">
             <div>
                 <div class="font-black text-gray-900 text-sm">National Administration</div>
-                <div class="text-[10px] font-bold uppercase tracking-widest text-[#901C1E]">SUPER ADMIN — FULL CRUD</div>
+                <div class="text-[10px] font-bold uppercase tracking-widest text-[#b3261e]">SUPER ADMIN — FULL CRUD</div>
             </div>
         </div>
         <div class="flex-1 overflow-y-auto p-6">
@@ -60,7 +60,7 @@
         @forelse($recentOrders as $o)
         <div class="flex items-center gap-3 py-3 border-b border-gray-100 last:border-0">
             <div class="flex-1 min-w-0"><div class="font-semibold text-gray-900 text-sm">{{ $o->order_number }}</div><div class="text-xs text-[#5A6480]">KES {{ number_format($o->grand_total) }}</div></div>
-            <form method="POST" action="{{ route('admin.delete-order', $o->id) }}" onsubmit="return confirm('Delete order?')">@csrf<button class="text-[10px] text-[#901C1E] hover:underline" data-magnetic>Delete</button></form>
+            <form method="POST" action="{{ route('admin.delete-order', $o->id) }}" onsubmit="return confirm('Delete order?')">@csrf<button class="text-[10px] text-[#b3261e] hover:underline" data-magnetic>Delete</button></form>
         </div>
         @empty <p class="text-[#5A6480] text-sm">No orders.</p> @endforelse
     </div>
@@ -69,7 +69,7 @@
         @forelse($recentPayments as $p)
         <div class="flex items-center gap-3 py-3 border-b border-gray-100 last:border-0">
             <div class="flex-1 min-w-0"><div class="font-semibold text-gray-900 text-sm font-mono">{{ $p->intent_id }}</div><div class="text-xs text-[#5A6480]">KES {{ number_format($p->amount) }}</div></div>
-            <span class="text-[10px] font-bold px-2.5 py-1 rounded-full border capitalize {{ $p->status === 'confirmed' ? 'text-emerald-400 bg-emerald-500/15 border-emerald-500/25' : ($p->status === 'failed' ? 'text-[#901C1E] bg-[#901C1E]/15 border-[#901C1E]/25' : 'text-[#FFCD05] bg-[#FFCD05]/15 border-[#FFCD05]/25') }}">{{ $p->status }}</span>
+            <span class="text-[10px] font-bold px-2.5 py-1 rounded-full border capitalize {{ $p->status === 'confirmed' ? 'text-emerald-400 bg-emerald-500/15 border-emerald-500/25' : ($p->status === 'failed' ? 'text-[#b3261e] bg-[#b3261e]/15 border-[#b3261e]/25' : 'text-[#FFCD05] bg-[#FFCD05]/15 border-[#FFCD05]/25') }}">{{ $p->status }}</span>
         </div>
         @empty <p class="text-[#5A6480] text-sm">No payments.</p> @endforelse
     </div>
@@ -116,7 +116,7 @@
                 <td class="py-3 px-3 text-center">
                     <a href="{{ route('marketplace.show', $p->slug) }}" class="text-[#FFCD05] text-xs hover:underline mr-3">View</a>
                     <form method="POST" action="{{ route('admin.delete-product', $p->id) }}" class="inline" onsubmit="return confirm('Delete {{ $p->name }}?')">
-                        @csrf<button class="text-[#901C1E] text-xs hover:underline" data-magnetic>Delete</button>
+                        @csrf<button class="text-[#b3261e] text-xs hover:underline" data-magnetic>Delete</button>
                     </form>
                 </td>
             </tr>
@@ -141,7 +141,7 @@
                 <td class="py-3 px-3 text-right text-gray-900">KES {{ number_format($o->grand_total) }}</td>
                 <td class="py-3 px-3 text-center"><span class="text-[10px] font-bold px-2.5 py-1 rounded-full border {{ $o->payment_status === 'confirmed' ? 'text-emerald-400 bg-emerald-500/15' : 'text-[#FFCD05] bg-[#FFCD05]/15' }}">{{ $o->payment_status }}</span></td>
                 <td class="py-3 px-3 text-center">
-                    <form method="POST" action="{{ route('admin.delete-order', $o->id) }}" class="inline" onsubmit="return confirm('Delete order?')">@csrf<button class="text-[#901C1E] text-xs hover:underline" data-magnetic>Delete</button></form>
+                    <form method="POST" action="{{ route('admin.delete-order', $o->id) }}" class="inline" onsubmit="return confirm('Delete order?')">@csrf<button class="text-[#b3261e] text-xs hover:underline" data-magnetic>Delete</button></form>
                 </td>
             </tr>
             @endforeach
@@ -164,7 +164,7 @@
                 <td class="py-3 px-3 text-gray-900 font-semibold">{{ $u->name ?? '—' }}</td>
                 <td class="py-3 px-3 text-[#5A6480]">{{ $u->email ?? '—' }}</td>
                 <td class="py-3 px-3 text-center">
-                    <form method="POST" action="{{ route('admin.delete-user', $u->id) }}" class="inline" onsubmit="return confirm('Delete user {{ $u->name }}?')">@csrf<button class="text-[#901C1E] text-xs hover:underline" data-magnetic>Delete</button></form>
+                    <form method="POST" action="{{ route('admin.delete-user', $u->id) }}" class="inline" onsubmit="return confirm('Delete user {{ $u->name }}?')">@csrf<button class="text-[#b3261e] text-xs hover:underline" data-magnetic>Delete</button></form>
                 </td>
             </tr>
             @endforeach
@@ -193,7 +193,7 @@
     @forelse($recentPayments as $p)
     <div class="flex items-center gap-3 py-3 border-b border-gray-100 last:border-0">
         <div class="flex-1"><div class="font-semibold text-gray-900 text-sm">{{ $p->intent_id }}</div><div class="text-xs text-[#5A6480]">{{ $p->reference_type }} #{{ $p->reference_id }} · KES {{ number_format($p->amount) }}</div></div>
-        <span class="text-[10px] font-bold px-2.5 py-1 rounded-full border capitalize {{ $p->status === 'confirmed' ? 'text-emerald-400 bg-emerald-500/15' : ($p->status === 'failed' ? 'text-[#901C1E] bg-[#901C1E]/15' : 'text-[#FFCD05] bg-[#FFCD05]/15') }}">{{ $p->status }}</span>
+        <span class="text-[10px] font-bold px-2.5 py-1 rounded-full border capitalize {{ $p->status === 'confirmed' ? 'text-emerald-400 bg-emerald-500/15' : ($p->status === 'failed' ? 'text-[#b3261e] bg-[#b3261e]/15' : 'text-[#FFCD05] bg-[#FFCD05]/15') }}">{{ $p->status }}</span>
     </div>
     @empty <p class="text-[#5A6480]">No payments yet.</p> @endforelse
 </div>

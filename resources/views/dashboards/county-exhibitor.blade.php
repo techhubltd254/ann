@@ -3,7 +3,7 @@
 @section('title', $county->name . ' County Portal — KICC')
 
 @section('content')
-@php $accent = '#0B1E57'; @endphp
+@php $accent = '#0b0b0b'; @endphp
 <div class="flex min-h-screen bg-[#F9FAFB]">
     {{-- Sidebar --}}
     <div class="w-56 bg-white border-r border-gray-200 flex flex-col shrink-0 min-h-screen">

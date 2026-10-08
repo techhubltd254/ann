@@ -38,7 +38,7 @@
                     </select>
                 </div>
 
-                <button type="submit" class="w-full h-12 rounded-xl bg-[#901C1E] text-white font-bold text-sm hover:bg-[#7b1618] transition-all">
+                <button type="submit" class="w-full h-12 rounded-xl bg-[#b3261e] text-white font-bold text-sm hover:bg-[#7b1618] transition-all">
                     Create Stream
                 </button>
             </div>

@@ -63,7 +63,7 @@
                                 <svg x-show="showPassword" class="w-4 h-4" fill="none" stroke="currentColor" stroke-width="1.5" viewBox="0 0 24 24">
                                     <ellipse cx="8" cy="7" rx="5" ry="6"/><ellipse cx="17" cy="7" rx="5" ry="6"/>
                                     <path d="M3 3Q6 2 8 2l4 0" stroke-width="1"/><path d="M20 3Q23 2 13 2l4 0" stroke-width="1"/>
-                                    <line x1="2" y1="2" x2="14" y2="13" stroke="#901C1E" stroke-width="2" stroke-linecap="round"/>
+                                    <line x1="2" y1="2" x2="14" y2="13" stroke="#b3261e" stroke-width="2" stroke-linecap="round"/>
                                 </svg>
                             </button>
                         </div>

@@ -20,7 +20,7 @@
             <div class="text-5xl mb-3"></div>
             <p class="font-black text-gray-900">Drag &amp; drop files here</p>
             <p class="text-[#5A6480] text-sm mt-1">or click to browse — max 10 files, 50MB each</p>
-            <button type="button" id="pick-files" class="mt-6 inline-flex items-center justify-center gap-2 font-bold tracking-wide transition-all duration-200 px-8 h-14 rounded-xl bg-[#901C1E] text-white hover:bg-[#7b1618] active:scale-[0.97]" data-magnetic>
+            <button type="button" id="pick-files" class="mt-6 inline-flex items-center justify-center gap-2 font-bold tracking-wide transition-all duration-200 px-8 h-14 rounded-xl bg-[#b3261e] text-white hover:bg-[#7b1618] active:scale-[0.97]" data-magnetic>
                 Choose Files
             </button>
             <div class="hidden mt-6" id="file-list"></div>
@@ -42,7 +42,7 @@
                 <div class="text-xs font-bold text-kicc-gold" id="upload-progress-text">0%</div>
             </div>
             <div class="h-2 bg-gray-100 rounded-full overflow-hidden">
-                <div class="h-full bg-gradient-to-r from-kicc-gold to-[#901C1E] transition-all" id="upload-progress-bar" style="width: 0%"></div>
+                <div class="h-full bg-gradient-to-r from-kicc-gold to-[#b3261e] transition-all" id="upload-progress-bar" style="width: 0%"></div>
             </div>
             <div class="flex gap-2 mt-4" id="file-progress-list"></div>
         </div>
