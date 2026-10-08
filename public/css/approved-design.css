@@ -3,14 +3,14 @@
    DESIGN TOKENS — transcribed verbatim from KICC-UIUX-COMPLETE.md
    ============================================================ */
 :root{
-  --dark-canvas:#0A0A0A;
-  --surface:#141414;
+  --dark-canvas:#000000;
+  --surface:#0A0A0A;
   --card:rgba(239,228,210,0.34);   /* overridden by the brand layer */
   --kicc-red:#B4432A;      --kicc-red-hover:#93331b;
   --kicc-gold:#E0A22B;     --gold-soft:var(--au-500);
-  --kicc-navy:#1E1E1E;     --navy-hover:#2A2A2A;
-  --text:#2E2118;          --text-muted:rgba(46,33,24,0.70);
-  --light-bg:#FFFFFF;      --sand-alt:#E8E8E8;
+  --kicc-navy:#1A1A1A;     --navy-hover:#2C2C2C;
+  --text:#F5F5F5;          --text-muted:rgba(46,33,24,0.70);
+  --light-bg:#FAFAFA;      --sand-alt:#E0E0E0;
   --info-blue:#5A5A5A;
   --green:var(--kicc-green);
   --glass-bg:rgba(255,253,248,0.72);
@@ -633,10 +633,10 @@ table.tbl tbody tr:last-child td{border-bottom:none}
 /* ── 1 · TOKENS: retuned to the place, not to a startup palette ─────────── */
 :root{
   /* warm near-black — burnt acacia, not navy */
-  --dark-canvas:#0A0A0A;
-  --surface:#141414;
+  --dark-canvas:#000000;
+  --surface:#0A0A0A;
   --card:rgba(239,228,210,0.34);
-  --ink:#0A0A0A;
+  --ink:#000000;
 
   /* bone paper, not white */
   --bone:#2E2118;
@@ -651,11 +651,11 @@ table.tbl tbody tr:last-child td{border-bottom:none}
   /* deep acacia green */
   --acacia:#5C4634;        --acacia-lift:#7A6553;
 
-  --text:#2E2118;          --text-muted:rgba(46,33,24,0.70);
+  --text:#F5F5F5;          --text-muted:rgba(46,33,24,0.70);
   --hairline:rgba(46,33,24,0.14);
   --hairline-soft:rgba(46,33,24,0.07);
 
-  --light-bg:#FFFBF4;      --sand-alt:#E8E8E8;
+  --light-bg:#FFFBF4;      --sand-alt:#E0E0E0;
   --info-blue:#4A7C8C;
   --green:#4F6B47;
 
@@ -1505,13 +1505,13 @@ body.rail-on .nav-inner{border-bottom-color:transparent}
   --paper:#FFFBF4;
   --ink:#2E2118;
 
-  --text:#2E2118;
+  --text:#F5F5F5;
   --text-muted:rgba(46,33,24,0.70);
   --hairline:rgba(46,33,24,0.16);
   --hairline-soft:rgba(46,33,24,0.08);
 
   --light-bg:#F7F0E3;
-  --sand-alt:#E8E8E8;
+  --sand-alt:#E0E0E0;
   --info-blue:#5A7C8C;
   --green:var(--kicc-green);
 
