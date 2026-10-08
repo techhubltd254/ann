@@ -1,0 +1,39 @@
+{
+  "reference_sha256": "9862880f9e9fdf2ed422a05c1a8635a9f1c968b13e50038a56bd20cc0ab8e070",
+  "release": "reference-replica-v1",
+  "canonical_sections": [
+    "chapter-top",
+    "chapter-nation",
+    "chapter-archive",
+    "chapter-halls",
+    "chapter-makers",
+    "chapter-inside",
+    "chapter-programme",
+    "chapter-close"
+  ],
+  "views": [
+    "home",
+    "experience/counties",
+    "experience/marketplace",
+    "experience/venues",
+    "experience/exhibitions",
+    "experience/screens",
+    "experience/streams",
+    "experience/pages/counties/show",
+    "experience/pages/marketplace/show",
+    "experience/pages/venues/show"
+  ],
+  "brand_colors": [
+    "#FFFFFF",
+    "#0B0B0B",
+    "#B3261E",
+    "#FFCD05"
+  ],
+  "data_source": "native Laravel models, entity-scoped verified R2 assets",
+  "empty_native_tables": [
+    "exhibitions",
+    "screens",
+    "live_streams"
+  ],
+  "prototype_mutations": "disabled; native authenticated routes retained"
+}

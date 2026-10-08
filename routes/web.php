@@ -858,7 +858,7 @@ Route::middleware('auth')->prefix('kicc-admin/site-images')->name('experience.im
     Route::delete('/{asset}', [\App\Http\Controllers\Web\ExperienceImageController::class, 'destroy'])->name('destroy');
 });
 
-Route::get('/catalog',[\App\Http\Controllers\Web\ExperienceAtlasController::class,'index'])->name('experience.atlas');
+Route::get('/catalog',[\App\Http\Controllers\Web\ExperienceAtlasController::class,'index'])->middleware('auth')->name('experience.atlas');
 // Preserve the reference's URLs; use real controllers/tabs and their existing permissions.
 Route::get('/kicc-admin/media', fn() => redirect()->route('media.library'))->middleware('auth');
 Route::get('/kicc-admin/live', fn() => redirect('/kicc-live/admin'))->middleware('auth');
@@ -882,3 +882,6 @@ Route::middleware('auth')->group(function () {
 });
 
 Route::middleware("auth")->group(function(){Route::get("/portal/media-flow",[\App\Http\Controllers\Web\MediaFlowController::class,"index"])->name("admin.mediaflow");Route::get("/portal/media-flow/{institution}/sectors",[\App\Http\Controllers\Web\MediaFlowController::class,"sectors"])->whereNumber("institution")->name("admin.mediaflow.sectors");Route::get("/portal/media-flow/{institution}/media",[\App\Http\Controllers\Web\MediaFlowController::class,"media"])->whereNumber("institution")->name("admin.mediaflow.media");});
+
+// Approved reference: public, read-only projection of native models.
+Route::get('/experience/reference-data', [\App\Http\Controllers\Web\ReferenceExperienceController::class, 'data'])->name('experience.reference.data');

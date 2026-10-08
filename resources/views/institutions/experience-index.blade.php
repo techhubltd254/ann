@@ -1,3 +1,5 @@
-@extends('layouts.experience-live')
-@section('title','Institutions — KICC')
-@section('content')<section class="wrap rb-page"><div class="ed-chapter-num">Institutions & their experiences</div><h1 style="margin:25px 0">The people and places<br>behind each county.</h1><p class="ed-lead">Discover published institutions. Profiles, films and products are managed by their institution and county administrators.</p><div class="tm-gallery" style="margin-top:40px"><div class="rb-grid">@forelse($institutions as $r)<article class="tm-tile"><x-live-media :record="$r" type="institutions"/><div class="tm-copy"><div><div class="tm-metadata">{{ $r->county?->name }} · {{ $r->type }}</div><h3>{{ $r->name }}</h3><p>{{ \Illuminate\Support\Str::limit(strip_tags($r->description??''),150) }}</p></div><a href="{{ route('counties.institution',$r->slug) }}">Explore institution →</a>@auth<a class="ex-admin" href="{{ route('institution.admin',$r->slug) }}">Manage media</a>@endauth</div></article>@empty<p class="rb-notice">No institutions are currently published. Administrators can publish them from the existing county and institution controls.</p>@endforelse</div></div><div class="rb-pagination">{{ $institutions->links() }}</div></section>@endsection
+@if(request()->boolean('native'))
+@include('experience.native-backup.institutions.experience-index')
+@else
+@include('experience.reference')
+@endif
