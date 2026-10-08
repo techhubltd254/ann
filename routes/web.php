@@ -873,3 +873,10 @@ Route::get('/kicc-admin/{page}', function(string $page){
 })->where('page','overview|portals|counties|institutions|national|exhibitors|orders|providers|escrow|pool|pipelines|experiences|live_events|venues|users|hero_media|packages|analytics|integration|pipeline-creator|earnings|search-analytics|cache|licence-queue|pipeline-settings')->middleware('auth');
 
 Route::redirect('/admin','/kicc-admin');
+
+// Unified entry point mounts the EXISTING old/new controllers with their real tab contracts.
+Route::middleware('auth')->group(function () {
+    Route::get('/portal/hierarchy', [\App\Http\Controllers\Web\UnifiedAdminController::class, 'hierarchy'])->name('admin.hub.hierarchy');
+    Route::get('/portal/components', [\App\Http\Controllers\Web\UnifiedAdminController::class, 'components'])->name('admin.components.ui');
+    Route::get('/kicc-admin/components', [\App\Http\Controllers\Web\UnifiedAdminController::class, 'components'])->name('admin.components.reference');
+});

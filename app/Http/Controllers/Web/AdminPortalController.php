@@ -11,38 +11,9 @@ use Illuminate\Support\Facades\Auth;
 
 class AdminPortalController extends Controller
 {
-    public function selector()
+    public function selector(\Illuminate\Http\Request $request)
     {
-        $user = Auth::user();
-        // Any of the four admin tiers may see the portal selector
-        if (!$user?->hasAnyRole(['kicc_admin', 'national_admin', 'county_admin', 'exhibitor'])) {
-            abort(403, 'You do not have admin access.');
-        }
-
-        // KICC admins go to the KICC admin dashboard with the portals tab open
-        if ($user->hasRole('kicc_admin')) {
-            return redirect()->route('kicc.admin', ['tab' => 'portals']);
-        }
-
-        // County admins go directly to their county's professional admin page
-        if ($user->hasRole('county_admin') && $user->county_id) {
-            $county = \App\Models\County::find($user->county_id);
-            if ($county) {
-                return redirect()->route('county.admin.pro', $county->slug);
-            }
-        }
-
-        // Exhibitors go to their portal
-        if ($user->hasRole('exhibitor')) {
-            return redirect()->route('exhibitor.admin');
-        }
-
-        // National admins go to their portal
-        if ($user->hasRole('national_admin')) {
-            return redirect()->route('national.admin');
-        }
-
-        return redirect('/');
+        return app(UnifiedAdminController::class)->index($request);
     }
 
     public function national()

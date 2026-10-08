@@ -39,6 +39,7 @@ return Application::configure(basePath: dirname(__DIR__))
             \App\Http\Middleware\CachePublicResponse::class,
         ]);
         $middleware->web(append: [
+            \App\Http\Middleware\EnforceAdminHierarchy::class,
             \App\Http\Middleware\AppendAuditContext::class,
             \App\Http\Middleware\HandleInertiaRequests::class,
             'throttle:60,1',

@@ -1,0 +1,473 @@
+{
+  "kicc": {
+    "route": "kicc.admin",
+    "source": "app/Http/Controllers/Web/KiccAdminController.php",
+    "tabs": [
+      {
+        "tab": "overview",
+        "label": "Overview",
+        "registered_route": "kicc.admin",
+        "source": "app/Http/Controllers/Web/KiccAdminController.php"
+      },
+      {
+        "tab": "portals",
+        "label": "Sub-Portals",
+        "registered_route": "kicc.admin",
+        "source": "app/Http/Controllers/Web/KiccAdminController.php"
+      },
+      {
+        "tab": "counties",
+        "label": "Counties (47)",
+        "registered_route": "kicc.admin",
+        "source": "app/Http/Controllers/Web/KiccAdminController.php"
+      },
+      {
+        "tab": "institutions",
+        "label": "Institutions",
+        "registered_route": "kicc.admin",
+        "source": "app/Http/Controllers/Web/KiccAdminController.php"
+      },
+      {
+        "tab": "national",
+        "label": "National Govt",
+        "registered_route": "kicc.admin",
+        "source": "app/Http/Controllers/Web/KiccAdminController.php"
+      },
+      {
+        "tab": "exhibitors",
+        "label": "Exhibitors",
+        "registered_route": "kicc.admin",
+        "source": "app/Http/Controllers/Web/KiccAdminController.php"
+      },
+      {
+        "tab": "orders",
+        "label": "Orders",
+        "registered_route": "kicc.admin",
+        "source": "app/Http/Controllers/Web/KiccAdminController.php"
+      },
+      {
+        "tab": "providers",
+        "label": "Providers",
+        "registered_route": "kicc.admin",
+        "source": "app/Http/Controllers/Web/KiccAdminController.php"
+      },
+      {
+        "tab": "escrow",
+        "label": "Escrow",
+        "registered_route": "kicc.admin",
+        "source": "app/Http/Controllers/Web/KiccAdminController.php"
+      },
+      {
+        "tab": "3d_assets",
+        "label": "3D Assets",
+        "registered_route": "kicc.admin",
+        "source": "app/Http/Controllers/Web/KiccAdminController.php"
+      },
+      {
+        "tab": "pool",
+        "label": "Selling Pool",
+        "registered_route": "kicc.admin",
+        "source": "app/Http/Controllers/Web/KiccAdminController.php"
+      },
+      {
+        "tab": "pipelines",
+        "label": "Pipeline Management",
+        "registered_route": "kicc.admin",
+        "source": "app/Http/Controllers/Web/KiccAdminController.php"
+      },
+      {
+        "tab": "experiences",
+        "label": "Experiences",
+        "registered_route": "kicc.admin",
+        "source": "app/Http/Controllers/Web/KiccAdminController.php"
+      },
+      {
+        "tab": "live_events",
+        "label": "Live Events",
+        "registered_route": "kicc.admin",
+        "source": "app/Http/Controllers/Web/KiccAdminController.php"
+      },
+      {
+        "tab": "users",
+        "label": "Users",
+        "registered_route": "kicc.admin",
+        "source": "app/Http/Controllers/Web/KiccAdminController.php"
+      },
+      {
+        "tab": "venues",
+        "label": "Venues",
+        "registered_route": "kicc.admin",
+        "source": "app/Http/Controllers/Web/KiccAdminController.php"
+      },
+      {
+        "tab": "exh_requests",
+        "label": "Exhibitor Requests",
+        "registered_route": "kicc.admin",
+        "source": "app/Http/Controllers/Web/KiccAdminController.php"
+      },
+      {
+        "tab": "hero_media",
+        "label": "Hero Media",
+        "registered_route": "kicc.admin",
+        "source": "app/Http/Controllers/Web/KiccAdminController.php"
+      },
+      {
+        "tab": "packages",
+        "label": "Packages",
+        "registered_route": "kicc.admin",
+        "source": "app/Http/Controllers/Web/KiccAdminController.php"
+      },
+      {
+        "tab": "analytics",
+        "label": "Analytics",
+        "registered_route": "kicc.admin",
+        "source": "app/Http/Controllers/Web/KiccAdminController.php"
+      },
+      {
+        "tab": "integration",
+        "label": "Integration",
+        "registered_route": "kicc.admin",
+        "source": "app/Http/Controllers/Web/KiccAdminController.php"
+      },
+      {
+        "tab": "pipeline-creator",
+        "label": "Pipeline Creator",
+        "registered_route": "kicc.admin",
+        "source": "app/Http/Controllers/Web/KiccAdminController.php"
+      },
+      {
+        "tab": "earnings",
+        "label": "Earnings",
+        "registered_route": "kicc.admin",
+        "source": "app/Http/Controllers/Web/KiccAdminController.php"
+      },
+      {
+        "tab": "search-analytics",
+        "label": "Search Analytics",
+        "registered_route": "kicc.admin",
+        "source": "app/Http/Controllers/Web/KiccAdminController.php"
+      },
+      {
+        "tab": "cache",
+        "label": "Cache",
+        "registered_route": "kicc.admin",
+        "source": "app/Http/Controllers/Web/KiccAdminController.php"
+      },
+      {
+        "tab": "licence-queue",
+        "label": "Licence Queue",
+        "registered_route": "kicc.admin",
+        "source": "app/Http/Controllers/Web/KiccAdminController.php"
+      },
+      {
+        "tab": "pipeline-settings",
+        "label": "Pipeline Settings",
+        "registered_route": "kicc.admin",
+        "source": "app/Http/Controllers/Web/KiccAdminController.php"
+      }
+    ],
+    "sources": [
+      "app/Http/Controllers/Web/KiccAdminController.php",
+      "resources/views/experience/pages/kicc-mother-admin.blade.php"
+    ]
+  },
+  "county": {
+    "route": "county.admin.pro",
+    "source": "resources/views/experience/pages/dashboards/county-admin.blade.php",
+    "tabs": [
+      {
+        "tab": "overview",
+        "label": "Dashboard",
+        "registered_route": "county.admin.pro",
+        "source": "resources/views/experience/pages/dashboards/county-admin.blade.php"
+      },
+      {
+        "tab": "details",
+        "label": "General Info",
+        "registered_route": "county.admin.pro",
+        "source": "resources/views/experience/pages/dashboards/county-admin.blade.php"
+      },
+      {
+        "tab": "content",
+        "label": "Content CMS",
+        "registered_route": "county.admin.pro",
+        "source": "resources/views/experience/pages/dashboards/county-admin.blade.php"
+      },
+      {
+        "tab": "hero",
+        "label": "Hero Videos",
+        "registered_route": "county.admin.pro",
+        "source": "resources/views/experience/pages/dashboards/county-admin.blade.php"
+      },
+      {
+        "tab": "institutions",
+        "label": "Institutions",
+        "registered_route": "county.admin.pro",
+        "source": "resources/views/experience/pages/dashboards/county-admin.blade.php"
+      },
+      {
+        "tab": "images",
+        "label": "Sector Videos",
+        "registered_route": "county.admin.pro",
+        "source": "resources/views/experience/pages/dashboards/county-admin.blade.php"
+      },
+      {
+        "tab": "videos4d",
+        "label": "4D Gaussian Studio",
+        "registered_route": "county.admin.pro",
+        "source": "resources/views/experience/pages/dashboards/county-admin.blade.php"
+      },
+      {
+        "tab": "sectors",
+        "label": "Sectors",
+        "registered_route": "county.admin.pro",
+        "source": "resources/views/experience/pages/dashboards/county-admin.blade.php"
+      },
+      {
+        "tab": "prices",
+        "label": "Pricing Engine",
+        "registered_route": "county.admin.pro",
+        "source": "resources/views/experience/pages/dashboards/county-admin.blade.php"
+      },
+      {
+        "tab": "marketplace",
+        "label": "Marketplace",
+        "registered_route": "county.admin.pro",
+        "source": "resources/views/experience/pages/dashboards/county-admin.blade.php"
+      },
+      {
+        "tab": "ads",
+        "label": "Advertising",
+        "registered_route": "county.admin.pro",
+        "source": "resources/views/experience/pages/dashboards/county-admin.blade.php"
+      },
+      {
+        "tab": "packages",
+        "label": "Subscriptions",
+        "registered_route": "county.admin.pro",
+        "source": "resources/views/experience/pages/dashboards/county-admin.blade.php"
+      },
+      {
+        "tab": "reports",
+        "label": "Reports & Exports",
+        "registered_route": "county.admin.pro",
+        "source": "resources/views/experience/pages/dashboards/county-admin.blade.php"
+      },
+      {
+        "tab": "analytics",
+        "label": "Analytics",
+        "registered_route": "county.admin.pro",
+        "source": "resources/views/experience/pages/dashboards/county-admin.blade.php"
+      },
+      {
+        "tab": "trade_hub",
+        "label": "Trade Hub",
+        "registered_route": "county.admin.pro",
+        "source": "app/Http/Controllers/Web/CountyAdminController.php"
+      },
+      {
+        "tab": "traders",
+        "label": "Trader Spotlights",
+        "registered_route": "county.admin.pro",
+        "source": "app/Http/Controllers/Web/CountyAdminController.php"
+      },
+      {
+        "tab": "broadcast",
+        "label": "Broadcast",
+        "registered_route": "county.admin.pro",
+        "source": "app/Http/Controllers/Web/CountyAdminController.php"
+      },
+      {
+        "tab": "flythroughs",
+        "label": "Flythroughs",
+        "registered_route": "county.admin.pro",
+        "source": "app/Http/Controllers/Web/CountyAdminController.php"
+      },
+      {
+        "tab": "drone",
+        "label": "Drone Seq",
+        "registered_route": "county.admin.pro",
+        "source": "app/Http/Controllers/Web/CountyAdminController.php"
+      },
+      {
+        "tab": "floors",
+        "label": "Floor Plans",
+        "registered_route": "county.admin.pro",
+        "source": "app/Http/Controllers/Web/CountyAdminController.php"
+      },
+      {
+        "tab": "consent",
+        "label": "Consent Forms",
+        "registered_route": "county.admin.pro",
+        "source": "app/Http/Controllers/Web/CountyAdminController.php"
+      },
+      {
+        "tab": "voice",
+        "label": "Voice Notes",
+        "registered_route": "county.admin.pro",
+        "source": "app/Http/Controllers/Web/CountyAdminController.php"
+      },
+      {
+        "tab": "landmarks",
+        "label": "Landmarks",
+        "registered_route": "county.admin.pro",
+        "source": "app/Http/Controllers/Web/CountyAdminController.php"
+      },
+      {
+        "tab": "exh_requests",
+        "label": "Exhibitor Req.",
+        "registered_route": "county.admin.pro",
+        "source": "app/Http/Controllers/Web/CountyAdminController.php"
+      },
+      {
+        "tab": "attractions_list",
+        "label": "Attractions & Sites",
+        "registered_route": "county.admin.pro",
+        "source": "resources/views/experience/pages/dashboards/county-admin.blade.php"
+      },
+      {
+        "tab": "hotels",
+        "label": "Hotels & Stays",
+        "registered_route": "county.admin.pro",
+        "source": "resources/views/experience/pages/dashboards/county-admin.blade.php"
+      },
+      {
+        "tab": "live_events",
+        "label": "Live Events",
+        "registered_route": "county.admin.pro",
+        "source": "resources/views/experience/pages/dashboards/county-admin.blade.php"
+      }
+    ],
+    "sources": [
+      "app/Http/Controllers/Web/CountyAdminController.php",
+      "resources/views/experience/pages/dashboards/county-admin.blade.php"
+    ]
+  },
+  "institution": {
+    "route": "institution.admin",
+    "source": "resources/views/experience/pages/dashboards/institution-admin.blade.php",
+    "tabs": [
+      {
+        "tab": "overview",
+        "label": "Dashboard",
+        "registered_route": "institution.admin",
+        "source": "resources/views/experience/pages/dashboards/institution-admin.blade.php"
+      },
+      {
+        "tab": "analytics",
+        "label": "Analytics",
+        "registered_route": "institution.admin",
+        "source": "resources/views/experience/pages/dashboards/institution-admin.blade.php"
+      },
+      {
+        "tab": "transactions",
+        "label": "Transactions",
+        "registered_route": "institution.admin",
+        "source": "resources/views/experience/pages/dashboards/institution-admin.blade.php"
+      },
+      {
+        "tab": "products",
+        "label": "Products",
+        "registered_route": "institution.admin",
+        "source": "resources/views/experience/pages/dashboards/institution-admin.blade.php"
+      },
+      {
+        "tab": "customers",
+        "label": "Customers",
+        "registered_route": "institution.admin",
+        "source": "resources/views/experience/pages/dashboards/institution-admin.blade.php"
+      },
+      {
+        "tab": "videos",
+        "label": "Videos",
+        "registered_route": "institution.admin",
+        "source": "resources/views/experience/pages/dashboards/institution-admin.blade.php"
+      },
+      {
+        "tab": "production",
+        "label": "Production Chain",
+        "registered_route": "institution.admin",
+        "source": "resources/views/experience/pages/dashboards/institution-admin.blade.php"
+      },
+      {
+        "tab": "sectors",
+        "label": "Sector Mapping",
+        "registered_route": "institution.admin",
+        "source": "resources/views/experience/pages/dashboards/institution-admin.blade.php"
+      },
+      {
+        "tab": "profile",
+        "label": "Profile",
+        "registered_route": "institution.admin",
+        "source": "resources/views/experience/pages/dashboards/institution-admin.blade.php"
+      },
+      {
+        "tab": "team",
+        "label": "Team",
+        "registered_route": "institution.admin",
+        "source": "resources/views/experience/pages/dashboards/institution-admin.blade.php"
+      }
+    ],
+    "sources": [
+      "resources/views/experience/pages/dashboards/institution-admin.blade.php"
+    ]
+  },
+  "national": {
+    "route": "national.admin.v2.dashboard",
+    "source": "app/Http/Controllers/Web/NationalAdminController.php",
+    "tabs": [
+      {
+        "tab": "ministries",
+        "label": "Ministries",
+        "registered_route": "national.admin.v2.dashboard",
+        "source": "app/Http/Controllers/Web/NationalAdminController.php"
+      },
+      {
+        "tab": "agencies",
+        "label": "Agencies",
+        "registered_route": "national.admin.v2.dashboard",
+        "source": "app/Http/Controllers/Web/NationalAdminController.php"
+      },
+      {
+        "tab": "hero",
+        "label": "Hero Video",
+        "registered_route": "national.admin.v2.dashboard",
+        "source": "app/Http/Controllers/Web/NationalAdminController.php"
+      },
+      {
+        "tab": "media",
+        "label": "Ministry Media",
+        "registered_route": "national.admin.v2.dashboard",
+        "source": "app/Http/Controllers/Web/NationalAdminController.php"
+      },
+      {
+        "tab": "flag",
+        "label": "National Flag",
+        "registered_route": "national.admin.v2.dashboard",
+        "source": "app/Http/Controllers/Web/NationalAdminController.php"
+      },
+      {
+        "tab": "pages",
+        "label": "Pages",
+        "registered_route": "national.admin.v2.dashboard",
+        "source": "app/Http/Controllers/Web/NationalAdminController.php"
+      },
+      {
+        "tab": "counties",
+        "label": "County Classification",
+        "registered_route": "national.admin.v2.dashboard",
+        "source": "app/Http/Controllers/Web/NationalAdminController.php"
+      },
+      {
+        "tab": "exh_requests",
+        "label": "Exhibitor Req.",
+        "registered_route": "national.admin.v2.dashboard",
+        "source": "app/Http/Controllers/Web/NationalAdminController.php"
+      }
+    ],
+    "sources": [
+      "app/Http/Controllers/Web/NationalAdminController.php",
+      "resources/views/experience/pages/national/admin.blade.php"
+    ]
+  }
+}

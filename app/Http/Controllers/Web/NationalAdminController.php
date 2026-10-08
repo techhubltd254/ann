@@ -24,7 +24,7 @@ class NationalAdminController extends Controller
 
     public function index()
     {
-        return redirect()->route('national.admin.v2');
+        return redirect()->route('national.admin.v2.dashboard');
     }
 
     public function dashboard(Request $request)

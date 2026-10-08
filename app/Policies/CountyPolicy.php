@@ -14,11 +14,7 @@ class CountyPolicy
 
     public function update(User $user, County $county): bool
     {
-        return $user->isAdmin()
-            || $user->hasRole('kicc_admin')
-            || $user->hasRole('national_admin')
-            || ($user->county_id && $user->county_id == $county->id)
-            || ($user->hasRole('county_admin') && $user->county_id == $county->id);
+        return app(\App\Services\AdminHierarchyScope::class)->canCounty($user, $county);
     }
 
     public function manageMedia(User $user, County $county): bool

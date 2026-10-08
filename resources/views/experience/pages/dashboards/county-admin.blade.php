@@ -55,6 +55,12 @@
             ];
             @endphp
 
+            @php
+                $visibleTabs = collect($groups)->flatten(1)->pluck('tab')->all();
+                $otherNativeTabs = collect($navItems)->reject(fn($item) => in_array($item['tab'], $visibleTabs, true))->values()->all();
+                if ($otherNativeTabs) $groups['Additional county controls'] = $otherNativeTabs;
+            @endphp
+
             @foreach($groups as $groupName => $items)
             <div class="space-y-0.5">
                 <p class="px-3 text-[9px] font-semibold text-zinc-500 uppercase tracking-[0.15em] mb-1.5">{{ $groupName }}</p>

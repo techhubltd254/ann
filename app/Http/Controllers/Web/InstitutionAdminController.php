@@ -28,11 +28,8 @@ class InstitutionAdminController extends Controller
         $user = Auth::user();
         $institution = CountyInstitution::where('slug', $slug)->firstOrFail();
 
-        $allowed = $user->hasRole('kicc_admin')
-            || ($user->institution_id === $institution->id)
-            || ($user->hasRole('county_admin') && $user->county_id === $institution->county_id);
-
-        abort_unless($allowed, 403, 'You do not have access to this institution.');
+        abort_unless($user && app(\App\Services\AdminHierarchyScope::class)->canInstitution($user, $institution),
+            403, 'You do not have access to this institution.');
 
         return $institution;
     }
@@ -415,7 +412,9 @@ class InstitutionAdminController extends Controller
             'stock' => 'nullable|integer|min:0',
         ]);
 
-        $mp = \App\Models\Marketplace\Product::find($product);
+        $mp = \App\Models\Marketplace\Product::where('county_id', $institution->county_id)
+            ->where(fn($q) => $q->where('institution_id', (string)$institution->id)
+                ->orWhere('user_id', $institution->user_id ?? -1))->find($product);
         if (!$mp) {
             return back()->withErrors(['product' => 'Marketplace product not found.']);
         }
@@ -612,7 +611,7 @@ class InstitutionAdminController extends Controller
     public function removeTeamMember(Request $request, string $slug, int $userId)
     {
         $institution = $this->authorizeInstitution($slug);
-        $user = \App\Models\User::findOrFail($userId);
+        $user = \App\Models\User::where('institution_id', $institution->id)->findOrFail($userId);
         if ($user->id === Auth::id()) {
             return back()->withErrors(['team' => 'You cannot remove yourself.']);
         }

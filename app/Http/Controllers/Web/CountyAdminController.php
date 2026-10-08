@@ -181,7 +181,7 @@ class CountyAdminController extends Controller
         $countyFlagVideo = \App\Models\MediaAsset::resolveSlot(\App\Models\County::class, $county->id, 'county_flag_video');
 
         // All counties for national admin switcher
-        $allCounties = County::orderBy('name')->get(['slug', 'name']);
+        $allCounties = app(\App\Services\AdminHierarchyScope::class)->counties($user)->orderBy('name')->get(['slug', 'name']);
 
         // County-scoped exhibitor requests
         $exhRequests = User::where('county_id', $county->id)
