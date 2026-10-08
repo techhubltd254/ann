@@ -13,7 +13,11 @@ if (!function_exists('media')) {
 if (!function_exists('media_url')) {
     function media_url(): string
     {
-        return rtrim(config('media.cdn_url', url('storage')), '/');
+        // Empty string (not url('storage')) when no CDN is configured: callers
+        // concatenate a leading '/', so '' yields same-origin /<path>, which the
+        // media proxy serves from R2. url('storage') produced /storage/... and
+        // 404s because nothing is mounted there.
+        return rtrim((string) config('media.cdn_url'), '/');
     }
 }
 
@@ -22,7 +26,7 @@ if (!function_exists('img_url')) {
     {
         if (!$path) return '';
 
-        $storage = rtrim(config('media.cdn_url', url('storage')), '/');
+        $storage = rtrim((string) config('media.cdn_url'), '/');
 
         if ($format === 'webp') {
             $webpPath = preg_replace('/\.(jpg|jpeg|png)$/i', '.webp', $path);
@@ -38,7 +42,7 @@ if (!function_exists('img')) {
     {
         if (!$path) return '';
 
-        $storage = rtrim(config('media.cdn_url', url('storage')), '/');
+        $storage = rtrim((string) config('media.cdn_url'), '/');
         $fallback = "$storage/$path";
 
         $webpPath = preg_replace('/\.(jpg|jpeg|png)$/i', '.webp', $path);
@@ -64,7 +68,7 @@ if (!function_exists('img_srcset')) {
         $dir = dirname($path);
         $name = pathinfo($path, PATHINFO_FILENAME);
         $ext = pathinfo($path, PATHINFO_EXTENSION);
-        $storage = rtrim(config('media.cdn_url', url('storage')), '/');
+        $storage = rtrim((string) config('media.cdn_url'), '/');
 
         $srcset = [];
         foreach ($sizes as $w) {

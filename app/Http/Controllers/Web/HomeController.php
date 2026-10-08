@@ -42,19 +42,16 @@ class HomeController extends Controller
         $venues = Venue::whereIn('id', $ids['venueIds'] ?? [])->orderBy('name')->get();
         $tradeAgreementsHome = TradeAgreement::with('bloc')->whereIn('id', $ids['tradeAgreementIds'] ?? [])->latest()->get();
 
-        // Resolve hero videos for all counties
-        $heroAssets = MediaAsset::where('owner_type', County::class)
-            ->whereIn('owner_id', $counties->pluck('id'))
-            ->where('slot', 'hero_video')
-            ->where('status', 'ready')
-            ->with('derivatives')
-            ->get()
-            ->keyBy('owner_id');
-
+        // Resolve hero videos for all counties through the strict mapping rule:
+        // a county only renders footage whose R2 key carries its own slug. A
+        // shared stand-in is withheld (null) so the tile shows its own fallback
+        // instead of another place's film.
         $countyHeroVideos = [];
+        $countyHeroStates = [];
         foreach ($counties as $c) {
-            $asset = $heroAssets->get($c->id);
-            $countyHeroVideos[$c->slug] = $asset?->mp4Url();
+            $hero = \App\Support\MediaMapping::countyHero($c);
+            $countyHeroVideos[$c->slug] = $hero['video'];
+            $countyHeroStates[$c->slug] = $hero['state'];
         }
 
         // Resolve the pipeline-managed hero video (fall back to hardcoded path).
@@ -73,7 +70,7 @@ class HomeController extends Controller
         return view('home', compact(
             'featuredExhibitions', 'counties', 'products', 'venues',
             'tradeAgreementsHome', 'heroVideo', 'heroWebm', 'heroPoster',
-            'countyHeroVideos', 'liveStreams',
+            'countyHeroVideos', 'countyHeroStates', 'liveStreams',
         ));
     }
 }

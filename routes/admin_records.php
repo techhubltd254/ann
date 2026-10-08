@@ -1,5 +1,6 @@
 <?php
 
+use App\Http\Controllers\Admin\MediaControlController;
 use App\Http\Controllers\Admin\RecordsAdminController;
 use App\Http\Controllers\Admin\RecordsHierarchyController;
 use Illuminate\Support\Facades\Route;
@@ -47,4 +48,20 @@ Route::middleware(['auth', 'admin:kicc'])->prefix('records-admin')->name('admin.
     Route::get('/record-media/{media}', [RecordsAdminController::class, 'showMedia'])->name('media.show');
     Route::patch('/record-media/{media}', [RecordsAdminController::class, 'mediaStatus'])->name('media.status');
     Route::delete('/record-media/{media}', [RecordsAdminController::class, 'deleteMedia'])->name('media.delete');
+
+    /*
+    | Per-entity video control. Each county, institution, KICC and the national
+    | portal owns its own rows; uploads land in R2 under a slug-scoped prefix so
+    | no entity can ever render another entity's footage.
+    */
+    Route::prefix('media')->name('media.')->group(function () {
+        Route::get('/', [MediaControlController::class, 'index'])->name('index');
+        Route::post('/add', [MediaControlController::class, 'store'])->name('store');
+        Route::post('/{asset}/replace', [MediaControlController::class, 'replace'])->name('replace');
+        Route::delete('/{asset}', [MediaControlController::class, 'destroy'])->name('destroy');
+        Route::get('/{asset}/file', [MediaControlController::class, 'file'])->name('file');
+        Route::get('/r2/unreferenced', [MediaControlController::class, 'orphans'])->name('orphans');
+        Route::post('/r2/unreferenced/purge', [MediaControlController::class, 'purgeOrphans'])->name('orphans.purge');
+        Route::post('/r2/prune-missing', [MediaControlController::class, 'pruneMissing'])->name('prune');
+    });
 });

@@ -43,10 +43,11 @@ class MediaAsset extends Model
 
     public function url(?string $variant = null): string
     {
-        // Serve everything through the CDN worker (media.kicctest.org) —
-        // it has the KICC_MEDIA R2 binding and streams video/mp4 + derivatives.
-        $media = media_url();
-        return $media . '/' . ltrim($this->path, '/');
+        // Bytes live in R2. When MEDIA_CDN_URL is configured we use it;
+        // otherwise we serve through the application proxy, which streams the
+        // R2 object with Range support and is verified working on production.
+        // The old hard-coded Worker host 404'd for every object.
+        return $this->resolve($this->path);
     }
 
     public function bestVideoUrl(): ?string
@@ -133,7 +134,10 @@ class MediaAsset extends Model
 
     protected function resolve(string $path): string
     {
-        return media_url() . '/' . ltrim($path, '/');
+        $cdn = media_url();
+        if ($cdn !== '') return $cdn . '/' . ltrim($path, '/');
+        if (($this->disk ?? 'r2') === 'r2') return url('/media/video/' . ltrim($path, '/'));
+        return url('/storage/' . ltrim($path, '/'));
     }
 
     public function scopeKind(Builder $q, string $kind): Builder

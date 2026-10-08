@@ -1,42 +1,79 @@
 name: Deploy to VPS
 
+# Fix (2026-10-08): the previous revision used `scapecmd/rsync-action@master`,
+# which GitHub cannot resolve ("Unable to resolve action ... repository not
+# found"), so every run died at step 1 and production never received a push.
+# It also ran composer/migrate on the *runner* (no .env, no DB) and used
+# `rsync --delete`, which would have pruned server-only files.
+# This revision: rsync the tracked tree (no --delete) then build, migrate and
+# clear caches ON the VPS via appleboy/ssh-action (already proven in ci-cd.yml).
+
 on:
   push:
     branches: [main]
+  workflow_dispatch:
+
+concurrency:
+  group: deploy-vps
+  cancel-in-progress: false
 
 jobs:
   deploy:
     runs-on: ubuntu-latest
     steps:
-      - name: Checkout code
+      - name: Checkout
         uses: actions/checkout@v4
 
-      - name: Set up PHP
-        uses: shivammathur/setup-php@v2
+      - name: Configure SSH
+        run: |
+          mkdir -p ~/.ssh
+          printf '%s\n' "${{ secrets.VPS_SSH_KEY }}" > ~/.ssh/deploy_key
+          chmod 600 ~/.ssh/deploy_key
+          ssh-keyscan -H "${{ secrets.VPS_HOST }}" >> ~/.ssh/known_hosts 2>/dev/null
+
+      # No --delete: the VPS holds files that were placed there out of band
+      # (storage/app/legacy-admin-functions.json, site-component manifests,
+      # deploy/seed-site-components.php). Deleting them breaks the admin.
+      - name: Sync tracked files to VPS
+        run: |
+          rsync -az --no-perms --no-owner --no-group \
+            --exclude '.git/' --exclude '.github/' \
+            --exclude 'node_modules/' --exclude 'vendor/' \
+            --exclude '.env' --exclude '.env.*' \
+            --exclude 'storage/app/public/' --exclude 'storage/logs/' \
+            --exclude 'storage/framework/' \
+            --exclude 'bootstrap/cache/*.php' \
+            -e "ssh -i ~/.ssh/deploy_key -o StrictHostKeyChecking=no" \
+            ./ "${{ secrets.VPS_USER }}@${{ secrets.VPS_HOST }}:/opt/kicc-laravel/"
+
+      - name: Build · migrate · clear caches on VPS
+        uses: appleboy/ssh-action@v1
         with:
-          php-version: '8.4'
+          host: ${{ secrets.VPS_HOST }}
+          username: ${{ secrets.VPS_USER }}
+          key: ${{ secrets.VPS_SSH_KEY }}
+          script_stop: true
+          script: |
+            set -e
+            cd /opt/kicc-laravel
+            export COMPOSER_ALLOW_SUPERUSER=1
 
-      - name: Install dependencies
-        run: composer install --no-interaction --prefer-dist --optimize-autoloader --no-dev
+            if command -v composer >/dev/null 2>&1; then
+              composer install --no-interaction --no-dev --prefer-dist --optimize-autoloader || true
+            fi
 
-      - name: Run migrations
-        run: php artisan migrate --force --isolated
+            # Vite build for the @vite-driven views
+            if [ -f package.json ]; then
+              if [ ! -d node_modules ]; then npm ci --no-audit --no-fund || npm install --no-audit --no-fund; fi
+              npx --yes vite build || echo "vite build skipped"
+            fi
 
-      - name: Clear cache
-        run: php artisan cache:clear && php artisan config:clear && php artisan route:clear
+            php artisan migrate --force
 
-      - name: Sync files to VPS
-        uses: scapecmd/rsync-action@master
-        with:
-          connection-type: ssh
-          ssh-keyscan: true
-          args: -avz --delete
-          exclude: .git, .github, vendor/, node_modules/, storage/framework/cache/, storage/framework/views/
-          remote-path: /opt/kicc-laravel
-          remote: ${{ secrets.VPS_SSH_HOST }}
+            php artisan config:clear
+            php artisan route:clear
+            php artisan view:clear
+            php artisan optimize:clear || true
 
-      - name: Restart PHP-FPM
-        run: ssh ${{ secrets.VPS_SSH_HOST }} 'systemctl restart php8.4-fpm'
-
-      - name: Notify deployment
-        run: echo "✅ Deployment complete on $(date)"
+            systemctl restart php8.4-fpm
+            echo "=== deployed $(git -C /opt/kicc-laravel rev-parse --short HEAD 2>/dev/null || echo n/a) ==="

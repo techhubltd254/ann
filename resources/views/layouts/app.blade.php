@@ -415,6 +415,7 @@
     <link rel="stylesheet" href="/css/approved-design.css?v=kicc-live-20261007-r2">
     <link rel="stylesheet" href="/css/rebuild.css?v=kicc-live-20261007-r2">
     <link rel="stylesheet" href="/css/live-compat.css?v=kicc-live-20261007-r2">
+<link rel="stylesheet" href="/css/glass-kicc.css?v=kicc-glass-20261008">
     <script>try{var m=localStorage.getItem('kicc.theme')||'system';document.documentElement.dataset.theme=m==='system'?(matchMedia('(prefers-color-scheme: dark)').matches?'dark':'light'):m}catch(e){document.documentElement.dataset.theme='light'}</script>
     @stack('styles')
 <script>
