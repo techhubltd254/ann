@@ -124,7 +124,7 @@ body.light-world{background:var(--light-bg);color:#17150F}
 /* =====================================================================
    Legacy-token override layer  (appended 2026-10-08)
    approved-design.css still defines the retired ochre/gold system
-   (--kicc-gold:#fbbf24, rgba(255,205,5,…) glows). This block re-points
+   (--kicc-gold:#ffcd05, rgba(255,205,5,…) glows). This block re-points
    every legacy token and hard-coded gold affordance at the brown/deep-red
    palette so the glass skin wins without touching page logic or layout.
    ===================================================================== */

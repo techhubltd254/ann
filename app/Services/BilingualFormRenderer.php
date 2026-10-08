@@ -66,7 +66,7 @@ class BilingualFormRenderer
                 <span>I consent to broadcast across KICC screens and partner platforms</span>
             </label>
         </div>
-        <button type="submit" style="background:#0B1E57;color:white;border:none;padding:.75rem 2rem;border-radius:6px;font-weight:600;cursor:pointer">Sign Consent</button>
+        <button type="submit" style="background:#0b0b0b;color:white;border:none;padding:.75rem 2rem;border-radius:6px;font-weight:600;cursor:pointer">Sign Consent</button>
     </form>
 </div>
 HTML;

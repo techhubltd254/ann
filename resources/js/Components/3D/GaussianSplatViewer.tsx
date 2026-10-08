@@ -26,7 +26,7 @@ export default function GaussianSplatViewer({ splatUrl, title }: GaussianSplatVi
 
     // Simple Three.js scene as fallback until full splat renderer is integrated
     const scene = new THREE.Scene();
-    scene.background = new THREE.Color('#0A1024');
+    scene.background = new THREE.Color('#0b0b0b');
     const camera = new THREE.PerspectiveCamera(60, containerRef.current.clientWidth / containerRef.current.clientHeight, 0.1, 100);
     camera.position.set(2, 1.5, 3);
     const renderer = new THREE.WebGLRenderer({ antialias: true, alpha: true });
@@ -36,7 +36,7 @@ export default function GaussianSplatViewer({ splatUrl, title }: GaussianSplatVi
 
     // Placeholder sphere until splat loads
     const geo = new THREE.SphereGeometry(1, 32, 32);
-    const mat = new THREE.MeshStandardMaterial({ color: '#1890D7', wireframe: true, transparent: true, opacity: 0.3 });
+    const mat = new THREE.MeshStandardMaterial({ color: '#2a2a2a', wireframe: true, transparent: true, opacity: 0.3 });
     const mesh = new THREE.Mesh(geo, mat);
     scene.add(mesh);
 
@@ -78,9 +78,9 @@ export default function GaussianSplatViewer({ splatUrl, title }: GaussianSplatVi
     <div className="relative w-full h-full min-h-[300px] rounded-xl overflow-hidden">
       <div ref={containerRef} className="w-full h-full" />
       {loading && (
-        <div className="absolute inset-0 flex items-center justify-center bg-[#0A1024]/80">
+        <div className="absolute inset-0 flex items-center justify-center bg-[#0b0b0b]/80">
           <div className="flex flex-col items-center gap-2">
-            <svg className="w-8 h-8 animate-spin text-[#1890D7]" fill="none" viewBox="0 0 24 24">
+            <svg className="w-8 h-8 animate-spin text-[#2a2a2a]" fill="none" viewBox="0 0 24 24">
               <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4" />
               <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8v4a4 4 0 00-4 4H4z" />
             </svg>
@@ -89,7 +89,7 @@ export default function GaussianSplatViewer({ splatUrl, title }: GaussianSplatVi
         </div>
       )}
       {error && (
-        <div className="absolute inset-0 flex items-center justify-center bg-[#0A1024]/90">
+        <div className="absolute inset-0 flex items-center justify-center bg-[#0b0b0b]/90">
           <div className="text-center px-4">
             <p className="text-red-400 text-sm mb-2">Failed to load splat</p>
             <p className="text-white/40 text-xs">{error}</p>

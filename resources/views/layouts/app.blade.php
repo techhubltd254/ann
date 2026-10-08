@@ -287,7 +287,7 @@
 
         /* UX LAW: Hick's Law — recommended option ring */
         .opt-recommended {
-            border-color: rgba(144, 28, 30, 0.55);
+            border-color: rgba(179,38,30, 0.55);
             background: linear-gradient(135deg, rgba(179,38,30,0.06), rgba(255,205,5,0.08));
         }
 
@@ -313,10 +313,10 @@
             --kicc-warning: #D97706;
             --kicc-error: #DC2626;
             --kicc-info: #0284C7;
-            --focus-ring: 0 0 0 3px rgba(144, 28, 30, 0.35);
-            --shadow-sm: 0 1px 2px rgba(11, 30, 87, 0.06);
-            --shadow-md: 0 4px 12px rgba(11, 30, 87, 0.08);
-            --shadow-lg: 0 8px 32px rgba(11, 30, 87, 0.12);
+            --focus-ring: 0 0 0 3px rgba(179,38,30, 0.35);
+            --shadow-sm: 0 1px 2px rgba(11,11,11, 0.06);
+            --shadow-md: 0 4px 12px rgba(11,11,11, 0.08);
+            --shadow-lg: 0 8px 32px rgba(11,11,11, 0.12);
             --radius-sm: 0.5rem;
             --radius-md: 0.75rem;
             --radius-lg: 1rem;
@@ -412,10 +412,10 @@
         .shader-dark { background: #0a0a14; }
         .shader-dark .glass-card-dark { background: rgba(10,10,20,0.65); border: 1px solid rgba(255,255,255,0.08); }
     </style>
-    <link rel="stylesheet" href="/css/approved-design.css?v=kicc-live-20261007-r3">
-    <link rel="stylesheet" href="/css/rebuild.css?v=kicc-live-20261007-r3">
-    <link rel="stylesheet" href="/css/live-compat.css?v=kicc-live-20261007-r3">
-<link rel="stylesheet" href="/css/glass-kicc.css?v=kicc-glass-20261008b">
+    <link rel="stylesheet" href="/css/approved-design.css?v=kicc-live-20261007-r4">
+    <link rel="stylesheet" href="/css/rebuild.css?v=kicc-live-20261007-r4">
+    <link rel="stylesheet" href="/css/live-compat.css?v=kicc-live-20261007-r4">
+<link rel="stylesheet" href="/css/glass-kicc.css?v=kicc-glass-20261008c">
     <script>try{var m=localStorage.getItem('kicc.theme')||'system';document.documentElement.dataset.theme=m==='system'?(matchMedia('(prefers-color-scheme: dark)').matches?'dark':'light'):m}catch(e){document.documentElement.dataset.theme='light'}</script>
     @stack('styles')
 <script>

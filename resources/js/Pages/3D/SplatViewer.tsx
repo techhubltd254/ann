@@ -18,7 +18,7 @@ export default function SplatViewerPage({ splatName, splatUrl }: Props) {
   return (
     <>
       <Head title={`${SPLAT_TITLES[splatName] || splatName} — 3D Splat Viewer`} />
-      <div className="min-h-screen bg-[#0A1024] flex flex-col">
+      <div className="min-h-screen bg-[#0b0b0b] flex flex-col">
         <div className="absolute top-4 left-4 z-10">
           <a href="/3d/splats" className="inline-flex items-center gap-1 text-white/60 hover:text-white text-sm bg-black/40 px-3 py-1.5 rounded-lg backdrop-blur">
             ← Splat Gallery

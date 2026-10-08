@@ -11,7 +11,7 @@ export default function County3DPage({ county, modelUrl }: Props) {
   return (
     <>
       <Head title={`${county.name} — 3D Map`} />
-      <div className="min-h-screen bg-[#0A1024] flex flex-col">
+      <div className="min-h-screen bg-[#0b0b0b] flex flex-col">
         <div className="flex-1 relative">
           <County3DViewer modelUrl={modelUrl} autoRotate={true} />
         </div>

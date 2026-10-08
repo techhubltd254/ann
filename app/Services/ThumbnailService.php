@@ -128,7 +128,7 @@ class ThumbnailService
     public static function placeholder(string $name, ?string $category = null): string
     {
         $palettes = [
-            ['#0B1E57', '#1a3070'], ['#901C1E', '#b71c1c'], ['#0A1024', '#1a1a2e'],
+            ['#0b0b0b', '#1a3070'], ['#b3261e', '#b71c1c'], ['#0b0b0b', '#1a1a2e'],
             ['#046bd2', '#0EA5E9'], ['#2D6A4F', '#40916C'], ['#8B6914', '#FFCD05'],
         ];
         $hash = crc32($name);
