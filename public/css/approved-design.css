@@ -4,12 +4,12 @@
    ============================================================ */
 :root{
   --dark-canvas:#000000;
-  --surface:#0A0A0A;
+  --surface:#0d0a0b;
   --card:rgba(255,255,255,0.06);   /* overridden by the brand layer */
-  --kicc-red:#B4432A;      --kicc-red-hover:#93331b;
-  --kicc-gold:#E0A22B;     --gold-soft:var(--au-500);
+  --kicc-red:#d32f2f;      --kicc-red-hover:#a82828;
+  --kicc-gold:#fbbf24;     --gold-soft:var(--au-500);
   --kicc-navy:#1A1A1A;     --navy-hover:#2C2C2C;
-  --text:#F5F5F5;          --text-muted:rgba(180,180,180,0.70);
+  --text:#ffffff;          --text-muted:rgba(180,180,180,0.70);
   --light-bg:#FAFAFA;      --sand-alt:#E0E0E0;
   --info-blue:#5A5A5A;
   --green:var(--kicc-green);
@@ -634,7 +634,7 @@ table.tbl tbody tr:last-child td{border-bottom:none}
 :root{
   /* warm near-black — burnt acacia, not navy */
   --dark-canvas:#000000;
-  --surface:#0A0A0A;
+  --surface:#0d0a0b;
   --card:rgba(255,255,255,0.06);
   --ink:#000000;
 
@@ -644,14 +644,14 @@ table.tbl tbody tr:last-child td{border-bottom:none}
   --paper:#FFFBF4;
 
   /* Maasai shuka terracotta — replaces the flat #B4432A */
-  --kicc-red:#B4432A;      --kicc-red-hover:#93331B;
+  --kicc-red:#d32f2f;      --kicc-red-hover:#93331B;
   /* savanna ochre at golden hour — replaces neon #E0A22B */
-  --kicc-gold:#E0A22B;     --gold-soft:#EFC978;
+  --kicc-gold:#fbbf24;     --gold-soft:#EFC978;
   --ochre-deep:#C08F1E;
   /* deep acacia green */
   --acacia:#5C4634;        --acacia-lift:#7A6553;
 
-  --text:#F5F5F5;          --text-muted:rgba(180,180,180,0.70);
+  --text:#ffffff;          --text-muted:rgba(180,180,180,0.70);
   --hairline:rgba(46,33,24,0.14);
   --hairline-soft:rgba(46,33,24,0.07);
 
@@ -1440,7 +1440,7 @@ body.rail-on .nav-inner{border-bottom-color:transparent}
      toward terracotta / amber and re-based on a cream canvas. */
   --kicc-crimson:#B4432A;      /* #901C1E warmed -> terracotta */
   --kicc-crimson-lift:#C85738;
-  --kicc-gold:#E0A22B;         /* #FFCD05 warmed -> amber */
+  --kicc-gold:#fbbf24;         /* #FFCD05 warmed -> amber */
   --kicc-gold-soft:#EFC978;
   --kicc-gold-deep:#A87A18;
   --kicc-navy:#4A3728;         /* #142556 warmed -> espresso */
@@ -1505,7 +1505,7 @@ body.rail-on .nav-inner{border-bottom-color:transparent}
   --paper:#FFFBF4;
   --ink:#2E2118;
 
-  --text:#F5F5F5;
+  --text:#ffffff;
   --text-muted:rgba(180,180,180,0.70);
   --hairline:rgba(46,33,24,0.16);
   --hairline-soft:rgba(46,33,24,0.08);
