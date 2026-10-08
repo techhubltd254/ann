@@ -67,10 +67,81 @@ class HomeController extends Controller
             ->take(6)
             ->get();
 
+        // ── The Archive strip ────────────────────────────────────────────
+        // "No image reaches this page unfiltered": the strip renders only
+        // media that passed the pipeline (status=ready) and is attached to a
+        // named owner, read live from the store — never a hardcoded list.
+        $archive = collect();
+        try {
+            $archive = MediaAsset::query()
+                ->where('status', 'ready')
+                ->whereNotNull('owner_type')
+                ->orderByDesc('id')
+                ->take(24)
+                ->get()
+                ->map(function (MediaAsset $a) {
+                    $ownerName = 'KICC';
+                    $ownerType = 'National';
+                    try {
+                        $ot = (string) $a->owner_type;
+                        if ($ot !== '' && class_exists($ot)) {
+                            $ownerType = class_basename($ot);
+                            $owner = $a->owner;
+                            if ($owner && ! empty($owner->name)) {
+                                $ownerName = $owner->name;
+                            }
+                        } else {
+                            $ownerType = ucfirst($ot !== '' ? $ot : 'National');
+                        }
+                    } catch (\Throwable $e) {
+                        // owner row missing — keep the slot, label it honestly
+                    }
+
+                    $isVideo = $a->kind === 'video';
+
+                    return [
+                        'id' => $a->id,
+                        'kind' => $isVideo ? 'Film' : 'Still',
+                        'slot' => $a->slot ?: 'media',
+                        'owner' => $ownerName,
+                        'owner_type' => $ownerType,
+                        'video' => $isVideo ? ($a->mp4Url() ?: $a->url()) : null,
+                        'image' => $isVideo ? $a->posterUrl() : $a->url(),
+                        'mime' => $a->mime,
+                    ];
+                })
+                ->filter(fn ($row) => $row['video'] || $row['image'])
+                ->values();
+        } catch (\Throwable $e) {
+            \Illuminate\Support\Facades\Log::warning('home archive strip: ' . $e->getMessage());
+        }
+
+        // Counters for the spec's chapter figures, read from the store.
+        $hallsCount = $venues->count();
+        $makersCount = $products->count();
+        $exhibitionCount = Exhibition::where('status', 'published')->count();
+        $archiveCount = $archive->count();
+        $institutionCount = 0;
+        try {
+            $institutionCount = \Illuminate\Support\Facades\DB::table('county_institutions')->count();
+        } catch (\Throwable $e) {
+        }
+
+        // "Step Inside" targets: /room3d and /exhibition-3d/* are the working
+        // viewers on production (the /3d/* Inertia routes need a Vite build).
+        $rooms3d = collect();
+        try {
+            $rooms3d = \App\Models\Room3d::whereIn('status', ['ready', 'processed'])
+                ->orderByDesc('created_at')->take(3)->get();
+        } catch (\Throwable $e) {
+        }
+
         return view('home', compact(
             'featuredExhibitions', 'counties', 'products', 'venues',
             'tradeAgreementsHome', 'heroVideo', 'heroWebm', 'heroPoster',
             'countyHeroVideos', 'countyHeroStates', 'liveStreams',
+            'archive', 'hallsCount', 'makersCount', 'exhibitionCount',
+            'archiveCount', 'institutionCount', 'rooms3d',
         ));
     }
 }
