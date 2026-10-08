@@ -892,3 +892,33 @@ Route::middleware('auth')->group(function(){
  Route::post('/portal/media-flow/{institution:id}/videos/{asset}/replace',[\App\Http\Controllers\Web\MediaFlowController::class,'replace'])->whereNumber('institution')->whereNumber('asset')->name('admin.mediaflow.replace');
  Route::delete('/portal/media-flow/{institution:id}/videos/{asset}',[\App\Http\Controllers\Web\MediaFlowController::class,'destroy'])->whereNumber('institution')->whereNumber('asset')->name('admin.mediaflow.destroy');
 });
+
+/* ─── Restored legacy routes (KICC-Diagnosis-Report 2026-10-08, Section E) ─── */
+// Directories that now have canonical homes — 301 aliases keep old links/SEO alive.
+Route::redirect('/sectors', '/national-sector', 301);
+Route::redirect('/products', '/marketplace', 301);
+Route::redirect('/reels', '/streams', 301);              // never built → video feed home
+Route::redirect('/splat', '/exhibition-3d', 301);        // never built → 3D viewer home
+Route::redirect('/national-admin/v2', '/national-admin', 301);
+
+// Trade agreements: full legacy URL set onto the existing controller.
+Route::get('/trade-agreements/apply', [\App\Http\Controllers\Web\TradeAgreementController::class, 'index'])->name('trade.agreements.apply')->middleware('auth');
+Route::get('/trade-agreements/blocs', fn() => redirect()->route('trade.blocs.index'))->name('trade.agreements.blocs');
+Route::get('/trade-agreements/eligibility-index', fn() => redirect()->route('trade.eligibility'))->name('trade.agreements.eligibility');
+
+// Tourism legacy aliases onto the existing TourismEntityController methods.
+Route::get('/tourism/organizers', [\App\Http\Controllers\Web\TourismEntityController::class, 'organizers'])->name('tourism.organizers.legacy');
+Route::get('/tourism/rentals', [\App\Http\Controllers\Web\TourismEntityController::class, 'rentals'])->name('tourism.rentals.legacy');
+
+// Standalone legacy pages with existing controllers.
+Route::get('/county-subscriptions', [\App\Http\Controllers\Web\CountySubscriptionController::class, 'index'])->name('county.subscriptions.legacy');
+Route::get('/consent', [\App\Http\Controllers\Web\ConsentController::class, 'physical'])->name('consent.index');
+Route::get('/exhibitor-portal', fn() => redirect()->route('exhibitor.admin'))->name('exhibitor.portal');
+
+// Legacy admin sub-areas: point at the unified hub (real, working) — no dead stub pages.
+Route::middleware(['auth'])->group(function () {
+    Route::get('/kicc-admin/exhibitions', fn() => redirect()->route('kicc.admin', ['tab' => 'overview']))->name('kicc.admin.exhibitions')->middleware('admin:kicc');
+    Route::get('/kicc-admin/settings', fn() => redirect()->route('kicc.admin', ['tab' => 'settings']))->name('kicc.admin.settings')->middleware('admin:kicc');
+    Route::get('/kicc-admin/automation', fn() => redirect()->route('kicc.admin', ['tab' => 'operations']))->name('kicc.admin.automation')->middleware('admin:kicc');
+    Route::get('/kicc-admin/roles', fn() => redirect()->route('kicc.admin', ['tab' => 'roles']))->name('kicc.admin.roles')->middleware('admin:kicc');
+});
