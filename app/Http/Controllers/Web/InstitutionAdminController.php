@@ -521,7 +521,7 @@ class InstitutionAdminController extends Controller
     {
         $institution = $this->authorizeInstitution($slug);
         $data = $request->validate([
-            'video' => 'required|file|mimes:mp4,webm,mov|max:2048000',
+            'video' => 'required|file|mimes:mp4,webm,mov|max:'.\App\Services\ScopedVideoMedia::MAX_KB,
             'title' => 'required|string|max:255',
             'description' => 'nullable|string|max:5000',
             'entity_key' => 'nullable|string|max:100',
@@ -530,10 +530,11 @@ class InstitutionAdminController extends Controller
         $file = $request->file('video');
         $path = $file->storeAs(
             "institutions/{$institution->slug}/videos",
-            Str::slug($data['title']) . '-' . Str::lower(Str::random(5)) . '.' . $file->getClientOriginalExtension(),
+            Str::slug($data['title']) . '-' . Str::uuid() . '.' . $file->getClientOriginalExtension(),
             'r2'
         );
 
+        abort_unless($path && Storage::disk('r2')->exists($path),503,'R2 upload was not confirmed.');
         $videos = $institution->videos ?? [];
         $videos[] = [
             'title' => $data['title'],
@@ -543,7 +544,11 @@ class InstitutionAdminController extends Controller
             'size_bytes' => $file->getSize(),
             'entity_key' => $data['entity_key'] ?? null,
         ];
-        $institution->update(['videos' => $videos]);
+        \Illuminate\Support\Facades\DB::transaction(function() use($institution,$videos){
+            $locked=CountyInstitution::lockForUpdate()->findOrFail($institution->id);
+            $current=$locked->videos??[];$current[]=end($videos);$locked->update(['videos'=>$current]);
+        });
+        $institution->refresh();
 
         app(InstitutionSyncService::class)->sync($institution);
 
@@ -553,19 +558,26 @@ class InstitutionAdminController extends Controller
     public function deleteVideo(Request $request, string $slug, int $index)
     {
         $institution = $this->authorizeInstitution($slug);
-        $videos = $institution->videos ?? [];
-        if (isset($videos[$index])) {
-            try {
-                Storage::disk('r2')->delete($videos[$index]['path'] ?? '');
-            } catch (\Throwable $e) {
-            }
+        $paths = \Illuminate\Support\Facades\DB::transaction(function () use ($institution, $index) {
+            $locked = CountyInstitution::lockForUpdate()->findOrFail($institution->id);
+            $videos = $locked->videos ?? [];
+            abort_unless(isset($videos[$index]), 404, 'This legacy video no longer exists. Reload its owner.');
+            $path = $videos[$index]['path'] ?? null;
             unset($videos[$index]);
-            $institution->update(['videos' => array_values($videos)]);
-        }
-
-        app(InstitutionSyncService::class)->sync($institution);
-
-        return back()->with('success', 'Video removed & synced.');
+            $locked->update(['videos'=>array_values($videos)]);
+            if (!$path) return [];
+            $entityIds = $institution->sectorEntities()->pluck('id');
+            $assets = MediaAsset::where('path',$path)->where(function($q) use($institution,$entityIds){
+                $q->where(fn($q)=>$q->where('owner_type',CountyInstitution::class)->where('owner_id',$institution->id))
+                    ->orWhere(fn($q)=>$q->where('owner_type',\App\Models\SectorEntity::class)->whereIn('owner_id',$entityIds));
+            })->with('derivatives')->get();
+            $paths=[$path];
+            foreach($assets as $asset){$paths=array_merge($paths,$asset->derivatives->pluck('path')->all());$asset->derivatives()->delete();$asset->delete();}
+            return array_unique($paths);
+        });
+        $report=app(\App\Services\ScopedVideoMedia::class)->retire($paths);
+        $pending=in_array('cleanup_pending',$report,true);
+        return back()->with($pending?'error':'success',$pending?'Video unbound; R2 cleanup remains pending.':'Video removed from its native/legacy owner records. Shared files retained.');
     }
 
     /* ─── SYNC ─── */

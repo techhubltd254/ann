@@ -458,8 +458,8 @@ class InstitutionSyncService
 
         foreach ($videos as $video) {
             $targetKey = $video['entity_key'] ?? null;
-            // Attach if video targets this sector slug OR has no specific target and this is the first entity
-            $matchesSector = !$targetKey || $targetKey === $sectorSlug;
+            // Institution-wide videos do not become every sector's footage. A sector must be explicitly named.
+            $matchesSector = $targetKey && $targetKey === $sectorSlug;
             if (!$matchesSector) continue;
 
             $asset = MediaAsset::where('owner_type', SectorEntity::class)

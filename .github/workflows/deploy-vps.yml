@@ -82,6 +82,10 @@ jobs:
             chown -R www-data:www-data storage/framework bootstrap/cache
             chmod -R ug+rwX storage/framework bootstrap/cache
 
+            # Keep PHP request limits aligned with the real video form contract.
+            install -m 0644 deploy/php/99-kicc-uploads.ini /etc/php/8.4/fpm/conf.d/99-kicc-uploads.ini
+            php-fpm8.4 -t
+
             # The checkout SHA, not stale server Git metadata, identifies the rsync payload.
             test -s .deploy-source-sha
             SOURCE_SHA=$(cat .deploy-source-sha)

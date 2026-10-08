@@ -84,3 +84,5 @@ html:root[data-theme] body.experience-world{--ui-bg:var(--x-bg)!important;--ui-s
 html:root[data-theme] #chapter-halls.ed-plate{--stage-ink:var(--ui-ink)!important;background:var(--ui-surface)!important;color:var(--ui-ink)!important}
 html:root[data-theme] #app #chapter-halls.ed-plate :is(h1,h2,h3,h4,p,.ed-label,.ed-chapter-num,.ed-lead){color:var(--ui-ink)!important;-webkit-text-fill-color:var(--ui-ink)!important}
 html:root[data-theme] body.experience-world :is(.ex-shot,.rb-fallback,.ex-empty){background:var(--ui-surface)!important;color:var(--ui-ink)!important}
+
+@media(max-width:700px){html[data-theme] .orbit-caption{inset:auto 18px 18px}html[data-theme] .orbit-caption h3{font-size:25px;margin-bottom:5px}html[data-theme] .orbit-caption p:not(.orbit-pop){display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden;font-size:11px;line-height:1.45}html[data-theme] .orbit-code{display:block;max-width:65%;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}html[data-theme] .orbit-caption .orbit-pop{margin-top:7px;font-size:10px}}

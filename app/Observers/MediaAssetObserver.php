@@ -13,7 +13,7 @@ use Illuminate\Support\Facades\Cache;
 use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Str;
 
-class MediaAssetObserver
+class MediaAssetObserver implements \Illuminate\Contracts\Events\ShouldHandleEventsAfterCommit
 {
     public function created(MediaAsset $asset): void
     {
@@ -53,7 +53,8 @@ class MediaAssetObserver
 
         // Trigger institution sync when a video is uploaded for an institution
         if ($asset->owner_type === CountyInstitution::class && $asset->owner_id) {
-            SyncInstitutionJob::dispatch($asset->owner_id)->onQueue('sync');
+            try { SyncInstitutionJob::dispatch($asset->owner_id)->onQueue('sync'); }
+            catch (\Throwable $e) { Log::warning('Institution sync enqueue failed after media commit', ['asset_id'=>$asset->id,'error'=>$e->getMessage()]); }
         }
     }
 

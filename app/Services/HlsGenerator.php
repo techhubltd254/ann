@@ -109,12 +109,24 @@ class HlsGenerator
                 return false;
             }
 
+            // A replacement/deletion may happen while ffmpeg is running.
+            // Never attach derivatives from an obsolete source to the current media ID.
+            $current = MediaAsset::find($asset->id);
+            if (!$current || $current->path !== $sourcePath) {
+                Log::info('HLS source superseded before upload', ['asset_id'=>$asset->id]);
+                return false;
+            }
             // Upload HLS files to R2 / disk
             $this->uploadDir($tempOut, $hlsDir, $disk);
 
             $masterContent = file_get_contents($masterTemp);
             $masterSize = filesize($masterTemp);
 
+            // Lock and check again: upload itself may overlap a replace/delete.
+            $published = \Illuminate\Support\Facades\DB::transaction(function () use ($asset, $sourcePath, $masterPath, $masterSize, $masterContent) {
+            $locked = MediaAsset::lockForUpdate()->find($asset->id);
+            if (!$locked || $locked->path !== $sourcePath) return false;
+            $asset = $locked;
             // Create derivative records
             $asset->derivatives()->whereIn('kind', ['hls_master', 'hls_playlist', 'hls_segment'])->delete();
 
@@ -134,6 +146,13 @@ class HlsGenerator
                 'variant' => 'master',
                 'meta' => ['playlist' => $masterContent],
             ]);
+
+            return true;
+            });
+            if (!$published) {
+                Log::info('HLS source superseded during upload', ['asset_id'=>$asset->id]);
+                return false;
+            }
 
             // Bust page caches so heroes/sector videos pick up HLS immediately
             $countyId = $asset->owner_id ?? null;
