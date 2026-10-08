@@ -49,3 +49,4 @@ class MediaProxyController extends Controller
             'Access-Control-Expose-Headers' => 'Content-Type, Content-Length, Content-Range, Accept-Ranges',
         ]);
     }
+}
