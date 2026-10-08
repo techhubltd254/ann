@@ -3,7 +3,7 @@
 @section('content')
 <x-experience.head
   eyebrow="Live from the halls"
-  title="What is live,<br>right now."
+  title="Live Streams"
   lead="Live streams carry the exhibition floor to anyone who cannot be in the room."
   :stats="['live now' => $live->count(), 'upcoming' => $upcoming->count()]"
 />

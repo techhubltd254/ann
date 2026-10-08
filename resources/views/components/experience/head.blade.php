@@ -1,6 +1,7 @@
 {{-- Shared experience page header. One shape, every tab. --}}
 @props(['eyebrow','title','lead'=>null,'stats'=>[],'accent'=>null])
-<section class="ex-hero">
+<nav class="wrap ex-breadcrumb" aria-label="Breadcrumb"><a href="{{ route('home') }}">Home</a><span aria-hidden="true"> / </span><span>{{ str_replace(' — KICC', '', trim($__env->yieldContent('title'))) }}</span></nav>
+<section class="ex-hero page-head" data-depth="mid">
   <div class="wrap">
     <div class="ex-eyebrow">{{ $eyebrow }}</div>
     <h1>{!! $title !!}</h1>

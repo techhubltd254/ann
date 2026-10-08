@@ -603,3 +603,11 @@ html[data-theme="light"] body.experience-world footer a:hover{color:#B3261E!impo
 html[data-theme="light"] body.experience-world :is(.tm-dialog,.ex-film)::backdrop{background:rgba(255,255,255,.85)!important;}
 html[data-theme="light"] body.experience-world :is(.glass-card-dark,.shader-dark,.admin-pane,.stat-strip,.sector-stats){background:#FFFFFF!important;color:#0B0B0B!important;}
 html[data-theme="light"] body.experience-world :is(.btn.gold,.btn-gold,.ex-tag,.badge.gold){background:#FFCD05!important;color:#0B0B0B!important;}
+
+/* Reference document page-head scale, with the requested bright four-colour treatment. */
+.ex-breadcrumb { margin-top:110px; font-size:13px; color:#0B0B0B; }
+.ex-breadcrumb a { color:#B3261E; }
+.ex-hero.page-head { padding-top:28px; }
+.ex-hero.page-head h1 { font-size:clamp(2rem,4vw,3.2rem); margin-top:12px; max-width:100%; }
+.ex-illustration-note { z-index:4; max-width:calc(100% - 20px); background:#FFFFFF; color:#0B0B0B; font-size:10px; line-height:1.4; }
+@media(max-width:760px) { .ex-breadcrumb { margin-top:90px; } .ex-hero.page-head { padding-top:20px; } }

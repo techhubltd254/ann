@@ -3,7 +3,7 @@
 @section('content')
 <x-experience.head
   eyebrow="Forty-seven devolved units"
-  title="Every county sends<br>its own economy."
+  title="County Video Tunnel"
   lead="Forty-seven counties, each with the sectors that define it. Open a county to walk its film, its institutions and the goods it brings to market."
   :stats="['counties represented' => $counties->count()]"
 />

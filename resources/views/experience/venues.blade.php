@@ -3,7 +3,7 @@
 @section('content')
 <x-experience.head
   eyebrow="Ten rooms, from a boardroom to two thousand seats"
-  title="Walk the room<br>before you book it."
+  title="World-Class Venues"
   lead="Every hall carries its own film, its capacity and its floor plan. Filter by room type or capacity."
   :stats="['venues' => $venues->total(), 'counties' => $counties->count()]"
 />

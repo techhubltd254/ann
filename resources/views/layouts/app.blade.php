@@ -1,6 +1,6 @@
 @extends('layouts.experience-live')
 @push('styles')
-<link rel="stylesheet" href="/css/experience-compat-structure.css?v=experience-full-bright-v3">
+<link rel="stylesheet" href="/css/experience-compat-structure.css?v=experience-full-bright-v4">
 <script src="https://cdn.tailwindcss.com"></script>
 <script src="{{ asset('js/gsap.min.js') }}"></script>
 <script src="{{ asset('js/ScrollTrigger.min.js') }}"></script>

@@ -1,4 +1,7 @@
 (()=>{'use strict';
+// Preserve reference-document deep links while using real Laravel routes.
+if(location.hash.startsWith('#/')&&location.hash.length>2){const path=location.hash.slice(1);if(!path.startsWith('//')){location.replace(location.origin+path);return;}}
+
 const reduce=matchMedia('(prefers-reduced-motion: reduce)');
 document.querySelectorAll('.nav-links a').forEach(a=>{if(location.pathname===a.pathname||(a.pathname!=='/'&&location.pathname.startsWith(a.pathname+'/')))a.setAttribute('aria-current','page');});
 document.querySelectorAll('[data-county-view]').forEach(b=>b.onclick=()=>{const host=document.querySelector('[data-county-results]');if(host)host.dataset.view=b.dataset.countyView;document.querySelectorAll('[data-county-view]').forEach(x=>x.setAttribute('aria-pressed',String(x===b)));});

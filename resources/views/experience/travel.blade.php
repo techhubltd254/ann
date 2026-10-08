@@ -3,7 +3,7 @@
 @section('content')
 <x-experience.head
   eyebrow="Arrive, stay, and see the country"
-  title="Come for the exhibition.<br>Stay for Kenya."
+  title="Travel to KICC"
   lead="Attractions, hotels and destinations around every county hosting the programme. Weather-aware, so you pack for the right season."
   :stats="['attractions' => $attractions->count(), 'hotels' => $hotels->count(), 'destinations' => $destinations->count()]"
 />

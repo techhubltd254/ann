@@ -3,7 +3,7 @@
 @section('content')
 <x-experience.head
   eyebrow="Digital signage network"
-  title="Every screen,<br>every county."
+  title="Kenya&#039;s Most Iconic Screens"
   lead="The screen network is driven by county and sector playlists. Open a screen to see its rotation and its live feed."
   :stats="['screens' => $screens->count()]"
 />

@@ -3,7 +3,7 @@
 @section('content')
 <x-experience.head
   eyebrow="The programme"
-  title="What is on,<br>and what is next."
+  title="Exhibitions"
   lead="Each exhibition is a chapter: its county, its halls, its booths and its live stream."
   :stats="['exhibitions' => $exhibitions->total()]"
 />
