@@ -74,14 +74,15 @@ class HomeController extends Controller
 
         // A real still to sit under the film, so the hero keeps a frame even
         // where the film cannot be decoded. Prefer a published poster, else the
-        // first ready image in the store.
+        // first ready image in the store — verified against the bucket, because
+        // publishing an unverified path is what produced the 404 poster.
         $heroStill = $heroPoster;
         if (! $heroStill) {
             try {
                 $stillAsset = MediaAsset::query()
                     ->where('status', 'ready')->where('kind', 'image')
                     ->whereNotNull('path')->orderBy('id')->first();
-                if ($stillAsset) {
+                if ($stillAsset && \Illuminate\Support\Facades\Storage::disk('r2')->exists($stillAsset->path)) {
                     $heroStill = $stillAsset->url();
                 }
             } catch (\Throwable $e) {
@@ -129,8 +130,22 @@ class HomeController extends Controller
                 }
             }
 
+            // One bucket listing per request, then only publish paths that are
+            // really there. A derivative row can outlive its object (the
+            // seedance poster was purged), and an unverified path reaches the
+            // page as a 404 — the exact defect this strip had.
+            $r2Keys = [];
+            try {
+                foreach (\Illuminate\Support\Facades\Storage::disk('r2')->allFiles() as $key) {
+                    $r2Keys[$key] = true;
+                }
+            } catch (\Throwable $e) {
+                \Illuminate\Support\Facades\Log::warning('archive r2 listing: ' . $e->getMessage());
+            }
+            $onR2 = static fn (?string $p): bool => $p !== null && $p !== '' && isset($r2Keys[$p]);
+
             $archive = $picked
-                ->map(function (MediaAsset $a) {
+                ->map(function (MediaAsset $a) use ($onR2) {
                     $ownerName = 'KICC';
                     $ownerType = 'National';
                     try {
@@ -150,17 +165,38 @@ class HomeController extends Controller
 
                     $isVideo = $a->kind === 'video';
 
+                    // Video: the mp4 derivative if present, else the asset itself.
+                    $videoPath = $a->derivatives->firstWhere('kind', 'video_mp4')?->path ?: $a->path;
+                    $video = ($isVideo && $onR2($videoPath)) ? ($a->mp4Url() ?: $a->url()) : null;
+
+                    // Still: a verified poster for films, the object itself for images.
+                    $still = null;
+                    if ($isVideo) {
+                        $posterPath = $a->derivatives->firstWhere('kind', 'poster')?->path;
+                        if ($onR2($posterPath)) {
+                            $still = $a->posterUrl();
+                        }
+                    } elseif ($onR2($a->path)) {
+                        $still = $a->url();
+                    }
+
+                    // Nothing verified to show: leave the slot out of the strip.
+                    if (! $video && ! $still) {
+                        return null;
+                    }
+
                     return [
                         'id' => $a->id,
                         'kind' => $isVideo ? 'Film' : 'Still',
                         'slot' => $a->slot ?: 'media',
                         'owner' => $ownerName,
                         'owner_type' => $ownerType,
-                        'video' => $isVideo ? ($a->mp4Url() ?: $a->url()) : null,
-                        'image' => $isVideo ? $a->posterUrl() : $a->url(),
+                        'video' => $video,
+                        'image' => $still,
                         'mime' => $a->mime,
                     ];
                 })
+                ->filter()
                 ->filter(fn ($row) => $row['video'] || $row['image'])
                 ->values();
         } catch (\Throwable $e) {
