@@ -49,6 +49,13 @@
             :loop="true"
             :muted="true"
         />
+        @elseif(!empty($countyHeroImage))
+        {{-- No film of its own: render this county's OWN still, resolved from
+             media_assets (slot fallback_image) — never another county's film. --}}
+        <div class="absolute inset-0 w-full h-full bg-black">
+            <img src="{{ $countyHeroImage }}" alt="{{ $county->name }} county"
+                 class="absolute inset-0 w-full h-full object-cover" style="z-index:1">
+        </div>
         @elseif(count($countyHeroFallback ?? []) > 0)
         {{-- Hero fallback: no county hero uploaded — seamless loop of related videos --}}
         <div class="absolute inset-0 w-full h-full bg-black"
