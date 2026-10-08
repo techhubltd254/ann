@@ -32,31 +32,72 @@ class MediaProxyController extends Controller
             abort(404);
         }
 
-        $mime = $disk->mimeType($key) ?? 'application/octet-stream';
-        $size = $disk->size($key);
+        $mime = $disk->mimeType($key) ?: 'application/octet-stream';
+        $size = (int) $disk->size($key);
+
+        // Byte range requested by the browser (video scrubbing / seeking)
+        $start = 0;
+        $end   = max($size - 1, 0);
+        $partial = false;
+        if ($range = $request->header('Range')) {
+            if (preg_match('/bytes=(\d+)-(\d*)/', $range, $m)) {
+                $start = (int) $m[1];
+                $end   = $m[2] !== '' ? min((int) $m[2], $size - 1) : $size - 1;
+                $partial = true;
+            }
+        }
+        if ($start > $end) {
+            return response('', 416, ['Content-Range' => "bytes */{$size}"]);
+        }
+        $length = $end - $start + 1;
 
         $headers = [
-            'Content-Type' => $mime,
-            'Content-Length' => $size,
-            'Accept-Ranges' => 'bytes',
-            'Access-Control-Allow-Origin' => '*',
+            'Content-Type'                  => $mime,
+            'Accept-Ranges'                 => 'bytes',
+            'Access-Control-Allow-Origin'   => '*',
             'Access-Control-Expose-Headers' => 'Content-Type, Content-Length, Content-Range, Accept-Ranges',
-            'Cache-Control' => 'public, max-age=86400, immutable',
+            'Cache-Control'                 => 'public, max-age=86400, immutable',
         ];
 
-        $range = $request->header('Range');
-        if ($range && preg_match('/bytes=(\d+)-(\d*)/', $range, $m)) {
-            $start = (int) $m[1];
-            $end = $m[2] !== '' ? (int) $m[2] : $size - 1;
-            $headers['Content-Range'] = "bytes {$start}-{$end}/{$size}";
-            $headers['Content-Length'] = $end - $start + 1;
-            $stream = $disk->readStream($key);
-            if ($start > 0) fseek($stream, $start);
-            $data = stream_get_contents($stream, $end - $start + 1);
-            fclose($stream);
-            return response($data, 206, $headers);
+        // One ranged GET straight from R2; the body is streamed, never buffered.
+        try {
+            $client = $disk->getClient();
+            $args = [
+                'Bucket' => config('filesystems.disks.r2.bucket'),
+                'Key'    => $key,
+            ];
+            if ($partial) {
+                $args['Range'] = "bytes={$start}-{$end}";
+            }
+            $result = $client->getObject($args);
+            $body   = $result['Body'];
+        } catch (\Throwable $e) {
+            \Illuminate\Support\Facades\Log::error('media-proxy getObject failed', ['key' => $key, 'msg' => $e->getMessage()]);
+            abort(502, 'Media source unavailable');
         }
 
-        return response($disk->get($key), 200, $headers);
+        if ($partial) {
+            $headers['Content-Range']  = "bytes {$start}-{$end}/{$size}";
+            $headers['Content-Length'] = $length;
+            $status = 206;
+        } else {
+            $headers['Content-Length'] = $size;
+            $status = 200;
+        }
+
+        return new \Symfony\Component\HttpFoundation\StreamedResponse(function () use ($body, $length) {
+            $sent = 0;
+            while (!feof($body) && $sent < $length) {
+                $chunk = $body->read(min(262144, $length - $sent));
+                if ($chunk === '' || $chunk === false) {
+                    break;
+                }
+                echo $chunk;
+                $sent += strlen($chunk);
+                if (ob_get_level() > 0) {
+                    @ob_flush();
+                }
+                flush();
+            }
+        }, $status, $headers);
     }
-}
