@@ -7,67 +7,23 @@ use Symfony\Component\HttpFoundation\Response;
 
 class CachePublicResponse
 {
-    private array $cacheablePrefixes = [
-        '/national-government',
-        '/national-exhibition',
-        '/counties',
-        '/marketplace',
-        '/exhibitions',
-    ];
-
     public function handle(Request $request, Closure $next): Response
     {
         $response = $next($request);
-        return $this->setCacheHeaders($request, $response);
-    }
-
-    private function setCacheHeaders(Request $request, Response $response): Response
-    {
-        if ($request->method() !== 'GET') {
+        if (str_starts_with('/' . $request->path(), '/media/')) {
             return $response;
         }
-
-        $path = '/' . $request->path();
-
-        // Skip media proxy routes — binary streaming responses
-        if (str_starts_with($path, '/media/')) {
+        if (!str_contains($response->headers->get('Content-Type', ''), 'text/html')) {
             return $response;
         }
-
-        // Skip non-HTML responses (JSON, binary, etc.)
-        $contentType = $response->headers->get('Content-Type', '');
-        if (!str_contains($contentType, 'text/html')) {
-            return $response;
-        }
-
-        // Never cache auth, admin, or mutation paths
-        foreach (['/login','/register','/cart','/checkout','/kicc-live/admin','/broadcast','/api','/live','/kicc-admin','/portal','/county-admin','/national-admin','/exhibitor-admin','/provider-admin'] as $no) {
-            if (str_starts_with($path, $no)) {
-                return $response;
-            }
-        }
-
-        if (!$response->isSuccessful()) {
-            return $response;
-        }
-
-        $cacheSecs = 60; // default 1 min
-        foreach ($this->cacheablePrefixes as $prefix) {
-            if (str_starts_with($path, $prefix)) {
-                $cacheSecs = 600; // 10 min for public pages
-                break;
-            }
-        }
-
-        // Forcefully set cache headers — this must override any middleware that ran after us
-        $response->headers->remove('Cache-Control');
-        $response->headers->remove('Pragma');
-        $response->headers->remove('Expires');
-
-        $response->headers->set('Cache-Control', "public, s-maxage={$cacheSecs}, max-age={$cacheSecs}, stale-while-revalidate=" . ($cacheSecs * 10));
-        $response->headers->set('CDN-Cache-Control', "max-age={$cacheSecs}");
-        $response->headers->set('X-Kicc-Cache', "s-maxage={$cacheSecs}");
-
+        // Rendered pages contain session-specific CSRF tokens and may include
+        // administrative controls. Shared caching would leak personalized HTML
+        // and continue serving outdated layouts after a deployment.
+        // This does not affect static asset or R2 media cache policies.
+        $response->headers->set('Cache-Control', 'private, no-store, max-age=0');
+        $response->headers->set('CDN-Cache-Control', 'no-store');
+        $response->headers->set('Cloudflare-CDN-Cache-Control', 'no-store');
+        $response->headers->set('X-Kicc-Cache', 'BYPASS-SESSION-HTML');
         return $response;
     }
 }
