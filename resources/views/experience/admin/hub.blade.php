@@ -1,4 +1,4 @@
-@extends('layouts.app')
+@extends('layouts.nexora')
 @section('title','Administration — KICC')
 @section('content')
 <x-experience.head eyebrow="One control centre · existing backend" title="Administration, connected." lead="The original administration panels, their real controls and the county → sector → institution hierarchy — together in the experience interface." :stats="['your access'=>$level,'counties'=>$counties->count(),'institutions'=>$institutions->count(),'registered routes'=>count($routes)]" />

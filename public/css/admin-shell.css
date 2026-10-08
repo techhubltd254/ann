@@ -58,3 +58,21 @@ body.admin-shell ::selection{background:var(--as-yellow);color:var(--as-black)}
 .as-burger{display:none}
 @media(max-width:960px){body.admin-shell{grid-template-columns:1fr}.as-side{position:fixed;z-index:70;transform:translateX(-100%);transition:transform .3s;box-shadow:20px 0 60px rgba(0,0,0,.4)}body.admin-shell.nav-open .as-side{transform:none}.as-burger{display:grid}.as-search{display:none}.as-main{padding:16px}}
 @media(prefers-reduced-motion:reduce){*{transition:none!important}}
+
+/* Portal hub modules on the new shell */
+.admin-hub-toolbar{display:flex;align-items:end;gap:18px;flex-wrap:wrap;margin-bottom:20px}
+.admin-hub-toolbar input{margin-top:6px;min-width:260px}
+.admin-hub-toolbar p{font-size:12px;color:var(--as-muted);margin:0;max-width:420px}
+.admin-module{background:var(--as-glass);border:1px solid var(--as-line);border-radius:var(--as-radius);padding:20px;margin-bottom:18px}
+.admin-module h2{font:700 17px var(--as-serif);margin:0 0 14px}.admin-module h2 small{color:var(--as-muted);font:500 11px var(--as-mono);letter-spacing:.1em;text-transform:uppercase;margin-left:8px}
+.admin-link-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(210px,1fr));gap:10px}
+.admin-control-link{display:flex;justify-content:space-between;align-items:center;gap:8px;padding:11px 14px;border-radius:11px;border:1px solid var(--as-line);background:var(--as-raised);color:var(--as-ink);text-decoration:none;font-size:12.5px;font-weight:500;transition:border-color .18s,transform .18s}
+.admin-control-link:hover{border-color:var(--as-accent);transform:translateY(-1px)}
+.admin-entity{border:1px solid var(--as-line);border-radius:11px;margin-bottom:8px;background:var(--as-raised)}
+.admin-entity summary{padding:11px 14px;cursor:pointer;font-weight:600;font-size:13px;display:flex;justify-content:space-between;gap:10px;list-style:none}
+.admin-entity summary span{color:var(--as-muted);font-weight:400;font-size:12px}
+.admin-entity .admin-link-grid{padding:0 14px 14px}
+.admin-hierarchy{display:grid;grid-template-columns:repeat(auto-fit,minmax(200px,1fr));gap:12px;margin-top:12px}
+.admin-hierarchy label{display:grid;gap:6px;font-size:12px;color:var(--as-muted)}
+.admin-hierarchy select{padding:10px 12px;border-radius:10px;border:1px solid var(--as-line);background:var(--as-raised);color:var(--as-ink)}
+.admin-hierarchy-actions{display:flex;gap:10px;align-items:end}.admin-route-table{overflow-x:auto}
