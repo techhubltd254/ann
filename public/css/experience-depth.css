@@ -1,3 +1,6 @@
+/* DARK-GUARD */
+html[data-theme="dark"] body{background:#0B0B0B!important;color:#FFFFFF!important;}
+html[data-theme="dark"] .wrap,html[data-theme="dark"] main,html[data-theme="dark"] section{background:transparent!important;}
 /* Theme and depth layer. Brand colours remain white, black, red and yellow;
    neutral surfaces are mixtures/alpha of white and black, not a fifth brand colour. */
 :root{--x-bg:color-mix(in srgb,#FFFFFF 96%,#0B0B0B);--x-surface:rgba(255,255,255,.78);--x-card:rgba(255,255,255,.86);--x-ink:#0B0B0B;--x-muted:rgba(11,11,11,.68);--x-line:rgba(11,11,11,.12);--x-shadow:0 16px 55px rgba(11,11,11,.07);--x-red:#B3261E;--x-yellow:#FFCD05;}
@@ -35,7 +38,7 @@ html[data-theme] body.experience-world :is(.tm-dialog,.ex-film)::backdrop{backgr
 .depth-graphic canvas{display:block;width:100%;height:100%;}.depth-graphic[data-state="fallback"]{background:repeating-radial-gradient(ellipse at 70% 45%,transparent 0 34px,rgba(179,38,30,.1) 35px 36px,transparent 37px 68px);transform:perspective(900px) rotateY(-25deg);}
 html[data-theme="dark"] .depth-graphic{opacity:.45;}
 .depth-card{transform-style:preserve-3d;will-change:transform;transition:box-shadow .25s,transform .22s;}.depth-card .ex-shot{transform:translateZ(8px);}.depth-card .ex-body{transform:translateZ(14px);}
-.depth-reveal{transition:opacity .7s ease,transform .9s cubic-bezier(.22,1,.36,1);}.depth-reveal:not(.is-visible){opacity:0;transform:translateY(20px) perspective(1200px) rotateX(3deg);}
+.depth-reveal{transition:opacity .7s ease,transform .9s cubic-bezier(.22,1,.36,1);}.depth-reveal:not(.is-visible){opacity:1;transform:none;}
 .depth-progress{position:fixed;top:0;left:0;height:3px;width:100%;transform-origin:left;transform:scaleX(var(--scroll-progress,0));background:linear-gradient(90deg,#B3261E,#FFCD05);z-index:9999;pointer-events:none;}
 .admin-hub{padding:24px 0 90px;}.admin-hub-toolbar{display:flex;flex-wrap:wrap;align-items:end;gap:20px;margin-bottom:24px;}.admin-hub-toolbar label{display:grid;gap:8px;min-width:min(100%,340px);}.admin-hub-toolbar p{max-width:460px;font-size:13px;line-height:1.6;}
 .admin-hub input,.admin-hub select,.admin-module input,.admin-module select,.admin-module textarea{padding:12px;border:1px solid var(--x-line);border-radius:12px;width:100%;font:inherit;}
