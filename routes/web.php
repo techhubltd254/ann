@@ -881,14 +881,14 @@ Route::middleware('auth')->group(function () {
     Route::get('/kicc-admin/components', [\App\Http\Controllers\Web\UnifiedAdminController::class, 'components'])->name('admin.components.reference');
 });
 
-Route::middleware("auth")->group(function(){Route::get("/portal/media-flow",[\App\Http\Controllers\Web\MediaFlowController::class,"index"])->name("admin.mediaflow");Route::get("/portal/media-flow/{institution}/sectors",[\App\Http\Controllers\Web\MediaFlowController::class,"sectors"])->whereNumber("institution")->name("admin.mediaflow.sectors");Route::get("/portal/media-flow/{institution}/media",[\App\Http\Controllers\Web\MediaFlowController::class,"media"])->whereNumber("institution")->name("admin.mediaflow.media");});
+Route::middleware("auth")->group(function(){Route::get("/portal/media-flow",[\App\Http\Controllers\Web\MediaFlowController::class,"index"])->name("admin.mediaflow");Route::get("/portal/media-flow/{institution:id}/sectors",[\App\Http\Controllers\Web\MediaFlowController::class,"sectors"])->whereNumber("institution")->name("admin.mediaflow.sectors");Route::get("/portal/media-flow/{institution:id}/media",[\App\Http\Controllers\Web\MediaFlowController::class,"media"])->whereNumber("institution")->name("admin.mediaflow.media");});
 
 // Approved reference: public, read-only projection of native models.
 Route::get('/experience/reference-data', [\App\Http\Controllers\Web\ReferenceExperienceController::class, 'data'])->name('experience.reference.data');
 
 // Stable-ID video mutations, constrained by the original institution/sector hierarchy.
 Route::middleware('auth')->group(function(){
- Route::post('/portal/media-flow/{institution}/videos',[\App\Http\Controllers\Web\MediaFlowController::class,'store'])->whereNumber('institution')->name('admin.mediaflow.store');
- Route::post('/portal/media-flow/{institution}/videos/{asset}/replace',[\App\Http\Controllers\Web\MediaFlowController::class,'replace'])->whereNumber('institution')->whereNumber('asset')->name('admin.mediaflow.replace');
- Route::delete('/portal/media-flow/{institution}/videos/{asset}',[\App\Http\Controllers\Web\MediaFlowController::class,'destroy'])->whereNumber('institution')->whereNumber('asset')->name('admin.mediaflow.destroy');
+ Route::post('/portal/media-flow/{institution:id}/videos',[\App\Http\Controllers\Web\MediaFlowController::class,'store'])->whereNumber('institution')->name('admin.mediaflow.store');
+ Route::post('/portal/media-flow/{institution:id}/videos/{asset}/replace',[\App\Http\Controllers\Web\MediaFlowController::class,'replace'])->whereNumber('institution')->whereNumber('asset')->name('admin.mediaflow.replace');
+ Route::delete('/portal/media-flow/{institution:id}/videos/{asset}',[\App\Http\Controllers\Web\MediaFlowController::class,'destroy'])->whereNumber('institution')->whereNumber('asset')->name('admin.mediaflow.destroy');
 });
