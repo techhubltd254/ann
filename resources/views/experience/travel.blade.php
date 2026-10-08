@@ -43,6 +43,8 @@
           :copy="\Illuminate\Support\Str::limit(strip_tags($a->description ?? ''),130)"
           action="Open"
           :initials="strtoupper(substr($a->name,0,2))"
+          :admin="auth()->check() ? 'Replace or delete this image' : null"
+          :admin-href="auth()->check() ? route('admin.media.index') : null"
         />
       @endforeach
     </div>
@@ -63,6 +65,8 @@
           :copy="\Illuminate\Support\Str::limit(strip_tags($h->description ?? ''),130)"
           action="Open"
           :initials="strtoupper(substr($h->name,0,2))"
+          :admin="auth()->check() ? 'Replace or delete this image' : null"
+          :admin-href="auth()->check() ? route('admin.media.index') : null"
         />
       @endforeach
     </div>

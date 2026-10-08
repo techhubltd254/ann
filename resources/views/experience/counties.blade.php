@@ -17,6 +17,14 @@
     <span class="ex-count">Film or still · bound per county</span>
   </div>
 
+  @auth
+  <div class="ex-adminbar">
+    <span>Signed in as an administrator — every image below can be replaced or deleted.</span>
+    <a class="btn ghost sm" href="{{ route('admin.media.index') }}">Media library</a>
+    <a class="btn ghost sm" href="{{ route('kicc.admin') }}">KICC admin</a>
+  </div>
+  @endauth
+
   <div class="ex-section">
     <div class="ex-grid">
       @forelse($counties as $c)
@@ -32,6 +40,8 @@
           :copy="\Illuminate\Support\Str::limit(strip_tags($c->tagline ?? $c->description ?? ''),130)"
           action="Enter the county"
           :initials="strtoupper(substr($c->name,0,2))"
+          :admin="auth()->check() ? 'Replace or delete this image' : null"
+          :admin-href="auth()->check() ? route('county.admin.pro', $c->slug) : null"
         />
       @empty
         <div class="ex-empty"><strong>No counties to show</strong>Nothing matched this search.</div>

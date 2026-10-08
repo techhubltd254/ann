@@ -40,6 +40,8 @@
           :copy="\Illuminate\Support\Str::limit(strip_tags($v->description ?? ''),130)"
           action="Open the room"
           :initials="strtoupper(substr($v->name,0,2))"
+          :admin="auth()->check() ? 'Replace or delete this image' : null"
+          :admin-href="auth()->check() ? route('admin.media.index') : null"
         />
       @empty
         <div class="ex-empty"><strong>No venues match</strong>Try a different county, type or capacity.</div>

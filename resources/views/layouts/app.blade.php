@@ -416,7 +416,7 @@
     <link rel="stylesheet" href="/css/rebuild.css?v=kicc-live-20261007-r5">
     <link rel="stylesheet" href="/css/live-compat.css?v=kicc-live-20261007-r5">
 <link rel="stylesheet" href="/css/glass-kicc.css?v=kicc-glass-20261008d">
-    <link rel="stylesheet" href="/css/experience-bright.css?v=kicc-bright-20261008a">
+    <link rel="stylesheet" href="/css/experience-bright.css?v=kicc-bright-20261008b">
     <script>/* The platform renders bright in one world: light, always. */try{localStorage.setItem('kicc.theme','light')}catch(e){}document.documentElement.dataset.theme='light'</script>
     @stack('styles')
 <script>

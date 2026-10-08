@@ -515,3 +515,41 @@ input, select, textarea {
   .ex-card, .ex-card .ex-go::after { transition: none !important; }
   .ex-card:hover { transform: none; }
 }
+
+/* ── 12. the administrator bar + per-tile admin affordance ───────────────── */
+.ex-adminbar {
+  display: flex; flex-wrap: wrap; align-items: center; gap: 14px;
+  margin: 0 0 34px; padding: 18px 22px;
+  background: #FAF9F7;
+  border: 1px solid rgba(17, 17, 17, .12);
+  border-left: 4px solid #FFCD05;
+  border-radius: 18px;
+  font-size: 14px; color: #111111;
+}
+.ex-adminbar span { flex: 1 1 320px; color: rgba(17, 17, 17, .72); }
+
+/* badges and overlays that were white-on-dark must go ink-on-white */
+[class*="bg-black"] :is(span, a, p, h1, h2, h3, small, div),
+[class*="bg-gray-9"] :is(span, a, p, h1, h2, h3, small, div),
+[class*="bg-zinc-9"] :is(span, a, p, h1, h2, h3, small, div),
+[class*="bg-neutral-9"] :is(span, a, p, h1, h2, h3, small, div),
+[class*="bg-stone-9"] :is(span, a, p, h1, h2, h3, small, div) {
+  color: #111111 !important;
+}
+[class*="text-white"],
+[class*="text-gray-1"],
+[class*="text-gray-2"],
+[class*="text-gray-3"],
+[class*="text-zinc-1"],
+[class*="text-zinc-2"],
+[class*="text-zinc-3"],
+[class*="text-slate-1"],
+[class*="text-slate-2"],
+[class*="text-neutral-1"],
+[class*="text-neutral-2"] {
+  color: #111111 !important;
+}
+/* but keep white text where it still sits on a genuine red or black accent */
+[class*="bg-[#B3261E]"] [class*="text-white"],
+.btn[class*="text-white"],
+.ex-tag--red { color: #FFFFFF !important; }

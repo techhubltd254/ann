@@ -46,6 +46,8 @@
           :copy="\Illuminate\Support\Str::limit(strip_tags($p->short_description ?? $p->description ?? ''),130)"
           action="View listing"
           :initials="strtoupper(substr($p->name,0,2))"
+          :admin="auth()->check() ? 'Replace or delete this image' : null"
+          :admin-href="auth()->check() ? route('admin.media.index') : null"
         />
       @empty
         <div class="ex-empty"><strong>No listings match</strong>Try another county or clear the filters.</div>
