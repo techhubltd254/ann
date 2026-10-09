@@ -5893,7 +5893,7 @@ Router.register('/marketplace', () => ({title:'Marketplace', html:`
       <select id="productCounty" class="input" style="max-width:200px"><option>All counties</option>${COUNTIES.map(c=>`<option>${c.name}</option>`).join('')}</select>
       <select id="productSort" class="input" style="max-width:200px"><option>Sort: Featured</option><option>Price: low → high</option><option>Price: high → low</option><option>Rating</option></select>
     </div>
-    <div class="muted-xs"><span id="prodCount">${PRODUCTS.length}</span> products · 3.1% pipeline fee applies</div>
+    <div class="muted-xs"><span id="prodCount">${PRODUCTS.length}</span> products</div>
   </div>
   <div class="wrapflex mt">
     ${['All',...new Set(PRODUCTS.map(p=>p.cat))].map((x,i)=>
@@ -5981,7 +5981,7 @@ Router.register('/marketplace', (rest) => {
       <h1 style="font-size:clamp(1.5rem,2.8vw,2.2rem);margin-top:14px">${p.n}</h1>
       <div class="mt-s">${T.stars(p.r)} <span class="muted-xs">(${p.rv} reviews)</span></div>
       <div class="mt" style="font-family:var(--font-head);font-weight:900;font-size:2.4rem;color:var(--au-ink)">KES ${nf(p.p)}</div>
-      <div class="muted-xs">${p.unit} · excl. 3.1% pipeline fee</div>
+      <div class="muted-xs">${p.unit} · </div>
       <div class="glass-card pad mt">
         <div class="fee-row"><span class="muted">Minimum order</span><span>${p.moq || "Enquire with producer"}</span></div>
         <div class="fee-row"><span class="muted">Lead time</span><span>Enquire with producer</span></div>
@@ -7012,7 +7012,7 @@ Router.register('/kicc-admin', (rest) => {
           <div class="mt">${T.hls({img:HERO_POSTER,title:'Kenya National Trade Expo 2026',sub:'seedance-hero · landing/hero/poster/seedance-hero.webp',q:'1080p',start:28})}</div></div></div>`,
     packages: `<div class="between mb"><h3>Subscription plan editor</h3>
         <button class="btn gold sm" data-action="toast" data-msg="New subscription plan created">＋ New plan</button></div>
-      <div class="grid g4">${[['Bronze','KES 0','1 storefront · 10 products · 3.1% fee','pc-county'],
+      <div class="grid g4">${[['Bronze','KES 0','1 storefront · 10 products','pc-county'],
         ['Silver','KES 4,900 / mo','3 storefronts · 120 products · 2.4% fee','pc-nat'],
         ['Gold','KES 14,900 / mo','10 storefronts · 800 products · 1.8% fee','pc-kicc'],
         ['National','Custom','Unlimited · dedicated pipelines · 1.2% fee','pc-exh']].map(([t,p,f,c])=>
