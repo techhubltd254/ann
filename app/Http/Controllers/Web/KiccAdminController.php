@@ -607,8 +607,9 @@ class KiccAdminController extends Controller
         ]);
     }
 
-    public function uploadCountyHero(Request $request, string $slug, MediaLibraryService $library)
+    public function uploadCountyHero(Request $request, string $slug)
     {
+        $library = app(MediaLibraryService::class);
         $this->authorizeKicc();
 
         $county = County::where('slug', $slug)->firstOrFail();
