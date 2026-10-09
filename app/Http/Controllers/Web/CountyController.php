@@ -28,15 +28,18 @@ class CountyController extends Controller
         // a county only plays footage whose R2 key carries its own slug. A shared
         // stand-in (e.g. the landing seedance film) is withheld, and the county's
         // own fallback image is used instead of borrowing another place's film.
+        // Bulk-resolved in two queries instead of two per county: the 47-county
+        // loop used to issue 94 media_assets lookups, each a full round trip.
+        $countyMedia = \App\Support\MediaMapping::countyMediaMaps($counties);
         $countyHeroes = [];
         foreach ($counties as $c) {
-            $hero = \App\Support\MediaMapping::countyHero($c);
+            $hero = $countyMedia['hero'][$c->slug] ?? ['video' => null, 'poster' => null, 'hover' => null, 'state' => 'missing'];
             $countyHeroes[$c->slug] = [
-                'video' => $hero['video'],
+                'video' => $hero['video'] ?? null,
                 'hover' => $hero['hover'] ?? null,
-                'poster' => $hero['poster'],
-                'image' => \App\Support\MediaMapping::countyFallbackImage($c),
-                'state' => $hero['state'],
+                'poster' => $hero['poster'] ?? null,
+                'image' => $countyMedia['fallback'][$c->slug] ?? null,
+                'state' => $hero['state'] ?? 'missing',
             ];
         }
 

@@ -3,6 +3,7 @@
 namespace App\Services;
 
 use App\Models\MediaAsset;
+use App\Support\MediaAssetIndex;
 
 /**
  * One resolver for every tile on the public site.
@@ -18,6 +19,16 @@ use App\Models\MediaAsset;
  */
 class TileMediaResolver
 {
+    /** Optional request-scoped index: turns one query per tile into none. */
+    private ?MediaAssetIndex $index = null;
+
+    public function withIndex(MediaAssetIndex $index): static
+    {
+        $this->index = $index;
+
+        return $this;
+    }
+
     /**
      * Every slot the public site can ask for. Each one is a row in media_assets
      * with owner_type = 'tile_default', so each one is editable from the admin.
@@ -70,43 +81,44 @@ class TileMediaResolver
     public const SEED_TYPE  = 'tile_default_seed';
     public const OWNER_ID   = 1;
 
-    /** Resolve the winning asset for one tile slot. */
-    public function resolve(string $ownerType, int $ownerId, string $slot): ?MediaAsset
+    /**
+     * Newest ready row for one (owner, slot).
+     *
+     * Uses the primed index when it covers this owner — identical result
+     * (`latest('id')->first()` === last of an ascending-id set) without a
+     * per-tile round trip to TiDB. Falls back to the original query otherwise.
+     */
+    private function pick(string $ownerType, int $ownerId, string $slot): ?MediaAsset
     {
-        $own = MediaAsset::query()
+        if ($this->index && $this->index->isPrimed($ownerType, $ownerId)) {
+            return $this->index->forSlot($ownerType, $ownerId, $slot);
+        }
+
+        return MediaAsset::query()
             ->where('owner_type', $ownerType)
             ->where('owner_id', $ownerId)
             ->where('slot', $slot)
             ->where('status', 'ready')
             ->latest('id')
             ->first();
+    }
 
-        if ($own) {
+    /** Resolve the winning asset for one tile slot. */
+    public function resolve(string $ownerType, int $ownerId, string $slot): ?MediaAsset
+    {
+        // 1. the entity's own upload
+        if ($own = $this->pick($ownerType, $ownerId, $slot)) {
             return $own;
         }
 
-        // Admin override on the platform tile (owner_type = tile_default).
-        $override = MediaAsset::query()
-            ->where('owner_type', self::OWNER_TYPE)
-            ->where('owner_id', self::OWNER_ID)
-            ->where('slot', $slot)
-            ->where('status', 'ready')
-            ->latest('id')
-            ->first();
-
-        if ($override) {
+        // 2. admin override on the platform tile (owner_type = tile_default)
+        if ($override = $this->pick(self::OWNER_TYPE, self::OWNER_ID, $slot)) {
             return $override;
         }
 
-        // The shipped seed — immutable, so deleting an admin upload restores it
-        // instead of leaving the tile blank.
-        return MediaAsset::query()
-            ->where('owner_type', self::SEED_TYPE)
-            ->where('owner_id', self::OWNER_ID)
-            ->where('slot', $slot)
-            ->where('status', 'ready')
-            ->latest('id')
-            ->first();
+        // 3. the shipped seed — immutable, so deleting an admin upload restores it
+        //    instead of leaving the tile blank.
+        return $this->pick(self::SEED_TYPE, self::OWNER_ID, $slot);
     }
 
     /** Turn a resolved asset into the URL the browser should fetch. */
@@ -218,33 +230,5 @@ class TileMediaResolver
         }
 
         return $rows;
-    }
-
-    /** Every asset bound to a tile, for the admin list. */
-    public function forOwner(string $ownerType, int $ownerId): array
-    {
-        return MediaAsset::query()
-            ->where('owner_type', $ownerType)
-            ->where('owner_id', $ownerId)
-            ->whereIn('kind', ['image', 'video'])
-            ->latest('id')
-            ->get()
-            ->map(fn (MediaAsset $a) => [
-                'id' => $a->id,
-                'slot' => $a->slot,
-                'kind' => $a->kind,
-                'disk' => $a->disk,
-                'status' => $a->status,
-                'path' => $a->path,
-                'url' => $this->url($a),
-                'size_bytes' => $a->size_bytes,
-                'updated_at' => (string) $a->updated_at,
-            ])->all();
-    }
-
-    /** Slot metadata for the admin UI. */
-    public function labels(): array
-    {
-        return self::SLOTS;
     }
 }

@@ -46,16 +46,17 @@ class HomeController extends Controller
         // a county only renders footage whose R2 key carries its own slug. A
         // shared stand-in is withheld (null) so the tile shows its own fallback
         // instead of another place's film.
+        $countyMedia = \App\Support\MediaMapping::countyMediaMaps($counties);
         $countyHeroVideos = [];
         $countyHeroStates = [];
         $countyHeroImages = [];
         $countyHeroHover = [];
         foreach ($counties as $c) {
-            $hero = \App\Support\MediaMapping::countyHero($c);
-            $countyHeroVideos[$c->slug] = $hero['video'];
-            $countyHeroStates[$c->slug] = $hero['state'];
-            $countyHeroHover[$c->slug] = $hero['hover'] ?? null;
-            $countyHeroImages[$c->slug] = \App\Support\MediaMapping::countyFallbackImage($c);
+            $h = $countyMedia['hero'][$c->slug] ?? null;
+            $countyHeroVideos[$c->slug] = $h['video'] ?? null;
+            $countyHeroStates[$c->slug] = $h['state'] ?? \App\Support\MediaMapping::MISSING;
+            $countyHeroHover[$c->slug] = $h['hover'] ?? null;
+            $countyHeroImages[$c->slug] = $countyMedia['fallback'][$c->slug] ?? null;
         }
 
         // Resolve the pipeline-managed hero video (fall back to hardcoded path).
@@ -112,6 +113,7 @@ class HomeController extends Controller
             $pool = MediaAsset::query()
                 ->where('status', 'ready')
                 ->whereNotNull('owner_type')
+                ->with('derivatives')
                 ->orderByDesc('id')
                 ->take(160)
                 ->get();

@@ -5,33 +5,64 @@ use App\Http\Controllers\Controller;
 use App\Models\{County, CountyInstitution, Exhibition, MediaAsset, Screen, LiveStream, Venue};
 use App\Models\Marketplace\Product;
 use App\Services\ProductMediaResolver;
+use App\Services\TileMediaResolver;
+use App\Support\MediaAssetIndex;
 use App\Support\MediaMapping;
 use Illuminate\Http\Request;
 
 /** The approved HTML is the renderer, not a screenshot or another approximation. */
 class ReferenceExperienceController extends Controller
 {
+    /**
+     * The payload is expensive to assemble, so it is cached. The cache is
+     * invalidated whenever an admin uploads or removes tile media, and this TTL
+     * is only a backstop.
+     */
+    public const CACHE_KEY = 'reference.native.v1';
+    public const CACHE_TTL = 300;
+
     public function tables(): array
     {
-        return \Illuminate\Support\Facades\Cache::remember('reference.native.v1', 300, fn () => $this->buildTables());
+        return \Illuminate\Support\Facades\Cache::remember(self::CACHE_KEY, self::CACHE_TTL, fn () => $this->buildTables());
     }
 
     private function buildTables(): array
     {
         $tables = array_fill_keys(['counties','institutions','products','venues','exhibitions','screens','streams','content','media','analytics','travel_groups','airports','tileDefaults'], []);
-        $tiles = app(\App\Services\TileMediaResolver::class);
-        $tables['tileDefaults'] = $tiles->defaults();
+
+        // ---- load the entities once, then prime one media index for all of them.
+        // Every tile lookup below is answered from this index, which is what
+        // removes ~1000 per-tile round trips to TiDB.
+        $index = new MediaAssetIndex();
+
         $counties = County::with('sectors')->orderBy('code')->get();
+        $index->prime(County::class, $counties->pluck('id')->all());
+
+        $institutions = CountyInstitution::where('is_published', true)->with('sectorEntities')->orderBy('name')->get();
+        $index->prime(CountyInstitution::class, $institutions->pluck('id')->all());
+        $index->prime('institution', $institutions->pluck('id')->all());
+
+        $products = Product::with('county', 'images', 'variants')->where('status', 'active')->orderBy('name')->get();
+        $index->prime(Product::class, $products->pluck('id')->all());
+
+        $venues = Venue::where('is_active', true)->orderBy('name')->get();
+        $index->prime(Venue::class, $venues->pluck('id')->all());
+
+        $index->prime(TileMediaResolver::OWNER_TYPE, [TileMediaResolver::OWNER_ID]);
+        $index->prime(TileMediaResolver::SEED_TYPE, [TileMediaResolver::OWNER_ID]);
+
+        $tiles = app(TileMediaResolver::class)->withIndex($index);
+        $tables['tileDefaults'] = $tiles->defaults();
+
         $countyNames = $counties->pluck('name', 'id');
         foreach ($counties as $c) {
-            $hero = MediaMapping::countyHero($c);
-            $poster = $hero['poster'] ?? MediaMapping::countyFallbackImage($c);
+            $hero = MediaMapping::countyHero($c, $index);
+            $poster = $hero['poster'] ?? MediaMapping::countyFallbackImage($c, $index);
             $tables['counties'][] = ['id'=>(string)$c->id,'slug'=>$c->slug,'name'=>$c->name,'code'=>str_pad((string)$c->code,3,'0',STR_PAD_LEFT),'region'=>$c->region ?? $c->former_province,'pop'=>(int)$c->population_2024,'populationYear'=>2024,'sectors'=>$c->sectors->pluck('name')->all(),'description'=>$c->description,'image'=>$poster,'mediaState'=>$hero['state'],'mediaReason'=>$hero['reason'],'status'=>'published','tileMedia'=>$tiles->tile(\App\Models\County::class,(int)$c->id,'hero')];
             if ($hero['video']) $tables['media'][] = ['id'=>'county:'.$c->id,'ownerId'=>(string)$c->id,'kind'=>'video','role'=>'county','target'=>'/counties/'.$c->slug,'name'=>$c->name.' — county film','url'=>$hero['video'],'poster'=>$poster,'status'=>'published'];
         }
-        $institutions = CountyInstitution::where('is_published',true)->with('sectorEntities')->orderBy('name')->get();
         foreach ($institutions as $i) {
-            $hero = MediaMapping::institutionHero($i);
+            $hero = MediaMapping::institutionHero($i, $index);
             $tables['institutions'][] = ['id'=>(string)$i->id,'countyId'=>(string)$i->county_id,'county'=>$countyNames[$i->county_id] ?? '', 'slug'=>$i->slug,'name'=>$i->name,'description'=>$i->description,'website'=>$i->website,'type'=>$i->type,'email'=>$i->email,'verified'=>(bool)$i->is_verified_trader,'sectors'=>$i->sectorEntities->pluck('sector_id')->unique()->values()->all(),'status'=>'published','tileMedia'=>$tiles->tile(\App\Models\CountyInstitution::class,(int)$i->id,'hero')];
             if ($hero['video']) $tables['media'][] = ['id'=>'institution:'.$i->id,'ownerId'=>(string)$i->id,'kind'=>'video','role'=>'experience','target'=>'/institutions/'.$i->slug,'name'=>$i->name.' — institution film','url'=>$hero['video'],'poster'=>$hero['poster'] ?? null,'status'=>'published'];
         }
@@ -51,13 +82,19 @@ class ReferenceExperienceController extends Controller
             ];
         }
 
-        $resolver = app(ProductMediaResolver::class);
-        foreach (Product::with('county','images','variants')->where('status','active')->orderBy('name')->get() as $p) {
+        // Institutions are keyed by id for the product fallback, and the media
+        // index is primed for every one of them so the fallback costs no query.
+        $institutionMap = CountyInstitution::query()->get()->keyBy('id');
+        $index->prime(CountyInstitution::class, $institutionMap->keys()->all());
+        $index->prime('institution', $institutionMap->keys()->all());
+
+        $resolver = app(ProductMediaResolver::class)->withIndex($index)->withInstitutions($institutionMap);
+        foreach ($products as $p) {
             $image = $resolver->resolve($p);
             $tables['products'][] = ['id'=>(string)$p->id,'slug'=>$p->slug,'institutionId'=>(string)$p->institution_id,'n'=>$p->name,'name'=>$p->name,'c'=>$p->county?->name ?? '', 'cat'=>$p->category?->name ?? 'Product','p'=>(float)$p->price,'unit'=>$p->unit ?? '', 'r'=>0,'rv'=>0,'moq'=>(int)$p->moq,'incoterm'=>$p->incoterm,'v'=>'image','description'=>$p->short_description ?? $p->description,'image'=>$image['url'],'mediaLabel'=>$image['label'],'nativeUrl'=>route('marketplace.show',$p->slug),'status'=>'published','tileMedia'=>($t=$tiles->tile(\App\Models\Marketplace\Product::class,(int)$p->id,'product_image'))['state']==='published'?$t:($image['url']?['state'=>'published','kind'=>'image','url'=>$image['url'],'description'=>$image['label'] ?? $p->name,'alt'=>$image['label'] ?? $p->name,'source'=>'derived']:['state'=>'empty'])];
         }
-        foreach (Venue::where('is_active',true)->orderBy('name')->get() as $v) {
-            $asset = MediaAsset::where('owner_type',Venue::class)->where('owner_id',$v->id)->where('status','ready')->latest('id')->first();
+        foreach ($venues as $v) {
+            $asset = $index->forOwner(Venue::class, (int) $v->id)->last();
             $tile = ['state'=>'empty'];
             if ($asset && MediaMapping::inR2($asset->path)) $tile=['state'=>'published','kind'=>$asset->kind,'url'=>url('/media/video/'.$asset->path),'alt'=>$v->name];
             $tables['venues'][]=['id'=>(string)$v->id,'slug'=>$v->slug,'name'=>$v->name,'type'=>$v->venue_type,'cap'=>(int)$v->capacity,'area'=>'Area on enquiry','rate'=>'Rate on enquiry','desc'=>$v->description,'am'=>is_array($v->amenities)?$v->amenities:[],'availability'=>'Available','status'=>'published','tileMedia'=>($vt=$tiles->tile(\App\Models\Venue::class,(int)$v->id,'hero'))['state']==='published'?$vt:$tile];

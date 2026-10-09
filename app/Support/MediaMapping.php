@@ -41,9 +41,24 @@ class MediaMapping
         return $keys;
     }
 
+    /** Hash-set view of the bucket listing, so membership is O(1) not O(n). */
+    public static function r2KeySet(): array
+    {
+        static $set = null;
+        if ($set !== null) {
+            return $set;
+        }
+        $set = [];
+        foreach (self::r2Keys() as $k) {
+            $set[$k] = true;
+        }
+
+        return $set;
+    }
+
     public static function inR2(?string $path): bool
     {
-        return $path !== null && $path !== '' && in_array($path, self::r2Keys(), true);
+        return $path !== null && $path !== '' && isset(self::r2KeySet()[$path]);
     }
 
     /** Tokens that prove a key belongs to this entity. */
@@ -82,16 +97,18 @@ class MediaMapping
      * only thing available is a stand-in — the caller then shows its own
      * fallback tile rather than borrowing another place's film.
      */
-    public static function countyHero(County $county): array
+    public static function countyHero(County $county, ?MediaAssetIndex $index = null): array
     {
-        $asset = MediaAsset::query()
-            ->where('owner_type', County::class)
-            ->where('owner_id', $county->id)
-            ->where('slot', 'hero_video')
-            ->where('status', 'ready')
-            ->with('derivatives')
-            ->latest('id')
-            ->first();
+        $asset = $index
+            ? $index->forSlot(County::class, (int) $county->id, 'hero_video')
+            : MediaAsset::query()
+                ->where('owner_type', County::class)
+                ->where('owner_id', $county->id)
+                ->where('slot', 'hero_video')
+                ->where('status', 'ready')
+                ->with('derivatives')
+                ->latest('id')
+                ->first();
 
         $verdict = self::classify($asset, (string) $county->slug, (int) $county->id, $county->code ?? null);
 
@@ -114,21 +131,102 @@ class MediaMapping
      * tile whenever the county has no DISTINCT film of its own. Returns null when
      * no image is bound, so the caller falls back to its branded gradient tile.
      */
-    public static function countyFallbackImage(County $county): ?string
+    public static function countyFallbackImage(County $county, ?MediaAssetIndex $index = null): ?string
     {
-        $asset = MediaAsset::query()
-            ->where('owner_type', County::class)
-            ->where('owner_id', $county->id)
-            ->whereIn('slot', ['fallback_image', 'hero_image'])
-            ->where('status', 'ready')
-            ->latest('id')
-            ->first();
+        $asset = $index
+            ? $index->forSlot(County::class, (int) $county->id, ['fallback_image', 'hero_image'])
+            : MediaAsset::query()
+                ->where('owner_type', County::class)
+                ->where('owner_id', $county->id)
+                ->whereIn('slot', ['fallback_image', 'hero_image'])
+                ->where('status', 'ready')
+                ->latest('id')
+                ->first();
 
         if (! $asset || ! self::inR2($asset->path)) {
             return null;
         }
 
         return $asset->thumbnailUrl() ?? $asset->url();
+    }
+
+    /**
+     * Bulk-resolve every county's hero film and fallback still.
+     *
+     * Semantics are identical to calling countyHero() + countyFallbackImage()
+     * per county — the newest ready row per (owner, slot) wins, a shared
+     * stand-in is reported as REPRESENTATIVE rather than rendered as the
+     * county's own film, and every published path must still exist in R2 — but
+     * the per-county lookups collapse into four bulk queries. On the homepage
+     * this replaces 94 media_assets lookups and 47 derivative loads.
+     *
+     * @param  iterable  $counties  County models (id, slug and code required)
+     * @return array{hero: array<string,array>, fallback: array<string,?string>}
+     */
+    public static function countyMediaMaps(iterable $counties): array
+    {
+        $counties = collect($counties);
+        $ids = $counties->pluck('id')->map(fn ($i) => (int) $i)->filter()->unique()->values()->all();
+
+        if (empty($ids)) {
+            return ['hero' => [], 'fallback' => []];
+        }
+
+        // One query per slot group, derivatives eager-loaded so the URL helpers
+        // never fall back to a lazy load per asset.
+        $heroRows = MediaAsset::query()
+            ->where('owner_type', County::class)
+            ->whereIn('owner_id', $ids)
+            ->where('slot', 'hero_video')
+            ->where('status', 'ready')
+            ->with('derivatives')
+            ->orderBy('id')
+            ->get()
+            ->groupBy('owner_id')
+            ->map(fn ($rows) => $rows->last());   // highest id wins, as latest('id') did
+
+        $stillRows = MediaAsset::query()
+            ->where('owner_type', County::class)
+            ->whereIn('owner_id', $ids)
+            ->whereIn('slot', ['fallback_image', 'hero_image'])
+            ->where('status', 'ready')
+            ->with('derivatives')
+            ->orderBy('id')
+            ->get()
+            ->groupBy('owner_id')
+            ->map(fn ($rows) => $rows->last());
+
+        $hero = [];
+        $fallback = [];
+
+        foreach ($counties as $county) {
+            $asset = $heroRows->get($county->id);
+            $verdict = self::classify($asset, (string) $county->slug, (int) $county->id, $county->code ?? null);
+
+            $hero[$county->slug] = $verdict['state'] === self::DISTINCT
+                ? [
+                    'video' => $asset->mp4Url(),
+                    'poster' => $asset->posterUrl(),
+                    'hover' => $asset->hoverLoopUrl(),
+                    'state' => self::DISTINCT,
+                    'reason' => $verdict['reason'],
+                    'path' => $asset->path,
+                ]
+                : [
+                    'video' => null,
+                    'poster' => null,
+                    'state' => $verdict['state'],
+                    'reason' => $verdict['reason'],
+                    'path' => $asset?->path,
+                ];
+
+            $still = $stillRows->get($county->id);
+            $fallback[$county->slug] = ($still && self::inR2($still->path))
+                ? ($still->thumbnailUrl() ?? $still->url())
+                : null;
+        }
+
+        return ['hero' => $hero, 'fallback' => $fallback];
     }
 
     /** The landing-page stand-in film — never footage of any individual county. */
@@ -138,17 +236,19 @@ class MediaMapping
     }
 
     /** Same rule for institutions. */
-    public static function institutionHero(CountyInstitution $inst): array
+    public static function institutionHero(CountyInstitution $inst, ?MediaAssetIndex $index = null): array
     {
         foreach ([CountyInstitution::class, 'institution'] as $type) {
-            $asset = MediaAsset::query()
-                ->where('owner_type', $type)
-                ->where('owner_id', $inst->id)
-                ->whereIn('slot', ['hero_video', 'institution_video'])
-                ->where('status', 'ready')
-                ->with('derivatives')
-                ->latest('id')
-                ->first();
+            $asset = $index
+                ? $index->forSlot($type, (int) $inst->id, ['hero_video', 'institution_video'])
+                : MediaAsset::query()
+                    ->where('owner_type', $type)
+                    ->where('owner_id', $inst->id)
+                    ->whereIn('slot', ['hero_video', 'institution_video'])
+                    ->where('status', 'ready')
+                    ->with('derivatives')
+                    ->latest('id')
+                    ->first();
 
             if (! $asset) {
                 continue;
