@@ -1,4 +1,4 @@
-@extends('layouts.nexora')
+@extends('layouts.admin-theme', ['title' => 'National Government', 'themeColor' => '#A855F7', 'brandName' => 'National Government', 'brandSub' => 'KICC Admin'])
 @section('title', 'National Government — Admin Control')
 @section('content')
 <div class="max-w-7xl mx-auto px-5 py-10">
@@ -26,10 +26,10 @@
             <button onclick="document.getElementById('addMinistryForm').classList.toggle('hidden')" class="text-xs font-bold px-3 py-1.5 rounded-lg bg-[#0B0B0B] text-white">+ Add</button>
         </div>
         <form id="addMinistryForm" method="POST" action="{{ route('national.admin.v2.ministry.store') }}" class="hidden space-y-2 mb-4 p-4 border border-white/10 rounded-xl">@csrf
-            <input type="text" name="name" required placeholder="Ministry name" class="w-full h-9 px-3 rounded-lg bg-white/5 border border-white/10 text-white text-sm placeholder-zinc-500">
-            <div class="grid grid-cols-2 gap-2"><input type="text" name="code" placeholder="Code (e.g. MITI)" class="h-9 px-3 rounded-lg bg-white/5 border border-white/10 text-white text-sm placeholder-zinc-500"><input type="text" name="color" placeholder="Color hex (e.g. #0B0B0B)" class="h-9 px-3 rounded-lg bg-white/5 border border-white/10 text-white text-sm placeholder-zinc-500"></div>
-            <input type="url" name="website" placeholder="Website URL" class="w-full h-9 px-3 rounded-lg bg-white/5 border border-white/10 text-white text-sm placeholder-zinc-500">
-            <textarea name="description" rows="2" placeholder="Description" class="w-full px-3 py-2 rounded-lg bg-white/5 border border-white/10 text-white text-sm placeholder-zinc-500"></textarea>
+            <input type="text" name="name" required placeholder="Ministry name" class="w-full h-9 px-3 rounded-lg glass-card/5 border border-white/10 text-white text-sm placeholder-zinc-500">
+            <div class="grid grid-cols-2 gap-2"><input type="text" name="code" placeholder="Code (e.g. MITI)" class="h-9 px-3 rounded-lg glass-card/5 border border-white/10 text-white text-sm placeholder-zinc-500"><input type="text" name="color" placeholder="Color hex (e.g. #0B0B0B)" class="h-9 px-3 rounded-lg glass-card/5 border border-white/10 text-white text-sm placeholder-zinc-500"></div>
+            <input type="url" name="website" placeholder="Website URL" class="w-full h-9 px-3 rounded-lg glass-card/5 border border-white/10 text-white text-sm placeholder-zinc-500">
+            <textarea name="description" rows="2" placeholder="Description" class="w-full px-3 py-2 rounded-lg glass-card/5 border border-white/10 text-white text-sm placeholder-zinc-500"></textarea>
             <button class="h-9 px-4 rounded-lg bg-[#0B0B0B] text-white text-xs font-bold">Create</button>
         </form>
         <div class="space-y-3 max-h-[600px] overflow-y-auto">
@@ -47,8 +47,8 @@
                 </div>
                 @if($m->description)<p class="text-xs text-zinc-500 mt-2">{{ Str::limit($m->description, 120) }}</p>@endif
                 <form method="POST" action="{{ route('national.admin.v2.ministry.update', $m->id) }}" class="hidden mt-3 space-y-2">@csrf
-                    <input type="text" name="name" value="{{ $m->name }}" class="w-full h-8 px-3 rounded-lg bg-white/5 border border-white/10 text-white text-xs">
-                    <input type="text" name="code" value="{{ $m->code }}" class="w-full h-8 px-3 rounded-lg bg-white/5 border border-white/10 text-white text-xs">
+                    <input type="text" name="name" value="{{ $m->name }}" class="w-full h-8 px-3 rounded-lg glass-card/5 border border-white/10 text-white text-xs">
+                    <input type="text" name="code" value="{{ $m->code }}" class="w-full h-8 px-3 rounded-lg glass-card/5 border border-white/10 text-white text-xs">
                     <button class="h-8 px-3 rounded-lg bg-[#0B0B0B] text-white text-[10px] font-bold">Save</button>
                 </form>
             </div>
@@ -64,9 +64,9 @@
             <button onclick="document.getElementById('addAgencyForm').classList.toggle('hidden')" class="text-xs font-bold px-3 py-1.5 rounded-lg bg-[#0B0B0B] text-white">+ Add</button>
         </div>
         <form id="addAgencyForm" method="POST" action="{{ route('national.admin.v2.agency.store') }}" class="hidden space-y-2 mb-4 p-4 border border-white/10 rounded-xl">@csrf
-            <select name="ministry_id" required class="w-full h-9 px-3 rounded-lg bg-white/5 border border-white/10 text-white text-sm">@foreach($ministries as $m)<option value="{{ $m->id }}" class="bg-[#0B0B0B]">{{ $m->name }}</option>@endforeach</select>
-            <input type="text" name="name" required placeholder="Agency name" class="w-full h-9 px-3 rounded-lg bg-white/5 border border-white/10 text-white text-sm placeholder-zinc-500">
-            <input type="text" name="code" placeholder="Code" class="w-full h-9 px-3 rounded-lg bg-white/5 border border-white/10 text-white text-sm placeholder-zinc-500">
+            <select name="ministry_id" required class="w-full h-9 px-3 rounded-lg glass-card/5 border border-white/10 text-white text-sm">@foreach($ministries as $m)<option value="{{ $m->id }}" class="bg-[#0B0B0B]">{{ $m->name }}</option>@endforeach</select>
+            <input type="text" name="name" required placeholder="Agency name" class="w-full h-9 px-3 rounded-lg glass-card/5 border border-white/10 text-white text-sm placeholder-zinc-500">
+            <input type="text" name="code" placeholder="Code" class="w-full h-9 px-3 rounded-lg glass-card/5 border border-white/10 text-white text-sm placeholder-zinc-500">
             <button class="h-9 px-4 rounded-lg bg-[#0B0B0B] text-white text-xs font-bold">Create</button>
         </form>
         <div class="space-y-2 max-h-[600px] overflow-y-auto">
@@ -148,7 +148,7 @@
                     <div class="text-[10px] text-zinc-500 mb-3">Upload ministry tile video or animated flag</div>
                     <form data-r2-upload method="POST" action="{{ route('national.admin.v2.ministry.video.upload', $m->id) }}" enctype="multipart/form-data" class="mb-2">
                         @csrf
-                        <label class="flex items-center justify-center h-8 rounded-lg bg-[#0B0B0B]/20 text-[#0B0B0B] text-[10px] font-bold cursor-pointer hover:bg-[#0B0B0B]/30 transition border border-[#0B0B0B]/30">
+                        <label class="flex items-center justify-center h-8 rounded-lg bg-[#0B0B0B]/20 text-zinc-400 text-[10px] font-bold cursor-pointer hover:bg-[#0B0B0B]/30 transition border border-[#0B0B0B]/30">
                             <input type="file" name="video" accept="video/mp4,video/webm" class="sr-only" onchange="this.form.submit()">
                              Upload Ministry Video
                         </label>
@@ -167,7 +167,7 @@
                     <form method="POST" action="{{ route('national.admin.v2.ministry.flag.delete', $m->id) }}" onsubmit="return confirm('Delete ministry flag?')">@csrf<button class="text-[10px] text-red-400 hover:text-red-300 underline">Delete flag</button></form>
                     @endif
                 </div>
-                <div class="p-5 flex flex-col justify-center bg-white/5 border-t md:border-t-0 md:border-l border-white/10">
+                <div class="p-5 flex flex-col justify-center glass-card/5 border-t md:border-t-0 md:border-l border-white/10">
                     <div class="text-[10px] font-semibold text-zinc-400 mb-2">Fallback Chain</div>
                     <div class="text-[9px] text-zinc-500 space-y-1">
                         <div class="{{ $media['video']?->mp4Url() ? 'text-emerald-400 font-semibold' : '' }}">1. Ministry video</div>
@@ -229,7 +229,7 @@
             @foreach($nationalPages as $p)
             <div class="flex items-center justify-between border border-white/10 rounded-xl p-3">
                 <div><span class="font-semibold text-white text-sm capitalize">{{ $p->slug }}</span><div class="text-xs text-zinc-500">{{ Str::limit($p->title ?? '', 60) }}</div></div>
-                <a href="#" class="text-xs text-[#0B0B0B] hover:underline">Edit</a>
+                <a href="#" class="text-xs text-zinc-400 hover:underline">Edit</a>
             </div>
             @endforeach
         </div>
@@ -321,7 +321,7 @@
             <tbody>
                 @forelse($exhRequests as $u)
                 @php $m = $u->metadata ?? []; @endphp
-                <tr class="border-t border-white/5 hover:bg-white/5 transition-all">
+                <tr class="border-t border-white/5 hover:glass-card/5 transition-all">
                     <td class="px-3 py-2 font-semibold text-white">{{ $u->name }}</td>
                     <td class="px-3 py-2 text-zinc-400">{{ $u->county?->name ?? '—' }}</td>
                     <td class="px-3 py-2 text-zinc-400">{{ $m['business_type_label'] ?? '—' }}</td>

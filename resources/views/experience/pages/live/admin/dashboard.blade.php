@@ -1,4 +1,4 @@
-@extends('layouts.app')
+@extends('layouts.admin-theme', ['title' => 'Live Admin', 'themeColor' => '#6366F1', 'brandName' => 'Live Admin', 'brandSub' => 'KICC Streams'])
 @section('title', 'Live Platform Dashboard — Super Admin')
 @section('content')
 <div class="max-w-7xl mx-auto px-4 py-8">
@@ -16,7 +16,7 @@
     </div>
 
     <div class="card-kicc">
-        <div class="p-4 border-b border-gray-200 flex justify-between items-center">
+        <div class="p-4 border-b border-white/10 flex justify-between items-center">
             <h2 class="text-lg font-semibold">All Booths</h2>
             <a href="{{ route('live.admin.monitor') }}" class="btn-kicc-primary px-4 py-2 rounded-lg text-sm">Multiview Monitor</a>
         </div>
