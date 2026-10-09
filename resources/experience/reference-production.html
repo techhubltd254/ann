@@ -3401,6 +3401,29 @@ const SAVANNA_POSTER = TILE_DEFAULTS.savanna;
 /* the whole tile map, for pages outside this document */
 window.KICC_TILES = Object.assign({}, TILE_DEFAULTS, TD);
 
+/* ── GLOBAL EXPOSURE ─────────────────────────────────────────────────────────
+   TD / BLANK / TILE_DEFAULTS and the poster consts above are declared INSIDE
+   this IIFE, but sibling <script> blocks (ED_IMG, STUDIO_SEED, page templates)
+   consume them as globals. Without publishing them to window those blocks throw
+   ReferenceError and the SPA renders nothing (#app stays empty). */
+window.TD = TD;
+window.BLANK = BLANK;
+window.TILE_DEFAULTS = TILE_DEFAULTS;
+window.HERO_POSTER = HERO_POSTER;
+window.CITY_POSTER = CITY_POSTER;
+window.LAND_POSTER = LAND_POSTER;
+window.BOOTH_POSTER = BOOTH_POSTER;
+window.HALL_POSTER = HALL_POSTER;
+window.SAVANNA_POSTER = SAVANNA_POSTER;
+
+/* The sibling <script> blocks below are separate classic scripts and cannot see
+   this IIFE's lexical scope, so the tile map must be published on window.
+   Without this, ED_IMG / STUDIO_PLATES throw ReferenceError and the whole
+   page body fails to render into <main id="app">. */
+window.TD = TD;
+window.BLANK = BLANK;
+window.TILE_DEFAULTS = TILE_DEFAULTS;
+
 const imgFor = (c) => (c && c.tileMedia && c.tileMedia.state === "published" && c.tileMedia.url)
   ? c.tileMedia.url
   : (c && c.image) || "data:image/svg+xml,%3Csvg xmlns=\"http://www.w3.org/2000/svg\" width=\"800\" height=\"600\"%3E%3C/svg%3E";

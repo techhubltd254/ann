@@ -38,7 +38,7 @@
   <a href="{{ url('/portal/media-flow') }}" class="{{ request()->is('portal/media-flow*') ? 'active' : '' }}"><span class="ic">◉</span>Hierarchy</a>
   <a href="{{ url('/') }}" target="_blank" rel="noopener"><span class="ic">⌂</span>View Site</a>
  </nav>
- <div class="as-profile"><span class="as-avatar">{{ strtoupper(substr(auth()->user()->name ?? 'A',0,1)) }}</span><div><strong style="font-size:13px">{{ auth()->user()->name ?? 'Admin' }}</strong><small>{{ ucwords(str_replace('_',' ',auth()->user()->roles->first()->name ?? 'admin')) }}</small></div></div>
+ <div class="as-profile"><span class="as-avatar">{{ strtoupper(substr(auth()->user()->name ?? 'A',0,1)) }}</span><div><strong style="font-size:13px">{{ auth()->user()->name ?? 'Admin' }}</strong><small>{{ ucwords(str_replace('_',' ',auth()->user()?->roles?->first()?->name ?? 'admin')) }}</small></div></div>
 </aside>
 <div>
 <header class="as-top">

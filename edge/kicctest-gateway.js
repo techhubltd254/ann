@@ -13,7 +13,7 @@
 const JSON_CT = { "content-type": "application/json" };
 // Bump on every deploy that changes origin output — instantly invalidates all
 // edge page-cache entries (they key on this version).
-const CACHE_VERSION = "v38";
+const CACHE_VERSION = "v39";
 
 // Purge must cover the live cache version (and the previous one, in case a
 // deploy is mid-flight) — not a stale hardcoded list.

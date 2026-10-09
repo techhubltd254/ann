@@ -172,6 +172,26 @@ Route::post('/api/r2/confirm-upload', [\App\Http\Controllers\Web\MediaLibraryCon
 Route::middleware('auth')->group(function () {
     // Portal selector (choose KICC/National/County/Exhibitor admin)
     Route::get('/portal', [AdminPortalController::class, 'selector'])->name('admin.portal');
+
+    // Media flow: the county -> institution -> sector -> media workspace that the
+    // admin layouts link to. Without this route every layout using it throws 500.
+    Route::get('/portal/media-flow', [\App\Http\Controllers\Web\MediaFlowController::class, 'index'])->name('admin.mediaflow');
+    Route::get('/portal/media-flow/{institution}/sectors', [\App\Http\Controllers\Web\MediaFlowController::class, 'sectors'])->name('admin.mediaflow.sectors');
+    Route::get('/portal/media-flow/{institution}/media', [\App\Http\Controllers\Web\MediaFlowController::class, 'media'])->name('admin.mediaflow.media');
+    Route::post('/portal/media-flow/{institution}/videos', [\App\Http\Controllers\Web\MediaFlowController::class, 'store'])->name('admin.mediaflow.store');
+    Route::post('/portal/media-flow/{institution}/videos/{asset}/replace', [\App\Http\Controllers\Web\MediaFlowController::class, 'replace'])->name('admin.mediaflow.replace');
+    Route::delete('/portal/media-flow/{institution}/videos/{asset}', [\App\Http\Controllers\Web\MediaFlowController::class, 'destroy'])->name('admin.mediaflow.destroy');
+
+    // Chunked upload: the only path that can carry a 2 GB file past the edge's
+    // ~100 MB request ceiling.
+    Route::get('/portal/uploads', fn () => view('experience.admin.uploads'))->name('admin.uploads');
+    Route::post('/portal/uploads/init', [\App\Http\Controllers\Web\ChunkedUploadController::class, 'init'])->name('admin.uploads.init');
+    Route::post('/portal/uploads/{uploadId}/chunk', [\App\Http\Controllers\Web\ChunkedUploadController::class, 'chunk'])->name('admin.uploads.chunk');
+    Route::post('/portal/uploads/{uploadId}/complete', [\App\Http\Controllers\Web\ChunkedUploadController::class, 'complete'])->name('admin.uploads.complete');
+
+    // Role assignment across the four administration tiers.
+    Route::get('/portal/users', [\App\Http\Controllers\Web\AdminUsersController::class, 'index'])->name('admin.users');
+    Route::post('/portal/users/{user}/roles', [\App\Http\Controllers\Web\AdminUsersController::class, 'update'])->name('admin.users.roles');
     // National Government Admin — ministries & agencies
     Route::get('/admin/national', fn() => redirect()->route('national.admin.v2.dashboard'))->name('admin.national');
     // County Admin — scoped to own county
@@ -887,3 +907,21 @@ Route::get('/kicc-v2-seed-deploy/{token}', function(string $token) {
  }
 });
 
+
+// ── REPAIRED ROUTE NAMES (2026-10-09) ────────────────────────────────────────
+// These names are referenced by existing Blade views but were never defined,
+// so every page rendering those layouts died with RouteNotFoundException (500).
+Route::middleware('auth')->group(function () {
+    Route::get('/portal/media-flow', [\App\Http\Controllers\Web\MediaFlowController::class, 'index'])->name('admin.mediaflow');
+    Route::get('/portal/hierarchy', [\App\Http\Controllers\Web\UnifiedAdminController::class, 'hierarchy'])->name('admin.hub.hierarchy');
+});
+
+// Public pipeline sector pages — views existed, routes were never registered.
+Route::get('/pipelines', [\App\Http\Controllers\Web\PipelineController::class, 'index'])->name('pipelines.index');
+Route::get('/pipelines/{sector}', [\App\Http\Controllers\Web\PipelineController::class, 'sector'])->name('pipelines.sector');
+
+// Alias: views call route('institutions', $slug); canonical name is counties.institution.
+Route::get('/institutions/{institution}', [\App\Http\Controllers\Web\CountyController::class, 'institution'])->name('institutions');
+
+// Experience asset streaming — upload() hands back /experience/media/{id}, nothing served it.
+Route::get('/experience/media/{id}', [\App\Http\Controllers\Web\ExperienceProductionController::class, 'serve'])->name('experience.media.serve');

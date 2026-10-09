@@ -9,7 +9,7 @@ use Illuminate\Support\Str;
 /** Mutates native media IDs; never deletes a shared R2 object or invents a hierarchy. */
 class ScopedVideoMedia
 {
-    public const MAX_KB = 92160; // 90 MiB, below the current 100 MB edge request limit.
+    public const MAX_KB = 2097152; // 2 GiB. Same-origin POSTs are additionally capped by the edge proxy (~100 MB); above that the R2 presigned direct-upload path is required.
 
     private function upload(UploadedFile $file, CountyInstitution $institution): array
     {

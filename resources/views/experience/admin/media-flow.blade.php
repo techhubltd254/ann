@@ -14,7 +14,7 @@
  <div data-flow-display class="media-flow-panel"></div>
  <form data-flow-upload class="media-flow-panel" hidden>
   <h2>Add a video to this owner</h2>
-  <p>Maximum 90 MiB per request. Larger files require a separately verified direct-upload workflow; this form does not claim 2 GB support.</p>
+  <p>Up to 2 GiB per file. Same-origin uploads above ~100 MB must use the R2 direct-upload workflow, because the edge proxy caps request bodies; the server stores either path in R2.</p>
   <label>Title<input name="title" required maxlength="255"></label>
   <label>Display slot<select name="slot"><option value="institution_video">Institution video collection</option><option value="hero_video">Institution hero — changes the current public hero</option><option value="4d_video">4D video collection</option></select></label>
   <label>Video file<input name="video" type="file" accept="video/mp4,video/webm,video/quicktime" required></label>
