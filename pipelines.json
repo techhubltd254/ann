@@ -1,0 +1,3642 @@
+{
+    "pipelines": [
+        {
+            "id": 1,
+            "code": "A1",
+            "name": "Domestic Marketplace Already Built In Ann This Kit Wires It Into The Ledger",
+            "category": "trade",
+            "sector": "trade",
+            "phase": 1,
+            "status": "built",
+            "owner_desk": "marketplace-desk",
+            "external_systems": [
+                "trade-system"
+            ],
+            "mechanism": "commission",
+            "full_maturity_kes": 36000000,
+            "take_rate": "2-5% commission + subs/booths/ads",
+            "dependencies": []
+        },
+        {
+            "id": 2,
+            "code": "A2",
+            "name": "Cross Border Logistics",
+            "category": "trade",
+            "sector": "trade",
+            "phase": 1,
+            "status": "built",
+            "owner_desk": "marketplace-desk",
+            "external_systems": [
+                "trade-system"
+            ],
+            "mechanism": "commission",
+            "full_maturity_kes": 36000000,
+            "take_rate": "Landed-cost margin + FX spread 1-1.5% + carrier referral",
+            "dependencies": []
+        },
+        {
+            "id": 3,
+            "code": "A3",
+            "name": "Construction Materials Group Buy",
+            "category": "trade",
+            "sector": "trade",
+            "phase": 1,
+            "status": "built",
+            "owner_desk": "marketplace-desk",
+            "external_systems": [
+                "trade-system"
+            ],
+            "mechanism": "commission",
+            "full_maturity_kes": 36000000,
+            "take_rate": "2-4% commission + volume rebate share",
+            "dependencies": []
+        },
+        {
+            "id": 4,
+            "code": "A4",
+            "name": "County Wholesale Market Day Trade",
+            "category": "trade",
+            "sector": "trade",
+            "phase": 1,
+            "status": "built",
+            "owner_desk": "marketplace-desk",
+            "external_systems": [
+                "trade-system"
+            ],
+            "mechanism": "commission",
+            "full_maturity_kes": 36000000,
+            "take_rate": "1-3% commission + market-fee facilitation",
+            "dependencies": []
+        },
+        {
+            "id": 5,
+            "code": "A5",
+            "name": "Franchise Dealership Matchmaking",
+            "category": "trade",
+            "sector": "trade",
+            "phase": 1,
+            "status": "built",
+            "owner_desk": "marketplace-desk",
+            "external_systems": [
+                "trade-system"
+            ],
+            "mechanism": "commission",
+            "full_maturity_kes": 36000000,
+            "take_rate": "1-3% success fee per signed dealership",
+            "dependencies": []
+        },
+        {
+            "id": 6,
+            "code": "A6",
+            "name": "Sme Acquisition Business For Sale",
+            "category": "trade",
+            "sector": "trade",
+            "phase": 3,
+            "status": "built",
+            "owner_desk": "marketplace-desk",
+            "external_systems": [
+                "trade-system"
+            ],
+            "mechanism": "commission",
+            "full_maturity_kes": 36000000,
+            "take_rate": "1-2% success fee on business transfer",
+            "dependencies": []
+        },
+        {
+            "id": 7,
+            "code": "B1",
+            "name": "Agriculture Lots Grading Split Payout",
+            "category": "agriculture",
+            "sector": "agriculture",
+            "phase": 1,
+            "status": "built",
+            "owner_desk": "agro-desk",
+            "external_systems": [
+                "agriculture-system"
+            ],
+            "mechanism": "commission",
+            "full_maturity_kes": 36000000,
+            "take_rate": "3-5% commission + FX spread on exports",
+            "dependencies": []
+        },
+        {
+            "id": 8,
+            "code": "B2",
+            "name": "Cooperative Rail",
+            "category": "agriculture",
+            "sector": "agriculture",
+            "phase": 1,
+            "status": "built",
+            "owner_desk": "agro-desk",
+            "external_systems": [
+                "agriculture-system"
+            ],
+            "mechanism": "commission",
+            "full_maturity_kes": 36000000,
+            "take_rate": "2-5% on pooled member lots",
+            "dependencies": []
+        },
+        {
+            "id": 9,
+            "code": "B3",
+            "name": "Livestock Leather",
+            "category": "agriculture",
+            "sector": "agriculture",
+            "phase": 1,
+            "status": "built",
+            "owner_desk": "agro-desk",
+            "external_systems": [
+                "agriculture-system"
+            ],
+            "mechanism": "commission",
+            "full_maturity_kes": 36000000,
+            "take_rate": "3-5% on vet-certified sales",
+            "dependencies": []
+        },
+        {
+            "id": 10,
+            "code": "B4",
+            "name": "Fisheries Blue Economy",
+            "category": "agriculture",
+            "sector": "agriculture",
+            "phase": 1,
+            "status": "built",
+            "owner_desk": "agro-desk",
+            "external_systems": [
+                "agriculture-system"
+            ],
+            "mechanism": "commission",
+            "full_maturity_kes": 36000000,
+            "take_rate": "3-5% + export commission",
+            "dependencies": []
+        },
+        {
+            "id": 11,
+            "code": "B5",
+            "name": "Horticulture Export Compliance Desk",
+            "category": "agriculture",
+            "sector": "agriculture",
+            "phase": 2,
+            "status": "built",
+            "owner_desk": "agro-desk",
+            "external_systems": [
+                "agriculture-system"
+            ],
+            "mechanism": "commission",
+            "full_maturity_kes": 36000000,
+            "take_rate": "Per-document fees + bank FX spread",
+            "dependencies": []
+        },
+        {
+            "id": 12,
+            "code": "B6",
+            "name": "Agri Input Financing Feeder",
+            "category": "agriculture",
+            "sector": "agriculture",
+            "phase": 3,
+            "status": "licence_gated",
+            "owner_desk": "agro-desk",
+            "external_systems": [
+                "agriculture-system"
+            ],
+            "mechanism": "commission",
+            "full_maturity_kes": 36000000,
+            "take_rate": "2-3%/month on input advances",
+            "dependencies": []
+        },
+        {
+            "id": 13,
+            "code": "C1",
+            "name": "Tourism Experiences",
+            "category": "tourism",
+            "sector": "tourism",
+            "phase": 1,
+            "status": "built",
+            "owner_desk": "tourism-desk",
+            "external_systems": [
+                "tourism-system"
+            ],
+            "mechanism": "commission",
+            "full_maturity_kes": 36000000,
+            "take_rate": "15-18% OTA-style commission",
+            "dependencies": []
+        },
+        {
+            "id": 14,
+            "code": "C2",
+            "name": "Itinerary Trip Planning",
+            "category": "tourism",
+            "sector": "tourism",
+            "phase": 1,
+            "status": "built",
+            "owner_desk": "tourism-desk",
+            "external_systems": [
+                "tourism-system"
+            ],
+            "mechanism": "commission",
+            "full_maturity_kes": 36000000,
+            "take_rate": "Composition layer (no direct fee)",
+            "dependencies": []
+        },
+        {
+            "id": 15,
+            "code": "C3",
+            "name": "Bundled Tourism Merchant Of Record",
+            "category": "tourism",
+            "sector": "tourism",
+            "phase": 2,
+            "status": "built",
+            "owner_desk": "tourism-desk",
+            "external_systems": [
+                "tourism-system"
+            ],
+            "mechanism": "commission",
+            "full_maturity_kes": 36000000,
+            "take_rate": "20-30% of total trip spend (merchant of record)",
+            "dependencies": []
+        },
+        {
+            "id": 16,
+            "code": "C4",
+            "name": "County Homestay Community Tourism",
+            "category": "tourism",
+            "sector": "tourism",
+            "phase": 1,
+            "status": "built",
+            "owner_desk": "tourism-desk",
+            "external_systems": [
+                "tourism-system"
+            ],
+            "mechanism": "commission",
+            "full_maturity_kes": 36000000,
+            "take_rate": "15% commission + curation fees",
+            "dependencies": []
+        },
+        {
+            "id": 17,
+            "code": "C5",
+            "name": "Mice Venue Booths",
+            "category": "tourism",
+            "sector": "tourism",
+            "phase": 1,
+            "status": "built",
+            "owner_desk": "tourism-desk",
+            "external_systems": [
+                "tourism-system"
+            ],
+            "mechanism": "commission",
+            "full_maturity_kes": 36000000,
+            "take_rate": "Booking fees + dynamic pricing + booths",
+            "dependencies": []
+        },
+        {
+            "id": 18,
+            "code": "D1",
+            "name": "Industrial Sez Facilitation",
+            "category": "investment",
+            "sector": "investment",
+            "phase": 2,
+            "status": "built",
+            "owner_desk": "investment-desk",
+            "external_systems": [
+                "investment-system"
+            ],
+            "mechanism": "commission",
+            "full_maturity_kes": 36000000,
+            "take_rate": "0.1-0.5% success fee on committed capex",
+            "dependencies": []
+        },
+        {
+            "id": 19,
+            "code": "D2",
+            "name": "Sez Workforce Matching",
+            "category": "investment",
+            "sector": "investment",
+            "phase": 2,
+            "status": "built",
+            "owner_desk": "investment-desk",
+            "external_systems": [
+                "investment-system"
+            ],
+            "mechanism": "commission",
+            "full_maturity_kes": 36000000,
+            "take_rate": "Per-hire fees + skills-tier subscriptions",
+            "dependencies": []
+        },
+        {
+            "id": 20,
+            "code": "D3",
+            "name": "Real Estate Title Verified",
+            "category": "investment",
+            "sector": "investment",
+            "phase": 2,
+            "status": "blocked",
+            "owner_desk": "investment-desk",
+            "external_systems": [
+                "investment-system"
+            ],
+            "mechanism": "commission",
+            "full_maturity_kes": 36000000,
+            "take_rate": "2-5% facilitation fee",
+            "dependencies": []
+        },
+        {
+            "id": 21,
+            "code": "D4",
+            "name": "Diaspora Investment Corridor",
+            "category": "investment",
+            "sector": "investment",
+            "phase": 2,
+            "status": "built",
+            "owner_desk": "investment-desk",
+            "external_systems": [
+                "investment-system"
+            ],
+            "mechanism": "commission",
+            "full_maturity_kes": 36000000,
+            "take_rate": "FX spread + directed-investment commission",
+            "dependencies": []
+        },
+        {
+            "id": 22,
+            "code": "D5",
+            "name": "Mining Value Chain Services",
+            "category": "investment",
+            "sector": "investment",
+            "phase": 2,
+            "status": "built",
+            "owner_desk": "investment-desk",
+            "external_systems": [
+                "investment-system"
+            ],
+            "mechanism": "commission",
+            "full_maturity_kes": 36000000,
+            "take_rate": "2-5% trade commission + royalty split",
+            "dependencies": []
+        },
+        {
+            "id": 23,
+            "code": "F1",
+            "name": "Financing Treasury",
+            "category": "financing",
+            "sector": "financing",
+            "phase": 3,
+            "status": "licence_gated",
+            "owner_desk": "financing-desk",
+            "external_systems": [
+                "financing-system"
+            ],
+            "mechanism": "commission",
+            "full_maturity_kes": 36000000,
+            "take_rate": "2-3%/month + float yield",
+            "dependencies": []
+        },
+        {
+            "id": 24,
+            "code": "F2",
+            "name": "Supplier Invoice Financing",
+            "category": "financing",
+            "sector": "financing",
+            "phase": 3,
+            "status": "licence_gated",
+            "owner_desk": "financing-desk",
+            "external_systems": [
+                "financing-system"
+            ],
+            "mechanism": "commission",
+            "full_maturity_kes": 36000000,
+            "take_rate": "2-3%/month on PO-backed advances",
+            "dependencies": []
+        },
+        {
+            "id": 25,
+            "code": "F3",
+            "name": "Input Financing",
+            "category": "financing",
+            "sector": "financing",
+            "phase": 3,
+            "status": "licence_gated",
+            "owner_desk": "financing-desk",
+            "external_systems": [
+                "financing-system"
+            ],
+            "mechanism": "commission",
+            "full_maturity_kes": 36000000,
+            "take_rate": "Recovered at harvest",
+            "dependencies": []
+        },
+        {
+            "id": 26,
+            "code": "F4",
+            "name": "Embedded Insurance Kyb As A Service",
+            "category": "financing",
+            "sector": "financing",
+            "phase": 2,
+            "status": "built",
+            "owner_desk": "financing-desk",
+            "external_systems": [
+                "financing-system"
+            ],
+            "mechanism": "commission",
+            "full_maturity_kes": 36000000,
+            "take_rate": "10-20% commission / per-check API fees",
+            "dependencies": []
+        },
+        {
+            "id": 27,
+            "code": "F5",
+            "name": "Escrow Float Treasury Yield",
+            "category": "financing",
+            "sector": "financing",
+            "phase": 3,
+            "status": "licence_gated",
+            "owner_desk": "financing-desk",
+            "external_systems": [
+                "financing-system"
+            ],
+            "mechanism": "commission",
+            "full_maturity_kes": 36000000,
+            "take_rate": "Interest spread (KES 0 until CBK confirms)",
+            "dependencies": []
+        },
+        {
+            "id": 28,
+            "code": "G1",
+            "name": "County Own Source Revenue Rail",
+            "category": "government",
+            "sector": "government",
+            "phase": 1,
+            "status": "built",
+            "owner_desk": "gov-desk",
+            "external_systems": [
+                "government-system"
+            ],
+            "mechanism": "commission",
+            "full_maturity_kes": 36000000,
+            "take_rate": "1.5-2% collection fee",
+            "dependencies": []
+        },
+        {
+            "id": 29,
+            "code": "G2",
+            "name": "County Procurement Rail",
+            "category": "government",
+            "sector": "government",
+            "phase": 3,
+            "status": "licence_gated",
+            "owner_desk": "gov-desk",
+            "external_systems": [
+                "government-system"
+            ],
+            "mechanism": "commission",
+            "full_maturity_kes": 36000000,
+            "take_rate": "0.5-1% of escrowed PO value",
+            "dependencies": []
+        },
+        {
+            "id": 30,
+            "code": "H1",
+            "name": "National Procurement Ifmis Aligned",
+            "category": "government",
+            "sector": "government",
+            "phase": 3,
+            "status": "licence_gated",
+            "owner_desk": "gov-desk",
+            "external_systems": [
+                "government-system"
+            ],
+            "mechanism": "commission",
+            "full_maturity_kes": 36000000,
+            "take_rate": "0.5-1% of flow (largest single line)",
+            "dependencies": []
+        },
+        {
+            "id": 31,
+            "code": "G3",
+            "name": "E Government Services Facilitation",
+            "category": "government",
+            "sector": "government",
+            "phase": 2,
+            "status": "built",
+            "owner_desk": "gov-desk",
+            "external_systems": [
+                "government-system"
+            ],
+            "mechanism": "commission",
+            "full_maturity_kes": 36000000,
+            "take_rate": "KES 50-100 convenience fee per transaction",
+            "dependencies": []
+        },
+        {
+            "id": 32,
+            "code": "G4",
+            "name": "Market Intelligence Data Products",
+            "category": "government",
+            "sector": "government",
+            "phase": 1,
+            "status": "built",
+            "owner_desk": "gov-desk",
+            "external_systems": [
+                "government-system"
+            ],
+            "mechanism": "commission",
+            "full_maturity_kes": 36000000,
+            "take_rate": "Data/API subscriptions",
+            "dependencies": []
+        },
+        {
+            "id": 33,
+            "code": "K1",
+            "name": "Health Facility Supply Marketplace",
+            "category": "health",
+            "sector": "health",
+            "phase": 2,
+            "status": "built",
+            "owner_desk": "health-desk",
+            "external_systems": [
+                "health-system"
+            ],
+            "mechanism": "commission",
+            "full_maturity_kes": 36000000,
+            "take_rate": "1.5-3% + group-purchasing fee",
+            "dependencies": []
+        },
+        {
+            "id": 34,
+            "code": "K2",
+            "name": "Clinichospital Back Office Saas",
+            "category": "health",
+            "sector": "health",
+            "phase": 2,
+            "status": "built",
+            "owner_desk": "health-desk",
+            "external_systems": [
+                "health-system"
+            ],
+            "mechanism": "commission",
+            "full_maturity_kes": 36000000,
+            "take_rate": "SaaS subscriptions",
+            "dependencies": []
+        },
+        {
+            "id": 35,
+            "code": "K3",
+            "name": "Telehealth Health Data Layer",
+            "category": "health",
+            "sector": "health",
+            "phase": 2,
+            "status": "blocked",
+            "owner_desk": "health-desk",
+            "external_systems": [
+                "health-system"
+            ],
+            "mechanism": "commission",
+            "full_maturity_kes": 36000000,
+            "take_rate": "Undefined (Digital Health Act struck down)",
+            "dependencies": []
+        },
+        {
+            "id": 36,
+            "code": "L1",
+            "name": "Skills To Jobs Tvet",
+            "category": "education",
+            "sector": "education",
+            "phase": 1,
+            "status": "built",
+            "owner_desk": "education-desk",
+            "external_systems": [
+                "education-system"
+            ],
+            "mechanism": "commission",
+            "full_maturity_kes": 36000000,
+            "take_rate": "Employer placement fee + cert revenue share",
+            "dependencies": []
+        },
+        {
+            "id": 37,
+            "code": "L2",
+            "name": "Labour Migration Desk",
+            "category": "education",
+            "sector": "education",
+            "phase": 2,
+            "status": "built",
+            "owner_desk": "education-desk",
+            "external_systems": [
+                "education-system"
+            ],
+            "mechanism": "commission",
+            "full_maturity_kes": 36000000,
+            "take_rate": "Per-worker verification + remittance loop",
+            "dependencies": []
+        },
+        {
+            "id": 38,
+            "code": "L3",
+            "name": "Edu Commerce Fee Rails",
+            "category": "education",
+            "sector": "education",
+            "phase": 1,
+            "status": "built",
+            "owner_desk": "education-desk",
+            "external_systems": [
+                "education-system"
+            ],
+            "mechanism": "commission",
+            "full_maturity_kes": 36000000,
+            "take_rate": "0.5-1% fee handling + supplies margin",
+            "dependencies": []
+        },
+        {
+            "id": 39,
+            "code": "L4",
+            "name": "Universityindustry Attachment Ip Exchange",
+            "category": "education",
+            "sector": "education",
+            "phase": 1,
+            "status": "built",
+            "owner_desk": "education-desk",
+            "external_systems": [
+                "education-system"
+            ],
+            "mechanism": "commission",
+            "full_maturity_kes": 36000000,
+            "take_rate": "Success fees",
+            "dependencies": []
+        },
+        {
+            "id": 40,
+            "code": "L5",
+            "name": "Tvet Equipment Consumables Trade",
+            "category": "education",
+            "sector": "education",
+            "phase": 1,
+            "status": "built",
+            "owner_desk": "education-desk",
+            "external_systems": [
+                "education-system"
+            ],
+            "mechanism": "commission",
+            "full_maturity_kes": 36000000,
+            "take_rate": "2-4% of trade value",
+            "dependencies": []
+        },
+        {
+            "id": 41,
+            "code": "M1",
+            "name": "Clean Energy Commerce Payg Escrow",
+            "category": "energy",
+            "sector": "energy",
+            "phase": 2,
+            "status": "built",
+            "owner_desk": "energy-desk",
+            "external_systems": [
+                "energy-system"
+            ],
+            "mechanism": "commission",
+            "full_maturity_kes": 36000000,
+            "take_rate": "5-10% + installer referral + insurance attach",
+            "dependencies": []
+        },
+        {
+            "id": 42,
+            "code": "M2",
+            "name": "Carbon Climate Assets",
+            "category": "energy",
+            "sector": "energy",
+            "phase": 2,
+            "status": "built",
+            "owner_desk": "energy-desk",
+            "external_systems": [
+                "energy-system"
+            ],
+            "mechanism": "commission",
+            "full_maturity_kes": 36000000,
+            "take_rate": "10-15% brokerage + verification fees",
+            "dependencies": []
+        },
+        {
+            "id": 43,
+            "code": "M3",
+            "name": "Water Infrastructure Matchmaking",
+            "category": "energy",
+            "sector": "energy",
+            "phase": 2,
+            "status": "built",
+            "owner_desk": "energy-desk",
+            "external_systems": [
+                "energy-system"
+            ],
+            "mechanism": "commission",
+            "full_maturity_kes": 36000000,
+            "take_rate": "0.5-1% success fee on committed capex",
+            "dependencies": []
+        },
+        {
+            "id": 44,
+            "code": "M4",
+            "name": "Waste Recycling Exchange",
+            "category": "energy",
+            "sector": "energy",
+            "phase": 1,
+            "status": "built",
+            "owner_desk": "energy-desk",
+            "external_systems": [
+                "energy-system"
+            ],
+            "mechanism": "commission",
+            "full_maturity_kes": 36000000,
+            "take_rate": "Trade commission",
+            "dependencies": []
+        },
+        {
+            "id": 45,
+            "code": "N1",
+            "name": "Psv Matatu Sacco Operations",
+            "category": "mobility",
+            "sector": "mobility",
+            "phase": 2,
+            "status": "built",
+            "owner_desk": "mobility-desk",
+            "external_systems": [
+                "mobility-system"
+            ],
+            "mechanism": "commission",
+            "full_maturity_kes": 36000000,
+            "take_rate": "0.5-1% collection fee + insurance/parts commissions",
+            "dependencies": []
+        },
+        {
+            "id": 46,
+            "code": "N2",
+            "name": "Freight Loads Marketplace",
+            "category": "mobility",
+            "sector": "mobility",
+            "phase": 1,
+            "status": "built",
+            "owner_desk": "mobility-desk",
+            "external_systems": [
+                "mobility-system"
+            ],
+            "mechanism": "commission",
+            "full_maturity_kes": 36000000,
+            "take_rate": "5-10% of load value",
+            "dependencies": []
+        },
+        {
+            "id": 47,
+            "code": "N3",
+            "name": "Fuel Fleet Inputs",
+            "category": "mobility",
+            "sector": "mobility",
+            "phase": 2,
+            "status": "built",
+            "owner_desk": "mobility-desk",
+            "external_systems": [
+                "mobility-system"
+            ],
+            "mechanism": "commission",
+            "full_maturity_kes": 36000000,
+            "take_rate": "1-2% commission",
+            "dependencies": []
+        },
+        {
+            "id": 48,
+            "code": "O1",
+            "name": "Creative Livestream Economy",
+            "category": "creative",
+            "sector": "creative",
+            "phase": 1,
+            "status": "built",
+            "owner_desk": "creative-desk",
+            "external_systems": [
+                "creative-system"
+            ],
+            "mechanism": "commission",
+            "full_maturity_kes": 36000000,
+            "take_rate": "10-15% commission + passes + tips",
+            "dependencies": []
+        },
+        {
+            "id": 49,
+            "code": "O2",
+            "name": "Sports Talent Events",
+            "category": "creative",
+            "sector": "creative",
+            "phase": 3,
+            "status": "built",
+            "owner_desk": "creative-desk",
+            "external_systems": [
+                "creative-system"
+            ],
+            "mechanism": "commission",
+            "full_maturity_kes": 36000000,
+            "take_rate": "Success fees on talent deals",
+            "dependencies": []
+        },
+        {
+            "id": 50,
+            "code": "P1",
+            "name": "Kyb As A Service",
+            "category": "identity",
+            "sector": "identity",
+            "phase": 1,
+            "status": "built",
+            "owner_desk": "identity-desk",
+            "external_systems": [
+                "identity-system"
+            ],
+            "mechanism": "commission",
+            "full_maturity_kes": 36000000,
+            "take_rate": "Per-check API fees",
+            "dependencies": []
+        },
+        {
+            "id": 51,
+            "code": "B1.1",
+            "name": "Maize Cereals",
+            "category": "agriculture",
+            "sector": "agriculture",
+            "phase": 1,
+            "status": "built",
+            "owner_desk": "agro-desk",
+            "external_systems": [
+                "agriculture-system"
+            ],
+            "mechanism": "commission",
+            "full_maturity_kes": 36000000,
+            "take_rate": "commission",
+            "dependencies": []
+        },
+        {
+            "id": 52,
+            "code": "B1.2",
+            "name": "Horticulture Lots",
+            "category": "agriculture",
+            "sector": "agriculture",
+            "phase": 1,
+            "status": "built",
+            "owner_desk": "agro-desk",
+            "external_systems": [
+                "agriculture-system"
+            ],
+            "mechanism": "commission",
+            "full_maturity_kes": 36000000,
+            "take_rate": "commission",
+            "dependencies": []
+        },
+        {
+            "id": 53,
+            "code": "B1.3",
+            "name": "Coffee Tea",
+            "category": "agriculture",
+            "sector": "agriculture",
+            "phase": 1,
+            "status": "built",
+            "owner_desk": "agro-desk",
+            "external_systems": [
+                "agriculture-system"
+            ],
+            "mechanism": "commission",
+            "full_maturity_kes": 36000000,
+            "take_rate": "commission",
+            "dependencies": []
+        },
+        {
+            "id": 54,
+            "code": "B1.4",
+            "name": "Pulses Oilseeds",
+            "category": "agriculture",
+            "sector": "agriculture",
+            "phase": 1,
+            "status": "built",
+            "owner_desk": "agro-desk",
+            "external_systems": [
+                "agriculture-system"
+            ],
+            "mechanism": "commission",
+            "full_maturity_kes": 36000000,
+            "take_rate": "commission",
+            "dependencies": []
+        },
+        {
+            "id": 55,
+            "code": "B2.1",
+            "name": "Dairy Coops",
+            "category": "agriculture",
+            "sector": "agriculture",
+            "phase": 1,
+            "status": "built",
+            "owner_desk": "agro-desk",
+            "external_systems": [
+                "agriculture-system"
+            ],
+            "mechanism": "commission",
+            "full_maturity_kes": 36000000,
+            "take_rate": "commission",
+            "dependencies": []
+        },
+        {
+            "id": 56,
+            "code": "B2.2",
+            "name": "Coffee Unions",
+            "category": "agriculture",
+            "sector": "agriculture",
+            "phase": 1,
+            "status": "built",
+            "owner_desk": "agro-desk",
+            "external_systems": [
+                "agriculture-system"
+            ],
+            "mechanism": "commission",
+            "full_maturity_kes": 36000000,
+            "take_rate": "commission",
+            "dependencies": []
+        },
+        {
+            "id": 57,
+            "code": "B2.3",
+            "name": "Grain Coops",
+            "category": "agriculture",
+            "sector": "agriculture",
+            "phase": 1,
+            "status": "built",
+            "owner_desk": "agro-desk",
+            "external_systems": [
+                "agriculture-system"
+            ],
+            "mechanism": "commission",
+            "full_maturity_kes": 36000000,
+            "take_rate": "commission",
+            "dependencies": []
+        },
+        {
+            "id": 58,
+            "code": "B3.1",
+            "name": "Cattle",
+            "category": "agriculture",
+            "sector": "agriculture",
+            "phase": 1,
+            "status": "built",
+            "owner_desk": "agro-desk",
+            "external_systems": [
+                "agriculture-system"
+            ],
+            "mechanism": "commission",
+            "full_maturity_kes": 36000000,
+            "take_rate": "commission",
+            "dependencies": []
+        },
+        {
+            "id": 59,
+            "code": "B3.2",
+            "name": "Sheep Goats",
+            "category": "agriculture",
+            "sector": "agriculture",
+            "phase": 1,
+            "status": "built",
+            "owner_desk": "agro-desk",
+            "external_systems": [
+                "agriculture-system"
+            ],
+            "mechanism": "commission",
+            "full_maturity_kes": 36000000,
+            "take_rate": "commission",
+            "dependencies": []
+        },
+        {
+            "id": 60,
+            "code": "B3.3",
+            "name": "Poultry",
+            "category": "agriculture",
+            "sector": "agriculture",
+            "phase": 1,
+            "status": "built",
+            "owner_desk": "agro-desk",
+            "external_systems": [
+                "agriculture-system"
+            ],
+            "mechanism": "commission",
+            "full_maturity_kes": 36000000,
+            "take_rate": "commission",
+            "dependencies": []
+        },
+        {
+            "id": 61,
+            "code": "B3.4",
+            "name": "Hides Leather",
+            "category": "agriculture",
+            "sector": "agriculture",
+            "phase": 1,
+            "status": "built",
+            "owner_desk": "agro-desk",
+            "external_systems": [
+                "agriculture-system"
+            ],
+            "mechanism": "commission",
+            "full_maturity_kes": 36000000,
+            "take_rate": "commission",
+            "dependencies": []
+        },
+        {
+            "id": 62,
+            "code": "B4.1",
+            "name": "Lake Fisheries",
+            "category": "agriculture",
+            "sector": "agriculture",
+            "phase": 1,
+            "status": "built",
+            "owner_desk": "agro-desk",
+            "external_systems": [
+                "agriculture-system"
+            ],
+            "mechanism": "commission",
+            "full_maturity_kes": 36000000,
+            "take_rate": "commission",
+            "dependencies": []
+        },
+        {
+            "id": 63,
+            "code": "B4.2",
+            "name": "Marine Fisheries",
+            "category": "agriculture",
+            "sector": "agriculture",
+            "phase": 1,
+            "status": "built",
+            "owner_desk": "agro-desk",
+            "external_systems": [
+                "agriculture-system"
+            ],
+            "mechanism": "commission",
+            "full_maturity_kes": 36000000,
+            "take_rate": "commission",
+            "dependencies": []
+        },
+        {
+            "id": 64,
+            "code": "B4.3",
+            "name": "Aquaculture",
+            "category": "agriculture",
+            "sector": "agriculture",
+            "phase": 1,
+            "status": "built",
+            "owner_desk": "agro-desk",
+            "external_systems": [
+                "agriculture-system"
+            ],
+            "mechanism": "commission",
+            "full_maturity_kes": 36000000,
+            "take_rate": "commission",
+            "dependencies": []
+        },
+        {
+            "id": 65,
+            "code": "B5.1",
+            "name": "Vegetables Eu",
+            "category": "agriculture",
+            "sector": "agriculture",
+            "phase": 2,
+            "status": "built",
+            "owner_desk": "agro-desk",
+            "external_systems": [
+                "agriculture-system"
+            ],
+            "mechanism": "flat_fee",
+            "full_maturity_kes": 36000000,
+            "take_rate": "flat_fee",
+            "dependencies": []
+        },
+        {
+            "id": 66,
+            "code": "B5.2",
+            "name": "Fruits Middle East",
+            "category": "agriculture",
+            "sector": "agriculture",
+            "phase": 2,
+            "status": "built",
+            "owner_desk": "agro-desk",
+            "external_systems": [
+                "agriculture-system"
+            ],
+            "mechanism": "flat_fee",
+            "full_maturity_kes": 36000000,
+            "take_rate": "flat_fee",
+            "dependencies": []
+        },
+        {
+            "id": 67,
+            "code": "B5.3",
+            "name": "Flowers",
+            "category": "agriculture",
+            "sector": "agriculture",
+            "phase": 2,
+            "status": "built",
+            "owner_desk": "agro-desk",
+            "external_systems": [
+                "agriculture-system"
+            ],
+            "mechanism": "flat_fee",
+            "full_maturity_kes": 36000000,
+            "take_rate": "flat_fee",
+            "dependencies": []
+        },
+        {
+            "id": 68,
+            "code": "B6.1",
+            "name": "Fertilizer Credit",
+            "category": "agriculture",
+            "sector": "agriculture",
+            "phase": 3,
+            "status": "built",
+            "owner_desk": "agro-desk",
+            "external_systems": [
+                "agriculture-system"
+            ],
+            "mechanism": "commission",
+            "full_maturity_kes": 36000000,
+            "take_rate": "rate_note",
+            "dependencies": []
+        },
+        {
+            "id": 69,
+            "code": "B6.2",
+            "name": "Seed Credit",
+            "category": "agriculture",
+            "sector": "agriculture",
+            "phase": 3,
+            "status": "built",
+            "owner_desk": "agro-desk",
+            "external_systems": [
+                "agriculture-system"
+            ],
+            "mechanism": "commission",
+            "full_maturity_kes": 36000000,
+            "take_rate": "rate_note",
+            "dependencies": []
+        },
+        {
+            "id": 70,
+            "code": "B6.3",
+            "name": "Equipment Credit",
+            "category": "agriculture",
+            "sector": "agriculture",
+            "phase": 3,
+            "status": "built",
+            "owner_desk": "agro-desk",
+            "external_systems": [
+                "agriculture-system"
+            ],
+            "mechanism": "commission",
+            "full_maturity_kes": 36000000,
+            "take_rate": "rate_note",
+            "dependencies": []
+        },
+        {
+            "id": 71,
+            "code": "O1.1",
+            "name": "Livestream Passes",
+            "category": "creative",
+            "sector": "creative",
+            "phase": 1,
+            "status": "built",
+            "owner_desk": "creative-desk",
+            "external_systems": [
+                "creative-system"
+            ],
+            "mechanism": "commission",
+            "full_maturity_kes": 36000000,
+            "take_rate": "commission",
+            "dependencies": []
+        },
+        {
+            "id": 72,
+            "code": "O1.2",
+            "name": "Creator Tips",
+            "category": "creative",
+            "sector": "creative",
+            "phase": 1,
+            "status": "built",
+            "owner_desk": "creative-desk",
+            "external_systems": [
+                "creative-system"
+            ],
+            "mechanism": "commission",
+            "full_maturity_kes": 36000000,
+            "take_rate": "commission",
+            "dependencies": []
+        },
+        {
+            "id": 73,
+            "code": "O1.3",
+            "name": "Event Streaming",
+            "category": "creative",
+            "sector": "creative",
+            "phase": 1,
+            "status": "built",
+            "owner_desk": "creative-desk",
+            "external_systems": [
+                "creative-system"
+            ],
+            "mechanism": "commission",
+            "full_maturity_kes": 36000000,
+            "take_rate": "commission",
+            "dependencies": []
+        },
+        {
+            "id": 74,
+            "code": "O2.1",
+            "name": "Football Talent",
+            "category": "creative",
+            "sector": "creative",
+            "phase": 3,
+            "status": "built",
+            "owner_desk": "creative-desk",
+            "external_systems": [
+                "creative-system"
+            ],
+            "mechanism": "flat_fee",
+            "full_maturity_kes": 36000000,
+            "take_rate": "flat_fee",
+            "dependencies": []
+        },
+        {
+            "id": 75,
+            "code": "O2.2",
+            "name": "Athletics",
+            "category": "creative",
+            "sector": "creative",
+            "phase": 3,
+            "status": "built",
+            "owner_desk": "creative-desk",
+            "external_systems": [
+                "creative-system"
+            ],
+            "mechanism": "flat_fee",
+            "full_maturity_kes": 36000000,
+            "take_rate": "flat_fee",
+            "dependencies": []
+        },
+        {
+            "id": 76,
+            "code": "O2.3",
+            "name": "Event Rights",
+            "category": "creative",
+            "sector": "creative",
+            "phase": 3,
+            "status": "built",
+            "owner_desk": "creative-desk",
+            "external_systems": [
+                "creative-system"
+            ],
+            "mechanism": "flat_fee",
+            "full_maturity_kes": 36000000,
+            "take_rate": "flat_fee",
+            "dependencies": []
+        },
+        {
+            "id": 77,
+            "code": "L1.1",
+            "name": "Tvet Placement",
+            "category": "education",
+            "sector": "education",
+            "phase": 1,
+            "status": "built",
+            "owner_desk": "education-desk",
+            "external_systems": [
+                "education-system"
+            ],
+            "mechanism": "flat_fee",
+            "full_maturity_kes": 36000000,
+            "take_rate": "flat_fee",
+            "dependencies": []
+        },
+        {
+            "id": 78,
+            "code": "L1.2",
+            "name": "Apprenticeship",
+            "category": "education",
+            "sector": "education",
+            "phase": 1,
+            "status": "built",
+            "owner_desk": "education-desk",
+            "external_systems": [
+                "education-system"
+            ],
+            "mechanism": "flat_fee",
+            "full_maturity_kes": 36000000,
+            "take_rate": "flat_fee",
+            "dependencies": []
+        },
+        {
+            "id": 79,
+            "code": "L1.3",
+            "name": "Certification",
+            "category": "education",
+            "sector": "education",
+            "phase": 1,
+            "status": "built",
+            "owner_desk": "education-desk",
+            "external_systems": [
+                "education-system"
+            ],
+            "mechanism": "flat_fee",
+            "full_maturity_kes": 36000000,
+            "take_rate": "flat_fee",
+            "dependencies": []
+        },
+        {
+            "id": 80,
+            "code": "L2.1",
+            "name": "Gulf Migration",
+            "category": "education",
+            "sector": "education",
+            "phase": 2,
+            "status": "built",
+            "owner_desk": "education-desk",
+            "external_systems": [
+                "education-system"
+            ],
+            "mechanism": "flat_fee",
+            "full_maturity_kes": 36000000,
+            "take_rate": "flat_fee",
+            "dependencies": []
+        },
+        {
+            "id": 81,
+            "code": "L2.2",
+            "name": "Eu Migration",
+            "category": "education",
+            "sector": "education",
+            "phase": 2,
+            "status": "built",
+            "owner_desk": "education-desk",
+            "external_systems": [
+                "education-system"
+            ],
+            "mechanism": "flat_fee",
+            "full_maturity_kes": 36000000,
+            "take_rate": "flat_fee",
+            "dependencies": []
+        },
+        {
+            "id": 82,
+            "code": "L2.3",
+            "name": "Domestic Placement",
+            "category": "education",
+            "sector": "education",
+            "phase": 2,
+            "status": "built",
+            "owner_desk": "education-desk",
+            "external_systems": [
+                "education-system"
+            ],
+            "mechanism": "flat_fee",
+            "full_maturity_kes": 36000000,
+            "take_rate": "flat_fee",
+            "dependencies": []
+        },
+        {
+            "id": 83,
+            "code": "L3.1",
+            "name": "School Fees",
+            "category": "education",
+            "sector": "education",
+            "phase": 1,
+            "status": "built",
+            "owner_desk": "education-desk",
+            "external_systems": [
+                "education-system"
+            ],
+            "mechanism": "commission",
+            "full_maturity_kes": 36000000,
+            "take_rate": "commission",
+            "dependencies": []
+        },
+        {
+            "id": 84,
+            "code": "L3.2",
+            "name": "Edu Supplies",
+            "category": "education",
+            "sector": "education",
+            "phase": 1,
+            "status": "built",
+            "owner_desk": "education-desk",
+            "external_systems": [
+                "education-system"
+            ],
+            "mechanism": "commission",
+            "full_maturity_kes": 36000000,
+            "take_rate": "rate_note",
+            "dependencies": []
+        },
+        {
+            "id": 85,
+            "code": "L3.3",
+            "name": "Transport Fees",
+            "category": "education",
+            "sector": "education",
+            "phase": 1,
+            "status": "built",
+            "owner_desk": "education-desk",
+            "external_systems": [
+                "education-system"
+            ],
+            "mechanism": "commission",
+            "full_maturity_kes": 36000000,
+            "take_rate": "commission",
+            "dependencies": []
+        },
+        {
+            "id": 86,
+            "code": "L4.1",
+            "name": "Internships",
+            "category": "education",
+            "sector": "education",
+            "phase": 1,
+            "status": "built",
+            "owner_desk": "education-desk",
+            "external_systems": [
+                "education-system"
+            ],
+            "mechanism": "flat_fee",
+            "full_maturity_kes": 36000000,
+            "take_rate": "flat_fee",
+            "dependencies": []
+        },
+        {
+            "id": 87,
+            "code": "L4.2",
+            "name": "Industrial Attachment",
+            "category": "education",
+            "sector": "education",
+            "phase": 1,
+            "status": "built",
+            "owner_desk": "education-desk",
+            "external_systems": [
+                "education-system"
+            ],
+            "mechanism": "flat_fee",
+            "full_maturity_kes": 36000000,
+            "take_rate": "flat_fee",
+            "dependencies": []
+        },
+        {
+            "id": 88,
+            "code": "L4.3",
+            "name": "Ip Licensing",
+            "category": "education",
+            "sector": "education",
+            "phase": 1,
+            "status": "built",
+            "owner_desk": "education-desk",
+            "external_systems": [
+                "education-system"
+            ],
+            "mechanism": "flat_fee",
+            "full_maturity_kes": 36000000,
+            "take_rate": "flat_fee",
+            "dependencies": []
+        },
+        {
+            "id": 89,
+            "code": "L5.1",
+            "name": "Workshop Equipment",
+            "category": "education",
+            "sector": "education",
+            "phase": 1,
+            "status": "built",
+            "owner_desk": "education-desk",
+            "external_systems": [
+                "education-system"
+            ],
+            "mechanism": "commission",
+            "full_maturity_kes": 36000000,
+            "take_rate": "commission",
+            "dependencies": []
+        },
+        {
+            "id": 90,
+            "code": "L5.2",
+            "name": "Consumables",
+            "category": "education",
+            "sector": "education",
+            "phase": 1,
+            "status": "built",
+            "owner_desk": "education-desk",
+            "external_systems": [
+                "education-system"
+            ],
+            "mechanism": "commission",
+            "full_maturity_kes": 36000000,
+            "take_rate": "commission",
+            "dependencies": []
+        },
+        {
+            "id": 91,
+            "code": "L5.3",
+            "name": "Ict Labs",
+            "category": "education",
+            "sector": "education",
+            "phase": 1,
+            "status": "built",
+            "owner_desk": "education-desk",
+            "external_systems": [
+                "education-system"
+            ],
+            "mechanism": "commission",
+            "full_maturity_kes": 36000000,
+            "take_rate": "commission",
+            "dependencies": []
+        },
+        {
+            "id": 92,
+            "code": "M1.1",
+            "name": "Solar Kits",
+            "category": "energy",
+            "sector": "energy",
+            "phase": 2,
+            "status": "built",
+            "owner_desk": "energy-desk",
+            "external_systems": [
+                "energy-system"
+            ],
+            "mechanism": "commission",
+            "full_maturity_kes": 36000000,
+            "take_rate": "commission",
+            "dependencies": []
+        },
+        {
+            "id": 93,
+            "code": "M1.2",
+            "name": "Payg Solar",
+            "category": "energy",
+            "sector": "energy",
+            "phase": 2,
+            "status": "built",
+            "owner_desk": "energy-desk",
+            "external_systems": [
+                "energy-system"
+            ],
+            "mechanism": "commission",
+            "full_maturity_kes": 36000000,
+            "take_rate": "commission",
+            "dependencies": []
+        },
+        {
+            "id": 94,
+            "code": "M1.3",
+            "name": "Clean Cooking",
+            "category": "energy",
+            "sector": "energy",
+            "phase": 2,
+            "status": "built",
+            "owner_desk": "energy-desk",
+            "external_systems": [
+                "energy-system"
+            ],
+            "mechanism": "commission",
+            "full_maturity_kes": 36000000,
+            "take_rate": "commission",
+            "dependencies": []
+        },
+        {
+            "id": 95,
+            "code": "M1.4",
+            "name": "Installer Network",
+            "category": "energy",
+            "sector": "energy",
+            "phase": 2,
+            "status": "built",
+            "owner_desk": "energy-desk",
+            "external_systems": [
+                "energy-system"
+            ],
+            "mechanism": "flat_fee",
+            "full_maturity_kes": 36000000,
+            "take_rate": "flat_fee",
+            "dependencies": []
+        },
+        {
+            "id": 96,
+            "code": "M2.1",
+            "name": "Cookstove Credits",
+            "category": "energy",
+            "sector": "energy",
+            "phase": 2,
+            "status": "built",
+            "owner_desk": "energy-desk",
+            "external_systems": [
+                "energy-system"
+            ],
+            "mechanism": "commission",
+            "full_maturity_kes": 36000000,
+            "take_rate": "commission",
+            "dependencies": []
+        },
+        {
+            "id": 97,
+            "code": "M2.2",
+            "name": "Forestry Credits",
+            "category": "energy",
+            "sector": "energy",
+            "phase": 2,
+            "status": "built",
+            "owner_desk": "energy-desk",
+            "external_systems": [
+                "energy-system"
+            ],
+            "mechanism": "commission",
+            "full_maturity_kes": 36000000,
+            "take_rate": "commission",
+            "dependencies": []
+        },
+        {
+            "id": 98,
+            "code": "M2.3",
+            "name": "Verification Brokerage",
+            "category": "energy",
+            "sector": "energy",
+            "phase": 2,
+            "status": "built",
+            "owner_desk": "energy-desk",
+            "external_systems": [
+                "energy-system"
+            ],
+            "mechanism": "flat_fee",
+            "full_maturity_kes": 36000000,
+            "take_rate": "flat_fee",
+            "dependencies": []
+        },
+        {
+            "id": 99,
+            "code": "M3.1",
+            "name": "Boreholes",
+            "category": "energy",
+            "sector": "energy",
+            "phase": 2,
+            "status": "built",
+            "owner_desk": "energy-desk",
+            "external_systems": [
+                "energy-system"
+            ],
+            "mechanism": "commission",
+            "full_maturity_kes": 36000000,
+            "take_rate": "commission",
+            "dependencies": []
+        },
+        {
+            "id": 100,
+            "code": "M3.2",
+            "name": "Water Kiosks",
+            "category": "energy",
+            "sector": "energy",
+            "phase": 2,
+            "status": "built",
+            "owner_desk": "energy-desk",
+            "external_systems": [
+                "energy-system"
+            ],
+            "mechanism": "commission",
+            "full_maturity_kes": 36000000,
+            "take_rate": "commission",
+            "dependencies": []
+        },
+        {
+            "id": 101,
+            "code": "M3.3",
+            "name": "Irrigation Schemes",
+            "category": "energy",
+            "sector": "energy",
+            "phase": 2,
+            "status": "built",
+            "owner_desk": "energy-desk",
+            "external_systems": [
+                "energy-system"
+            ],
+            "mechanism": "commission",
+            "full_maturity_kes": 36000000,
+            "take_rate": "commission",
+            "dependencies": []
+        },
+        {
+            "id": 102,
+            "code": "M4.1",
+            "name": "Plastics Recycling",
+            "category": "energy",
+            "sector": "energy",
+            "phase": 1,
+            "status": "built",
+            "owner_desk": "energy-desk",
+            "external_systems": [
+                "energy-system"
+            ],
+            "mechanism": "flat_fee",
+            "full_maturity_kes": 36000000,
+            "take_rate": "flat_fee",
+            "dependencies": []
+        },
+        {
+            "id": 103,
+            "code": "M4.2",
+            "name": "E Waste",
+            "category": "energy",
+            "sector": "energy",
+            "phase": 1,
+            "status": "built",
+            "owner_desk": "energy-desk",
+            "external_systems": [
+                "energy-system"
+            ],
+            "mechanism": "flat_fee",
+            "full_maturity_kes": 36000000,
+            "take_rate": "flat_fee",
+            "dependencies": []
+        },
+        {
+            "id": 104,
+            "code": "M4.3",
+            "name": "Organic Compost",
+            "category": "energy",
+            "sector": "energy",
+            "phase": 1,
+            "status": "built",
+            "owner_desk": "energy-desk",
+            "external_systems": [
+                "energy-system"
+            ],
+            "mechanism": "flat_fee",
+            "full_maturity_kes": 36000000,
+            "take_rate": "flat_fee",
+            "dependencies": []
+        },
+        {
+            "id": 105,
+            "code": "F1.1",
+            "name": "Sme Lending",
+            "category": "financing",
+            "sector": "financing",
+            "phase": 3,
+            "status": "built",
+            "owner_desk": "financing-desk",
+            "external_systems": [
+                "financing-system"
+            ],
+            "mechanism": "commission",
+            "full_maturity_kes": 36000000,
+            "take_rate": "rate_note",
+            "dependencies": []
+        },
+        {
+            "id": 106,
+            "code": "F1.2",
+            "name": "Trade Treasury",
+            "category": "financing",
+            "sector": "financing",
+            "phase": 3,
+            "status": "built",
+            "owner_desk": "financing-desk",
+            "external_systems": [
+                "financing-system"
+            ],
+            "mechanism": "commission",
+            "full_maturity_kes": 36000000,
+            "take_rate": "rate_note",
+            "dependencies": []
+        },
+        {
+            "id": 107,
+            "code": "F1.3",
+            "name": "Float Yield",
+            "category": "financing",
+            "sector": "financing",
+            "phase": 3,
+            "status": "built",
+            "owner_desk": "financing-desk",
+            "external_systems": [
+                "financing-system"
+            ],
+            "mechanism": "commission",
+            "full_maturity_kes": 36000000,
+            "take_rate": "rate_note",
+            "dependencies": []
+        },
+        {
+            "id": 108,
+            "code": "F2.1",
+            "name": "Po Financing",
+            "category": "financing",
+            "sector": "financing",
+            "phase": 3,
+            "status": "built",
+            "owner_desk": "financing-desk",
+            "external_systems": [
+                "financing-system"
+            ],
+            "mechanism": "commission",
+            "full_maturity_kes": 36000000,
+            "take_rate": "rate_note",
+            "dependencies": []
+        },
+        {
+            "id": 109,
+            "code": "F2.2",
+            "name": "Invoice Discounting",
+            "category": "financing",
+            "sector": "financing",
+            "phase": 3,
+            "status": "built",
+            "owner_desk": "financing-desk",
+            "external_systems": [
+                "financing-system"
+            ],
+            "mechanism": "commission",
+            "full_maturity_kes": 36000000,
+            "take_rate": "rate_note",
+            "dependencies": []
+        },
+        {
+            "id": 110,
+            "code": "F3.1",
+            "name": "Input Advance",
+            "category": "financing",
+            "sector": "financing",
+            "phase": 3,
+            "status": "built",
+            "owner_desk": "financing-desk",
+            "external_systems": [
+                "financing-system"
+            ],
+            "mechanism": "commission",
+            "full_maturity_kes": 36000000,
+            "take_rate": "rate_note",
+            "dependencies": []
+        },
+        {
+            "id": 111,
+            "code": "F3.2",
+            "name": "Harvest Repay",
+            "category": "financing",
+            "sector": "financing",
+            "phase": 3,
+            "status": "built",
+            "owner_desk": "financing-desk",
+            "external_systems": [
+                "financing-system"
+            ],
+            "mechanism": "commission",
+            "full_maturity_kes": 36000000,
+            "take_rate": "rate_note",
+            "dependencies": []
+        },
+        {
+            "id": 112,
+            "code": "F4.1",
+            "name": "Embedded Insurance",
+            "category": "financing",
+            "sector": "financing",
+            "phase": 2,
+            "status": "built",
+            "owner_desk": "financing-desk",
+            "external_systems": [
+                "financing-system"
+            ],
+            "mechanism": "commission",
+            "full_maturity_kes": 36000000,
+            "take_rate": "commission",
+            "dependencies": []
+        },
+        {
+            "id": 113,
+            "code": "F4.2",
+            "name": "Kyb Api",
+            "category": "financing",
+            "sector": "financing",
+            "phase": 2,
+            "status": "built",
+            "owner_desk": "financing-desk",
+            "external_systems": [
+                "financing-system"
+            ],
+            "mechanism": "flat_fee",
+            "full_maturity_kes": 36000000,
+            "take_rate": "flat_fee",
+            "dependencies": []
+        },
+        {
+            "id": 114,
+            "code": "F4.3",
+            "name": "Device Insurance",
+            "category": "financing",
+            "sector": "financing",
+            "phase": 2,
+            "status": "built",
+            "owner_desk": "financing-desk",
+            "external_systems": [
+                "financing-system"
+            ],
+            "mechanism": "commission",
+            "full_maturity_kes": 36000000,
+            "take_rate": "commission",
+            "dependencies": []
+        },
+        {
+            "id": 115,
+            "code": "F5.1",
+            "name": "Escrow Float",
+            "category": "financing",
+            "sector": "financing",
+            "phase": 3,
+            "status": "built",
+            "owner_desk": "financing-desk",
+            "external_systems": [
+                "financing-system"
+            ],
+            "mechanism": "commission",
+            "full_maturity_kes": 36000000,
+            "take_rate": "rate_note",
+            "dependencies": []
+        },
+        {
+            "id": 116,
+            "code": "F5.2",
+            "name": "Treasury Parking",
+            "category": "financing",
+            "sector": "financing",
+            "phase": 3,
+            "status": "built",
+            "owner_desk": "financing-desk",
+            "external_systems": [
+                "financing-system"
+            ],
+            "mechanism": "commission",
+            "full_maturity_kes": 36000000,
+            "take_rate": "rate_note",
+            "dependencies": []
+        },
+        {
+            "id": 117,
+            "code": "G1.1",
+            "name": "Business Permits",
+            "category": "government",
+            "sector": "government",
+            "phase": 1,
+            "status": "built",
+            "owner_desk": "gov-desk",
+            "external_systems": [
+                "government-system"
+            ],
+            "mechanism": "commission",
+            "full_maturity_kes": 36000000,
+            "take_rate": "commission",
+            "dependencies": []
+        },
+        {
+            "id": 118,
+            "code": "G1.2",
+            "name": "Parking Fees",
+            "category": "government",
+            "sector": "government",
+            "phase": 1,
+            "status": "built",
+            "owner_desk": "gov-desk",
+            "external_systems": [
+                "government-system"
+            ],
+            "mechanism": "commission",
+            "full_maturity_kes": 36000000,
+            "take_rate": "commission",
+            "dependencies": []
+        },
+        {
+            "id": 119,
+            "code": "G1.3",
+            "name": "Market Fees",
+            "category": "government",
+            "sector": "government",
+            "phase": 1,
+            "status": "built",
+            "owner_desk": "gov-desk",
+            "external_systems": [
+                "government-system"
+            ],
+            "mechanism": "commission",
+            "full_maturity_kes": 36000000,
+            "take_rate": "commission",
+            "dependencies": []
+        },
+        {
+            "id": 120,
+            "code": "G1.4",
+            "name": "Land Rates",
+            "category": "government",
+            "sector": "government",
+            "phase": 1,
+            "status": "built",
+            "owner_desk": "gov-desk",
+            "external_systems": [
+                "government-system"
+            ],
+            "mechanism": "commission",
+            "full_maturity_kes": 36000000,
+            "take_rate": "commission",
+            "dependencies": []
+        },
+        {
+            "id": 121,
+            "code": "G2.1",
+            "name": "County Tenders",
+            "category": "government",
+            "sector": "government",
+            "phase": 3,
+            "status": "built",
+            "owner_desk": "gov-desk",
+            "external_systems": [
+                "government-system"
+            ],
+            "mechanism": "commission",
+            "full_maturity_kes": 36000000,
+            "take_rate": "commission",
+            "dependencies": []
+        },
+        {
+            "id": 122,
+            "code": "G2.2",
+            "name": "County Supplies",
+            "category": "government",
+            "sector": "government",
+            "phase": 3,
+            "status": "built",
+            "owner_desk": "gov-desk",
+            "external_systems": [
+                "government-system"
+            ],
+            "mechanism": "commission",
+            "full_maturity_kes": 36000000,
+            "take_rate": "commission",
+            "dependencies": []
+        },
+        {
+            "id": 123,
+            "code": "H1.1",
+            "name": "National Tenders",
+            "category": "government",
+            "sector": "government",
+            "phase": 3,
+            "status": "built",
+            "owner_desk": "gov-desk",
+            "external_systems": [
+                "government-system"
+            ],
+            "mechanism": "commission",
+            "full_maturity_kes": 36000000,
+            "take_rate": "commission",
+            "dependencies": []
+        },
+        {
+            "id": 124,
+            "code": "H1.2",
+            "name": "Ministry Supply",
+            "category": "government",
+            "sector": "government",
+            "phase": 3,
+            "status": "built",
+            "owner_desk": "gov-desk",
+            "external_systems": [
+                "government-system"
+            ],
+            "mechanism": "commission",
+            "full_maturity_kes": 36000000,
+            "take_rate": "commission",
+            "dependencies": []
+        },
+        {
+            "id": 125,
+            "code": "G3.1",
+            "name": "Ecitizen Services",
+            "category": "government",
+            "sector": "government",
+            "phase": 2,
+            "status": "built",
+            "owner_desk": "gov-desk",
+            "external_systems": [
+                "government-system"
+            ],
+            "mechanism": "commission",
+            "full_maturity_kes": 36000000,
+            "take_rate": "rate_note",
+            "dependencies": []
+        },
+        {
+            "id": 126,
+            "code": "G3.2",
+            "name": "County Eservices",
+            "category": "government",
+            "sector": "government",
+            "phase": 2,
+            "status": "built",
+            "owner_desk": "gov-desk",
+            "external_systems": [
+                "government-system"
+            ],
+            "mechanism": "commission",
+            "full_maturity_kes": 36000000,
+            "take_rate": "rate_note",
+            "dependencies": []
+        },
+        {
+            "id": 127,
+            "code": "G3.3",
+            "name": "Licensing",
+            "category": "government",
+            "sector": "government",
+            "phase": 2,
+            "status": "built",
+            "owner_desk": "gov-desk",
+            "external_systems": [
+                "government-system"
+            ],
+            "mechanism": "commission",
+            "full_maturity_kes": 36000000,
+            "take_rate": "rate_note",
+            "dependencies": []
+        },
+        {
+            "id": 128,
+            "code": "G4.1",
+            "name": "Market Reports",
+            "category": "government",
+            "sector": "government",
+            "phase": 1,
+            "status": "built",
+            "owner_desk": "gov-desk",
+            "external_systems": [
+                "government-system"
+            ],
+            "mechanism": "commission",
+            "full_maturity_kes": 36000000,
+            "take_rate": "rate_note",
+            "dependencies": []
+        },
+        {
+            "id": 129,
+            "code": "G4.2",
+            "name": "Price Indices",
+            "category": "government",
+            "sector": "government",
+            "phase": 1,
+            "status": "built",
+            "owner_desk": "gov-desk",
+            "external_systems": [
+                "government-system"
+            ],
+            "mechanism": "commission",
+            "full_maturity_kes": 36000000,
+            "take_rate": "rate_note",
+            "dependencies": []
+        },
+        {
+            "id": 130,
+            "code": "G4.3",
+            "name": "Api Access",
+            "category": "government",
+            "sector": "government",
+            "phase": 1,
+            "status": "built",
+            "owner_desk": "gov-desk",
+            "external_systems": [
+                "government-system"
+            ],
+            "mechanism": "commission",
+            "full_maturity_kes": 36000000,
+            "take_rate": "rate_note",
+            "dependencies": []
+        },
+        {
+            "id": 131,
+            "code": "K1.1",
+            "name": "Medical Consumables",
+            "category": "health",
+            "sector": "health",
+            "phase": 2,
+            "status": "built",
+            "owner_desk": "health-desk",
+            "external_systems": [
+                "health-system"
+            ],
+            "mechanism": "commission",
+            "full_maturity_kes": 36000000,
+            "take_rate": "commission",
+            "dependencies": []
+        },
+        {
+            "id": 132,
+            "code": "K1.2",
+            "name": "Pharma Supply",
+            "category": "health",
+            "sector": "health",
+            "phase": 2,
+            "status": "built",
+            "owner_desk": "health-desk",
+            "external_systems": [
+                "health-system"
+            ],
+            "mechanism": "commission",
+            "full_maturity_kes": 36000000,
+            "take_rate": "commission",
+            "dependencies": []
+        },
+        {
+            "id": 133,
+            "code": "K1.3",
+            "name": "Lab Equipment",
+            "category": "health",
+            "sector": "health",
+            "phase": 2,
+            "status": "built",
+            "owner_desk": "health-desk",
+            "external_systems": [
+                "health-system"
+            ],
+            "mechanism": "commission",
+            "full_maturity_kes": 36000000,
+            "take_rate": "commission",
+            "dependencies": []
+        },
+        {
+            "id": 134,
+            "code": "K2.1",
+            "name": "Clinic Saas",
+            "category": "health",
+            "sector": "health",
+            "phase": 2,
+            "status": "built",
+            "owner_desk": "health-desk",
+            "external_systems": [
+                "health-system"
+            ],
+            "mechanism": "flat_fee",
+            "full_maturity_kes": 36000000,
+            "take_rate": "flat_fee",
+            "dependencies": []
+        },
+        {
+            "id": 135,
+            "code": "K2.2",
+            "name": "Hospital His",
+            "category": "health",
+            "sector": "health",
+            "phase": 2,
+            "status": "built",
+            "owner_desk": "health-desk",
+            "external_systems": [
+                "health-system"
+            ],
+            "mechanism": "flat_fee",
+            "full_maturity_kes": 36000000,
+            "take_rate": "flat_fee",
+            "dependencies": []
+        },
+        {
+            "id": 136,
+            "code": "K2.3",
+            "name": "Pharmacy Pos",
+            "category": "health",
+            "sector": "health",
+            "phase": 2,
+            "status": "built",
+            "owner_desk": "health-desk",
+            "external_systems": [
+                "health-system"
+            ],
+            "mechanism": "flat_fee",
+            "full_maturity_kes": 36000000,
+            "take_rate": "flat_fee",
+            "dependencies": []
+        },
+        {
+            "id": 137,
+            "code": "K3.1",
+            "name": "Teleconsultation",
+            "category": "health",
+            "sector": "health",
+            "phase": 2,
+            "status": "built",
+            "owner_desk": "health-desk",
+            "external_systems": [
+                "health-system"
+            ],
+            "mechanism": "commission",
+            "full_maturity_kes": 36000000,
+            "take_rate": "rate_note",
+            "dependencies": []
+        },
+        {
+            "id": 138,
+            "code": "K3.2",
+            "name": "Health Data Analytics",
+            "category": "health",
+            "sector": "health",
+            "phase": 2,
+            "status": "built",
+            "owner_desk": "health-desk",
+            "external_systems": [
+                "health-system"
+            ],
+            "mechanism": "commission",
+            "full_maturity_kes": 36000000,
+            "take_rate": "rate_note",
+            "dependencies": []
+        },
+        {
+            "id": 139,
+            "code": "P1.1",
+            "name": "Kyb Checks",
+            "category": "identity",
+            "sector": "identity",
+            "phase": 1,
+            "status": "built",
+            "owner_desk": "identity-desk",
+            "external_systems": [
+                "identity-system"
+            ],
+            "mechanism": "flat_fee",
+            "full_maturity_kes": 36000000,
+            "take_rate": "flat_fee",
+            "dependencies": []
+        },
+        {
+            "id": 140,
+            "code": "P1.2",
+            "name": "Kyc Individual",
+            "category": "identity",
+            "sector": "identity",
+            "phase": 1,
+            "status": "built",
+            "owner_desk": "identity-desk",
+            "external_systems": [
+                "identity-system"
+            ],
+            "mechanism": "flat_fee",
+            "full_maturity_kes": 36000000,
+            "take_rate": "flat_fee",
+            "dependencies": []
+        },
+        {
+            "id": 141,
+            "code": "P1.3",
+            "name": "Api Partners",
+            "category": "identity",
+            "sector": "identity",
+            "phase": 1,
+            "status": "built",
+            "owner_desk": "identity-desk",
+            "external_systems": [
+                "identity-system"
+            ],
+            "mechanism": "flat_fee",
+            "full_maturity_kes": 36000000,
+            "take_rate": "flat_fee",
+            "dependencies": []
+        },
+        {
+            "id": 142,
+            "code": "D1.1",
+            "name": "Sez Investors",
+            "category": "investment",
+            "sector": "investment",
+            "phase": 2,
+            "status": "built",
+            "owner_desk": "investment-desk",
+            "external_systems": [
+                "investment-system"
+            ],
+            "mechanism": "commission",
+            "full_maturity_kes": 36000000,
+            "take_rate": "commission",
+            "dependencies": []
+        },
+        {
+            "id": 143,
+            "code": "D1.2",
+            "name": "Industrial Parks",
+            "category": "investment",
+            "sector": "investment",
+            "phase": 2,
+            "status": "built",
+            "owner_desk": "investment-desk",
+            "external_systems": [
+                "investment-system"
+            ],
+            "mechanism": "commission",
+            "full_maturity_kes": 36000000,
+            "take_rate": "commission",
+            "dependencies": []
+        },
+        {
+            "id": 144,
+            "code": "D1.3",
+            "name": "Export Processing",
+            "category": "investment",
+            "sector": "investment",
+            "phase": 2,
+            "status": "built",
+            "owner_desk": "investment-desk",
+            "external_systems": [
+                "investment-system"
+            ],
+            "mechanism": "commission",
+            "full_maturity_kes": 36000000,
+            "take_rate": "commission",
+            "dependencies": []
+        },
+        {
+            "id": 145,
+            "code": "D2.1",
+            "name": "Skilled Trades",
+            "category": "investment",
+            "sector": "investment",
+            "phase": 2,
+            "status": "built",
+            "owner_desk": "investment-desk",
+            "external_systems": [
+                "investment-system"
+            ],
+            "mechanism": "flat_fee",
+            "full_maturity_kes": 36000000,
+            "take_rate": "flat_fee",
+            "dependencies": []
+        },
+        {
+            "id": 146,
+            "code": "D2.2",
+            "name": "Engineers",
+            "category": "investment",
+            "sector": "investment",
+            "phase": 2,
+            "status": "built",
+            "owner_desk": "investment-desk",
+            "external_systems": [
+                "investment-system"
+            ],
+            "mechanism": "flat_fee",
+            "full_maturity_kes": 36000000,
+            "take_rate": "flat_fee",
+            "dependencies": []
+        },
+        {
+            "id": 147,
+            "code": "D2.3",
+            "name": "Line Operators",
+            "category": "investment",
+            "sector": "investment",
+            "phase": 2,
+            "status": "built",
+            "owner_desk": "investment-desk",
+            "external_systems": [
+                "investment-system"
+            ],
+            "mechanism": "flat_fee",
+            "full_maturity_kes": 36000000,
+            "take_rate": "flat_fee",
+            "dependencies": []
+        },
+        {
+            "id": 148,
+            "code": "D3.1",
+            "name": "Residential Sales",
+            "category": "investment",
+            "sector": "investment",
+            "phase": 2,
+            "status": "built",
+            "owner_desk": "investment-desk",
+            "external_systems": [
+                "investment-system"
+            ],
+            "mechanism": "commission",
+            "full_maturity_kes": 36000000,
+            "take_rate": "commission",
+            "dependencies": []
+        },
+        {
+            "id": 149,
+            "code": "D3.2",
+            "name": "Commercial Lease",
+            "category": "investment",
+            "sector": "investment",
+            "phase": 2,
+            "status": "built",
+            "owner_desk": "investment-desk",
+            "external_systems": [
+                "investment-system"
+            ],
+            "mechanism": "commission",
+            "full_maturity_kes": 36000000,
+            "take_rate": "commission",
+            "dependencies": []
+        },
+        {
+            "id": 150,
+            "code": "D3.3",
+            "name": "Land Plots",
+            "category": "investment",
+            "sector": "investment",
+            "phase": 2,
+            "status": "built",
+            "owner_desk": "investment-desk",
+            "external_systems": [
+                "investment-system"
+            ],
+            "mechanism": "commission",
+            "full_maturity_kes": 36000000,
+            "take_rate": "commission",
+            "dependencies": []
+        },
+        {
+            "id": 151,
+            "code": "D4.1",
+            "name": "Realestate Diaspora",
+            "category": "investment",
+            "sector": "investment",
+            "phase": 2,
+            "status": "built",
+            "owner_desk": "investment-desk",
+            "external_systems": [
+                "investment-system"
+            ],
+            "mechanism": "commission",
+            "full_maturity_kes": 36000000,
+            "take_rate": "rate_note",
+            "dependencies": []
+        },
+        {
+            "id": 152,
+            "code": "D4.2",
+            "name": "Sez Diaspora",
+            "category": "investment",
+            "sector": "investment",
+            "phase": 2,
+            "status": "built",
+            "owner_desk": "investment-desk",
+            "external_systems": [
+                "investment-system"
+            ],
+            "mechanism": "commission",
+            "full_maturity_kes": 36000000,
+            "take_rate": "rate_note",
+            "dependencies": []
+        },
+        {
+            "id": 153,
+            "code": "D4.3",
+            "name": "Smebusiness Diaspora",
+            "category": "investment",
+            "sector": "investment",
+            "phase": 2,
+            "status": "built",
+            "owner_desk": "investment-desk",
+            "external_systems": [
+                "investment-system"
+            ],
+            "mechanism": "commission",
+            "full_maturity_kes": 36000000,
+            "take_rate": "rate_note",
+            "dependencies": []
+        },
+        {
+            "id": 154,
+            "code": "D5.1",
+            "name": "Gemstones",
+            "category": "investment",
+            "sector": "investment",
+            "phase": 2,
+            "status": "built",
+            "owner_desk": "investment-desk",
+            "external_systems": [
+                "investment-system"
+            ],
+            "mechanism": "commission",
+            "full_maturity_kes": 36000000,
+            "take_rate": "commission",
+            "dependencies": []
+        },
+        {
+            "id": 155,
+            "code": "D5.2",
+            "name": "Industrial Minerals",
+            "category": "investment",
+            "sector": "investment",
+            "phase": 2,
+            "status": "built",
+            "owner_desk": "investment-desk",
+            "external_systems": [
+                "investment-system"
+            ],
+            "mechanism": "commission",
+            "full_maturity_kes": 36000000,
+            "take_rate": "commission",
+            "dependencies": []
+        },
+        {
+            "id": 156,
+            "code": "D5.3",
+            "name": "Royalty Facilitation",
+            "category": "investment",
+            "sector": "investment",
+            "phase": 2,
+            "status": "built",
+            "owner_desk": "investment-desk",
+            "external_systems": [
+                "investment-system"
+            ],
+            "mechanism": "flat_fee",
+            "full_maturity_kes": 36000000,
+            "take_rate": "flat_fee",
+            "dependencies": []
+        },
+        {
+            "id": 157,
+            "code": "N1.1",
+            "name": "Matatu Sacco",
+            "category": "mobility",
+            "sector": "mobility",
+            "phase": 2,
+            "status": "built",
+            "owner_desk": "mobility-desk",
+            "external_systems": [
+                "mobility-system"
+            ],
+            "mechanism": "commission",
+            "full_maturity_kes": 36000000,
+            "take_rate": "commission",
+            "dependencies": []
+        },
+        {
+            "id": 158,
+            "code": "N1.2",
+            "name": "Boda Sacco",
+            "category": "mobility",
+            "sector": "mobility",
+            "phase": 2,
+            "status": "built",
+            "owner_desk": "mobility-desk",
+            "external_systems": [
+                "mobility-system"
+            ],
+            "mechanism": "commission",
+            "full_maturity_kes": 36000000,
+            "take_rate": "commission",
+            "dependencies": []
+        },
+        {
+            "id": 159,
+            "code": "N1.3",
+            "name": "Insurance Parts",
+            "category": "mobility",
+            "sector": "mobility",
+            "phase": 2,
+            "status": "built",
+            "owner_desk": "mobility-desk",
+            "external_systems": [
+                "mobility-system"
+            ],
+            "mechanism": "flat_fee",
+            "full_maturity_kes": 36000000,
+            "take_rate": "flat_fee",
+            "dependencies": []
+        },
+        {
+            "id": 160,
+            "code": "N2.1",
+            "name": "Long Haul",
+            "category": "mobility",
+            "sector": "mobility",
+            "phase": 1,
+            "status": "built",
+            "owner_desk": "mobility-desk",
+            "external_systems": [
+                "mobility-system"
+            ],
+            "mechanism": "commission",
+            "full_maturity_kes": 36000000,
+            "take_rate": "commission",
+            "dependencies": []
+        },
+        {
+            "id": 161,
+            "code": "N2.2",
+            "name": "Last Mile",
+            "category": "mobility",
+            "sector": "mobility",
+            "phase": 1,
+            "status": "built",
+            "owner_desk": "mobility-desk",
+            "external_systems": [
+                "mobility-system"
+            ],
+            "mechanism": "commission",
+            "full_maturity_kes": 36000000,
+            "take_rate": "commission",
+            "dependencies": []
+        },
+        {
+            "id": 162,
+            "code": "N2.3",
+            "name": "Cold Chain",
+            "category": "mobility",
+            "sector": "mobility",
+            "phase": 1,
+            "status": "built",
+            "owner_desk": "mobility-desk",
+            "external_systems": [
+                "mobility-system"
+            ],
+            "mechanism": "commission",
+            "full_maturity_kes": 36000000,
+            "take_rate": "commission",
+            "dependencies": []
+        },
+        {
+            "id": 163,
+            "code": "N3.1",
+            "name": "Fleet Fuel",
+            "category": "mobility",
+            "sector": "mobility",
+            "phase": 2,
+            "status": "built",
+            "owner_desk": "mobility-desk",
+            "external_systems": [
+                "mobility-system"
+            ],
+            "mechanism": "commission",
+            "full_maturity_kes": 36000000,
+            "take_rate": "commission",
+            "dependencies": []
+        },
+        {
+            "id": 164,
+            "code": "N3.2",
+            "name": "Lubricants",
+            "category": "mobility",
+            "sector": "mobility",
+            "phase": 2,
+            "status": "built",
+            "owner_desk": "mobility-desk",
+            "external_systems": [
+                "mobility-system"
+            ],
+            "mechanism": "commission",
+            "full_maturity_kes": 36000000,
+            "take_rate": "commission",
+            "dependencies": []
+        },
+        {
+            "id": 165,
+            "code": "N3.3",
+            "name": "Tyres Parts",
+            "category": "mobility",
+            "sector": "mobility",
+            "phase": 2,
+            "status": "built",
+            "owner_desk": "mobility-desk",
+            "external_systems": [
+                "mobility-system"
+            ],
+            "mechanism": "commission",
+            "full_maturity_kes": 36000000,
+            "take_rate": "commission",
+            "dependencies": []
+        },
+        {
+            "id": 166,
+            "code": "C1.1",
+            "name": "Attractions",
+            "category": "tourism",
+            "sector": "tourism",
+            "phase": 1,
+            "status": "built",
+            "owner_desk": "tourism-desk",
+            "external_systems": [
+                "tourism-system"
+            ],
+            "mechanism": "commission",
+            "full_maturity_kes": 36000000,
+            "take_rate": "commission",
+            "dependencies": []
+        },
+        {
+            "id": 167,
+            "code": "C1.2",
+            "name": "Activities",
+            "category": "tourism",
+            "sector": "tourism",
+            "phase": 1,
+            "status": "built",
+            "owner_desk": "tourism-desk",
+            "external_systems": [
+                "tourism-system"
+            ],
+            "mechanism": "commission",
+            "full_maturity_kes": 36000000,
+            "take_rate": "commission",
+            "dependencies": []
+        },
+        {
+            "id": 168,
+            "code": "C1.3",
+            "name": "Day Tours",
+            "category": "tourism",
+            "sector": "tourism",
+            "phase": 1,
+            "status": "built",
+            "owner_desk": "tourism-desk",
+            "external_systems": [
+                "tourism-system"
+            ],
+            "mechanism": "commission",
+            "full_maturity_kes": 36000000,
+            "take_rate": "commission",
+            "dependencies": []
+        },
+        {
+            "id": 169,
+            "code": "C2.1",
+            "name": "Leisure Travel",
+            "category": "tourism",
+            "sector": "tourism",
+            "phase": 1,
+            "status": "built",
+            "owner_desk": "tourism-desk",
+            "external_systems": [
+                "tourism-system"
+            ],
+            "mechanism": "flat_fee",
+            "full_maturity_kes": 36000000,
+            "take_rate": "flat_fee",
+            "dependencies": []
+        },
+        {
+            "id": 170,
+            "code": "C2.2",
+            "name": "Business Travel",
+            "category": "tourism",
+            "sector": "tourism",
+            "phase": 1,
+            "status": "built",
+            "owner_desk": "tourism-desk",
+            "external_systems": [
+                "tourism-system"
+            ],
+            "mechanism": "flat_fee",
+            "full_maturity_kes": 36000000,
+            "take_rate": "flat_fee",
+            "dependencies": []
+        },
+        {
+            "id": 171,
+            "code": "C2.3",
+            "name": "Mice Travel",
+            "category": "tourism",
+            "sector": "tourism",
+            "phase": 1,
+            "status": "built",
+            "owner_desk": "tourism-desk",
+            "external_systems": [
+                "tourism-system"
+            ],
+            "mechanism": "flat_fee",
+            "full_maturity_kes": 36000000,
+            "take_rate": "flat_fee",
+            "dependencies": []
+        },
+        {
+            "id": 172,
+            "code": "C3.1",
+            "name": "Safari Packages",
+            "category": "tourism",
+            "sector": "tourism",
+            "phase": 2,
+            "status": "built",
+            "owner_desk": "tourism-desk",
+            "external_systems": [
+                "tourism-system"
+            ],
+            "mechanism": "commission",
+            "full_maturity_kes": 36000000,
+            "take_rate": "commission",
+            "dependencies": []
+        },
+        {
+            "id": 173,
+            "code": "C3.2",
+            "name": "Beach Packages",
+            "category": "tourism",
+            "sector": "tourism",
+            "phase": 2,
+            "status": "built",
+            "owner_desk": "tourism-desk",
+            "external_systems": [
+                "tourism-system"
+            ],
+            "mechanism": "commission",
+            "full_maturity_kes": 36000000,
+            "take_rate": "commission",
+            "dependencies": []
+        },
+        {
+            "id": 174,
+            "code": "C3.3",
+            "name": "Flight Hotel Bundles",
+            "category": "tourism",
+            "sector": "tourism",
+            "phase": 2,
+            "status": "built",
+            "owner_desk": "tourism-desk",
+            "external_systems": [
+                "tourism-system"
+            ],
+            "mechanism": "commission",
+            "full_maturity_kes": 36000000,
+            "take_rate": "commission",
+            "dependencies": []
+        },
+        {
+            "id": 175,
+            "code": "C4.1",
+            "name": "Homestays",
+            "category": "tourism",
+            "sector": "tourism",
+            "phase": 1,
+            "status": "built",
+            "owner_desk": "tourism-desk",
+            "external_systems": [
+                "tourism-system"
+            ],
+            "mechanism": "commission",
+            "full_maturity_kes": 36000000,
+            "take_rate": "commission",
+            "dependencies": []
+        },
+        {
+            "id": 176,
+            "code": "C4.2",
+            "name": "Community Lodges",
+            "category": "tourism",
+            "sector": "tourism",
+            "phase": 1,
+            "status": "built",
+            "owner_desk": "tourism-desk",
+            "external_systems": [
+                "tourism-system"
+            ],
+            "mechanism": "commission",
+            "full_maturity_kes": 36000000,
+            "take_rate": "commission",
+            "dependencies": []
+        },
+        {
+            "id": 177,
+            "code": "C4.3",
+            "name": "Cultural Experiences",
+            "category": "tourism",
+            "sector": "tourism",
+            "phase": 1,
+            "status": "built",
+            "owner_desk": "tourism-desk",
+            "external_systems": [
+                "tourism-system"
+            ],
+            "mechanism": "commission",
+            "full_maturity_kes": 36000000,
+            "take_rate": "commission",
+            "dependencies": []
+        },
+        {
+            "id": 178,
+            "code": "C5.1",
+            "name": "Conference Venues",
+            "category": "tourism",
+            "sector": "tourism",
+            "phase": 1,
+            "status": "built",
+            "owner_desk": "tourism-desk",
+            "external_systems": [
+                "tourism-system"
+            ],
+            "mechanism": "commission",
+            "full_maturity_kes": 36000000,
+            "take_rate": "rate_note",
+            "dependencies": []
+        },
+        {
+            "id": 179,
+            "code": "C5.2",
+            "name": "Exhibition Booths",
+            "category": "tourism",
+            "sector": "tourism",
+            "phase": 1,
+            "status": "built",
+            "owner_desk": "tourism-desk",
+            "external_systems": [
+                "tourism-system"
+            ],
+            "mechanism": "flat_fee",
+            "full_maturity_kes": 36000000,
+            "take_rate": "flat_fee",
+            "dependencies": []
+        },
+        {
+            "id": 180,
+            "code": "C5.3",
+            "name": "Event Venues",
+            "category": "tourism",
+            "sector": "tourism",
+            "phase": 1,
+            "status": "built",
+            "owner_desk": "tourism-desk",
+            "external_systems": [
+                "tourism-system"
+            ],
+            "mechanism": "commission",
+            "full_maturity_kes": 36000000,
+            "take_rate": "rate_note",
+            "dependencies": []
+        },
+        {
+            "id": 181,
+            "code": "A1.1",
+            "name": "General Merchandise",
+            "category": "trade",
+            "sector": "trade",
+            "phase": 1,
+            "status": "built",
+            "owner_desk": "marketplace-desk",
+            "external_systems": [
+                "trade-system"
+            ],
+            "mechanism": "commission",
+            "full_maturity_kes": 36000000,
+            "take_rate": "commission",
+            "dependencies": []
+        },
+        {
+            "id": 182,
+            "code": "A1.2",
+            "name": "Electronics",
+            "category": "trade",
+            "sector": "trade",
+            "phase": 1,
+            "status": "built",
+            "owner_desk": "marketplace-desk",
+            "external_systems": [
+                "trade-system"
+            ],
+            "mechanism": "commission",
+            "full_maturity_kes": 36000000,
+            "take_rate": "commission",
+            "dependencies": []
+        },
+        {
+            "id": 183,
+            "code": "A1.3",
+            "name": "Fashion",
+            "category": "trade",
+            "sector": "trade",
+            "phase": 1,
+            "status": "built",
+            "owner_desk": "marketplace-desk",
+            "external_systems": [
+                "trade-system"
+            ],
+            "mechanism": "commission",
+            "full_maturity_kes": 36000000,
+            "take_rate": "commission",
+            "dependencies": []
+        },
+        {
+            "id": 184,
+            "code": "A1.4",
+            "name": "Home Garden",
+            "category": "trade",
+            "sector": "trade",
+            "phase": 1,
+            "status": "built",
+            "owner_desk": "marketplace-desk",
+            "external_systems": [
+                "trade-system"
+            ],
+            "mechanism": "commission",
+            "full_maturity_kes": 36000000,
+            "take_rate": "commission",
+            "dependencies": []
+        },
+        {
+            "id": 185,
+            "code": "A1.5",
+            "name": "B2b Industrial",
+            "category": "trade",
+            "sector": "trade",
+            "phase": 1,
+            "status": "built",
+            "owner_desk": "marketplace-desk",
+            "external_systems": [
+                "trade-system"
+            ],
+            "mechanism": "commission",
+            "full_maturity_kes": 36000000,
+            "take_rate": "commission",
+            "dependencies": []
+        },
+        {
+            "id": 186,
+            "code": "A1.6",
+            "name": "Exhibitor Ads",
+            "category": "trade",
+            "sector": "trade",
+            "phase": 1,
+            "status": "built",
+            "owner_desk": "marketplace-desk",
+            "external_systems": [
+                "trade-system"
+            ],
+            "mechanism": "flat_fee",
+            "full_maturity_kes": 36000000,
+            "take_rate": "flat_fee",
+            "dependencies": []
+        },
+        {
+            "id": 187,
+            "code": "A2.1",
+            "name": "Sea Freight",
+            "category": "trade",
+            "sector": "trade",
+            "phase": 1,
+            "status": "built",
+            "owner_desk": "marketplace-desk",
+            "external_systems": [
+                "trade-system"
+            ],
+            "mechanism": "commission",
+            "full_maturity_kes": 36000000,
+            "take_rate": "rate_note",
+            "dependencies": []
+        },
+        {
+            "id": 188,
+            "code": "A2.2",
+            "name": "Air Freight",
+            "category": "trade",
+            "sector": "trade",
+            "phase": 1,
+            "status": "built",
+            "owner_desk": "marketplace-desk",
+            "external_systems": [
+                "trade-system"
+            ],
+            "mechanism": "commission",
+            "full_maturity_kes": 36000000,
+            "take_rate": "rate_note",
+            "dependencies": []
+        },
+        {
+            "id": 189,
+            "code": "A2.3",
+            "name": "Road Corridor",
+            "category": "trade",
+            "sector": "trade",
+            "phase": 1,
+            "status": "built",
+            "owner_desk": "marketplace-desk",
+            "external_systems": [
+                "trade-system"
+            ],
+            "mechanism": "commission",
+            "full_maturity_kes": 36000000,
+            "take_rate": "rate_note",
+            "dependencies": []
+        },
+        {
+            "id": 190,
+            "code": "A2.4",
+            "name": "Customs Brokerage",
+            "category": "trade",
+            "sector": "trade",
+            "phase": 1,
+            "status": "built",
+            "owner_desk": "marketplace-desk",
+            "external_systems": [
+                "trade-system"
+            ],
+            "mechanism": "flat_fee",
+            "full_maturity_kes": 36000000,
+            "take_rate": "flat_fee",
+            "dependencies": []
+        },
+        {
+            "id": 191,
+            "code": "A3.1",
+            "name": "Cement Steel",
+            "category": "trade",
+            "sector": "trade",
+            "phase": 1,
+            "status": "built",
+            "owner_desk": "marketplace-desk",
+            "external_systems": [
+                "trade-system"
+            ],
+            "mechanism": "commission",
+            "full_maturity_kes": 36000000,
+            "take_rate": "commission",
+            "dependencies": []
+        },
+        {
+            "id": 192,
+            "code": "A3.2",
+            "name": "Roofing",
+            "category": "trade",
+            "sector": "trade",
+            "phase": 1,
+            "status": "built",
+            "owner_desk": "marketplace-desk",
+            "external_systems": [
+                "trade-system"
+            ],
+            "mechanism": "commission",
+            "full_maturity_kes": 36000000,
+            "take_rate": "commission",
+            "dependencies": []
+        },
+        {
+            "id": 193,
+            "code": "A3.3",
+            "name": "Finishes",
+            "category": "trade",
+            "sector": "trade",
+            "phase": 1,
+            "status": "built",
+            "owner_desk": "marketplace-desk",
+            "external_systems": [
+                "trade-system"
+            ],
+            "mechanism": "commission",
+            "full_maturity_kes": 36000000,
+            "take_rate": "commission",
+            "dependencies": []
+        },
+        {
+            "id": 194,
+            "code": "A4.1",
+            "name": "County Market Day",
+            "category": "trade",
+            "sector": "trade",
+            "phase": 1,
+            "status": "built",
+            "owner_desk": "marketplace-desk",
+            "external_systems": [
+                "trade-system"
+            ],
+            "mechanism": "commission",
+            "full_maturity_kes": 36000000,
+            "take_rate": "commission",
+            "dependencies": []
+        },
+        {
+            "id": 195,
+            "code": "A4.2",
+            "name": "Bulk Wholesale",
+            "category": "trade",
+            "sector": "trade",
+            "phase": 1,
+            "status": "built",
+            "owner_desk": "marketplace-desk",
+            "external_systems": [
+                "trade-system"
+            ],
+            "mechanism": "commission",
+            "full_maturity_kes": 36000000,
+            "take_rate": "commission",
+            "dependencies": []
+        },
+        {
+            "id": 196,
+            "code": "A4.3",
+            "name": "Agrovet Supply",
+            "category": "trade",
+            "sector": "trade",
+            "phase": 1,
+            "status": "built",
+            "owner_desk": "marketplace-desk",
+            "external_systems": [
+                "trade-system"
+            ],
+            "mechanism": "commission",
+            "full_maturity_kes": 36000000,
+            "take_rate": "commission",
+            "dependencies": []
+        },
+        {
+            "id": 197,
+            "code": "A5.1",
+            "name": "Food Franchise",
+            "category": "trade",
+            "sector": "trade",
+            "phase": 1,
+            "status": "built",
+            "owner_desk": "marketplace-desk",
+            "external_systems": [
+                "trade-system"
+            ],
+            "mechanism": "commission",
+            "full_maturity_kes": 36000000,
+            "take_rate": "commission",
+            "dependencies": []
+        },
+        {
+            "id": 198,
+            "code": "A5.2",
+            "name": "Retail Franchise",
+            "category": "trade",
+            "sector": "trade",
+            "phase": 1,
+            "status": "built",
+            "owner_desk": "marketplace-desk",
+            "external_systems": [
+                "trade-system"
+            ],
+            "mechanism": "commission",
+            "full_maturity_kes": 36000000,
+            "take_rate": "commission",
+            "dependencies": []
+        },
+        {
+            "id": 199,
+            "code": "A5.3",
+            "name": "Auto Dealership",
+            "category": "trade",
+            "sector": "trade",
+            "phase": 1,
+            "status": "built",
+            "owner_desk": "marketplace-desk",
+            "external_systems": [
+                "trade-system"
+            ],
+            "mechanism": "commission",
+            "full_maturity_kes": 36000000,
+            "take_rate": "commission",
+            "dependencies": []
+        },
+        {
+            "id": 200,
+            "code": "A6.1",
+            "name": "Retail Businesses",
+            "category": "trade",
+            "sector": "trade",
+            "phase": 3,
+            "status": "built",
+            "owner_desk": "marketplace-desk",
+            "external_systems": [
+                "trade-system"
+            ],
+            "mechanism": "commission",
+            "full_maturity_kes": 36000000,
+            "take_rate": "commission",
+            "dependencies": []
+        },
+        {
+            "id": 201,
+            "code": "A6.2",
+            "name": "Service Businesses",
+            "category": "trade",
+            "sector": "trade",
+            "phase": 3,
+            "status": "built",
+            "owner_desk": "marketplace-desk",
+            "external_systems": [
+                "trade-system"
+            ],
+            "mechanism": "commission",
+            "full_maturity_kes": 36000000,
+            "take_rate": "commission",
+            "dependencies": []
+        },
+        {
+            "id": 202,
+            "code": "A6.3",
+            "name": "Manufacturing Smes",
+            "category": "trade",
+            "sector": "trade",
+            "phase": 3,
+            "status": "built",
+            "owner_desk": "marketplace-desk",
+            "external_systems": [
+                "trade-system"
+            ],
+            "mechanism": "commission",
+            "full_maturity_kes": 36000000,
+            "take_rate": "commission",
+            "dependencies": []
+        },
+        {
+            "id": 211,
+            "code": "DA1",
+            "name": "Milk Collection Raw",
+            "category": "milk-dairy",
+            "sector": "milk-dairy",
+            "phase": 3,
+            "status": "built",
+            "owner_desk": "dairy-desk",
+            "external_systems": [
+                "milk-dairy-system"
+            ],
+            "mechanism": "commission",
+            "full_maturity_kes": 36000000,
+            "take_rate": "commission",
+            "dependencies": []
+        },
+        {
+            "id": 212,
+            "code": "DA2",
+            "name": "Milk Pasteurisation Processing",
+            "category": "milk-dairy",
+            "sector": "milk-dairy",
+            "phase": 3,
+            "status": "built",
+            "owner_desk": "dairy-desk",
+            "external_systems": [
+                "milk-dairy-system"
+            ],
+            "mechanism": "commission",
+            "full_maturity_kes": 36000000,
+            "take_rate": "commission",
+            "dependencies": []
+        },
+        {
+            "id": 213,
+            "code": "DA3",
+            "name": "Yoghurt Fermented",
+            "category": "milk-dairy",
+            "sector": "milk-dairy",
+            "phase": 3,
+            "status": "built",
+            "owner_desk": "dairy-desk",
+            "external_systems": [
+                "milk-dairy-system"
+            ],
+            "mechanism": "commission",
+            "full_maturity_kes": 36000000,
+            "take_rate": "commission",
+            "dependencies": []
+        },
+        {
+            "id": 214,
+            "code": "DA4",
+            "name": "Cheese Production",
+            "category": "milk-dairy",
+            "sector": "milk-dairy",
+            "phase": 3,
+            "status": "built",
+            "owner_desk": "dairy-desk",
+            "external_systems": [
+                "milk-dairy-system"
+            ],
+            "mechanism": "commission",
+            "full_maturity_kes": 36000000,
+            "take_rate": "commission",
+            "dependencies": []
+        },
+        {
+            "id": 215,
+            "code": "DA5",
+            "name": "Butter Ghee",
+            "category": "milk-dairy",
+            "sector": "milk-dairy",
+            "phase": 3,
+            "status": "built",
+            "owner_desk": "dairy-desk",
+            "external_systems": [
+                "milk-dairy-system"
+            ],
+            "mechanism": "commission",
+            "full_maturity_kes": 36000000,
+            "take_rate": "commission",
+            "dependencies": []
+        },
+        {
+            "id": 216,
+            "code": "DA6",
+            "name": "Ice Cream Frozen",
+            "category": "milk-dairy",
+            "sector": "milk-dairy",
+            "phase": 3,
+            "status": "built",
+            "owner_desk": "dairy-desk",
+            "external_systems": [
+                "milk-dairy-system"
+            ],
+            "mechanism": "commission",
+            "full_maturity_kes": 36000000,
+            "take_rate": "commission",
+            "dependencies": []
+        },
+        {
+            "id": 217,
+            "code": "DA7",
+            "name": "Milk Powder Concentrates",
+            "category": "milk-dairy",
+            "sector": "milk-dairy",
+            "phase": 3,
+            "status": "built",
+            "owner_desk": "dairy-desk",
+            "external_systems": [
+                "milk-dairy-system"
+            ],
+            "mechanism": "commission",
+            "full_maturity_kes": 36000000,
+            "take_rate": "commission",
+            "dependencies": []
+        },
+        {
+            "id": 218,
+            "code": "DA8",
+            "name": "Infant Nutritional Formula",
+            "category": "milk-dairy",
+            "sector": "milk-dairy",
+            "phase": 3,
+            "status": "built",
+            "owner_desk": "dairy-desk",
+            "external_systems": [
+                "milk-dairy-system"
+            ],
+            "mechanism": "commission",
+            "full_maturity_kes": 36000000,
+            "take_rate": "licence_gated",
+            "dependencies": []
+        },
+        {
+            "id": 219,
+            "code": "DA9",
+            "name": "Whey Byproduct",
+            "category": "milk-dairy",
+            "sector": "milk-dairy",
+            "phase": 3,
+            "status": "built",
+            "owner_desk": "dairy-desk",
+            "external_systems": [
+                "milk-dairy-system"
+            ],
+            "mechanism": "commission",
+            "full_maturity_kes": 36000000,
+            "take_rate": "commission",
+            "dependencies": []
+        },
+        {
+            "id": 220,
+            "code": "DA10",
+            "name": "Dairy Equipment Coldchain",
+            "category": "milk-dairy",
+            "sector": "milk-dairy",
+            "phase": 3,
+            "status": "built",
+            "owner_desk": "dairy-desk",
+            "external_systems": [
+                "milk-dairy-system"
+            ],
+            "mechanism": "commission",
+            "full_maturity_kes": 36000000,
+            "take_rate": "commission",
+            "dependencies": []
+        },
+        {
+            "id": 221,
+            "code": "DA11",
+            "name": "Animal Feed Fodder",
+            "category": "milk-dairy",
+            "sector": "milk-dairy",
+            "phase": 3,
+            "status": "built",
+            "owner_desk": "dairy-desk",
+            "external_systems": [
+                "milk-dairy-system"
+            ],
+            "mechanism": "commission",
+            "full_maturity_kes": 36000000,
+            "take_rate": "commission",
+            "dependencies": []
+        },
+        {
+            "id": 222,
+            "code": "DA12",
+            "name": "Veterinary Ai Services",
+            "category": "milk-dairy",
+            "sector": "milk-dairy",
+            "phase": 3,
+            "status": "built",
+            "owner_desk": "dairy-desk",
+            "external_systems": [
+                "milk-dairy-system"
+            ],
+            "mechanism": "flat_fee",
+            "full_maturity_kes": 36000000,
+            "take_rate": "flat_fee",
+            "dependencies": []
+        }
+    ]
+}
