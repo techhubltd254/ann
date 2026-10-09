@@ -42,6 +42,9 @@ class AdminUsersController extends Controller
             'roles' => 'array',
             'roles.*' => 'string|exists:roles,name',
         ]);
+        if ($user->hasRole('kicc_admin') && !in_array('kicc_admin', $d['roles'] ?? [], true)) {
+            abort_unless(User::role('kicc_admin')->where('id', '!=', $user->id)->where('status', 'active')->exists(), 422, 'The last active KICC administrator cannot be removed.');
+        }
         $before = $user->getRoleNames()->all();
         $user->syncRoles($d['roles'] ?? []);
         $after = $user->getRoleNames()->all();

@@ -1,92 +1,48 @@
 <?php
-
 namespace App\Support;
-
+use App\Models\User;
+use App\Services\AdminHierarchyScope;
 use Illuminate\Support\Facades\Route;
 
-/**
- * Builds the console navigation for one administration level.
- *
- * Every entry is emitted only when the named route actually exists, so the
- * sidebar can never advertise a control the backend does not serve. Entries
- * that exist in the legacy registry but have no route are surfaced in the
- * "Not wired" list instead of being silently dropped.
- */
+/** Real native menus, categorised without changing handlers or permission checks. */
 class AdminNav
 {
-    /** @return array<string,array{icon:string,label:string,items:array<int,array{label:string,url:string}>}> */
-    public static function groups(string $level, int $legacyCount = 0): array
-    {
-        $link = function (string $label, array $candidates): ?array {
-            foreach ($candidates as $name) {
-                if (Route::has($name)) {
-                    return ['label' => $label, 'url' => route($name)];
-                }
-            }
-            return null;
-        };
-        $collect = fn (array $items) => array_values(array_filter($items));
-
-        $isKicc = $level === 'kicc';
-        $isCounty = in_array($level, ['kicc', 'national', 'county'], true);
-        $isInst = in_array($level, ['kicc', 'national', 'county', 'institution'], true);
-
-        $groups = [];
-
-        $groups['dashboard'] = ['icon' => '◈', 'label' => 'Dashboard', 'items' => $collect([
-            $link('Control centre', ['admin.portal']),
-            $link('Publishing overview', ['admin.index']),
-            $link('Records workspace', ['records.admin.index', 'admin.records.index']),
-        ])];
-
-        $groups['content'] = ['icon' => '▤', 'label' => 'Content', 'items' => $collect([
-            $link('Hero videos & posters', ['experience.images.index', 'admin.media.index']),
-            $link('Sequential media flow', ['admin.mediaflow']),
-            $link('Bulk upload (2 GB)', ['admin.uploads']),
-            $link('Media library', ['admin.media.index']),
-            $link('CMS pages & FAQ', ['cms.admin.index']),
-            $link('3D asset library', ['admin.3d.assets']),
-            $isKicc ? $link('Source-component editor', ['admin.components.ui']) : null,
-        ])];
-
-        $groups['commerce'] = ['icon' => '◧', 'label' => 'Commerce', 'items' => $collect([
-            $link('Products', ['admin.ecommerce.products', 'admin.ecommerce.dashboard']),
-            $link('Orders', ['admin.ecommerce.dashboard']),
-            $link('Payments & escrow', ['admin.escrow.index', 'admin.pool.index']),
-            $link('Revenue pool', ['admin.pool.index']),
-            $isKicc ? $link('Providers & freight', ['admin.providers.index']) : null,
-        ])];
-
-        $groups['operations'] = ['icon' => '⚙', 'label' => 'Operations', 'items' => $collect([
-            $link('Pipeline registry', ['admin.pipeline.index']),
-            $link('Hierarchy (county → sector → institution)', ['admin.hierarchy']),
-            $link('Requests & enquiries', ['admin.enquiries']),
-            $link('Integrations', ['admin.integration.index']),
-        ])];
-
-        $groups['people'] = ['icon' => '☰', 'label' => 'People', 'items' => $collect([
-            $isKicc ? $link('Users & roles', ['admin.users']) : null,
-            $link('Institutions', ['admin.institutions.index']),
-            $isInst ? $link('Exhibitors', ['admin.exhibitors.index']) : null,
-            $link('Agents & commissions', ['agent.admin.index', 'commission.admin.index']),
-        ])];
-
-        $groups['analytics'] = ['icon' => '◔', 'label' => 'Analytics', 'items' => $collect([
-            $link('Platform KPIs', ['admin.analytics.index']),
-            $link('Search analytics', ['admin.search.index']),
-            $link('Audit trail', ['admin.audit']),
-        ])];
-
-        $groups['settings'] = ['icon' => '⚒', 'label' => 'Settings', 'items' => $collect([
-            $link('Cache & maintenance', ['admin.cache.index', 'admin.settings.index']),
-            $link('Configuration', ['admin.settings.index']),
-            $link('Licence queue', ['admin.licence.index']),
-        ])];
-
-        // Portal jump-offs, always available and always real routes.
-        $groups['settings']['items'][] = ['label' => 'County portals (47)', 'url' => Route::has('county.admin') ? route('county.admin') : '/county-admin'];
-        $groups['settings']['items'][] = ['label' => 'Legacy records-admin', 'url' => '/records-admin'];
-
-        return $groups;
-    }
+ public static function groups(User $u,array $context=[]):array
+ {
+  $scope=app(AdminHierarchyScope::class);$level=$scope->level($u);
+  $groups=[];foreach(['Dashboard','Content','Commerce','Operations','People','Analytics','Settings'] as $g)$groups[$g]=[];
+  $add=function($g,$label,$name,$params=[])use(&$groups){if(Route::has($name))$groups[$g][]=['label'=>$label,'url'=>route($name,$params)];};
+  $add('Dashboard','Control centre','admin.portal');
+  $county=$context['county']??null;$institution=$context['institution']??null;
+  $uri=request()->path();$key=null;$route=null;$params=[];
+  if(str_starts_with($uri,'kicc-admin') && !str_contains($uri,'national')){$key='kicc';$route='kicc.admin';}
+  elseif(str_starts_with($uri,'county-admin/') && $county){$key='county';$route='county.admin.pro';$params=['slug'=>$county->slug];}
+  elseif(str_starts_with($uri,'institution-admin/') && $institution){$key='institution';$route='institution.admin';$params=['institution'=>$institution->slug];}
+  elseif(str_contains($uri,'national')){$key='national';$route=Route::has('national.admin.v2.dashboard')?'national.admin.v2.dashboard':'national.admin';}
+  $catalog=json_decode(file_get_contents(base_path('verification/admin-tab-map.json')),true);
+  $items=$context['navItems']??($key?($catalog[$key]['tabs']??[]):[]);
+  foreach($items as $item){
+   if(!is_array($item)||!isset($item['tab'])||!$route)continue;
+   $t=$item['tab'];$g=$item['group']??null;
+   if(!isset($groups[$g??'']))$g=match(true){
+    in_array($t,['overview','portals','dashboard'])=>'Dashboard',
+    (bool)preg_match('/hero|video|image|media|experience|venue|page|flag|3d|production|content/',$t)=>'Content',
+    (bool)preg_match('/order|product|payment|pool|earning|ledger|package|price|provider|escrow/',$t)=>'Commerce',
+    (bool)preg_match('/pipeline|integrat|request|sector|hierarch|broadcast|licence/',$t)=>'Operations',
+    (bool)preg_match('/user|institution|exhibitor|county|counties|national|ministr|agenc|team/',$t)=>'People',
+    (bool)preg_match('/analytic|report|audit|search/',$t)=>'Analytics',default=>'Settings'};
+   $label=strtr($item['label']??ucwords(str_replace('_',' ',$t)),['Pool Engine'=>'Revenue Pool','Selling Pool'=>'Revenue Pool','Ledger'=>'Earnings Ledger','Pipeline Management'=>'Pipeline Licensing','Sub-Portals'=>'Admin Portals','Hero Media'=>'Hero Videos & Posters']);
+   $add($g,$label,$route,$params+['tab'=>$t]);
+  }
+  if($level){
+   $add('Content','Sequential media control','admin.mediaflow');$add('Content','Video upload · up to 2 GiB','admin.uploads');
+   $add('Operations','County → Sector → Institution','admin.portal');
+  }
+  if($level==='kicc'){
+   foreach(['experience.images.index'=>['Content','Image add / replace / delete'],'admin.media.index'=>['Content','Media library'],'cms.admin.index'=>['Content','CMS / FAQ'],'admin.3d.assets'=>['Content','3D library'],'admin.components.ui'=>['Content','Source components'],'admin.users'=>['People','Users & roles'],'admin.audit'=>['Analytics','Audit trail'],'admin.enquiries'=>['Operations','Enquiries'],'admin.ecommerce.dashboard'=>['Commerce','Commerce workspace']] as $name=>[$g,$label])$add($g,$label,$name);
+  }
+  $add('Settings','Public website','home');
+  foreach($groups as $g=>$links){$unique=[];foreach($links as $link)$unique[$link['url']]=$link;$groups[$g]=array_values($unique);}
+  return $groups;
+ }
 }

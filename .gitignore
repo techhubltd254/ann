@@ -115,3 +115,5 @@ ARCHITECTURE.*
 WORKFLOW_TREES.*
 *.docx#
 *.xlsx#
+
+/storage/app/chunked/

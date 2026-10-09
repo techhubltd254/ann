@@ -1,52 +1,37 @@
 'use strict';
 document.addEventListener('DOMContentLoaded',()=>{
-  const root=document.querySelector('[data-chunk-upload]');if(!root)return;
-  const type=root.querySelector('[data-up-owner-type]'),id=root.querySelector('[data-up-owner-id]'),
-        slot=root.querySelector('[data-up-slot]'),title=root.querySelector('[data-up-title]'),
-        file=root.querySelector('[data-up-file]'),start=root.querySelector('[data-up-start]'),
-        bar=root.querySelector('[data-up-bar]'),status=root.querySelector('[data-up-status]'),
-        log=root.querySelector('[data-up-log]');
-  const MAX=2*1024*1024*1024;
-  const csrf=()=>document.querySelector('meta[name="csrf-token"]')?.content||'';
-  const say=(t,err=false)=>{status.textContent=t;status.dataset.error=String(err);};
-  const note=t=>{log.hidden=false;log.textContent+=t+'\n';log.scrollTop=log.scrollHeight;};
-  function send(url,body,method='POST'){
-    return new Promise((res,rej)=>{
-      const x=new XMLHttpRequest();x.open(method,url);x.withCredentials=true;
-      x.setRequestHeader('Accept','application/json');x.setRequestHeader('X-CSRF-TOKEN',csrf());
-      x.onerror=()=>rej(Error('Network error — no successful upload was confirmed.'));
-      x.onload=()=>{let d;try{d=JSON.parse(x.responseText);}catch{rej(Error('Server returned HTTP '+x.status+'.'));return;}
-        (x.status>=200&&x.status<300)?res(d):rej(Error(d.message||('Rejected (HTTP '+x.status+')')));};
-      x.send(body);
-    });
-  }
-  start.addEventListener('click',async()=>{
-    const f=file.files[0];
-    if(!f)return say('Choose a video file first.',true);
-    if(!id.value)return say('Owner ID is required.',true);
-    if(f.size>MAX)return say('File is larger than the 2 GiB ceiling.',true);
-    start.disabled=true;log.hidden=false;log.textContent='';
-    note('file: '+f.name+' ('+(f.size/1048576).toFixed(1)+' MiB)');
-    try{
-      say('Opening an upload session…');
-      const init=await send(root.dataset.base+'/init',(()=>{const d=new FormData();
-        d.append('filename',f.name);d.append('size',String(f.size));d.append('mime',f.type||'video/mp4');
-        d.append('owner_type',type.value);d.append('owner_id',id.value);d.append('slot',slot.value);
-        d.append('title',title.value||f.name);return d;})());
-      note('session '+init.upload_id+' · slice '+(init.chunk_bytes/1048576)+' MiB');
-      const step=init.chunk_bytes;let index=0;
-      for(let off=0;off<f.size;off+=step,index++){
-        const d=new FormData();d.append('index',String(index));d.append('chunk',f.slice(off,Math.min(off+step,f.size)),f.name+'.part');
-        const r=await send(root.dataset.base+'/'+init.upload_id+'/chunk',d);
-        const pct=Math.min(100,Math.round(((off+step)/f.size)*100));
-        bar.style.width=pct+'%';say('Uploading slice '+r.received+' · '+pct+'%');
-      }
-      say('Assembling and streaming to R2…');
-      const done=await send(root.dataset.base+'/'+init.upload_id+'/complete',new FormData());
-      bar.style.width='100%';
-      note('stored id='+done.id+'\npath='+done.path+'\nbytes='+done.bytes+'\nstatus='+done.status+'\npublic='+done.public_url+'\nalgorithm='+(done.algorithm_state||'n/a'));
-      say('Uploaded. Media #'+done.id+' is ready and the public caches were cleared.');
-    }catch(e){say(e.message,true);note('FAILED: '+e.message);}
-    finally{start.disabled=false;}
-  });
+ const root=document.querySelector('[data-chunk-upload]');if(!root)return;
+ const get=n=>root.querySelector('[data-up-'+n+']');
+ const county=get('county'),type=get('owner-type'),owner=get('owner-id'),sector=get('sector'),slot=get('slot'),title=get('title'),file=get('file'),start=get('start'),progress=get('progress'),status=get('status'),log=get('log');
+ const entities=JSON.parse(get('entities').textContent);let busy=false;
+ const say=t=>status.textContent=t;
+ const choices=(sel,list,label)=>{sel.replaceChildren(new Option(label,''),...list.map(x=>new Option(x.name,String(x.id))));};
+ const refresh=()=>{sector.disabled=true;choices(sector,[],'Choose institution first');const kind=type.value.split('\\').pop();const rows=kind==='County'?entities.counties.filter(x=>String(x.id)===county.value):kind==='CountyInstitution'?entities.institutions.filter(x=>String(x.county_id)===county.value):entities.venues;choices(owner,rows,'Choose responsible owner');};
+ county.addEventListener('change',refresh);type.addEventListener('change',refresh);
+ owner.addEventListener('change',async()=>{sector.disabled=true;if(type.value!=='App\\Models\\CountyInstitution'||!owner.value)return;try{const r=await fetch('/portal/media-flow/'+owner.value+'/sectors',{headers:{Accept:'application/json'}});const d=await r.json();if(!r.ok)throw Error(d.message||'Cannot load sectors');choices(sector,d.sectors,'Choose linked sector');sector.disabled=false;}catch(e){say(e.message);}});
+ async function send(path,body){
+  for(let attempt=0;attempt<20;attempt++){
+   const r=await fetch(root.dataset.base+path,{method:'POST',credentials:'same-origin',headers:{Accept:'application/json','X-CSRF-TOKEN':document.querySelector('meta[name="csrf-token"]').content},body});
+   if(r.status===429||r.status===502||r.status===503||r.status===504||r.status===524||(r.status===409&&path.endsWith("/complete"))){await new Promise(ok=>setTimeout(ok,Math.min(60000,Number(r.headers.get('Retry-After')||5)*1000)));continue;}
+   const d=await r.json().catch(()=>({message:'HTTP '+r.status}));if(!r.ok)throw Error(d.message||'HTTP '+r.status);return d;
+  }throw Error('Server busy. The upload was not confirmed; no successful publication is being claimed.');
+ }
+ start.addEventListener('click',async()=>{
+  if(busy)return;const f=file.files[0];
+  if(!f||!owner.value||!title.value.trim())return say('Select a file, owner and title.');
+  if(type.value==='App\\Models\\CountyInstitution'&&!sector.value)return say('Select a linked sector.');
+  if(f.size>2147483648)return say('Maximum file size is 2 GiB.');
+  busy=true;start.disabled=true;log.hidden=false;log.textContent='';
+  try{
+   const form=new FormData();Object.entries({filename:f.name,size:f.size,mime:f.type||'video/mp4',owner_type:type.value,owner_id:owner.value,slot:slot.value,title:title.value}).forEach(([k,v])=>form.append(k,v));if(sector.value)form.append('sector_id',sector.value);
+   say('Starting verified upload…');const init=await send('/init',form);
+   for(let offset=0,index=0;offset<f.size;offset+=init.chunk_bytes,index++){
+    const part=new FormData();part.append('index',index);part.append('chunk',f.slice(offset,Math.min(offset+init.chunk_bytes,f.size)),'chunk.bin');
+    await send('/'+init.upload_id+'/chunk',part);progress.value=Math.min(100,Math.round((offset+init.chunk_bytes)/f.size*100));say('Upload '+progress.value+'% · verifying slice '+(index+1));
+   }
+   say('Verifying complete file in R2 and publishing…');const result=await send('/'+init.upload_id+'/complete',new FormData());
+   log.textContent=JSON.stringify(result,null,2);say('Media #'+result.id+' saved. '+result.bytes+' bytes verified in R2. Refresh the public owner page to see the change.');
+  }catch(e){say('Not published: '+e.message);}finally{busy=false;start.disabled=false;}
+ });
+ const q=new URLSearchParams(location.search);if(q.has('county'))county.value=q.get('county');refresh();
 });

@@ -72,7 +72,7 @@ return Application::configure(basePath: dirname(__DIR__))
     })
     ->withExceptions(function (Exceptions $exceptions): void {
         $exceptions->shouldRenderJsonWhen(
-            fn (Request $request) => $request->is('api/*'),
+            fn (Request $request) => $request->is('api/*', 'portal/uploads/*', 'portal/media-flow/*') || $request->expectsJson(),
         );
         // Breadcrumb on every 500 for production debugging
         $exceptions->reportable(function (\Throwable $e) {

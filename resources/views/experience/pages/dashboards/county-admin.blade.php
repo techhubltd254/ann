@@ -6,100 +6,14 @@
 @php $accent = '#0B0B0B'; @endphp
 
 @section('content')
-<div class="flex min-h-screen experience-admin-shell" x-data="{ 
-    tab: '{{ $tab ?? 'overview' }}', 
+<div class="flex min-h-screen experience-admin-shell" x-data="{
+    tab: '{{ $tab ?? 'overview' }}',
     search: '',
     setTab(t) { this.tab = t; },
 }">
 
     {{--  SIDEBAR  --}}
-    <aside class="glass-nav flex flex-col w-64 shrink-0 z-30 overflow-y-auto">
-        <div class="flex items-center gap-3 h-16 px-5 border-b border-white/5 shrink-0">
-            <div class="w-9 h-9 rounded-xl bg-gradient-to-br from-indigo-500 to-violet-600 flex items-center justify-center font-black text-white text-sm shadow-lg shadow-indigo-500/25">M</div>
-            <div>
-                <div class="text-white font-bold text-sm leading-tight">{{ $county->name }}</div>
-                <div class="text-indigo-400 text-[9px] font-bold tracking-[0.15em] uppercase">County Admin · KICC</div>
-            </div>
-        </div>
 
-        <div class="flex-1 px-3 py-4 space-y-5 scrollbar-hide">
-            @php
-            $groups = [
-                'Overview' => [
-                    ['tab' => 'overview', 'label' => 'Dashboard', 'icon' => 'M3 12l2-2m0 0l7-7 7 7M5 10v10a1 1 0 001 1h3m10-11l2 2m-2-2v10a1 1 0 01-1 1h-3m-6 0a1 1 0 001-1v-4a1 1 0 011-1h2a1 1 0 011 1v4a1 1 0 001 1m-6 0h6'],
-                    ['tab' => 'details', 'label' => 'General Info', 'icon' => 'M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z'],
-                    ['tab' => 'analytics', 'label' => 'Analytics', 'icon' => 'M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z'],
-                    ['tab' => 'content', 'label' => 'Content CMS', 'icon' => 'M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z'],
-                ],
-                'Tourism & Hospitality' => [
-                    ['tab' => 'attractions_list', 'label' => 'Attractions & Sites', 'icon' => 'M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z'],
-                    ['tab' => 'hotels', 'label' => 'Hotels & Stays', 'icon' => 'M19 21V5a2 2 0 00-2-2H7a2 2 0 00-2 2v16m14 0h2m-2 0h-5m-9 0H3m2 0h5M9 7h1m-1 4h1m4-4h1m-1 4h1m-5 10v-5a1 1 0 011-1h2a1 1 0 011 1v5m-4 0h4'],
-                    ['tab' => 'marketplace', 'label' => 'Marketplace', 'icon' => 'M16 11V7a4 4 0 00-8 0v4M5 9h14l1 12H4L5 9z'],
-                ],
-                'Immersive Media' => [
-                    ['tab' => 'videos4d', 'label' => '4D Gaussian Studio', 'icon' => 'M15 10l4.553-2.276A1 1 0 0121 8.618v6.764a1 1 0 01-1.447.894L15 14M5 18h8a2 2 0 002-2V8a2 2 0 00-2-2H5a2 2 0 00-2 2v8a2 2 0 002 2z'],
-                    ['tab' => 'hero', 'label' => 'Hero Videos', 'icon' => 'M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z'],
-                    ['tab' => 'images', 'label' => 'Sector Videos', 'icon' => 'M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z'],
-                    ['tab' => 'live_events', 'label' => 'Live Events', 'icon' => 'M15 10l4.553-2.276A1 1 0 0121 8.618v6.764a1 1 0 01-1.447.894L15 14M5 18h8a2 2 0 002-2V8a2 2 0 00-2-2H5a2 2 0 00-2 2v8a2 2 0 002 2z'],
-                ],
-                'Operations' => [
-                    ['tab' => 'prices', 'label' => 'Pricing Engine', 'icon' => 'M12 8c-1.657 0-3 .895-3 2s1.343 2 3 2 3 .895 3 2-1.343 2-3 2m0-8c1.11 0 2.08.402 2.599 1M12 8V7m0 1v8m0 0v1m0-1c-1.11 0-2.08-.402-2.599-1'],
-                    ['tab' => 'ads', 'label' => 'Advertising', 'icon' => 'M11 5.882V19.24a1.76 1.76 0 01-3.417.592l-2.147-6.15M18 13a3 3 0 100-6M5.436 13.683A4.001 4.001 0 017 6h1.832c4.1 0 7.625-1.234 9.168-3v14c-1.543-1.766-5.067-3-9.168-3H7a3.988 3.988 0 01-1.564-.317z'],
-                    ['tab' => 'packages', 'label' => 'Subscriptions', 'icon' => 'M3 3h2l.4 2M7 13h10l4-8H5.4M7 13L5.4 5M7 13l-2.293 2.293c-.63.63-.184 1.707.707 1.707H17m0 0a2 2 0 100 4 2 2 0 000-4zm-8 2a2 2 0 11-4 0 2 2 0 014 0z'],
-                    ['tab' => 'reports', 'label' => 'Reports & Exports', 'icon' => 'M9 17v-2m3 2v-4m3 4v-6m2 10H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z'],
-                ],
-                'Administration' => [
-                    ['tab' => 'institutions', 'label' => 'Institutions', 'icon' => 'M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z'],
-                    ['tab' => 'sectors', 'label' => 'Sectors', 'icon' => 'M4 6h16M4 10h16M4 14h16M4 18h16'],
-                ],
-            ];
-            @endphp
-
-            @php
-                $visibleTabs = collect($groups)->flatten(1)->pluck('tab')->all();
-                $otherNativeTabs = collect($navItems)->reject(fn($item) => in_array($item['tab'], $visibleTabs, true))->values()->all();
-                if ($otherNativeTabs) $groups['Additional county controls'] = $otherNativeTabs;
-            @endphp
-
-            @foreach($groups as $groupName => $items)
-            <div class="space-y-0.5">
-                <p class="px-3 text-[9px] font-semibold text-zinc-500 uppercase tracking-[0.15em] mb-1.5">{{ $groupName }}</p>
-                @foreach($items as $item)
-                <a href="{{ route('county.admin.pro', [$county->slug, 'tab' => $item['tab']]) }}"
-                   class="sidebar-link text-xs {{ $tab === $item['tab'] ? 'sidebar-link-active' : 'sidebar-link-inactive' }}">
-                    <svg class="w-4 h-4 shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="{{ $item['icon'] }}"/></svg>
-                    <span>{{ $item['label'] }}</span>
-                </a>
-                @endforeach
-            </div>
-            @endforeach
-
-            {{-- Plan card --}}
-            <div class="pt-3">
-                <div class="glass rounded-xl p-4 bg-gradient-to-br from-indigo-500/5 to-violet-600/5 border border-indigo-500/10">
-                    <div class="text-xs font-semibold text-white mb-1">County Enterprise</div>
-                    <div class="flex items-center gap-2 mb-2">
-                        <span class="text-[10px] text-indigo-400 font-medium">Free Tier</span>
-                        <span class="text-[10px] text-zinc-600">·</span>
-                        <span class="text-[10px] text-zinc-500">4/12 GB used</span>
-                    </div>
-                    <div class="progress-bar mb-3">
-                        <div class="progress-fill bg-gradient-to-r from-indigo-500 to-violet-600" style="width:33%"></div>
-                    </div>
-                    <button class="w-full py-1.5 rounded-lg text-[10px] font-bold text-white bg-gradient-to-r from-indigo-500 to-violet-600 hover:from-indigo-400 hover:to-violet-500 transition">Upgrade →</button>
-                </div>
-            </div>
-
-            {{-- Bottom links --}}
-            <div class="pt-2 space-y-0.5 border-t border-white/5">
-                <a href="{{ route('counties.show', $county->slug) }}" class="sidebar-link sidebar-link-inactive text-xs">
-                    <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 6H6a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2v-4M14 4h6m0 0v6m0-6L10 14"/></svg>
-                    <span>View Public Portal</span>
-                </a>
-                <form method="POST" action="{{ route('logout') }}">@csrf<button type="submit" class="sidebar-link sidebar-link-inactive w-full text-xs"><svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 16l4-4m0 0l-4-4m4 4H7m6 4v1a3 3 0 01-3 3H6a3 3 0 01-3-3V7a3 3 0 013-3h4a3 3 0 013 3v1"/></svg><span>Logout</span></button></form>
-            </div>
-        </div>
-    </aside>
 
     {{--  MAIN VIEWPORT  --}}
     <div class="flex-1 flex flex-col overflow-hidden">
@@ -1259,6 +1173,7 @@ document.addEventListener('DOMContentLoaded', function() {
         closeBtn.addEventListener('click', closeInspector);
     }
 });
+document.addEventListener('DOMContentLoaded', function() {
     var rc = document.getElementById('revenueChart');
     if (rc) {
         new Chart(rc, {
@@ -1267,7 +1182,7 @@ document.addEventListener('DOMContentLoaded', function() {
                 labels: ['Jul','Aug','Sep','Oct','Nov','Dec','Jan','Feb','Mar','Apr','May','Jun'],
                 datasets: [{
                     label: 'Revenue',
-                    data: [120,145,160,180,220,250,280,310,350,380,420,480],
+                    data: [],
                     borderColor: '#0B0B0B',
                     backgroundColor: 'rgba(11,11,11,0.1)',
                     fill: true, tension: 0.4, pointRadius: 3, pointBackgroundColor: '#0B0B0B', borderWidth: 2,
@@ -1287,7 +1202,7 @@ document.addEventListener('DOMContentLoaded', function() {
             type: 'doughnut',
             data: {
                 labels: ['Hospitality','Eco-Tourism','Agri-Trade','Cultural'],
-                datasets: [{ data: [35,28,22,15], backgroundColor: ['#0B0B0B','#0B0B0B','#FFCD05','#0B0B0B'], borderWidth: 0 }]
+                datasets: [{ data: [], backgroundColor: ['#0B0B0B','#0B0B0B','#FFCD05','#0B0B0B'], borderWidth: 0 }]
             },
             options: {
                 responsive: true, maintainAspectRatio: false, cutout: '70%',

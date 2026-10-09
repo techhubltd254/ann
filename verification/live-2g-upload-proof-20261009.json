@@ -1,0 +1,12 @@
+{
+  "id": 60175,
+  "path": "institutions/eliper-hotel/videos/b8692856-bb3e-4fff-8d57-60d09bb61071.mp4",
+  "bytes": 2147483648,
+  "status": "ready",
+  "public_url": "/media/video/institutions/eliper-hotel/videos/b8692856-bb3e-4fff-8d57-60d09bb61071.mp4",
+  "sha256": "1234f47984ad795983d8edaf95c4021f57d1064de088d86b6711deecc14c7afa",
+  "public_http": 206,
+  "content_range": "bytes 0-1023/2147483648",
+  "sha256_matches": true,
+  "verified_bytes": 2147483648
+}

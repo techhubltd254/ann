@@ -2,27 +2,35 @@
 <html lang="en" data-theme="dark"><head><meta charset="utf-8"><link rel="icon" type="image/png" sizes="32x32" href="{{ asset('favicon-32.png') }}"><link rel="icon" type="image/png" sizes="16x16" href="{{ asset('favicon-16.png') }}"><link rel="apple-touch-icon" href="{{ asset('apple-touch-icon.png') }}"><link rel="shortcut icon" href="{{ asset('favicon.ico') }}"><meta name="viewport" content="width=device-width,initial-scale=1"><meta name="csrf-token" content="{{ csrf_token() }}"><title>@yield('title','KICC Admin')</title>
 <script>(()=>{let t='dark';try{t=localStorage.getItem('kicc.theme')||'dark'}catch(e){}document.documentElement.dataset.theme=t;document.documentElement.style.colorScheme=t;})();</script>
 <link href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,300;0,9..144,400;0,9..144,500;1,9..144,400&family=Inter+Tight:wght@300;400;500;600;700&family=JetBrains+Mono:wght@400;500;700&display=swap" rel="stylesheet">
-<link rel="stylesheet" href="/css/admin-shell.css?v=admin-shell-v2">
+<script src="https://cdn.tailwindcss.com"></script>
+<script defer src="/js/alpine-data.js"></script>
+<script defer src="https://cdn.jsdelivr.net/npm/alpinejs@3.14.8/dist/cdn.min.js"></script>
+<link rel="stylesheet" href="/css/admin-shell.css?v=admin-safe-v3">
+<link rel="stylesheet" href="/css/admin-safe.css?v=admin-safe-v3">
 <script defer src="https://cdn.jsdelivr.net/npm/chart.js@4.4.4/dist/chart.umd.min.js"></script>
 @stack('styles')</head>
-<body class="admin-shell">
+@php
+ $actor=auth()->user();
+ $adminLevel=$actor?app(\App\Services\AdminHierarchyScope::class)->level($actor):null;
+
+ $adminContext=request()->is('county-admin/*')?'county':(request()->is('institution-admin/*')?'institution':(request()->is('*national*')?'national':(request()->is('kicc-admin*')?'kicc':($adminLevel??'kicc'))));
+ $adminVariant=$adminContext==='county'?'galaxy':($adminContext==='institution'?'nexora':'adminora');
+ $adminLinks=$actor?\App\Support\AdminNav::groups($actor,['county'=>$county??null,'institution'=>$institution??null,'navItems'=>$navItems??null]):[];
+@endphp
+<body class="admin-shell" data-admin-tier="{{ $adminContext }}" data-admin-variant="{{ $adminVariant }}">
 <aside class="as-side">
- <a class="as-brand" href="{{ route('admin.portal') }}"><span class="as-mark as-mark-logo"><img src=tile_url('logo') alt="KICC"></span><span><strong>KICC Admin</strong><small>National Platform</small></span></a>
- <div class="as-nav-label">Manage</div>
- <nav class="as-nav">
-  <a href="{{ route('admin.portal') }}"><span class="ic">▦</span>Dashboard</a>
-  <a href="{{ route('kicc.admin') }}"><span class="ic">◎</span>Mother Admin</a>
-  <a href="{{ route('county.admin') }}"><span class="ic">◈</span>Counties</a>
-  <a href="{{ route('national.admin') }}"><span class="ic">▣</span>National</a>
-  <a href="{{ route('experience.images.index') }}"><span class="ic">▤</span>Images</a>
-  <a href="{{ route('admin.mediaflow') }}"><span class="ic">▶</span>Media Flow</a>
- </nav>
- <div class="as-nav-label">Tools</div>
- <nav class="as-nav">
-  <a href="{{ route('admin.mediaflow') }}"><span class="ic">⇄</span>Videos &amp; R2</a>
-  <a href="{{ url('/records-admin') }}"><span class="ic">▦</span>Records</a>
-  <a href="{{ url('/portal/media-flow') }}"><span class="ic">◉</span>Hierarchy</a>
-  <a href="{{ url('/') }}" target="_blank" rel="noopener"><span class="ic">⌂</span>View Site</a>
+ <a class="as-brand" href="{{ route('admin.portal') }}"><span class="as-mark as-mark-logo"><img src="{{ tile_url('logo') }}" alt="KICC"></span><span><strong>KICC Admin</strong><small>{{ ucfirst($adminContext) }} control centre</small></span></a>
+ <div class="as-nav-label">{{ ucfirst($adminContext) }} · {{ ucfirst($adminVariant) }}</div>
+ <nav class="as-nav" aria-label="Administration controls">
+ @foreach($adminLinks as $section=>$links)
+  @if(count($links))
+  @php $active=collect($links)->contains(fn($a)=>$a['url']===url()->full()); @endphp
+  <details class="as-nav-group" @if($active || $section==='Dashboard') open @endif>
+   <summary>{{ $section }} <small>{{ count($links) }}</small></summary>
+   @foreach($links as $link)<a href="{{ $link['url'] }}" @class(['active'=>$link['url']===url()->full()])>{{ $link['label'] }}</a>@endforeach
+  </details>
+  @endif
+ @endforeach
  </nav>
  <div class="as-profile"><span class="as-avatar">{{ strtoupper(substr(auth()->user()->name ?? 'A',0,1)) }}</span><div><strong style="font-size:13px">{{ auth()->user()->name ?? 'Admin' }}</strong><small>{{ ucwords(str_replace('_',' ',auth()->user()?->roles?->first()?->name ?? 'admin')) }}</small></div></div>
 </aside>

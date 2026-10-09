@@ -7,40 +7,7 @@
 @section('content')
 <div class="flex h-screen overflow-hidden" x-data="{ tab: '{{ $tab ?? 'overview' }}', drawer: null, setTab(t) { this.tab = t; history.replaceState(null,'','?tab='+t); } }">
 
-    <aside class="glass-nav flex flex-col w-64 shrink-0 z-30 overflow-y-auto">
-        <div class="flex items-center gap-3 h-16 px-5 border-b border-white/5 shrink-0">
-            <div class="w-8 h-8 rounded-lg bg-gradient-to-br from-sky-500 to-blue-600 flex items-center justify-center font-black text-white text-sm"></div>
-            <div>
-                <div class="text-white font-bold text-sm leading-tight">National</div>
-                <div class="text-sky-400 text-[9px] font-bold tracking-[0.2em] uppercase">Government Portal</div>
-            </div>
-        </div>
-        <div class="flex-1 px-3 py-4 space-y-6 scrollbar-hide">
-            @php $navItems = [
-                'Overview' => ['tab'=>'overview','label'=>'Dashboard','icon'=>"M3 12l2-2m0 0l7-7 7 7M5 10v10a1 1 0 001 1h3m10-11l2 2m-2-2v10a1 1 0 01-1 1h-3m-6 0a1 1 0 001-1v-4a1 1 0 011-1h2a1 1 0 011 1v4a1 1 0 001 1m-6 0h6"],
-                'Management' => ['tab'=>'ministries','label'=>'Ministries','icon'=>"M19 21V5a2 2 0 00-2-2H7a2 2 0 00-2 2v16m14 0h2m-2 0h-5m-9 0H3m2 0h5M9 7h1m-1 4h1m4-4h1m-1 4h1m-5 10v-5a1 1 0 011-1h2a1 1 0 011 1v5m-4 0h4"],
-                'Agencies' => ['tab'=>'agencies','label'=>'Agencies','icon'=>"M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857"],
-                'Trade' => ['tab'=>'trade','label'=>'Trade Overview','icon'=>"M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z"],
-            ]; @endphp
-            @foreach($navItems as $group => $item)
-            <div class="space-y-1">
-                <p class="px-3 text-[10px] font-semibold text-zinc-500 uppercase tracking-widest mt-4 {{ $loop->first ? '' : '' }}">{{ $loop->first ? 'Overview' : $group }}</p>
-                <a href="{{ route('national.admin', ['tab' => $item['tab']]) }}"
-                   @click.prevent="setTab('{{ $item['tab'] }}')"
-                   class="sidebar-link"
-                   :class="tab === '{{ $item['tab'] }}' ? 'sidebar-link-active' : 'sidebar-link-inactive'">
-                    <svg class="w-4 h-4 shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="{{ $item['icon'] }}"/></svg>
-                    <span>{{ $item['label'] }}</span>
-                </a>
-            </div>
-            @endforeach
-            <a href="{{ route('logout') }}" onclick="event.preventDefault();document.getElementById('logout-form').submit()" class="sidebar-link sidebar-link-inactive mt-8">
-                <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 16l4-4m0 0l-4-4m4 4H7m6 4v1a3 3 0 01-3 3H6a3 3 0 01-3-3V7a3 3 0 013-3h4a3 3 0 013 3v1"/></svg>
-                <span>Exit</span>
-            </a>
-            <form id="logout-form" method="POST" action="{{ route('logout') }}" class="hidden">@csrf</form>
-        </div>
-    </aside>
+
 
     <div class="flex-1 flex flex-col overflow-hidden">
         <header class="glass-header h-16 px-6 flex items-center justify-between shrink-0">
@@ -60,7 +27,7 @@
             </div>
         </header>
         <main class="flex-1 overflow-y-auto p-6 scrollbar-hide">
-            
+
              @if(isset($errors) && $errors->any())
             <div class="mb-4 px-5 py-3 rounded-xl bg-red-500/10 border border-red-500/20 text-red-400 text-sm">{{ $errors->first() }}</div>
             @endif

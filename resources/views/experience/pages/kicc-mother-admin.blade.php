@@ -7,53 +7,7 @@
 @section('content')
 <div class="flex min-h-screen experience-admin-shell" x-data="{ tab: '{{ $tab ?? 'overview' }}', drawer: null, setTab(t) { this.tab = t; history.replaceState(null,'','?tab='+t); } }">
 
-    <aside class="glass-nav flex flex-col w-64 shrink-0 z-30 overflow-y-auto">
-        <div class="flex items-center gap-3 h-16 px-5 border-b border-white/5 shrink-0">
-            <img src="{{ tile_url('logo') }}" alt="KICC" class="w-9 h-9 rounded-xl object-contain bg-white/10 p-1.5">
-            <div>
-                <div class="text-white font-bold text-sm leading-tight">KICC</div>
-                <div class="text-[#FFCD05] text-[9px] font-bold tracking-[0.2em] uppercase">Global Exhibition Admin</div>
-            </div>
-        </div>
-        <div class="flex-1 px-3 py-4 space-y-6 scrollbar-hide">
-@php
-                $groupedNav = [];
-                foreach($navItems as $ni){ $groupedNav[$ni['group'] ?? 'Dashboard'][] = $ni; }
-                $groupOrder = ['Dashboard','Content','Commerce','Operations','People','Analytics','Settings'];
-                $activeItem = collect($navItems)->firstWhere('tab', $tab ?? 'overview');
-                $activeGroup = $activeItem['group'] ?? 'Dashboard';
-            @endphp
-            @foreach($groupOrder as $groupName)
-                @if(isset($groupedNav[$groupName]))
-                <div class="sidebar-group" x-data="{ open: {{ ($groupName === $activeGroup || $groupName === 'Dashboard') ? 'true' : 'false' }} }">
-                    @if($groupName !== 'Dashboard')
-                    <button type="button" @click="open = !open" class="sidebar-group-header" :aria-expanded="open.toString()">
-                        <span>{{ $groupName }}</span>
-                        <svg class="w-3.5 h-3.5 transition-transform" :class="open ? 'rotate-90' : ''" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"/></svg>
-                    </button>
-                    @endif
-                    <div @if($groupName !== 'Dashboard') x-show="open" x-cloak @endif class="sidebar-group-items">
-                    @foreach($groupedNav[$groupName] as $item)
-                    <a href="{{ route('kicc.admin', ['tab' => $item['tab']]) }}"
-                       class="sidebar-link"
-                       :class="tab === '{{ $item['tab'] }}' ? 'sidebar-link-active' : 'sidebar-link-inactive'">
-                        <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="{{ $item['icon'] }}"/></svg>
-                        <span>{{ $item['label'] }}</span>
-                    </a>
-                    @endforeach
-                    </div>
-                </div>
-                @endif
-            @endforeach
-            <div class="px-3 pt-4 border-t border-white/5 space-y-1">
-                <a class="sidebar-link" href="{{ route('media.library') }}">Media Library</a>
 
-                <a href="{{ route('kicc.admin', ['tab' => 'counties']) }}" class="sidebar-link sidebar-link-inactive"><svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 12l2-2m0 0l7-7 7 7M5 10v10a1 1 0 001 1h3m10-11l2 2m-2-2v10a1 1 0 01-1 1h-3m-6 0a1 1 0 001-1v-4a1 1 0 011-1h2a1 1 0 011 1v4a1 1 0 001 1m-6 0h6"/></svg><span>County Portals</span></a>
-                <a href="{{ route('national.admin') }}" class="sidebar-link sidebar-link-inactive"><svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 21V5a2 2 0 00-2-2H7a2 2 0 00-2 2v16m14 0h2m-2 0h-5m-9 0H3m2 0h5M9 7h1m-1 4h1m4-4h1m-1 4h1m-5 10v-5a1 1 0 011-1h2a1 1 0 011 1v5m-4 0h4"/></svg><span>National Government</span></a>
-                <form method="POST" action="{{ route('logout') }}">@csrf<button type="submit" class="sidebar-link sidebar-link-inactive w-full"><svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 16l4-4m0 0l-4-4m4 4H7m6 4v1a3 3 0 01-3 3H6a3 3 0 01-3-3V7a3 3 0 013-3h4a3 3 0 013 3v1"/></svg><span>Logout</span></button></form>
-            </div>
-        </div>
-    </aside>
 
     <div class="flex-1 flex flex-col overflow-hidden">
         <header class="glass-header h-16 px-6 flex items-center justify-between shrink-0">

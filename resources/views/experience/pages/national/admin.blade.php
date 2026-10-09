@@ -1,4 +1,4 @@
-@extends('layouts.admin-theme', ['title' => 'National Government', 'themeColor' => '#A855F7', 'brandName' => 'National Government', 'brandSub' => 'KICC Admin'])
+@extends('layouts.nexora')
 @section('title', 'National Government — Admin Control')
 @section('content')
 <div class="max-w-7xl mx-auto px-5 py-10">

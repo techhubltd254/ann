@@ -1,0 +1,285 @@
+[
+  {
+    "role": "kicc_admin",
+    "path": "/portal",
+    "method": "GET",
+    "http": 200,
+    "expected": [
+      200
+    ],
+    "pass": true
+  },
+  {
+    "role": "kicc_admin",
+    "path": "/portal/uploads",
+    "method": "GET",
+    "http": 200,
+    "expected": [
+      200
+    ],
+    "pass": true
+  },
+  {
+    "role": "kicc_admin",
+    "path": "/portal/media-flow",
+    "method": "GET",
+    "http": 200,
+    "expected": [
+      200
+    ],
+    "pass": true
+  },
+  {
+    "role": "kicc_admin",
+    "path": "/portal/users",
+    "method": "GET",
+    "http": 200,
+    "expected": [
+      200
+    ],
+    "pass": true
+  },
+  {
+    "role": "kicc_admin",
+    "path": "/kicc-admin",
+    "method": "GET",
+    "http": 200,
+    "expected": [
+      200
+    ],
+    "pass": true
+  },
+  {
+    "role": "national_admin",
+    "path": "/portal",
+    "method": "GET",
+    "http": 200,
+    "expected": [
+      200
+    ],
+    "pass": true
+  },
+  {
+    "role": "national_admin",
+    "path": "/portal/uploads",
+    "method": "GET",
+    "http": 200,
+    "expected": [
+      200
+    ],
+    "pass": true
+  },
+  {
+    "role": "national_admin",
+    "path": "/portal/media-flow",
+    "method": "GET",
+    "http": 200,
+    "expected": [
+      200
+    ],
+    "pass": true
+  },
+  {
+    "role": "national_admin",
+    "path": "/portal/users",
+    "method": "GET",
+    "http": 403,
+    "expected": [
+      403
+    ],
+    "pass": true
+  },
+  {
+    "role": "national_admin",
+    "path": "/kicc-admin",
+    "method": "GET",
+    "http": 403,
+    "expected": [
+      403
+    ],
+    "pass": true
+  },
+  {
+    "role": "county_admin",
+    "path": "/portal",
+    "method": "GET",
+    "http": 200,
+    "expected": [
+      200
+    ],
+    "pass": true
+  },
+  {
+    "role": "county_admin",
+    "path": "/portal/uploads",
+    "method": "GET",
+    "http": 200,
+    "expected": [
+      200
+    ],
+    "pass": true
+  },
+  {
+    "role": "county_admin",
+    "path": "/portal/media-flow",
+    "method": "GET",
+    "http": 200,
+    "expected": [
+      200
+    ],
+    "pass": true
+  },
+  {
+    "role": "county_admin",
+    "path": "/portal/users",
+    "method": "GET",
+    "http": 403,
+    "expected": [
+      403
+    ],
+    "pass": true
+  },
+  {
+    "role": "county_admin",
+    "path": "/kicc-admin",
+    "method": "GET",
+    "http": 403,
+    "expected": [
+      403
+    ],
+    "pass": true
+  },
+  {
+    "role": "institution_admin",
+    "path": "/portal",
+    "method": "GET",
+    "http": 200,
+    "expected": [
+      200
+    ],
+    "pass": true
+  },
+  {
+    "role": "institution_admin",
+    "path": "/portal/uploads",
+    "method": "GET",
+    "http": 200,
+    "expected": [
+      200
+    ],
+    "pass": true
+  },
+  {
+    "role": "institution_admin",
+    "path": "/portal/media-flow",
+    "method": "GET",
+    "http": 200,
+    "expected": [
+      200
+    ],
+    "pass": true
+  },
+  {
+    "role": "institution_admin",
+    "path": "/portal/users",
+    "method": "GET",
+    "http": 403,
+    "expected": [
+      403
+    ],
+    "pass": true
+  },
+  {
+    "role": "institution_admin",
+    "path": "/kicc-admin",
+    "method": "GET",
+    "http": 403,
+    "expected": [
+      403
+    ],
+    "pass": true
+  },
+  {
+    "role": "county_admin",
+    "path": "/portal/uploads/init",
+    "method": "POST",
+    "http": 403,
+    "expected": [
+      403
+    ],
+    "pass": true
+  },
+  {
+    "role": "county_admin",
+    "path": "/portal/uploads/init",
+    "method": "POST",
+    "http": 422,
+    "expected": [
+      422
+    ],
+    "pass": true
+  },
+  {
+    "role": "guest",
+    "path": "/",
+    "http": 200,
+    "expected": [
+      200
+    ],
+    "pass": true
+  },
+  {
+    "role": "guest",
+    "path": "/counties",
+    "http": 200,
+    "expected": [
+      200
+    ],
+    "pass": true
+  },
+  {
+    "role": "guest",
+    "path": "/venues",
+    "http": 200,
+    "expected": [
+      200
+    ],
+    "pass": true
+  },
+  {
+    "role": "guest",
+    "path": "/marketplace",
+    "http": 200,
+    "expected": [
+      200
+    ],
+    "pass": true
+  },
+  {
+    "role": "guest",
+    "path": "/exhibitions",
+    "http": 200,
+    "expected": [
+      200
+    ],
+    "pass": true
+  },
+  {
+    "role": "guest",
+    "path": "/screens",
+    "http": 200,
+    "expected": [
+      200
+    ],
+    "pass": true
+  },
+  {
+    "role": "guest",
+    "path": "/travel",
+    "http": 200,
+    "expected": [
+      200
+    ],
+    "pass": true
+  }
+]

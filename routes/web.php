@@ -172,22 +172,23 @@ Route::post('/api/r2/confirm-upload', [\App\Http\Controllers\Web\MediaLibraryCon
 Route::middleware('auth')->group(function () {
     // Portal selector (choose KICC/National/County/Exhibitor admin)
     Route::get('/portal', [AdminPortalController::class, 'selector'])->name('admin.portal');
+    Route::get('/portal/components', [\App\Http\Controllers\Web\UnifiedAdminController::class, 'components'])->name('admin.components.ui');
 
     // Media flow: the county -> institution -> sector -> media workspace that the
     // admin layouts link to. Without this route every layout using it throws 500.
     Route::get('/portal/media-flow', [\App\Http\Controllers\Web\MediaFlowController::class, 'index'])->name('admin.mediaflow');
-    Route::get('/portal/media-flow/{institution}/sectors', [\App\Http\Controllers\Web\MediaFlowController::class, 'sectors'])->name('admin.mediaflow.sectors');
-    Route::get('/portal/media-flow/{institution}/media', [\App\Http\Controllers\Web\MediaFlowController::class, 'media'])->name('admin.mediaflow.media');
-    Route::post('/portal/media-flow/{institution}/videos', [\App\Http\Controllers\Web\MediaFlowController::class, 'store'])->name('admin.mediaflow.store');
-    Route::post('/portal/media-flow/{institution}/videos/{asset}/replace', [\App\Http\Controllers\Web\MediaFlowController::class, 'replace'])->name('admin.mediaflow.replace');
-    Route::delete('/portal/media-flow/{institution}/videos/{asset}', [\App\Http\Controllers\Web\MediaFlowController::class, 'destroy'])->name('admin.mediaflow.destroy');
+    Route::get('/portal/media-flow/{institution:id}/sectors', [\App\Http\Controllers\Web\MediaFlowController::class, 'sectors'])->name('admin.mediaflow.sectors');
+    Route::get('/portal/media-flow/{institution:id}/media', [\App\Http\Controllers\Web\MediaFlowController::class, 'media'])->name('admin.mediaflow.media');
+    Route::post('/portal/media-flow/{institution:id}/videos', [\App\Http\Controllers\Web\MediaFlowController::class, 'store'])->name('admin.mediaflow.store');
+    Route::post('/portal/media-flow/{institution:id}/videos/{asset}/replace', [\App\Http\Controllers\Web\MediaFlowController::class, 'replace'])->name('admin.mediaflow.replace');
+    Route::delete('/portal/media-flow/{institution:id}/videos/{asset}', [\App\Http\Controllers\Web\MediaFlowController::class, 'destroy'])->name('admin.mediaflow.destroy');
 
     // Chunked upload: the only path that can carry a 2 GB file past the edge's
     // ~100 MB request ceiling.
-    Route::get('/portal/uploads', fn () => view('experience.admin.uploads'))->name('admin.uploads');
-    Route::post('/portal/uploads/init', [\App\Http\Controllers\Web\ChunkedUploadController::class, 'init'])->name('admin.uploads.init');
-    Route::post('/portal/uploads/{uploadId}/chunk', [\App\Http\Controllers\Web\ChunkedUploadController::class, 'chunk'])->name('admin.uploads.chunk');
-    Route::post('/portal/uploads/{uploadId}/complete', [\App\Http\Controllers\Web\ChunkedUploadController::class, 'complete'])->name('admin.uploads.complete');
+    Route::get('/portal/uploads', [\App\Http\Controllers\Web\ChunkedUploadController::class, 'index'])->name('admin.uploads');
+    Route::post('/portal/uploads/init', [\App\Http\Controllers\Web\ChunkedUploadController::class, 'init'])->name('admin.uploads.init')->withoutMiddleware('throttle:60,1')->middleware('throttle:600,1,video-upload');
+    Route::post('/portal/uploads/{uploadId}/chunk', [\App\Http\Controllers\Web\ChunkedUploadController::class, 'chunk'])->name('admin.uploads.chunk')->withoutMiddleware('throttle:60,1')->middleware('throttle:600,1,video-upload');
+    Route::post('/portal/uploads/{uploadId}/complete', [\App\Http\Controllers\Web\ChunkedUploadController::class, 'complete'])->name('admin.uploads.complete')->withoutMiddleware('throttle:60,1')->middleware('throttle:600,1,video-upload');
 
     // Role assignment across the four administration tiers.
     Route::get('/portal/users', [\App\Http\Controllers\Web\AdminUsersController::class, 'index'])->name('admin.users');
