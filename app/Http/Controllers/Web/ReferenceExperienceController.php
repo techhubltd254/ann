@@ -33,6 +33,22 @@ class ReferenceExperienceController extends Controller
             $tables['institutions'][] = ['id'=>(string)$i->id,'countyId'=>(string)$i->county_id,'county'=>$countyNames[$i->county_id] ?? '', 'slug'=>$i->slug,'name'=>$i->name,'description'=>$i->description,'website'=>$i->website,'type'=>$i->type,'email'=>$i->email,'verified'=>(bool)$i->is_verified_trader,'sectors'=>$i->sectorEntities->pluck('sector_id')->unique()->values()->all(),'status'=>'published'];
             if ($hero['video']) $tables['media'][] = ['id'=>'institution:'.$i->id,'ownerId'=>(string)$i->id,'kind'=>'video','role'=>'experience','target'=>'/institutions/'.$i->slug,'name'=>$i->name.' — institution film','url'=>$hero['video'],'poster'=>$hero['poster'] ?? null,'status'=>'published'];
         }
+        // Landing page hero video (kiccwalkin.mp4)
+        $landingHero = MediaAsset::where('owner_type', 'landing_page')->where('slot', 'hero_video')->first();
+        if ($landingHero) {
+            $tables['media'][] = [
+                'id' => 'landing:1',
+                'ownerId' => '1',
+                'kind' => 'video',
+                'role' => 'hero',
+                'target' => '/',
+                'name' => 'KICC Landing Hero',
+                'url' => url('/media/video/' . $landingHero->path),
+                'poster' => null,
+                'status' => 'published',
+            ];
+        }
+
         $resolver = app(ProductMediaResolver::class);
         foreach (Product::with('county','images','variants')->where('status','active')->orderBy('name')->get() as $p) {
             $image = $resolver->resolve($p);
