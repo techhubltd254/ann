@@ -1,0 +1,1804 @@
+[
+  {
+    "module": "KICC",
+    "controller": "KiccAdminController",
+    "function": "index",
+    "routes": [
+      "Route::get('/kicc-admin', [\\App\\Http\\Controllers\\Web\\KiccAdminController::class, 'index'])->name('kicc.admin')->middleware('admin:kicc');"
+    ],
+    "status": "Preserved legacy handler; mutation untested",
+    "reason": "Handler exists; production mutation is not executed by migration."
+  },
+  {
+    "module": "KICC",
+    "controller": "KiccAdminController",
+    "function": "releaseEscrow",
+    "routes": [
+      "Route::post('/kicc-admin/escrow/{id}/release', [\\App\\Http\\Controllers\\Web\\KiccAdminController::class, 'releaseEscrow'])->name('kicc.admin.escrow.release')->middleware('admin:kicc');"
+    ],
+    "status": "Preserved legacy handler; mutation untested",
+    "reason": "Handler exists; production mutation is not executed by migration."
+  },
+  {
+    "module": "KICC",
+    "controller": "KiccAdminController",
+    "function": "approveService",
+    "routes": [
+      "Route::post('/kicc-admin/approve/{table}/{id}', [\\App\\Http\\Controllers\\Web\\KiccAdminController::class, 'approveService'])->name('kicc.admin.approve');"
+    ],
+    "status": "Preserved legacy handler; mutation untested",
+    "reason": "Handler exists; production mutation is not executed by migration."
+  },
+  {
+    "module": "KICC",
+    "controller": "KiccAdminController",
+    "function": "denyService",
+    "routes": [
+      "Route::post('/kicc-admin/deny/{table}/{id}', [\\App\\Http\\Controllers\\Web\\KiccAdminController::class, 'denyService'])->name('kicc.admin.deny');"
+    ],
+    "status": "Preserved legacy handler; mutation untested",
+    "reason": "Handler exists; production mutation is not executed by migration."
+  },
+  {
+    "module": "KICC",
+    "controller": "KiccAdminController",
+    "function": "runCommand",
+    "routes": [
+      "Route::post('/kicc-admin/artisan', [\\App\\Http\\Controllers\\Web\\KiccAdminController::class, 'runCommand'])->name('kicc.admin.artisan')->middleware('admin:kicc');"
+    ],
+    "status": "Preserved legacy handler; mutation untested",
+    "reason": "Handler exists; production mutation is not executed by migration."
+  },
+  {
+    "module": "KICC",
+    "controller": "KiccAdminController",
+    "function": "uploadCountyHero",
+    "routes": [
+      "Route::post('/kicc-admin/county/{slug}/hero', [\\App\\Http\\Controllers\\Web\\KiccAdminController::class, 'uploadCountyHero'])->name('kicc.admin.county.hero')->middleware('admin:kicc');"
+    ],
+    "status": "Preserved legacy handler; mutation untested",
+    "reason": "Handler exists; production mutation is not executed by migration."
+  },
+  {
+    "module": "KICC",
+    "controller": "KiccAdminController",
+    "function": "updatePlan",
+    "routes": [
+      "Route::post('/kicc-admin/plans/{id}', [\\App\\Http\\Controllers\\Web\\KiccAdminController::class, 'updatePlan'])->name('kicc.admin.plan.update')->middleware('admin:kicc');"
+    ],
+    "status": "Preserved legacy handler; mutation untested",
+    "reason": "Handler exists; production mutation is not executed by migration."
+  },
+  {
+    "module": "KICC",
+    "controller": "KiccAdminController",
+    "function": "uploadHeroVideo",
+    "routes": [
+      "Route::post('/kicc-admin/hero/upload', [\\App\\Http\\Controllers\\Web\\KiccAdminController::class, 'uploadHeroVideo'])->name('kicc.admin.hero.upload')->middleware('admin:kicc');"
+    ],
+    "status": "Preserved legacy handler; mutation untested",
+    "reason": "Handler exists; production mutation is not executed by migration."
+  },
+  {
+    "module": "KICC",
+    "controller": "KiccAdminController",
+    "function": "deleteHeroVideo",
+    "routes": [
+      "Route::post('/kicc-admin/hero/delete', [\\App\\Http\\Controllers\\Web\\KiccAdminController::class, 'deleteHeroVideo'])->name('kicc.admin.hero.delete')->middleware('admin:kicc');"
+    ],
+    "status": "Preserved legacy handler; mutation untested",
+    "reason": "Handler exists; production mutation is not executed by migration."
+  },
+  {
+    "module": "KICC",
+    "controller": "KiccAdminController",
+    "function": "storePipeline",
+    "routes": [
+      "Route::post('/kicc-admin/pipelines/store', [\\App\\Http\\Controllers\\Web\\KiccAdminController::class, 'storePipeline'])->name('kicc.admin.pipeline.store');"
+    ],
+    "status": "Preserved legacy handler; mutation untested",
+    "reason": "Handler exists; production mutation is not executed by migration."
+  },
+  {
+    "module": "KICC",
+    "controller": "KiccAdminController",
+    "function": "storeVenue",
+    "routes": [
+      "Route::post('/kicc-admin/venues/store', [\\App\\Http\\Controllers\\Web\\KiccAdminController::class, 'storeVenue'])->name('kicc.admin.venue.store')->middleware('admin:kicc');"
+    ],
+    "status": "Preserved legacy handler; mutation untested",
+    "reason": "Handler exists; production mutation is not executed by migration."
+  },
+  {
+    "module": "KICC",
+    "controller": "KiccAdminController",
+    "function": "updateVenue",
+    "routes": [
+      "Route::post('/kicc-admin/venues/{id}/update', [\\App\\Http\\Controllers\\Web\\KiccAdminController::class, 'updateVenue'])->name('kicc.admin.venue.update')->middleware('admin:kicc');"
+    ],
+    "status": "Preserved legacy handler; mutation untested",
+    "reason": "Handler exists; production mutation is not executed by migration."
+  },
+  {
+    "module": "County",
+    "controller": "CountyAdminController",
+    "function": "dashboard",
+    "routes": [
+      "Route::get('/county-admin/{slug}/pro', [\\App\\Http\\Controllers\\Web\\CountyAdminController::class, 'dashboard'])->name('county.admin.pro');"
+    ],
+    "status": "Preserved legacy handler; mutation untested",
+    "reason": "Handler exists; production mutation is not executed by migration."
+  },
+  {
+    "module": "County",
+    "controller": "CountyAdminController",
+    "function": "updateContent",
+    "routes": [
+      "Route::post('/county-admin/{slug}/pro/content', [\\App\\Http\\Controllers\\Web\\CountyAdminController::class, 'updateContent'])->name('county.admin.content');"
+    ],
+    "status": "Preserved legacy handler; mutation untested",
+    "reason": "Handler exists; production mutation is not executed by migration."
+  },
+  {
+    "module": "County",
+    "controller": "CountyAdminController",
+    "function": "updateDetails",
+    "routes": [
+      "Route::post('/county-admin/{slug}/pro/details', [\\App\\Http\\Controllers\\Web\\CountyAdminController::class, 'updateDetails'])->name('county.admin.details');"
+    ],
+    "status": "Preserved legacy handler; mutation untested",
+    "reason": "Handler exists; production mutation is not executed by migration."
+  },
+  {
+    "module": "County",
+    "controller": "CountyAdminController",
+    "function": "toggleSector",
+    "routes": [
+      "Route::post('/county-admin/{slug}/pro/sector', [\\App\\Http\\Controllers\\Web\\CountyAdminController::class, 'toggleSector'])->name('county.admin.sector');"
+    ],
+    "status": "Preserved legacy handler; mutation untested",
+    "reason": "Handler exists; production mutation is not executed by migration."
+  },
+  {
+    "module": "County",
+    "controller": "CountyAdminController",
+    "function": "toggleTileSector",
+    "routes": [
+      "Route::post('/county-admin/{slug}/pro/sector/tile', [\\App\\Http\\Controllers\\Web\\CountyAdminController::class, 'toggleTileSector'])->name('county.admin.sector.tile');"
+    ],
+    "status": "Preserved legacy handler; mutation untested",
+    "reason": "Handler exists; production mutation is not executed by migration."
+  },
+  {
+    "module": "County",
+    "controller": "CountyAdminController",
+    "function": "addEntity",
+    "routes": [
+      "Route::post('/county-admin/{slug}/pro/entity', [\\App\\Http\\Controllers\\Web\\CountyAdminController::class, 'addEntity'])->name('county.admin.entity');"
+    ],
+    "status": "Preserved legacy handler; mutation untested",
+    "reason": "Handler exists; production mutation is not executed by migration."
+  },
+  {
+    "module": "County",
+    "controller": "CountyAdminController",
+    "function": "deleteEntity",
+    "routes": [
+      "Route::post('/county-admin/{slug}/pro/entity/{entityId}/delete', [\\App\\Http\\Controllers\\Web\\CountyAdminController::class, 'deleteEntity'])->name('county.admin.entity.delete');"
+    ],
+    "status": "Preserved legacy handler; mutation untested",
+    "reason": "Handler exists; production mutation is not executed by migration."
+  },
+  {
+    "module": "County",
+    "controller": "CountyAdminController",
+    "function": "uploadImage",
+    "routes": [],
+    "status": "No direct action route",
+    "reason": "Helper entry or redirect invoked through a dashboard; no standalone route found."
+  },
+  {
+    "module": "County",
+    "controller": "CountyAdminController",
+    "function": "uploadSectorVideo",
+    "routes": [],
+    "status": "No direct action route",
+    "reason": "Helper entry or redirect invoked through a dashboard; no standalone route found."
+  },
+  {
+    "module": "County",
+    "controller": "CountyAdminController",
+    "function": "deleteSectorVideo",
+    "routes": [],
+    "status": "No direct action route",
+    "reason": "Helper entry or redirect invoked through a dashboard; no standalone route found."
+  },
+  {
+    "module": "County",
+    "controller": "CountyAdminController",
+    "function": "deleteImage",
+    "routes": [],
+    "status": "No direct action route",
+    "reason": "Helper entry or redirect invoked through a dashboard; no standalone route found."
+  },
+  {
+    "module": "County",
+    "controller": "CountyAdminController",
+    "function": "storeInstitution",
+    "routes": [
+      "Route::post('/county-admin/{slug}/pro/institutions', [\\App\\Http\\Controllers\\Web\\CountyAdminController::class, 'storeInstitution'])->name('county.admin.institution.store');"
+    ],
+    "status": "Preserved legacy handler; mutation untested",
+    "reason": "Handler exists; production mutation is not executed by migration."
+  },
+  {
+    "module": "County",
+    "controller": "CountyAdminController",
+    "function": "deleteInstitution",
+    "routes": [
+      "Route::post('/county-admin/{slug}/pro/institutions/{institutionId}/delete', [\\App\\Http\\Controllers\\Web\\CountyAdminController::class, 'deleteInstitution'])->name('county.admin.institution.delete');"
+    ],
+    "status": "Preserved legacy handler; mutation untested",
+    "reason": "Handler exists; production mutation is not executed by migration."
+  },
+  {
+    "module": "County",
+    "controller": "CountyAdminController",
+    "function": "uploadHeroVideo",
+    "routes": [],
+    "status": "No direct action route",
+    "reason": "Helper entry or redirect invoked through a dashboard; no standalone route found."
+  },
+  {
+    "module": "County",
+    "controller": "CountyAdminController",
+    "function": "deleteHeroVideo",
+    "routes": [],
+    "status": "No direct action route",
+    "reason": "Helper entry or redirect invoked through a dashboard; no standalone route found."
+  },
+  {
+    "module": "County",
+    "controller": "CountyAdminController",
+    "function": "uploadFlagVideo",
+    "routes": [],
+    "status": "No direct action route",
+    "reason": "Helper entry or redirect invoked through a dashboard; no standalone route found."
+  },
+  {
+    "module": "County",
+    "controller": "CountyAdminController",
+    "function": "deleteFlagVideo",
+    "routes": [],
+    "status": "No direct action route",
+    "reason": "Helper entry or redirect invoked through a dashboard; no standalone route found."
+  },
+  {
+    "module": "County",
+    "controller": "CountyAdminController",
+    "function": "upload4dVideo",
+    "routes": [],
+    "status": "No direct action route",
+    "reason": "Helper entry or redirect invoked through a dashboard; no standalone route found."
+  },
+  {
+    "module": "County",
+    "controller": "CountyAdminController",
+    "function": "delete4dVideo",
+    "routes": [],
+    "status": "No direct action route",
+    "reason": "Helper entry or redirect invoked through a dashboard; no standalone route found."
+  },
+  {
+    "module": "County",
+    "controller": "CountyAdminController",
+    "function": "updatePrice",
+    "routes": [
+      "Route::post('/county-admin/{slug}/pro/price', [\\App\\Http\\Controllers\\Web\\CountyAdminController::class, 'updatePrice'])->name('county.admin.price');"
+    ],
+    "status": "Preserved legacy handler; mutation untested",
+    "reason": "Handler exists; production mutation is not executed by migration."
+  },
+  {
+    "module": "County",
+    "controller": "CountyAdminController",
+    "function": "createAd",
+    "routes": [
+      "Route::post('/county-admin/{slug}/pro/ads', [\\App\\Http\\Controllers\\Web\\CountyAdminController::class, 'createAd'])->name('county.admin.ads');"
+    ],
+    "status": "Preserved legacy handler; mutation untested",
+    "reason": "Handler exists; production mutation is not executed by migration."
+  },
+  {
+    "module": "County",
+    "controller": "CountyAdminController",
+    "function": "purchasePackage",
+    "routes": [
+      "Route::post('/county-admin/{slug}/pro/package', [\\App\\Http\\Controllers\\Web\\CountyAdminController::class, 'purchasePackage'])->name('county.admin.package');"
+    ],
+    "status": "Preserved legacy handler; mutation untested",
+    "reason": "Handler exists; production mutation is not executed by migration."
+  },
+  {
+    "module": "County",
+    "controller": "CountyAdminController",
+    "function": "downloadReport",
+    "routes": [
+      "Route::get('/county-admin/{slug}/pro/report/{type}', [\\App\\Http\\Controllers\\Web\\CountyAdminController::class, 'downloadReport'])->name('county.admin.report');"
+    ],
+    "status": "Preserved legacy handler; mutation untested",
+    "reason": "Handler exists; production mutation is not executed by migration."
+  },
+  {
+    "module": "County",
+    "controller": "CountyAdminController",
+    "function": "updateTradeHub",
+    "routes": [
+      "Route::post('/county-admin/{slug}/pro/trade-hub', [\\App\\Http\\Controllers\\Web\\CountyAdminController::class, 'updateTradeHub'])->name('county.admin.trade.hub');"
+    ],
+    "status": "Preserved legacy handler; mutation untested",
+    "reason": "Handler exists; production mutation is not executed by migration."
+  },
+  {
+    "module": "County",
+    "controller": "CountyAdminController",
+    "function": "storeTraderSpotlight",
+    "routes": [
+      "Route::post('/county-admin/{slug}/pro/spotlight', [\\App\\Http\\Controllers\\Web\\CountyAdminController::class, 'storeTraderSpotlight'])->name('county.admin.spotlight.store');"
+    ],
+    "status": "Preserved legacy handler; mutation untested",
+    "reason": "Handler exists; production mutation is not executed by migration."
+  },
+  {
+    "module": "County",
+    "controller": "CountyAdminController",
+    "function": "updateBroadcast",
+    "routes": [
+      "Route::post('/county-admin/{slug}/pro/broadcast', [\\App\\Http\\Controllers\\Web\\CountyAdminController::class, 'updateBroadcast'])->name('county.admin.broadcast');"
+    ],
+    "status": "Preserved legacy handler; mutation untested",
+    "reason": "Handler exists; production mutation is not executed by migration."
+  },
+  {
+    "module": "County",
+    "controller": "CountyAdminController",
+    "function": "storeHousingProject",
+    "routes": [
+      "Route::post('/county-admin/{slug}/pro/housing', [\\App\\Http\\Controllers\\Web\\CountyAdminController::class, 'storeHousingProject'])->name('county.admin.housing.store');"
+    ],
+    "status": "Preserved legacy handler; mutation untested",
+    "reason": "Handler exists; production mutation is not executed by migration."
+  },
+  {
+    "module": "County",
+    "controller": "CountyAdminController",
+    "function": "storeDroneSequence",
+    "routes": [
+      "Route::post('/county-admin/{slug}/pro/drone', [\\App\\Http\\Controllers\\Web\\CountyAdminController::class, 'storeDroneSequence'])->name('county.admin.drone.store');"
+    ],
+    "status": "Preserved legacy handler; mutation untested",
+    "reason": "Handler exists; production mutation is not executed by migration."
+  },
+  {
+    "module": "County",
+    "controller": "CountyAdminController",
+    "function": "storeFloorPlan",
+    "routes": [
+      "Route::post('/county-admin/{slug}/pro/floor-plan', [\\App\\Http\\Controllers\\Web\\CountyAdminController::class, 'storeFloorPlan'])->name('county.admin.floor.store');"
+    ],
+    "status": "Preserved legacy handler; mutation untested",
+    "reason": "Handler exists; production mutation is not executed by migration."
+  },
+  {
+    "module": "County",
+    "controller": "CountyAdminController",
+    "function": "storeConsentForm",
+    "routes": [
+      "Route::post('/county-admin/{slug}/pro/consent', [\\App\\Http\\Controllers\\Web\\CountyAdminController::class, 'storeConsentForm'])->name('county.admin.consent.store');"
+    ],
+    "status": "Preserved legacy handler; mutation untested",
+    "reason": "Handler exists; production mutation is not executed by migration."
+  },
+  {
+    "module": "County",
+    "controller": "CountyAdminController",
+    "function": "storeVoiceNote",
+    "routes": [
+      "Route::post('/county-admin/{slug}/pro/voice-note', [\\App\\Http\\Controllers\\Web\\CountyAdminController::class, 'storeVoiceNote'])->name('county.admin.voice.store');"
+    ],
+    "status": "Preserved legacy handler; mutation untested",
+    "reason": "Handler exists; production mutation is not executed by migration."
+  },
+  {
+    "module": "County",
+    "controller": "CountyAdminController",
+    "function": "storeLandmark",
+    "routes": [
+      "Route::post('/county-admin/{slug}/pro/landmark', [\\App\\Http\\Controllers\\Web\\CountyAdminController::class, 'storeLandmark'])->name('county.admin.landmark.store');"
+    ],
+    "status": "Preserved legacy handler; mutation untested",
+    "reason": "Handler exists; production mutation is not executed by migration."
+  },
+  {
+    "module": "Institution",
+    "controller": "InstitutionAdminController",
+    "function": "dashboard",
+    "routes": [
+      "Route::get('/institution-admin/{institution}', [\\App\\Http\\Controllers\\Web\\InstitutionAdminController::class, 'dashboard'])->name('institution.admin');"
+    ],
+    "status": "Preserved legacy handler; mutation untested",
+    "reason": "Handler exists; production mutation is not executed by migration."
+  },
+  {
+    "module": "Institution",
+    "controller": "InstitutionAdminController",
+    "function": "updateProfile",
+    "routes": [
+      "Route::post('/institution-admin/{institution}/profile', [\\App\\Http\\Controllers\\Web\\InstitutionAdminController::class, 'updateProfile'])->name('institution.admin.profile');"
+    ],
+    "status": "Preserved legacy handler; mutation untested",
+    "reason": "Handler exists; production mutation is not executed by migration."
+  },
+  {
+    "module": "Institution",
+    "controller": "InstitutionAdminController",
+    "function": "uploadLogo",
+    "routes": [
+      "Route::post('/institution-admin/{institution}/logo', [\\App\\Http\\Controllers\\Web\\InstitutionAdminController::class, 'uploadLogo'])->name('institution.admin.logo');"
+    ],
+    "status": "Preserved legacy handler; mutation untested",
+    "reason": "Handler exists; production mutation is not executed by migration."
+  },
+  {
+    "module": "Institution",
+    "controller": "InstitutionAdminController",
+    "function": "uploadHeroVideo",
+    "routes": [
+      "Route::post('/institution-admin/{institution}/hero-video', [\\App\\Http\\Controllers\\Web\\InstitutionAdminController::class, 'uploadHeroVideo'])->name('institution.admin.hero-video');"
+    ],
+    "status": "Preserved legacy handler; mutation untested",
+    "reason": "Handler exists; production mutation is not executed by migration."
+  },
+  {
+    "module": "Institution",
+    "controller": "InstitutionAdminController",
+    "function": "uploadFlagVideo",
+    "routes": [
+      "Route::post('/institution-admin/{institution}/flag-video', [\\App\\Http\\Controllers\\Web\\InstitutionAdminController::class, 'uploadFlagVideo'])->name('institution.admin.flag-video');"
+    ],
+    "status": "Preserved legacy handler; mutation untested",
+    "reason": "Handler exists; production mutation is not executed by migration."
+  },
+  {
+    "module": "Institution",
+    "controller": "InstitutionAdminController",
+    "function": "updateProduction",
+    "routes": [
+      "Route::post('/institution-admin/{institution}/production', [\\App\\Http\\Controllers\\Web\\InstitutionAdminController::class, 'updateProduction'])->name('institution.admin.production');"
+    ],
+    "status": "Preserved legacy handler; mutation untested",
+    "reason": "Handler exists; production mutation is not executed by migration."
+  },
+  {
+    "module": "Institution",
+    "controller": "InstitutionAdminController",
+    "function": "updateSectors",
+    "routes": [
+      "Route::post('/institution-admin/{institution}/sectors', [\\App\\Http\\Controllers\\Web\\InstitutionAdminController::class, 'updateSectors'])->name('institution.admin.sectors');"
+    ],
+    "status": "Preserved legacy handler; mutation untested",
+    "reason": "Handler exists; production mutation is not executed by migration."
+  },
+  {
+    "module": "Institution",
+    "controller": "InstitutionAdminController",
+    "function": "storeProduct",
+    "routes": [
+      "Route::post('/institution-admin/{institution}/products', [\\App\\Http\\Controllers\\Web\\InstitutionAdminController::class, 'storeProduct'])->name('institution.admin.products.store');"
+    ],
+    "status": "Preserved legacy handler; mutation untested",
+    "reason": "Handler exists; production mutation is not executed by migration."
+  },
+  {
+    "module": "Institution",
+    "controller": "InstitutionAdminController",
+    "function": "updateProduct",
+    "routes": [
+      "Route::post('/institution-admin/{institution}/products/{product}/update', [\\App\\Http\\Controllers\\Web\\InstitutionAdminController::class, 'updateProduct'])->name('institution.admin.products.update');"
+    ],
+    "status": "Preserved legacy handler; mutation untested",
+    "reason": "Handler exists; production mutation is not executed by migration."
+  },
+  {
+    "module": "Institution",
+    "controller": "InstitutionAdminController",
+    "function": "deleteProduct",
+    "routes": [
+      "Route::post('/institution-admin/{institution}/products/{index}/delete', [\\App\\Http\\Controllers\\Web\\InstitutionAdminController::class, 'deleteProduct'])->name('institution.admin.products.delete');"
+    ],
+    "status": "Preserved legacy handler; mutation untested",
+    "reason": "Handler exists; production mutation is not executed by migration."
+  },
+  {
+    "module": "Institution",
+    "controller": "InstitutionAdminController",
+    "function": "uploadVideo",
+    "routes": [
+      "Route::post('/institution-admin/{institution}/videos', [\\App\\Http\\Controllers\\Web\\InstitutionAdminController::class, 'uploadVideo'])->name('institution.admin.videos.upload');"
+    ],
+    "status": "Preserved legacy handler; mutation untested",
+    "reason": "Handler exists; production mutation is not executed by migration."
+  },
+  {
+    "module": "Institution",
+    "controller": "InstitutionAdminController",
+    "function": "deleteVideo",
+    "routes": [
+      "Route::post('/institution-admin/{institution}/videos/{index}/delete', [\\App\\Http\\Controllers\\Web\\InstitutionAdminController::class, 'deleteVideo'])->name('institution.admin.videos.delete');"
+    ],
+    "status": "Preserved legacy handler; mutation untested",
+    "reason": "Handler exists; production mutation is not executed by migration."
+  },
+  {
+    "module": "Institution",
+    "controller": "InstitutionAdminController",
+    "function": "sync",
+    "routes": [
+      "Route::get('/institution-admin/{institution}/sync', [\\App\\Http\\Controllers\\Web\\InstitutionAdminController::class, 'sync'])->name('institution.admin.sync');"
+    ],
+    "status": "Fixed: POST + CSRF",
+    "reason": "GET write/deletion disabled; original handler preserved behind POST and real form submission. Production destructive mutation not exercised."
+  },
+  {
+    "module": "Institution",
+    "controller": "InstitutionAdminController",
+    "function": "addTeamMember",
+    "routes": [
+      "Route::post('/institution-admin/{institution}/team', [\\App\\Http\\Controllers\\Web\\InstitutionAdminController::class, 'addTeamMember'])->name('institution.admin.team.add');"
+    ],
+    "status": "Preserved legacy handler; mutation untested",
+    "reason": "Handler exists; production mutation is not executed by migration."
+  },
+  {
+    "module": "Institution",
+    "controller": "InstitutionAdminController",
+    "function": "removeTeamMember",
+    "routes": [
+      "Route::post('/institution-admin/{institution}/team/{userId}/remove', [\\App\\Http\\Controllers\\Web\\InstitutionAdminController::class, 'removeTeamMember'])->name('institution.admin.team.remove');"
+    ],
+    "status": "Preserved legacy handler; mutation untested",
+    "reason": "Handler exists; production mutation is not executed by migration."
+  },
+  {
+    "module": "National government",
+    "controller": "NationalAdminController",
+    "function": "index",
+    "routes": [
+      "Route::get('/redirect', [\\App\\Http\\Controllers\\Web\\NationalAdminController::class, 'index'])->name('index');"
+    ],
+    "status": "Preserved legacy handler; mutation untested",
+    "reason": "Handler exists; production mutation is not executed by migration."
+  },
+  {
+    "module": "National government",
+    "controller": "NationalAdminController",
+    "function": "dashboard",
+    "routes": [
+      "Route::get('/', [\\App\\Http\\Controllers\\Web\\NationalAdminController::class, 'dashboard'])->name('dashboard');"
+    ],
+    "status": "Preserved legacy handler; mutation untested",
+    "reason": "Handler exists; production mutation is not executed by migration."
+  },
+  {
+    "module": "National government",
+    "controller": "NationalAdminController",
+    "function": "uploadNationalHero",
+    "routes": [
+      "Route::post('/hero', [\\App\\Http\\Controllers\\Web\\NationalAdminController::class, 'uploadNationalHero'])->name('hero.upload');"
+    ],
+    "status": "Preserved legacy handler; mutation untested",
+    "reason": "Handler exists; production mutation is not executed by migration."
+  },
+  {
+    "module": "National government",
+    "controller": "NationalAdminController",
+    "function": "deleteNationalHero",
+    "routes": [
+      "Route::post('/hero/delete', [\\App\\Http\\Controllers\\Web\\NationalAdminController::class, 'deleteNationalHero'])->name('hero.delete');"
+    ],
+    "status": "Preserved legacy handler; mutation untested",
+    "reason": "Handler exists; production mutation is not executed by migration."
+  },
+  {
+    "module": "National government",
+    "controller": "NationalAdminController",
+    "function": "uploadMinistryVideo",
+    "routes": [
+      "Route::post('/ministries/{ministry}/video', [\\App\\Http\\Controllers\\Web\\NationalAdminController::class, 'uploadMinistryVideo'])->name('ministry.video.upload');"
+    ],
+    "status": "Preserved legacy handler; mutation untested",
+    "reason": "Handler exists; production mutation is not executed by migration."
+  },
+  {
+    "module": "National government",
+    "controller": "NationalAdminController",
+    "function": "deleteMinistryVideo",
+    "routes": [
+      "Route::post('/ministries/{ministry}/video/delete', [\\App\\Http\\Controllers\\Web\\NationalAdminController::class, 'deleteMinistryVideo'])->name('ministry.video.delete');"
+    ],
+    "status": "Preserved legacy handler; mutation untested",
+    "reason": "Handler exists; production mutation is not executed by migration."
+  },
+  {
+    "module": "National government",
+    "controller": "NationalAdminController",
+    "function": "uploadMinistryFlag",
+    "routes": [
+      "Route::post('/ministries/{ministry}/flag', [\\App\\Http\\Controllers\\Web\\NationalAdminController::class, 'uploadMinistryFlag'])->name('ministry.flag.upload');"
+    ],
+    "status": "Preserved legacy handler; mutation untested",
+    "reason": "Handler exists; production mutation is not executed by migration."
+  },
+  {
+    "module": "National government",
+    "controller": "NationalAdminController",
+    "function": "deleteMinistryFlag",
+    "routes": [
+      "Route::post('/ministries/{ministry}/flag/delete', [\\App\\Http\\Controllers\\Web\\NationalAdminController::class, 'deleteMinistryFlag'])->name('ministry.flag.delete');"
+    ],
+    "status": "Preserved legacy handler; mutation untested",
+    "reason": "Handler exists; production mutation is not executed by migration."
+  },
+  {
+    "module": "National government",
+    "controller": "NationalAdminController",
+    "function": "uploadNationalFlag",
+    "routes": [
+      "Route::post('/flag', [\\App\\Http\\Controllers\\Web\\NationalAdminController::class, 'uploadNationalFlag'])->name('flag.upload');"
+    ],
+    "status": "Preserved legacy handler; mutation untested",
+    "reason": "Handler exists; production mutation is not executed by migration."
+  },
+  {
+    "module": "National government",
+    "controller": "NationalAdminController",
+    "function": "deleteNationalFlag",
+    "routes": [
+      "Route::post('/flag/delete', [\\App\\Http\\Controllers\\Web\\NationalAdminController::class, 'deleteNationalFlag'])->name('flag.delete');"
+    ],
+    "status": "Preserved legacy handler; mutation untested",
+    "reason": "Handler exists; production mutation is not executed by migration."
+  },
+  {
+    "module": "National government",
+    "controller": "NationalAdminController",
+    "function": "storeMinistry",
+    "routes": [
+      "Route::post('/ministries', [\\App\\Http\\Controllers\\Web\\NationalAdminController::class, 'storeMinistry'])->name('ministry.store');"
+    ],
+    "status": "Preserved legacy handler; mutation untested",
+    "reason": "Handler exists; production mutation is not executed by migration."
+  },
+  {
+    "module": "National government",
+    "controller": "NationalAdminController",
+    "function": "updateMinistry",
+    "routes": [
+      "Route::post('/ministries/{ministry}', [\\App\\Http\\Controllers\\Web\\NationalAdminController::class, 'updateMinistry'])->name('ministry.update');"
+    ],
+    "status": "Preserved legacy handler; mutation untested",
+    "reason": "Handler exists; production mutation is not executed by migration."
+  },
+  {
+    "module": "National government",
+    "controller": "NationalAdminController",
+    "function": "deleteMinistry",
+    "routes": [
+      "Route::get('/ministries/{ministry}/delete', [\\App\\Http\\Controllers\\Web\\NationalAdminController::class, 'deleteMinistry'])->name('ministry.delete');"
+    ],
+    "status": "Fixed: POST + CSRF",
+    "reason": "GET write/deletion disabled; original handler preserved behind POST and real form submission. Production destructive mutation not exercised."
+  },
+  {
+    "module": "National government",
+    "controller": "NationalAdminController",
+    "function": "storeAgency",
+    "routes": [
+      "Route::post('/agencies', [\\App\\Http\\Controllers\\Web\\NationalAdminController::class, 'storeAgency'])->name('agency.store');"
+    ],
+    "status": "Preserved legacy handler; mutation untested",
+    "reason": "Handler exists; production mutation is not executed by migration."
+  },
+  {
+    "module": "National government",
+    "controller": "NationalAdminController",
+    "function": "deleteAgency",
+    "routes": [
+      "Route::get('/agencies/{agency}/delete', [\\App\\Http\\Controllers\\Web\\NationalAdminController::class, 'deleteAgency'])->name('agency.delete');"
+    ],
+    "status": "Fixed: POST + CSRF",
+    "reason": "GET write/deletion disabled; original handler preserved behind POST and real form submission. Production destructive mutation not exercised."
+  },
+  {
+    "module": "3D assets",
+    "controller": "Admin3dAssetsController",
+    "function": "index",
+    "routes": [
+      "Route::get('/kicc-admin/3d-assets', [\\App\\Http\\Controllers\\Web\\Admin3dAssetsController::class, 'index'])->name('admin.3d.assets')->middleware('admin:kicc');",
+      "Route::get('/institution-admin/{institution}/3d', [\\App\\Http\\Controllers\\Web\\Admin3dAssetsController::class, 'index'])->name('admin.3d.institution');"
+    ],
+    "status": "Preserved legacy handler; mutation untested",
+    "reason": "Handler exists; production mutation is not executed by migration."
+  },
+  {
+    "module": "3D assets",
+    "controller": "Admin3dAssetsController",
+    "function": "upload",
+    "routes": [
+      "Route::match(['get', 'post'], '/kicc-admin/3d-assets/upload', [\\App\\Http\\Controllers\\Web\\Admin3dAssetsController::class, 'upload'])->name('admin.3d.upload')->middleware('admin:kicc');",
+      "Route::match(['get', 'post'], '/institution-admin/{institution}/3d/upload', [\\App\\Http\\Controllers\\Web\\Admin3dAssetsController::class, 'upload'])->name('admin.3d.upload.institution');"
+    ],
+    "status": "Preserved legacy handler; mutation untested",
+    "reason": "Handler exists; production mutation is not executed by migration."
+  },
+  {
+    "module": "3D assets",
+    "controller": "Admin3dAssetsController",
+    "function": "attach",
+    "routes": [
+      "Route::post('/kicc-admin/3d-assets/{assetId}/attach', [\\App\\Http\\Controllers\\Web\\Admin3dAssetsController::class, 'attach'])->name('admin.3d.attach')->middleware('admin:kicc');"
+    ],
+    "status": "Preserved legacy handler; mutation untested",
+    "reason": "Handler exists; production mutation is not executed by migration."
+  },
+  {
+    "module": "3D assets",
+    "controller": "Admin3dAssetsController",
+    "function": "detach",
+    "routes": [
+      "Route::post('/kicc-admin/3d-assets/{assetId}/detach', [\\App\\Http\\Controllers\\Web\\Admin3dAssetsController::class, 'detach'])->name('admin.3d.detach')->middleware('admin:kicc');"
+    ],
+    "status": "Preserved legacy handler; mutation untested",
+    "reason": "Handler exists; production mutation is not executed by migration."
+  },
+  {
+    "module": "3D assets",
+    "controller": "Admin3dAssetsController",
+    "function": "delete",
+    "routes": [
+      "Route::post('/kicc-admin/3d-assets/{assetId}/delete', [\\App\\Http\\Controllers\\Web\\Admin3dAssetsController::class, 'delete'])->name('admin.3d.delete')->middleware('admin:kicc');"
+    ],
+    "status": "Preserved legacy handler; mutation untested",
+    "reason": "Handler exists; production mutation is not executed by migration."
+  },
+  {
+    "module": "3D assets",
+    "controller": "Admin3dAssetsController",
+    "function": "storeRoom3d",
+    "routes": [
+      "Route::post('/institution-admin/{institution}/3d/room3d', [\\App\\Http\\Controllers\\Web\\Admin3dAssetsController::class, 'storeRoom3d'])->name('admin.3d.room3d.store.institution');"
+    ],
+    "status": "Preserved legacy handler; mutation untested",
+    "reason": "Handler exists; production mutation is not executed by migration."
+  },
+  {
+    "module": "Media library",
+    "controller": "MediaLibraryController",
+    "function": "index",
+    "routes": [
+      "Route::get('/', [\\App\\Http\\Controllers\\Web\\MediaLibraryController::class, 'index'])->name('media.library');"
+    ],
+    "status": "Preserved legacy handler; mutation untested",
+    "reason": "Handler exists; production mutation is not executed by migration."
+  },
+  {
+    "module": "Media library",
+    "controller": "MediaLibraryController",
+    "function": "upload",
+    "routes": [
+      "Route::get('/upload', [\\App\\Http\\Controllers\\Web\\MediaLibraryController::class, 'upload'])->name('media.upload');"
+    ],
+    "status": "Preserved legacy handler; mutation untested",
+    "reason": "Handler exists; production mutation is not executed by migration."
+  },
+  {
+    "module": "Media library",
+    "controller": "MediaLibraryController",
+    "function": "store",
+    "routes": [
+      "Route::post('/upload', [\\App\\Http\\Controllers\\Web\\MediaLibraryController::class, 'store'])->name('media.store');"
+    ],
+    "status": "Preserved legacy handler; mutation untested",
+    "reason": "Handler exists; production mutation is not executed by migration."
+  },
+  {
+    "module": "Media library",
+    "controller": "MediaLibraryController",
+    "function": "show",
+    "routes": [
+      "Route::get('/{asset}', [\\App\\Http\\Controllers\\Web\\MediaLibraryController::class, 'show'])->name('media.show');"
+    ],
+    "status": "Preserved legacy handler; mutation untested",
+    "reason": "Handler exists; production mutation is not executed by migration."
+  },
+  {
+    "module": "Media library",
+    "controller": "MediaLibraryController",
+    "function": "attach",
+    "routes": [
+      "Route::post('/{asset}/attach', [\\App\\Http\\Controllers\\Web\\MediaLibraryController::class, 'attach'])->name('media.attach');"
+    ],
+    "status": "Preserved legacy handler; mutation untested",
+    "reason": "Handler exists; production mutation is not executed by migration."
+  },
+  {
+    "module": "Media library",
+    "controller": "MediaLibraryController",
+    "function": "detach",
+    "routes": [
+      "Route::post('/{asset}/detach', [\\App\\Http\\Controllers\\Web\\MediaLibraryController::class, 'detach'])->name('media.detach');"
+    ],
+    "status": "Preserved legacy handler; mutation untested",
+    "reason": "Handler exists; production mutation is not executed by migration."
+  },
+  {
+    "module": "Media library",
+    "controller": "MediaLibraryController",
+    "function": "dispatchPipeline",
+    "routes": [
+      "Route::post('/{asset}/pipeline', [\\App\\Http\\Controllers\\Web\\MediaLibraryController::class, 'dispatchPipeline'])->name('media.pipeline.dispatch');"
+    ],
+    "status": "Preserved legacy handler; mutation untested",
+    "reason": "Handler exists; production mutation is not executed by migration."
+  },
+  {
+    "module": "Media library",
+    "controller": "MediaLibraryController",
+    "function": "jobStatus",
+    "routes": [
+      "Route::get('/jobs/{job}/status', [\\App\\Http\\Controllers\\Web\\MediaLibraryController::class, 'jobStatus'])->name('media.job.status');"
+    ],
+    "status": "Preserved legacy handler; mutation untested",
+    "reason": "Handler exists; production mutation is not executed by migration."
+  },
+  {
+    "module": "Media library",
+    "controller": "MediaLibraryController",
+    "function": "cancelJob",
+    "routes": [
+      "Route::post('/jobs/{job}/cancel', [\\App\\Http\\Controllers\\Web\\MediaLibraryController::class, 'cancelJob'])->name('media.job.cancel');"
+    ],
+    "status": "Preserved legacy handler; mutation untested",
+    "reason": "Handler exists; production mutation is not executed by migration."
+  },
+  {
+    "module": "Media library",
+    "controller": "MediaLibraryController",
+    "function": "destroy",
+    "routes": [
+      "Route::delete('/{asset}', [\\App\\Http\\Controllers\\Web\\MediaLibraryController::class, 'destroy'])->name('media.destroy');"
+    ],
+    "status": "Preserved legacy handler; mutation untested",
+    "reason": "Handler exists; production mutation is not executed by migration."
+  },
+  {
+    "module": "Media library",
+    "controller": "MediaLibraryController",
+    "function": "presignedUploadUrl",
+    "routes": [
+      "Route::post('/api/r2/presigned-upload', [\\App\\Http\\Controllers\\Web\\MediaLibraryController::class, 'presignedUploadUrl'])->middleware('auth');"
+    ],
+    "status": "Preserved legacy handler; mutation untested",
+    "reason": "Handler exists; production mutation is not executed by migration."
+  },
+  {
+    "module": "Media library",
+    "controller": "MediaLibraryController",
+    "function": "confirmR2Upload",
+    "routes": [
+      "Route::post('/api/r2/confirm-upload', [\\App\\Http\\Controllers\\Web\\MediaLibraryController::class, 'confirmR2Upload'])->middleware('auth');"
+    ],
+    "status": "Preserved legacy handler; mutation untested",
+    "reason": "Handler exists; production mutation is not executed by migration."
+  },
+  {
+    "module": "KICC website CMS",
+    "controller": "CmsController",
+    "function": "page",
+    "routes": [],
+    "status": "No direct action route",
+    "reason": "Helper entry or redirect invoked through a dashboard; no standalone route found."
+  },
+  {
+    "module": "KICC website CMS",
+    "controller": "CmsController",
+    "function": "about",
+    "routes": [],
+    "status": "No direct action route",
+    "reason": "Helper entry or redirect invoked through a dashboard; no standalone route found."
+  },
+  {
+    "module": "KICC website CMS",
+    "controller": "CmsController",
+    "function": "mission",
+    "routes": [],
+    "status": "No direct action route",
+    "reason": "Helper entry or redirect invoked through a dashboard; no standalone route found."
+  },
+  {
+    "module": "KICC website CMS",
+    "controller": "CmsController",
+    "function": "history",
+    "routes": [],
+    "status": "No direct action route",
+    "reason": "Helper entry or redirect invoked through a dashboard; no standalone route found."
+  },
+  {
+    "module": "KICC website CMS",
+    "controller": "CmsController",
+    "function": "board",
+    "routes": [],
+    "status": "No direct action route",
+    "reason": "Helper entry or redirect invoked through a dashboard; no standalone route found."
+  },
+  {
+    "module": "KICC website CMS",
+    "controller": "CmsController",
+    "function": "management",
+    "routes": [],
+    "status": "No direct action route",
+    "reason": "Helper entry or redirect invoked through a dashboard; no standalone route found."
+  },
+  {
+    "module": "KICC website CMS",
+    "controller": "CmsController",
+    "function": "faq",
+    "routes": [],
+    "status": "No direct action route",
+    "reason": "Helper entry or redirect invoked through a dashboard; no standalone route found."
+  },
+  {
+    "module": "KICC website CMS",
+    "controller": "CmsController",
+    "function": "pricing",
+    "routes": [],
+    "status": "No direct action route",
+    "reason": "Helper entry or redirect invoked through a dashboard; no standalone route found."
+  },
+  {
+    "module": "KICC website CMS",
+    "controller": "CmsController",
+    "function": "videoGallery",
+    "routes": [],
+    "status": "No direct action route",
+    "reason": "Helper entry or redirect invoked through a dashboard; no standalone route found."
+  },
+  {
+    "module": "KICC website CMS",
+    "controller": "CmsController",
+    "function": "services",
+    "routes": [],
+    "status": "No direct action route",
+    "reason": "Helper entry or redirect invoked through a dashboard; no standalone route found."
+  },
+  {
+    "module": "KICC website CMS",
+    "controller": "CmsController",
+    "function": "adminIndex",
+    "routes": [
+      "Route::get('/', [\\App\\Http\\Controllers\\Web\\CmsController::class, 'adminIndex'])->name('index');"
+    ],
+    "status": "Preserved legacy handler; mutation untested",
+    "reason": "Handler exists; production mutation is not executed by migration."
+  },
+  {
+    "module": "KICC website CMS",
+    "controller": "CmsController",
+    "function": "updatePage",
+    "routes": [
+      "Route::post('/pages/{page}', [\\App\\Http\\Controllers\\Web\\CmsController::class, 'updatePage'])->name('page.update');"
+    ],
+    "status": "Preserved legacy handler; mutation untested",
+    "reason": "Handler exists; production mutation is not executed by migration."
+  },
+  {
+    "module": "KICC website CMS",
+    "controller": "CmsController",
+    "function": "storePage",
+    "routes": [
+      "Route::post('/pages', [\\App\\Http\\Controllers\\Web\\CmsController::class, 'storePage'])->name('page.store');"
+    ],
+    "status": "Preserved legacy handler; mutation untested",
+    "reason": "Handler exists; production mutation is not executed by migration."
+  },
+  {
+    "module": "KICC website CMS",
+    "controller": "CmsController",
+    "function": "storeTeamMember",
+    "routes": [
+      "Route::post('/team', [\\App\\Http\\Controllers\\Web\\CmsController::class, 'storeTeamMember'])->name('team.store');"
+    ],
+    "status": "Preserved legacy handler; mutation untested",
+    "reason": "Handler exists; production mutation is not executed by migration."
+  },
+  {
+    "module": "KICC website CMS",
+    "controller": "CmsController",
+    "function": "updateTeamMember",
+    "routes": [
+      "Route::post('/team/{member}', [\\App\\Http\\Controllers\\Web\\CmsController::class, 'updateTeamMember'])->name('team.update');"
+    ],
+    "status": "Preserved legacy handler; mutation untested",
+    "reason": "Handler exists; production mutation is not executed by migration."
+  },
+  {
+    "module": "KICC website CMS",
+    "controller": "CmsController",
+    "function": "deleteTeamMember",
+    "routes": [
+      "Route::get('/team/{member}/delete', [\\App\\Http\\Controllers\\Web\\CmsController::class, 'deleteTeamMember'])->name('team.delete');"
+    ],
+    "status": "Fixed: POST + CSRF",
+    "reason": "GET write/deletion disabled; original handler preserved behind POST and real form submission. Production destructive mutation not exercised."
+  },
+  {
+    "module": "KICC website CMS",
+    "controller": "CmsController",
+    "function": "storeTimelineEvent",
+    "routes": [
+      "Route::post('/timeline', [\\App\\Http\\Controllers\\Web\\CmsController::class, 'storeTimelineEvent'])->name('timeline.store');"
+    ],
+    "status": "Preserved legacy handler; mutation untested",
+    "reason": "Handler exists; production mutation is not executed by migration."
+  },
+  {
+    "module": "KICC website CMS",
+    "controller": "CmsController",
+    "function": "deleteTimelineEvent",
+    "routes": [
+      "Route::get('/timeline/{event}/delete', [\\App\\Http\\Controllers\\Web\\CmsController::class, 'deleteTimelineEvent'])->name('timeline.delete');"
+    ],
+    "status": "Fixed: POST + CSRF",
+    "reason": "GET write/deletion disabled; original handler preserved behind POST and real form submission. Production destructive mutation not exercised."
+  },
+  {
+    "module": "KICC website CMS",
+    "controller": "CmsController",
+    "function": "storeFaq",
+    "routes": [
+      "Route::post('/faq', [\\App\\Http\\Controllers\\Web\\CmsController::class, 'storeFaq'])->name('faq.store');"
+    ],
+    "status": "Preserved legacy handler; mutation untested",
+    "reason": "Handler exists; production mutation is not executed by migration."
+  },
+  {
+    "module": "KICC website CMS",
+    "controller": "CmsController",
+    "function": "updateFaq",
+    "routes": [
+      "Route::post('/faq/{faq}', [\\App\\Http\\Controllers\\Web\\CmsController::class, 'updateFaq'])->name('faq.update');"
+    ],
+    "status": "Preserved legacy handler; mutation untested",
+    "reason": "Handler exists; production mutation is not executed by migration."
+  },
+  {
+    "module": "KICC website CMS",
+    "controller": "CmsController",
+    "function": "deleteFaq",
+    "routes": [
+      "Route::get('/faq/{faq}/delete', [\\App\\Http\\Controllers\\Web\\CmsController::class, 'deleteFaq'])->name('faq.delete');"
+    ],
+    "status": "Fixed: POST + CSRF",
+    "reason": "GET write/deletion disabled; original handler preserved behind POST and real form submission. Production destructive mutation not exercised."
+  },
+  {
+    "module": "KICC website CMS",
+    "controller": "CmsController",
+    "function": "storeVideo",
+    "routes": [
+      "Route::post('/video', [\\App\\Http\\Controllers\\Web\\CmsController::class, 'storeVideo'])->name('video.store');"
+    ],
+    "status": "Preserved legacy handler; mutation untested",
+    "reason": "Handler exists; production mutation is not executed by migration."
+  },
+  {
+    "module": "KICC website CMS",
+    "controller": "CmsController",
+    "function": "deleteVideo",
+    "routes": [
+      "Route::get('/video/{video}/delete', [\\App\\Http\\Controllers\\Web\\CmsController::class, 'deleteVideo'])->name('video.delete');"
+    ],
+    "status": "Fixed: POST + CSRF",
+    "reason": "GET write/deletion disabled; original handler preserved behind POST and real form submission. Production destructive mutation not exercised."
+  },
+  {
+    "module": "KICC",
+    "label": "Overview",
+    "tab": "overview",
+    "url": "/kicc-admin?tab=overview",
+    "status": "Render checked",
+    "reason": "Authenticated read-only render, mutation not exercised.",
+    "http": 200,
+    "form_actions": 0
+  },
+  {
+    "module": "KICC",
+    "label": "Sub-Portals",
+    "tab": "portals",
+    "url": "/kicc-admin?tab=portals",
+    "status": "Render checked",
+    "reason": "Authenticated read-only render, mutation not exercised.",
+    "http": 200,
+    "form_actions": 0
+  },
+  {
+    "module": "KICC",
+    "label": "Counties (47)",
+    "tab": "counties",
+    "url": "/kicc-admin?tab=counties",
+    "status": "Render checked",
+    "reason": "Authenticated read-only render, mutation not exercised.",
+    "http": 200,
+    "form_actions": 0
+  },
+  {
+    "module": "KICC",
+    "label": "Institutions",
+    "tab": "institutions",
+    "url": "/kicc-admin?tab=institutions",
+    "status": "Render checked",
+    "reason": "Authenticated read-only render, mutation not exercised.",
+    "http": 200,
+    "form_actions": 0
+  },
+  {
+    "module": "KICC",
+    "label": "National Govt",
+    "tab": "national",
+    "url": "/kicc-admin?tab=national",
+    "status": "Render checked",
+    "reason": "Authenticated read-only render, mutation not exercised.",
+    "http": 200,
+    "form_actions": 0
+  },
+  {
+    "module": "KICC",
+    "label": "Exhibitors",
+    "tab": "exhibitors",
+    "url": "/kicc-admin?tab=exhibitors",
+    "status": "Render checked",
+    "reason": "Authenticated read-only render, mutation not exercised.",
+    "http": 200,
+    "form_actions": 0
+  },
+  {
+    "module": "KICC",
+    "label": "Orders",
+    "tab": "orders",
+    "url": "/kicc-admin?tab=orders",
+    "status": "Render checked",
+    "reason": "Authenticated read-only render, mutation not exercised.",
+    "http": 200,
+    "form_actions": 0
+  },
+  {
+    "module": "KICC",
+    "label": "Providers",
+    "tab": "providers",
+    "url": "/kicc-admin?tab=providers",
+    "status": "Render checked",
+    "reason": "Authenticated read-only render, mutation not exercised.",
+    "http": 200,
+    "form_actions": 0
+  },
+  {
+    "module": "KICC",
+    "label": "Escrow",
+    "tab": "escrow",
+    "url": "/kicc-admin?tab=escrow",
+    "status": "Render checked",
+    "reason": "Authenticated read-only render, mutation not exercised.",
+    "http": 200,
+    "form_actions": 0
+  },
+  {
+    "module": "KICC",
+    "label": "3D Assets",
+    "tab": "3d_assets",
+    "url": "/kicc-admin?tab=3d_assets",
+    "status": "Render checked",
+    "reason": "Authenticated read-only render, mutation not exercised.",
+    "http": 200,
+    "form_actions": 0
+  },
+  {
+    "module": "KICC",
+    "label": "Selling Pool",
+    "tab": "pool",
+    "url": "/kicc-admin?tab=pool",
+    "status": "Render checked",
+    "reason": "Authenticated read-only render, mutation not exercised.",
+    "http": 200,
+    "form_actions": 0
+  },
+  {
+    "module": "KICC",
+    "label": "Pipeline Management",
+    "tab": "pipelines",
+    "url": "/kicc-admin?tab=pipelines",
+    "status": "Render checked",
+    "reason": "Authenticated read-only render, mutation not exercised.",
+    "http": 200,
+    "form_actions": 0
+  },
+  {
+    "module": "KICC",
+    "label": "Experiences",
+    "tab": "experiences",
+    "url": "/kicc-admin?tab=experiences",
+    "status": "Render checked",
+    "reason": "Authenticated read-only render, mutation not exercised.",
+    "http": 200,
+    "form_actions": 0
+  },
+  {
+    "module": "KICC",
+    "label": "Live Events",
+    "tab": "live_events",
+    "url": "/kicc-admin?tab=live_events",
+    "status": "Render checked",
+    "reason": "Authenticated read-only render, mutation not exercised.",
+    "http": 200,
+    "form_actions": 0
+  },
+  {
+    "module": "KICC",
+    "label": "Users",
+    "tab": "users",
+    "url": "/kicc-admin?tab=users",
+    "status": "Render checked",
+    "reason": "Authenticated read-only render, mutation not exercised.",
+    "http": 200,
+    "form_actions": 0
+  },
+  {
+    "module": "KICC",
+    "label": "Venues",
+    "tab": "venues",
+    "url": "/kicc-admin?tab=venues",
+    "status": "Render checked",
+    "reason": "Authenticated read-only render, mutation not exercised.",
+    "http": 200,
+    "form_actions": 0
+  },
+  {
+    "module": "KICC",
+    "label": "Exhibitor Requests",
+    "tab": "exh_requests",
+    "url": "/kicc-admin?tab=exh_requests",
+    "status": "Render checked",
+    "reason": "Authenticated read-only render, mutation not exercised.",
+    "http": 200,
+    "form_actions": 0
+  },
+  {
+    "module": "KICC",
+    "label": "Hero Media",
+    "tab": "hero_media",
+    "url": "/kicc-admin?tab=hero_media",
+    "status": "Render checked",
+    "reason": "Authenticated read-only render, mutation not exercised.",
+    "http": 200,
+    "form_actions": 0
+  },
+  {
+    "module": "KICC",
+    "label": "Packages",
+    "tab": "packages",
+    "url": "/kicc-admin?tab=packages",
+    "status": "Render checked",
+    "reason": "Authenticated read-only render, mutation not exercised.",
+    "http": 200,
+    "form_actions": 0
+  },
+  {
+    "module": "KICC",
+    "label": "Analytics",
+    "tab": "analytics",
+    "url": "/kicc-admin?tab=analytics",
+    "status": "Render checked",
+    "reason": "Authenticated read-only render, mutation not exercised.",
+    "http": 200,
+    "form_actions": 0
+  },
+  {
+    "module": "KICC",
+    "label": "Integration",
+    "tab": "integration",
+    "url": "/kicc-admin?tab=integration",
+    "status": "Render checked",
+    "reason": "Authenticated read-only render, mutation not exercised.",
+    "http": 200,
+    "form_actions": 0
+  },
+  {
+    "module": "KICC",
+    "label": "Pipeline Creator",
+    "tab": "pipeline-creator",
+    "url": "/kicc-admin?tab=pipeline-creator",
+    "status": "Render checked",
+    "reason": "Authenticated read-only render, mutation not exercised.",
+    "http": 200,
+    "form_actions": 0
+  },
+  {
+    "module": "KICC",
+    "label": "Earnings",
+    "tab": "earnings",
+    "url": "/kicc-admin?tab=earnings",
+    "status": "Render checked",
+    "reason": "Authenticated read-only render, mutation not exercised.",
+    "http": 200,
+    "form_actions": 0
+  },
+  {
+    "module": "KICC",
+    "label": "Search Analytics",
+    "tab": "search-analytics",
+    "url": "/kicc-admin?tab=search-analytics",
+    "status": "Render checked",
+    "reason": "Authenticated read-only render, mutation not exercised.",
+    "http": 200,
+    "form_actions": 0
+  },
+  {
+    "module": "KICC",
+    "label": "Cache",
+    "tab": "cache",
+    "url": "/kicc-admin?tab=cache",
+    "status": "Render checked",
+    "reason": "Authenticated read-only render, mutation not exercised.",
+    "http": 200,
+    "form_actions": 0
+  },
+  {
+    "module": "KICC",
+    "label": "Licence Queue",
+    "tab": "licence-queue",
+    "url": "/kicc-admin?tab=licence-queue",
+    "status": "Render checked",
+    "reason": "Authenticated read-only render, mutation not exercised.",
+    "http": 200,
+    "form_actions": 0
+  },
+  {
+    "module": "KICC",
+    "label": "Pipeline Settings",
+    "tab": "pipeline-settings",
+    "url": "/kicc-admin?tab=pipeline-settings",
+    "status": "Render checked",
+    "reason": "Authenticated read-only render, mutation not exercised.",
+    "http": 200,
+    "form_actions": 0
+  },
+  {
+    "module": "County",
+    "label": "Overview",
+    "tab": "overview",
+    "url": "/county-admin/mombasa/pro?tab=overview",
+    "status": "Render checked",
+    "reason": "Authenticated read-only render, mutation not exercised.",
+    "http": 200,
+    "form_actions": 0
+  },
+  {
+    "module": "County",
+    "label": "Details",
+    "tab": "details",
+    "url": "/county-admin/mombasa/pro?tab=details",
+    "status": "Render checked",
+    "reason": "Authenticated read-only render, mutation not exercised.",
+    "http": 200,
+    "form_actions": 0
+  },
+  {
+    "module": "County",
+    "label": "Content",
+    "tab": "content",
+    "url": "/county-admin/mombasa/pro?tab=content",
+    "status": "Render checked",
+    "reason": "Authenticated read-only render, mutation not exercised.",
+    "http": 200,
+    "form_actions": 0
+  },
+  {
+    "module": "County",
+    "label": "Hero Video",
+    "tab": "hero",
+    "url": "/county-admin/mombasa/pro?tab=hero",
+    "status": "Render checked",
+    "reason": "Authenticated read-only render, mutation not exercised.",
+    "http": 200,
+    "form_actions": 0
+  },
+  {
+    "module": "County",
+    "label": "Institutions",
+    "tab": "institutions",
+    "url": "/county-admin/mombasa/pro?tab=institutions",
+    "status": "Render checked",
+    "reason": "Authenticated read-only render, mutation not exercised.",
+    "http": 200,
+    "form_actions": 0
+  },
+  {
+    "module": "County",
+    "label": "Images",
+    "tab": "images",
+    "url": "/county-admin/mombasa/pro?tab=images",
+    "status": "Render checked",
+    "reason": "Authenticated read-only render, mutation not exercised.",
+    "http": 200,
+    "form_actions": 0
+  },
+  {
+    "module": "County",
+    "label": "4D Videos",
+    "tab": "videos4d",
+    "url": "/county-admin/mombasa/pro?tab=videos4d",
+    "status": "Render checked",
+    "reason": "Authenticated read-only render, mutation not exercised.",
+    "http": 200,
+    "form_actions": 0
+  },
+  {
+    "module": "County",
+    "label": "Sectors",
+    "tab": "sectors",
+    "url": "/county-admin/mombasa/pro?tab=sectors",
+    "status": "Render checked",
+    "reason": "Authenticated read-only render, mutation not exercised.",
+    "http": 200,
+    "form_actions": 0
+  },
+  {
+    "module": "County",
+    "label": "Prices",
+    "tab": "prices",
+    "url": "/county-admin/mombasa/pro?tab=prices",
+    "status": "Render checked",
+    "reason": "Authenticated read-only render, mutation not exercised.",
+    "http": 200,
+    "form_actions": 0
+  },
+  {
+    "module": "County",
+    "label": "Marketplace",
+    "tab": "marketplace",
+    "url": "/county-admin/mombasa/pro?tab=marketplace",
+    "status": "Render checked",
+    "reason": "Authenticated read-only render, mutation not exercised.",
+    "http": 200,
+    "form_actions": 0
+  },
+  {
+    "module": "County",
+    "label": "Advertising",
+    "tab": "ads",
+    "url": "/county-admin/mombasa/pro?tab=ads",
+    "status": "Render checked",
+    "reason": "Authenticated read-only render, mutation not exercised.",
+    "http": 200,
+    "form_actions": 0
+  },
+  {
+    "module": "County",
+    "label": "Packages",
+    "tab": "packages",
+    "url": "/county-admin/mombasa/pro?tab=packages",
+    "status": "Render checked",
+    "reason": "Authenticated read-only render, mutation not exercised.",
+    "http": 200,
+    "form_actions": 0
+  },
+  {
+    "module": "County",
+    "label": "Reports",
+    "tab": "reports",
+    "url": "/county-admin/mombasa/pro?tab=reports",
+    "status": "Render checked",
+    "reason": "Authenticated read-only render, mutation not exercised.",
+    "http": 200,
+    "form_actions": 0
+  },
+  {
+    "module": "County",
+    "label": "Analytics",
+    "tab": "analytics",
+    "url": "/county-admin/mombasa/pro?tab=analytics",
+    "status": "Render checked",
+    "reason": "Authenticated read-only render, mutation not exercised.",
+    "http": 200,
+    "form_actions": 0
+  },
+  {
+    "module": "County",
+    "label": "Trade Hub",
+    "tab": "trade_hub",
+    "url": "/county-admin/mombasa/pro?tab=trade_hub",
+    "status": "Render checked",
+    "reason": "Authenticated read-only render, mutation not exercised.",
+    "http": 200,
+    "form_actions": 0
+  },
+  {
+    "module": "County",
+    "label": "Trader Spotlights",
+    "tab": "traders",
+    "url": "/county-admin/mombasa/pro?tab=traders",
+    "status": "Render checked",
+    "reason": "Authenticated read-only render, mutation not exercised.",
+    "http": 200,
+    "form_actions": 0
+  },
+  {
+    "module": "County",
+    "label": "Broadcast",
+    "tab": "broadcast",
+    "url": "/county-admin/mombasa/pro?tab=broadcast",
+    "status": "Render checked",
+    "reason": "Authenticated read-only render, mutation not exercised.",
+    "http": 200,
+    "form_actions": 0
+  },
+  {
+    "module": "County",
+    "label": "Flythroughs",
+    "tab": "flythroughs",
+    "url": "/county-admin/mombasa/pro?tab=flythroughs",
+    "status": "Render checked",
+    "reason": "Authenticated read-only render, mutation not exercised.",
+    "http": 200,
+    "form_actions": 0
+  },
+  {
+    "module": "County",
+    "label": "Drone Seq",
+    "tab": "drone",
+    "url": "/county-admin/mombasa/pro?tab=drone",
+    "status": "Render checked",
+    "reason": "Authenticated read-only render, mutation not exercised.",
+    "http": 200,
+    "form_actions": 0
+  },
+  {
+    "module": "County",
+    "label": "Floor Plans",
+    "tab": "floors",
+    "url": "/county-admin/mombasa/pro?tab=floors",
+    "status": "Render checked",
+    "reason": "Authenticated read-only render, mutation not exercised.",
+    "http": 200,
+    "form_actions": 0
+  },
+  {
+    "module": "County",
+    "label": "Consent Forms",
+    "tab": "consent",
+    "url": "/county-admin/mombasa/pro?tab=consent",
+    "status": "Render checked",
+    "reason": "Authenticated read-only render, mutation not exercised.",
+    "http": 200,
+    "form_actions": 0
+  },
+  {
+    "module": "County",
+    "label": "Voice Notes",
+    "tab": "voice",
+    "url": "/county-admin/mombasa/pro?tab=voice",
+    "status": "Render checked",
+    "reason": "Authenticated read-only render, mutation not exercised.",
+    "http": 200,
+    "form_actions": 0
+  },
+  {
+    "module": "County",
+    "label": "Landmarks",
+    "tab": "landmarks",
+    "url": "/county-admin/mombasa/pro?tab=landmarks",
+    "status": "Render checked",
+    "reason": "Authenticated read-only render, mutation not exercised.",
+    "http": 200,
+    "form_actions": 0
+  },
+  {
+    "module": "County",
+    "label": "Exhibitor Req.",
+    "tab": "exh_requests",
+    "url": "/county-admin/mombasa/pro?tab=exh_requests",
+    "status": "Render checked",
+    "reason": "Authenticated read-only render, mutation not exercised.",
+    "http": 200,
+    "form_actions": 0
+  },
+  {
+    "module": "Institution",
+    "label": "Dashboard",
+    "tab": "overview",
+    "url": "/institution-admin/eliper-hotel?tab=overview",
+    "status": "Render checked",
+    "reason": "Authenticated read-only render, mutation not exercised.",
+    "http": 200,
+    "form_actions": 0
+  },
+  {
+    "module": "Institution",
+    "label": "Products",
+    "tab": "products",
+    "url": "/institution-admin/eliper-hotel?tab=products",
+    "status": "Render checked",
+    "reason": "Authenticated read-only render, mutation not exercised.",
+    "http": 200,
+    "form_actions": 0
+  },
+  {
+    "module": "Institution",
+    "label": "Videos",
+    "tab": "videos",
+    "url": "/institution-admin/eliper-hotel?tab=videos",
+    "status": "Render checked",
+    "reason": "Authenticated read-only render, mutation not exercised.",
+    "http": 200,
+    "form_actions": 0
+  },
+  {
+    "module": "Institution",
+    "label": "Transactions",
+    "tab": "transactions",
+    "url": "/institution-admin/eliper-hotel?tab=transactions",
+    "status": "Render checked",
+    "reason": "Authenticated read-only render, mutation not exercised.",
+    "http": 200,
+    "form_actions": 0
+  },
+  {
+    "module": "Institution",
+    "label": "Analytics",
+    "tab": "analytics",
+    "url": "/institution-admin/eliper-hotel?tab=analytics",
+    "status": "Render checked",
+    "reason": "Authenticated read-only render, mutation not exercised.",
+    "http": 200,
+    "form_actions": 0
+  },
+  {
+    "module": "Institution",
+    "label": "Customers",
+    "tab": "customers",
+    "url": "/institution-admin/eliper-hotel?tab=customers",
+    "status": "Render checked",
+    "reason": "Authenticated read-only render, mutation not exercised.",
+    "http": 200,
+    "form_actions": 0
+  },
+  {
+    "module": "Institution",
+    "label": "Production Chain",
+    "tab": "production",
+    "url": "/institution-admin/eliper-hotel?tab=production",
+    "status": "Render checked",
+    "reason": "Authenticated read-only render, mutation not exercised.",
+    "http": 200,
+    "form_actions": 0
+  },
+  {
+    "module": "Institution",
+    "label": "Sector Mapping",
+    "tab": "sectors",
+    "url": "/institution-admin/eliper-hotel?tab=sectors",
+    "status": "Render checked",
+    "reason": "Authenticated read-only render, mutation not exercised.",
+    "http": 200,
+    "form_actions": 0
+  },
+  {
+    "module": "Institution",
+    "label": "Profile",
+    "tab": "profile",
+    "url": "/institution-admin/eliper-hotel?tab=profile",
+    "status": "Render checked",
+    "reason": "Authenticated read-only render, mutation not exercised.",
+    "http": 200,
+    "form_actions": 0
+  },
+  {
+    "module": "Institution",
+    "label": "Team",
+    "tab": "team",
+    "url": "/institution-admin/eliper-hotel?tab=team",
+    "status": "Render checked",
+    "reason": "Authenticated read-only render, mutation not exercised.",
+    "http": 200,
+    "form_actions": 0
+  },
+  {
+    "module": "National government",
+    "label": "Ministries",
+    "tab": "ministries",
+    "url": "/kicc-admin/national?tab=ministries",
+    "status": "Render checked",
+    "reason": "Authenticated read-only render, mutation not exercised.",
+    "http": 200,
+    "form_actions": 0
+  },
+  {
+    "module": "National government",
+    "label": "Agencies",
+    "tab": "agencies",
+    "url": "/kicc-admin/national?tab=agencies",
+    "status": "Render checked",
+    "reason": "Authenticated read-only render, mutation not exercised.",
+    "http": 200,
+    "form_actions": 0
+  },
+  {
+    "module": "National government",
+    "label": "Hero Video",
+    "tab": "hero",
+    "url": "/kicc-admin/national?tab=hero",
+    "status": "Render checked",
+    "reason": "Authenticated read-only render, mutation not exercised.",
+    "http": 200,
+    "form_actions": 0
+  },
+  {
+    "module": "National government",
+    "label": "Ministry Media",
+    "tab": "media",
+    "url": "/kicc-admin/national?tab=media",
+    "status": "Render checked",
+    "reason": "Authenticated read-only render, mutation not exercised.",
+    "http": 200,
+    "form_actions": 0
+  },
+  {
+    "module": "National government",
+    "label": "National Flag",
+    "tab": "flag",
+    "url": "/kicc-admin/national?tab=flag",
+    "status": "Render checked",
+    "reason": "Authenticated read-only render, mutation not exercised.",
+    "http": 200,
+    "form_actions": 0
+  },
+  {
+    "module": "National government",
+    "label": "Pages",
+    "tab": "pages",
+    "url": "/kicc-admin/national?tab=pages",
+    "status": "Render checked",
+    "reason": "Authenticated read-only render, mutation not exercised.",
+    "http": 200,
+    "form_actions": 0
+  },
+  {
+    "module": "National government",
+    "label": "County Classification",
+    "tab": "counties",
+    "url": "/kicc-admin/national?tab=counties",
+    "status": "Render checked",
+    "reason": "Authenticated read-only render, mutation not exercised.",
+    "http": 200,
+    "form_actions": 0
+  },
+  {
+    "module": "National government",
+    "label": "Exhibitor Req.",
+    "tab": "exh_requests",
+    "url": "/kicc-admin/national?tab=exh_requests",
+    "status": "Render checked",
+    "reason": "Authenticated read-only render, mutation not exercised.",
+    "http": 200,
+    "form_actions": 0
+  }
+]

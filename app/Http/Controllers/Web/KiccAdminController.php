@@ -221,7 +221,7 @@ class KiccAdminController extends Controller
         ];
         $navGroupsFlat = [];
         foreach ($navGroups as $g => $items) {
-            foreach ($items as $k => $v) { $tab = is_int($k) ? $v : $k; $label = is_int($k) ? null : $v; $navGroupsFlat[$tab] = ['group' => $g, 'label' => $label]; }
+            foreach ($items as $k => $v) { $tabKey = is_int($k) ? $v : $k; $label = is_int($k) ? null : $v; $navGroupsFlat[$tabKey] = ['group' => $g, 'label' => $label]; }
         }
         $navItems = [];
         $NAV_DEFS = [
@@ -256,9 +256,9 @@ class KiccAdminController extends Controller
         // Build navItems in the grouped order, applying renamed labels.
         foreach ($navGroups as $group => $items) {
             foreach ($items as $k => $v) {
-                $tab = is_int($k) ? $v : $k;
-                if (isset($NAV_DEFS[$tab])) {
-                    $item = $NAV_DEFS[$tab];
+                $tabKey = is_int($k) ? $v : $k;
+                if (isset($NAV_DEFS[$tabKey])) {
+                    $item = $NAV_DEFS[$tabKey];
                     if (is_string($v)) $item['label'] = $v;
                     $item['group'] = $group;
                     $navItems[] = $item;
@@ -284,15 +284,13 @@ class KiccAdminController extends Controller
         if ($plugin_filter) $pipelinesQuery->where('sector', $plugin_filter);
         if ($q_pipelines) $pipelinesQuery->where(fn($qq) => $qq->where('code', 'like', "%$q_pipelines%")->orWhere('slug', 'like', "%$q_pipelines%"));
         $pipelines = $pipelinesQuery->orderBy('sector')->orderBy('code')->paginate(100)->withQueryString();
-        // Aggregates cached — unindexed GROUP BY scans over TiDB were timing out (502).
-        $pipelineSectors = \Illuminate\Support\Facades\Cache::remember('kicc_admin_pipeline_sectors', 300,
-            fn() => \Illuminate\Support\Facades\DB::table('pipeline_registrations')
-                ->selectRaw('sector, COUNT(*) as c')->groupBy('sector')->orderByDesc('c')->get());
-        $pipelineStatusBreakdown = \Illuminate\Support\Facades\Cache::remember('kicc_admin_pipeline_status', 300,
-            fn() => \Illuminate\Support\Facades\DB::table('pipeline_registrations')
-                ->selectRaw('status, COUNT(*) as c')->groupBy('status')->orderByDesc('c')->get());
-        $pipelineTotal = \Illuminate\Support\Facades\Cache::remember('kicc_admin_pipeline_total', 300,
-            fn() => \Illuminate\Support\Facades\DB::table('pipeline_registrations')->count());
+        // Direct queries (no cache) — 214-row table, GROUP BY is fast.
+        // Cached Collections fail to unserialize across PHP-FPM processes.
+        $pipelineSectors = \Illuminate\Support\Facades\DB::table('pipeline_registrations')
+            ->selectRaw('sector, COUNT(*) as c')->groupBy('sector')->orderByDesc('c')->get();
+        $pipelineStatusBreakdown = \Illuminate\Support\Facades\DB::table('pipeline_registrations')
+            ->selectRaw('status, COUNT(*) as c')->groupBy('status')->orderByDesc('c')->get();
+        $pipelineTotal = \Illuminate\Support\Facades\DB::table('pipeline_registrations')->count();
 
         // ── Integration tab (real-time data, no cache) ──
         $integrationHealth = [];

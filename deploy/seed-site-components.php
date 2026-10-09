@@ -1,0 +1,3 @@
+<?php
+chdir('/opt/kicc-laravel');require 'vendor/autoload.php';$app=require 'bootstrap/app.php';$app->make(Illuminate\Contracts\Console\Kernel::class)->bootstrap();
+$rows=json_decode(file_get_contents('/root/kicc-ui-live-20261007/verified-component-manifest.json'),true);$n=0;foreach(array_chunk($rows,500)as$chunk){$data=[];foreach($chunk as$r)$data[]=['id'=>$r['id'],'entity_type'=>'site_components','status'=>$r['status'],'payload'=>json_encode($r,JSON_UNESCAPED_UNICODE|JSON_UNESCAPED_SLASHES),'revision'=>1,'actor_id'=>null,'created_at'=>now(),'updated_at'=>now()];$n+=Illuminate\Support\Facades\DB::table('experience_records')->insertOrIgnore($data);}echo json_encode(['manifest'=>count($rows),'new_records'=>$n,'existing_edits_preserved'=>true]);

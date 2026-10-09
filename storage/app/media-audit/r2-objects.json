@@ -1,0 +1,1292 @@
+[
+    {
+        "key": "counties/mombasa/sector-videos/tourism.mp4",
+        "category": "media",
+        "referenced_by_row": "yes",
+        "verdict": "kept"
+    },
+    {
+        "key": "counties/mombasa/video/hero/hero.mp4",
+        "category": "media",
+        "referenced_by_row": "yes",
+        "verdict": "kept"
+    },
+    {
+        "key": "counties/mombasa/video/hero/hls/hero/master.m3u8",
+        "category": "hls",
+        "referenced_by_row": "yes",
+        "verdict": "kept"
+    },
+    {
+        "key": "counties/mombasa/video/hero/hls/hero/v1080/init.mp4",
+        "category": "hls",
+        "referenced_by_row": "yes",
+        "verdict": "kept"
+    },
+    {
+        "key": "counties/mombasa/video/hero/hls/hero/v1080/playlist.m3u8",
+        "category": "hls",
+        "referenced_by_row": "yes",
+        "verdict": "kept"
+    },
+    {
+        "key": "counties/mombasa/video/hero/hls/hero/v1080/seg_000.m4s",
+        "category": "hls",
+        "referenced_by_row": "yes",
+        "verdict": "kept"
+    },
+    {
+        "key": "counties/mombasa/video/hero/hls/hero/v1080/seg_001.m4s",
+        "category": "hls",
+        "referenced_by_row": "yes",
+        "verdict": "kept"
+    },
+    {
+        "key": "counties/mombasa/video/hero/hls/hero/v1080/seg_002.m4s",
+        "category": "hls",
+        "referenced_by_row": "yes",
+        "verdict": "kept"
+    },
+    {
+        "key": "counties/mombasa/video/hero/hls/hero/v1080/seg_003.m4s",
+        "category": "hls",
+        "referenced_by_row": "yes",
+        "verdict": "kept"
+    },
+    {
+        "key": "counties/mombasa/video/hero/hls/hero/v1080/seg_004.m4s",
+        "category": "hls",
+        "referenced_by_row": "yes",
+        "verdict": "kept"
+    },
+    {
+        "key": "counties/mombasa/video/hero/hls/hero/v1080/seg_005.m4s",
+        "category": "hls",
+        "referenced_by_row": "yes",
+        "verdict": "kept"
+    },
+    {
+        "key": "counties/mombasa/video/hero/hls/hero/v1080/seg_006.m4s",
+        "category": "hls",
+        "referenced_by_row": "yes",
+        "verdict": "kept"
+    },
+    {
+        "key": "counties/mombasa/video/hero/hls/hero/v1080/seg_007.m4s",
+        "category": "hls",
+        "referenced_by_row": "yes",
+        "verdict": "kept"
+    },
+    {
+        "key": "counties/mombasa/video/hero/hls/hero/v1080/seg_008.m4s",
+        "category": "hls",
+        "referenced_by_row": "yes",
+        "verdict": "kept"
+    },
+    {
+        "key": "counties/mombasa/video/hero/hls/hero/v1080/seg_009.m4s",
+        "category": "hls",
+        "referenced_by_row": "yes",
+        "verdict": "kept"
+    },
+    {
+        "key": "counties/mombasa/video/hero/hls/hero/v1080/seg_010.m4s",
+        "category": "hls",
+        "referenced_by_row": "yes",
+        "verdict": "kept"
+    },
+    {
+        "key": "counties/mombasa/video/hero/hls/hero/v1080/seg_011.m4s",
+        "category": "hls",
+        "referenced_by_row": "yes",
+        "verdict": "kept"
+    },
+    {
+        "key": "counties/mombasa/video/hero/hls/hero/v1080/seg_012.m4s",
+        "category": "hls",
+        "referenced_by_row": "yes",
+        "verdict": "kept"
+    },
+    {
+        "key": "counties/mombasa/video/hero/hls/hero/v1080/seg_013.m4s",
+        "category": "hls",
+        "referenced_by_row": "yes",
+        "verdict": "kept"
+    },
+    {
+        "key": "counties/mombasa/video/hero/hls/hero/v360/init.mp4",
+        "category": "hls",
+        "referenced_by_row": "yes",
+        "verdict": "kept"
+    },
+    {
+        "key": "counties/mombasa/video/hero/hls/hero/v360/playlist.m3u8",
+        "category": "hls",
+        "referenced_by_row": "yes",
+        "verdict": "kept"
+    },
+    {
+        "key": "counties/mombasa/video/hero/hls/hero/v360/seg_000.m4s",
+        "category": "hls",
+        "referenced_by_row": "yes",
+        "verdict": "kept"
+    },
+    {
+        "key": "counties/mombasa/video/hero/hls/hero/v360/seg_001.m4s",
+        "category": "hls",
+        "referenced_by_row": "yes",
+        "verdict": "kept"
+    },
+    {
+        "key": "counties/mombasa/video/hero/hls/hero/v360/seg_002.m4s",
+        "category": "hls",
+        "referenced_by_row": "yes",
+        "verdict": "kept"
+    },
+    {
+        "key": "counties/mombasa/video/hero/hls/hero/v360/seg_003.m4s",
+        "category": "hls",
+        "referenced_by_row": "yes",
+        "verdict": "kept"
+    },
+    {
+        "key": "counties/mombasa/video/hero/hls/hero/v360/seg_004.m4s",
+        "category": "hls",
+        "referenced_by_row": "yes",
+        "verdict": "kept"
+    },
+    {
+        "key": "counties/mombasa/video/hero/hls/hero/v360/seg_005.m4s",
+        "category": "hls",
+        "referenced_by_row": "yes",
+        "verdict": "kept"
+    },
+    {
+        "key": "counties/mombasa/video/hero/hls/hero/v360/seg_006.m4s",
+        "category": "hls",
+        "referenced_by_row": "yes",
+        "verdict": "kept"
+    },
+    {
+        "key": "counties/mombasa/video/hero/hls/hero/v360/seg_007.m4s",
+        "category": "hls",
+        "referenced_by_row": "yes",
+        "verdict": "kept"
+    },
+    {
+        "key": "counties/mombasa/video/hero/hls/hero/v360/seg_008.m4s",
+        "category": "hls",
+        "referenced_by_row": "yes",
+        "verdict": "kept"
+    },
+    {
+        "key": "counties/mombasa/video/hero/hls/hero/v360/seg_009.m4s",
+        "category": "hls",
+        "referenced_by_row": "yes",
+        "verdict": "kept"
+    },
+    {
+        "key": "counties/mombasa/video/hero/hls/hero/v360/seg_010.m4s",
+        "category": "hls",
+        "referenced_by_row": "yes",
+        "verdict": "kept"
+    },
+    {
+        "key": "counties/mombasa/video/hero/hls/hero/v360/seg_011.m4s",
+        "category": "hls",
+        "referenced_by_row": "yes",
+        "verdict": "kept"
+    },
+    {
+        "key": "counties/mombasa/video/hero/hls/hero/v360/seg_012.m4s",
+        "category": "hls",
+        "referenced_by_row": "yes",
+        "verdict": "kept"
+    },
+    {
+        "key": "counties/mombasa/video/hero/hls/hero/v360/seg_013.m4s",
+        "category": "hls",
+        "referenced_by_row": "yes",
+        "verdict": "kept"
+    },
+    {
+        "key": "counties/mombasa/video/hero/hls/hero/v480/init.mp4",
+        "category": "hls",
+        "referenced_by_row": "yes",
+        "verdict": "kept"
+    },
+    {
+        "key": "counties/mombasa/video/hero/hls/hero/v480/playlist.m3u8",
+        "category": "hls",
+        "referenced_by_row": "yes",
+        "verdict": "kept"
+    },
+    {
+        "key": "counties/mombasa/video/hero/hls/hero/v480/seg_000.m4s",
+        "category": "hls",
+        "referenced_by_row": "yes",
+        "verdict": "kept"
+    },
+    {
+        "key": "counties/mombasa/video/hero/hls/hero/v480/seg_001.m4s",
+        "category": "hls",
+        "referenced_by_row": "yes",
+        "verdict": "kept"
+    },
+    {
+        "key": "counties/mombasa/video/hero/hls/hero/v480/seg_002.m4s",
+        "category": "hls",
+        "referenced_by_row": "yes",
+        "verdict": "kept"
+    },
+    {
+        "key": "counties/mombasa/video/hero/hls/hero/v480/seg_003.m4s",
+        "category": "hls",
+        "referenced_by_row": "yes",
+        "verdict": "kept"
+    },
+    {
+        "key": "counties/mombasa/video/hero/hls/hero/v480/seg_004.m4s",
+        "category": "hls",
+        "referenced_by_row": "yes",
+        "verdict": "kept"
+    },
+    {
+        "key": "counties/mombasa/video/hero/hls/hero/v480/seg_005.m4s",
+        "category": "hls",
+        "referenced_by_row": "yes",
+        "verdict": "kept"
+    },
+    {
+        "key": "counties/mombasa/video/hero/hls/hero/v480/seg_006.m4s",
+        "category": "hls",
+        "referenced_by_row": "yes",
+        "verdict": "kept"
+    },
+    {
+        "key": "counties/mombasa/video/hero/hls/hero/v480/seg_007.m4s",
+        "category": "hls",
+        "referenced_by_row": "yes",
+        "verdict": "kept"
+    },
+    {
+        "key": "counties/mombasa/video/hero/hls/hero/v480/seg_008.m4s",
+        "category": "hls",
+        "referenced_by_row": "yes",
+        "verdict": "kept"
+    },
+    {
+        "key": "counties/mombasa/video/hero/hls/hero/v480/seg_009.m4s",
+        "category": "hls",
+        "referenced_by_row": "yes",
+        "verdict": "kept"
+    },
+    {
+        "key": "counties/mombasa/video/hero/hls/hero/v480/seg_010.m4s",
+        "category": "hls",
+        "referenced_by_row": "yes",
+        "verdict": "kept"
+    },
+    {
+        "key": "counties/mombasa/video/hero/hls/hero/v480/seg_011.m4s",
+        "category": "hls",
+        "referenced_by_row": "yes",
+        "verdict": "kept"
+    },
+    {
+        "key": "counties/mombasa/video/hero/hls/hero/v480/seg_012.m4s",
+        "category": "hls",
+        "referenced_by_row": "yes",
+        "verdict": "kept"
+    },
+    {
+        "key": "counties/mombasa/video/hero/hls/hero/v480/seg_013.m4s",
+        "category": "hls",
+        "referenced_by_row": "yes",
+        "verdict": "kept"
+    },
+    {
+        "key": "counties/mombasa/video/hero/hls/hero/v720/init.mp4",
+        "category": "hls",
+        "referenced_by_row": "yes",
+        "verdict": "kept"
+    },
+    {
+        "key": "counties/mombasa/video/hero/hls/hero/v720/playlist.m3u8",
+        "category": "hls",
+        "referenced_by_row": "yes",
+        "verdict": "kept"
+    },
+    {
+        "key": "counties/mombasa/video/hero/hls/hero/v720/seg_000.m4s",
+        "category": "hls",
+        "referenced_by_row": "yes",
+        "verdict": "kept"
+    },
+    {
+        "key": "counties/mombasa/video/hero/hls/hero/v720/seg_001.m4s",
+        "category": "hls",
+        "referenced_by_row": "yes",
+        "verdict": "kept"
+    },
+    {
+        "key": "counties/mombasa/video/hero/hls/hero/v720/seg_002.m4s",
+        "category": "hls",
+        "referenced_by_row": "yes",
+        "verdict": "kept"
+    },
+    {
+        "key": "counties/mombasa/video/hero/hls/hero/v720/seg_003.m4s",
+        "category": "hls",
+        "referenced_by_row": "yes",
+        "verdict": "kept"
+    },
+    {
+        "key": "counties/mombasa/video/hero/hls/hero/v720/seg_004.m4s",
+        "category": "hls",
+        "referenced_by_row": "yes",
+        "verdict": "kept"
+    },
+    {
+        "key": "counties/mombasa/video/hero/hls/hero/v720/seg_005.m4s",
+        "category": "hls",
+        "referenced_by_row": "yes",
+        "verdict": "kept"
+    },
+    {
+        "key": "counties/mombasa/video/hero/hls/hero/v720/seg_006.m4s",
+        "category": "hls",
+        "referenced_by_row": "yes",
+        "verdict": "kept"
+    },
+    {
+        "key": "counties/mombasa/video/hero/hls/hero/v720/seg_007.m4s",
+        "category": "hls",
+        "referenced_by_row": "yes",
+        "verdict": "kept"
+    },
+    {
+        "key": "counties/mombasa/video/hero/hls/hero/v720/seg_008.m4s",
+        "category": "hls",
+        "referenced_by_row": "yes",
+        "verdict": "kept"
+    },
+    {
+        "key": "counties/mombasa/video/hero/hls/hero/v720/seg_009.m4s",
+        "category": "hls",
+        "referenced_by_row": "yes",
+        "verdict": "kept"
+    },
+    {
+        "key": "counties/mombasa/video/hero/hls/hero/v720/seg_010.m4s",
+        "category": "hls",
+        "referenced_by_row": "yes",
+        "verdict": "kept"
+    },
+    {
+        "key": "counties/mombasa/video/hero/hls/hero/v720/seg_011.m4s",
+        "category": "hls",
+        "referenced_by_row": "yes",
+        "verdict": "kept"
+    },
+    {
+        "key": "counties/mombasa/video/hero/hls/hero/v720/seg_012.m4s",
+        "category": "hls",
+        "referenced_by_row": "yes",
+        "verdict": "kept"
+    },
+    {
+        "key": "counties/mombasa/video/hero/hls/hero/v720/seg_013.m4s",
+        "category": "hls",
+        "referenced_by_row": "yes",
+        "verdict": "kept"
+    },
+    {
+        "key": "counties/mombasa/video/hero/hover/hero.mp4",
+        "category": "media",
+        "referenced_by_row": "yes",
+        "verdict": "kept"
+    },
+    {
+        "key": "counties/mombasa/video/hero/poster/hero.webp",
+        "category": "media",
+        "referenced_by_row": "yes",
+        "verdict": "kept"
+    },
+    {
+        "key": "counties/muranga/sector-videos/tourism.mp4",
+        "category": "media",
+        "referenced_by_row": "yes",
+        "verdict": "kept"
+    },
+    {
+        "key": "counties/muranga/video/hero/hero.mp4",
+        "category": "media",
+        "referenced_by_row": "yes",
+        "verdict": "kept"
+    },
+    {
+        "key": "counties/muranga/video/hero/hls/hero/master.m3u8",
+        "category": "hls",
+        "referenced_by_row": "yes",
+        "verdict": "kept"
+    },
+    {
+        "key": "counties/muranga/video/hero/hls/hero/v1080/init.mp4",
+        "category": "hls",
+        "referenced_by_row": "yes",
+        "verdict": "kept"
+    },
+    {
+        "key": "counties/muranga/video/hero/hls/hero/v1080/playlist.m3u8",
+        "category": "hls",
+        "referenced_by_row": "yes",
+        "verdict": "kept"
+    },
+    {
+        "key": "counties/muranga/video/hero/hls/hero/v1080/seg_000.m4s",
+        "category": "hls",
+        "referenced_by_row": "yes",
+        "verdict": "kept"
+    },
+    {
+        "key": "counties/muranga/video/hero/hls/hero/v1080/seg_001.m4s",
+        "category": "hls",
+        "referenced_by_row": "yes",
+        "verdict": "kept"
+    },
+    {
+        "key": "counties/muranga/video/hero/hls/hero/v1080/seg_002.m4s",
+        "category": "hls",
+        "referenced_by_row": "yes",
+        "verdict": "kept"
+    },
+    {
+        "key": "counties/muranga/video/hero/hls/hero/v1080/seg_003.m4s",
+        "category": "hls",
+        "referenced_by_row": "yes",
+        "verdict": "kept"
+    },
+    {
+        "key": "counties/muranga/video/hero/hls/hero/v1080/seg_004.m4s",
+        "category": "hls",
+        "referenced_by_row": "yes",
+        "verdict": "kept"
+    },
+    {
+        "key": "counties/muranga/video/hero/hls/hero/v1080/seg_005.m4s",
+        "category": "hls",
+        "referenced_by_row": "yes",
+        "verdict": "kept"
+    },
+    {
+        "key": "counties/muranga/video/hero/hls/hero/v1080/seg_006.m4s",
+        "category": "hls",
+        "referenced_by_row": "yes",
+        "verdict": "kept"
+    },
+    {
+        "key": "counties/muranga/video/hero/hls/hero/v1080/seg_007.m4s",
+        "category": "hls",
+        "referenced_by_row": "yes",
+        "verdict": "kept"
+    },
+    {
+        "key": "counties/muranga/video/hero/hls/hero/v1080/seg_008.m4s",
+        "category": "hls",
+        "referenced_by_row": "yes",
+        "verdict": "kept"
+    },
+    {
+        "key": "counties/muranga/video/hero/hls/hero/v1080/seg_009.m4s",
+        "category": "hls",
+        "referenced_by_row": "yes",
+        "verdict": "kept"
+    },
+    {
+        "key": "counties/muranga/video/hero/hls/hero/v1080/seg_010.m4s",
+        "category": "hls",
+        "referenced_by_row": "yes",
+        "verdict": "kept"
+    },
+    {
+        "key": "counties/muranga/video/hero/hls/hero/v1080/seg_011.m4s",
+        "category": "hls",
+        "referenced_by_row": "yes",
+        "verdict": "kept"
+    },
+    {
+        "key": "counties/muranga/video/hero/hls/hero/v1080/seg_012.m4s",
+        "category": "hls",
+        "referenced_by_row": "yes",
+        "verdict": "kept"
+    },
+    {
+        "key": "counties/muranga/video/hero/hls/hero/v1080/seg_013.m4s",
+        "category": "hls",
+        "referenced_by_row": "yes",
+        "verdict": "kept"
+    },
+    {
+        "key": "counties/muranga/video/hero/hls/hero/v1080/seg_014.m4s",
+        "category": "hls",
+        "referenced_by_row": "yes",
+        "verdict": "kept"
+    },
+    {
+        "key": "counties/muranga/video/hero/hls/hero/v1080/seg_015.m4s",
+        "category": "hls",
+        "referenced_by_row": "yes",
+        "verdict": "kept"
+    },
+    {
+        "key": "counties/muranga/video/hero/hls/hero/v1080/seg_016.m4s",
+        "category": "hls",
+        "referenced_by_row": "yes",
+        "verdict": "kept"
+    },
+    {
+        "key": "counties/muranga/video/hero/hls/hero/v1080/seg_017.m4s",
+        "category": "hls",
+        "referenced_by_row": "yes",
+        "verdict": "kept"
+    },
+    {
+        "key": "counties/muranga/video/hero/hls/hero/v360/init.mp4",
+        "category": "hls",
+        "referenced_by_row": "yes",
+        "verdict": "kept"
+    },
+    {
+        "key": "counties/muranga/video/hero/hls/hero/v360/playlist.m3u8",
+        "category": "hls",
+        "referenced_by_row": "yes",
+        "verdict": "kept"
+    },
+    {
+        "key": "counties/muranga/video/hero/hls/hero/v360/seg_000.m4s",
+        "category": "hls",
+        "referenced_by_row": "yes",
+        "verdict": "kept"
+    },
+    {
+        "key": "counties/muranga/video/hero/hls/hero/v360/seg_001.m4s",
+        "category": "hls",
+        "referenced_by_row": "yes",
+        "verdict": "kept"
+    },
+    {
+        "key": "counties/muranga/video/hero/hls/hero/v360/seg_002.m4s",
+        "category": "hls",
+        "referenced_by_row": "yes",
+        "verdict": "kept"
+    },
+    {
+        "key": "counties/muranga/video/hero/hls/hero/v360/seg_003.m4s",
+        "category": "hls",
+        "referenced_by_row": "yes",
+        "verdict": "kept"
+    },
+    {
+        "key": "counties/muranga/video/hero/hls/hero/v360/seg_004.m4s",
+        "category": "hls",
+        "referenced_by_row": "yes",
+        "verdict": "kept"
+    },
+    {
+        "key": "counties/muranga/video/hero/hls/hero/v360/seg_005.m4s",
+        "category": "hls",
+        "referenced_by_row": "yes",
+        "verdict": "kept"
+    },
+    {
+        "key": "counties/muranga/video/hero/hls/hero/v360/seg_006.m4s",
+        "category": "hls",
+        "referenced_by_row": "yes",
+        "verdict": "kept"
+    },
+    {
+        "key": "counties/muranga/video/hero/hls/hero/v360/seg_007.m4s",
+        "category": "hls",
+        "referenced_by_row": "yes",
+        "verdict": "kept"
+    },
+    {
+        "key": "counties/muranga/video/hero/hls/hero/v360/seg_008.m4s",
+        "category": "hls",
+        "referenced_by_row": "yes",
+        "verdict": "kept"
+    },
+    {
+        "key": "counties/muranga/video/hero/hls/hero/v360/seg_009.m4s",
+        "category": "hls",
+        "referenced_by_row": "yes",
+        "verdict": "kept"
+    },
+    {
+        "key": "counties/muranga/video/hero/hls/hero/v360/seg_010.m4s",
+        "category": "hls",
+        "referenced_by_row": "yes",
+        "verdict": "kept"
+    },
+    {
+        "key": "counties/muranga/video/hero/hls/hero/v360/seg_011.m4s",
+        "category": "hls",
+        "referenced_by_row": "yes",
+        "verdict": "kept"
+    },
+    {
+        "key": "counties/muranga/video/hero/hls/hero/v360/seg_012.m4s",
+        "category": "hls",
+        "referenced_by_row": "yes",
+        "verdict": "kept"
+    },
+    {
+        "key": "counties/muranga/video/hero/hls/hero/v360/seg_013.m4s",
+        "category": "hls",
+        "referenced_by_row": "yes",
+        "verdict": "kept"
+    },
+    {
+        "key": "counties/muranga/video/hero/hls/hero/v360/seg_014.m4s",
+        "category": "hls",
+        "referenced_by_row": "yes",
+        "verdict": "kept"
+    },
+    {
+        "key": "counties/muranga/video/hero/hls/hero/v360/seg_015.m4s",
+        "category": "hls",
+        "referenced_by_row": "yes",
+        "verdict": "kept"
+    },
+    {
+        "key": "counties/muranga/video/hero/hls/hero/v360/seg_016.m4s",
+        "category": "hls",
+        "referenced_by_row": "yes",
+        "verdict": "kept"
+    },
+    {
+        "key": "counties/muranga/video/hero/hls/hero/v360/seg_017.m4s",
+        "category": "hls",
+        "referenced_by_row": "yes",
+        "verdict": "kept"
+    },
+    {
+        "key": "counties/muranga/video/hero/hls/hero/v480/init.mp4",
+        "category": "hls",
+        "referenced_by_row": "yes",
+        "verdict": "kept"
+    },
+    {
+        "key": "counties/muranga/video/hero/hls/hero/v480/playlist.m3u8",
+        "category": "hls",
+        "referenced_by_row": "yes",
+        "verdict": "kept"
+    },
+    {
+        "key": "counties/muranga/video/hero/hls/hero/v480/seg_000.m4s",
+        "category": "hls",
+        "referenced_by_row": "yes",
+        "verdict": "kept"
+    },
+    {
+        "key": "counties/muranga/video/hero/hls/hero/v480/seg_001.m4s",
+        "category": "hls",
+        "referenced_by_row": "yes",
+        "verdict": "kept"
+    },
+    {
+        "key": "counties/muranga/video/hero/hls/hero/v480/seg_002.m4s",
+        "category": "hls",
+        "referenced_by_row": "yes",
+        "verdict": "kept"
+    },
+    {
+        "key": "counties/muranga/video/hero/hls/hero/v480/seg_003.m4s",
+        "category": "hls",
+        "referenced_by_row": "yes",
+        "verdict": "kept"
+    },
+    {
+        "key": "counties/muranga/video/hero/hls/hero/v480/seg_004.m4s",
+        "category": "hls",
+        "referenced_by_row": "yes",
+        "verdict": "kept"
+    },
+    {
+        "key": "counties/muranga/video/hero/hls/hero/v480/seg_005.m4s",
+        "category": "hls",
+        "referenced_by_row": "yes",
+        "verdict": "kept"
+    },
+    {
+        "key": "counties/muranga/video/hero/hls/hero/v480/seg_006.m4s",
+        "category": "hls",
+        "referenced_by_row": "yes",
+        "verdict": "kept"
+    },
+    {
+        "key": "counties/muranga/video/hero/hls/hero/v480/seg_007.m4s",
+        "category": "hls",
+        "referenced_by_row": "yes",
+        "verdict": "kept"
+    },
+    {
+        "key": "counties/muranga/video/hero/hls/hero/v480/seg_008.m4s",
+        "category": "hls",
+        "referenced_by_row": "yes",
+        "verdict": "kept"
+    },
+    {
+        "key": "counties/muranga/video/hero/hls/hero/v480/seg_009.m4s",
+        "category": "hls",
+        "referenced_by_row": "yes",
+        "verdict": "kept"
+    },
+    {
+        "key": "counties/muranga/video/hero/hls/hero/v480/seg_010.m4s",
+        "category": "hls",
+        "referenced_by_row": "yes",
+        "verdict": "kept"
+    },
+    {
+        "key": "counties/muranga/video/hero/hls/hero/v480/seg_011.m4s",
+        "category": "hls",
+        "referenced_by_row": "yes",
+        "verdict": "kept"
+    },
+    {
+        "key": "counties/muranga/video/hero/hls/hero/v480/seg_012.m4s",
+        "category": "hls",
+        "referenced_by_row": "yes",
+        "verdict": "kept"
+    },
+    {
+        "key": "counties/muranga/video/hero/hls/hero/v480/seg_013.m4s",
+        "category": "hls",
+        "referenced_by_row": "yes",
+        "verdict": "kept"
+    },
+    {
+        "key": "counties/muranga/video/hero/hls/hero/v480/seg_014.m4s",
+        "category": "hls",
+        "referenced_by_row": "yes",
+        "verdict": "kept"
+    },
+    {
+        "key": "counties/muranga/video/hero/hls/hero/v480/seg_015.m4s",
+        "category": "hls",
+        "referenced_by_row": "yes",
+        "verdict": "kept"
+    },
+    {
+        "key": "counties/muranga/video/hero/hls/hero/v480/seg_016.m4s",
+        "category": "hls",
+        "referenced_by_row": "yes",
+        "verdict": "kept"
+    },
+    {
+        "key": "counties/muranga/video/hero/hls/hero/v480/seg_017.m4s",
+        "category": "hls",
+        "referenced_by_row": "yes",
+        "verdict": "kept"
+    },
+    {
+        "key": "counties/muranga/video/hero/hls/hero/v720/init.mp4",
+        "category": "hls",
+        "referenced_by_row": "yes",
+        "verdict": "kept"
+    },
+    {
+        "key": "counties/muranga/video/hero/hls/hero/v720/playlist.m3u8",
+        "category": "hls",
+        "referenced_by_row": "yes",
+        "verdict": "kept"
+    },
+    {
+        "key": "counties/muranga/video/hero/hls/hero/v720/seg_000.m4s",
+        "category": "hls",
+        "referenced_by_row": "yes",
+        "verdict": "kept"
+    },
+    {
+        "key": "counties/muranga/video/hero/hls/hero/v720/seg_001.m4s",
+        "category": "hls",
+        "referenced_by_row": "yes",
+        "verdict": "kept"
+    },
+    {
+        "key": "counties/muranga/video/hero/hls/hero/v720/seg_002.m4s",
+        "category": "hls",
+        "referenced_by_row": "yes",
+        "verdict": "kept"
+    },
+    {
+        "key": "counties/muranga/video/hero/hls/hero/v720/seg_003.m4s",
+        "category": "hls",
+        "referenced_by_row": "yes",
+        "verdict": "kept"
+    },
+    {
+        "key": "counties/muranga/video/hero/hls/hero/v720/seg_004.m4s",
+        "category": "hls",
+        "referenced_by_row": "yes",
+        "verdict": "kept"
+    },
+    {
+        "key": "counties/muranga/video/hero/hls/hero/v720/seg_005.m4s",
+        "category": "hls",
+        "referenced_by_row": "yes",
+        "verdict": "kept"
+    },
+    {
+        "key": "counties/muranga/video/hero/hls/hero/v720/seg_006.m4s",
+        "category": "hls",
+        "referenced_by_row": "yes",
+        "verdict": "kept"
+    },
+    {
+        "key": "counties/muranga/video/hero/hls/hero/v720/seg_007.m4s",
+        "category": "hls",
+        "referenced_by_row": "yes",
+        "verdict": "kept"
+    },
+    {
+        "key": "counties/muranga/video/hero/hls/hero/v720/seg_008.m4s",
+        "category": "hls",
+        "referenced_by_row": "yes",
+        "verdict": "kept"
+    },
+    {
+        "key": "counties/muranga/video/hero/hls/hero/v720/seg_009.m4s",
+        "category": "hls",
+        "referenced_by_row": "yes",
+        "verdict": "kept"
+    },
+    {
+        "key": "counties/muranga/video/hero/hls/hero/v720/seg_010.m4s",
+        "category": "hls",
+        "referenced_by_row": "yes",
+        "verdict": "kept"
+    },
+    {
+        "key": "counties/muranga/video/hero/hls/hero/v720/seg_011.m4s",
+        "category": "hls",
+        "referenced_by_row": "yes",
+        "verdict": "kept"
+    },
+    {
+        "key": "counties/muranga/video/hero/hls/hero/v720/seg_012.m4s",
+        "category": "hls",
+        "referenced_by_row": "yes",
+        "verdict": "kept"
+    },
+    {
+        "key": "counties/muranga/video/hero/hls/hero/v720/seg_013.m4s",
+        "category": "hls",
+        "referenced_by_row": "yes",
+        "verdict": "kept"
+    },
+    {
+        "key": "counties/muranga/video/hero/hls/hero/v720/seg_014.m4s",
+        "category": "hls",
+        "referenced_by_row": "yes",
+        "verdict": "kept"
+    },
+    {
+        "key": "counties/muranga/video/hero/hls/hero/v720/seg_015.m4s",
+        "category": "hls",
+        "referenced_by_row": "yes",
+        "verdict": "kept"
+    },
+    {
+        "key": "counties/muranga/video/hero/hls/hero/v720/seg_016.m4s",
+        "category": "hls",
+        "referenced_by_row": "yes",
+        "verdict": "kept"
+    },
+    {
+        "key": "counties/muranga/video/hero/hls/hero/v720/seg_017.m4s",
+        "category": "hls",
+        "referenced_by_row": "yes",
+        "verdict": "kept"
+    },
+    {
+        "key": "counties/muranga/video/hero/hover/hero.mp4",
+        "category": "media",
+        "referenced_by_row": "no",
+        "verdict": "removed"
+    },
+    {
+        "key": "counties/muranga/video/hero/poster/hero.webp",
+        "category": "media",
+        "referenced_by_row": "no",
+        "verdict": "removed"
+    },
+    {
+        "key": "db-backups/hourly/kicc-20260818T0733Z.tar",
+        "category": "backup",
+        "referenced_by_row": "no",
+        "verdict": "removed"
+    },
+    {
+        "key": "db-backups/hourly/kicc-20260818T0830Z.tar",
+        "category": "backup",
+        "referenced_by_row": "no",
+        "verdict": "removed"
+    },
+    {
+        "key": "db-backups/hourly/kicc-20260818T0930Z.tar",
+        "category": "backup",
+        "referenced_by_row": "no",
+        "verdict": "removed"
+    },
+    {
+        "key": "db-backups/hourly/kicc-20260818T1030Z.tar",
+        "category": "backup",
+        "referenced_by_row": "no",
+        "verdict": "removed"
+    },
+    {
+        "key": "db-backups/hourly/kicc-20260818T1130Z.tar",
+        "category": "backup",
+        "referenced_by_row": "no",
+        "verdict": "removed"
+    },
+    {
+        "key": "db-backups/hourly/kicc-20260818T1230Z.tar",
+        "category": "backup",
+        "referenced_by_row": "no",
+        "verdict": "removed"
+    },
+    {
+        "key": "db-backups/hourly/kicc-20260818T1330Z.tar",
+        "category": "backup",
+        "referenced_by_row": "no",
+        "verdict": "removed"
+    },
+    {
+        "key": "db-backups/hourly/kicc-20260818T1430Z.tar",
+        "category": "backup",
+        "referenced_by_row": "no",
+        "verdict": "removed"
+    },
+    {
+        "key": "db-backups/hourly/kicc-20260818T1530Z.tar",
+        "category": "backup",
+        "referenced_by_row": "no",
+        "verdict": "removed"
+    },
+    {
+        "key": "db-backups/hourly/kicc-20260818T1630Z.tar",
+        "category": "backup",
+        "referenced_by_row": "no",
+        "verdict": "removed"
+    },
+    {
+        "key": "db-backups/hourly/kicc-20260818T1730Z.tar",
+        "category": "backup",
+        "referenced_by_row": "no",
+        "verdict": "removed"
+    },
+    {
+        "key": "db-backups/hourly/kicc-20260818T1830Z.tar",
+        "category": "backup",
+        "referenced_by_row": "no",
+        "verdict": "removed"
+    },
+    {
+        "key": "db-backups/hourly/kicc-20260818T1930Z.tar",
+        "category": "backup",
+        "referenced_by_row": "no",
+        "verdict": "removed"
+    },
+    {
+        "key": "db-backups/hourly/kicc-20260818T2030Z.tar",
+        "category": "backup",
+        "referenced_by_row": "no",
+        "verdict": "removed"
+    },
+    {
+        "key": "db-backups/hourly/kicc-20260818T2109Z.tar",
+        "category": "backup",
+        "referenced_by_row": "no",
+        "verdict": "removed"
+    },
+    {
+        "key": "db-backups/hourly/kicc-20260818T2130Z.tar",
+        "category": "backup",
+        "referenced_by_row": "no",
+        "verdict": "removed"
+    },
+    {
+        "key": "icons/bag2.json",
+        "category": "icon",
+        "referenced_by_row": "no",
+        "verdict": "removed"
+    },
+    {
+        "key": "icons/box1.json",
+        "category": "icon",
+        "referenced_by_row": "no",
+        "verdict": "removed"
+    },
+    {
+        "key": "icons/camera.json",
+        "category": "icon",
+        "referenced_by_row": "no",
+        "verdict": "removed"
+    },
+    {
+        "key": "icons/contacts.json",
+        "category": "icon",
+        "referenced_by_row": "no",
+        "verdict": "removed"
+    },
+    {
+        "key": "icons/folder.json",
+        "category": "icon",
+        "referenced_by_row": "no",
+        "verdict": "removed"
+    },
+    {
+        "key": "icons/heart.json",
+        "category": "icon",
+        "referenced_by_row": "no",
+        "verdict": "removed"
+    },
+    {
+        "key": "icons/lightbulb.json",
+        "category": "icon",
+        "referenced_by_row": "no",
+        "verdict": "removed"
+    },
+    {
+        "key": "icons/money.json",
+        "category": "icon",
+        "referenced_by_row": "no",
+        "verdict": "removed"
+    },
+    {
+        "key": "icons/movie.json",
+        "category": "icon",
+        "referenced_by_row": "no",
+        "verdict": "removed"
+    },
+    {
+        "key": "icons/music.json",
+        "category": "icon",
+        "referenced_by_row": "no",
+        "verdict": "removed"
+    },
+    {
+        "key": "icons/star.json",
+        "category": "icon",
+        "referenced_by_row": "no",
+        "verdict": "removed"
+    },
+    {
+        "key": "icons/truck.json",
+        "category": "icon",
+        "referenced_by_row": "no",
+        "verdict": "removed"
+    },
+    {
+        "key": "img/1dd795e2a99da6e235d49146403bf838.webp",
+        "category": "loose-upload",
+        "referenced_by_row": "yes",
+        "verdict": "kept"
+    },
+    {
+        "key": "img/a6445534d1de0c3c9d69e60b419c5bf9.webp",
+        "category": "loose-upload",
+        "referenced_by_row": "yes",
+        "verdict": "kept"
+    },
+    {
+        "key": "img/bb9b3e073ddbd260757a5a48daeae0b2.webp",
+        "category": "loose-upload",
+        "referenced_by_row": "yes",
+        "verdict": "kept"
+    },
+    {
+        "key": "img/dc22d1e90197219d2d584bc18638b898.webp",
+        "category": "loose-upload",
+        "referenced_by_row": "yes",
+        "verdict": "kept"
+    },
+    {
+        "key": "institutions/akamba-handicraft/hero/akamba-handicraft-hero.mp4",
+        "category": "media",
+        "referenced_by_row": "yes",
+        "verdict": "kept"
+    },
+    {
+        "key": "institutions/bombolulu-workshop/hero/bombolulu-workshop-hero.mp4",
+        "category": "media",
+        "referenced_by_row": "yes",
+        "verdict": "kept"
+    },
+    {
+        "key": "institutions/eliper-hotel/hero/eliper-hotel-hero.mp4",
+        "category": "media",
+        "referenced_by_row": "yes",
+        "verdict": "kept"
+    },
+    {
+        "key": "institutions/eliper-hotel/videos/boardroom-conference-centre-a69ew.mp4",
+        "category": "media",
+        "referenced_by_row": "yes",
+        "verdict": "kept"
+    },
+    {
+        "key": "institutions/eliper-hotel/videos/conference-hall-pbvkn.mp4",
+        "category": "media",
+        "referenced_by_row": "yes",
+        "verdict": "kept"
+    },
+    {
+        "key": "institutions/eliper-hotel/videos/dining-food-2ezrt.mp4",
+        "category": "media",
+        "referenced_by_row": "yes",
+        "verdict": "kept"
+    },
+    {
+        "key": "institutions/eliper-hotel/videos/masters-suite-ywcpz.mp4",
+        "category": "media",
+        "referenced_by_row": "yes",
+        "verdict": "kept"
+    },
+    {
+        "key": "institutions/eliper-hotel/videos/reception-dining-jkojx.mp4",
+        "category": "media",
+        "referenced_by_row": "yes",
+        "verdict": "kept"
+    },
+    {
+        "key": "institutions/eliper-hotel/videos/reception-welcome-xycrh.mp4",
+        "category": "media",
+        "referenced_by_row": "yes",
+        "verdict": "kept"
+    },
+    {
+        "key": "institutions/eliper-hotel/videos/vip-room-lzl6m.mp4",
+        "category": "media",
+        "referenced_by_row": "yes",
+        "verdict": "kept"
+    },
+    {
+        "key": "institutions/eliper-hotel/videos/vip-room-suite-brpti.mp4",
+        "category": "media",
+        "referenced_by_row": "yes",
+        "verdict": "kept"
+    },
+    {
+        "key": "institutions/gatura-greens/hero/gatura-greens-hero.mp4",
+        "category": "media",
+        "referenced_by_row": "yes",
+        "verdict": "kept"
+    },
+    {
+        "key": "institutions/gatura-greens/videos/gatura-black-tea-5vuw3.mp4",
+        "category": "media",
+        "referenced_by_row": "yes",
+        "verdict": "kept"
+    },
+    {
+        "key": "institutions/gatura-greens/videos/gatura-green-tea-oajnj.mp4",
+        "category": "media",
+        "referenced_by_row": "yes",
+        "verdict": "kept"
+    },
+    {
+        "key": "institutions/guka-cucu-coffee-farm/hero/guka-and-cucu-coffee-farm-hero.mp4",
+        "category": "media",
+        "referenced_by_row": "yes",
+        "verdict": "kept"
+    },
+    {
+        "key": "institutions/guka-cucu-coffee-farm/hero/guka-cucu-coffee-farm-hero.mp4",
+        "category": "media",
+        "referenced_by_row": "yes",
+        "verdict": "kept"
+    },
+    {
+        "key": "institutions/gukas-coffee-farm/videos/farm-tour-6snui.mp4",
+        "category": "media",
+        "referenced_by_row": "yes",
+        "verdict": "kept"
+    },
+    {
+        "key": "institutions/kakuzi-plc/hero/kakuzi-plc-hero.mp4",
+        "category": "media",
+        "referenced_by_row": "yes",
+        "verdict": "kept"
+    },
+    {
+        "key": "institutions/kakuzi-plc/videos/avocado-products-eyggl.mp4",
+        "category": "media",
+        "referenced_by_row": "yes",
+        "verdict": "kept"
+    },
+    {
+        "key": "institutions/kakuzi-plc/videos/blueberry-products-p30mf.mp4",
+        "category": "media",
+        "referenced_by_row": "yes",
+        "verdict": "kept"
+    },
+    {
+        "key": "institutions/kakuzi-plc/videos/dry-roasted-nuts-irvjl.mp4",
+        "category": "media",
+        "referenced_by_row": "yes",
+        "verdict": "kept"
+    },
+    {
+        "key": "institutions/kakuzi-plc/videos/macadamia-oil-zcvj1.mp4",
+        "category": "media",
+        "referenced_by_row": "yes",
+        "verdict": "kept"
+    },
+    {
+        "key": "institutions/kimakia-fishing-grounds/videos/kimakia-rapids-tlsea.mp4",
+        "category": "media",
+        "referenced_by_row": "yes",
+        "verdict": "kept"
+    },
+    {
+        "key": "institutions/muranga-university-of-science-and-technology/hero/muranga-university-of-science-and-technology-hero.mp4",
+        "category": "media",
+        "referenced_by_row": "yes",
+        "verdict": "kept"
+    },
+    {
+        "key": "institutions/sagana-raid-hotel/videos/sagana-rapids-x8niv.mp4",
+        "category": "media",
+        "referenced_by_row": "yes",
+        "verdict": "kept"
+    },
+    {
+        "key": "institutions/tamarind-mombasa/hero/tamarind-mombasa-hero.mp4",
+        "category": "media",
+        "referenced_by_row": "yes",
+        "verdict": "kept"
+    },
+    {
+        "key": "kicc/kicc-logo.png",
+        "category": "media",
+        "referenced_by_row": "no",
+        "verdict": "removed"
+    },
+    {
+        "key": "kicc/kicclogo.png",
+        "category": "media",
+        "referenced_by_row": "no",
+        "verdict": "removed"
+    },
+    {
+        "key": "landing/hero/seedance-hero.mp4",
+        "category": "media",
+        "referenced_by_row": "yes",
+        "verdict": "kept"
+    }
+]

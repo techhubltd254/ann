@@ -3132,6 +3132,8 @@ html[data-theme] .tm-gallery :is(.tm-copy p,.tm-note){color:var(--ui-muted)!impo
       </div>
       <div>
         <h4>Platform</h4>
+        <a href="/portal/media-flow" data-link>Curation Studio</a>
+        <a href="/pipelines" data-link>Pipeline Registry</a>
         <a href="/operations" data-link>Operations</a>
         <a href="#/consent/physical" data-link>Consent &amp; DPA 2019</a>
         <a href="#/trade-agreements" data-link>Trade Agreements</a>
@@ -3331,6 +3333,7 @@ const STREAMS = [
  {n:"Creative & Digital Expo Replay",venue:"Tsavo Hall",status:"vod",viewers:0,q:"1080p"},
 ];
 
+/* ── PIPELINE REGISTRY (202 registered, sector filter) ── */
 const SECTORS = ["Agriculture","Manufacturing","Tourism","Blue Economy","Mining","Energy","ICT & Innovation","Financial Services","Logistics","Creative Economy","Livestock","Textiles"];
 const PIPELINES = Array.from({length:202},(_,i)=>({
   code:"KICC-PL-"+String(i+1).padStart(4,"0"),
@@ -3412,6 +3415,7 @@ const REPO = (()=>{
  const unavailable=()=>{throw Error('Use the authenticated Admin portal for server-side changes. No local preview changes are saved.');};
  return {list:(t,p=false)=>clone((db.tables[t]||[]).filter(r=>!p||r.status==='published')),snapshot:()=>clone(db),put:unavailable,del:unavailable,restore:unavailable,track:()=>{},seedContent:()=>{},slug:x=>String(x).toLowerCase().replace(/[^a-z0-9]+/g,'-').replace(/^-|-$/g,''),storageOK:true,audit:[]};
 })();
+/* Uploaded binaries live in IndexedDB, never localStorage. Backend hosting is not connected. */
 const ASSETS={store:async()=>{throw Error('Upload through the authenticated native Admin portal.');},url:async id=>'/experience/media/'+encodeURIComponent(id),remove:async()=>{throw Error('Delete through the authenticated native Admin portal.');}};
 </script>
 <script>
@@ -4099,7 +4103,27 @@ const SPLATVIEW = (() => {
      04 STORY       assign to a narrative chapter, derive alt text + rights
      05 PUBLISH     emit the record the public site renders from
 
+   ── INTEGRATION NOTE ────────────────────────────────────────────────────
+   Stage 02 is the only stage that needs a model. `VISION.infer()` below is a
+   DETERMINISTIC MOCK — it is seeded from the filename so results are stable
+   across reloads, but it does not look at a single pixel. Replace the body of
+   `VISION.infer` with a real call and everything downstream keeps working:
 
+     async function infer(asset){
+       const b64 = await toBase64(asset.thumb);
+       const r = await fetch('/api/vision/analyse', {        // your Laravel route
+         method:'POST', headers:{'Content-Type':'application/json'},
+         body: JSON.stringify({ image:b64, schema:VISION_SCHEMA })
+       });
+       return VISION.validate(await r.json());               // keep the shape
+     }
+
+   Any provider works (Gemini Vision, Claude, GPT-4V, a local LLaVA). What
+   matters is the RETURN SHAPE, because stages 03–05 depend on it:
+     { caption, tags[], quality{score,sharpness,exposure,composition},
+       people{count,minors}, text{detected,content}, heroFrame, focal{x,y},
+       suggestedChapter, alt, rights{modelRelease,locationRelease} }
+   ============================================================================ */
 const CURATION = (() => {
 
   /* ── the five stages, as displayed in the admin studio ───────────────── */
@@ -4116,9 +4140,10 @@ const CURATION = (() => {
   const pick=(r,a)=>a[Math.floor(r()*a.length)%a.length];
   const int=(r,a,b)=>a+Math.floor(r()*(b-a+1));
 
+  /* ── 02 · VISION — MOCK. Replace with a real provider call. ──────────── */
   const VISION = {
     model:'mock-vision-v0',
-    live:false,
+    live:false,                       // flipped true only when a real key is wired
     schema:{caption:'string',tags:'string[]',quality:'object',heroFrame:'int',focal:'{x,y}',chapter:'string'},
     infer(asset){
       const r = seed(asset.file||asset.id||'asset');
@@ -6447,7 +6472,7 @@ Router.register('/login', () => ({title:'Sign In', html:`
     <div class="text-center">
       <div class="logo" style="justify-content:center"><span class="mark" style="background:transparent;box-shadow:none"><img src="/kicc-logo.png" alt="KICC" style="width:34px;height:34px;object-fit:contain;display:block"></span></div>
       <h2 style="margin-top:18px;font-size:1.6rem">Sign in to KICC</h2>
-      
+      <p class="muted-xs" style="margin-top:8px">Public sign-in. Glass card floats on a minimal shader (low intensity).</p>
     </div>
     <form class="mt-l" id="loginForm" autocomplete="on">
       <div class="field"><label for="li-id">Email or phone number</label>
@@ -6476,7 +6501,7 @@ Router.register('/register', () => ({title:'Create Account', html:`
     <div class="text-center">
       <div class="logo" style="justify-content:center"><span class="mark" style="background:transparent;box-shadow:none"><img src="/kicc-logo.png" alt="KICC" style="width:34px;height:34px;object-fit:contain;display:block"></span></div>
       <h2 style="margin-top:16px;font-size:1.45rem">Create your account</h2>
-      
+      <p class="muted-xs" style="margin-top:8px">Multi-step horizontal carousel: email → 6-digit code → details. Each step slides from the right, the previous slides left (500ms, power2.inOut).</p>
     </div>
     <div class="steps mt-l"><i class="on"></i><i></i><i></i></div>
     <form id="regForm">
@@ -6529,7 +6554,7 @@ Router.register('/reset-password', () => ({title:'Set New Password', html:`
   <div class="glass-card auth-card" data-reveal>
     <div class="text-center"><div class="logo" style="justify-content:center"><span class="mark" style="background:transparent;box-shadow:none"><img src="/kicc-logo.png" alt="KICC" style="width:34px;height:34px;object-fit:contain;display:block"></span></div>
       <h2 style="margin-top:16px;font-size:1.4rem">Set a new password</h2>
-      </div>
+      <p class="muted-xs" style="margin-top:8px">Token: <code style="color:var(--au-ink)">rps_8f31c0a7d4e6b921</code></p></div>
     <form class="mt-l" id="resetForm">
       <div class="field"><label>New password</label>
         <div class="pw-wrap"><input class="input" type="password" placeholder="Minimum 8 characters" required>

@@ -1,0 +1,982 @@
+[
+    {
+        "scope": "county",
+        "entity_id": 30,
+        "entity": "Baringo",
+        "slug": "baringo",
+        "state": "representative",
+        "renders": "FALLBACK TILE (no own film)",
+        "source_key": "landing/hero/seedance-hero.mp4",
+        "reason": "shared stand-in, not footage of this entity"
+    },
+    {
+        "scope": "county",
+        "entity_id": 36,
+        "entity": "Bomet",
+        "slug": "bomet",
+        "state": "representative",
+        "renders": "FALLBACK TILE (no own film)",
+        "source_key": "landing/hero/seedance-hero.mp4",
+        "reason": "shared stand-in, not footage of this entity"
+    },
+    {
+        "scope": "county",
+        "entity_id": 47,
+        "entity": "Bungoma",
+        "slug": "bungoma",
+        "state": "representative",
+        "renders": "FALLBACK TILE (no own film)",
+        "source_key": "landing/hero/seedance-hero.mp4",
+        "reason": "shared stand-in, not footage of this entity"
+    },
+    {
+        "scope": "county",
+        "entity_id": 39,
+        "entity": "Busia",
+        "slug": "busia",
+        "state": "representative",
+        "renders": "FALLBACK TILE (no own film)",
+        "source_key": "landing/hero/seedance-hero.mp4",
+        "reason": "shared stand-in, not footage of this entity"
+    },
+    {
+        "scope": "county",
+        "entity_id": 28,
+        "entity": "Elgeyo-Marakwet",
+        "slug": "elgeyo-marakwet",
+        "state": "representative",
+        "renders": "FALLBACK TILE (no own film)",
+        "source_key": "landing/hero/seedance-hero.mp4",
+        "reason": "shared stand-in, not footage of this entity"
+    },
+    {
+        "scope": "county",
+        "entity_id": 14,
+        "entity": "Embu",
+        "slug": "embu",
+        "state": "representative",
+        "renders": "FALLBACK TILE (no own film)",
+        "source_key": "landing/hero/seedance-hero.mp4",
+        "reason": "shared stand-in, not footage of this entity"
+    },
+    {
+        "scope": "county",
+        "entity_id": 7,
+        "entity": "Garissa",
+        "slug": "garissa",
+        "state": "representative",
+        "renders": "FALLBACK TILE (no own film)",
+        "source_key": "landing/hero/seedance-hero.mp4",
+        "reason": "shared stand-in, not footage of this entity"
+    },
+    {
+        "scope": "county",
+        "entity_id": 42,
+        "entity": "Homa Bay",
+        "slug": "homa-bay",
+        "state": "representative",
+        "renders": "FALLBACK TILE (no own film)",
+        "source_key": "landing/hero/seedance-hero.mp4",
+        "reason": "shared stand-in, not footage of this entity"
+    },
+    {
+        "scope": "county",
+        "entity_id": 11,
+        "entity": "Isiolo",
+        "slug": "isiolo",
+        "state": "representative",
+        "renders": "FALLBACK TILE (no own film)",
+        "source_key": "landing/hero/seedance-hero.mp4",
+        "reason": "shared stand-in, not footage of this entity"
+    },
+    {
+        "scope": "county",
+        "entity_id": 34,
+        "entity": "Kajiado",
+        "slug": "kajiado",
+        "state": "representative",
+        "renders": "FALLBACK TILE (no own film)",
+        "source_key": "landing/hero/seedance-hero.mp4",
+        "reason": "shared stand-in, not footage of this entity"
+    },
+    {
+        "scope": "county",
+        "entity_id": 37,
+        "entity": "Kakamega",
+        "slug": "kakamega",
+        "state": "representative",
+        "renders": "FALLBACK TILE (no own film)",
+        "source_key": "landing/hero/seedance-hero.mp4",
+        "reason": "shared stand-in, not footage of this entity"
+    },
+    {
+        "scope": "county",
+        "entity_id": 35,
+        "entity": "Kericho",
+        "slug": "kericho",
+        "state": "representative",
+        "renders": "FALLBACK TILE (no own film)",
+        "source_key": "landing/hero/seedance-hero.mp4",
+        "reason": "shared stand-in, not footage of this entity"
+    },
+    {
+        "scope": "county",
+        "entity_id": 22,
+        "entity": "Kiambu",
+        "slug": "kiambu",
+        "state": "representative",
+        "renders": "FALLBACK TILE (no own film)",
+        "source_key": "landing/hero/seedance-hero.mp4",
+        "reason": "shared stand-in, not footage of this entity"
+    },
+    {
+        "scope": "county",
+        "entity_id": 3,
+        "entity": "Kilifi",
+        "slug": "kilifi",
+        "state": "representative",
+        "renders": "FALLBACK TILE (no own film)",
+        "source_key": "landing/hero/seedance-hero.mp4",
+        "reason": "shared stand-in, not footage of this entity"
+    },
+    {
+        "scope": "county",
+        "entity_id": 20,
+        "entity": "Kirinyaga",
+        "slug": "kirinyaga",
+        "state": "representative",
+        "renders": "FALLBACK TILE (no own film)",
+        "source_key": "landing/hero/seedance-hero.mp4",
+        "reason": "shared stand-in, not footage of this entity"
+    },
+    {
+        "scope": "county",
+        "entity_id": 44,
+        "entity": "Kisii",
+        "slug": "kisii",
+        "state": "representative",
+        "renders": "FALLBACK TILE (no own film)",
+        "source_key": "landing/hero/seedance-hero.mp4",
+        "reason": "shared stand-in, not footage of this entity"
+    },
+    {
+        "scope": "county",
+        "entity_id": 41,
+        "entity": "Kisumu",
+        "slug": "kisumu",
+        "state": "representative",
+        "renders": "FALLBACK TILE (no own film)",
+        "source_key": "landing/hero/seedance-hero.mp4",
+        "reason": "shared stand-in, not footage of this entity"
+    },
+    {
+        "scope": "county",
+        "entity_id": 15,
+        "entity": "Kitui",
+        "slug": "kitui",
+        "state": "representative",
+        "renders": "FALLBACK TILE (no own film)",
+        "source_key": "landing/hero/seedance-hero.mp4",
+        "reason": "shared stand-in, not footage of this entity"
+    },
+    {
+        "scope": "county",
+        "entity_id": 2,
+        "entity": "Kwale",
+        "slug": "kwale",
+        "state": "representative",
+        "renders": "FALLBACK TILE (no own film)",
+        "source_key": "landing/hero/seedance-hero.mp4",
+        "reason": "shared stand-in, not footage of this entity"
+    },
+    {
+        "scope": "county",
+        "entity_id": 31,
+        "entity": "Laikipia",
+        "slug": "laikipia",
+        "state": "representative",
+        "renders": "FALLBACK TILE (no own film)",
+        "source_key": "landing/hero/seedance-hero.mp4",
+        "reason": "shared stand-in, not footage of this entity"
+    },
+    {
+        "scope": "county",
+        "entity_id": 5,
+        "entity": "Lamu",
+        "slug": "lamu",
+        "state": "representative",
+        "renders": "FALLBACK TILE (no own film)",
+        "source_key": "landing/hero/seedance-hero.mp4",
+        "reason": "shared stand-in, not footage of this entity"
+    },
+    {
+        "scope": "county",
+        "entity_id": 16,
+        "entity": "Machakos",
+        "slug": "machakos",
+        "state": "representative",
+        "renders": "FALLBACK TILE (no own film)",
+        "source_key": "landing/hero/seedance-hero.mp4",
+        "reason": "shared stand-in, not footage of this entity"
+    },
+    {
+        "scope": "county",
+        "entity_id": 17,
+        "entity": "Makueni",
+        "slug": "makueni",
+        "state": "representative",
+        "renders": "FALLBACK TILE (no own film)",
+        "source_key": "landing/hero/seedance-hero.mp4",
+        "reason": "shared stand-in, not footage of this entity"
+    },
+    {
+        "scope": "county",
+        "entity_id": 9,
+        "entity": "Mandera",
+        "slug": "mandera",
+        "state": "representative",
+        "renders": "FALLBACK TILE (no own film)",
+        "source_key": "landing/hero/seedance-hero.mp4",
+        "reason": "shared stand-in, not footage of this entity"
+    },
+    {
+        "scope": "county",
+        "entity_id": 10,
+        "entity": "Marsabit",
+        "slug": "marsabit",
+        "state": "representative",
+        "renders": "FALLBACK TILE (no own film)",
+        "source_key": "landing/hero/seedance-hero.mp4",
+        "reason": "shared stand-in, not footage of this entity"
+    },
+    {
+        "scope": "county",
+        "entity_id": 12,
+        "entity": "Meru",
+        "slug": "meru",
+        "state": "representative",
+        "renders": "FALLBACK TILE (no own film)",
+        "source_key": "landing/hero/seedance-hero.mp4",
+        "reason": "shared stand-in, not footage of this entity"
+    },
+    {
+        "scope": "county",
+        "entity_id": 43,
+        "entity": "Migori",
+        "slug": "migori",
+        "state": "representative",
+        "renders": "FALLBACK TILE (no own film)",
+        "source_key": "landing/hero/seedance-hero.mp4",
+        "reason": "shared stand-in, not footage of this entity"
+    },
+    {
+        "scope": "county",
+        "entity_id": 1,
+        "entity": "Mombasa",
+        "slug": "mombasa",
+        "state": "distinct",
+        "renders": "https://kicctest.org/media/video/counties/mombasa/video/hero/hero.mp4",
+        "source_key": "counties/mombasa/video/hero/hero.mp4",
+        "reason": "key carries \"mombasa\""
+    },
+    {
+        "scope": "county",
+        "entity_id": 21,
+        "entity": "Murang'a",
+        "slug": "muranga",
+        "state": "distinct",
+        "renders": "https://kicctest.org/media/video/counties/muranga/video/hero/hero.mp4",
+        "source_key": "counties/muranga/video/hero/hero.mp4",
+        "reason": "key carries \"muranga\""
+    },
+    {
+        "scope": "county",
+        "entity_id": 46,
+        "entity": "Nairobi City",
+        "slug": "nairobi-city",
+        "state": "representative",
+        "renders": "FALLBACK TILE (no own film)",
+        "source_key": "landing/hero/seedance-hero.mp4",
+        "reason": "shared stand-in, not footage of this entity"
+    },
+    {
+        "scope": "county",
+        "entity_id": 32,
+        "entity": "Nakuru",
+        "slug": "nakuru",
+        "state": "representative",
+        "renders": "FALLBACK TILE (no own film)",
+        "source_key": "landing/hero/seedance-hero.mp4",
+        "reason": "shared stand-in, not footage of this entity"
+    },
+    {
+        "scope": "county",
+        "entity_id": 29,
+        "entity": "Nandi",
+        "slug": "nandi",
+        "state": "representative",
+        "renders": "FALLBACK TILE (no own film)",
+        "source_key": "landing/hero/seedance-hero.mp4",
+        "reason": "shared stand-in, not footage of this entity"
+    },
+    {
+        "scope": "county",
+        "entity_id": 33,
+        "entity": "Narok",
+        "slug": "narok",
+        "state": "representative",
+        "renders": "FALLBACK TILE (no own film)",
+        "source_key": "landing/hero/seedance-hero.mp4",
+        "reason": "shared stand-in, not footage of this entity"
+    },
+    {
+        "scope": "county",
+        "entity_id": 45,
+        "entity": "Nyamira",
+        "slug": "nyamira",
+        "state": "representative",
+        "renders": "FALLBACK TILE (no own film)",
+        "source_key": "landing/hero/seedance-hero.mp4",
+        "reason": "shared stand-in, not footage of this entity"
+    },
+    {
+        "scope": "county",
+        "entity_id": 18,
+        "entity": "Nyandarua",
+        "slug": "nyandarua",
+        "state": "representative",
+        "renders": "FALLBACK TILE (no own film)",
+        "source_key": "landing/hero/seedance-hero.mp4",
+        "reason": "shared stand-in, not footage of this entity"
+    },
+    {
+        "scope": "county",
+        "entity_id": 19,
+        "entity": "Nyeri",
+        "slug": "nyeri",
+        "state": "representative",
+        "renders": "FALLBACK TILE (no own film)",
+        "source_key": "landing/hero/seedance-hero.mp4",
+        "reason": "shared stand-in, not footage of this entity"
+    },
+    {
+        "scope": "county",
+        "entity_id": 25,
+        "entity": "Samburu",
+        "slug": "samburu",
+        "state": "representative",
+        "renders": "FALLBACK TILE (no own film)",
+        "source_key": "landing/hero/seedance-hero.mp4",
+        "reason": "shared stand-in, not footage of this entity"
+    },
+    {
+        "scope": "county",
+        "entity_id": 40,
+        "entity": "Siaya",
+        "slug": "siaya",
+        "state": "representative",
+        "renders": "FALLBACK TILE (no own film)",
+        "source_key": "landing/hero/seedance-hero.mp4",
+        "reason": "shared stand-in, not footage of this entity"
+    },
+    {
+        "scope": "county",
+        "entity_id": 6,
+        "entity": "Taita-Taveta",
+        "slug": "taita-taveta",
+        "state": "representative",
+        "renders": "FALLBACK TILE (no own film)",
+        "source_key": "landing/hero/seedance-hero.mp4",
+        "reason": "shared stand-in, not footage of this entity"
+    },
+    {
+        "scope": "county",
+        "entity_id": 4,
+        "entity": "Tana River",
+        "slug": "tana-river",
+        "state": "representative",
+        "renders": "FALLBACK TILE (no own film)",
+        "source_key": "landing/hero/seedance-hero.mp4",
+        "reason": "shared stand-in, not footage of this entity"
+    },
+    {
+        "scope": "county",
+        "entity_id": 13,
+        "entity": "Tharaka-Nithi",
+        "slug": "tharaka-nithi",
+        "state": "representative",
+        "renders": "FALLBACK TILE (no own film)",
+        "source_key": "landing/hero/seedance-hero.mp4",
+        "reason": "shared stand-in, not footage of this entity"
+    },
+    {
+        "scope": "county",
+        "entity_id": 26,
+        "entity": "Trans Nzoia",
+        "slug": "trans-nzoia",
+        "state": "representative",
+        "renders": "FALLBACK TILE (no own film)",
+        "source_key": "landing/hero/seedance-hero.mp4",
+        "reason": "shared stand-in, not footage of this entity"
+    },
+    {
+        "scope": "county",
+        "entity_id": 23,
+        "entity": "Turkana",
+        "slug": "turkana",
+        "state": "representative",
+        "renders": "FALLBACK TILE (no own film)",
+        "source_key": "landing/hero/seedance-hero.mp4",
+        "reason": "shared stand-in, not footage of this entity"
+    },
+    {
+        "scope": "county",
+        "entity_id": 27,
+        "entity": "Uasin Gishu",
+        "slug": "uasin-gishu",
+        "state": "representative",
+        "renders": "FALLBACK TILE (no own film)",
+        "source_key": "landing/hero/seedance-hero.mp4",
+        "reason": "shared stand-in, not footage of this entity"
+    },
+    {
+        "scope": "county",
+        "entity_id": 38,
+        "entity": "Vihiga",
+        "slug": "vihiga",
+        "state": "representative",
+        "renders": "FALLBACK TILE (no own film)",
+        "source_key": "landing/hero/seedance-hero.mp4",
+        "reason": "shared stand-in, not footage of this entity"
+    },
+    {
+        "scope": "county",
+        "entity_id": 8,
+        "entity": "Wajir",
+        "slug": "wajir",
+        "state": "representative",
+        "renders": "FALLBACK TILE (no own film)",
+        "source_key": "landing/hero/seedance-hero.mp4",
+        "reason": "shared stand-in, not footage of this entity"
+    },
+    {
+        "scope": "county",
+        "entity_id": 24,
+        "entity": "West Pokot",
+        "slug": "west-pokot",
+        "state": "representative",
+        "renders": "FALLBACK TILE (no own film)",
+        "source_key": "landing/hero/seedance-hero.mp4",
+        "reason": "shared stand-in, not footage of this entity"
+    },
+    {
+        "scope": "institution",
+        "entity_id": 60010,
+        "entity": "Africa Economic Zone",
+        "slug": "africa-economic-zone",
+        "state": "missing",
+        "renders": "FALLBACK TILE (no own film)",
+        "source_key": "",
+        "reason": "no admin row for this slot"
+    },
+    {
+        "scope": "institution",
+        "entity_id": 60018,
+        "entity": "Akamba Handicraft",
+        "slug": "akamba-handicraft",
+        "state": "distinct",
+        "renders": "https://kicctest.org/media/video/institutions/akamba-handicraft/hero/akamba-handicraft-hero.mp4",
+        "source_key": "institutions/akamba-handicraft/hero/akamba-handicraft-hero.mp4",
+        "reason": "key carries \"akamba-handicraft\""
+    },
+    {
+        "scope": "institution",
+        "entity_id": 30005,
+        "entity": "Alba Foods \u2014 Macadamia Processing Plant",
+        "slug": "alba-foods-macadamia-processing",
+        "state": "missing",
+        "renders": "FALLBACK TILE (no own film)",
+        "source_key": "",
+        "reason": "no admin row for this slot"
+    },
+    {
+        "scope": "institution",
+        "entity_id": 60032,
+        "entity": "APDK Rehabilitation Clinic \u2014 Mombasa",
+        "slug": "apdk-rehabilitation-clinic",
+        "state": "missing",
+        "renders": "FALLBACK TILE (no own film)",
+        "source_key": "",
+        "reason": "no admin row for this slot"
+    },
+    {
+        "scope": "institution",
+        "entity_id": 60005,
+        "entity": "Boma Inn Eldoret",
+        "slug": "boma-inn-eldoret",
+        "state": "missing",
+        "renders": "FALLBACK TILE (no own film)",
+        "source_key": "",
+        "reason": "no admin row for this slot"
+    },
+    {
+        "scope": "institution",
+        "entity_id": 60013,
+        "entity": "Bombolulu Workshops & Cultural Centre",
+        "slug": "bombolulu-workshop",
+        "state": "distinct",
+        "renders": "https://kicctest.org/media/video/institutions/bombolulu-workshop/hero/bombolulu-workshop-hero.mp4",
+        "source_key": "institutions/bombolulu-workshop/hero/bombolulu-workshop-hero.mp4",
+        "reason": "key carries \"bombolulu-workshop\""
+    },
+    {
+        "scope": "institution",
+        "entity_id": 60028,
+        "entity": "Bridge Construction Gaturi-Kiharu",
+        "slug": "gaturi-kiharu-bridge",
+        "state": "missing",
+        "renders": "FALLBACK TILE (no own film)",
+        "source_key": "",
+        "reason": "no admin row for this slot"
+    },
+    {
+        "scope": "institution",
+        "entity_id": 60003,
+        "entity": "Brigidear Boinet",
+        "slug": "brigidear-boinet",
+        "state": "missing",
+        "renders": "FALLBACK TILE (no own film)",
+        "source_key": "",
+        "reason": "no admin row for this slot"
+    },
+    {
+        "scope": "institution",
+        "entity_id": 60015,
+        "entity": "Coast General Teaching & Referral Hospital",
+        "slug": "coast-general-hospital",
+        "state": "missing",
+        "renders": "FALLBACK TILE (no own film)",
+        "source_key": "",
+        "reason": "no admin row for this slot"
+    },
+    {
+        "scope": "institution",
+        "entity_id": 60007,
+        "entity": "Complete Sports Training Center",
+        "slug": "complete-sports-training-center",
+        "state": "missing",
+        "renders": "FALLBACK TILE (no own film)",
+        "source_key": "",
+        "reason": "no admin row for this slot"
+    },
+    {
+        "scope": "institution",
+        "entity_id": 7,
+        "entity": "Eliper Hotel",
+        "slug": "eliper-hotel",
+        "state": "distinct",
+        "renders": "https://kicctest.org/media/video/institutions/eliper-hotel/hero/eliper-hotel-hero.mp4",
+        "source_key": "institutions/eliper-hotel/hero/eliper-hotel-hero.mp4",
+        "reason": "key carries \"eliper-hotel\""
+    },
+    {
+        "scope": "institution",
+        "entity_id": 8,
+        "entity": "Gatura Greens",
+        "slug": "gatura-greens",
+        "state": "distinct",
+        "renders": "https://kicctest.org/media/video/institutions/gatura-greens/hero/gatura-greens-hero.mp4",
+        "source_key": "institutions/gatura-greens/hero/gatura-greens-hero.mp4",
+        "reason": "key carries \"gatura-greens\""
+    },
+    {
+        "scope": "institution",
+        "entity_id": 9,
+        "entity": "Gikono Landfill & Recycling Centre",
+        "slug": "muranga-waste-management-centre",
+        "state": "missing",
+        "renders": "FALLBACK TILE (no own film)",
+        "source_key": "",
+        "reason": "no admin row for this slot"
+    },
+    {
+        "scope": "institution",
+        "entity_id": 60021,
+        "entity": "Global Tea",
+        "slug": "global-tea-mombasa",
+        "state": "missing",
+        "renders": "FALLBACK TILE (no own film)",
+        "source_key": "",
+        "reason": "no admin row for this slot"
+    },
+    {
+        "scope": "institution",
+        "entity_id": 60030,
+        "entity": "Guka and Cucu Coffee Farm",
+        "slug": "guka-cucu-coffee-farm",
+        "state": "distinct",
+        "renders": "https://kicctest.org/media/video/institutions/guka-cucu-coffee-farm/hero/guka-and-cucu-coffee-farm-hero.mp4",
+        "source_key": "institutions/guka-cucu-coffee-farm/hero/guka-and-cucu-coffee-farm-hero.mp4",
+        "reason": "key carries \"guka-cucu-coffee-farm\""
+    },
+    {
+        "scope": "institution",
+        "entity_id": 10,
+        "entity": "Gukas Coffee Farm",
+        "slug": "gukas-coffee-farm",
+        "state": "missing",
+        "renders": "FALLBACK TILE (no own film)",
+        "source_key": "",
+        "reason": "no admin row for this slot"
+    },
+    {
+        "scope": "institution",
+        "entity_id": 60014,
+        "entity": "Haller Park",
+        "slug": "haller-park",
+        "state": "missing",
+        "renders": "FALLBACK TILE (no own film)",
+        "source_key": "",
+        "reason": "no admin row for this slot"
+    },
+    {
+        "scope": "institution",
+        "entity_id": 11,
+        "entity": "Kakuzi PLC",
+        "slug": "kakuzi-plc",
+        "state": "distinct",
+        "renders": "https://kicctest.org/media/video/institutions/kakuzi-plc/hero/kakuzi-plc-hero.mp4",
+        "source_key": "institutions/kakuzi-plc/hero/kakuzi-plc-hero.mp4",
+        "reason": "key carries \"kakuzi-plc\""
+    },
+    {
+        "scope": "institution",
+        "entity_id": 30011,
+        "entity": "Kangari Tea Smallholder Farmers Cooperative",
+        "slug": "kangari-tea-smallholder-cooperative",
+        "state": "missing",
+        "renders": "FALLBACK TILE (no own film)",
+        "source_key": "",
+        "reason": "no admin row for this slot"
+    },
+    {
+        "scope": "institution",
+        "entity_id": 60022,
+        "entity": "Kenya Suitcase Manufacturers",
+        "slug": "kenya-suitcase-manufacturers",
+        "state": "missing",
+        "renders": "FALLBACK TILE (no own film)",
+        "source_key": "",
+        "reason": "no admin row for this slot"
+    },
+    {
+        "scope": "institution",
+        "entity_id": 30001,
+        "entity": "KICC \u2014 Kenyatta International Convention Centre",
+        "slug": "kicc",
+        "state": "missing",
+        "renders": "FALLBACK TILE (no own film)",
+        "source_key": "",
+        "reason": "no admin row for this slot"
+    },
+    {
+        "scope": "institution",
+        "entity_id": 60025,
+        "entity": "Kimakia Fishing Grounds \u2014 The Twin Falls",
+        "slug": "kimakia-fishing-grounds",
+        "state": "missing",
+        "renders": "FALLBACK TILE (no own film)",
+        "source_key": "",
+        "reason": "no admin row for this slot"
+    },
+    {
+        "scope": "institution",
+        "entity_id": 60020,
+        "entity": "KMFRI \u2014 Kenya Marine & Fisheries Research Institute",
+        "slug": "kemfri-mombasa",
+        "state": "missing",
+        "renders": "FALLBACK TILE (no own film)",
+        "source_key": "",
+        "reason": "no admin row for this slot"
+    },
+    {
+        "scope": "institution",
+        "entity_id": 60019,
+        "entity": "Kongowea Market",
+        "slug": "kongowea-market",
+        "state": "missing",
+        "renders": "FALLBACK TILE (no own film)",
+        "source_key": "",
+        "reason": "no admin row for this slot"
+    },
+    {
+        "scope": "institution",
+        "entity_id": 60016,
+        "entity": "Mama Ngina Waterfront",
+        "slug": "mama-ngina-waterfront",
+        "state": "missing",
+        "renders": "FALLBACK TILE (no own film)",
+        "source_key": "",
+        "reason": "no admin row for this slot"
+    },
+    {
+        "scope": "institution",
+        "entity_id": 60026,
+        "entity": "Mbiri Primary School",
+        "slug": "mbiri-primary-school",
+        "state": "missing",
+        "renders": "FALLBACK TILE (no own film)",
+        "source_key": "",
+        "reason": "no admin row for this slot"
+    },
+    {
+        "scope": "institution",
+        "entity_id": 60027,
+        "entity": "Mukurwe wa Nyagathanga Primary School",
+        "slug": "mukurwe-wa-nyagathanga-primary",
+        "state": "missing",
+        "renders": "FALLBACK TILE (no own film)",
+        "source_key": "",
+        "reason": "no admin row for this slot"
+    },
+    {
+        "scope": "institution",
+        "entity_id": 30004,
+        "entity": "Murang'a Agri-Tech Innovation Hub",
+        "slug": "muranga-agri-tech-innovation-hub",
+        "state": "missing",
+        "renders": "FALLBACK TILE (no own film)",
+        "source_key": "",
+        "reason": "no admin row for this slot"
+    },
+    {
+        "scope": "institution",
+        "entity_id": 30006,
+        "entity": "Murang'a Coffee & Tea Factory Cooperative",
+        "slug": "muranga-coffee-and-tea-factory-outlets",
+        "state": "missing",
+        "renders": "FALLBACK TILE (no own film)",
+        "source_key": "",
+        "reason": "no admin row for this slot"
+    },
+    {
+        "scope": "institution",
+        "entity_id": 30003,
+        "entity": "Murang'a County Referral Hospital",
+        "slug": "muranga-county-referral-hospital",
+        "state": "missing",
+        "renders": "FALLBACK TILE (no own film)",
+        "source_key": "",
+        "reason": "no admin row for this slot"
+    },
+    {
+        "scope": "institution",
+        "entity_id": 30009,
+        "entity": "Murang'a Creative Arts & Textiles Co-op",
+        "slug": "muranga-creative-arts-and-textiles",
+        "state": "missing",
+        "renders": "FALLBACK TILE (no own film)",
+        "source_key": "",
+        "reason": "no admin row for this slot"
+    },
+    {
+        "scope": "institution",
+        "entity_id": 30008,
+        "entity": "Murang'a Farmers Sacco Society",
+        "slug": "muranga-farmers-sacco",
+        "state": "missing",
+        "renders": "FALLBACK TILE (no own film)",
+        "source_key": "",
+        "reason": "no admin row for this slot"
+    },
+    {
+        "scope": "institution",
+        "entity_id": 30002,
+        "entity": "Murang'a Institute of Technology",
+        "slug": "muranga-institute-of-technology",
+        "state": "missing",
+        "renders": "FALLBACK TILE (no own film)",
+        "source_key": "",
+        "reason": "no admin row for this slot"
+    },
+    {
+        "scope": "institution",
+        "entity_id": 30010,
+        "entity": "Murang'a Sagana Riverside Estates",
+        "slug": "muranga-sagana-riverside-estates",
+        "state": "missing",
+        "renders": "FALLBACK TILE (no own film)",
+        "source_key": "",
+        "reason": "no admin row for this slot"
+    },
+    {
+        "scope": "institution",
+        "entity_id": 30007,
+        "entity": "Murang'a Town \u2014 Transport & Logistics Hub",
+        "slug": "muranga-town-transport-hub",
+        "state": "missing",
+        "renders": "FALLBACK TILE (no own film)",
+        "source_key": "",
+        "reason": "no admin row for this slot"
+    },
+    {
+        "scope": "institution",
+        "entity_id": 13,
+        "entity": "Murang'a University of Science and Technology",
+        "slug": "muranga-university-of-science-and-technology",
+        "state": "distinct",
+        "renders": "https://kicctest.org/media/video/institutions/muranga-university-of-science-and-technology/hero/muranga-university-of-science-and-technology-hero.mp4",
+        "source_key": "institutions/muranga-university-of-science-and-technology/hero/muranga-university-of-science-and-technology-hero.mp4",
+        "reason": "key carries \"muranga-university-of-science-and-technology\""
+    },
+    {
+        "scope": "institution",
+        "entity_id": 60029,
+        "entity": "Muranga Georges",
+        "slug": "muranga-georges",
+        "state": "missing",
+        "renders": "FALLBACK TILE (no own film)",
+        "source_key": "",
+        "reason": "no admin row for this slot"
+    },
+    {
+        "scope": "institution",
+        "entity_id": 12,
+        "entity": "Muranga Gorges",
+        "slug": "muranga-gorges",
+        "state": "missing",
+        "renders": "FALLBACK TILE (no own film)",
+        "source_key": "",
+        "reason": "no admin row for this slot"
+    },
+    {
+        "scope": "institution",
+        "entity_id": 60031,
+        "entity": "Muranga Land Field",
+        "slug": "muranga-land-field",
+        "state": "missing",
+        "renders": "FALLBACK TILE (no own film)",
+        "source_key": "",
+        "reason": "no admin row for this slot"
+    },
+    {
+        "scope": "institution",
+        "entity_id": 60002,
+        "entity": "Oxyplus",
+        "slug": "oxyplus-uasin-gishu",
+        "state": "missing",
+        "renders": "FALLBACK TILE (no own film)",
+        "source_key": "",
+        "reason": "no admin row for this slot"
+    },
+    {
+        "scope": "institution",
+        "entity_id": 14,
+        "entity": "Rapids Camp Sagana",
+        "slug": "rapids-camp-sagana",
+        "state": "missing",
+        "renders": "FALLBACK TILE (no own film)",
+        "source_key": "",
+        "reason": "no admin row for this slot"
+    },
+    {
+        "scope": "institution",
+        "entity_id": 60024,
+        "entity": "Sagana RAID Hotel",
+        "slug": "sagana-raid-hotel",
+        "state": "missing",
+        "renders": "FALLBACK TILE (no own film)",
+        "source_key": "",
+        "reason": "no admin row for this slot"
+    },
+    {
+        "scope": "institution",
+        "entity_id": 60023,
+        "entity": "Serena Beach Hotel",
+        "slug": "serena-beach-hotel",
+        "state": "missing",
+        "renders": "FALLBACK TILE (no own film)",
+        "source_key": "",
+        "reason": "no admin row for this slot"
+    },
+    {
+        "scope": "institution",
+        "entity_id": 60004,
+        "entity": "Simba Cement",
+        "slug": "simba-cement",
+        "state": "missing",
+        "renders": "FALLBACK TILE (no own film)",
+        "source_key": "",
+        "reason": "no admin row for this slot"
+    },
+    {
+        "scope": "institution",
+        "entity_id": 60001,
+        "entity": "Solaricon",
+        "slug": "solaricon-uasin-gishu",
+        "state": "missing",
+        "renders": "FALLBACK TILE (no own film)",
+        "source_key": "",
+        "reason": "no admin row for this slot"
+    },
+    {
+        "scope": "institution",
+        "entity_id": 60011,
+        "entity": "Tamarind Mombasa",
+        "slug": "tamarind-mombasa",
+        "state": "distinct",
+        "renders": "https://kicctest.org/media/video/institutions/tamarind-mombasa/hero/tamarind-mombasa-hero.mp4",
+        "source_key": "institutions/tamarind-mombasa/hero/tamarind-mombasa-hero.mp4",
+        "reason": "key carries \"tamarind-mombasa\""
+    },
+    {
+        "scope": "institution",
+        "entity_id": 60006,
+        "entity": "Teret Resort",
+        "slug": "teret-resort",
+        "state": "missing",
+        "renders": "FALLBACK TILE (no own film)",
+        "source_key": "",
+        "reason": "no admin row for this slot"
+    },
+    {
+        "scope": "institution",
+        "entity_id": 60008,
+        "entity": "Tuiyo Farmers Cooperative Society",
+        "slug": "tuiyo-farmers-cooperative",
+        "state": "missing",
+        "renders": "FALLBACK TILE (no own film)",
+        "source_key": "",
+        "reason": "no admin row for this slot"
+    },
+    {
+        "scope": "institution",
+        "entity_id": 60009,
+        "entity": "Uasin Gishu Export Processing Zone",
+        "slug": "uasin-gishu-epz",
+        "state": "missing",
+        "renders": "FALLBACK TILE (no own film)",
+        "source_key": "",
+        "reason": "no admin row for this slot"
+    },
+    {
+        "scope": "institution",
+        "entity_id": 60012,
+        "entity": "Voyager Beach Resort",
+        "slug": "voyager-beach-resort",
+        "state": "missing",
+        "renders": "FALLBACK TILE (no own film)",
+        "source_key": "",
+        "reason": "no admin row for this slot"
+    },
+    {
+        "scope": "institution",
+        "entity_id": 60017,
+        "entity": "Wild Waters",
+        "slug": "wild-waters-mombasa",
+        "state": "missing",
+        "renders": "FALLBACK TILE (no own film)",
+        "source_key": "",
+        "reason": "no admin row for this slot"
+    }
+]

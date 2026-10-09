@@ -46,7 +46,7 @@
                 @endif
             @endforeach
             <div class="px-3 pt-4 border-t border-white/5 space-y-1">
-                <a class="sidebar-link" href="{{ route('experience.images.index') }}">Images · replace / delete</a>
+                <a class="sidebar-link" href="{{ route('experience.images.index') }}">Media Library</a>
 
                 <a href="{{ route('kicc.admin', ['tab' => 'counties']) }}" class="sidebar-link sidebar-link-inactive"><svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 12l2-2m0 0l7-7 7 7M5 10v10a1 1 0 001 1h3m10-11l2 2m-2-2v10a1 1 0 01-1 1h-3m-6 0a1 1 0 001-1v-4a1 1 0 011-1h2a1 1 0 011 1v4a1 1 0 001 1m-6 0h6"/></svg><span>County Portals</span></a>
                 <a href="{{ route('national.admin') }}" class="sidebar-link sidebar-link-inactive"><svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 21V5a2 2 0 00-2-2H7a2 2 0 00-2 2v16m14 0h2m-2 0h-5m-9 0H3m2 0h5M9 7h1m-1 4h1m4-4h1m-1 4h1m-5 10v-5a1 1 0 011-1h2a1 1 0 011 1v5m-4 0h4"/></svg><span>National Government</span></a>
@@ -68,7 +68,7 @@
                 @endif
                 <div class="flex items-center gap-2.5">
                     <div class="text-xs text-zinc-200 font-medium">{{ Auth::user()?->name ?? 'Admin' }}</div>
-                    <div class="w-8 h-8 rounded-xl bg-white flex items-center justify-center p-1"><img src="{{ asset('kicc-logo.png') }}" alt="KICC" class="w-full h-full object-contain"></div>
+                    <div class="w-8 h-8 rounded-xl bg-gradient-to-br from-red-500 to-rose-600 flex items-center justify-center text-white font-bold text-xs">K</div>
                 </div>
             </div>
         </header>
@@ -181,7 +181,7 @@
             <div class="grid grid-cols-1 lg:grid-cols-2 gap-6 mb-6">
                 <div class="glass-card rounded-2xl p-6 border-2 border-rose-500/30">
                     <div class="flex items-center gap-3 mb-3">
-                        <div class="w-12 h-12 rounded-xl bg-white flex items-center justify-center p-1.5"><img src="{{ asset('kicc-logo.png') }}" alt="KICC" class="w-full h-full object-contain"></div>
+                        <div class="w-12 h-12 rounded-xl bg-gradient-to-br from-rose-500 to-rose-600 flex items-center justify-center text-white font-bold text-sm">K</div>
                         <div><div class="font-bold text-white text-lg">KICC Mother Admin</div><div class="text-xs text-zinc-400">You are here</div></div>
                     </div>
                     <div class="text-xs text-zinc-500 leading-relaxed">Platform owner's god-mode: counties, institutions, national govt, exhibitors, orders, escrow, pipelines, live events, users, venues, analytics and every system setting.</div>
@@ -888,7 +888,7 @@
                         <p class="text-zinc-400 text-sm mt-1">{{ $pipelineTotal }} revenue pipelines — 50 parents + 152 subsectors · 87 per the catalog</p>
                     </div>
                     <div class="text-right">
-                        <a href="{{ route('kicc.admin', ['tab' => 'pipelines', 'pipeline_q' => '', 'pipeline_sector' => '']) }}" class="text-xs text-[#0B0B0B] hover:underline">Reset</a>
+                        <a href="{{ route('kicc.admin', ['tab' => 'pipelines', 'pipeline_q' => '', 'pipeline_sector' => '']) }}" class="text-xs text-[#FFCD05] hover:underline">Reset</a>
                     </div>
                 </div>
 
@@ -937,7 +937,7 @@
                         <tbody>
                         @forelse($pipelines as $p)
                         <tr class="border-t border-zinc-700/40 text-zinc-300 hover:bg-zinc-700/20">
-                            <td class="px-4 py-2.5 font-mono text-[#0B0B0B] font-semibold">{{ $p->code }}</td>
+                            <td class="px-4 py-2.5 font-mono text-[#FFCD05] font-semibold">{{ $p->code }}</td>
                             <td class="px-4 py-2.5 text-white">{{ \Illuminate\Support\Str::title(str_replace('-', ' ', $p->slug)) }}</td>
                             <td class="px-4 py-2.5">{{ ucfirst($p->sector) }}</td>
                             <td class="px-4 py-2.5">P{{ $p->phase }}</td>
