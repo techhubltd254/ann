@@ -5426,31 +5426,6 @@ Router.register('/', () => {
     </a>
 </section>
 
-<!-- ══ FROM THE ARCHIVE — output of the curation pipeline ══ -->
-<section class="ed-interlude ed-flat" data-lean="soft" id="chapter-archive">
-  <div class="ed-bridge at-bottom" aria-hidden="true"></div>
-  <div class="wrap">
-    <div class="ed-grid">
-      <div class="ed-col-4">
-        <div class="ed-chapter-num" data-reveal>Interlude &mdash; From the archive</div>
-        <h3 style="margin-top:18px;max-width:22ch" data-reveal>No image reaches this page unfiltered.</h3>
-        <p class="muted-xs" style="margin-top:16px;max-width:46ch">
-          Editorial imagery retained from the approved reference. The curation scores below are illustrative, not evidence of executed production pipelines.
-        </p>
-      </div>
-      <div class="ed-col-8">
-        <div class="ed-curated" data-curated data-reveal></div>
-        <div class="ed-ledger-note" data-curated-note></div>
-      </div>
-    </div>
-  </div>
-
-    <a class="ed-handoff" href="#chapter-halls" data-scroll="halls" data-reveal>
-      <span class="n">02</span><span class="t">The Halls</span>
-      <span class="ln"></span><span class="s">Next</span><span class="ar">&#8595;</span>
-    </a>
-</section>
-
 <!-- ══ 02 · THE HALLS ══ -->
 <section class="ed-chapter ed-plate" data-lean="deep" id="chapter-halls">
   <div class="ed-bridge at-bottom" aria-hidden="true"></div>
@@ -6472,7 +6447,7 @@ Router.register('/login', () => ({title:'Sign In', html:`
     <div class="text-center">
       <div class="logo" style="justify-content:center"><span class="mark" style="background:transparent;box-shadow:none"><img src="/kicc-logo.png" alt="KICC" style="width:34px;height:34px;object-fit:contain;display:block"></span></div>
       <h2 style="margin-top:18px;font-size:1.6rem">Sign in to KICC</h2>
-      <p class="muted-xs" style="margin-top:8px">Public sign-in. Glass card floats on a minimal shader (low intensity).</p>
+      
     </div>
     <form class="mt-l" id="loginForm" autocomplete="on">
       <div class="field"><label for="li-id">Email or phone number</label>
@@ -6501,7 +6476,7 @@ Router.register('/register', () => ({title:'Create Account', html:`
     <div class="text-center">
       <div class="logo" style="justify-content:center"><span class="mark" style="background:transparent;box-shadow:none"><img src="/kicc-logo.png" alt="KICC" style="width:34px;height:34px;object-fit:contain;display:block"></span></div>
       <h2 style="margin-top:16px;font-size:1.45rem">Create your account</h2>
-      <p class="muted-xs" style="margin-top:8px">Multi-step horizontal carousel: email → 6-digit code → details. Each step slides from the right, the previous slides left (500ms, power2.inOut).</p>
+      
     </div>
     <div class="steps mt-l"><i class="on"></i><i></i><i></i></div>
     <form id="regForm">
@@ -6554,7 +6529,7 @@ Router.register('/reset-password', () => ({title:'Set New Password', html:`
   <div class="glass-card auth-card" data-reveal>
     <div class="text-center"><div class="logo" style="justify-content:center"><span class="mark" style="background:transparent;box-shadow:none"><img src="/kicc-logo.png" alt="KICC" style="width:34px;height:34px;object-fit:contain;display:block"></span></div>
       <h2 style="margin-top:16px;font-size:1.4rem">Set a new password</h2>
-      <p class="muted-xs" style="margin-top:8px">Token: <code style="color:var(--au-ink)">rps_8f31c0a7d4e6b921</code></p></div>
+      </div>
     <form class="mt-l" id="resetForm">
       <div class="field"><label>New password</label>
         <div class="pw-wrap"><input class="input" type="password" placeholder="Minimum 8 characters" required>
