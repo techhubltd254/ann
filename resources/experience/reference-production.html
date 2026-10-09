@@ -3056,8 +3056,7 @@ html[data-theme] .tm-gallery :is(.tm-copy p,.tm-note){color:var(--ui-muted)!impo
 <header class="nav" id="nav">
   <div class="nav-inner">
     <a href="#/" class="logo" data-link>
-      <span class="mark">K</span>
-      <span>KICC<small>National Exhibition Platform</small></span>
+      <img src="/kicclogo.png" alt="KICC" class="logo-img" style="max-height:36px;width:auto;object-fit:contain">
     </a>
     <nav class="nav-links" id="navLinks">
       <a href="#/" data-link data-nav="/">Home</a>
@@ -3102,8 +3101,7 @@ html[data-theme] .tm-gallery :is(.tm-copy p,.tm-note){color:var(--ui-muted)!impo
     <div class="footer-grid">
       <div>
         <a href="#/" class="logo" data-link style="margin-bottom:16px">
-          <span class="mark">K</span>
-          <span>KICC<small>National Exhibition Platform</small></span>
+          <img src="/kicclogo.png" alt="KICC" class="logo-img" style="max-height:36px;width:auto;object-fit:contain">
         </a>
         <p class="muted-xs" style="max-width:330px;margin-top:16px">
           Africa's premier meeting venue and Kenya's national exhibition infrastructure.
@@ -6454,7 +6452,7 @@ Router.register('/travel', (rest) => {
 <div class="wrap section-sm">
   <div class="glass-card pad-l" data-reveal style="max-width:760px;margin:0 auto">
     <div class="between" style="border-bottom:1px solid var(--glass-border);padding-bottom:20px">
-      <div class="logo"><span class="mark">K</span><span>KICC<small>National Exhibition Platform</small></span></div>
+      <div class="logo"><img src="/kicclogo.png" alt="KICC" class="logo-img" style="max-height:36px;width:auto;object-fit:contain"></div>
       <div style="text-align:right"><div class="eyebrow">Booking receipt</div>
         <div style="font-family:var(--font-head);font-weight:800;margin-top:4px">${ref}</div></div>
     </div>
@@ -7801,7 +7799,7 @@ Router.register('/consent', (rest) => {
 <div class="wrap section-sm">
   <div class="glass-card pad-l" data-reveal style="max-width:720px;margin:0 auto">
     <div class="between" style="border-bottom:1px solid var(--glass-border);padding-bottom:18px">
-      <div class="logo"><span class="mark">K</span><span>KICC<small>National Exhibition Platform</small></span></div>
+      <div class="logo"><img src="/kicclogo.png" alt="KICC" class="logo-img" style="max-height:36px;width:auto;object-fit:contain"></div>
       <div class="eyebrow">Printable QR consent form</div></div>
     <h2 style="margin-top:22px;font-size:1.3rem">Data Protection Act 2019 &amp; GDPR Consent</h2>
     <p class="muted-xs" style="margin-top:12px">Scan the QR code below to open the digital consent form, or complete this printed copy and return it to the KICC registration desk.</p>
@@ -7831,7 +7829,7 @@ Router.register('/consent', (rest) => {
 <div class="wrap section-sm">
   <div class="glass-card pad-l" data-reveal style="max-width:760px;margin:0 auto">
     <div class="between" style="border-bottom:1px solid var(--glass-border);padding-bottom:18px">
-      <div class="logo"><span class="mark">K</span><span>KICC<small>National Exhibition Platform</small></span></div>
+      <div class="logo"><img src="/kicclogo.png" alt="KICC" class="logo-img" style="max-height:36px;width:auto;object-fit:contain"></div>
       <div style="text-align:right"><div class="eyebrow">Digital consent</div>
         <div class="muted-xs" style="margin-top:4px">${c.name} County</div></div></div>
     <h2 style="margin-top:22px;font-size:1.3rem">DPA 2019 &amp; GDPR Digital Consent</h2>
@@ -9284,7 +9282,7 @@ const TILEMEDIA=(()=>{
  function cleanup(){epoch++;for(const f of cleanups)f();cleanups=[];for(const d of dialogs){d.close();d.remove()}dialogs.clear();states.clear()}
  async function resolve(c){return c.assetId?await ASSETS.url(c.assetId):urlSafe(c.url)}
  function mediaElement(c,u,preview=false){const e=document.createElement(c.kind==='video'?'video':'img');e.src=u;if(c.kind==='video'){e.muted=true;e.loop=!preview;e.playsInline=true;e.controls=preview;e.preload='metadata';if(c.posterUrl)e.poster=urlSafe(c.posterUrl)}else e.alt=c.alt||'Uploaded media';return e}
- function showPlayer(table,r){const c=config(table,r);if(['empty','draft'].includes(c.state))return;const d=document.createElement('dialog');d.className='tm-dialog tm-player';d.innerHTML=`<div class="cms-toolbar"><h2>${esc(name(r))}</h2><button type="button" class="btn ghost" data-tm-close>Close</button></div><div data-tm-player-host></div><p class="tm-player-note">${esc(c.description||c.alt||'')}${c.state==='demo'?' Shared demonstration poster—not verified room-specific media.':''}${c.format==='360'?' · 360° upload: flat playback only; not a spherical viewer.':''}</p><a class="btn gold" style="margin-top:15px" href="#${esc(route(table,r))}">${table==='venues'?'View venue details':'View product details'} →</a>`;document.body.append(d);dialogs.add(d);d.showModal();const close=()=>{d.querySelector('video')?.pause();d.close();d.remove();dialogs.delete(d)};d.querySelector('[data-tm-close]').onclick=close;d.addEventListener('cancel',close);d.addEventListener('click',e=>{if(e.target===d&&e.offsetY<0)close()});resolve(c).then(u=>{if(!d.isConnected)return;if(!u){d.querySelector('[data-tm-player-host]').textContent='Media is unavailable on this device. Re-upload in admin.';return}const el=mediaElement(c,u,true);if(c.kind==='video')el.muted=false;d.querySelector('[data-tm-player-host]').append(el);if(c.kind==='video')el.play().catch(()=>{})}).catch(()=>{d.querySelector('[data-tm-player-host]').textContent='Media cannot be opened.'});}
+ function showPlayer(table,r){const c=config(table,r);if(['empty','draft'].includes(c.state))return;const d=document.createElement('dialog');d.className='tm-dialog tm-player';d.innerHTML=`<div class="cms-toolbar"><h2>${esc(name(r))}</h2><button type="button" class="btn ghost" data-tm-close>Close</button></div><div data-tm-player-host></div><p class="tm-player-note">${esc(c.description||c.alt||'')}${c.state==='demo'?' ':''}${c.format==='360'?' · 360° upload: flat playback only; not a spherical viewer.':''}</p><a class="btn gold" style="margin-top:15px" href="#${esc(route(table,r))}">${table==='venues'?'View venue details':'View product details'} →</a>`;document.body.append(d);dialogs.add(d);d.showModal();const close=()=>{d.querySelector('video')?.pause();d.close();d.remove();dialogs.delete(d)};d.querySelector('[data-tm-close]').onclick=close;d.addEventListener('cancel',close);d.addEventListener('click',e=>{if(e.target===d&&e.offsetY<0)close()});resolve(c).then(u=>{if(!d.isConnected)return;if(!u){d.querySelector('[data-tm-player-host]').textContent='Media is unavailable on this device. Re-upload in admin.';return}const el=mediaElement(c,u,true);if(c.kind==='video')el.muted=false;d.querySelector('[data-tm-player-host]').append(el);if(c.kind==='video')el.play().catch(()=>{})}).catch(()=>{d.querySelector('[data-tm-player-host]').textContent='Media cannot be opened.'});}
  async function mountTile(tile,table,r,current){const c=config(table,r);if(c.state==='empty'||c.state==='draft')return;try{const u=await resolve(c);if(current!==epoch||!tile.isConnected)return;if(!u)throw Error('Missing media');const el=mediaElement(c,u);const window=tile.querySelector('[data-tm-window]');window.querySelector('.tm-empty')?.remove();window.prepend(el);const fail=()=>{el.remove();if(current!==epoch||!tile.isConnected)return;const p=document.createElement('div');p.className='tm-empty';p.innerHTML='<p>Media unavailable on this device. Replace it in admin.</p>';window.prepend(p);tile.querySelector('[data-tm-open]')?.remove()};el.onerror=fail;tile.querySelector('[data-tm-open]').onclick=()=>showPlayer(table,r);if(c.kind==='video'){const s={el,inView:false,focus:false,hover:false,manual:false,userPlay:false};states.set(tile,s);const control=()=>{if(!tile.isConnected)return;if(s.inView&&!s.manual&&!document.hidden&&(s.userPlay||(!s.focus&&!s.hover&&!reduced.matches)))el.play().catch(()=>{});else el.pause()};const observer=new IntersectionObserver(entries=>{s.inView=entries[0].isIntersecting;control()},{threshold:.65});observer.observe(tile);const vis=()=>control(),motion=()=>{if(reduced.matches){s.manual=true;s.userPlay=false;pause.textContent='Play preview';pause.setAttribute('aria-pressed','true')}control()};document.addEventListener('visibilitychange',vis);reduced.addEventListener('change',motion);tile.addEventListener('mouseenter',()=>{s.hover=true;control()});tile.addEventListener('mouseleave',()=>{s.hover=false;control()});tile.addEventListener('focusin',()=>{s.focus=true;control()});tile.addEventListener('focusout',e=>{s.focus=!!e.relatedTarget&&tile.contains(e.relatedTarget);control()});const pause=document.createElement('button');pause.className='tm-open-film';pause.style.cssText='left:auto;right:18px;bottom:auto;top:70px';pause.textContent='Pause preview';pause.setAttribute('aria-label','Pause or resume muted preview');pause.setAttribute('aria-pressed','false');pause.onclick=()=>{s.manual=!s.manual;s.userPlay=!s.manual;pause.textContent=s.manual?'Resume preview':'Pause preview';pause.setAttribute('aria-pressed',String(s.manual));control()};window.append(pause);if(reduced.matches){s.manual=true;pause.textContent='Play preview';pause.setAttribute('aria-pressed','true')}cleanups.push(()=>{observer.disconnect();document.removeEventListener('visibilitychange',vis);reduced.removeEventListener('change',motion);el.pause()});control()}}catch(e){if(tile.isConnected){tile.querySelector('[data-tm-empty]').textContent='Media is unavailable on this device. Re-upload in admin.';tile.querySelector('[data-tm-open]')?.remove()}}}
  function mountGallery(g){const table=g.dataset.tmTable,track=g.querySelector('[data-tm-track]'),tiles=[...track.children],rows=REPO.list(table,true);let index=0;const current=epoch;
  const step=delta=>{index=Math.max(0,Math.min(tiles.length-1,index+delta));track.scrollTo({left:tiles[index].offsetLeft-tiles[0].offsetLeft,behavior:reduced.matches?'instant':'smooth'})};g.querySelector('[data-tm-prev]').onclick=()=>step(-1);g.querySelector('[data-tm-next]').onclick=()=>step(1);track.onkeydown=e=>{if(e.target!==track)return;if(e.key==='ArrowRight'||e.key==='ArrowLeft'){e.preventDefault();step(e.key==='ArrowRight'?1:-1)}};track.onscroll=()=>{const left=track.scrollLeft;index=tiles.reduce((best,t,i)=>Math.abs((t.offsetLeft-tiles[0].offsetLeft)-left)<Math.abs((tiles[best].offsetLeft-tiles[0].offsetLeft)-left)?i:best,0);g.querySelector('[data-tm-counter]').textContent=String(index+1).padStart(2,'0')+' / '+String(tiles.length).padStart(2,'0');g.querySelector('[data-tm-prev]').disabled=index===0;g.querySelector('[data-tm-next]').disabled=index===tiles.length-1};track.onscroll();for(const t of tiles){const r=rows.find(r=>String(r.id)===t.dataset.tmId);if(r)mountTile(t,table,r,current)}}
