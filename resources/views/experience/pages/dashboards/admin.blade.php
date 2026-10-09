@@ -9,7 +9,7 @@
             <a href="{{ route('admin.portal') }}" class="text-gray-400 hover:text-gray-900 text-xs">&larr; Back</a>
             <div class="flex items-center gap-2">
                 <div class="rounded-lg bg-[#B3261E] px-2 py-1 flex items-center justify-center">
-                    <img src="{{ media('kicc/kicc-logo.png') }}" alt="KICC" class="h-6 w-auto">
+                    <img src="{{ tile_url('logo') }}" alt="KICC" class="h-6 w-auto">
                 </div>
                 <div class="text-[#FFCD05] text-[9px] font-black tracking-[0.15em] uppercase leading-tight">National<br>Admin</div>
             </div>

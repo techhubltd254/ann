@@ -10,7 +10,7 @@
         <div class="flex items-center gap-3 px-4 border-b border-gray-200 h-16">
             <a href="{{ route('admin.portal') }}" class="text-gray-400 hover:text-gray-700 text-xs">&larr; Portal</a>
             <div class="flex items-center gap-2">
-                <img src="{{ media('kicc/kicc-logo.png') }}" alt="KICC" class="h-7 w-auto" style="filter: brightness(0);">
+                <img src="{{ tile_url('logo') }}" alt="KICC" class="h-7 w-auto" style="filter: brightness(0);">
                 <div style="color: {{ $accent }}" class="text-[9px] font-black tracking-[0.15em] uppercase">Provider<br>Portal</div>
             </div>
         </div>

@@ -6,7 +6,7 @@
 <div class="bg-[#0B0B0B] rounded-2xl overflow-hidden">
     <div class="px-6 pt-6 pb-2 flex items-center justify-between">
         <div class="flex items-center gap-3">
-            <img src="{{ media('kicc/kicc-logo.png') }}" alt="KICC" class="h-6 w-auto">
+            <img src="{{ tile_url('logo') }}" alt="KICC" class="h-6 w-auto">
             <span class="text-[#FFCD05] text-[10px] font-black uppercase tracking-[0.2em]">Exhibitor Packages</span>
         </div>
         <a href="{{ route('packages.index') }}" class="text-gray-400 hover:text-gray-900 text-xs font-semibold transition-colors">All packages &nearr;</a>

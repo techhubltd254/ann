@@ -60,6 +60,10 @@ class MediaLibraryService
             'status' => 'uploaded',
             'alt_text' => $opts['alt_text'] ?? null,
             'metadata' => $opts['metadata'] ?? null,
+            // A slot is the whole point of a tile upload: without it the asset
+            // is stored but never binds to the tile it was uploaded for.
+            'slot' => $opts['slot'] ?? null,
+            'display_mode' => $opts['display_mode'] ?? null,
         ]);
     }
 

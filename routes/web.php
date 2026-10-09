@@ -193,15 +193,24 @@ Route::middleware('auth')->group(function () {
     Route::post('/kicc-admin/hero/upload', [\App\Http\Controllers\Web\KiccAdminController::class, 'uploadHeroVideo'])->name('kicc.admin.hero.upload')->middleware('admin:kicc');
     Route::post('/kicc-admin/hero/delete', [\App\Http\Controllers\Web\KiccAdminController::class, 'deleteHeroVideo'])->name('kicc.admin.hero.delete')->middleware('admin:kicc');
     Route::post('/kicc-admin/county/{slug}/hero', [\App\Http\Controllers\Web\KiccAdminController::class, 'uploadCountyHero'])->name('kicc.admin.county.hero')->middleware('admin:kicc');
+
+    // ═══ TILE MEDIA — platform-wide slots (landing hero, plates, brand mark, any tile) ═══
+    Route::middleware(['auth', 'admin:kicc'])->prefix('kicc-admin/tile-media')->name('kicc.tile.media.')->group(function () {
+        Route::get('/', [\App\Http\Controllers\Web\TileMediaController::class, 'index'])->name('index');
+        Route::post('/upload', [\App\Http\Controllers\Web\TileMediaController::class, 'store'])->name('store');
+        Route::post('/reset', [\App\Http\Controllers\Web\TileMediaController::class, 'reset'])->name('reset');
+        Route::post('/{asset}/replace', [\App\Http\Controllers\Web\TileMediaController::class, 'replace'])->name('replace');
+        Route::post('/{asset}/delete', [\App\Http\Controllers\Web\TileMediaController::class, 'destroy'])->name('destroy');
+    });
     Route::post('/kicc-admin/plans/{id}', [\App\Http\Controllers\Web\KiccAdminController::class, 'updatePlan'])->name('kicc.admin.plan.update')->middleware('admin:kicc');
     // National Government Exhibitor Portal — redirects to KICC national admin
     Route::get('/national-admin', fn() => redirect()->route('national.admin.v2.dashboard'))->name('national.admin')->middleware('admin:national');
 Route::post('/national-admin/ministries', [\App\Http\Controllers\Web\NationalPortalController::class, 'storeMinistry'])->name('national.admin.ministry.store')->middleware('admin:national');
 Route::post('/national-admin/ministries/{ministry}', [\App\Http\Controllers\Web\NationalPortalController::class, 'updateMinistry'])->name('national.admin.ministry.update')->middleware('admin:national');
-Route::post('/national-admin/ministries/{ministry}/delete', [\App\Http\Controllers\Web\NationalPortalController::class, 'deleteMinistry'])->name('national.admin.ministry.delete')->middleware('admin:national');
+Route::get('/national-admin/ministries/{ministry}/delete', [\App\Http\Controllers\Web\NationalPortalController::class, 'deleteMinistry'])->name('national.admin.ministry.delete')->middleware('admin:national');
 Route::post('/national-admin/agencies', [\App\Http\Controllers\Web\NationalPortalController::class, 'storeAgency'])->name('national.admin.agency.store')->middleware('admin:national');
 Route::post('/national-admin/agencies/{agency}', [\App\Http\Controllers\Web\NationalPortalController::class, 'updateAgency'])->name('national.admin.agency.update')->middleware('admin:national');
-Route::post('/national-admin/agencies/{agency}/delete', [\App\Http\Controllers\Web\NationalPortalController::class, 'deleteAgency'])->name('national.admin.agency.delete')->middleware('admin:national');
+Route::get('/national-admin/agencies/{agency}/delete', [\App\Http\Controllers\Web\NationalPortalController::class, 'deleteAgency'])->name('national.admin.agency.delete')->middleware('admin:national');
     // County Exhibitor Portal (county = a website by itself)
     Route::middleware('county.scope')->group(function () {
     Route::get('/county-admin', [\App\Http\Controllers\Web\CountyPortalController::class, 'index'])->name('county.admin');
@@ -257,8 +266,13 @@ Route::post('/national-admin/agencies/{agency}/delete', [\App\Http\Controllers\W
     Route::post('/institution-admin/{institution}/products/{product}/update', [\App\Http\Controllers\Web\InstitutionAdminController::class, 'updateProduct'])->name('institution.admin.products.update');
     Route::post('/institution-admin/{institution}/products/{index}/delete', [\App\Http\Controllers\Web\InstitutionAdminController::class, 'deleteProduct'])->name('institution.admin.products.delete');
     Route::post('/institution-admin/{institution}/videos', [\App\Http\Controllers\Web\InstitutionAdminController::class, 'uploadVideo'])->name('institution.admin.videos.upload');
+    // ═══ TILE MEDIA — one DB-backed slot per tile, institution-scoped ═══
+    Route::get('/institution-admin/{institution}/tile-media', [\App\Http\Controllers\Web\TileMediaController::class, 'index'])->name('tile.media.index');
+    Route::post('/institution-admin/{institution}/tile-media/upload', [\App\Http\Controllers\Web\TileMediaController::class, 'store'])->name('tile.media.store');
+    Route::post('/institution-admin/{institution}/tile-media/{asset}/replace', [\App\Http\Controllers\Web\TileMediaController::class, 'replace'])->name('tile.media.replace');
+    Route::post('/institution-admin/{institution}/tile-media/{asset}/delete', [\App\Http\Controllers\Web\TileMediaController::class, 'destroy'])->name('tile.media.destroy');
     Route::post('/institution-admin/{institution}/videos/{index}/delete', [\App\Http\Controllers\Web\InstitutionAdminController::class, 'deleteVideo'])->name('institution.admin.videos.delete');
-    Route::post('/institution-admin/{institution}/sync', [\App\Http\Controllers\Web\InstitutionAdminController::class, 'sync'])->name('institution.admin.sync');
+    Route::get('/institution-admin/{institution}/sync', [\App\Http\Controllers\Web\InstitutionAdminController::class, 'sync'])->name('institution.admin.sync');
     Route::post('/institution-admin/{institution}/team', [\App\Http\Controllers\Web\InstitutionAdminController::class, 'addTeamMember'])->name('institution.admin.team.add');
     Route::post('/institution-admin/{institution}/team/{userId}/remove', [\App\Http\Controllers\Web\InstitutionAdminController::class, 'removeTeamMember'])->name('institution.admin.team.remove');
 
@@ -318,6 +332,15 @@ Route::post('/kicc-admin/venues/{id}/update', [\App\Http\Controllers\Web\KiccAdm
         Route::post('/{asset}/attach', [\App\Http\Controllers\Web\MediaLibraryController::class, 'attach'])->name('media.attach');
         Route::post('/{asset}/detach', [\App\Http\Controllers\Web\MediaLibraryController::class, 'detach'])->name('media.detach');
     });
+
+    // Alias: experience.images.* routes point to the media library
+    Route::get('/kicc-admin/site-images', [\App\Http\Controllers\Web\MediaLibraryController::class, 'index'])->name('experience.images.index');
+    Route::post('/kicc-admin/site-images', [\App\Http\Controllers\Web\MediaLibraryController::class, 'store'])->name('experience.images.store');
+    Route::post('/kicc-admin/site-images/{asset}/replace', function (int $asset) {
+        \App\Models\MediaAsset::findOrFail($asset)->update(['path' => request()->file('file')->store('site-images', 'r2')]);
+        return back()->with('success', 'Image replaced.');
+    })->name('experience.images.replace');
+    Route::delete('/kicc-admin/site-images/{asset}', [\App\Http\Controllers\Web\MediaLibraryController::class, 'destroy'])->name('experience.images.destroy');
 });
 
 // Public exhibitor websites (independent, interconnected)
@@ -377,9 +400,6 @@ Route::get('/api/streams/live', [\App\Http\Controllers\Web\StreamController::cla
 
 // Trade Agreements & Trading Blocs
 Route::get('/trade-agreements', [\App\Http\Controllers\Web\TradeAgreementController::class, 'index'])->name('trade.agreements.index');
-Route::get('/trade-agreements/apply', [\App\Http\Controllers\Web\TradeAgreementController::class, 'index'])->name('trade.agreements.apply')->middleware('auth');
-Route::get('/trade-agreements/blocs', fn() => redirect()->route('trade.blocs.index'))->name('trade.agreements.blocs');
-Route::get('/trade-agreements/eligibility-index', fn() => redirect()->route('trade.eligibility'))->name('trade.agreements.eligibility');
 Route::get('/trade-agreements/{slug}', [\App\Http\Controllers\Web\TradeAgreementController::class, 'show'])->name('trade.agreements.show');
 Route::get('/trading-blocs', [\App\Http\Controllers\Web\TradeAgreementController::class, 'blocs'])->name('trade.blocs.index');
 Route::get('/trading-blocs/{slug}', [\App\Http\Controllers\Web\TradeAgreementController::class, 'blocShow'])->name('trade.blocs.show');
@@ -513,14 +533,14 @@ Route::middleware(['auth', 'admin:kicc'])->prefix('kicc-admin/cms')->name('cms.a
     Route::post('/pages', [\App\Http\Controllers\Web\CmsController::class, 'storePage'])->name('page.store');
     Route::post('/team', [\App\Http\Controllers\Web\CmsController::class, 'storeTeamMember'])->name('team.store');
     Route::post('/team/{member}', [\App\Http\Controllers\Web\CmsController::class, 'updateTeamMember'])->name('team.update');
-    Route::post('/team/{member}/delete', [\App\Http\Controllers\Web\CmsController::class, 'deleteTeamMember'])->name('team.delete');
+    Route::get('/team/{member}/delete', [\App\Http\Controllers\Web\CmsController::class, 'deleteTeamMember'])->name('team.delete');
     Route::post('/timeline', [\App\Http\Controllers\Web\CmsController::class, 'storeTimelineEvent'])->name('timeline.store');
-    Route::post('/timeline/{event}/delete', [\App\Http\Controllers\Web\CmsController::class, 'deleteTimelineEvent'])->name('timeline.delete');
+    Route::get('/timeline/{event}/delete', [\App\Http\Controllers\Web\CmsController::class, 'deleteTimelineEvent'])->name('timeline.delete');
     Route::post('/faq', [\App\Http\Controllers\Web\CmsController::class, 'storeFaq'])->name('faq.store');
     Route::post('/faq/{faq}', [\App\Http\Controllers\Web\CmsController::class, 'updateFaq'])->name('faq.update');
-    Route::post('/faq/{faq}/delete', [\App\Http\Controllers\Web\CmsController::class, 'deleteFaq'])->name('faq.delete');
+    Route::get('/faq/{faq}/delete', [\App\Http\Controllers\Web\CmsController::class, 'deleteFaq'])->name('faq.delete');
     Route::post('/video', [\App\Http\Controllers\Web\CmsController::class, 'storeVideo'])->name('video.store');
-    Route::post('/video/{video}/delete', [\App\Http\Controllers\Web\CmsController::class, 'deleteVideo'])->name('video.delete');
+    Route::get('/video/{video}/delete', [\App\Http\Controllers\Web\CmsController::class, 'deleteVideo'])->name('video.delete');
 });
 
 // National Government Admin (like counties)
@@ -539,9 +559,9 @@ Route::middleware(['auth', 'admin:national'])->prefix('kicc-admin/national')->na
     // Ministry & Agency CRUD
     Route::post('/ministries', [\App\Http\Controllers\Web\NationalAdminController::class, 'storeMinistry'])->name('ministry.store');
     Route::post('/ministries/{ministry}', [\App\Http\Controllers\Web\NationalAdminController::class, 'updateMinistry'])->name('ministry.update');
-    Route::post('/ministries/{ministry}/delete', [\App\Http\Controllers\Web\NationalAdminController::class, 'deleteMinistry'])->name('ministry.delete');
+    Route::get('/ministries/{ministry}/delete', [\App\Http\Controllers\Web\NationalAdminController::class, 'deleteMinistry'])->name('ministry.delete');
     Route::post('/agencies', [\App\Http\Controllers\Web\NationalAdminController::class, 'storeAgency'])->name('agency.store');
-    Route::post('/agencies/{agency}/delete', [\App\Http\Controllers\Web\NationalAdminController::class, 'deleteAgency'])->name('agency.delete');
+    Route::get('/agencies/{agency}/delete', [\App\Http\Controllers\Web\NationalAdminController::class, 'deleteAgency'])->name('agency.delete');
 });
 
 // KPIs & Monitoring
@@ -597,7 +617,7 @@ Route::middleware(['auth', 'admin:kicc'])->group(function () {
         $commissions = \App\Models\CommissionLog::with('agent', 'order')->latest()->paginate(25);
         $totalPending = \App\Models\CommissionLog::where('status', 'pending')->sum('commission_amount');
         $totalSettled = \App\Models\CommissionLog::where('status', 'settled')->sum('commission_amount');
-        return view('experience.pages.commissions.admin-index', compact('commissions', 'totalPending', 'totalSettled'));
+        return view('commissions.admin-index', compact('commissions', 'totalPending', 'totalSettled'));
     })->name('commission.admin.index');
 });
 
@@ -624,13 +644,32 @@ Route::middleware(['auth', 'admin:kicc,national'])->prefix('kicc-admin/ecommerce
     Route::get('/analytics', [\App\Http\Controllers\Admin\EcommerceAdminController::class, 'analytics'])->name('analytics');
 });
 
+// ─── Admin: Venue Management (full CRUD + media) ───
+Route::middleware(['auth', 'admin:kicc,national'])->prefix('kicc-admin/venues')->name('admin.venues.')->group(function () {
+    Route::get('/', [\App\Http\Controllers\Admin\VenueAdminController::class, 'index'])->name('index');
+    Route::get('/{id}/edit', [\App\Http\Controllers\Admin\VenueAdminController::class, 'edit'])->name('edit');
+    Route::post('/{id}', [\App\Http\Controllers\Admin\VenueAdminController::class, 'update'])->name('update');
+    Route::post('/{id}/upload-cover', [\App\Http\Controllers\Admin\VenueAdminController::class, 'uploadCover'])->name('upload-cover');
+    Route::post('/{id}/upload-video', [\App\Http\Controllers\Admin\VenueAdminController::class, 'uploadVideo'])->name('upload-video');
+    Route::post('/{id}/delete-video', [\App\Http\Controllers\Admin\VenueAdminController::class, 'deleteVideo'])->name('delete-video');
+    Route::post('/{id}/delete-cover', [\App\Http\Controllers\Admin\VenueAdminController::class, 'deleteCover'])->name('delete-cover');
+    Route::post('/r2-presigned', [\App\Http\Controllers\Admin\VenueAdminController::class, 'r2PresignedUrl'])->name('r2-presigned');
+    Route::post('/r2-confirm', [\App\Http\Controllers\Admin\VenueAdminController::class, 'confirmR2Upload'])->name('r2-confirm');
+});
+
 Route::get('/venues', [\App\Http\Controllers\Web\ExhibitionController::class, 'venues'])->name('venues.index')
     ->middleware($publicCache)
     ->withoutMiddleware($noSession);
 Route::get('/venues/{venue}', [VenueController::class, 'show'])->name('venues.show')
     ->middleware($publicCache)
     ->withoutMiddleware($noSession);
-Route::post('/venues/{venue}/inquire', [VenueController::class, 'inquire'])->name('venues.inquire')->middleware('auth');
+Route::post('/venues/{venue}/inquire', [VenueController::class, 'inquire'])->name('venues.inquire');
+Route::get('/venues/{venue}/book', [VenueController::class, 'book'])->name('venues.book');
+Route::post('/venues/{venue}/quote', [VenueController::class, 'quote'])->name('venues.quote');
+Route::post('/venues/{venue}/reserve', [VenueController::class, 'reserve'])->name('venues.reserve');
+Route::get('/venues/{venue}/booking/{booking}/confirm', [VenueController::class, 'confirm'])->name('venues.booking.confirm');
+Route::post('/venues/{venue}/booking/{booking}/pay', [VenueController::class, 'payDeposit'])->name('venues.booking.pay');
+Route::get('/my-venues', [VenueController::class, 'bookingHistory'])->name('venues.my-bookings')->middleware('auth');
 
 // Exhibition screen videos
 Route::get('/screens', [ScreenController::class, 'directory'])->name('screens.directory');
@@ -640,10 +679,10 @@ Route::get('/screens/{screen}', [ScreenController::class, 'show'])->name('screen
 Route::post('/screens/{screen}/advertise', [ScreenController::class, 'advertise'])->name('screens.advertise')->middleware('auth');
 
 // 3D Exhibition experiences (standalone views)
-Route::view('/exhibition-3d/map', 'experience.pages.exhibition-3d.map')->name('exhibition-3d.map');
-Route::view('/exhibition-3d/sector', 'experience.pages.exhibition-3d.sector')->name('exhibition-3d.sector');
-Route::view('/exhibition-3d/booth', 'experience.pages.exhibition-3d.booth')->name('exhibition-3d.booth');
-Route::view('/exhibition-3d/terrain', 'experience.pages.exhibition-3d.terrain')->name('exhibition-3d.terrain');
+Route::view('/exhibition-3d/map', 'exhibition-3d.map')->name('exhibition-3d.map');
+Route::view('/exhibition-3d/sector', 'exhibition-3d.sector')->name('exhibition-3d.sector');
+Route::view('/exhibition-3d/booth', 'exhibition-3d.booth')->name('exhibition-3d.booth');
+Route::view('/exhibition-3d/terrain', 'exhibition-3d.terrain')->name('exhibition-3d.terrain');
 
 // 3D Room Explorer
 Route::get('/room3d', [Room3dController::class, 'index'])->name('room3d.index');
@@ -848,77 +887,3 @@ Route::get('/kicc-v2-seed-deploy/{token}', function(string $token) {
  }
 });
 
-
-Route::get('/institutions', [\App\Http\Controllers\Web\ExperienceInstitutionController::class, 'index'])->name('institutions.index');
-
-require __DIR__.'/experience.php';
-
-// Entity-bound image controls for the bright experience. Real R2 and TiDB writes.
-Route::middleware('auth')->prefix('kicc-admin/site-images')->name('experience.images.')->group(function () {
-    Route::get('/', [\App\Http\Controllers\Web\ExperienceImageController::class, 'index'])->name('index');
-    Route::post('/', [\App\Http\Controllers\Web\ExperienceImageController::class, 'store'])->name('store');
-    Route::post('/{asset}/replace', [\App\Http\Controllers\Web\ExperienceImageController::class, 'replace'])->name('replace');
-    Route::delete('/{asset}', [\App\Http\Controllers\Web\ExperienceImageController::class, 'destroy'])->name('destroy');
-});
-
-Route::get('/catalog',[\App\Http\Controllers\Web\ExperienceAtlasController::class,'index'])->middleware('auth')->name('experience.atlas');
-// Preserve the reference's URLs; use real controllers/tabs and their existing permissions.
-Route::get('/kicc-admin/media', fn() => redirect()->route('media.library'))->middleware('auth');
-Route::get('/kicc-admin/live', fn() => redirect('/kicc-live/admin'))->middleware('auth');
-Route::get('/pipelines', fn() => redirect()->route('kicc.admin',['tab'=>'pipelines']))->middleware('auth');
-Route::get('/pipelines/{sector}', fn(string $sector) => redirect()->route('kicc.admin',['tab'=>'pipelines','sector'=>$sector]))->middleware('auth');
-Route::get('/reviews', fn() => redirect('/kicc-admin/reviews'))->middleware('auth');
-Route::get('/county-admin/{slug}/pro/{page}', function(string $slug,string $page){
- return redirect()->route('county.admin.pro',['slug'=>$slug,'tab'=>$page]);
-})->where('page','overview|content|images|prices|sectors|products|4d|ads|packages|reports|housing|drone|floor|consent|voice|landmark|broadcast|trade-hub|spotlight')->middleware('auth');
-Route::get('/kicc-admin/{page}', function(string $page){
- return redirect()->route('kicc.admin',['tab'=>$page]);
-})->where('page','overview|portals|counties|institutions|national|exhibitors|orders|providers|escrow|pool|pipelines|experiences|live_events|venues|users|hero_media|packages|analytics|integration|pipeline-creator|earnings|search-analytics|cache|licence-queue|pipeline-settings')->middleware('auth');
-
-Route::redirect('/admin','/kicc-admin');
-
-// Unified entry point mounts the EXISTING old/new controllers with their real tab contracts.
-Route::middleware('auth')->group(function () {
-    Route::get('/portal/hierarchy', [\App\Http\Controllers\Web\UnifiedAdminController::class, 'hierarchy'])->name('admin.hub.hierarchy');
-    Route::get('/portal/components', [\App\Http\Controllers\Web\UnifiedAdminController::class, 'components'])->name('admin.components.ui');
-    Route::get('/kicc-admin/components', [\App\Http\Controllers\Web\UnifiedAdminController::class, 'components'])->name('admin.components.reference');
-});
-
-Route::middleware("auth")->group(function(){Route::get("/portal/media-flow",[\App\Http\Controllers\Web\MediaFlowController::class,"index"])->name("admin.mediaflow");Route::get("/portal/media-flow/{institution:id}/sectors",[\App\Http\Controllers\Web\MediaFlowController::class,"sectors"])->whereNumber("institution")->name("admin.mediaflow.sectors");Route::get("/portal/media-flow/{institution:id}/media",[\App\Http\Controllers\Web\MediaFlowController::class,"media"])->whereNumber("institution")->name("admin.mediaflow.media");});
-
-// Approved reference: public, read-only projection of native models.
-Route::get('/experience/reference-data', [\App\Http\Controllers\Web\ReferenceExperienceController::class, 'data'])->name('experience.reference.data');
-
-// Stable-ID video mutations, constrained by the original institution/sector hierarchy.
-Route::middleware('auth')->group(function(){
- Route::post('/portal/media-flow/{institution:id}/videos',[\App\Http\Controllers\Web\MediaFlowController::class,'store'])->whereNumber('institution')->name('admin.mediaflow.store');
- Route::post('/portal/media-flow/{institution:id}/videos/{asset}/replace',[\App\Http\Controllers\Web\MediaFlowController::class,'replace'])->whereNumber('institution')->whereNumber('asset')->name('admin.mediaflow.replace');
- Route::delete('/portal/media-flow/{institution:id}/videos/{asset}',[\App\Http\Controllers\Web\MediaFlowController::class,'destroy'])->whereNumber('institution')->whereNumber('asset')->name('admin.mediaflow.destroy');
-});
-
-/* ─── Restored legacy routes (KICC-Diagnosis-Report 2026-10-08, Section E) ─── */
-// Directories that now have canonical homes — 301 aliases keep old links/SEO alive.
-Route::redirect('/sectors', '/national-sector', 301);
-Route::redirect('/products', '/marketplace', 301);
-Route::redirect('/reels', '/streams', 301);              // never built → video feed home
-Route::redirect('/splat', '/exhibition-3d', 301);        // never built → 3D viewer home
-Route::redirect('/national-admin/v2', '/national-admin', 301);
-
-// Trade agreements: full legacy URL set onto the existing controller.
-
-// Tourism legacy aliases onto the existing TourismEntityController methods.
-Route::get('/tourism/organizers', [\App\Http\Controllers\Web\TourismEntityController::class, 'organizers'])->name('tourism.organizers.legacy');
-Route::get('/tourism/rentals', [\App\Http\Controllers\Web\TourismEntityController::class, 'rentals'])->name('tourism.rentals.legacy');
-
-// Standalone legacy pages with existing controllers.
-Route::get('/county-subscriptions', [\App\Http\Controllers\Web\CountySubscriptionController::class, 'index'])->name('county.subscriptions.legacy');
-Route::get('/consent', [\App\Http\Controllers\Web\ConsentController::class, 'physical'])->name('consent.index');
-Route::get('/exhibitor-portal', fn() => redirect()->route('exhibitor.admin'))->name('exhibitor.portal');
-
-// Legacy admin sub-areas: point at the unified hub (real, working) — no dead stub pages.
-Route::middleware(['auth'])->group(function () {
-    Route::get('/kicc-admin/exhibitions', fn() => redirect()->route('kicc.admin', ['tab' => 'overview']))->name('kicc.admin.exhibitions')->middleware('admin:kicc');
-    Route::get('/kicc-admin/settings', fn() => redirect()->route('kicc.admin', ['tab' => 'settings']))->name('kicc.admin.settings')->middleware('admin:kicc');
-    Route::get('/kicc-admin/automation', fn() => redirect()->route('kicc.admin', ['tab' => 'operations']))->name('kicc.admin.automation')->middleware('admin:kicc');
-    Route::get('/kicc-admin/roles', fn() => redirect()->route('kicc.admin', ['tab' => 'roles']))->name('kicc.admin.roles')->middleware('admin:kicc');
-});

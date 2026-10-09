@@ -51,7 +51,7 @@
 <div class="min-h-screen bg-[#FFFFFF] flex items-center justify-center p-5">
     <div class="w-full max-w-5xl">
         <div class="text-center mb-10">
-            <img src="{{ media('kicc/kicc-logo.png') }}" alt="KICC" class="h-16 w-auto mx-auto mb-4" style="filter: brightness(0) invert(0);">
+            <img src="{{ tile_url('logo') }}" alt="KICC" class="h-16 w-auto mx-auto mb-4" style="filter: brightness(0) invert(0);">
             <h1 class="text-3xl font-black text-gray-900" data-split>Admin Portal</h1>
             <p class="text-[#0B0B0B] mt-2">Four independent exhibitor tiers, one interconnected platform</p>
         </div>

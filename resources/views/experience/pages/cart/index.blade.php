@@ -37,7 +37,7 @@
         @elseif($item->variant)
             @php $product = $item->variant->product; @endphp
             <div class="bg-white rounded-2xl border border-gray-100 p-5 flex mobile-stack items-center gap-5 card-hover" data-reveal>
-                <img src="{{ $product->image_url }}" alt="" class="w-16 h-16 rounded-xl object-cover bg-gray-50" loading="lazy" decoding="async" onerror="this.src='{{ asset('storage/kicc/kicc-logo.png') }}'">
+                <img src="{{ $product->image_url }}" alt="" class="w-16 h-16 rounded-xl object-cover bg-gray-50" loading="lazy" decoding="async" onerror="this.src='{{ tile_url('logo') }}'">
                 <div class="flex-1 min-w-0">
                     <a href="{{ route('marketplace.show', $product->slug) }}" class="font-bold text-gray-900 hover:text-kicc-gold transition-colors text-sm">{{ $product->name }}</a>
                     <div class="text-gray-400 text-xs mt-0.5">{{ $item->variant->name ?? 'Standard' }} × {{ $item->quantity }}</div>

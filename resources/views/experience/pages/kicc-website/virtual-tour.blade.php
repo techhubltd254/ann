@@ -30,7 +30,9 @@ const sphere = new THREE.Mesh(new THREE.SphereGeometry(500, 60, 40), new THREE.M
 scene.add(sphere);
 function loadPanorama(slug) {
     const loader = new THREE.TextureLoader();
-    loader.load(`/storage/kicc/venues/${slug}.jpg`, (tex) => { sphere.material.map = tex; sphere.material.needsUpdate = true; });
+    const src = (window.KICC_TILES && (window.KICC_TILES['panorama_' + slug] || window.KICC_TILES.venue)) || '';
+    if (!src) { console.warn('No panorama published for ' + slug + ' — add it in the admin.'); return; }
+    loader.load(src, (tex) => { sphere.material.map = tex; sphere.material.needsUpdate = true; });
 }
 loadPanorama('mainfront');
 document.querySelectorAll('.tour-btn').forEach(b => b.addEventListener('click', () => loadPanorama(b.dataset.slug)));

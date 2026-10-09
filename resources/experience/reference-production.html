@@ -3388,14 +3388,22 @@ const SEED_ORDERS = [
  ["ORD-2026-04411","Kwale","Glassware Set ×44","KES 334,400","escrow","paid"],
 ];
 
-const HERO_POSTER = "https://sspark.genspark.ai/i/duB8gvxLPeB4F7ti?width=2560";
-const CITY_POSTER = "https://sspark.genspark.ai/i/JrzULumxvfF6Hfrk?width=2560";
-const LAND_POSTER = "https://sspark.genspark.ai/i/qoNIhZZNbcZ2YPBn?width=2560";
-const BOOTH_POSTER = "https://sspark.genspark.ai/i/N5IFjBvM2wAKnB9x?width=2560";
-const HALL_POSTER = "https://sspark.genspark.ai/i/d493ghnYvDsy7rpQ?width=2560";
-const SAVANNA_POSTER = "https://sspark.genspark.ai/i/akpoHn0Vp5tAAufS?width=2560";
+const TD=(window.KICC_NATIVE&&window.KICC_NATIVE.tables&&window.KICC_NATIVE.tables.tileDefaults)||{};
+const BLANK="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='16' height='10'%3E%3C/svg%3E";
+const TILE_DEFAULTS={hero:TD.hero||BLANK,city:TD.city||BLANK,land:TD.land||BLANK,booth:TD.booth||BLANK,hall:TD.hall||BLANK,savanna:TD.savanna||BLANK};
+const HERO_POSTER = TILE_DEFAULTS.hero;
+const CITY_POSTER = TILE_DEFAULTS.city;
+const LAND_POSTER = TILE_DEFAULTS.land;
+const BOOTH_POSTER = TILE_DEFAULTS.booth;
+const HALL_POSTER = TILE_DEFAULTS.hall;
+const SAVANNA_POSTER = TILE_DEFAULTS.savanna;
 
-const imgFor = (c) => c.image || "data:image/svg+xml,%3Csvg xmlns=\"http://www.w3.org/2000/svg\" width=\"800\" height=\"600\"%3E%3C/svg%3E";
+/* the whole tile map, for pages outside this document */
+window.KICC_TILES = Object.assign({}, TILE_DEFAULTS, TD);
+
+const imgFor = (c) => (c && c.tileMedia && c.tileMedia.state === "published" && c.tileMedia.url)
+  ? c.tileMedia.url
+  : (c && c.image) || "data:image/svg+xml,%3Csvg xmlns=\"http://www.w3.org/2000/svg\" width=\"800\" height=\"600\"%3E%3C/svg%3E";
 const nf = n => n.toLocaleString("en-KE");
 
 return {COUNTIES,VENUES,PRODUCTS,EXHIBITIONS,SCREENS,STREAMS,SECTORS,PIPELINES,ADMIN_KPI,
@@ -5363,12 +5371,13 @@ const T = {
 
 /* curated imagery — CC/PD licensed via image_search, see reply for provenance */
 const ED_IMG = {
-  savanna : 'https://sspark.genspark.ai/i/1RcgBjtYEuJ78hIE?width=2560',
-  nairobi : 'https://sspark.genspark.ai/i/PVkdIoF6Vw3o4PED?width=2560',
-  skyline : 'https://sspark.genspark.ai/i/u1ywvVQ2Qzo6ajnL?width=2560',
-  hall    : 'https://sspark.genspark.ai/i/qAnr5ZAd8daxgSIb?width=2560',
-  escarp  : 'https://sspark.genspark.ai/i/yEBiSGiqrbthu44L?width=2560',
-  mara    : 'https://sspark.genspark.ai/i/RzOIpnnhxDvDlXIr?width=2560'
+  /* every frame below is a media_assets row (tile_default) — replace it in the admin */
+  savanna : TD.ed_savanna || BLANK,
+  nairobi : TD.ed_nairobi || BLANK,
+  skyline : TD.ed_skyline || BLANK,
+  hall    : TD.ed_hall    || BLANK,
+  escarp  : TD.ed_escarp  || BLANK,
+  mara    : TD.ed_mara    || BLANK
 };
 
 const ED_CHAPTERS = [
@@ -8021,12 +8030,13 @@ const STUDIO_SEED = [
 
 /* the plates the archive strip renders from — real, licence-cleared frames */
 const STUDIO_PLATES = [
-  /* 0 · hall interior */      'https://sspark.genspark.ai/i/qAnr5ZAd8daxgSIb?width=2560',
-  /* 1 · market / vendor */    'https://sspark.genspark.ai/i/jJb4NYEd2gx2FAL4?width=2560',
-  /* 2 · city / golden hour */ 'https://sspark.genspark.ai/i/PVkdIoF6Vw3o4PED?width=2560',
-  /* 3 · savanna / aerial */   'https://sspark.genspark.ai/i/yEBiSGiqrbthu44L?width=2560',
-  /* 4 · exhibition floor */   'https://sspark.genspark.ai/i/e2x9V9fU5QQXUai0?width=2560',
-  /* 5 · generic city */       'https://sspark.genspark.ai/i/6qV5pV5w0yXda4Ve?width=2560'
+  /* every plate is a media_assets row (tile_default) — replace it in the admin */
+  TD.plate_0 || BLANK,   /* 0 · hall interior */
+  TD.plate_1 || BLANK,   /* 1 · market / vendor */
+  TD.plate_2 || BLANK,   /* 2 · city / golden hour */
+  TD.plate_3 || BLANK,   /* 3 · savanna / aerial */
+  TD.plate_4 || BLANK,   /* 4 · exhibition floor */
+  TD.plate_5 || BLANK    /* 5 · generic city */
 ];
 
 const STUDIO = (() => {
@@ -9252,7 +9262,7 @@ const TILEMEDIA=(()=>{
  const states=new Map();
  const urlSafe=x=>{try{const u=new URL(x);return u.protocol==='https:'||u.protocol==='http:'?u.href:''}catch{return ''}};
  function route(table,r){return table==='venues'?'/venues/'+slug(r.name):'/marketplace/'+slug(r.n).slice(0,44)}
- function config(table,r){if(r.tileMedia)return r.tileMedia;if(table==='products'&&r.image)return {state:'published',kind:'image',url:urlSafe(r.image),alt:name(r)};if(table==='venues')return {state:'demo',kind:'image',url:typeof ED_IMG!=='undefined'?ED_IMG.hall:KICC.HALL_POSTER,alt:'Existing shared demonstration hall poster; not a photograph verified for this room.'};return {state:'empty'}}
+ function config(table,r){if(r.tileMedia)return r.tileMedia;if(table==='products'&&r.image)return {state:'published',kind:'image',url:urlSafe(r.image),alt:name(r)};if(table==='venues')return {state:'demo',kind:'image',url:urlSafe(HALL_POSTER)||(typeof ED_IMG!=='undefined'?ED_IMG.hall:KICC.HALL_POSTER),alt:'Existing shared demonstration hall poster; not a photograph verified for this room.'};return {state:'empty'}}
  function label(c){return c.state==='demo'?'Shared demo poster · replace in admin':c.state==='empty'?'Your film belongs here':c.state==='draft'?'Media awaiting publication':c.kind==='video'?'Venue / maker film':'Uploaded photograph'}
  function tile(table,r,i){const c=config(table,r);const title=name(r),href=route(table,r),meta=table==='venues'?r.type+' · '+r.area:r.cat+' · '+r.c+' County';return `<article class="tm-tile" data-tm-id="${esc(r.id)}" data-tm-table="${table}" aria-label="${esc(title)}"><div class="tm-window" data-tm-window><div class="tm-empty"><span class="tm-initial" aria-hidden="true">${esc(table==='venues'?String(i+1).padStart(2,'0'):r.c?.slice(0,2)||'KE')}</span><p data-tm-empty>${c.state==='empty'?'No media published. Add your own image or video in the admin.':c.state==='draft'?'This media is a draft. Publish it from the admin to show it here.':'Preparing preview…'}</p></div><span class="tm-badge" data-tm-badge>${esc(label(c))}</span>${c.state!=='empty'&&c.state!=='draft'?`<button class="tm-open-film" type="button" data-tm-open aria-label="${c.kind==='video'?'Watch':'View'} ${esc(title)}"><span aria-hidden="true">${c.kind==='video'?'▶':'↗'}</span><span>${c.kind==='video'?'Watch the experience':table==='venues'?'View the space':'View the product'}</span></button>`:''}</div><div class="tm-copy"><div><div class="tm-metadata">${String(i+1).padStart(2,'0')} / ${esc(meta)}</div><h3>${esc(title)}</h3><p>${esc(table==='venues'?r.desc||'':r.description||'Discover the product through the maker’s own film.')}</p></div><div><div class="tm-price">${table==='venues'?esc((r.rate||'').split(' / ')[0]):'KES '+Number(r.p).toLocaleString('en-KE')}</div>${table==='venues'?`<p>${Number(r.cap).toLocaleString('en-KE')} seats</p>`:''}<a href="#${esc(href)}">${table==='venues'?'Explore this venue':'Meet this product'} <span aria-hidden="true">→</span></a>${table==='venues'?'<p class="tm-terms">Confirm availability and rates with venue</p>':''}</div></div></article>`}
  function gallery(table,rows){if(!rows.length)return '<div class="tm-admin-disclosure">No '+esc(table)+' are currently published. Publish a listing in admin to restore this gallery.</div>';const modes=rows.map(r=>config(table,r)),note=modes.some(c=>c.state==='demo')?'Existing shared demonstration posters are not room-specific.':modes.some(c=>c.state==='empty'||c.state==='draft')?'Some media slots are awaiting your published footage.':'Your published photographs and films are shown here.';return `<div class="tm-gallery" data-tm-gallery data-tm-table="${table}"><div class="tm-toolbar"><div class="tm-counter" data-tm-counter>01 / ${String(rows.length).padStart(2,'0')}</div><div class="tm-transport"><button type="button" data-tm-prev aria-label="Previous ${table==='venues'?'venue':'product'}">←</button><button type="button" data-tm-next aria-label="Next ${table==='venues'?'venue':'product'}">→</button></div><span class="tm-mode">Swipe · choose · step inside</span></div><div class="tm-track" data-tm-track tabindex="0" aria-label="${table==='venues'?'Venue':'Maker'} experience gallery. Use arrow keys or swipe.">${rows.map((r,i)=>tile(table,r,i)).join('')}</div><p class="tm-note">${note} Every tile’s media can be uploaded, replaced, unpublished or deleted in Admin → Experience tiles. Deletion does not remove the listing.</p></div>`}

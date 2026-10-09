@@ -9,7 +9,7 @@
 @php $p = $item->wishlistable; @endphp
 @if($p)
 <a href="{{ route('marketplace.show', $p->slug) }}" class="group bg-white border border-gray-200 rounded-2xl overflow-hidden card-hover">
-<div class="aspect-square bg-gray-50 overflow-hidden"><img src="{{ $p->image_url ?? media('kicc/kicc-logo.png') }}" class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500" loading="lazy"></div>
+<div class="aspect-square bg-gray-50 overflow-hidden"><img src="{{ $p->image_url ?? tile_url('logo') }}" class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500" loading="lazy"></div>
 <div class="p-4"><div class="font-bold text-gray-900 text-sm leading-snug line-clamp-2">{{ $p->name }}</div><div class="font-black text-[#0B0B0B] text-sm mt-1">KES {{ number_format($p->variants->min('price') ?? 0) }}</div></div>
 </a>
 @endif

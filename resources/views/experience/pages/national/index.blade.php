@@ -9,7 +9,7 @@
     <div class="bg-[#0B0B0B] text-white">
         <div class="max-w-7xl mx-auto px-5 py-14 md:py-20">
             <div class="flex items-center gap-3 mb-6">
-                <img src="{{ media('kicc/kicc-logo.png') }}" alt="KICC" class="h-9 w-auto" style="filter: brightness(0) invert(1);">
+                <img src="{{ tile_url('logo') }}" alt="KICC" class="h-9 w-auto" style="filter: brightness(0) invert(1);">
                 <span class="text-[10px] font-bold uppercase tracking-[0.2em] text-white/40 border-l border-white/20 pl-3">National Pavilion</span>
             </div>
             <h1 class="text-3xl md:text-5xl font-black leading-tight" data-split>National Government <span class="text-[#FFCD05]">of Kenya</span></h1>

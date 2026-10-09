@@ -15,7 +15,7 @@
         @endif
 
         <div class="text-center mb-8">
-            <img src="{{ media('kicc/kicc-logo.png') }}" alt="KICC" class="h-12 w-auto mx-auto mb-4" style="filter: brightness(0) invert(1);">
+            <img src="{{ tile_url('logo') }}" alt="KICC" class="h-12 w-auto mx-auto mb-4" style="filter: brightness(0) invert(1);">
             <h1 class="text-3xl font-black text-white" data-split>Set up your exhibitor website</h1>
             <p class="text-gray-400 text-sm mt-2">4 quick questions — your storefront is built instantly from your answers</p>
             <div class="flex items-center justify-center gap-2 mt-6">

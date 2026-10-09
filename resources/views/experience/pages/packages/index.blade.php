@@ -7,11 +7,11 @@
 {{-- Hero --}}
 <div class="relative bg-[#0B0B0B] overflow-hidden">
     <div class="absolute inset-0">
-        <img src="{{ media('kicc/tower-night.jpg') }}" alt="" class="w-full h-full object-cover opacity-20">
+        <img src="{{ tile_url('hero') }}" alt="" class="w-full h-full object-cover opacity-20">
     </div>
     <div class="relative max-w-7xl mx-auto px-5 py-16">
         <div class="flex items-center gap-3 mb-4">
-            <img src="{{ media('kicc/kicc-logo.png') }}" alt="KICC" class="h-8 w-auto">
+            <img src="{{ tile_url('logo') }}" alt="KICC" class="h-8 w-auto">
             <span class="text-[#FFCD05] text-xs font-bold uppercase tracking-[0.25em]">Packages</span>
         </div>
         <h1 class="text-4xl md:text-5xl font-black text-gray-900 tracking-tight" data-split>Sell, Exhibit &amp; <span class="text-[#FFCD05]">Trade</span></h1>

@@ -9,7 +9,7 @@
     <div class="w-56 bg-white border-r border-gray-200 flex flex-col shrink-0 min-h-screen overflow-y-auto">
         <div class="flex items-center gap-3 px-4 border-b border-gray-200 h-16 shrink-0">
             <div class="flex items-center gap-2">
-                <img src="{{ media('kicc/kicc-logo.png') }}" alt="KICC" class="h-7 w-auto" style="filter: brightness(0) invert(1);">
+                <img src="{{ tile_url('logo') }}" alt="KICC" class="h-7 w-auto" style="filter: brightness(0) invert(1);">
                 <div class="text-[#FFCD05] text-[9px] font-black tracking-[0.15em] uppercase">Overall<br>Admin</div>
             </div>
         </div>

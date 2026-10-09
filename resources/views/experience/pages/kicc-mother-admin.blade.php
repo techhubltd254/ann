@@ -9,7 +9,7 @@
 
     <aside class="glass-nav flex flex-col w-64 shrink-0 z-30 overflow-y-auto">
         <div class="flex items-center gap-3 h-16 px-5 border-b border-white/5 shrink-0">
-            <img src="{{ media('kicc/kicc-logo.png') }}" alt="KICC" class="w-9 h-9 rounded-xl object-contain bg-white/10 p-1.5">
+            <img src="{{ tile_url('logo') }}" alt="KICC" class="w-9 h-9 rounded-xl object-contain bg-white/10 p-1.5">
             <div>
                 <div class="text-white font-bold text-sm leading-tight">KICC</div>
                 <div class="text-[#FFCD05] text-[9px] font-bold tracking-[0.2em] uppercase">Global Exhibition Admin</div>
@@ -46,7 +46,7 @@
                 @endif
             @endforeach
             <div class="px-3 pt-4 border-t border-white/5 space-y-1">
-                <a class="sidebar-link" href="{{ route('experience.images.index') }}">Media Library</a>
+                <a class="sidebar-link" href="{{ route('media.library') }}">Media Library</a>
 
                 <a href="{{ route('kicc.admin', ['tab' => 'counties']) }}" class="sidebar-link sidebar-link-inactive"><svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 12l2-2m0 0l7-7 7 7M5 10v10a1 1 0 001 1h3m10-11l2 2m-2-2v10a1 1 0 01-1 1h-3m-6 0a1 1 0 001-1v-4a1 1 0 011-1h2a1 1 0 011 1v4a1 1 0 001 1m-6 0h6"/></svg><span>County Portals</span></a>
                 <a href="{{ route('national.admin') }}" class="sidebar-link sidebar-link-inactive"><svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 21V5a2 2 0 00-2-2H7a2 2 0 00-2 2v16m14 0h2m-2 0h-5m-9 0H3m2 0h5M9 7h1m-1 4h1m4-4h1m-1 4h1m-5 10v-5a1 1 0 011-1h2a1 1 0 011 1v5m-4 0h4"/></svg><span>National Government</span></a>

@@ -9,7 +9,7 @@
 <div class="bg-[#0B0B0B] text-gray-900">
     <div class="max-w-6xl mx-auto px-5 py-14">
         <div class="flex items-center gap-3 mb-6">
-            <img src="{{ media('kicc/kicc-logo.png') }}" alt="KICC" class="h-9 w-auto" style="filter: brightness(0) invert(1);">
+            <img src="{{ tile_url('logo') }}" alt="KICC" class="h-9 w-auto" style="filter: brightness(0) invert(1);">
             <span class="text-[10px] font-bold uppercase tracking-[0.2em] text-gray-400 border-l border-gray-200 pl-3">Official Exhibitor Website</span>
         </div>
         <div class="flex flex-wrap items-start justify-between gap-6">

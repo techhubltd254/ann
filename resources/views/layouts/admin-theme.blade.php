@@ -21,7 +21,7 @@
 @stack('styles')</head>
 <body class="admin-shell">
 <aside class="as-side">
- <a class="as-brand" href="{{ route('admin.portal') }}"><span class="as-mark as-mark-logo"><img src="/kicc-logo.png" alt="KICC"></span><span><strong>{{ $brandName ?? 'KICC Admin' }}</strong><small>{{ $brandSub ?? 'National Platform' }}</small></span></a>
+ <a class="as-brand" href="{{ route('admin.portal') }}"><span class="as-mark as-mark-logo"><img src=tile_url('logo') alt="KICC"></span><span><strong>{{ $brandName ?? 'KICC Admin' }}</strong><small>{{ $brandSub ?? 'National Platform' }}</small></span></a>
  <div class="as-nav-label">Manage</div>
  <nav class="as-nav">
   <a href="{{ route('admin.portal') }}" class="{{ request()->is('portal') ? 'active' : '' }}"><span class="ic">▦</span>Dashboard</a>

@@ -13,7 +13,7 @@ $activeSubs = $subscribers->where('status', 'active')->count();
             <div class="flex items-center justify-between px-4 border-b border-white/10 h-16">
                 <div class="flex items-center gap-2">
                     <div class="rounded-lg bg-[#16A34A] px-2 py-1 flex items-center justify-center">
-                        <img src="{{ media('kicc/kicc-logo.png') }}" alt="KICC" class="h-6 w-auto">
+                        <img src="{{ tile_url('logo') }}" alt="KICC" class="h-6 w-auto">
                     </div>
                     <div class="text-[#22C55E] text-[9px] font-black tracking-[0.15em] uppercase leading-tight">Global<br>Exhibition</div>
                 </div>

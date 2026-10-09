@@ -11,7 +11,7 @@
 <div class="grid grid-cols-2 md:grid-cols-4 gap-3">
 @foreach($sale->products as $p)
 <a href="{{ route('marketplace.show', $p->slug) }}" class="bg-white rounded-2xl border border-orange-100 p-3 card-hover">
-<div class="aspect-square bg-gray-50 rounded-xl overflow-hidden mb-2"><img src="{{ $p->image_url ?? media('kicc/kicc-logo.png') }}" class="w-full h-full object-cover" loading="lazy"></div>
+<div class="aspect-square bg-gray-50 rounded-xl overflow-hidden mb-2"><img src="{{ $p->image_url ?? tile_url('logo') }}" class="w-full h-full object-cover" loading="lazy"></div>
 <div class="text-xs font-bold text-gray-900 line-clamp-2">{{ $p->name }}</div>
 <div class="flex items-center gap-2 mt-1"><span class="font-black text-red-600 text-sm">-{{ $sale->discount_percent }}%</span><span class="text-gray-400 text-xs line-through">KES {{ number_format($p->variants->min('price') ?? 0) }}</span></div>
 </a>

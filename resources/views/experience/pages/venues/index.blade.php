@@ -5,7 +5,7 @@
 @section('content')
 <div class="relative bg-[#FFFFFF] overflow-hidden border-b border-gray-200">
     <div class="absolute inset-0">
-        <img src="{{ media('kicc/tower-night.jpg') }}" alt="" class="w-full h-full object-cover object-top opacity-25" data-parallax="0.15" loading="lazy">
+        <img src="{{ tile_url('hero') }}" alt="" class="w-full h-full object-cover object-top opacity-25" data-parallax="0.15" loading="lazy">
     </div>
     <div class="absolute inset-0 bg-gradient-to-b from-[#0B0B0B]/70 via-[#0B0B0B]/85 to-[#0B0B0B]"></div>
     <div class="relative max-w-7xl mx-auto px-5 py-16" data-reveal>
@@ -85,7 +85,7 @@
         <a href="{{ route('venues.show', $v->slug) }}" class="bg-white rounded-2xl border border-gray-200 overflow-hidden hover:border-kicc-gold/40 transition-all group card-hover block" data-tilt="6" data-reveal data-reveal-delay="{{ ($i % 3) * 80 }}">
             <div class="tilt-glare"></div>
             <div class="h-40 bg-[#FFFFFF] flex items-center justify-center overflow-hidden relative">
-                @php $img = $v->cover_image ? media($v->cover_image) : media("kicc/{$v->slug}.jpg"); @endphp
+                @php $img = $v->cover_image ? media($v->cover_image) : tile_url('venue', 'venue', $v->id); @endphp
                 <img src="{{ $img }}" alt="{{ $v->name }}" loading="lazy" decoding="async" class="w-full h-full object-cover opacity-70 group-hover:opacity-100 group-hover:scale-105 transition-all duration-500"
                      onerror="this.style.display='none'">
                 <span class="absolute text-gray-900/15 text-6xl font-black">{{ $v->name[0] }}</span>

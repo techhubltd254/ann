@@ -156,3 +156,45 @@ if (!function_exists('bust_cache')) {
         Illuminate\Support\Facades\Cache::forever($key, time());
     }
 }
+
+
+if (!function_exists('tile_url')) {
+    /**
+     * The URL of one tile slot, resolved through media_assets.
+     *
+     * Nothing in a view should ever carry a literal media path: every tile —
+     * brand mark, hero plate, editorial frame, per-entity fallback — comes from
+     * a row an admin can upload, replace or delete.
+     */
+    function tile_url(string $slot, string $type = 'default', $id = null): string
+    {
+        static $resolver = null;
+        if ($resolver === null) {
+            $resolver = app(\App\Services\TileMediaResolver::class);
+        }
+
+        $map = [
+            'institution' => \App\Models\CountyInstitution::class,
+            'product'     => \App\Models\Marketplace\Product::class,
+            'county'      => \App\Models\County::class,
+            'venue'       => \App\Models\Venue::class,
+            'landing'     => 'landing_page',
+            'default'     => \App\Services\TileMediaResolver::OWNER_TYPE,
+        ];
+
+        $ownerType = $map[$type] ?? \App\Services\TileMediaResolver::OWNER_TYPE;
+        $ownerId   = $type === 'default'
+            ? \App\Services\TileMediaResolver::OWNER_ID
+            : (int) $id;
+
+        return (string) $resolver->url($resolver->resolve($ownerType, $ownerId, $slot));
+    }
+}
+
+if (!function_exists('tile_defaults')) {
+    /** Every platform tile URL, for a view or script that needs the whole map. */
+    function tile_defaults(): array
+    {
+        return app(\App\Services\TileMediaResolver::class)->defaults();
+    }
+}
