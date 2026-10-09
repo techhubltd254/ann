@@ -595,6 +595,8 @@ table.tbl tbody tr:last-child td{border-bottom:none}
 #countyGrid .media-tile .tile-body{justify-content:flex-end;padding:13px}
 </style>
 <link rel="stylesheet" href="/css/reference-palette.css?v=reference-replica-v3">
+<link rel="stylesheet" href="/css/expo-video.css?v=dab02ad56266">
+<script src="/js/expo-video.js?v=20358f55afb7"></script>
 </head>
 <style>
 /* ============================================================================
@@ -5423,38 +5425,17 @@ Router.register('/', () => {
   ${ED_CHAPTERS.map(c=>`<a href="#chapter-${c.key}" data-scroll="${c.key}" data-chapter="${c.key}"><i></i><span>${c.n} ${c.t}</span></a>`).join('')}
 </nav>
 
-<!-- ══ FRONT DOOR ══ -->
-<header class="ed-chapter ed-plate" data-lean="deep" id="chapter-top" style="min-height:100vh">
-  <div class="ed-bridge at-bottom" aria-hidden="true"></div>
-  <div class="ed-bleed" data-depth="far">
-    <img src="${ED_IMG.nairobi}" alt="Nairobi at dusk, seen from the central business district">
-  </div>
-  <div class="ed-layer wrap">
-    <div class="ed-grid">
-      <div class="ed-col-8">
-        <div class="ed-label" data-reveal>Kenyatta International Convention Centre · Est. 1973</div>
-        <h1 style="margin-top:30px" data-reveal>
-          <span class="ed-mask"><span>The whole country,</span></span>
-          <span class="ed-mask"><span><em style="font-style:italic;color:var(--au-300)">in one room.</em></span></span>
-        </h1>
-        <p class="ed-lead" style="margin-top:34px" data-reveal>
-          Forty-seven county economies arrive here as goods, produce and people — and leave as
-          trade. This is Kenya's national exhibition infrastructure, published as a single
-          living archive.
-        </p>
-        <div class="wrapflex" style="margin-top:46px;gap:14px" data-reveal>
-          <a href="#chapter-nation" class="btn gold" data-scroll="nation" data-magnetic>Enter the archive</a>
-          <a href="#chapter-inside" class="btn ghost" data-scroll="inside" data-magnetic>Step inside a hall</a>
-        </div>
-      </div>
-    </div>
-  </div>
-
-    <a class="ed-handoff" href="#chapter-nation" data-scroll="nation" data-reveal>
-      <span class="n">01</span><span class="t">The Nation</span>
-      <span class="ln"></span><span class="s">Begin</span><span class="ar">&#8595;</span>
-    </a>
-</header>
+<!-- ══ FRONT DOOR · native media, Expo-style shared section ══ -->
+${window.KiccExpoVideo.render({
+ id:'chapter-top',variant:'hero',
+ video:window.KICC_NATIVE.tables.heroMedia?.video||null,
+ poster:window.KICC_NATIVE.tables.heroMedia?.poster||ED_IMG.nairobi,
+ ownerId:window.KICC_NATIVE.tables.heroMedia?.ownerId||'1',
+ eyebrow:'Kenyatta International Convention Centre · Est. 1973',
+ title:'The whole country, in one room.',
+ description:"Forty-seven county economies arrive here as goods, produce and people — and leave as trade. This is Kenya's national exhibition infrastructure, published as a single living archive.",
+ actions:[{label:'Enter the archive',href:'#chapter-nation',scroll:'nation'},{label:'Step inside a hall',href:'#chapter-inside',scroll:'inside'}]
+})}
 
 <!-- ══ 01 · THE NATION ══ -->
 <section class="ed-chapter ed-flat" data-lean="soft" id="chapter-nation">
@@ -9621,7 +9602,7 @@ function PAGE_EVENTS(path){
 (function nativeAdapters(){
  const esc=x=>String(x??'').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
  const media=window.KICC_NATIVE.tables.media;
- T.hls=o=>{const path=location.hash.replace(/^#/,'')||'/';const m=media.find(x=>x.target===path&&x.kind==='video');return `<div class="hls-stage" data-native-owner="${esc(m?.ownerId||'')}">${m?`<video muted loop playsinline autoplay preload="metadata" ${m.poster?'poster="'+esc(m.poster)+'"':''} src="${esc(m.url)}" style="width:100%;height:100%;object-fit:cover" data-hero-autoplay></video>`:`<div class="poster" style="background-image:url('${esc(o.img||'')}')"></div><div class="hud"><div><h3>${esc(o.title)}</h3><p>No entity-owned video published. Add one in the Admin portal.</p></div></div>`}</div>`;};
+ T.hls=o=>{const path=location.hash.replace(/^#/,'')||'/';const m=media.find(x=>x.target===path&&x.kind==='video');return window.KiccExpoVideo.render({variant:'feature',ownerId:m?.ownerId,video:m?.url,poster:m?.poster||o.img,title:o.title||m?.name||'Published film',description:o.sub||'',actions:[]});};
  for(const t of ['exhibitions','screens','streams']){const old=Router.PAGES['/'+t];Router.PAGES['/'+t]=(rest,path)=>!window.KICC_NATIVE.tables[t].length?{title:t,html:`<section class="wrap section"><div class="eyebrow">${esc(t)}</div><h1>${t==='screens'?'Digital Screens':t==='streams'?'Live Streams':'Exhibitions'}</h1><div class="reference-empty mt-l">No published ${esc(t)} records in the database. The collection is empty, not populated with demonstration listings.</div></section>`}:old(rest,path);}
  document.addEventListener('click',e=>{const a=e.target.closest('[data-action="toast"],[data-action="link"]');if(!a)return;e.preventDefault();e.stopImmediatePropagation();const path=location.hash.replace(/^#/,'');let target='/portal';const card=a.closest('[data-native-product]');if(card){const p=window.KICC_NATIVE.tables.products.find(x=>x.slug===card.dataset.nativeProduct);if(p)target=p.nativeUrl+'?native=1';}else if(path.startsWith('/marketplace/')){const slug=path.split('/')[2];const p=window.KICC_NATIVE.tables.products.find(x=>REPO.slug(x.n).slice(0,44)===slug||x.slug===slug);if(p)target=p.nativeUrl+'?native=1';}else if(path.startsWith('/venues/'))target=path+'?native=1';else if(path==='/travel')target='/travel?native=1';location.assign(target);},true);
  document.querySelectorAll('a[href="#/login"],a[href="#/register"]').forEach(a=>{a.href=a.getAttribute('href').slice(1);a.removeAttribute('data-link');});
@@ -9639,6 +9620,6 @@ function PAGE_EVENTS(path){
 })();
 </script>
 <script type="module" src="https://static.cloudflareinsights.com/beacon.min.js/v31edd6df95cf4e85bb4c19e7a9bdbcba1788362987495" integrity="sha512-iIg7k2xntmwu6/uSb5tpc/hySgZc4eoL31yB29W6tJFo2akwjPWcEqnCEdJvGexCL0KEQwVYv5BlowfhVz26hg==" data-cf-beacon='{"version":"2024.11.0","token":"4edd5f8ec12a48cfa682ab8261b80a79","spa":2}' crossorigin="anonymous"></script>
-<script defer src="/js/tile-hover-video.js?v=tile-video-v1"></script>
+<script defer src="/js/tile-hover-video.js?v=8ce8d3743419"></script>
 </body>
 </html>

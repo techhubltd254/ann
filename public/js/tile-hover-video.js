@@ -4,7 +4,7 @@
  function attach(el){
   const a=el.querySelector('a[href^="#/counties/"],a[href^="#/institutions/"],a[href^="#/venues/"],a[href^="#/marketplace/"]');if(!a)return;
   const m=mediaOf(a.getAttribute('href').slice(1));if(!m||!m.url)return;
-  if(el.querySelector('video[data-hover-video]'))return;
+  if(el.querySelector('video'))return;
   const host=el.querySelector('.tile-media,.pc-media,.tm-window,.orbit-screen')||el;
   host.style.position=host.style.position||'relative';
   const v=document.createElement('video');v.dataset.hoverVideo='1';v.muted=true;v.loop=true;v.playsInline=true;v.preload='none';if(m.poster)v.poster=m.poster;v.src=m.url;

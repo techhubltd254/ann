@@ -926,3 +926,8 @@ Route::get('/institutions/{institution}', [\App\Http\Controllers\Web\CountyContr
 
 // Experience asset streaming — upload() hands back /experience/media/{id}, nothing served it.
 Route::get('/experience/media/{id}', [\App\Http\Controllers\Web\ExperienceProductionController::class, 'serve'])->name('experience.media.serve');
+
+// Original R2 bytes: bypass the edge video handler that advertises ranges
+// but streams the entire object. This existing controller redirects to R2,
+// which handles seeking natively without buffering films in PHP.
+Route::get('/media/original/{path}', [\App\Http\Controllers\Web\MediaProxyController::class, 'video'])->where('path', '.*')->name('media.original');

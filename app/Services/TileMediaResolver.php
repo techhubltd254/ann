@@ -231,4 +231,19 @@ class TileMediaResolver
 
         return $rows;
     }
+
+    // Compatibility with native county/institution controllers. Recovered
+    // unchanged sector/owner rules from 9cb8021f5; the newer tile API stays intact.
+    public function forAllCountySectors(\App\Models\County $county, array $sectorData): array
+    { return app(RecoveredSectorMediaResolver::class)->forAllCountySectors($county, $sectorData); }
+    public function forCountySector(\App\Models\County $county, string $slug): array
+    { return app(RecoveredSectorMediaResolver::class)->forCountySector($county, $slug); }
+    public function forEntity(\App\Models\SectorEntity $entity): array
+    { return app(RecoveredSectorMediaResolver::class)->forEntity($entity); }
+    public function forInstitution(\App\Models\CountyInstitution $institution, ?string $slug = null): array
+    { return app(RecoveredSectorMediaResolver::class)->forInstitution($institution, $slug); }
+    public function forMinistry(\App\Models\Ministry $ministry): array
+    { return app(RecoveredSectorMediaResolver::class)->forMinistry($ministry); }
+    public function forOwner(string $type, int $id, ?string $slot = null): array
+    { return app(RecoveredSectorMediaResolver::class)->forOwner($type, $id, $slot); }
 }

@@ -133,7 +133,11 @@ class ReferenceExperienceController extends Controller
         // A changed palette must never reuse an immutable browser/edge cache key.
         $paletteHash = substr(hash_file('sha256', public_path('css/reference-palette.css')), 0, 12);
         $html = str_replace('/css/reference-palette.css?v=reference-replica-v2', '/css/reference-palette.css?v='.$paletteHash, $html);
-        $payload = ['path'=>$request->getPathInfo(),'tables'=>$this->tables()];
+        $tables = $this->tables();
+        $hero = \App\Models\MediaAsset::where('owner_type','landing_page')->where('owner_id',1)->where('slot','hero_video')->where('kind','video')->where('status','ready')->with('derivatives')->latest('id')->first();
+        $tile = app(\App\Services\TileMediaResolver::class)->tile(\App\Services\TileMediaResolver::OWNER_TYPE, \App\Services\TileMediaResolver::OWNER_ID, 'hero');
+        $tables['heroMedia'] = ['ownerId'=>1,'video'=>$hero ? ($hero->mp4Url() ?: $hero->url()) : (($tile['kind'] ?? null)==='video' ? ($tile['url'] ?? null) : null), 'poster'=>$hero?->posterUrl() ?: ($tile['poster'] ?? $tables['tileDefaults']['ed_nairobi'] ?? null)];
+        $payload = ['path'=>$request->getPathInfo(),'tables'=>$tables];
         $boot = json_encode($payload, JSON_HEX_TAG|JSON_HEX_AMP|JSON_HEX_APOS|JSON_HEX_QUOT|JSON_THROW_ON_ERROR);
         // This inserts JSON only; the approved document is never compiled as Blade.
         return str_replace('/*__KICC_NATIVE_BOOT__*/', 'window.KICC_NATIVE='.$boot.';', $html);
