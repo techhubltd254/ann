@@ -208,35 +208,63 @@ class KiccAdminController extends Controller
 
         extract($dash);
 
-        $navItems = [
-            ['label' => 'Overview', 'tab' => 'overview', 'icon' => 'M3 12l2-2m0 0l7-7 7 7M5 10v10a1 1 0 001 1h3m10-11l2 2m-2-2v10a1 1 0 01-1 1h-3m-6 0a1 1 0 001-1v-4a1 1 0 011-1h2a1 1 0 011 1v4a1 1 0 001 1m-6 0h6'],
-            ['label' => 'Sub-Portals', 'tab' => 'portals', 'icon' => 'M4 6a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2H6a2 2 0 01-2-2V6zM14 6a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2h-2a2 2 0 01-2-2V6zM4 16a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2H6a2 2 0 01-2-2v-2zM14 16a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2h-2a2 2 0 01-2-2v-2z'],
-            ['label' => 'Counties (47)', 'tab' => 'counties', 'icon' => 'M9 20l-5.447-2.724A1 1 0 013 16.382V5.618a1 1 0 011.447-.894L9 7m0 13l6-3m-6 3V7m6 10l4.553 2.276A1 1 0 0021 18.382V7.618a1 1 0 00-.553-.894L15 4m0 13V4m0 0L9 7'],
-            ['label' => 'Institutions', 'tab' => 'institutions', 'icon' => 'M19 21V5a2 2 0 00-2-2H7a2 2 0 00-2 2v16m14 0h2m-2 0h-5m-9 0H3m2 0h5M9 7h1m-1 4h1m4-4h1m-1 4h1m-5 10v-5a1 1 0 011-1h2a1 1 0 011 1v5m-4 0h4'],
-            ['label' => 'National Govt', 'tab' => 'national', 'icon' => 'M8 14v3m4-3v3m4-3v3M3 21h18M3 10h18M3 7l9-4 9 4M3 3v18h18V3z'],
-            ['label' => 'Exhibitors', 'tab' => 'exhibitors', 'icon' => 'M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0z'],
-            ['label' => 'Orders', 'tab' => 'orders', 'icon' => 'M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2'],
-            ['label' => 'Providers', 'tab' => 'providers', 'icon' => 'M9 12l2 2 4-4m5.618-4.016A11.955 11.955 0 0112 2.944a11.955 11.955 0 01-8.618 3.04A12.02 12.02 0 003 9c0 5.591 3.824 10.29 9 11.622 5.176-1.332 9-6.03 9-11.622 0-1.042-.133-2.052-.382-3.016z'],
-            ['label' => 'Escrow', 'tab' => 'escrow', 'icon' => 'M12 8c-1.657 0-3 .895-3 2s1.343 2 3 2 3 .895 3 2-1.343 2-3 2m0-8c1.11 0 2.08.402 2.599 1M12 8V7m0 1v8m0 0v1m0-1c-1.11 0-2.08-.402-2.599-1'],
-            ['label' => '3D Assets', 'tab' => '3d_assets', 'icon' => 'M17 8l4-4m0-4-4-4m4 4H7m6 4v1a3 3 0 01-3 3H6a3 3 0 01-3-3V7a3 3 0 013-3h4a3 3 0 013 3v1'],
-            ['label' => 'Selling Pool', 'tab' => 'pool', 'icon' => 'M12 8c-1.657 0-3 .895-3 2s1.343 2 3 2 3 .895 3 2-1.343 2-3 2m0-8c1.11 0 2.08.402 2.599 1M12 8V7m0 1v8m0 0v1m0-1c-1.11 0-2.08-.402-2.599-1'],
-            ['label' => 'Pipeline Management', 'tab' => 'pipelines', 'icon' => 'M4 5a1 1 0 011-1h14a1 1 0 011 1v2a1 1 0 01-1 1H5a1 1 0 01-1-1V5zM4 13a1 1 0 011-1h6a1 1 0 011 1v6a1 1 0 01-1 1H5a1 1 0 01-1-1v-6zM16 13a1 1 0 011-1h2a1 1 0 011 1v6a1 1 0 01-1 1h-2a1 1 0 01-1-1v-6z'],
-            ['label' => 'Experiences', 'tab' => 'experiences', 'icon' => 'M9 20l-5.447-2.724A1 1 0 013 16.382V5.618a1 1 0 011.447-.894L9 7m0 13l6-3m-6 3V7m6 10l4.553 2.276A1 1 0 0021 18.382V7.618a1 1 0 00-.553-.894L15 4m0 13V4m0 0L9 7'],
-            ['label' => 'Live Events', 'tab' => 'live_events', 'icon' => 'M15 10l4.553-2.276A1 1 0 0121 8.618v6.764a1 1 0 01-1.447.894L15 14M5 18h8a2 2 0 002-2V8a2 2 0 00-2-2H5a2 2 0 00-2 2v8a2 2 0 002 2z'],
-            ['label' => 'Users', 'tab' => 'users', 'icon' => 'M12 4.354a4 4 0 110 5.292M15 21H3v-1a6 6 0 0112 0v1zm0 0h6v-1a6 6 0 00-9-5.197'],
-            ['label' => 'Venues', 'tab' => 'venues', 'icon' => 'M19 21V5a2 2 0 00-2-2H7a2 2 0 00-2 2v16m14 0h2m-2 0h-5m-9 0H3m2 0h5M9 7h1m-1 4h1m4-4h1m-1 4h1m-5 10v-5a1 1 0 011-1h2a1 1 0 011 1v5m-4 0h4'],
-            ['label' => 'Exhibitor Requests', 'tab' => 'exh_requests', 'icon' => 'M12 4.354a4 4 0 110 5.292M15 21H3v-1a6 6 0 0112 0v1zm0 0h6v-1a6 6 0 00-9-5.197'],
-            ['label' => 'Hero Media', 'tab' => 'hero_media', 'icon' => 'M15 10l4.553-2.276A1 1 0 0121 8.618v6.764a1 1 0 01-1.447.894L15 14M5 18h8a2 2 0 002-2V8a2 2 0 00-2-2H5a2 2 0 00-2 2v8a2 2 0 002 2z'],
-            ['label' => 'Packages', 'tab' => 'packages', 'icon' => 'M3 3h2l.4 2M7 13h10l4-8H5.4M7 13L5.4 5M7 13l-2.293 2.293c-.63.63-.184 1.707.707 1.707H17m0 0a2 2 0 100 4 2 2 0 000-4zm-8 2a2 2 0 11-4 0 2 2 0 014 0z'],
-            ['label' => 'Analytics', 'tab' => 'analytics', 'icon' => 'M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z'],
-            ['label' => 'Integration', 'tab' => 'integration', 'icon' => 'M8 9l3 3-3 3m5 0h3M5 20h14a2 2 0 002-2V6a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z'],
-            ['label' => 'Pipeline Creator', 'tab' => 'pipeline-creator', 'icon' => 'M12 6v6m0 0v6m0-6h6m-6 0H6'],
-            ['label' => 'Earnings', 'tab' => 'earnings', 'icon' => 'M12 8c-1.657 0-3 .895-3 2s1.343 2 3 2 3 .895 3 2-1.343 2-3 2m0-8c1.11 0 2.08.402 2.599 1M12 8V7m0 1v8m0 0v1m0-1c-1.11 0-2.08-.402-2.599-1'],
-            ['label' => 'Search Analytics', 'tab' => 'search-analytics', 'icon' => 'M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z'],
-            ['label' => 'Cache', 'tab' => 'cache', 'icon' => 'M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15'],
-            ['label' => 'Licence Queue', 'tab' => 'licence-queue', 'icon' => 'M9 12l2 2 4-4m5.618-4.016A11.955 11.955 0 0112 2.944a11.955 11.955 0 01-8.618 3.04A12.02 12.02 0 003 9c0 5.591 3.824 10.29 9 11.622 5.176-1.332 9-6.03 9-11.622 0-1.042-.133-2.052-.382-3.016z'],
-            ['label' => 'Pipeline Settings', 'tab' => 'pipeline-settings', 'icon' => 'M10.325 4.317c.426-1.756 2.924-1.756 3.35 0a1.724 1.724 0 002.573 1.066c1.543-.94 3.31.826 2.37 2.37a1.724 1.724 0 001.066 2.573c1.756.426 1.756 2.924 0 3.35a1.724 1.724 0 00-1.066 2.573c.94 1.543-.826 3.31-2.37 2.37a1.724 1.724 0 00-2.573 1.066c-.426 1.756-2.924 1.756-3.35 0a1.724 1.724 0 00-2.573-1.066c-1.543.94-3.31-.826-2.37-2.37a1.724 1.724 0 00-1.066-2.573c-1.756-.426-1.756-2.924 0-3.35a1.724 1.724 0 001.066-2.573c-.94-1.543.826-3.31 2.37-2.37.996.608 2.296.07 2.572-1.065z M15 12a3 3 0 11-6 0 3 3 0 016 0z'],
+        // Department × Function grouping (KICC Admin Reorganization strategy).
+        // $navGroups feeds a collapsible sidebar; $navItems stays flat for tab validation.
+        $navGroups = [
+            'Dashboard'  => ['overview'],
+            'Content'    => ['hero_media' => 'Hero Videos & Posters', '3d_assets' => '3D Assets & Splats', 'experiences' => 'Experiences', 'live_events' => 'Live Events'],
+            'Commerce'   => ['orders' => 'Orders & Returns', 'packages' => 'Packages & Pricing', 'escrow' => 'Escrow & Settlements', 'pool' => 'Revenue Pool', 'earnings' => 'Earnings Ledger'],
+            'Operations' => ['pipelines' => 'Pipeline Licensing', 'pipeline-creator' => 'Pipeline Creator', 'licence-queue' => 'Licence Queue', 'exh_requests' => 'Exhibitor Requests', 'venues' => 'Venues', 'counties' => 'Counties (47)', 'national' => 'National Govt'],
+            'People'     => ['users' => 'User Management', 'institutions' => 'Institutions', 'exhibitors' => 'Exhibitors', 'providers' => 'Providers'],
+            'Analytics'  => ['analytics' => 'Dashboard & KPIs', 'search-analytics' => 'Search Analytics'],
+            'Settings'   => ['integration' => 'API & Webhooks', 'pipeline-settings' => 'Pipeline Settings', 'cache' => 'Cache Management', 'portals' => 'Admin Portals'],
         ];
+        $navGroupsFlat = [];
+        foreach ($navGroups as $g => $items) {
+            foreach ($items as $k => $v) { $tab = is_int($k) ? $v : $k; $label = is_int($k) ? null : $v; $navGroupsFlat[$tab] = ['group' => $g, 'label' => $label]; }
+        }
+        $navItems = [];
+        $NAV_DEFS = [
+            'overview' => ['label' => 'Dashboard', 'tab' => 'overview', 'icon' => 'M3 12l2-2m0 0l7-7 7 7M5 10v10a1 1 0 001 1h3m10-11l2 2m-2-2v10a1 1 0 01-1 1h-3m-6 0a1 1 0 001-1v-4a1 1 0 011-1h2a1 1 0 011 1v4a1 1 0 001 1m-6 0h6'],
+            'portals' => ['label' => 'Admin Portals', 'tab' => 'portals', 'icon' => 'M4 6a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2H6a2 2 0 01-2-2V6zM14 6a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2h-2a2 2 0 01-2-2V6zM4 16a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2H6a2 2 0 01-2-2v-2zM14 16a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2h-2a2 2 0 01-2-2v-2z'],
+            'counties' => ['label' => 'Counties (47)', 'tab' => 'counties', 'icon' => 'M9 20l-5.447-2.724A1 1 0 013 16.382V5.618a1 1 0 011.447-.894L9 7m0 13l6-3m-6 3V7m6 10l4.553 2.276A1 1 0 0021 18.382V7.618a1 1 0 00-.553-.894L15 4m0 13V4m0 0L9 7'],
+            'institutions' => ['label' => 'Institutions', 'tab' => 'institutions', 'icon' => 'M19 21V5a2 2 0 00-2-2H7a2 2 0 00-2 2v16m14 0h2m-2 0h-5m-9 0H3m2 0h5M9 7h1m-1 4h1m4-4h1m-1 4h1m-5 10v-5a1 1 0 011-1h2a1 1 0 011 1v5m-4 0h4'],
+            'national' => ['label' => 'National Govt', 'tab' => 'national', 'icon' => 'M8 14v3m4-3v3m4-3v3M3 21h18M3 10h18M3 7l9-4 9 4M3 3v18h18V3z'],
+            'exhibitors' => ['label' => 'Exhibitors', 'tab' => 'exhibitors', 'icon' => 'M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0z'],
+            'orders' => ['label' => 'Orders & Returns', 'tab' => 'orders', 'icon' => 'M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2'],
+            'providers' => ['label' => 'Providers', 'tab' => 'providers', 'icon' => 'M9 12l2 2 4-4m5.618-4.016A11.955 11.955 0 0112 2.944a11.955 11.955 0 01-8.618 3.04A12.02 12.02 0 003 9c0 5.591 3.824 10.29 9 11.622 5.176-1.332 9-6.03 9-11.622 0-1.042-.133-2.052-.382-3.016z'],
+            'escrow' => ['label' => 'Escrow & Settlements', 'tab' => 'escrow', 'icon' => 'M12 8c-1.657 0-3 .895-3 2s1.343 2 3 2 3 .895 3 2-1.343 2-3 2m0-8c1.11 0 2.08.402 2.599 1M12 8V7m0 1v8m0 0v1m0-1c-1.11 0-2.08-.402-2.599-1'],
+            '3d_assets' => ['label' => '3D Assets & Splats', 'tab' => '3d_assets', 'icon' => 'M17 8l4-4m0-4-4-4m4 4H7m6 4v1a3 3 0 01-3 3H6a3 3 0 01-3-3V7a3 3 0 013-3h4a3 3 0 013 3v1'],
+            'pool' => ['label' => 'Revenue Pool', 'tab' => 'pool', 'icon' => 'M12 8c-1.657 0-3 .895-3 2s1.343 2 3 2 3 .895 3 2-1.343 2-3 2m0-8c1.11 0 2.08.402 2.599 1M12 8V7m0 1v8m0 0v1m0-1c-1.11 0-2.08-.402-2.599-1'],
+            'pipelines' => ['label' => 'Pipeline Licensing', 'tab' => 'pipelines', 'icon' => 'M4 5a1 1 0 011-1h14a1 1 0 011 1v2a1 1 0 01-1 1H5a1 1 0 01-1-1V5zM4 13a1 1 0 011-1h6a1 1 0 011 1v6a1 1 0 01-1 1H5a1 1 0 01-1-1v-6zM16 13a1 1 0 011-1h2a1 1 0 011 1v6a1 1 0 01-1 1h-2a1 1 0 01-1-1v-6z'],
+            'experiences' => ['label' => 'Experiences', 'tab' => 'experiences', 'icon' => 'M9 20l-5.447-2.724A1 1 0 013 16.382V5.618a1 1 0 011.447-.894L9 7m0 13l6-3m-6 3V7m6 10l4.553 2.276A1 1 0 0021 18.382V7.618a1 1 0 00-.553-.894L15 4m0 13V4m0 0L9 7'],
+            'live_events' => ['label' => 'Live Events', 'tab' => 'live_events', 'icon' => 'M15 10l4.553-2.276A1 1 0 0121 8.618v6.764a1 1 0 01-1.447.894L15 14M5 18h8a2 2 0 002-2V8a2 2 0 00-2-2H5a2 2 0 00-2 2v8a2 2 0 002 2z'],
+            'users' => ['label' => 'User Management', 'tab' => 'users', 'icon' => 'M12 4.354a4 4 0 110 5.292M15 21H3v-1a6 6 0 0112 0v1zm0 0h6v-1a6 6 0 00-9-5.197'],
+            'venues' => ['label' => 'Venues', 'tab' => 'venues', 'icon' => 'M19 21V5a2 2 0 00-2-2H7a2 2 0 00-2 2v16m14 0h2m-2 0h-5m-9 0H3m2 0h5M9 7h1m-1 4h1m4-4h1m-1 4h1m-5 10v-5a1 1 0 011-1h2a1 1 0 011 1v5m-4 0h4'],
+            'exh_requests' => ['label' => 'Exhibitor Requests', 'tab' => 'exh_requests', 'icon' => 'M12 4.354a4 4 0 110 5.292M15 21H3v-1a6 6 0 0112 0v1zm0 0h6v-1a6 6 0 00-9-5.197'],
+            'hero_media' => ['label' => 'Hero Videos & Posters', 'tab' => 'hero_media', 'icon' => 'M15 10l4.553-2.276A1 1 0 0121 8.618v6.764a1 1 0 01-1.447.894L15 14M5 18h8a2 2 0 002-2V8a2 2 0 00-2-2H5a2 2 0 00-2 2v8a2 2 0 002 2z'],
+            'packages' => ['label' => 'Packages & Pricing', 'tab' => 'packages', 'icon' => 'M3 3h2l.4 2M7 13h10l4-8H5.4M7 13L5.4 5M7 13l-2.293 2.293c-.63.63-.184 1.707.707 1.707H17m0 0a2 2 0 100 4 2 2 0 000-4zm-8 2a2 2 0 11-4 0 2 2 0 014 0z'],
+            'analytics' => ['label' => 'Dashboard & KPIs', 'tab' => 'analytics', 'icon' => 'M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z'],
+            'integration' => ['label' => 'API & Webhooks', 'tab' => 'integration', 'icon' => 'M8 9l3 3-3 3m5 0h3M5 20h14a2 2 0 002-2V6a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z'],
+            'pipeline-creator' => ['label' => 'Pipeline Creator', 'tab' => 'pipeline-creator', 'icon' => 'M12 6v6m0 0v6m0-6h6m-6 0H6'],
+            'earnings' => ['label' => 'Earnings Ledger', 'tab' => 'earnings', 'icon' => 'M12 8c-1.657 0-3 .895-3 2s1.343 2 3 2 3 .895 3 2-1.343 2-3 2m0-8c1.11 0 2.08.402 2.599 1M12 8V7m0 1v8m0 0v1m0-1c-1.11 0-2.08-.402-2.599-1'],
+            'search-analytics' => ['label' => 'Search Analytics', 'tab' => 'search-analytics', 'icon' => 'M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z'],
+            'cache' => ['label' => 'Cache Management', 'tab' => 'cache', 'icon' => 'M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15'],
+            'licence-queue' => ['label' => 'Licence Queue', 'tab' => 'licence-queue', 'icon' => 'M9 12l2 2 4-4m5.618-4.016A11.955 11.955 0 0112 2.944a11.955 11.955 0 01-8.618 3.04A12.02 12.02 0 003 9c0 5.591 3.824 10.29 9 11.622 5.176-1.332 9-6.03 9-11.622 0-1.042-.133-2.052-.382-3.016z'],
+            'pipeline-settings' => ['label' => 'Pipeline Settings', 'tab' => 'pipeline-settings', 'icon' => 'M10.325 4.317c.426-1.756 2.924-1.756 3.35 0a1.724 1.724 0 002.573 1.066c1.543-.94 3.31.826 2.37 2.37a1.724 1.724 0 001.066 2.573c1.756.426 1.756 2.924 0 3.35a1.724 1.724 0 00-1.066 2.573c.94 1.543-.826 3.31-2.37 2.37a1.724 1.724 0 00-2.573 1.066c-.426 1.756-2.924 1.756-3.35 0a1.724 1.724 0 00-2.573-1.066c-1.543.94-3.31-.826-2.37-2.37a1.724 1.724 0 00-1.066-2.573c-1.756-.426-1.756-2.924 0-3.35a1.724 1.724 0 001.066-2.573c-.94-1.543.826-3.31 2.37-2.37.996.608 2.296.07 2.572-1.065z M15 12a3 3 0 11-6 0 3 3 0 016 0z'],
+        ];
+        // Build navItems in the grouped order, applying renamed labels.
+        foreach ($navGroups as $group => $items) {
+            foreach ($items as $k => $v) {
+                $tab = is_int($k) ? $v : $k;
+                if (isset($NAV_DEFS[$tab])) {
+                    $item = $NAV_DEFS[$tab];
+                    if (is_string($v)) $item['label'] = $v;
+                    $item['group'] = $group;
+                    $navItems[] = $item;
+                }
+            }
+        }
 
         $analytics = app(\App\Services\AnalyticsService::class)->forKicc($stats);
 
@@ -256,11 +284,15 @@ class KiccAdminController extends Controller
         if ($plugin_filter) $pipelinesQuery->where('sector', $plugin_filter);
         if ($q_pipelines) $pipelinesQuery->where(fn($qq) => $qq->where('code', 'like', "%$q_pipelines%")->orWhere('slug', 'like', "%$q_pipelines%"));
         $pipelines = $pipelinesQuery->orderBy('sector')->orderBy('code')->paginate(100)->withQueryString();
-        $pipelineSectors = \Illuminate\Support\Facades\DB::table('pipeline_registrations')
-            ->selectRaw('sector, COUNT(*) as c')->groupBy('sector')->orderByDesc('c')->get();
-        $pipelineStatusBreakdown = \Illuminate\Support\Facades\DB::table('pipeline_registrations')
-            ->selectRaw('status, COUNT(*) as c')->groupBy('status')->orderByDesc('c')->get();
-        $pipelineTotal = \Illuminate\Support\Facades\DB::table('pipeline_registrations')->count();
+        // Aggregates cached — unindexed GROUP BY scans over TiDB were timing out (502).
+        $pipelineSectors = \Illuminate\Support\Facades\Cache::remember('kicc_admin_pipeline_sectors', 300,
+            fn() => \Illuminate\Support\Facades\DB::table('pipeline_registrations')
+                ->selectRaw('sector, COUNT(*) as c')->groupBy('sector')->orderByDesc('c')->get());
+        $pipelineStatusBreakdown = \Illuminate\Support\Facades\Cache::remember('kicc_admin_pipeline_status', 300,
+            fn() => \Illuminate\Support\Facades\DB::table('pipeline_registrations')
+                ->selectRaw('status, COUNT(*) as c')->groupBy('status')->orderByDesc('c')->get());
+        $pipelineTotal = \Illuminate\Support\Facades\Cache::remember('kicc_admin_pipeline_total', 300,
+            fn() => \Illuminate\Support\Facades\DB::table('pipeline_registrations')->count());
 
         // ── Integration tab (real-time data, no cache) ──
         $integrationHealth = [];
