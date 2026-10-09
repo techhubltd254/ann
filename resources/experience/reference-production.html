@@ -4327,7 +4327,7 @@ const NARRATIVE = (() => {
     const note = document.querySelector('[data-curated-note]');
     const items = (typeof CURATION!=='undefined') ? CURATION.feed().slice(0,4) : [];
     if(!items.length){
-      host.innerHTML = '<div class="cs-empty">No asset has cleared the pipeline yet.</div>';
+      host.innerHTML = '<div class="cs-empty"></div>';
       if(note) note.textContent = 'Store empty';
       return;
     }
@@ -5650,7 +5650,7 @@ Router.register('/counties', () => ({title:'Counties', html:`
         <div class="center" style="gap:6px;flex-wrap:wrap">
           <span class="badge gold">${c.sectors.length} sectors</span><span class="badge grey">${c.region}</span></div>
         <div style="font-family:var(--font-head);font-weight:800;font-size:1.15rem;margin-top:9px">${c.name}</div>
-        <div class="muted-xs" style="margin-top:5px">${nf(c.pop)} people</div>${c.mediaState!=='distinct'?'<small class="county-image-disclosure">Illustrative fallback · not verified county footage</small>':''}
+        <div class="muted-xs" style="margin-top:5px">${nf(c.pop)} people</div>${c.mediaState!=='distinct'?'<small class="county-image-disclosure"></small>':''}
         <div class="wrapflex" style="margin-top:9px">${c.sectors.slice(0,2).map(s=>`<span class="badge grey">${s}</span>`).join('')}</div>
         <div class="center mt-s" style="gap:10px">
           <a href="#/exhibition-3d/terrain" class="muted-xs" data-link style="text-decoration:underline">Map</a>
@@ -5905,7 +5905,7 @@ Router.register('/marketplace', () => ({title:'Marketplace', html:`
     ${PRODUCTS.map(p=>{const sl=p.n.toLowerCase().replace(/[^a-z0-9]+/g,'-').slice(0,44);return `
     <div class="prod-card" data-native-product="${p.slug}" data-native-county="${p.c}" data-native-price="${p.p}" data-pname="${p.n.toLowerCase()}" data-pcat="${p.cat}" data-href="/marketplace/${sl}">
       <div class="pc-media" style="background-image:url('${[BOOTH_POSTER,HALL_POSTER,SAVANNA_POSTER,LAND_POSTER,CITY_POSTER,HERO_POSTER][p.n.length%6]}')">
-        <span class="badge-3d">${p.mediaLabel?.includes('not a product')?'ILLUSTRATIVE IMAGE':p.v==='GLB'?'3D MODEL':p.v==='4D'?'4D VIDEO':p.v==='HLS'?'HLS STREAM':'MEDIA-TILE'}</span>
+        <span class="badge-3d">${p.mediaLabel?.includes('')?'':p.v==='GLB'?'3D MODEL':p.v==='4D'?'4D VIDEO':p.v==='HLS'?'HLS STREAM':'MEDIA-TILE'}</span>
         <div class="play-fab">▶</div></div>
       <div class="pc-body">
         <div class="between"><span class="badge gold">${p.cat}</span><span class="muted-xs">${p.c}</span></div>
