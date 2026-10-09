@@ -95,6 +95,7 @@ class AppServiceProvider extends ServiceProvider
         // Behind the Cloudflare edge: always generate https URLs (origin speaks HTTP).
         if ($this->app->environment('production')) {
             URL::forceScheme('https');
+            URL::forceRootUrl(config('app.url'));
         }
 
         // Must live here, NOT in routes/api.php — with route:cache the route files
