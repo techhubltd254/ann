@@ -12,7 +12,7 @@
     <div class="w-full max-w-md">
         <div class="text-center mb-4">
             <div class="w-14 h-14 mx-auto rounded-xl bg-gradient-to-br from-amber-400 to-yellow-500 flex items-center justify-center mb-3 shadow-lg shadow-amber-500/20">
-                <span class="text-2xl font-black text-[#0B0B0B]">K</span>
+                <img src="{{ asset('kicc-logo.png') }}" alt="KICC" class="h-10 w-10 object-contain">
             </div>
         </div>
 

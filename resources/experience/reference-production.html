@@ -5,7 +5,7 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>KICC — Kenya's National Exhibition Platform</title>
 <meta name="description" content="The Kenyatta International Convention Centre. Forty-seven counties, one stage — a curated, video-native platform for Kenya's national exhibition infrastructure.">
-<meta name="theme-color" content="#F7F0E3">
+<meta name="theme-color" content="#F7F0E3"><link rel="icon" type="image/png" sizes="32x32" href="/favicon-32.png"><link rel="icon" type="image/png" sizes="16x16" href="/favicon-16.png"><link rel="apple-touch-icon" href="/apple-touch-icon.png"><link rel="shortcut icon" href="/favicon.ico">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,200;0,9..144,300;0,9..144,400;0,9..144,500;1,9..144,300;1,9..144,400&family=Inter+Tight:wght@300;400;450;500&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
@@ -3056,7 +3056,8 @@ html[data-theme] .tm-gallery :is(.tm-copy p,.tm-note){color:var(--ui-muted)!impo
 <header class="nav" id="nav">
   <div class="nav-inner">
     <a href="#/" class="logo" data-link>
-      <img src="/kicclogo.png" alt="KICC" class="logo-img" style="max-height:36px;width:auto;object-fit:contain">
+      <span class="mark" style="background:transparent;box-shadow:none"><img src="/kicc-logo.png" alt="KICC" style="width:34px;height:34px;object-fit:contain;display:block"></span>
+      <span>KICC<small>National Exhibition Platform</small></span>
     </a>
     <nav class="nav-links" id="navLinks">
       <a href="#/" data-link data-nav="/">Home</a>
@@ -3101,7 +3102,8 @@ html[data-theme] .tm-gallery :is(.tm-copy p,.tm-note){color:var(--ui-muted)!impo
     <div class="footer-grid">
       <div>
         <a href="#/" class="logo" data-link style="margin-bottom:16px">
-          <img src="/kicclogo.png" alt="KICC" class="logo-img" style="max-height:36px;width:auto;object-fit:contain">
+          <span class="mark" style="background:transparent;box-shadow:none"><img src="/kicc-logo.png" alt="KICC" style="width:34px;height:34px;object-fit:contain;display:block"></span>
+          <span>KICC<small>National Exhibition Platform</small></span>
         </a>
         <p class="muted-xs" style="max-width:330px;margin-top:16px">
           Africa's premier meeting venue and Kenya's national exhibition infrastructure.
@@ -3130,8 +3132,6 @@ html[data-theme] .tm-gallery :is(.tm-copy p,.tm-note){color:var(--ui-muted)!impo
       </div>
       <div>
         <h4>Platform</h4>
-        <a href="/portal/media-flow" data-link>Curation Studio</a>
-        <a href="/pipelines" data-link>Pipeline Registry</a>
         <a href="/operations" data-link>Operations</a>
         <a href="#/consent/physical" data-link>Consent &amp; DPA 2019</a>
         <a href="#/trade-agreements" data-link>Trade Agreements</a>
@@ -3331,7 +3331,6 @@ const STREAMS = [
  {n:"Creative & Digital Expo Replay",venue:"Tsavo Hall",status:"vod",viewers:0,q:"1080p"},
 ];
 
-/* ── PIPELINE REGISTRY (202 registered, sector filter) ── */
 const SECTORS = ["Agriculture","Manufacturing","Tourism","Blue Economy","Mining","Energy","ICT & Innovation","Financial Services","Logistics","Creative Economy","Livestock","Textiles"];
 const PIPELINES = Array.from({length:202},(_,i)=>({
   code:"KICC-PL-"+String(i+1).padStart(4,"0"),
@@ -3352,7 +3351,7 @@ const ADMIN_KPI = [
  {l:"Escrow Held",v:"KES 618.4M",d:"−4.1% MoM",up:0,sp:[700,682,671,660,644,630,624,618]},
  {l:"Selling Pool Balance",v:"KES 92.7M",d:"+9.6% MoM",up:1,sp:[58,61,68,71,79,84,88,93]},
  {l:"Live Streams Today",v:"5",d:"peak 9,880 CCV",up:1,sp:[2,3,4,6,5,7,8,5]},
- {l:"Certification Queue",v:"37",d:"",up:0,sp:[52,48,45,44,41,39,38,37]},
+ {l:"Certification Queue",v:"37",d:"awaiting review",up:0,sp:[52,48,45,44,41,39,38,37]},
 ];
 
 const NAV_ADMIN = [
@@ -3413,7 +3412,6 @@ const REPO = (()=>{
  const unavailable=()=>{throw Error('Use the authenticated Admin portal for server-side changes. No local preview changes are saved.');};
  return {list:(t,p=false)=>clone((db.tables[t]||[]).filter(r=>!p||r.status==='published')),snapshot:()=>clone(db),put:unavailable,del:unavailable,restore:unavailable,track:()=>{},seedContent:()=>{},slug:x=>String(x).toLowerCase().replace(/[^a-z0-9]+/g,'-').replace(/^-|-$/g,''),storageOK:true,audit:[]};
 })();
-/* Uploaded binaries live in IndexedDB, never localStorage. Backend hosting is not connected. */
 const ASSETS={store:async()=>{throw Error('Upload through the authenticated native Admin portal.');},url:async id=>'/experience/media/'+encodeURIComponent(id),remove:async()=>{throw Error('Delete through the authenticated native Admin portal.');}};
 </script>
 <script>
@@ -4101,27 +4099,7 @@ const SPLATVIEW = (() => {
      04 STORY       assign to a narrative chapter, derive alt text + rights
      05 PUBLISH     emit the record the public site renders from
 
-   ── INTEGRATION NOTE ────────────────────────────────────────────────────
-    is the only stage that needs a model. `VISION.infer()` below is a
-   DETERMINISTIC MOCK — it is seeded from the filename so results are stable
-   across reloads, but it does not look at a single pixel. Replace the body of
-   `VISION.infer` with a real call and everything downstream keeps working:
 
-     async function infer(asset){
-       const b64 = await toBase64(asset.thumb);
-       const r = await fetch('/api/vision/analyse', {        // your Laravel route
-         method:'POST', headers:{'Content-Type':'application/json'},
-         body: JSON.stringify({ image:b64, schema:VISION_SCHEMA })
-       });
-       return VISION.validate(await r.json());               // keep the shape
-     }
-
-   Any provider works (Gemini Vision, Claude, GPT-4V, a local LLaVA). What
-   matters is the RETURN SHAPE, because stages 03–05 depend on it:
-     { caption, tags[], quality{score,sharpness,exposure,composition},
-       people{count,minors}, text{detected,content}, heroFrame, focal{x,y},
-       suggestedChapter, alt, rights{modelRelease,locationRelease} }
-   ============================================================================ */
 const CURATION = (() => {
 
   /* ── the five stages, as displayed in the admin studio ───────────────── */
@@ -4138,10 +4116,9 @@ const CURATION = (() => {
   const pick=(r,a)=>a[Math.floor(r()*a.length)%a.length];
   const int=(r,a,b)=>a+Math.floor(r()*(b-a+1));
 
-  /* ── 02 · VISION — MOCK. Replace with a real provider call. ──────────── */
   const VISION = {
     model:'mock-vision-v0',
-    live:false,                       // flipped true only when a real key is wired
+    live:false,
     schema:{caption:'string',tags:'string[]',quality:'object',heroFrame:'int',focal:'{x,y}',chapter:'string'},
     infer(asset){
       const r = seed(asset.file||asset.id||'asset');
@@ -4228,7 +4205,7 @@ const CURATION = (() => {
     return {...a,
       state: a.held ? 'held' : 'published',
       reason: a.held
-        ? (a.quality.score<70 ? 'Quality score below 70 — '
+        ? (a.quality.score<70 ? 'Quality score below 70 — held for review'
                               : 'Minors detected without a model release — held')
         : 'Cleared for public render' };
   }
@@ -4325,7 +4302,7 @@ const NARRATIVE = (() => {
     const note = document.querySelector('[data-curated-note]');
     const items = (typeof CURATION!=='undefined') ? CURATION.feed().slice(0,4) : [];
     if(!items.length){
-      host.innerHTML = '<div class="cs-empty"></div>';
+      host.innerHTML = '<div class="cs-empty">No asset has cleared the pipeline yet.</div>';
       if(note) note.textContent = 'Store empty';
       return;
     }
@@ -4340,7 +4317,7 @@ const NARRATIVE = (() => {
       </div>`).join('');
     if(note){
       const s = CURATION.stats();
-      note.textContent = `${s.published} published · ${s.held}  ·  ${s.avg} · ${s.chapters} chapters fed · `;
+      note.textContent = `${s.published} published · ${s.held} held for review · mean quality ${s.avg} · ${s.chapters} chapters fed · stage 02 marked mock`;
     }
   }
 
@@ -5449,6 +5426,31 @@ Router.register('/', () => {
     </a>
 </section>
 
+<!-- ══ FROM THE ARCHIVE — output of the curation pipeline ══ -->
+<section class="ed-interlude ed-flat" data-lean="soft" id="chapter-archive">
+  <div class="ed-bridge at-bottom" aria-hidden="true"></div>
+  <div class="wrap">
+    <div class="ed-grid">
+      <div class="ed-col-4">
+        <div class="ed-chapter-num" data-reveal>Interlude &mdash; From the archive</div>
+        <h3 style="margin-top:18px;max-width:22ch" data-reveal>No image reaches this page unfiltered.</h3>
+        <p class="muted-xs" style="margin-top:16px;max-width:46ch">
+          Editorial imagery retained from the approved reference. The curation scores below are illustrative, not evidence of executed production pipelines.
+        </p>
+      </div>
+      <div class="ed-col-8">
+        <div class="ed-curated" data-curated data-reveal></div>
+        <div class="ed-ledger-note" data-curated-note></div>
+      </div>
+    </div>
+  </div>
+
+    <a class="ed-handoff" href="#chapter-halls" data-scroll="halls" data-reveal>
+      <span class="n">02</span><span class="t">The Halls</span>
+      <span class="ln"></span><span class="s">Next</span><span class="ar">&#8595;</span>
+    </a>
+</section>
+
 <!-- ══ 02 · THE HALLS ══ -->
 <section class="ed-chapter ed-plate" data-lean="deep" id="chapter-halls">
   <div class="ed-bridge at-bottom" aria-hidden="true"></div>
@@ -5623,7 +5625,7 @@ Router.register('/counties', () => ({title:'Counties', html:`
         <div class="center" style="gap:6px;flex-wrap:wrap">
           <span class="badge gold">${c.sectors.length} sectors</span><span class="badge grey">${c.region}</span></div>
         <div style="font-family:var(--font-head);font-weight:800;font-size:1.15rem;margin-top:9px">${c.name}</div>
-        <div class="muted-xs" style="margin-top:5px">${nf(c.pop)} people</div>${c.mediaState!=='distinct'?'<small class="county-image-disclosure"></small>':''}
+        <div class="muted-xs" style="margin-top:5px">${nf(c.pop)} people</div>${c.mediaState!=='distinct'?'<small class="county-image-disclosure">Illustrative fallback · not verified county footage</small>':''}
         <div class="wrapflex" style="margin-top:9px">${c.sectors.slice(0,2).map(s=>`<span class="badge grey">${s}</span>`).join('')}</div>
         <div class="center mt-s" style="gap:10px">
           <a href="#/exhibition-3d/terrain" class="muted-xs" data-link style="text-decoration:underline">Map</a>
@@ -5866,7 +5868,7 @@ Router.register('/marketplace', () => ({title:'Marketplace', html:`
       <select id="productCounty" class="input" style="max-width:200px"><option>All counties</option>${COUNTIES.map(c=>`<option>${c.name}</option>`).join('')}</select>
       <select id="productSort" class="input" style="max-width:200px"><option>Sort: Featured</option><option>Price: low → high</option><option>Price: high → low</option><option>Rating</option></select>
     </div>
-    <div class="muted-xs"><span id="prodCount">${PRODUCTS.length}</span> products</div>
+    <div class="muted-xs"><span id="prodCount">${PRODUCTS.length}</span> products · 3.1% pipeline fee applies</div>
   </div>
   <div class="wrapflex mt">
     ${['All',...new Set(PRODUCTS.map(p=>p.cat))].map((x,i)=>
@@ -5878,7 +5880,7 @@ Router.register('/marketplace', () => ({title:'Marketplace', html:`
     ${PRODUCTS.map(p=>{const sl=p.n.toLowerCase().replace(/[^a-z0-9]+/g,'-').slice(0,44);return `
     <div class="prod-card" data-native-product="${p.slug}" data-native-county="${p.c}" data-native-price="${p.p}" data-pname="${p.n.toLowerCase()}" data-pcat="${p.cat}" data-href="/marketplace/${sl}">
       <div class="pc-media" style="background-image:url('${[BOOTH_POSTER,HALL_POSTER,SAVANNA_POSTER,LAND_POSTER,CITY_POSTER,HERO_POSTER][p.n.length%6]}')">
-        <span class="badge-3d">${p.mediaLabel?.includes('')?'':p.v==='GLB'?'3D MODEL':p.v==='4D'?'4D VIDEO':p.v==='HLS'?'HLS STREAM':'MEDIA-TILE'}</span>
+        <span class="badge-3d">${p.mediaLabel?.includes('not a product')?'ILLUSTRATIVE IMAGE':p.v==='GLB'?'3D MODEL':p.v==='4D'?'4D VIDEO':p.v==='HLS'?'HLS STREAM':'MEDIA-TILE'}</span>
         <div class="play-fab">▶</div></div>
       <div class="pc-body">
         <div class="between"><span class="badge gold">${p.cat}</span><span class="muted-xs">${p.c}</span></div>
@@ -5896,7 +5898,7 @@ Router.register('/marketplace', () => ({title:'Marketplace', html:`
         <div>
           <div class="fee-row"><span class="muted">Producer net</span><span>KES 100,000.00</span></div>
           <div class="fee-row"><span class="muted">County pipeline (0.80%)</span><span>KES 800.00</span></div>
-          <div class="fee-row"><span class="muted"></span><span>KES 1,200.00</span></div>
+          <div class="fee-row"><span class="muted">Institution pipeline (1.20%)</span><span>KES 1,200.00</span></div>
           <div class="fee-row"><span class="muted">National pool (0.60%)</span><span>KES 600.00</span></div>
           <div class="fee-row"><span class="muted">KICC platform (0.40%)</span><span>KES 400.00</span></div>
           <div class="fee-total"><span>Buyer pays</span><span class="gold">KES 103,000.00</span></div>
@@ -5954,7 +5956,7 @@ Router.register('/marketplace', (rest) => {
       <h1 style="font-size:clamp(1.5rem,2.8vw,2.2rem);margin-top:14px">${p.n}</h1>
       <div class="mt-s">${T.stars(p.r)} <span class="muted-xs">(${p.rv} reviews)</span></div>
       <div class="mt" style="font-family:var(--font-head);font-weight:900;font-size:2.4rem;color:var(--au-ink)">KES ${nf(p.p)}</div>
-      <div class="muted-xs">${p.unit} · </div>
+      <div class="muted-xs">${p.unit} · excl. 3.1% pipeline fee</div>
       <div class="glass-card pad mt">
         <div class="fee-row"><span class="muted">Minimum order</span><span>${p.moq || "Enquire with producer"}</span></div>
         <div class="fee-row"><span class="muted">Lead time</span><span>Enquire with producer</span></div>
@@ -6427,7 +6429,7 @@ Router.register('/travel', (rest) => {
 <div class="wrap section-sm">
   <div class="glass-card pad-l" data-reveal style="max-width:760px;margin:0 auto">
     <div class="between" style="border-bottom:1px solid var(--glass-border);padding-bottom:20px">
-      <div class="logo"><img src="/kicclogo.png" alt="KICC" class="logo-img" style="max-height:36px;width:auto;object-fit:contain"></div>
+      <div class="logo"><span class="mark" style="background:transparent;box-shadow:none"><img src="/kicc-logo.png" alt="KICC" style="width:34px;height:34px;object-fit:contain;display:block"></span><span>KICC<small>National Exhibition Platform</small></span></div>
       <div style="text-align:right"><div class="eyebrow">Booking receipt</div>
         <div style="font-family:var(--font-head);font-weight:800;margin-top:4px">${ref}</div></div>
     </div>
@@ -6468,9 +6470,9 @@ Router.register('/login', () => ({title:'Sign In', html:`
 <div class="auth-stage">
   <div class="glass-card auth-card" data-reveal>
     <div class="text-center">
-      <div class="logo" style="justify-content:center"><img src="/kicclogo.png" alt="KICC" style="max-height:48px;width:auto;object-fit:contain"></div>
+      <div class="logo" style="justify-content:center"><span class="mark" style="background:transparent;box-shadow:none"><img src="/kicc-logo.png" alt="KICC" style="width:34px;height:34px;object-fit:contain;display:block"></span></div>
       <h2 style="margin-top:18px;font-size:1.6rem">Sign in to KICC</h2>
-      
+      <p class="muted-xs" style="margin-top:8px">Public sign-in. Glass card floats on a minimal shader (low intensity).</p>
     </div>
     <form class="mt-l" id="loginForm" autocomplete="on">
       <div class="field"><label for="li-id">Email or phone number</label>
@@ -6497,9 +6499,9 @@ Router.register('/register', () => ({title:'Create Account', html:`
 <div class="auth-stage">
   <div class="glass-card auth-card" data-reveal style="width:min(500px,96vw)">
     <div class="text-center">
-      <div class="logo" style="justify-content:center"><img src="/kicclogo.png" alt="KICC" style="max-height:48px;width:auto;object-fit:contain"></div>
+      <div class="logo" style="justify-content:center"><span class="mark" style="background:transparent;box-shadow:none"><img src="/kicc-logo.png" alt="KICC" style="width:34px;height:34px;object-fit:contain;display:block"></span></div>
       <h2 style="margin-top:16px;font-size:1.45rem">Create your account</h2>
-      
+      <p class="muted-xs" style="margin-top:8px">Multi-step horizontal carousel: email → 6-digit code → details. Each step slides from the right, the previous slides left (500ms, power2.inOut).</p>
     </div>
     <div class="steps mt-l"><i class="on"></i><i></i><i></i></div>
     <form id="regForm">
@@ -6534,7 +6536,7 @@ Router.register('/register', () => ({title:'Create Account', html:`
 Router.register('/forgot-password', () => ({title:'Forgot Password', html:`
 <div class="auth-stage">
   <div class="glass-card auth-card" data-reveal>
-    <div class="text-center"><div class="logo" style="justify-content:center"><img src="/kicclogo.png" alt="KICC" style="max-height:48px;width:auto;object-fit:contain"></div>
+    <div class="text-center"><div class="logo" style="justify-content:center"><span class="mark" style="background:transparent;box-shadow:none"><img src="/kicc-logo.png" alt="KICC" style="width:34px;height:34px;object-fit:contain;display:block"></span></div>
       <h2 style="margin-top:16px;font-size:1.4rem">Reset your password</h2>
       <p class="muted-xs" style="margin-top:8px">Enter the email on your account and we'll send a secure reset link.</p></div>
     <form class="mt-l" id="forgotForm">
@@ -6550,9 +6552,9 @@ Router.register('/forgot-password', () => ({title:'Forgot Password', html:`
 Router.register('/reset-password', () => ({title:'Set New Password', html:`
 <div class="auth-stage">
   <div class="glass-card auth-card" data-reveal>
-    <div class="text-center"><div class="logo" style="justify-content:center"><img src="/kicclogo.png" alt="KICC" style="max-height:48px;width:auto;object-fit:contain"></div>
+    <div class="text-center"><div class="logo" style="justify-content:center"><span class="mark" style="background:transparent;box-shadow:none"><img src="/kicc-logo.png" alt="KICC" style="width:34px;height:34px;object-fit:contain;display:block"></span></div>
       <h2 style="margin-top:16px;font-size:1.4rem">Set a new password</h2>
-      </div>
+      <p class="muted-xs" style="margin-top:8px">Token: <code style="color:var(--au-ink)">rps_8f31c0a7d4e6b921</code></p></div>
     <form class="mt-l" id="resetForm">
       <div class="field"><label>New password</label>
         <div class="pw-wrap"><input class="input" type="password" placeholder="Minimum 8 characters" required>
@@ -6902,7 +6904,7 @@ Router.register('/kicc-admin', (rest) => {
          ['Kwale Glassworks','Kwale','16','96','KES 4.2M',T.badge('active')]])}`,
     orders: `${P.table(['Reference','County','Items','Total','Escrow','Fulfilment'],
         SEED_ORDERS.map(o=>[`<code style="color:var(--au-ink);font-size:12px">${o[0]}</code>`,o[1],o[2],o[3],T.badge(o[4]),T.badge(o[5])]))}`,
-    providers: `<div class="eyebrow">Provider certification queue</div><h3 style="margin-top:8px">37 </h3>
+    providers: `<div class="eyebrow">Provider certification queue</div><h3 style="margin-top:8px">37 awaiting review</h3>
       <div class="mt-l">${P.table(['Provider','County','Documents','Submitted','Action'],
         [['Mombasa Handicraft Guild','Mombasa','KEBS · KRA · DPA','2 days ago',
           `<button class="btn gold xs" data-action="toast" data-msg="Provider approved — certificate issued">Approve</button> <button class="btn ghost xs" data-action="toast" data-msg="Provider denied — reason recorded">Deny</button>`],
@@ -6985,7 +6987,7 @@ Router.register('/kicc-admin', (rest) => {
           <div class="mt">${T.hls({img:HERO_POSTER,title:'Kenya National Trade Expo 2026',sub:'seedance-hero · landing/hero/poster/seedance-hero.webp',q:'1080p',start:28})}</div></div></div>`,
     packages: `<div class="between mb"><h3>Subscription plan editor</h3>
         <button class="btn gold sm" data-action="toast" data-msg="New subscription plan created">＋ New plan</button></div>
-      <div class="grid g4">${[['Bronze','KES 0','1 storefront · 10 products','pc-county'],
+      <div class="grid g4">${[['Bronze','KES 0','1 storefront · 10 products · 3.1% fee','pc-county'],
         ['Silver','KES 4,900 / mo','3 storefronts · 120 products · 2.4% fee','pc-nat'],
         ['Gold','KES 14,900 / mo','10 storefronts · 800 products · 1.8% fee','pc-kicc'],
         ['National','Custom','Unlimited · dedicated pipelines · 1.2% fee','pc-exh']].map(([t,p,f,c])=>
@@ -7774,7 +7776,7 @@ Router.register('/consent', (rest) => {
 <div class="wrap section-sm">
   <div class="glass-card pad-l" data-reveal style="max-width:720px;margin:0 auto">
     <div class="between" style="border-bottom:1px solid var(--glass-border);padding-bottom:18px">
-      <div class="logo"><img src="/kicclogo.png" alt="KICC" class="logo-img" style="max-height:36px;width:auto;object-fit:contain"></div>
+      <div class="logo"><span class="mark" style="background:transparent;box-shadow:none"><img src="/kicc-logo.png" alt="KICC" style="width:34px;height:34px;object-fit:contain;display:block"></span><span>KICC<small>National Exhibition Platform</small></span></div>
       <div class="eyebrow">Printable QR consent form</div></div>
     <h2 style="margin-top:22px;font-size:1.3rem">Data Protection Act 2019 &amp; GDPR Consent</h2>
     <p class="muted-xs" style="margin-top:12px">Scan the QR code below to open the digital consent form, or complete this printed copy and return it to the KICC registration desk.</p>
@@ -7804,7 +7806,7 @@ Router.register('/consent', (rest) => {
 <div class="wrap section-sm">
   <div class="glass-card pad-l" data-reveal style="max-width:760px;margin:0 auto">
     <div class="between" style="border-bottom:1px solid var(--glass-border);padding-bottom:18px">
-      <div class="logo"><img src="/kicclogo.png" alt="KICC" class="logo-img" style="max-height:36px;width:auto;object-fit:contain"></div>
+      <div class="logo"><span class="mark" style="background:transparent;box-shadow:none"><img src="/kicc-logo.png" alt="KICC" style="width:34px;height:34px;object-fit:contain;display:block"></span><span>KICC<small>National Exhibition Platform</small></span></div>
       <div style="text-align:right"><div class="eyebrow">Digital consent</div>
         <div class="muted-xs" style="margin-top:4px">${c.name} County</div></div></div>
     <h2 style="margin-top:22px;font-size:1.3rem">DPA 2019 &amp; GDPR Digital Consent</h2>
@@ -7999,7 +8001,7 @@ Router.register('/404', (rest,path) => ({title:'Not found', html:`
 
      ingest → vision → frame → story → publish
 
-    calls CURATION.VISION.infer(). In this build that is a DETERMINISTIC
+   Stage 02 calls CURATION.VISION.infer(). In this build that is a DETERMINISTIC
    MOCK — seeded from the filename so results are stable across reloads, but it
    does not look at a single pixel. The UI says so, on screen, in the mock bar.
    Swap in a real provider call (see parts/15.curation.js header) and every
@@ -8035,7 +8037,7 @@ const STUDIO = (() => {
   /* Plates are chosen by TAG AFFINITY against the caption's vocabulary, so a
      "savanna" caption never sits on a city skyline. This is affinity matching
      over the mock's own tags — not a vision call. It keeps the ledger coherent
-     while . */
+     while stage 02 is mocked. */
   const PLATE_RULES = [
     { on:['boardroom','interior','foyer','plenary','corporate','detail'],        i:0 },
     { on:['maker','marketplace','handicraft','agriculture','coffee','produce'],   i:1 },
@@ -8305,7 +8307,7 @@ Router.register('/studio', () => {
   </div>
 
   <div class="cs-mockbar" data-reveal>
-    <span class="ai-mock"> · mock</span>
+    <span class="ai-mock">Stage 02 · mock</span>
     <p>
       <b>Read this before you judge the captions.</b> The vision call is a deterministic
       mock — it is seeded from the filename, so the same file always produces the same
@@ -8707,7 +8709,7 @@ const PF = (() => {
         ['chapters', 'Minimum chapters fed', 'number', '3'],
         ['autopub', 'Publish automatically when it clears', 'toggle', 'on'],
       ],
-      action: ['Re-score experience library', 'Library re-scored — 6 published, 2 ,  87.'],
+      action: ['Re-score experience library', 'Library re-scored — 6 published, 2 held for review, mean quality 87.'],
     },
     live_events: {
       note: 'Stream health and failover for every live surface.',
@@ -9184,7 +9186,7 @@ const PUBLISH = (()=>{
  if(table==='audit')panel=`<h2>Change history</h2><p class="cms-public-copy">Local create, update, delete and publication events. This is not a security audit log.</p><table class="cms-table">${REPO.audit.map(r=>`<tr><td>${esc(r.time)}</td><td>${esc(r.action)}</td><td>${esc(r.table)}</td><td>${esc(r.id)}</td></tr>`).join('')||'<tr><td>No changes yet.</td></tr>'}</table>`;
  if(table==='analytics')panel='<div class="cms-notice">These counts measure page openings in this browser only—not visitors, revenue or production analytics.</div>'+panel;
  if(table==='settings')panel=`<h2>Data portability & appearance</h2><p class="cms-public-copy">Content and publication state persist in this browser. Media binaries remain in IndexedDB. JSON backups do not include those binaries. Keep original video files separately.</p><div class="wrapflex" style="margin:24px 0"><button class="btn gold" data-cms-export>Export JSON</button><label class="btn ghost">Import JSON<input type="file" accept="application/json,.json" data-cms-import style="width:180px"></label><button class="btn ghost" data-cms-system>Use system theme</button></div><div class="cms-notice">TiDB, object storage, authentication, transcoding and server jobs: NOT CONNECTED. No API keys are stored in this file.</div>`;
- return {title:'Publishing · '+labels[table],html:`<section class="cms-wrap" data-cms-root data-cms-table="${table}" data-cms-scope="${esc(scope?.id||'')}" data-cms-scope-type="${scope?.type||''}"><div class="eyebrow">KICC · publishing control room ${scopeText?'· '+esc(scopeText):''}</div><div class="cms-toolbar" style="margin-top:12px"><h1 style="font-size:clamp(30px,4vw,52px)">The public site starts here.</h1><a href="#/" class="btn ghost">View public site →</a></div><div class="cms-notice">Working local CMS preview · changes publish to this browser’s public site.  Legacy transaction and infrastructure panes remain demonstrations.</div><div class="cms-grid"><nav class="cms-nav" aria-label="Publishing modules">${navTables.map(t=>`<a href="#${base}/${t}" ${t===table?'aria-current="page"':''}>${labels[t]}</a>`).join('')}<a href="#/kicc-admin/experience-tiles/venues">Experience tiles · images / videos</a><a href="#${base}/overview">Legacy overview</a></nav><div class="cms-panel">${panel}<div class="cms-status" role="status" data-cms-status></div></div></div></section>`};
+ return {title:'Publishing · '+labels[table],html:`<section class="cms-wrap" data-cms-root data-cms-table="${table}" data-cms-scope="${esc(scope?.id||'')}" data-cms-scope-type="${scope?.type||''}"><div class="eyebrow">KICC · publishing control room ${scopeText?'· '+esc(scopeText):''}</div><div class="cms-toolbar" style="margin-top:12px"><h1 style="font-size:clamp(30px,4vw,52px)">The public site starts here.</h1><a href="#/" class="btn ghost">View public site →</a></div><div class="cms-notice">Working local CMS preview · changes publish to this browser’s public site. Not a hosted CMS, not authenticated, not synchronized between devices. Legacy transaction and infrastructure panes remain demonstrations.</div><div class="cms-grid"><nav class="cms-nav" aria-label="Publishing modules">${navTables.map(t=>`<a href="#${base}/${t}" ${t===table?'aria-current="page"':''}>${labels[t]}</a>`).join('')}<a href="#/kicc-admin/experience-tiles/venues">Experience tiles · images / videos</a><a href="#${base}/overview">Legacy overview</a></nav><div class="cms-panel">${panel}<div class="cms-status" role="status" data-cms-status></div></div></div></section>`};
  }
  function notify(msg){const s=document.querySelector('[data-cms-status]');if(s)s.textContent=msg;else if(typeof Toast==='function')Toast(msg)}
  function editor(table,id,scope){const old=REPO.list(table).find(r=>String(r.id)===id)||{};document.querySelector('#cmsEditor')?.remove();const d=document.createElement('dialog');d.id='cmsEditor';d.className='cms-dialog';
@@ -9251,17 +9253,17 @@ const TILEMEDIA=(()=>{
  const urlSafe=x=>{try{const u=new URL(x);return u.protocol==='https:'||u.protocol==='http:'?u.href:''}catch{return ''}};
  function route(table,r){return table==='venues'?'/venues/'+slug(r.name):'/marketplace/'+slug(r.n).slice(0,44)}
  function config(table,r){if(r.tileMedia)return r.tileMedia;if(table==='products'&&r.image)return {state:'published',kind:'image',url:urlSafe(r.image),alt:name(r)};if(table==='venues')return {state:'demo',kind:'image',url:typeof ED_IMG!=='undefined'?ED_IMG.hall:KICC.HALL_POSTER,alt:'Existing shared demonstration hall poster; not a photograph verified for this room.'};return {state:'empty'}}
- function label(c){return 'Media'}
+ function label(c){return c.state==='demo'?'Shared demo poster · replace in admin':c.state==='empty'?'Your film belongs here':c.state==='draft'?'Media awaiting publication':c.kind==='video'?'Venue / maker film':'Uploaded photograph'}
  function tile(table,r,i){const c=config(table,r);const title=name(r),href=route(table,r),meta=table==='venues'?r.type+' · '+r.area:r.cat+' · '+r.c+' County';return `<article class="tm-tile" data-tm-id="${esc(r.id)}" data-tm-table="${table}" aria-label="${esc(title)}"><div class="tm-window" data-tm-window><div class="tm-empty"><span class="tm-initial" aria-hidden="true">${esc(table==='venues'?String(i+1).padStart(2,'0'):r.c?.slice(0,2)||'KE')}</span><p data-tm-empty>${c.state==='empty'?'No media published. Add your own image or video in the admin.':c.state==='draft'?'This media is a draft. Publish it from the admin to show it here.':'Preparing preview…'}</p></div><span class="tm-badge" data-tm-badge>${esc(label(c))}</span>${c.state!=='empty'&&c.state!=='draft'?`<button class="tm-open-film" type="button" data-tm-open aria-label="${c.kind==='video'?'Watch':'View'} ${esc(title)}"><span aria-hidden="true">${c.kind==='video'?'▶':'↗'}</span><span>${c.kind==='video'?'Watch the experience':table==='venues'?'View the space':'View the product'}</span></button>`:''}</div><div class="tm-copy"><div><div class="tm-metadata">${String(i+1).padStart(2,'0')} / ${esc(meta)}</div><h3>${esc(title)}</h3><p>${esc(table==='venues'?r.desc||'':r.description||'Discover the product through the maker’s own film.')}</p></div><div><div class="tm-price">${table==='venues'?esc((r.rate||'').split(' / ')[0]):'KES '+Number(r.p).toLocaleString('en-KE')}</div>${table==='venues'?`<p>${Number(r.cap).toLocaleString('en-KE')} seats</p>`:''}<a href="#${esc(href)}">${table==='venues'?'Explore this venue':'Meet this product'} <span aria-hidden="true">→</span></a>${table==='venues'?'<p class="tm-terms">Confirm availability and rates with venue</p>':''}</div></div></article>`}
- function gallery(table,rows){if(!rows.length)return '<div class="tm-admin-disclosure">No '+esc(table)+' are currently published. Publish a listing in admin to restore this gallery.</div>';const modes=rows.map(r=>config(table,r)),note=modes.some(c=>c.state==='demo')?'':modes.some(c=>c.state==='empty'||c.state==='draft')?'':'';return `<div class="tm-gallery" data-tm-gallery data-tm-table="${table}"><div class="tm-toolbar"><div class="tm-counter" data-tm-counter>01 / ${String(rows.length).padStart(2,'0')}</div><div class="tm-transport"><button type="button" data-tm-prev aria-label="Previous ${table==='venues'?'venue':'product'}">←</button><button type="button" data-tm-next aria-label="Next ${table==='venues'?'venue':'product'}">→</button></div><span class="tm-mode">Swipe · choose · step inside</span></div><div class="tm-track" data-tm-track tabindex="0" aria-label="${table==='venues'?'Venue':'Maker'} experience gallery. Use arrow keys or swipe.">${rows.map((r,i)=>tile(table,r,i)).join('')}</div><p class="tm-note">${note} Every tile’s media can be uploaded, replaced, unpublished or deleted in Admin → Experience tiles. Deletion does not remove the listing.</p></div>`}
+ function gallery(table,rows){if(!rows.length)return '<div class="tm-admin-disclosure">No '+esc(table)+' are currently published. Publish a listing in admin to restore this gallery.</div>';const modes=rows.map(r=>config(table,r)),note=modes.some(c=>c.state==='demo')?'Existing shared demonstration posters are not room-specific.':modes.some(c=>c.state==='empty'||c.state==='draft')?'Some media slots are awaiting your published footage.':'Your published photographs and films are shown here.';return `<div class="tm-gallery" data-tm-gallery data-tm-table="${table}"><div class="tm-toolbar"><div class="tm-counter" data-tm-counter>01 / ${String(rows.length).padStart(2,'0')}</div><div class="tm-transport"><button type="button" data-tm-prev aria-label="Previous ${table==='venues'?'venue':'product'}">←</button><button type="button" data-tm-next aria-label="Next ${table==='venues'?'venue':'product'}">→</button></div><span class="tm-mode">Swipe · choose · step inside</span></div><div class="tm-track" data-tm-track tabindex="0" aria-label="${table==='venues'?'Venue':'Maker'} experience gallery. Use arrow keys or swipe.">${rows.map((r,i)=>tile(table,r,i)).join('')}</div><p class="tm-note">${note} Every tile’s media can be uploaded, replaced, unpublished or deleted in Admin → Experience tiles. Deletion does not remove the listing.</p></div>`}
  function cleanup(){epoch++;for(const f of cleanups)f();cleanups=[];for(const d of dialogs){d.close();d.remove()}dialogs.clear();states.clear()}
  async function resolve(c){return c.assetId?await ASSETS.url(c.assetId):urlSafe(c.url)}
  function mediaElement(c,u,preview=false){const e=document.createElement(c.kind==='video'?'video':'img');e.src=u;if(c.kind==='video'){e.muted=true;e.loop=!preview;e.playsInline=true;e.controls=preview;e.preload='metadata';if(c.posterUrl)e.poster=urlSafe(c.posterUrl)}else e.alt=c.alt||'Uploaded media';return e}
- function showPlayer(table,r){const c=config(table,r);if(['empty','draft'].includes(c.state))return;const d=document.createElement('dialog');d.className='tm-dialog tm-player';d.innerHTML=`<div class="cms-toolbar"><h2>${esc(name(r))}</h2><button type="button" class="btn ghost" data-tm-close>Close</button></div><div data-tm-player-host></div><p class="tm-player-note">${esc(c.description||c.alt||'')}${c.state==='demo'?' ':''}${c.format==='360'?' · 360° upload: flat playback only; not a spherical viewer.':''}</p><a class="btn gold" style="margin-top:15px" href="#${esc(route(table,r))}">${table==='venues'?'View venue details':'View product details'} →</a>`;document.body.append(d);dialogs.add(d);d.showModal();const close=()=>{d.querySelector('video')?.pause();d.close();d.remove();dialogs.delete(d)};d.querySelector('[data-tm-close]').onclick=close;d.addEventListener('cancel',close);d.addEventListener('click',e=>{if(e.target===d&&e.offsetY<0)close()});resolve(c).then(u=>{if(!d.isConnected)return;if(!u){d.querySelector('[data-tm-player-host]').textContent='Media is unavailable on this device. Re-upload in admin.';return}const el=mediaElement(c,u,true);if(c.kind==='video')el.muted=false;d.querySelector('[data-tm-player-host]').append(el);if(c.kind==='video')el.play().catch(()=>{})}).catch(()=>{d.querySelector('[data-tm-player-host]').textContent='Media cannot be opened.'});}
+ function showPlayer(table,r){const c=config(table,r);if(['empty','draft'].includes(c.state))return;const d=document.createElement('dialog');d.className='tm-dialog tm-player';d.innerHTML=`<div class="cms-toolbar"><h2>${esc(name(r))}</h2><button type="button" class="btn ghost" data-tm-close>Close</button></div><div data-tm-player-host></div><p class="tm-player-note">${esc(c.description||c.alt||'')}${c.state==='demo'?' Shared demonstration poster—not verified room-specific media.':''}${c.format==='360'?' · 360° upload: flat playback only; not a spherical viewer.':''}</p><a class="btn gold" style="margin-top:15px" href="#${esc(route(table,r))}">${table==='venues'?'View venue details':'View product details'} →</a>`;document.body.append(d);dialogs.add(d);d.showModal();const close=()=>{d.querySelector('video')?.pause();d.close();d.remove();dialogs.delete(d)};d.querySelector('[data-tm-close]').onclick=close;d.addEventListener('cancel',close);d.addEventListener('click',e=>{if(e.target===d&&e.offsetY<0)close()});resolve(c).then(u=>{if(!d.isConnected)return;if(!u){d.querySelector('[data-tm-player-host]').textContent='Media is unavailable on this device. Re-upload in admin.';return}const el=mediaElement(c,u,true);if(c.kind==='video')el.muted=false;d.querySelector('[data-tm-player-host]').append(el);if(c.kind==='video')el.play().catch(()=>{})}).catch(()=>{d.querySelector('[data-tm-player-host]').textContent='Media cannot be opened.'});}
  async function mountTile(tile,table,r,current){const c=config(table,r);if(c.state==='empty'||c.state==='draft')return;try{const u=await resolve(c);if(current!==epoch||!tile.isConnected)return;if(!u)throw Error('Missing media');const el=mediaElement(c,u);const window=tile.querySelector('[data-tm-window]');window.querySelector('.tm-empty')?.remove();window.prepend(el);const fail=()=>{el.remove();if(current!==epoch||!tile.isConnected)return;const p=document.createElement('div');p.className='tm-empty';p.innerHTML='<p>Media unavailable on this device. Replace it in admin.</p>';window.prepend(p);tile.querySelector('[data-tm-open]')?.remove()};el.onerror=fail;tile.querySelector('[data-tm-open]').onclick=()=>showPlayer(table,r);if(c.kind==='video'){const s={el,inView:false,focus:false,hover:false,manual:false,userPlay:false};states.set(tile,s);const control=()=>{if(!tile.isConnected)return;if(s.inView&&!s.manual&&!document.hidden&&(s.userPlay||(!s.focus&&!s.hover&&!reduced.matches)))el.play().catch(()=>{});else el.pause()};const observer=new IntersectionObserver(entries=>{s.inView=entries[0].isIntersecting;control()},{threshold:.65});observer.observe(tile);const vis=()=>control(),motion=()=>{if(reduced.matches){s.manual=true;s.userPlay=false;pause.textContent='Play preview';pause.setAttribute('aria-pressed','true')}control()};document.addEventListener('visibilitychange',vis);reduced.addEventListener('change',motion);tile.addEventListener('mouseenter',()=>{s.hover=true;control()});tile.addEventListener('mouseleave',()=>{s.hover=false;control()});tile.addEventListener('focusin',()=>{s.focus=true;control()});tile.addEventListener('focusout',e=>{s.focus=!!e.relatedTarget&&tile.contains(e.relatedTarget);control()});const pause=document.createElement('button');pause.className='tm-open-film';pause.style.cssText='left:auto;right:18px;bottom:auto;top:70px';pause.textContent='Pause preview';pause.setAttribute('aria-label','Pause or resume muted preview');pause.setAttribute('aria-pressed','false');pause.onclick=()=>{s.manual=!s.manual;s.userPlay=!s.manual;pause.textContent=s.manual?'Resume preview':'Pause preview';pause.setAttribute('aria-pressed',String(s.manual));control()};window.append(pause);if(reduced.matches){s.manual=true;pause.textContent='Play preview';pause.setAttribute('aria-pressed','true')}cleanups.push(()=>{observer.disconnect();document.removeEventListener('visibilitychange',vis);reduced.removeEventListener('change',motion);el.pause()});control()}}catch(e){if(tile.isConnected){tile.querySelector('[data-tm-empty]').textContent='Media is unavailable on this device. Re-upload in admin.';tile.querySelector('[data-tm-open]')?.remove()}}}
  function mountGallery(g){const table=g.dataset.tmTable,track=g.querySelector('[data-tm-track]'),tiles=[...track.children],rows=REPO.list(table,true);let index=0;const current=epoch;
  const step=delta=>{index=Math.max(0,Math.min(tiles.length-1,index+delta));track.scrollTo({left:tiles[index].offsetLeft-tiles[0].offsetLeft,behavior:reduced.matches?'instant':'smooth'})};g.querySelector('[data-tm-prev]').onclick=()=>step(-1);g.querySelector('[data-tm-next]').onclick=()=>step(1);track.onkeydown=e=>{if(e.target!==track)return;if(e.key==='ArrowRight'||e.key==='ArrowLeft'){e.preventDefault();step(e.key==='ArrowRight'?1:-1)}};track.onscroll=()=>{const left=track.scrollLeft;index=tiles.reduce((best,t,i)=>Math.abs((t.offsetLeft-tiles[0].offsetLeft)-left)<Math.abs((tiles[best].offsetLeft-tiles[0].offsetLeft)-left)?i:best,0);g.querySelector('[data-tm-counter]').textContent=String(index+1).padStart(2,'0')+' / '+String(tiles.length).padStart(2,'0');g.querySelector('[data-tm-prev]').disabled=index===0;g.querySelector('[data-tm-next]').disabled=index===tiles.length-1};track.onscroll();for(const t of tiles){const r=rows.find(r=>String(r.id)===t.dataset.tmId);if(r)mountTile(t,table,r,current)}}
- function admin(table='venues'){table=table==='products'?'products':'venues';const rows=REPO.list(table);return {title:'Experience tiles · '+table,html:`<section class="cms-wrap" data-tm-admin data-tm-table="${table}"><div class="eyebrow">Admin · film-first publishing</div><div class="cms-toolbar"><h1 style="font-size:clamp(30px,4vw,52px)">Every tile is yours.</h1><a class="btn ghost" href="#/">View public home →</a></div><div class="tm-admin-disclosure">Local preview. Images/videos persist in this browser’s IndexedDB; assignments persist in the local repository. No hosting, authentication, cloud upload or transcoding is connected. Keep original files: JSON backups do not contain media binaries. Accepted MOV/360° files are flat video previews when the browser supports their codec.</div><nav class="tm-admin-nav" aria-label="Tile media types"><a class="btn ${table==='venues'?'gold':'ghost'}" href="#/kicc-admin/experience-tiles/venues">Venue tiles</a><a class="btn ${table==='products'?'gold':'ghost'}" href="#/kicc-admin/experience-tiles/products">Product tiles</a><a class="btn ghost" href="#/kicc-admin/media">General media library</a><a class="btn ghost" href="#/kicc-admin/${table}">Edit listing data</a></nav><p class="cms-public-copy">The first six published ${table} appear in the home chapter. Deleting media leaves names, prices, capacities and listing records untouched. New uploads replace the assigned media; old unshared files are removed from IndexedDB after a successful save.</p><div role="status" aria-live="polite" data-tm-status></div>${rows.map(r=>{const c=config(table,r);return `<article class="tm-admin-record" data-tm-record="${esc(r.id)}"><div class="tm-admin-preview" data-tm-preview><span class="tm-admin-empty">${esc(label(c))}</span></div><div><h2>${esc(name(r))}</h2><div class="tm-admin-status">${esc(c.state)} · ${esc(c.fileName||c.kind||'no media')} · Listing: ${esc(r.status)}${c.format==='360'?' · flat 360° preview':''}</div><p class="cms-public-copy">${esc(c.description||'')}</p><div class="tm-admin-actions"><button type="button" class="btn gold" data-tm-upload="${esc(r.id)}">${c.state==='empty'?'Upload media':'Upload / replace'}</button>${!['empty','demo'].includes(c.state)?`<button type="button" class="btn ghost" data-tm-publish="${esc(r.id)}">${c.state==='published'?'Unpublish media':'Publish media'}</button>`:''}${c.state!=='empty'?`<button type="button" class="btn ghost" data-tm-delete="${esc(r.id)}">Delete ${'media'}</button>`:''}<a class="btn ghost" href="#${esc(route(table,r))}">Open listing →</a></div></div></article>`}).join('')}</section>`}}
+ function admin(table='venues'){table=table==='products'?'products':'venues';const rows=REPO.list(table);return {title:'Experience tiles · '+table,html:`<section class="cms-wrap" data-tm-admin data-tm-table="${table}"><div class="eyebrow">Admin · film-first publishing</div><div class="cms-toolbar"><h1 style="font-size:clamp(30px,4vw,52px)">Every tile is yours.</h1><a class="btn ghost" href="#/">View public home →</a></div><div class="tm-admin-disclosure">Working local preview only. Images/videos persist in this browser’s IndexedDB; assignments persist in the local repository. No hosting, authentication, cloud upload or transcoding is connected. Keep original files: JSON backups do not contain media binaries. Accepted MOV/360° files are flat video previews when the browser supports their codec.</div><nav class="tm-admin-nav" aria-label="Tile media types"><a class="btn ${table==='venues'?'gold':'ghost'}" href="#/kicc-admin/experience-tiles/venues">Venue tiles</a><a class="btn ${table==='products'?'gold':'ghost'}" href="#/kicc-admin/experience-tiles/products">Product tiles</a><a class="btn ghost" href="#/kicc-admin/media">General media library</a><a class="btn ghost" href="#/kicc-admin/${table}">Edit listing data</a></nav><p class="cms-public-copy">The first six published ${table} appear in the home chapter. Deleting media leaves names, prices, capacities and listing records untouched. New uploads replace the assigned media; old unshared files are removed from IndexedDB after a successful save.</p><div role="status" aria-live="polite" data-tm-status></div>${rows.map(r=>{const c=config(table,r);return `<article class="tm-admin-record" data-tm-record="${esc(r.id)}"><div class="tm-admin-preview" data-tm-preview><span class="tm-admin-empty">${esc(label(c))}</span></div><div><h2>${esc(name(r))}</h2><div class="tm-admin-status">${esc(c.state)} · ${esc(c.fileName||c.kind||'no media')} · Listing: ${esc(r.status)}${c.format==='360'?' · flat 360° preview':''}</div><p class="cms-public-copy">${esc(c.description||'Upload your own film, walkthrough or product photograph.')}</p><div class="tm-admin-actions"><button type="button" class="btn gold" data-tm-upload="${esc(r.id)}">${c.state==='empty'?'Upload media':'Upload / replace'}</button>${!['empty','demo'].includes(c.state)?`<button type="button" class="btn ghost" data-tm-publish="${esc(r.id)}">${c.state==='published'?'Unpublish media':'Publish media'}</button>`:''}${c.state!=='empty'?`<button type="button" class="btn ghost" data-tm-delete="${esc(r.id)}">Delete ${c.state==='demo'?'demo poster':'media'}</button>`:''}<a class="btn ghost" href="#${esc(route(table,r))}">Open listing →</a></div></div></article>`}).join('')}</section>`}}
  function status(msg){const s=document.querySelector('[data-tm-status]');if(s)s.textContent=msg}
  function referenced(assetId){return ['venues','products','media'].some(t=>REPO.list(t).some(r=>r.tileMedia?.assetId===assetId||r.assetId===assetId))}
  async function removeUnshared(id){if(id&&!referenced(id))await ASSETS.remove(id)}
@@ -9270,7 +9272,7 @@ const TILEMEDIA=(()=>{
  fileInput.onchange=()=>{const token=++probeToken;valid=false;save.disabled=true;if(preview)URL.revokeObjectURL(preview);previewHost.innerHTML='';const f=fileInput.files[0];if(!f)return;const kind=f.type.startsWith('image/')?'image':f.type.startsWith('video/')||/\.(mp4|webm|mov)$/i.test(f.name)?'video':'';if(!kind||f.size>250*1024*1024){notice.textContent='Choose a supported image/video under 250 MB.';return}preview=URL.createObjectURL(f);const e=mediaElement({kind,alt:'Upload preview'},preview,true);previewHost.append(e);notice.textContent='Checking browser playback…';const done=()=>{if(token!==probeToken)return;valid=true;save.disabled=false;notice.textContent='Preview ready. Add a description and save.'};e.addEventListener(kind==='image'?'load':'loadedmetadata',done,{once:true});e.addEventListener('error',()=>{if(token===probeToken){notice.textContent='This browser cannot decode the file. Use a supported codec or another image.';save.disabled=true}},{once:true})};
  d.querySelector('form').onsubmit=async e=>{e.preventDefault();if(!valid)return;save.disabled=true;fileInput.disabled=true;d.querySelectorAll('[data-tm-close]').forEach(b=>b.disabled=true);notice.textContent='Saving on this device…';let assetId='';try{const f=fileInput.files[0],data=new FormData(e.currentTarget),old=config(table,r);assetId=await ASSETS.store(f);const updated={...r,tileMedia:{state:String(data.get('state')),kind:f.type.startsWith('image/')?'image':'video',assetId,fileName:f.name,bytes:f.size,description:String(data.get('description')).trim(),alt:String(data.get('description')).trim(),format:String(data.get('format')),updatedAt:new Date().toISOString()}};REPO.put(table,updated);try{await removeUnshared(old.assetId)}catch{/* Assignment succeeded; do not roll back or delete its live blob. */}close();Router.render()}catch(err){if(assetId&&!referenced(assetId))await ASSETS.remove(assetId).catch(()=>{});notice.textContent=err.message;save.disabled=false;fileInput.disabled=false;d.querySelectorAll('[data-tm-close]').forEach(b=>b.disabled=false)}};
  }
- function confirmDelete(table,id){const r=REPO.list(table).find(r=>String(r.id)===id);if(!r)return;const c=config(table,r),d=document.createElement('dialog');d.className='tm-dialog';d.innerHTML=`<h2>Delete tile media?</h2><p style="margin:22px 0">Remove ${esc(c.fileName||'the current media')} from ${esc(name(r))}. The listing remains. </p><button class="btn gold" type="button" data-tm-confirm>Delete media</button> <button class="btn ghost" type="button" data-tm-cancel>Cancel</button><p role="status" data-tm-delete-status></p>`;document.body.append(d);dialogs.add(d);d.showModal();const close=()=>{d.close();d.remove();dialogs.delete(d)};d.querySelector('[data-tm-cancel]').onclick=close;d.addEventListener('cancel',close);d.querySelector('[data-tm-confirm]').onclick=async()=>{d.querySelectorAll('button').forEach(b=>b.disabled=true);try{REPO.put(table,{...r,tileMedia:{state:'empty',deletedAt:new Date().toISOString()}});try{await removeUnshared(c.assetId)}catch{status('Media detached. Local file cleanup needs another attempt.')}close();Router.render()}catch(err){d.querySelector('[data-tm-delete-status]').textContent=err.message;d.querySelectorAll('button').forEach(b=>b.disabled=false)}}}
+ function confirmDelete(table,id){const r=REPO.list(table).find(r=>String(r.id)===id);if(!r)return;const c=config(table,r),d=document.createElement('dialog');d.className='tm-dialog';d.innerHTML=`<h2>Delete tile media?</h2><p style="margin:22px 0">Remove ${esc(c.fileName||'the demonstration poster')} from ${esc(name(r))}. The listing remains. Deleted demo posters do not come back on refresh.</p><button class="btn gold" type="button" data-tm-confirm>Delete media</button> <button class="btn ghost" type="button" data-tm-cancel>Cancel</button><p role="status" data-tm-delete-status></p>`;document.body.append(d);dialogs.add(d);d.showModal();const close=()=>{d.close();d.remove();dialogs.delete(d)};d.querySelector('[data-tm-cancel]').onclick=close;d.addEventListener('cancel',close);d.querySelector('[data-tm-confirm]').onclick=async()=>{d.querySelectorAll('button').forEach(b=>b.disabled=true);try{REPO.put(table,{...r,tileMedia:{state:'empty',deletedAt:new Date().toISOString()}});try{await removeUnshared(c.assetId)}catch{status('Media detached. Local file cleanup needs another attempt.')}close();Router.render()}catch(err){d.querySelector('[data-tm-delete-status]').textContent=err.message;d.querySelectorAll('button').forEach(b=>b.disabled=false)}}}
  function mountAdmin(root){const table=root.dataset.tmTable;root.querySelectorAll('[data-tm-upload]').forEach(b=>b.onclick=()=>uploadDialog(table,b.dataset.tmUpload));root.querySelectorAll('[data-tm-delete]').forEach(b=>b.onclick=()=>confirmDelete(table,b.dataset.tmDelete));root.querySelectorAll('[data-tm-publish]').forEach(b=>b.onclick=()=>{const r=REPO.list(table).find(r=>String(r.id)===b.dataset.tmPublish);try{REPO.put(table,{...r,tileMedia:{...r.tileMedia,state:r.tileMedia.state==='published'?'draft':'published'}});Router.render()}catch(e){status(e.message)}});const current=epoch;root.querySelectorAll('[data-tm-record]').forEach(async el=>{const r=REPO.list(table).find(r=>String(r.id)===el.dataset.tmRecord),c=config(table,r);if(['empty'].includes(c.state))return;try{const u=await resolve(c);if(!u||current!==epoch||!el.isConnected)return;el.querySelector('[data-tm-preview]').replaceChildren(mediaElement(c,u,true))}catch{/* Retain labelled empty preview. */}})}
  function refresh(){cleanup();document.querySelectorAll('[data-tm-gallery]').forEach(mountGallery);document.querySelectorAll('[data-tm-admin]').forEach(mountAdmin)}
  const mother=Router.PAGES['/kicc-admin'];Router.PAGES['/kicc-admin']=(rest,path)=>rest[0]==='experience-tiles'?admin(rest[1]):mother(rest,path);
@@ -9565,7 +9567,7 @@ function PAGE_EVENTS(path){
   }
 }
 
-/* . */
+/* Native DTOs replace all public demonstration records before first paint. */
 
 /* ══ BOOT ══ */
 (function nativeProductFilters(){

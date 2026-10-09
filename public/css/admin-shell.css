@@ -81,3 +81,14 @@ body.admin-shell ::selection{background:var(--as-yellow);color:var(--as-black)}
 .as-eyebrow{font:700 9.5px var(--as-mono);letter-spacing:.24em;text-transform:uppercase;color:var(--as-accent)}
 .as-section-head h2{font:700 18px var(--as-serif);margin:0}
 .admin-control-link{border-radius:12px}
+.as-mark-logo{background:transparent;box-shadow:none;padding:0;overflow:hidden}.as-mark-logo img{width:100%;height:100%;object-fit:contain}
+
+/* Collapsible Department×Function sidebar groups */
+.sidebar-group{margin-bottom:4px}
+.sidebar-group-header{display:flex;justify-content:space-between;align-items:center;width:100%;padding:10px 12px;border:none;background:none;color:var(--as-muted);font:700 10px var(--as-mono);letter-spacing:.2em;text-transform:uppercase;cursor:pointer;border-radius:10px}
+.sidebar-group-header:hover{color:var(--as-ink);background:var(--as-raised)}
+.sidebar-group-header:focus-visible{outline:2px solid var(--as-accent);outline-offset:1px}
+.sidebar-group-items{display:flex;flex-direction:column;gap:2px;padding-bottom:6px}
+[x-cloak]{display:none!important}
+/* logo fit guard — never stretch, never overflow */
+img[alt="KICC"]{object-fit:contain;max-width:100%;height:auto}

@@ -1,5 +1,5 @@
 <!doctype html>
-<html lang="en" data-theme="dark"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><meta name="csrf-token" content="{{ csrf_token() }}"><title>@yield('title','KICC Admin')</title>
+<html lang="en" data-theme="dark"><head><meta charset="utf-8"><link rel="icon" type="image/png" sizes="32x32" href="{{ asset('favicon-32.png') }}"><link rel="icon" type="image/png" sizes="16x16" href="{{ asset('favicon-16.png') }}"><link rel="apple-touch-icon" href="{{ asset('apple-touch-icon.png') }}"><link rel="shortcut icon" href="{{ asset('favicon.ico') }}"><meta name="viewport" content="width=device-width,initial-scale=1"><meta name="csrf-token" content="{{ csrf_token() }}"><title>@yield('title','KICC Admin')</title>
 <script>(()=>{let t='dark';try{t=localStorage.getItem('kicc.theme')||'dark'}catch(e){}document.documentElement.dataset.theme=t;document.documentElement.style.colorScheme=t;})();</script>
 <link href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,300;0,9..144,400;0,9..144,500;1,9..144,400&family=Inter+Tight:wght@300;400;500;600;700&family=JetBrains+Mono:wght@400;500;700&display=swap" rel="stylesheet">
 <link rel="stylesheet" href="/css/admin-shell.css?v=admin-shell-v2">
@@ -7,7 +7,7 @@
 @stack('styles')</head>
 <body class="admin-shell">
 <aside class="as-side">
- <a class="as-brand" href="{{ route('admin.portal') }}"><span class="as-mark">K</span><span><strong>KICC Admin</strong><small>National Platform</small></span></a>
+ <a class="as-brand" href="{{ route('admin.portal') }}"><span class="as-mark as-mark-logo"><img src="/kicc-logo.png" alt="KICC"></span><span><strong>KICC Admin</strong><small>National Platform</small></span></a>
  <div class="as-nav-label">Manage</div>
  <nav class="as-nav">
   <a href="{{ route('admin.portal') }}"><span class="ic">▦</span>Dashboard</a>

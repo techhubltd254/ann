@@ -16,7 +16,7 @@
 @endphp
 <div class="rounded-lg bg-white/5 border border-white/10 p-3" data-pipeline-fee-breakdown>
     <div class="flex items-center gap-2 mb-2">
-        <div class="w-6 h-6 rounded-md bg-gradient-to-br from-rose-500 to-amber-500 flex items-center justify-center text-white font-bold text-[9px]">K</div>
+        <div class="w-6 h-6 rounded-md bg-white flex items-center justify-center p-0.5"><img src="{{ asset('kicc-logo.png') }}" alt="KICC" class="w-full h-full object-contain"></div>
         <div class="text-xs text-white font-semibold">Pipeline fee breakdown</div>
         <span class="ml-auto text-[9px] font-mono text-zinc-500">{{ $pipelineCode }}</span>
     </div>

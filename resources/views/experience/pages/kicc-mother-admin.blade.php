@@ -16,15 +16,34 @@
             </div>
         </div>
         <div class="flex-1 px-3 py-4 space-y-6 scrollbar-hide">
-            @foreach($navItems as $item)
-            <div class="space-y-1">
-                <a href="{{ route('kicc.admin', ['tab' => $item['tab']]) }}"
-                   class="sidebar-link"
-                   :class="tab === '{{ $item['tab'] }}' ? 'sidebar-link-active' : 'sidebar-link-inactive'">
-                    <svg class="w-4 h-4 shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="{{ $item['icon'] }}"/></svg>
-                    <span>{{ $item['label'] }}</span>
-                </a>
-            </div>
+@php
+                $groupedNav = [];
+                foreach($navItems as $ni){ $groupedNav[$ni['group'] ?? 'Dashboard'][] = $ni; }
+                $groupOrder = ['Dashboard','Content','Commerce','Operations','People','Analytics','Settings'];
+                $activeItem = collect($navItems)->firstWhere('tab', $tab ?? 'overview');
+                $activeGroup = $activeItem['group'] ?? 'Dashboard';
+            @endphp
+            @foreach($groupOrder as $groupName)
+                @if(isset($groupedNav[$groupName]))
+                <div class="sidebar-group" x-data="{ open: {{ ($groupName === $activeGroup || $groupName === 'Dashboard') ? 'true' : 'false' }} }">
+                    @if($groupName !== 'Dashboard')
+                    <button type="button" @click="open = !open" class="sidebar-group-header" :aria-expanded="open.toString()">
+                        <span>{{ $groupName }}</span>
+                        <svg class="w-3.5 h-3.5 transition-transform" :class="open ? 'rotate-90' : ''" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"/></svg>
+                    </button>
+                    @endif
+                    <div @if($groupName !== 'Dashboard') x-show="open" x-cloak @endif class="sidebar-group-items">
+                    @foreach($groupedNav[$groupName] as $item)
+                    <a href="{{ route('kicc.admin', ['tab' => $item['tab']]) }}"
+                       class="sidebar-link"
+                       :class="tab === '{{ $item['tab'] }}' ? 'sidebar-link-active' : 'sidebar-link-inactive'">
+                        <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="{{ $item['icon'] }}"/></svg>
+                        <span>{{ $item['label'] }}</span>
+                    </a>
+                    @endforeach
+                    </div>
+                </div>
+                @endif
             @endforeach
             <div class="px-3 pt-4 border-t border-white/5 space-y-1">
                 <a class="sidebar-link" href="{{ route('experience.images.index') }}">Images · replace / delete</a>
@@ -49,7 +68,7 @@
                 @endif
                 <div class="flex items-center gap-2.5">
                     <div class="text-xs text-zinc-200 font-medium">{{ Auth::user()?->name ?? 'Admin' }}</div>
-                    <div class="w-8 h-8 rounded-xl bg-gradient-to-br from-red-500 to-rose-600 flex items-center justify-center text-white font-bold text-xs">K</div>
+                    <div class="w-8 h-8 rounded-xl bg-white flex items-center justify-center p-1"><img src="{{ asset('kicc-logo.png') }}" alt="KICC" class="w-full h-full object-contain"></div>
                 </div>
             </div>
         </header>
@@ -162,7 +181,7 @@
             <div class="grid grid-cols-1 lg:grid-cols-2 gap-6 mb-6">
                 <div class="glass-card rounded-2xl p-6 border-2 border-rose-500/30">
                     <div class="flex items-center gap-3 mb-3">
-                        <div class="w-12 h-12 rounded-xl bg-gradient-to-br from-rose-500 to-rose-600 flex items-center justify-center text-white font-bold text-sm">K</div>
+                        <div class="w-12 h-12 rounded-xl bg-white flex items-center justify-center p-1.5"><img src="{{ asset('kicc-logo.png') }}" alt="KICC" class="w-full h-full object-contain"></div>
                         <div><div class="font-bold text-white text-lg">KICC Mother Admin</div><div class="text-xs text-zinc-400">You are here</div></div>
                     </div>
                     <div class="text-xs text-zinc-500 leading-relaxed">Platform owner's god-mode: counties, institutions, national govt, exhibitors, orders, escrow, pipelines, live events, users, venues, analytics and every system setting.</div>
