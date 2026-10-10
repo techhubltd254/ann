@@ -7,8 +7,9 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Log;
 
 /**
- * Receives validated webhook events forwarded from the Node.js integration layer.
- * The Node.js service verifies provider signatures before forwarding.
+ * Receives authenticated, replay-protected events from the integration layer.
+ * Transport authentication is not proof of settlement or delivery.
+ * Financial and delivery state transitions require independent provider verification.
  */
 class IntegrationWebhookController extends Controller
 {
@@ -54,25 +55,14 @@ class IntegrationWebhookController extends Controller
         $amount = $event['amount'] ?? null;
         $providerRef = $event['providerRef'] ?? null;
 
-        // A forwarded payment event is not buyer consent or verified settlement.
-        // Fund release is deliberately disabled here; use the authorized escrow workflow.
-        // Delivery verified -> auto-release escrow
-        if ($event['deliveryVerified'] ?? false) {
-            try {
-                $shipment = \App\Models\CourierShipment::where('tracking_number', $providerRef)->first();
-                if ($shipment) {
-                    $shipment->update(['status' => 'delivered', 'delivered_at' => now()]);
-                    $escrow = $shipment->escrowTransaction;
-                    if ($escrow && $escrow->status === 'held') {
-                        app(\App\Services\EscrowService::class)->markDelivered($escrow, $event['location'] ?? 'unknown');
-                    }
-                }
-            } catch (\Throwable $e) {
-                Log::error('integration-webhook: delivery update failed', [
-                    'providerRef' => $providerRef,
-                    'error' => $e->getMessage(),
-                ]);
-            }
+        // Neither payment nor delivery assertions may mutate shipment/escrow state.
+        // A claimed delivery previously unlocked downstream auto-release workflows.
+        // Provider-specific verification must be implemented before re-enabling this.
+        if ($state === 'paid' || ($event['deliveryVerified'] ?? false)) {
+            Log::notice('integration-webhook: unverified state transition ignored', [
+                'provider' => $provider,
+                'state' => $state,
+            ]);
         }
     }
 }
