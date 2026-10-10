@@ -971,3 +971,5 @@ Route::post('/admin/kicc/cms/services',[\App\Http\Controllers\Web\CmsController:
 Route::post('/admin/kicc/cms/services/{service}',[\App\Http\Controllers\Web\CmsController::class,'updateService'])->middleware(['auth','admin:kicc'])->name('cms.admin.service.update');
 Route::delete('/admin/kicc/cms/services/{service}',[\App\Http\Controllers\Web\CmsController::class,'deleteService'])->middleware(['auth','admin:kicc'])->name('cms.admin.service.delete');
 Route::delete('/admin/kicc/cms/pages/{page}',[\App\Http\Controllers\Web\CmsController::class,'deletePage'])->middleware(['auth','admin:kicc'])->name('cms.admin.page.delete');
+
+Route::get('/admin/model-preview/{asset}',[\App\Http\Controllers\Web\PublicModelController::class,'preview'])->middleware(['auth','admin:kicc,national,county,institution'])->name('admin.model.preview');

@@ -42,7 +42,7 @@ class ReferenceExperienceController extends Controller
         $index->prime(CountyInstitution::class, $institutions->pluck('id')->all());
         $index->prime('institution', $institutions->pluck('id')->all());
 
-        $products = Product::with(['county','category','images','variants','offers'=>fn($q)=>$q->current()])->where('status','active')->orderByDesc('updated_at')->orderByDesc('id')->get();
+        $products = Product::with(['county','category','images','variants','offers'=>fn($q)=>$q->current()])->where('status','active')->where(fn($q)=>$q->whereNull('institution_id')->orWhereIn('institution_id',CountyInstitution::where('is_published',true)->select('id')))->orderByDesc('updated_at')->orderByDesc('id')->get();
         $index->prime(Product::class, $products->pluck('id')->all());
 
         $venues = Venue::where('is_active', true)->orderBy('name')->get();

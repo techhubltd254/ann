@@ -1,5 +1,6 @@
 @extends('layouts.app')
 @section('title',$asset->alt_text?:'Uploaded 3D model')
+@push('styles')<script type="importmap">{"imports":{"three":"https://cdn.jsdelivr.net/npm/three@0.170.0/build/three.module.js"}}</script>@endpush
 @section('content')
 <section class="wrap" style="padding:32px"><h1>{{ $asset->alt_text?:$asset->original_name }}</h1><p>Uploaded {{ strtoupper($format) }} · drag to orbit and scroll to zoom.</p><div id="model-host" style="height:65vh;min-height:350px;background:#17191b;border-radius:20px;position:relative" data-model-url="{{ $modelUrl }}" data-model-format="{{ $format }}">
 @if(in_array($format,['glb','gltf']))<model-viewer src="{{ $modelUrl }}" camera-controls auto-rotate shadow-intensity="1" style="width:100%;height:100%" aria-label="Uploaded 3D model"></model-viewer>@endif
