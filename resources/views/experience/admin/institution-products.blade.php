@@ -1,6 +1,8 @@
 @extends('layouts.nexora')
 @section('title',$institution->name.' · Products, Services & Experiences')
 @section('content')
+<style>[data-private-refined-story] form{display:grid;gap:14px}[data-private-refined-story] label{display:grid;gap:8px;margin:0}[data-private-refined-story] textarea{display:block;width:100%;min-width:0;box-sizing:border-box;padding:12px;border-radius:12px;font-size:16px;line-height:1.5}[data-private-refined-story] button{min-height:44px;justify-self:start}[data-private-institution-candidates] article{padding:14px 0;border-bottom:1px solid rgba(255,255,255,.1)}</style>
+
 @php
 $reviewPath=storage_path('app/private/institution-source-review/'.(int)$institution->id.'.json');
 $sourceReview=is_file($reviewPath)?json_decode(file_get_contents($reviewPath),true):null;
