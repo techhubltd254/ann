@@ -14,7 +14,7 @@ class AdminNav
   $add=function($g,$label,$name,$params=[])use(&$groups){if(Route::has($name))$groups[$g][]=['label'=>$label,'url'=>route($name,$params)];};
   $add('Dashboard','Control centre','admin.portal');
   $county=$context['county']??null;$institution=$context['institution']??null;
-  $uri=request()->path();$key=null;$route=null;$params=[];
+  $uri=\App\Support\AdminPaths::legacy(request()->path());$key=null;$route=null;$params=[];
   if(str_starts_with($uri,'kicc-admin') && !str_contains($uri,'national')){$key='kicc';$route='kicc.admin';}
   elseif(str_starts_with($uri,'county-admin/') && $county){$key='county';$route='county.admin.pro';$params=['slug'=>$county->slug];}
   elseif(str_starts_with($uri,'institution-admin/') && $institution){$key='institution';$route='institution.admin';$params=['institution'=>$institution->slug];}
@@ -41,7 +41,8 @@ class AdminNav
   if($level==='kicc'){
    foreach(['experience.images.index'=>['Content','Image add / replace / delete'],'admin.media.index'=>['Content','Media library'],'cms.admin.index'=>['Content','CMS / FAQ'],'admin.3d.assets'=>['Content','3D library'],'admin.components.ui'=>['Content','Source components'],'admin.users'=>['People','Users & roles'],'admin.audit'=>['Analytics','Audit trail'],'admin.enquiries'=>['Operations','Enquiries'],'admin.ecommerce.dashboard'=>['Commerce','Commerce workspace']] as $name=>[$g,$label])$add($g,$label,$name);
   }
-  $add('Settings','Public website','home');
+  if($institution)$add('Commerce','Product video editor','institution.products.index',[$institution->slug]);
+  $add('Settings','Preview public website ↗','home');
   foreach($groups as $g=>$links){$unique=[];foreach($links as $link)$unique[$link['url']]=$link;$groups[$g]=array_values($unique);}
   return $groups;
  }

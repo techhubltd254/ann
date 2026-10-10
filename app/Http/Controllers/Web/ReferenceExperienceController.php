@@ -92,6 +92,13 @@ class ReferenceExperienceController extends Controller
         foreach ($products as $p) {
             $image = $resolver->resolve($p);
             $tables['products'][] = ['id'=>(string)$p->id,'slug'=>$p->slug,'institutionId'=>(string)$p->institution_id,'n'=>$p->name,'name'=>$p->name,'c'=>$p->county?->name ?? '', 'cat'=>$p->category?->name ?? 'Product','p'=>(float)$p->price,'unit'=>$p->unit ?? '', 'r'=>0,'rv'=>0,'moq'=>(int)$p->moq,'incoterm'=>$p->incoterm,'v'=>'image','description'=>$p->short_description ?? $p->description,'image'=>$image['url'],'mediaLabel'=>$image['label'],'nativeUrl'=>route('marketplace.show',$p->slug),'status'=>'published','tileMedia'=>($t=$tiles->tile(\App\Models\Marketplace\Product::class,(int)$p->id,'product_image'))['state']==='published'?$t:($image['url']?['state'=>'published','kind'=>'image','url'=>$image['url'],'description'=>$image['label'] ?? $p->name,'alt'=>$image['label'] ?? $p->name,'source'=>'derived']:['state'=>'empty'])];
+            $video=$index->forSlot(\App\Models\Marketplace\Product::class,(int)$p->id,'product_video');
+            if($video && $video->kind==='video'){
+                $videoUrl=url('/media/original/'.$video->path);
+                $tables['media'][]=['id'=>'product:'.$p->id,'ownerId'=>(string)$p->id,'kind'=>'video','role'=>'product','target'=>'/marketplace/'.$p->slug,'name'=>$p->name.' — product film','url'=>$videoUrl,'poster'=>$video->posterUrl()?:$image['url'],'status'=>'published'];
+                $last=array_key_last($tables['products']);$tables['products'][$last]['v']='video';
+                $tables['products'][$last]['tileMedia']=['state'=>'published','kind'=>'video','url'=>$videoUrl,'poster'=>$video->posterUrl()?:$image['url'],'alt'=>$p->name,'source'=>'admin-upload'];
+            }
         }
         foreach ($venues as $v) {
             $asset = $index->forOwner(Venue::class, (int) $v->id)->last();

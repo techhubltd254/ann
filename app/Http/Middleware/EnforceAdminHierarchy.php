@@ -11,7 +11,7 @@ class EnforceAdminHierarchy
 {
     public function handle(Request $r, Closure $next)
     {
-        $path=trim($r->path(),'/');$name=$r->route()?->getName()??'';
+        $path=\App\Support\AdminPaths::legacy($r->path());$name=$r->route()?->getName()??'';
         $protected=preg_match('#^(portal|kicc-admin|county-admin|institution-admin|national-admin|records-admin)(/|$)#',$path);
         if(!$protected || in_array($path,['kicc-admin/login','kicc-admin/reset-pwd'],true))return $next($r);
         $u=$r->user();if(!$u)return redirect()->guest(route('login'));

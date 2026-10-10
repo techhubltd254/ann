@@ -156,9 +156,7 @@ document.addEventListener('alpine:init', () => {
                     </td>
                     <td class="py-3.5 pr-5 text-right">
                         <div class="flex items-center justify-end gap-1">
-                            <button @click='$store.pd.open({!! $productData !!})' class="btn-ghost text-[10px] py-1 px-1.5 text-zinc-400 hover:text-white" title="Edit product">
-                                <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15.232 5.232l3.536 3.536m-2.036-5.036a2.5 2.5 0 113.536 3.536L6.5 21.036H3v-3.572L16.732 3.732z"/></svg>
-                            </button>
+                            <a href="{{ route('institution.products.edit',[$institution->slug,$p->id]) }}" class="as-cta" title="Edit product and upload videos">Edit / videos</a>
                             <form method="POST" action="{{ route('institution.admin.products.delete', [$institution->slug, $i]) }}" class="inline" onsubmit="return confirm('Delete?')">
                                 @csrf
                                 <button class="btn-ghost text-[10px] py-1 px-1.5 text-red-400"></button>
@@ -249,7 +247,7 @@ document.addEventListener('alpine:init', () => {
                 </div>
                 <div>
                     <label class="text-[10px] font-semibold text-zinc-500 uppercase tracking-widest block mb-1">Product Videos / Reels</label>
-                    <input name="videos[]" type="file" accept="video/mp4,video/webm" multiple @change="$store.pd.videoSelect">
+                    <p>Save the product first, then choose Edit / videos for resumable uploads up to 2 GiB.</p>
                     <p class="text-[9px] text-zinc-600 mt-1" x-show="$store.pd.detail?.video_url" x-text="(($store.pd.detail?.videos?.length || 0) + ($store.pd.video_url ? 1 : 0)) + ' video(s) on this product'"></p>
                 </div>
                 <div class="md:col-span-2">

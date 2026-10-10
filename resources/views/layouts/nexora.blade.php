@@ -8,12 +8,12 @@
 <link rel="stylesheet" href="/css/admin-shell.css?v=admin-safe-v3">
 <link rel="stylesheet" href="/css/admin-safe.css?v=admin-safe-v3">
 <script defer src="https://cdn.jsdelivr.net/npm/chart.js@4.4.4/dist/chart.umd.min.js"></script>
-@stack('styles')</head>
+<link rel="stylesheet" href="/css/admin-workflow.css?v=admin-product-v1">@stack('styles')</head>
 @php
  $actor=auth()->user();
  $adminLevel=$actor?app(\App\Services\AdminHierarchyScope::class)->level($actor):null;
 
- $adminContext=request()->is('county-admin/*')?'county':(request()->is('institution-admin/*')?'institution':(request()->is('*national*')?'national':(request()->is('kicc-admin*')?'kicc':($adminLevel??'kicc'))));
+ $adminContext=request()->is('county-admin/*','admin/counties/*')?'county':(request()->is('institution-admin/*','admin/institutions/*')?'institution':(request()->is('*national*')?'national':(request()->is('kicc-admin*','admin/kicc*')?'kicc':($adminLevel??'kicc'))));
  $adminVariant=$adminContext==='county'?'galaxy':($adminContext==='institution'?'nexora':'adminora');
  $adminLinks=$actor?\App\Support\AdminNav::groups($actor,['county'=>$county??null,'institution'=>$institution??null,'navItems'=>$navItems??null]):[];
 @endphp
@@ -27,7 +27,7 @@
   @php $active=collect($links)->contains(fn($a)=>$a['url']===url()->full()); @endphp
   <details class="as-nav-group" @if($active || $section==='Dashboard') open @endif>
    <summary>{{ $section }} <small>{{ count($links) }}</small></summary>
-   @foreach($links as $link)<a href="{{ $link['url'] }}" @class(['active'=>$link['url']===url()->full()])>{{ $link['label'] }}</a>@endforeach
+   @foreach($links as $link)<a href="{{ $link['url'] }}" @if($link['url']===route('home')) target="_blank" rel="noopener noreferrer" @endif @class(['active'=>$link['url']===url()->full()])>{{ $link['label'] }}</a>@endforeach
   </details>
   @endif
  @endforeach

@@ -3,6 +3,7 @@ namespace App\Http\Controllers\Web;
 
 use App\Http\Controllers\Controller;
 use App\Models\{MediaAsset,County,CountyInstitution,Venue};
+use App\Models\Marketplace\Product;
 use App\Services\AdminHierarchyScope;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\{Cache,DB,Storage};
@@ -23,13 +24,16 @@ class ChunkedUploadController extends Controller
     {
         $u=$this->actor($r);$scope=app(AdminHierarchyScope::class);
         $type=$d['owner_type'];$id=(int)$d['owner_id'];
-        abort_unless(in_array($type,[County::class,CountyInstitution::class,Venue::class],true),422,'Unsupported owner type.');
+        abort_unless(in_array($type,[County::class,CountyInstitution::class,Venue::class,Product::class],true),422,'Unsupported owner type.');
         $o=$type::findOrFail($id);
-        $ok=match($type){County::class=>$scope->canCounty($u,$o),CountyInstitution::class=>$scope->canInstitution($u,$o),default=>$u->hasRole('kicc_admin')};
+        $inst=$type===Product::class?CountyInstitution::findOrFail((int)$o->institution_id):null;
+        $ok=match($type){County::class=>$scope->canCounty($u,$o),CountyInstitution::class=>$scope->canInstitution($u,$o),Product::class=>$scope->canInstitution($u,$inst)&&(int)$o->county_id===(int)$inst->county_id,default=>$u->hasRole('kicc_admin')};
         abort_unless($ok,403,'This owner is outside your administration scope.');
-        if($type===CountyInstitution::class){
+        if($type===Product::class)abort_unless(($d['slot']??'')==='product_video',422,'A product upload requires the product video slot.');
+        if($type===CountyInstitution::class||$type===Product::class){
+            $context=$inst??$o;
             $sector=(int)($d['sector_id']??0);
-            abort_unless($sector>0 && $o->sectorEntities()->where('sector_id',$sector)->exists() && $o->county->sectors()->where('sectors.id',$sector)->exists(),422,'Choose a sector linked to the institution and county.');
+            abort_unless($sector>0 && $context->sectorEntities()->where('sector_id',$sector)->exists() && $context->county->sectors()->where('sectors.id',$sector)->exists(),422,'Choose a sector linked to the institution and county.');
         }
         return $o;
     }
@@ -57,8 +61,9 @@ class ChunkedUploadController extends Controller
     public function init(Request $r)
     {
         $u=$this->actor($r);
-        $d=$r->validate(['filename'=>'required|string|max:255','size'=>'required|integer|min:1|max:'.self::MAX_BYTES,'mime'=>'required|in:video/mp4,video/webm,video/quicktime,video/x-matroska,video/x-msvideo','owner_type'=>'required|string|max:200','owner_id'=>'required|integer|min:1','sector_id'=>'nullable|integer|min:1','slot'=>'required|in:hero_video,institution_video,4d_video,flag_video','title'=>'required|string|max:255','replace_id'=>'nullable|integer|min:1']);
+        $d=$r->validate(['filename'=>'required|string|max:255','size'=>'required|integer|min:1|max:'.self::MAX_BYTES,'mime'=>'required|in:video/mp4,video/webm,video/quicktime,video/x-matroska,video/x-msvideo','owner_type'=>'required|string|max:200','owner_id'=>'required|integer|min:1','sector_id'=>'nullable|integer|min:1','slot'=>'required|in:hero_video,institution_video,4d_video,flag_video,product_video','title'=>'required|string|max:255','replace_id'=>'nullable|integer|min:1']);
         $o=$this->owner($r,$d);
+        if($d['owner_type']===Product::class){$inst=CountyInstitution::findOrFail((int)$o->institution_id);$d['institution_id']=$inst->id;$d['institution_slug']=$inst->slug;}
         $ext=strtolower(pathinfo($d['filename'],PATHINFO_EXTENSION));
         abort_unless(in_array($ext,['mp4','webm','mov','m4v','mkv','avi'],true),422,'Unsupported container.');
         if(!empty($d['replace_id'])){
@@ -102,7 +107,7 @@ class ChunkedUploadController extends Controller
             $mime=(new \finfo(FILEINFO_MIME_TYPE))->file($assembled);
             abort_unless(in_array($mime,['video/mp4','video/webm','video/quicktime','video/x-matroska','video/x-msvideo'],true),422,'File content is not a supported video.');
             $prefix=match($m['owner_type']){County::class=>'counties',CountyInstitution::class=>'institutions',default=>'venues'};
-            $key=$prefix.'/'.$m['slug'].'/videos/'.$uploadId.'.'.$m['extension'];$disk=Storage::disk('r2');
+            $key=$m['owner_type']===Product::class?'institutions/'.$m['institution_slug'].'/products/'.$m['owner_id'].'/videos/'.$uploadId.'.'.$m['extension']:$prefix.'/'.$m['slug'].'/videos/'.$uploadId.'.'.$m['extension'];$disk=Storage::disk('r2');
             $in=fopen($assembled,'rb');
             try{$ok=$disk->put($key,$in,['ContentType'=>$mime]);}finally{if(is_resource($in))fclose($in);}
             abort_unless($ok && $disk->exists($key) && $disk->size($key)===$total,503,'R2 did not verify the complete file. Nothing was published.');
@@ -115,13 +120,19 @@ class ChunkedUploadController extends Controller
                         $a->derivatives()->delete();$a->update($fields);
                     }else{$a=MediaAsset::create($fields+['uuid'=>(string)Str::uuid(),'owner_type'=>$m['owner_type'],'owner_id'=>$m['owner_id'],'slot'=>$m['slot']]);}
                     if($mime==='video/mp4')$a->derivatives()->create(['kind'=>'video_mp4','variant'=>'source','path'=>$key,'mime'=>$mime,'size_bytes'=>$total]);
+                    if($m['owner_type']===Product::class){
+                        $p=Product::lockForUpdate()->findOrFail($m['owner_id']);abort_unless((int)$p->institution_id===(int)$m['institution_id'],409,'Product ownership changed during upload.');
+                        $newUrl=url('/media/original/'.$key);$oldPath=$m['replace_path']??null;$urls=array_values(array_filter($p->videos??[],fn($v)=>!$oldPath||!str_contains($v,$oldPath)));array_unshift($urls,$newUrl);$p->update(['video_url'=>$newUrl,'videos'=>array_values(array_unique($urls))]);
+                        $i=CountyInstitution::lockForUpdate()->findOrFail($m['institution_id']);$entries=$i->products??[];
+                        foreach($entries as &$entry)if((int)($entry['marketplace_product_id']??0)===$p->id||($entry['name']??'')===$p->name){$entry['marketplace_product_id']=$p->id;$entry['videos']=$p->videos;$entry['video_url']=$newUrl;}unset($entry);$i->update(['products'=>$entries]);
+                    }
                     return $a;
                 });
             }catch(\Throwable $e){$disk->delete($key);throw $e;}
             foreach(['reference.native.v1','kicc_home','kicc_counties_index','resolve:county_hero_id_'.$m['owner_id']] as $k)Cache::forget($k);
             Cache::forget('kicc:r2:keys');Cache::forget('kicc:r2:keyset');
             Cache::increment('kicc_cache_version');
-            $result=['id'=>$a->id,'path'=>$key,'bytes'=>$total,'status'=>'ready','public_url'=>'/media/video/'.$key,'sha256'=>hash_file('sha256',$assembled)];
+            $result=['id'=>$a->id,'path'=>$key,'bytes'=>$total,'status'=>'ready','public_url'=>'/media/original/'.$key,'sha256'=>hash_file('sha256',$assembled)];
             file_put_contents($dir.'/result.json',json_encode($result));
             foreach(glob($dir.'/*.part')?:[] as $p)unlink($p);unlink($assembled);
             return response()->json($result)->header('Cache-Control','no-store');

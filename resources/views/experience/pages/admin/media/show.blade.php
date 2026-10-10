@@ -1,4 +1,4 @@
-@extends('layouts.app')
+@extends('layouts.nexora')
 
 @section('title', $asset->original_name . ' — Media Pipeline')
 

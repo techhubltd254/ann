@@ -16,6 +16,7 @@ return Application::configure(basePath: dirname(__DIR__))
             // Kept in its own file so it can never disturb routes/web.php.
             Illuminate\Support\Facades\Route::middleware('web')
                 ->group(base_path('routes/admin_records.php'));
+            require base_path('routes/admin_console.php');
         },
     )
     ->withMiddleware(function (Middleware $middleware): void {
@@ -72,7 +73,7 @@ return Application::configure(basePath: dirname(__DIR__))
     })
     ->withExceptions(function (Exceptions $exceptions): void {
         $exceptions->shouldRenderJsonWhen(
-            fn (Request $request) => $request->is('api/*', 'portal/uploads/*', 'portal/media-flow/*') || $request->expectsJson(),
+            fn (Request $request) => $request->is('api/*', 'portal/uploads/*', 'portal/media-flow/*', 'admin/uploads/*', 'admin/media-flow/*') || $request->expectsJson(),
         );
         // Breadcrumb on every 500 for production debugging
         $exceptions->reportable(function (\Throwable $e) {

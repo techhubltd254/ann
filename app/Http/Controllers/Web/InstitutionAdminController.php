@@ -70,7 +70,7 @@ class InstitutionAdminController extends Controller
 
         // Products (global marketplace)
         $marketplaceProducts = Product::with(['variants', 'images'])
-            ->where('user_id', $ownerId ?? -1)
+            ->where('institution_id', (string) $institution->id)
             ->latest()
             ->get();
 
@@ -214,7 +214,7 @@ class InstitutionAdminController extends Controller
     {
         $institution = $this->authorizeInstitution($slug);
         $data = $request->validate([
-            'video' => 'required|file|mimes:mp4,webm,mov|max:2048000',
+            'video' => 'required|file|mimes:mp4,webm,mov|max:2097152',
         ]);
 
         $file = $request->file('video');
@@ -257,7 +257,7 @@ class InstitutionAdminController extends Controller
     {
         $institution = $this->authorizeInstitution($slug);
         $data = $request->validate([
-            'video' => 'required|file|mimes:mp4,webm,mov|max:2048000',
+            'video' => 'required|file|mimes:mp4,webm,mov|max:2097152',
         ]);
 
         $file = $request->file('video');
@@ -347,7 +347,7 @@ class InstitutionAdminController extends Controller
             'description' => 'nullable|string|max:5000',
             'image' => 'nullable|image|mimes:jpeg,png,jpg,webp|max:10240',
             'videos' => 'nullable|array',
-            'videos.*' => 'nullable|file|mimes:mp4,webm,mov|max:2048000',
+            'videos.*' => 'nullable|file|mimes:mp4,webm,mov|max:2097152',
             'stock' => 'nullable|integer|min:0',
         ]);
 
@@ -408,13 +408,11 @@ class InstitutionAdminController extends Controller
             'description' => 'nullable|string|max:5000',
             'image' => 'nullable|image|mimes:jpeg,png,jpg,webp|max:10240',
             'videos' => 'nullable|array',
-            'videos.*' => 'nullable|file|mimes:mp4,webm,mov|max:2048000',
+            'videos.*' => 'nullable|file|mimes:mp4,webm,mov|max:2097152',
             'stock' => 'nullable|integer|min:0',
         ]);
 
-        $mp = \App\Models\Marketplace\Product::where('county_id', $institution->county_id)
-            ->where(fn($q) => $q->where('institution_id', (string)$institution->id)
-                ->orWhere('user_id', $institution->user_id ?? -1))->find($product);
+        $mp = \App\Models\Marketplace\Product::where('county_id', $institution->county_id)->where('institution_id', (string)$institution->id)->find($product);
         if (!$mp) {
             return back()->withErrors(['product' => 'Marketplace product not found.']);
         }

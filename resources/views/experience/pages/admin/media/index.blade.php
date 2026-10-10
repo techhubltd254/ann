@@ -1,4 +1,4 @@
-@extends('layouts.app')
+@extends('layouts.nexora')
 
 @section('title', 'Media Library — KICC Pipeline')
 @section('description', 'Upload, process and attach cinematic media across the platform — nothing hardcoded, everything admin-controlled.')

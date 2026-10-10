@@ -357,10 +357,7 @@ Route::post('/kicc-admin/venues/{id}/update', [\App\Http\Controllers\Web\KiccAdm
     // Alias: experience.images.* routes point to the media library
     Route::get('/kicc-admin/site-images', [\App\Http\Controllers\Web\MediaLibraryController::class, 'index'])->name('experience.images.index');
     Route::post('/kicc-admin/site-images', [\App\Http\Controllers\Web\MediaLibraryController::class, 'store'])->name('experience.images.store');
-    Route::post('/kicc-admin/site-images/{asset}/replace', function (int $asset) {
-        \App\Models\MediaAsset::findOrFail($asset)->update(['path' => request()->file('file')->store('site-images', 'r2')]);
-        return back()->with('success', 'Image replaced.');
-    })->name('experience.images.replace');
+    Route::post('/kicc-admin/site-images/{asset}/replace', [\App\Http\Controllers\Web\MediaLibraryController::class, 'replaceAsset'])->middleware('admin:kicc')->name('experience.images.replace');
     Route::delete('/kicc-admin/site-images/{asset}', [\App\Http\Controllers\Web\MediaLibraryController::class, 'destroy'])->name('experience.images.destroy');
 });
 
@@ -931,3 +928,11 @@ Route::get('/experience/media/{id}', [\App\Http\Controllers\Web\ExperienceProduc
 // but streams the entire object. This existing controller redirects to R2,
 // which handles seeking natively without buffering films in PHP.
 Route::get('/media/original/{path}', [\App\Http\Controllers\Web\MediaProxyController::class, 'video'])->where('path', '.*')->name('media.original');
+
+// Institution -> exact product ID -> product video administration.
+Route::middleware(['auth', \App\Http\Middleware\AdminConsole::class])->group(function(){
+ Route::get('/admin/institutions/{institution}/products', [\App\Http\Controllers\Web\InstitutionProductAdminController::class,'index'])->name('institution.products.index');
+ Route::get('/admin/institutions/{institution}/products/{product}/edit', [\App\Http\Controllers\Web\InstitutionProductAdminController::class,'edit'])->name('institution.products.edit');
+ Route::post('/admin/institutions/{institution}/products/{product}', [\App\Http\Controllers\Web\InstitutionProductAdminController::class,'update'])->name('institution.products.save');
+ Route::delete('/admin/institutions/{institution}/products/{product}/videos/{asset}', [\App\Http\Controllers\Web\InstitutionProductAdminController::class,'destroyVideo'])->name('institution.products.video.delete');
+});

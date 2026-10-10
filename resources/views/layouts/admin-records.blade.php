@@ -1,4 +1,4 @@
-@extends('layouts.app')
+@extends('layouts.nexora')
 @section('title', 'KICC publishing admin')
 @push('styles')
 <style>
@@ -64,7 +64,7 @@
       <p class="ra-eyebrow">KICC · publishing control room</p>
       <h1 class="ra-h1">The public site starts here.</h1>
     </div>
-    <a class="ra-btn ra-btn-ghost" href="/">View public site →</a>
+    <a class="ra-btn ra-btn-ghost" href="/" target="_blank" rel="noopener noreferrer">Preview public site →</a>
   </div>
 
   <nav class="ra-nav" aria-label="Administration">

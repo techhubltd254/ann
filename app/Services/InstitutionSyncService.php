@@ -363,7 +363,8 @@ class InstitutionSyncService
                     // Route this product to its ledger pipeline.
                     $pipelineCode = $router->forProduct(new Product([
                         'name' => $name,
-                        'county_id' => $county->id,
+                        'institution_id' => (string) $i->id,
+            'county_id' => $county->id,
                         'category_id' => $categoryId,
                     ]));
                     // Resolve a proper *sector* (never a pipeline code) for the

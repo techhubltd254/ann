@@ -21,7 +21,7 @@ class MediaLibraryController extends Controller
 {
     protected function authorizeMediaAccess(): void
     {
-        if (!auth()->user()?->hasAnyRole(['kicc_admin', 'county_admin', 'national_admin', 'exhibitor', 'provider'])) {
+        if (!auth()->user()?->hasRole('kicc_admin')) {
             abort(403, 'Media library requires an admin role.');
         }
     }
@@ -90,7 +90,7 @@ class MediaLibraryController extends Controller
 
         $request->validate([
             'files' => ['required', 'array', 'max:10'],
-            'files.*' => ['file', 'max:2048000'],
+            'files.*' => ['file', 'mimes:jpeg,jpg,png,webp,glb,gltf', 'max:51200'],
         ]);
 
         foreach ($request->file('files', []) as $file) {
@@ -286,5 +286,17 @@ class MediaLibraryController extends Controller
         ]);
 
         return response()->json(['asset_id' => $asset->id, 'path' => $data['path']]);
+    }
+
+    public function replaceAsset(Request $request, int $asset, MediaLibraryService $library)
+    {
+        $this->authorizeMediaAccess();
+        $a=MediaAsset::findOrFail($asset);
+        $request->validate(['file'=>'required|image|mimes:jpeg,jpg,png,webp|max:51200']);
+        $file=$request->file('file');$old=$a->path;$oldDisk=$a->disk;
+        $path=$file->store('site-images','r2');abort_unless($path,503,'R2 upload failed.');
+        $a->update(['disk'=>'r2','path'=>$path,'mime'=>$file->getMimeType(),'kind'=>'image','size_bytes'=>$file->getSize(),'original_name'=>$file->getClientOriginalName(),'status'=>'ready']);
+        if(!MediaAsset::where('disk',$oldDisk)->where('path',$old)->exists()&&!\App\Models\MediaDerivative::where('path',$old)->exists())\Illuminate\Support\Facades\Storage::disk($oldDisk)->delete($old);
+        \Illuminate\Support\Facades\Cache::increment('kicc_cache_version');return back()->with('success','Image replaced.');
     }
 }
