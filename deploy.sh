@@ -145,7 +145,7 @@ NPM=$(command -v npm 2>/dev/null)
 if [ -f package.json ] && [ -n "$NPM" ]; then
     echo "  frontend: npm at $NPM" >> "$LOG"
     mkdir -p public/build 2>/dev/null
-    if "$NPM" install --no-audit --no-fund >> "$LOG" 2>&1 && "$NPM" run build >> "$LOG" 2>&1; then
+    if "$NPM" ci --include=dev --include=optional --no-audit --no-fund >> "$LOG" 2>&1 && "$NPM" run build >> "$LOG" 2>&1; then
         echo "  frontend: build OK" >> "$LOG"
         ln -sf .vite/manifest.json public/build/manifest.json 2>/dev/null || true
         [ -f public/build/.vite/manifest.json ] && echo "  frontend: manifest symlinked" >> "$LOG"

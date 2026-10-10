@@ -598,7 +598,7 @@ table.tbl tbody tr:last-child td{border-bottom:none}
 <link rel="stylesheet" href="/css/expo-video.css?v=dab02ad56266">
 <script src="/js/expo-video.js?v=enterprise-native-films-20261010-clean-20261010-hierarchy-mobile-20261010-county-ai-fallback-20261010-20358f55afb7"></script>
 <link rel="stylesheet" href="/css/hierarchy-mobile.css?v=hierarchy-mobile-final-20261010">
-<style id="clean-real-media-only">[data-hierarchy-media-state="empty"]>.hierarchy-tile__media{display:none}.official-kicc-films{display:grid;grid-template-columns:repeat(auto-fit,minmax(min(100%,300px),1fr));gap:20px;margin:24px 0}.official-kicc-films video{width:100%;aspect-ratio:16/9;display:block;background:#171717;border-radius:12px}.official-kicc-films a{overflow-wrap:anywhere} [data-private-refined-story] textarea{width:100%;box-sizing:border-box}</style><link rel="stylesheet" href="/css/county-layout.5e296bf9132a.css" data-county-layout-release="responsive-v1">
+<style id="clean-real-media-only">[data-hierarchy-media-state="empty"]>.hierarchy-tile__media{display:none}.official-kicc-films{display:grid;grid-template-columns:repeat(auto-fit,minmax(min(100%,300px),1fr));gap:20px;margin:24px 0}.official-kicc-films video{width:100%;aspect-ratio:16/9;display:block;background:#171717;border-radius:12px}.official-kicc-films a{overflow-wrap:anywhere} [data-private-refined-story] textarea{width:100%;box-sizing:border-box}</style><link rel="stylesheet" href="/css/county-layout.cf740ee22b4d.css" data-county-layout-release="responsive-v1">
 </head>
 <style>
 /* ============================================================================
@@ -5580,8 +5580,9 @@ function countyLayoutImage(c){
  for(const value of values){if(!value)continue;try{const u=new URL(value,location.origin);if(!['http:','https:'].includes(u.protocol)||/\/placeholders\/|media-pending|existing-generated-preview/i.test(u.pathname))continue;return u.href;}catch{}}
  return '';
 }
+function countyLayoutPlain(v){const entities={'#39':"'",apos:"'",amp:'&',quot:'"',lt:'<',gt:'>',nbsp:' '};return String(v??'').replace(/&(#39|apos|amp|quot|lt|gt|nbsp);/g,(_,k)=>entities[k]);}
 function countyLayoutTile(c){
- const e=v=>String(v??'').replace(/[&<>"']/g,x=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[x]));
+ const e=v=>countyLayoutPlain(v).replace(/[&<>"']/g,x=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[x]));
  const image=countyLayoutImage(c),available=Boolean(c.heroVideo||image);
  return `<article class="media-tile county-layout-card" data-county-hero="${c.heroVideo?'1':'0'}" data-county-media="${c.heroVideo?'video':image?'image':'none'}" data-cname="${e(c.name.toLowerCase())}" data-cregioncard="${e(c.region)}" data-href="/counties/${e(c.slug)}">
  ${available?`<div class="tile-ratio"></div><div class="tile-media">${image?`<img src="${e(image)}" alt="${e(c.name)}" loading="lazy" decoding="async" width="640" height="400" style="width:100%;height:100%;object-fit:cover">`:''}</div>`:''}
@@ -7760,7 +7761,7 @@ const PUBLISH = (()=>{
   card.style.zIndex=String(5-Math.abs(offset));card.dataset.orbitActive=String(offset===0);
   if(fresh){
    const image=countyLayoutImage(c);card.dataset.countyMedia=c.heroVideo?'video':image?'image':'none';
-   card.innerHTML=`${image?`<img src="${esc(image)}" alt="${esc(c.name)}" decoding="async" loading="lazy">`:''}<a class="orbit-open" href="#/counties/${esc(c.slug)}">Explore →</a><div class="orbit-caption"><span class="orbit-code">${esc(c.code)} / ${esc(c.region)}</span><h3>${esc(c.name)}</h3><p class="orbit-description">${esc(c.description)}</p><p>${esc((c.sectors||[]).slice(0,3).join(' · '))} · ${(c.sectors||[]).length} sectors</p><p class="orbit-pop">${Number(c.pop).toLocaleString('en-KE')} people · ${esc(c.populationYear||2024)}</p></div>`;
+   card.innerHTML=`${image?`<img src="${esc(image)}" alt="${esc(c.name)}" decoding="async" loading="lazy">`:''}<a class="orbit-open" href="#/counties/${esc(c.slug)}">Explore →</a><div class="orbit-caption"><span class="orbit-code">${esc(c.code)} / ${esc(c.region)}</span><h3>${esc(c.name)}</h3><p class="orbit-description">${esc(countyLayoutPlain(c.description))}</p><p>${esc((c.sectors||[]).slice(0,3).join(' · '))} · ${(c.sectors||[]).length} sectors</p><p class="orbit-pop">${Number(c.pop).toLocaleString('en-KE')} people · ${esc(c.populationYear||2024)}</p></div>`;
    const media=REPO.list('media',true).find(m=>m.target==='/counties/'+c.slug&&m.kind==='video');
    if(media||c.heroVideo)(async()=>{
     const source=media?.assetId?await ASSETS.url(media.assetId):safeUrl(matchMedia('(max-width:768px)').matches&&c.heroMobileVideo?c.heroMobileVideo:media?.url||c.heroVideo);
@@ -8239,6 +8240,6 @@ window.KiccRefreshCatalogue=refresh;refresh();setInterval(refresh,(navigator.con
 })();
 </script>
 <script defer src="/js/hierarchy-video-tiles.js?v=hierarchy-mobile-20261010"></script>
-<script defer src="/js/county-layout.fa9e818e7e92.js"></script>
+<script defer src="/js/county-layout.3222871d2697.js"></script>
 </body>
 </html>
