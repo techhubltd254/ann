@@ -932,6 +932,10 @@ Route::get('/media/original/{path}', [\App\Http\Controllers\Web\MediaProxyContro
 // Institution -> exact product ID -> product video administration.
 Route::middleware(['auth', \App\Http\Middleware\AdminConsole::class])->group(function(){
  Route::get('/admin/institutions/{institution}/products', [\App\Http\Controllers\Web\InstitutionProductAdminController::class,'index'])->name('institution.products.index');
+ Route::get('/admin/institutions/{institution}/products/new', [\App\Http\Controllers\Web\InstitutionProductAdminController::class,'create'])->name('institution.offerings.create');
+ Route::post('/admin/institutions/{institution}/offerings', [\App\Http\Controllers\Web\InstitutionProductAdminController::class,'store'])->name('institution.offerings.store');
+ Route::post('/admin/institutions/{institution}/products/{product}/offers', [\App\Http\Controllers\Web\InstitutionProductAdminController::class,'storeOffer'])->name('institution.offers.store');
+ Route::delete('/admin/institutions/{institution}/products/{product}/offers/{offer}', [\App\Http\Controllers\Web\InstitutionProductAdminController::class,'deleteOffer'])->name('institution.offers.delete');
  Route::get('/admin/institutions/{institution}/products/{product}/edit', [\App\Http\Controllers\Web\InstitutionProductAdminController::class,'edit'])->name('institution.products.edit');
  Route::post('/admin/institutions/{institution}/products/{product}', [\App\Http\Controllers\Web\InstitutionProductAdminController::class,'update'])->name('institution.products.save');
  Route::delete('/admin/institutions/{institution}/products/{product}/videos/{asset}', [\App\Http\Controllers\Web\InstitutionProductAdminController::class,'destroyVideo'])->name('institution.products.video.delete');

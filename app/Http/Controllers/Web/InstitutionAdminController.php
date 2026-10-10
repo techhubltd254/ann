@@ -38,6 +38,7 @@ class InstitutionAdminController extends Controller
     {
         $institution = $this->authorizeInstitution($slug);
         $tab = $request->get('tab', 'overview');
+        if(in_array($tab,['products','services','experiences','offers'],true))return redirect()->route('institution.products.index',$institution->slug);
 
         // ── Analytics (real data) ──
         $ownerId = $institution->user_id;

@@ -21,13 +21,14 @@ class Product extends Model
         'video_url', 'videos', 'video_description', 'model_url',
         'moq', 'fob_price', 'incoterm', 'hs_code', 'export_readiness',
         'certifications', 'trade_enquiry_email', 'is_spotlight_product',
-        'pipeline_code',
+        'pipeline_code', 'offering_kind', 'price_mode', 'sync_key', 'source_url', 'source_verified_at', 'booking_url', 'offering_details',
     ];
 
     protected $casts = [
         'is_digital' => 'boolean',
         'is_featured' => 'boolean',
         'tags' => 'array',
+        'offering_details' => 'array', 'source_verified_at' => 'datetime',
         'videos' => 'array',
         'weight_kg' => 'float',
         'fob_price' => 'decimal:2',
@@ -56,6 +57,9 @@ class Product extends Model
     }
 
     public function scopeActive($q) { return $q->where('status', 'active'); }
+
+    public function experiences() { return $this->hasOne(\App\Models\InstitutionExperience::class); }
+    public function offers() { return $this->hasMany(\App\Models\InstitutionOffer::class); }
 
     public function county() { return $this->belongsTo(County::class); }
     public function category() { return $this->belongsTo(ProductCategory::class, 'category_id'); }

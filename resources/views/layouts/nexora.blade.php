@@ -22,10 +22,11 @@
  <a class="as-brand" href="{{ route('admin.portal') }}"><span class="as-mark as-mark-logo"><img src="{{ tile_url('logo') }}" alt="KICC"></span><span><strong>KICC Admin</strong><small>{{ ucfirst($adminContext) }} control centre</small></span></a>
  <div class="as-nav-label">{{ ucfirst($adminContext) }} · {{ ucfirst($adminVariant) }}</div>
  <nav class="as-nav" aria-label="Administration controls">
+ @isset($institution)<a class="as-cta" style="display:block;margin:12px 0;white-space:normal" href="{{ route('institution.products.index',$institution->slug) }}">Products, Services & Experiences →</a>@endisset
  @foreach($adminLinks as $section=>$links)
   @if(count($links))
   @php $active=collect($links)->contains(fn($a)=>$a['url']===url()->full()); @endphp
-  <details class="as-nav-group" @if($active || $section==='Dashboard') open @endif>
+  <details class="as-nav-group" @if($active || $section==='Dashboard' || ($section==='Commerce' && isset($institution))) open @endif>
    <summary>{{ $section }} <small>{{ count($links) }}</small></summary>
    @foreach($links as $link)<a href="{{ $link['url'] }}" @if($link['url']===route('home')) target="_blank" rel="noopener noreferrer" @endif @class(['active'=>$link['url']===url()->full()])>{{ $link['label'] }}</a>@endforeach
   </details>

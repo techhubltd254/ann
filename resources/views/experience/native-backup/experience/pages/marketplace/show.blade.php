@@ -120,7 +120,7 @@
 
         <div>
             <div class="bg-white border border-gray-200 rounded-2xl p-6 sticky-sidebar sticky top-24">
-                <div class="font-black text-kicc-gold text-2xl">KES {{ number_format($product->price ?? 0) }}</div>
+                <div class="font-black text-kicc-gold text-2xl">{{ $product->price_mode==='enquiry'?'Price on enquiry':($product->price_mode==='from'?'From ':'').'KES '.number_format($product->price??0) }}</div>
                 <div class="text-gray-400 text-sm">per {{ $product->unit ?? 'unit' }}</div>
 
                 <div class="mt-3">
@@ -140,6 +140,7 @@
                     ])
                 </div>
 
+                @if($product->offering_kind==='product' && $product->price_mode==='fixed')
                 <div class="mt-6 space-y-3">
                     @foreach($product->variants->where('is_active', true) as $i => $variant)
                     <label class="flex items-center justify-between bg-[#FFFFFF] border border-gray-200 rounded-xl px-4 py-3 cursor-pointer transition-all has-[:checked]:border-kicc-gold has-[:checked]:bg-[#FFCD05]/5">
@@ -162,6 +163,10 @@
                     </button>
                 </form>
 
+                @else
+                <p>Confirm price and availability with the institution.</p>
+                @if($product->booking_url)<a href="{{ $product->booking_url }}" target="_blank" rel="noopener noreferrer">Book / enquire with institution ↗</a>@endif
+                @endif
                 @if($product->county)
                 <div class="mt-2">
                     <x-experience-booking-modal

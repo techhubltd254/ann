@@ -23,7 +23,10 @@ class InstitutionProductAdminController extends Controller
     public function index(Request $r,string $institution)
     {
         $institution=$this->institution($r,$institution);
-        $products=Product::where('institution_id',(string)$institution->id)->where('county_id',$institution->county_id)->orderBy('name')->paginate(30);
+        $query=Product::where('institution_id',(string)$institution->id)->where('county_id',$institution->county_id)->with('offers');
+        if($r->filled('kind'))$query->where('offering_kind',$r->validate(['kind'=>'in:product,service,experience'])['kind']);
+        if($r->filled('q')){$search=$r->validate(['q'=>'string|max:150'])['q'];$query->where('name','like','%'.$search.'%');}
+        $products=$query->orderBy('name')->paginate(30)->withQueryString();
         return response()->view('experience.admin.institution-products',compact('institution','products'))->header('Cache-Control','private,no-store');
     }
     public function edit(Request $r,string $institution,int $product)
@@ -33,12 +36,47 @@ class InstitutionProductAdminController extends Controller
         $media=MediaAsset::where('owner_type',Product::class)->where('owner_id',$product->id)->where('kind','video')->latest('id')->get();
         return response()->view('experience.admin.product-edit',compact('institution','product','sectors','media'))->header('Cache-Control','private,no-store');
     }
-    public function update(Request $r,string $institution,int $product)
-    {
+    private function fields(Request $r):array {
+        $d=$r->validate(['name'=>'required|string|max:255','description'=>'nullable|string|max:10000','unit'=>'nullable|string|max:50','price'=>'nullable|numeric|min:0','stock'=>'required|integer|min:0','offering_kind'=>'required|in:product,service,experience','price_mode'=>'required|in:fixed,from,enquiry','publication_status'=>'required|in:draft,active','booking_url'=>['nullable','url','regex:~^https?://~i'],'source_url'=>['nullable','url','regex:~^https?://~i'],'duration_minutes'=>'nullable|integer|min:1|max:100000','max_guests'=>'nullable|integer|min:1|max:100000','inclusions'=>'nullable|string|max:6000']);
+        if($d['price_mode']!=='enquiry' && !isset($d['price']))throw \Illuminate\Validation\ValidationException::withMessages(['price'=>'Enter a published price or use Price on enquiry.']);
+        $d['offering_details']=['duration_minutes'=>$d['duration_minutes']??null,'max_guests'=>$d['max_guests']??null,'inclusions'=>array_values(array_filter(array_map('trim',explode("\n",$d['inclusions']??''))))];
+        $d['price']=$d['price_mode']==='enquiry'?0:$d['price'];$d['category']=$d['offering_kind']==='experience'?'Tourism':($d['offering_kind']==='service'?'Services':'General');
+        unset($d['duration_minutes'],$d['max_guests'],$d['inclusions']);return $d;
+    }
+    public function create(Request $r,string $institution){
+        $institution=$this->institution($r,$institution);$product=new Product(['offering_kind'=>'product','price_mode'=>'enquiry','status'=>'draft']);
+        return response()->view('experience.admin.offering-create',compact('institution','product'))->header('Cache-Control','private,no-store');
+    }
+    public function store(Request $r,string $institution){
+        $i=$this->institution($r,$institution);$d=$this->fields($r);$d['source_key']='manual-'.\Illuminate\Support\Str::uuid();
+        DB::transaction(function()use($i,$d){$locked=CountyInstitution::lockForUpdate()->findOrFail($i->id);$entries=$locked->products??[];$entries[]=$d;$locked->syncing=true;$locked->update(['products'=>$entries]);});
+        $i->refresh();$summary=app(\App\Services\InstitutionSyncService::class)->sync($i);
+        $p=Product::where('institution_id',(string)$i->id)->where('sync_key',$d['source_key'])->first();
+        if(!$p)return back()->withErrors(['sync'=>'Saved the offering, but publication failed. Check the sync errors before retrying.'])->withInput();
+        Cache::increment('kicc_cache_version');return redirect()->route('institution.products.edit',[$i->slug,$p->id])->with('success','Offering created and synced. Upload its video below.');
+    }
+    public function update(Request $r,string $institution,int $product){
+        $i=$this->institution($r,$institution);$p=$this->product($i,$product);$d=$this->fields($r);
+        DB::transaction(function()use($i,$p,$d){$oldName=$p->name;$data=$d;unset($data['price'],$data['stock'],$data['category'],$data['publication_status']);$data['status']=$d['publication_status'];$p->update($data);
+            $v=$p->variants()->first();if($v)$v->update(['price'=>$d['price'],'stock'=>$d['stock']]);
+            $locked=CountyInstitution::lockForUpdate()->findOrFail($i->id);$entries=$locked->products??[];$found=false;
+            foreach($entries as &$e)if((int)($e['marketplace_product_id']??0)===$p->id||($e['name']??'')===$oldName){$e=array_merge($e,$d,['marketplace_product_id'=>$p->id]);$found=true;}unset($e);
+            if(!$found)$entries[]=array_merge($d,['marketplace_product_id'=>$p->id,'source_key'=>$p->sync_key?:('manual-'.$p->id)]);
+            $locked->syncing=true;$locked->update(['products'=>$entries]);
+        });
+        $i->refresh();$summary=app(\App\Services\InstitutionSyncService::class)->sync($i);Cache::increment('kicc_cache_version');
+        return back()->with('success','Offering saved and synced; existing videos were retained.');
+    }
+    public function storeOffer(Request $r,string $institution,int $product){
         $i=$this->institution($r,$institution);$p=$this->product($i,$product);
-        $d=$r->validate(['name'=>'required|string|max:255','description'=>'nullable|string|max:10000','unit'=>'nullable|string|max:60','price'=>'required|numeric|min:0','stock'=>'required|integer|min:0']);
-        DB::transaction(function()use($i,$p,$d){$oldName=$p->name;$p->update(['name'=>$d['name'],'description'=>$d['description']??'','unit'=>$d['unit']??'unit']);$v=$p->variants()->first();if($v)$v->update(['price'=>$d['price'],'stock'=>$d['stock']]);$json=$i->products??[];foreach($json as &$entry)if((int)($entry['marketplace_product_id']??0)===$p->id||($entry['name']??'')===$oldName)$entry=array_merge($entry,$d,['marketplace_product_id'=>$p->id]);unset($entry);$i->update(['products'=>$json]);});
-        Cache::increment('kicc_cache_version');return back()->with('success','Product saved. Upload its video separately using the verified large-file controls below.');
+        $d=$r->validate(['title'=>'required|string|max:255','terms'=>'required|string|max:10000','price'=>'nullable|numeric|min:0','starts_at'=>'nullable|date','ends_at'=>'nullable|date|after:starts_at','is_published'=>'nullable|boolean','source_url'=>['nullable','url','regex:~^https?://~i']]);
+        $d['is_published']=$r->boolean('is_published');$d['institution_id']=$i->id;$d['product_id']=$p->id;
+        \App\Models\InstitutionOffer::create($d);Cache::increment('kicc_cache_version');return back()->with('success','Offer saved. Only published offers within their date window appear publicly.');
+    }
+    public function deleteOffer(Request $r,string $institution,int $product,int $offer){
+        $i=$this->institution($r,$institution);$p=$this->product($i,$product);
+        \App\Models\InstitutionOffer::where('institution_id',$i->id)->where('product_id',$p->id)->findOrFail($offer)->delete();
+        Cache::increment('kicc_cache_version');return back()->with('success','Offer removed.');
     }
     public function destroyVideo(Request $r,string $institution,int $product,int $asset)
     {

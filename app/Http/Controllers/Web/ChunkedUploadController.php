@@ -132,6 +132,7 @@ class ChunkedUploadController extends Controller
             foreach(['reference.native.v1','kicc_home','kicc_counties_index','resolve:county_hero_id_'.$m['owner_id']] as $k)Cache::forget($k);
             Cache::forget('kicc:r2:keys');Cache::forget('kicc:r2:keyset');
             Cache::increment('kicc_cache_version');
+            if($m['owner_type']===Product::class){\App\Jobs\PrepareProductVideo::dispatch($a->id,$key);}
             $result=['id'=>$a->id,'path'=>$key,'bytes'=>$total,'status'=>'ready','public_url'=>'/media/original/'.$key,'sha256'=>hash_file('sha256',$assembled)];
             file_put_contents($dir.'/result.json',json_encode($result));
             foreach(glob($dir.'/*.part')?:[] as $p)unlink($p);unlink($assembled);

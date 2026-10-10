@@ -310,14 +310,18 @@ class InstitutionSyncService
     {
         $name = $product['name'];
         $ownerId = $i->user_id ?? null;
-        $cp = CountyProduct::where('county_id', $county->id)
-            ->when($ownerId, fn ($q) => $q->where('user_id', $ownerId))
-            ->where('name', $name)
-            ->first();
+        $cp=CountyProduct::where('county_id',$county->id)->where('institution_id',$i->id)->where('name',$name)->first();
+        if(!empty($product['county_product_id']))$cp=CountyProduct::where('county_id',$county->id)->where(fn($q)=>$q->where('institution_id',$i->id)->orWhereNull('institution_id'))->find($product['county_product_id'])?:$cp;
+        if(!$cp && !empty($product['marketplace_product_id'])){
+            $old=Product::where('institution_id',(string)$i->id)->find($product['marketplace_product_id']);
+            if($old)$cp=CountyProduct::where('county_id',$county->id)->where('institution_id',$i->id)->where('name',$old->name)->first();
+        }
+
 
         $data = [
             'county_id' => $county->id,
             'user_id' => $ownerId ?? 0,
+            'institution_id' => $i->id,
             'name' => $name,
             'description' => $product['description'] ?? ($i->name . ' product'),
             'category' => $product['category'] ?? 'Food',
@@ -326,16 +330,15 @@ class InstitutionSyncService
             'videos' => array_key_exists('videos', $product) ? $product['videos'] : ($cp->videos ?? null),
             'price' => $product['price'] ?? 0,
             'unit' => $product['unit'] ?? 'unit',
-            'booking_type' => 'order',
+            'booking_type' => ($product['price_mode']??'fixed')==='enquiry'?'enquiry':'order',
             'status' => 'available',
-            'is_published' => true,
+            'is_published' => ($product['publication_status']??'active')==='active',
         ];
 
-        if ($cp) {
-            $cp->update($data);
-        } else {
-            CountyProduct::create($data);
-        }
+        if ($cp) {$cp->update($data);}else{$cp=CountyProduct::create($data);}
+        $locked=CountyInstitution::lockForUpdate()->findOrFail($i->id);$entries=$locked->products??[];
+        foreach($entries as &$e)if((!empty($product['source_key'])&&($e['source_key']??null)===$product['source_key'])||($e['name']??'')===$name)$e['county_product_id']=$cp->id;
+        unset($e);$locked->syncing=true;$locked->forceFill(['products'=>$entries])->save();
     }
 
     protected function upsertMarketplaceProduct(CountyInstitution $i, County $county, array $product): void
@@ -349,7 +352,18 @@ class InstitutionSyncService
             ->where('slug', $slug)
             ->first();
 
-        $categoryId = $this->resolveCategoryId($product['category'] ?? null);
+        // Stable institution ownership and source identity survive name edits and reimports.
+        if (!empty($product['marketplace_product_id'])) {
+            $owned=Product::withTrashed()->where('institution_id',(string)$i->id)->where('county_id',$county->id)->find($product['marketplace_product_id']);
+            if($owned)$mp=$owned;
+        }
+        if (!empty($product['source_key'])) {
+            $owned=Product::withTrashed()->where('institution_id',(string)$i->id)->where('sync_key',$product['source_key'])->first();
+            if($owned)$mp=$owned;
+        }
+        if($mp && $mp->institution_id && (string)$mp->institution_id!==(string)$i->id)throw new \RuntimeException('Product belongs to another institution');
+        $categoryId = $this->resolveCategoryId($product['category'] ?? 'General');
+        $pipelineCode = null;
         // Interlink the product (and its category) to the ledger pipeline so the
         // sector → product → pipeline chain is complete. PipelineRouter routes by
         // category sector → name keywords → HS code, and returns a pipeline code.
@@ -393,13 +407,21 @@ class InstitutionSyncService
             'county_id' => $county->id,
             'user_id' => $ownerId ?? 0,
             'category_id' => $categoryId,
+            'institution_id' => (string)$i->id,
+            'offering_kind' => $product['offering_kind'] ?? ($mp->offering_kind ?? 'product'),
+            'price_mode' => $product['price_mode'] ?? ($mp->price_mode ?? 'fixed'),
+            'sync_key' => $product['source_key'] ?? ($mp->sync_key ?? null),
+            'source_url' => $product['source_url'] ?? ($mp->source_url ?? null),
+            'source_verified_at' => $product['source_verified_at'] ?? ($mp->source_verified_at ?? null),
+            'booking_url' => $product['booking_url'] ?? ($mp->booking_url ?? null),
+            'offering_details' => $product['offering_details'] ?? ($mp->offering_details ?? []),
             'name' => $name,
             'slug' => $slug,
             'description' => $product['description'] ?? ($i->name . ' — ' . $name),
             'short_description' => Str::limit($product['description'] ?? ($i->name . ' — ' . $name), 120),
-            'sku' => 'KICC-INS-' . strtoupper(Str::random(6)),
+            'sku' => $mp->sku ?? ('KICC-INS-' . strtoupper(Str::random(6))),
             'unit' => $product['unit'] ?? 'unit',
-            'status' => 'active',
+            'status' => $product['publication_status'] ?? ($mp->status ?? 'active'),
             'is_featured' => true,
             'pipeline_code' => $pipelineCode ?? ($mp->pipeline_code ?? null),
             // Preserve existing media when the product array doesn't specify it —
@@ -415,8 +437,17 @@ class InstitutionSyncService
             $mp = Product::create($data);
         }
 
+        if($mp->offering_kind==='experience'){
+            $details=$mp->offering_details??[];
+            \App\Models\InstitutionExperience::updateOrCreate(['product_id'=>$mp->id],['institution_id'=>$i->id,'duration_minutes'=>$details['duration_minutes']??null,'max_guests'=>$details['max_guests']??null,'inclusions'=>$details['inclusions']??[],'requirements'=>$details['requirements']??[]]);
+        }
+        // Persist identity without replacing concurrent video metadata or scheduling a second sync.
+        $locked=CountyInstitution::lockForUpdate()->findOrFail($i->id);$entries=$locked->products??[];
+        foreach($entries as &$e)if((!empty($product['source_key'])&&($e['source_key']??null)===$product['source_key'])||($e['name']??'')===$name)$e['marketplace_product_id']=$mp->id;
+        unset($e);$locked->syncing=true;$locked->forceFill(['products'=>$entries])->save();
         // Variant
-        $variant = $mp->variants()->firstOrNew(['name' => 'Standard ' . ($product['unit'] ?? 'unit')]);
+        $variant = $mp->variants()->first() ?? $mp->variants()->make();
+        $variant->name='Standard '.($product['unit']??'unit');
         $variant->fill([
             'sku' => $mp->sku . '-V1',
             'price' => $product['price'] ?? 0,
@@ -436,7 +467,7 @@ class InstitutionSyncService
 
     protected function resolveCategoryId(?string $categoryName): ?int
     {
-        if (!$categoryName) return null;
+        $categoryName=$categoryName?:'General';
         $cat = \App\Models\Marketplace\ProductCategory::where('name', $categoryName)->first();
         if ($cat) return $cat->id;
 

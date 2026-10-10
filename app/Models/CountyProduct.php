@@ -6,7 +6,7 @@ use Illuminate\Database\Eloquent\Model;
 
 class CountyProduct extends Model
 {
-    protected $fillable = ['county_id', 'userId', 'countyId', 'user_id', 'name', 'description', 'category', 'image_url', 'video_url', 'videos', 'price', 'unit', 'booking_type', 'status', 'is_published', 'isPublished'];
+    protected $fillable = ['institution_id', 'county_id', 'userId', 'countyId', 'user_id', 'name', 'description', 'category', 'image_url', 'video_url', 'videos', 'price', 'unit', 'booking_type', 'status', 'is_published', 'isPublished'];
     protected $casts = ['videos' => 'array', 'is_published' => 'boolean', 'price' => 'float'];
     public function county() { return $this->belongsTo(County::class); }
     public function user() { return $this->belongsTo(User::class); }

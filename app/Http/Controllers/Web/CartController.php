@@ -47,6 +47,7 @@ class CartController extends Controller
         ]);
 
         $variant = ProductVariant::where('is_active', true)->findOrFail($data['variant_id']);
+        abort_unless($variant->product && $variant->product->status==='active' && $variant->product->price_mode==='fixed' && $variant->product->offering_kind==='product',422,'This offering requires a confirmed quote or booking, not a shopping-cart purchase.');
         $cart = $this->currentCart($request);
         $qty = $data['quantity'] ?? 1;
 
