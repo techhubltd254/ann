@@ -47,8 +47,13 @@ class Handler(BaseHTTPRequestHandler):
                 r = get().run_pool_distribution(body.get("contributions", []), body.get("qualities", {}))
             elif self.path == "/anonymize":
                 a = get().anonymizer
-                a.k = body.get("k", 5)
-                r = a.anonymize(body.get("rows", []), body.get("group_by_key", "county_id"))
+                # A string is one quasi-identifier, never an iterable of letters.
+                key = body.get("group_by_key", ["county_id", "sector_id"])
+                quasi = (key,) if isinstance(key, str) else tuple(key)
+                if not quasi or any(q not in ("county_id", "sector_id") for q in quasi):
+                    return self._send(400, {"error": "unsupported quasi-identifier"})
+                a.k = max(5, int(body.get("k", 5)))
+                r = a.anonymize(body.get("rows", []), quasi)
             elif self.path == "/recommend":
                 plat = get()
                 r = plat.recommender.recommend(
