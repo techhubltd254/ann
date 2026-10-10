@@ -143,6 +143,8 @@ class CacheSyncService
      */
     public function national(): void
     {
+        \Illuminate\Support\Facades\Cache::forget('reference.native.v1');
+        \Illuminate\Support\Facades\Cache::increment('kicc_cache_version');
         $prefixes = [
             'national',
             'ministry',

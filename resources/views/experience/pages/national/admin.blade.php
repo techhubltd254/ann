@@ -3,7 +3,9 @@
 @section('content')
 <div class="max-w-7xl mx-auto px-5 py-10">
     <h1 class="text-2xl font-black text-white mb-2">National Government Management</h1>
-    <p class="text-zinc-400 text-sm mb-6">Manage ministries, agencies, national hero video, ministry media, and flag videos.</p>
+    <p class="text-zinc-400 text-sm mb-6">Manage national content and media. Large uploads are resumable; new versions are drafted, processed and previewed before publication.</p>
+<link rel="stylesheet" href="/css/national-media-admin.css?v=national-resumable-v1">
+<div class="nm-summary"><div><strong>{{ $stats['ministries'] }}</strong><span>Ministries</span></div><div><strong>{{ $stats['agencies'] }}</strong><span>Agencies</span></div><div><strong>{{ $mediaLibrary->where('status','processing')->count() }}</strong><span>Processing videos</span></div><div><strong>2 GiB</strong><span>Maximum video file</span></div><a class="as-cta" href="{{ route('national.admin.v2.dashboard',['tab'=>'library']) }}">Media library & versions</a><a href="/national-government" target="_blank" rel="noopener noreferrer">Preview public page ↗</a></div>
 
     @if(session('success'))<div class="bg-emerald-500/10 border border-emerald-500/30 text-emerald-400 rounded-xl px-4 py-3 mb-4 text-sm">{{ session('success') }}</div>@endif
 
@@ -41,7 +43,7 @@
                         <div><div class="font-bold text-white text-sm">{{ $m->name }}</div><div class="text-xs text-zinc-500">{{ $m->agencies->count() }} agencies</div></div>
                     </div>
                     <div class="flex gap-1">
-                        <button onclick="this.nextElementSibling.classList.toggle('hidden')" class="text-xs px-2 py-1 rounded border border-white/10 text-zinc-400 hover:text-white">Edit</button>
+                        <button onclick="this.closest('.border').querySelector('form.hidden')?.classList.toggle('hidden')" class="text-xs px-2 py-1 rounded border border-white/10 text-zinc-400 hover:text-white">Edit</button>
                         <form method="POST" action="{{ route('national.admin.v2.ministry.delete', $m->id) }}" style="display:inline" onsubmit="return confirm('Confirm this action?')">@csrf<button type="submit" class="text-xs px-2 py-1 rounded border border-red-500/30 text-red-400 hover:bg-red-500/10">×</button></form>
                     </div>
                 </div>
@@ -80,147 +82,25 @@
     </div>
 
     @elseif($tab === 'hero')
-    {{-- NATIONAL HERO VIDEO --}}
-    <div class="glass-card rounded-2xl overflow-hidden">
-        <div class="grid md:grid-cols-3 gap-0">
-            <div class="md:col-span-2 bg-black relative min-h-[250px]">
-                @if($nationalHero?->mp4Url())
-                <video autoplay muted loop playsinline class="absolute inset-0 w-full h-full object-cover">
-                    <source src="{{ $nationalHero->mp4Url() }}" type="video/mp4">
-                </video>
-                <div class="absolute bottom-2 left-3 text-[10px] px-2 py-1 rounded bg-black/70 text-indigo-300 border border-indigo-500/30">National Hero Video Playing</div>
-                @else
-                <div class="absolute inset-0 flex items-center justify-center">
-                    <div class="text-center">
-                        <svg class="w-12 h-12 mx-auto text-zinc-600 mb-2" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M15 10l4.553-2.276A1 1 0 0121 8.618v6.764a1 1 0 01-1.447.894L15 14M5 18h8a2 2 0 002-2V8a2 2 0 00-2-2H5a2 2 0 00-2 2v8a2 2 0 002 2z"/></svg>
-                        <div class="text-sm font-semibold text-zinc-500">No national hero video</div>
-                        <div class="text-[10px] text-zinc-600 mt-1">Upload to play on /national-government</div>
-                    </div>
-                </div>
-                @endif
-            </div>
-            <div class="p-6 flex flex-col justify-center">
-                <div class="text-sm font-bold text-white mb-1">National Hero Video</div>
-                <div class="text-[10px] text-zinc-500 mb-4">Plays on the national government landing page</div>
-                <form data-r2-upload method="POST" action="{{ route('national.admin.v2.hero.upload') }}" enctype="multipart/form-data" class="mb-3">
-                    @csrf
-                    <label class="flex items-center justify-center h-10 rounded-xl bg-gradient-to-r from-indigo-500 to-violet-600 text-white text-xs font-bold cursor-pointer hover:from-indigo-400 hover:to-violet-500 transition active:scale-95">
-                        <input type="file" name="video" accept="video/mp4,video/webm" class="sr-only" onchange="this.form.submit()">
-                         Upload National Hero Video
-                    </label>
-                </form>
-                @if($nationalHero?->mp4Url())
-                <form method="POST" action="{{ route('national.admin.v2.hero.delete') }}" onsubmit="return confirm('Delete hero video?')">@csrf<button class="text-xs text-red-400 hover:text-red-300 underline">Delete</button></form>
-                @endif
-            </div>
-        </div>
-    </div>
-
+@include('experience.admin.national-media-widget',['ownerType'=>'national_page','ownerId'=>1,'slot'=>'national_hero_video','label'=>'National Government Hero Video','help'=>'Published on /national-government. Uploading a draft never overwrites the current live hero.','liveAsset'=>$nationalHero])
     @elseif($tab === 'media')
-    {{-- MINISTRY MEDIA --}}
-    <div class="space-y-4">
-        @foreach($ministries as $m)
-        @php $media = $ministryMedia[$m->id] ?? ['video' => null, 'flag' => null]; @endphp
-        <div class="glass-card rounded-2xl overflow-hidden">
-            <div class="grid md:grid-cols-4 gap-0">
-                <div class="md:col-span-2 bg-black relative min-h-[180px]">
-                    @if($media['video']?->mp4Url())
-                    <video autoplay muted loop playsinline class="absolute inset-0 w-full h-full object-cover">
-                        <source src="{{ $media['video']->mp4Url() }}" type="video/mp4">
-                    </video>
-                    <div class="absolute bottom-2 left-3 text-[10px] px-2 py-1 rounded bg-black/70 text-indigo-300 border border-indigo-500/30">Ministry Video</div>
-                    @elseif($media['flag']?->mp4Url())
-                    <video autoplay muted loop playsinline class="absolute inset-0 w-full h-full object-cover">
-                        <source src="{{ $media['flag']->mp4Url() }}" type="video/mp4">
-                    </video>
-                    <div class="absolute bottom-2 left-3 text-[10px] px-2 py-1 rounded bg-black/70 text-amber-300 border border-amber-500/30">Ministry Flag</div>
-                    @else
-                    <div class="absolute inset-0 flex items-center justify-center">
-                        <div class="text-center">
-                            <div class="w-12 h-12 mx-auto rounded-xl flex items-center justify-center text-white text-lg font-black" style="background: {{ $m->color ?: '#0B0B0B' }}">{{ $m->code ?? substr($m->name, 0, 3) }}</div>
-                            <div class="text-xs text-zinc-500 mt-2">No video or flag</div>
-                        </div>
-                    </div>
-                    @endif
-                </div>
-                <div class="p-5 flex flex-col justify-center border-t md:border-t-0 md:border-l border-white/10">
-                    <div class="text-sm font-bold text-white mb-1">{{ $m->name }}</div>
-                    <div class="text-[10px] text-zinc-500 mb-3">Upload ministry tile video or animated flag</div>
-                    <form data-r2-upload method="POST" action="{{ route('national.admin.v2.ministry.video.upload', $m->id) }}" enctype="multipart/form-data" class="mb-2">
-                        @csrf
-                        <label class="flex items-center justify-center h-8 rounded-lg bg-[#0B0B0B]/20 text-zinc-400 text-[10px] font-bold cursor-pointer hover:bg-[#0B0B0B]/30 transition border border-[#0B0B0B]/30">
-                            <input type="file" name="video" accept="video/mp4,video/webm" class="sr-only" onchange="this.form.submit()">
-                             Upload Ministry Video
-                        </label>
-                    </form>
-                    @if($media['video']?->mp4Url())
-                    <form method="POST" action="{{ route('national.admin.v2.ministry.video.delete', $m->id) }}" onsubmit="return confirm('Delete ministry video?')">@csrf<button class="text-[10px] text-red-400 hover:text-red-300 underline mb-2">Delete video</button></form>
-                    @endif
-                    <form data-r2-upload method="POST" action="{{ route('national.admin.v2.ministry.flag.upload', $m->id) }}" enctype="multipart/form-data" class="mb-1">
-                        @csrf
-                        <label class="flex items-center justify-center h-8 rounded-lg bg-amber-500/10 text-amber-400 text-[10px] font-bold cursor-pointer hover:bg-amber-500/20 transition border border-amber-500/20">
-                            <input type="file" name="video" accept="video/mp4,video/webm" class="sr-only" onchange="this.form.submit()">
-                             Upload Ministry Flag
-                        </label>
-                    </form>
-                    @if($media['flag']?->mp4Url())
-                    <form method="POST" action="{{ route('national.admin.v2.ministry.flag.delete', $m->id) }}" onsubmit="return confirm('Delete ministry flag?')">@csrf<button class="text-[10px] text-red-400 hover:text-red-300 underline">Delete flag</button></form>
-                    @endif
-                </div>
-                <div class="p-5 flex flex-col justify-center glass-card/5 border-t md:border-t-0 md:border-l border-white/10">
-                    <div class="text-[10px] font-semibold text-zinc-400 mb-2">Fallback Chain</div>
-                    <div class="text-[9px] text-zinc-500 space-y-1">
-                        <div class="{{ $media['video']?->mp4Url() ? 'text-emerald-400 font-semibold' : '' }}">1. Ministry video</div>
-                        <div>2. Agency videos</div>
-                        <div class="{{ $media['flag']?->mp4Url() ? 'text-emerald-400 font-semibold' : '' }}">3. Ministry flag</div>
-                        <div>4. National flag</div>
-                    </div>
-                </div>
-            </div>
-        </div>
-        @endforeach
-    </div>
-
+<div class="nm-toolbar"><label>Find a ministry<input data-nm-search placeholder="Search ministry name"></label><p>Each ministry has its own video and animated-flag controls. National-only administration applies to every upload and publication.</p></div>
+@foreach($ministries as $m)
+<div data-nm-ministry="{{ strtolower($m->name) }}"><h2>{{ $m->name }}</h2>
+@include('experience.admin.national-media-widget',['ownerType'=>\App\Models\Ministry::class,'ownerId'=>$m->id,'slot'=>'ministry_video_'.$m->slug,'label'=>$m->name.' — Ministry Video','help'=>'Dedicated ministry media; publishes only to this ministry’s slot.','liveAsset'=>$ministryMedia[$m->id]['video']??null])
+@include('experience.admin.national-media-widget',['ownerType'=>\App\Models\Ministry::class,'ownerId'=>$m->id,'slot'=>'ministry_flag_video','label'=>$m->name.' — Animated Flag','help'=>'Fallback flag for this ministry.','liveAsset'=>$ministryMedia[$m->id]['flag']??null])
+</div>
+@endforeach
     @elseif($tab === 'flag')
-    {{-- NATIONAL FLAG --}}
-    <div class="glass-card rounded-2xl overflow-hidden">
-        <div class="grid md:grid-cols-3 gap-0">
-            <div class="md:col-span-2 bg-black relative min-h-[200px]">
-                @if($nationalFlag?->mp4Url())
-                <video autoplay muted loop playsinline class="absolute inset-0 w-full h-full object-cover">
-                    <source src="{{ $nationalFlag->mp4Url() }}" type="video/mp4">
-                </video>
-                <div class="absolute bottom-2 left-3 text-[10px] px-2 py-1 rounded bg-black/70 text-amber-300 border border-amber-500/30">National Flag Playing</div>
-                @else
-                <div class="absolute inset-0 flex items-center justify-center">
-                    <div class="text-center">
-                        <svg class="w-12 h-12 mx-auto text-zinc-600 mb-2" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M3 3v18h18M7 16l4-8 4 4 4-6"/></svg>
-                        <div class="text-sm font-semibold text-zinc-500">No national flag video</div>
-                        <div class="text-[10px] text-zinc-600 mt-1">Upload animated flag as last-resort fallback</div>
-                    </div>
-                </div>
-                @endif
-            </div>
-            <div class="p-6 flex flex-col justify-center">
-                <div class="text-sm font-bold text-white mb-1">National Animated Flag</div>
-                <div class="text-[10px] text-zinc-500 mb-4">Plays on every tile when no other video is available (fallback level 5)</div>
-                <form data-r2-upload method="POST" action="{{ route('national.admin.v2.flag.upload') }}" enctype="multipart/form-data" class="mb-3">
-                    @csrf
-                    <label class="flex items-center justify-center h-10 rounded-xl bg-gradient-to-r from-amber-500 to-orange-600 text-white text-xs font-bold cursor-pointer hover:from-amber-400 hover:to-orange-500 transition active:scale-95">
-                        <input type="file" name="video" accept="video/mp4,video/webm" class="sr-only" onchange="this.form.submit()">
-                         Upload National Flag
-                    </label>
-                </form>
-                @if($nationalFlag?->mp4Url())
-                <div class="flex items-center gap-2 text-xs">
-                    <span class="text-emerald-400">Live</span>
-                    <form method="POST" action="{{ route('national.admin.v2.flag.delete') }}" onsubmit="return confirm('Delete national flag?')">@csrf<button class="text-red-400 hover:text-red-300 underline">Delete</button></form>
-                </div>
-                @endif
-            </div>
-        </div>
-    </div>
-
+@include('experience.admin.national-media-widget',['ownerType'=>'national_page','ownerId'=>1,'slot'=>'national_flag_video','label'=>'National Animated Flag','help'=>'National fallback animation. Draft, preview and publish separately.','liveAsset'=>$nationalFlag])
+    @elseif($tab === 'library')
+<section class="nm-card"><h2>National media library</h2><p>Original files and versions are retained. Publishing replaces the logical slot only after the new stream is ready.</p><div class="nm-table"><table><thead><tr><th>Title</th><th>Destination</th><th>State</th><th>Size</th><th>Manage</th></tr></thead><tbody>
+@forelse($mediaLibrary as $a)
+<tr><td>{{ $a->alt_text?:$a->original_name }}</td><td>{{ $a->metadata['target_slot']??$a->slot }}</td><td>{{ $a->status }} · {{ $a->metadata['publication']??'legacy live' }}</td><td>{{ number_format($a->size_bytes/1048576,1) }} MiB</td><td><a href="{{ route('national.admin.v2.dashboard',['tab'=>$a->owner_type===\App\Models\Ministry::class?'media':(str_contains($a->slot,'flag')?'flag':'hero')]) }}">Preview & manage</a></td></tr>
+@empty
+<tr><td colspan="5">No national videos yet.</td></tr>
+@endforelse
+</tbody></table></div></section>
     @elseif($tab === 'pages')
     {{-- PAGES --}}
     <div class="glass-card rounded-2xl p-6">
@@ -342,11 +222,8 @@
 
 </div>
 @push('scripts')
-<x-r2-large-upload
-    owner-type="national"
-    :owner-id="0"
-    r2-path="national/video/hero/hero.mp4"
-/>
+<script defer src="/js/national-media-upload.js?v=national-resumable-v1"></script>
 @endpush
+
 
 @endsection

@@ -51,7 +51,7 @@ class NationalGovernmentController extends Controller
         $heroVid = Cache::remember($this->cacheKey('hero'), 900, function () {
             try {
                 $asset = MediaAsset::resolveSlot(\App\Models\County::class, 0, 'national_hero_video');
-                return $asset?->mp4Url();
+                return $asset?app(\App\Services\NationalMediaService::class)->stream($asset):null;
             } catch (\Throwable) { return null; }
         });
         $heroPoster = MediaAsset::resolveSlot(\App\Models\County::class, 0, 'national_hero_video')?->posterUrl() ?? '';

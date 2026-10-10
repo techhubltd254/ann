@@ -66,6 +66,8 @@ class ReferenceExperienceController extends Controller
             $tables['institutions'][] = ['id'=>(string)$i->id,'countyId'=>(string)$i->county_id,'county'=>$countyNames[$i->county_id] ?? '', 'slug'=>$i->slug,'name'=>$i->name,'description'=>$i->description,'website'=>$i->website,'type'=>$i->type,'email'=>$i->email,'verified'=>(bool)$i->is_verified_trader,'sectors'=>$i->sectorEntities->pluck('sector_id')->unique()->values()->all(),'status'=>'published','tileMedia'=>$tiles->tile(\App\Models\CountyInstitution::class,(int)$i->id,'hero')];
             if ($hero['video']) $tables['media'][] = ['id'=>'institution:'.$i->id,'ownerId'=>(string)$i->id,'kind'=>'video','role'=>'experience','target'=>'/institutions/'.$i->slug,'name'=>$i->name.' — institution film','url'=>$hero['video'],'poster'=>$hero['poster'] ?? null,'status'=>'published'];
         }
+        $nationalHero=MediaAsset::resolveSlot(\App\Models\County::class,0,'national_hero_video');
+        if($nationalHero){$tables['media'][]=['id'=>'national:hero','ownerId'=>'national','kind'=>'video','role'=>'national','target'=>'/national-government','name'=>$nationalHero->alt_text?:'National Government — hero film','url'=>app(\App\Services\NationalMediaService::class)->stream($nationalHero),'poster'=>$nationalHero->posterUrl(),'status'=>'published'];}
         // Landing page hero video (kiccwalkin.mp4)
         $landingHero = MediaAsset::where('owner_type', 'landing_page')->where('slot', 'hero_video')->first();
         if ($landingHero) {

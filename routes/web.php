@@ -577,9 +577,9 @@ Route::middleware(['auth', 'admin:national'])->prefix('kicc-admin/national')->na
     // Ministry & Agency CRUD
     Route::post('/ministries', [\App\Http\Controllers\Web\NationalAdminController::class, 'storeMinistry'])->name('ministry.store');
     Route::post('/ministries/{ministry}', [\App\Http\Controllers\Web\NationalAdminController::class, 'updateMinistry'])->name('ministry.update');
-    Route::get('/ministries/{ministry}/delete', [\App\Http\Controllers\Web\NationalAdminController::class, 'deleteMinistry'])->name('ministry.delete');
+    Route::post('/ministries/{ministry}/delete', [\App\Http\Controllers\Web\NationalAdminController::class, 'deleteMinistry'])->name('ministry.delete');
     Route::post('/agencies', [\App\Http\Controllers\Web\NationalAdminController::class, 'storeAgency'])->name('agency.store');
-    Route::get('/agencies/{agency}/delete', [\App\Http\Controllers\Web\NationalAdminController::class, 'deleteAgency'])->name('agency.delete');
+    Route::post('/agencies/{agency}/delete', [\App\Http\Controllers\Web\NationalAdminController::class, 'deleteAgency'])->name('agency.delete');
 });
 
 // KPIs & Monitoring
@@ -939,4 +939,12 @@ Route::middleware(['auth', \App\Http\Middleware\AdminConsole::class])->group(fun
  Route::get('/admin/institutions/{institution}/products/{product}/edit', [\App\Http\Controllers\Web\InstitutionProductAdminController::class,'edit'])->name('institution.products.edit');
  Route::post('/admin/institutions/{institution}/products/{product}', [\App\Http\Controllers\Web\InstitutionProductAdminController::class,'update'])->name('institution.products.save');
  Route::delete('/admin/institutions/{institution}/products/{product}/videos/{asset}', [\App\Http\Controllers\Web\InstitutionProductAdminController::class,'destroyVideo'])->name('institution.products.video.delete');
+});
+
+// Shared resumable media controls; national scope is verified in the controller.
+Route::middleware(['auth',\App\Http\Middleware\AdminConsole::class])->group(function(){
+ Route::get('/admin/uploads/{uploadId}/status',[\App\Http\Controllers\Web\ChunkedUploadController::class,'status'])->name('admin.uploads.status');
+ Route::delete('/admin/uploads/{uploadId}',[\App\Http\Controllers\Web\ChunkedUploadController::class,'cancel'])->name('admin.uploads.cancel');
+ Route::post('/admin/national/media/{asset}/publish',[\App\Http\Controllers\Web\NationalAdminController::class,'publishMedia'])->name('national.media.publish');
+ Route::post('/admin/national/media/{asset}/unpublish',[\App\Http\Controllers\Web\NationalAdminController::class,'unpublishMedia'])->name('national.media.unpublish');
 });

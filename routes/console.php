@@ -77,3 +77,6 @@ Schedule::exec('/opt/kicc-laravel/scripts/restore-test.sh')->weeklyOn(0, '06:30'
 
 // Elasticsearch index rebuild (runs silently when ES is unavailable).
 Schedule::command('search:index-es')->weeklyOn(0, '06:00');
+
+// Only expired temporary chunks are removed; published media is retained.
+\Illuminate\Support\Facades\Schedule::command('uploads:prune')->hourly()->withoutOverlapping();

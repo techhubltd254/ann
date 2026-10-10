@@ -20,6 +20,7 @@ class NationalAdminController extends Controller
     public function __construct()
     {
         $this->middleware('auth');
+        $this->middleware(function($r,$next){app(\App\Services\NationalMediaService::class)->authorize($r->user());return $next($r);});
     }
 
     public function index()
@@ -29,7 +30,9 @@ class NationalAdminController extends Controller
 
     public function dashboard(Request $request)
     {
-        $tab = $request->get('tab', 'ministries');
+        app(\App\Services\NationalMediaService::class)->authorize($request->user());
+        $tab = $request->get('tab', 'hero');
+        $mediaLibrary=MediaAsset::with('derivatives')->where('kind','video')->where(fn($q)=>$q->where(fn($q)=>$q->where('owner_type',County::class)->where('owner_id',0))->orWhere('owner_type',Ministry::class))->latest('id')->get();
 
         // Cached 60s (admin TTL); busted by CacheSyncService::national() on write.
         $buildDash = function () {
@@ -101,7 +104,7 @@ class NationalAdminController extends Controller
             ->latest()->take(50)->get();
 
         return view('experience.pages.national.admin', compact(
-            'tab', 'navItems', 'ministries', 'agencies', 'nationalPages',
+            'tab', 'navItems', 'mediaLibrary', 'ministries', 'agencies', 'nationalPages',
             'stats', 'nationalHero', 'nationalFlag', 'ministryMedia',
             'counties', 'quadrantCounts', 'unclassified',
             'activationCounts', 'activationTotal', 'activeByCounty',
@@ -113,188 +116,47 @@ class NationalAdminController extends Controller
 
     public function uploadNationalHero(Request $request)
     {
-        abort_if(!Auth::user()?->isAdmin(), 403);
-        $data = $request->validate(['video' => 'required|file|mimes:mp4,webm,mov|max:2048000']);
-        $file = $request->file('video');
-        $disk = Storage::disk('r2');
-        $r2Path = 'national/video/hero/hero.mp4';
-        $disk->writeStream($r2Path, fopen($file->getRealPath(), 'r'), ['visibility' => 'public']);
-
-        MediaAsset::forSlot(County::class, 0, 'national_hero_video')->delete();
-        $asset = MediaAsset::create([
-            'uuid' => (string) Str::uuid(),
-            'owner_id' => 0,
-            'owner_type' => County::class,
-            'slot' => 'national_hero_video',
-            'disk' => 'r2',
-            'path' => $r2Path,
-            'original_name' => $file->getClientOriginalName(),
-            'mime' => $file->getMimeType(),
-            'kind' => 'video',
-            'size_bytes' => $file->getSize(),
-            'status' => 'ready',
-        ]);
-        $asset->derivatives()->create([
-            'kind' => 'video_mp4', 'path' => $r2Path, 'mime' => 'video/mp4',
-            'size_bytes' => $file->getSize(), 'variant' => 'source',
-        ]);
-        app(\App\Services\CacheSyncService::class)->national();
-        return redirect()->route('national.admin.v2', ['tab' => 'hero'])->with('success', 'National hero video uploaded.');
+        app(\App\Services\NationalMediaService::class)->authorize($request->user());
+        return redirect()->route('national.admin.v2.dashboard',['tab'=>'hero'])->withErrors(['video'=>'Use the resumable uploader on this page. Large files must not be submitted as one request.']);
     }
 
-    public function deleteNationalHero()
-    {
-        abort_if(!Auth::user()?->isAdmin(), 403);
-        $assets = MediaAsset::forSlot(County::class, 0, 'national_hero_video')->get();
-        foreach ($assets as $a) {
-            if ($a->disk === 'r2') Storage::disk('r2')->delete($a->path);
-            $a->derivatives()->delete();
-            $a->delete();
-        }
-        app(\App\Services\CacheSyncService::class)->national();
-        return redirect()->route('national.admin.v2', ['tab' => 'hero'])->with('success', 'National hero video removed.');
+    public function deleteNationalHero(){
+        $asset=MediaAsset::resolveSlot(County::class,0,'national_hero_video');if($asset)app(\App\Services\NationalMediaService::class)->unpublish($asset,Auth::user());
+        return redirect()->route('national.admin.v2.dashboard',['tab'=>'hero'])->with('success','Media returned to draft; the file is retained.');
     }
-
-    /* ─── MINISTRY MEDIA ─── */
 
     public function uploadMinistryVideo(Request $request, Ministry $ministry)
     {
-        abort_if(!Auth::user()?->isAdmin(), 403);
-        $data = $request->validate(['video' => 'required|file|mimes:mp4,webm,mov|max:2048000']);
-        $file = $request->file('video');
-        $disk = Storage::disk('r2');
-        $filename = $ministry->slug . '.' . $file->getClientOriginalExtension();
-        $r2Path = "national/ministries/{$ministry->slug}/video/{$filename}";
-        $disk->writeStream($r2Path, fopen($file->getRealPath(), 'r'), ['visibility' => 'public']);
-
-        MediaAsset::forSlot(Ministry::class, $ministry->id, 'ministry_video_' . $ministry->slug)->delete();
-        $asset = MediaAsset::create([
-            'uuid' => (string) Str::uuid(),
-            'owner_id' => $ministry->id,
-            'owner_type' => Ministry::class,
-            'slot' => 'ministry_video_' . $ministry->slug,
-            'disk' => 'r2',
-            'path' => $r2Path,
-            'original_name' => $file->getClientOriginalName(),
-            'mime' => $file->getMimeType(),
-            'kind' => 'video',
-            'size_bytes' => $file->getSize(),
-            'status' => 'ready',
-        ]);
-        $asset->derivatives()->create([
-            'kind' => 'video_mp4', 'path' => $r2Path, 'mime' => 'video/mp4',
-            'size_bytes' => $file->getSize(), 'variant' => 'source',
-        ]);
-        app(\App\Services\CacheSyncService::class)->national();
-        return redirect()->route('national.admin.v2', ['tab' => 'media'])->with('success', "Video for {$ministry->name} uploaded.");
+        app(\App\Services\NationalMediaService::class)->authorize($request->user());
+        return redirect()->route('national.admin.v2.dashboard',['tab'=>'media'])->withErrors(['video'=>'Use the resumable uploader on this page. Large files must not be submitted as one request.']);
     }
 
-    public function deleteMinistryVideo(Ministry $ministry)
-    {
-        abort_if(!Auth::user()?->isAdmin(), 403);
-        $assets = MediaAsset::forSlot(Ministry::class, $ministry->id, 'ministry_video_' . $ministry->slug)->get();
-        foreach ($assets as $a) {
-            if ($a->disk === 'r2') Storage::disk('r2')->delete($a->path);
-            $a->derivatives()->delete();
-            $a->delete();
-        }
-        app(\App\Services\CacheSyncService::class)->national();
-        return redirect()->route('national.admin.v2', ['tab' => 'media'])->with('success', "Video for {$ministry->name} removed.");
+    public function deleteMinistryVideo(Ministry $ministry){
+        $asset=MediaAsset::resolveSlot(Ministry::class,$ministry->id,'ministry_video_'.$ministry->slug);if($asset)app(\App\Services\NationalMediaService::class)->unpublish($asset,Auth::user());
+        return redirect()->route('national.admin.v2.dashboard',['tab'=>'media'])->with('success','Media returned to draft; the file is retained.');
     }
 
     public function uploadMinistryFlag(Request $request, Ministry $ministry)
     {
-        abort_if(!Auth::user()?->isAdmin(), 403);
-        $data = $request->validate(['video' => 'required|file|mimes:mp4,webm,mov|max:2048000']);
-        $file = $request->file('video');
-        $disk = Storage::disk('r2');
-        $filename = 'flag.' . $file->getClientOriginalExtension();
-        $r2Path = "national/ministries/{$ministry->slug}/flag/{$filename}";
-        $disk->writeStream($r2Path, fopen($file->getRealPath(), 'r'), ['visibility' => 'public']);
-
-        MediaAsset::forSlot(Ministry::class, $ministry->id, 'ministry_flag_video')->delete();
-        $asset = MediaAsset::create([
-            'uuid' => (string) Str::uuid(),
-            'owner_id' => $ministry->id,
-            'owner_type' => Ministry::class,
-            'slot' => 'ministry_flag_video',
-            'disk' => 'r2',
-            'path' => $r2Path,
-            'original_name' => $file->getClientOriginalName(),
-            'mime' => $file->getMimeType(),
-            'kind' => 'video',
-            'size_bytes' => $file->getSize(),
-            'status' => 'ready',
-        ]);
-        $asset->derivatives()->create([
-            'kind' => 'video_mp4', 'path' => $r2Path, 'mime' => 'video/mp4',
-            'size_bytes' => $file->getSize(), 'variant' => 'source',
-        ]);
-        app(\App\Services\CacheSyncService::class)->national();
-        return redirect()->route('national.admin.v2', ['tab' => 'media'])->with('success', "Flag for {$ministry->name} uploaded.");
+        app(\App\Services\NationalMediaService::class)->authorize($request->user());
+        return redirect()->route('national.admin.v2.dashboard',['tab'=>'media'])->withErrors(['video'=>'Use the resumable uploader on this page. Large files must not be submitted as one request.']);
     }
 
-    public function deleteMinistryFlag(Ministry $ministry)
-    {
-        abort_if(!Auth::user()?->isAdmin(), 403);
-        $assets = MediaAsset::forSlot(Ministry::class, $ministry->id, 'ministry_flag_video')->get();
-        foreach ($assets as $a) {
-            if ($a->disk === 'r2') Storage::disk('r2')->delete($a->path);
-            $a->derivatives()->delete();
-            $a->delete();
-        }
-        app(\App\Services\CacheSyncService::class)->national();
-        return redirect()->route('national.admin.v2', ['tab' => 'media'])->with('success', "Flag for {$ministry->name} removed.");
+    public function deleteMinistryFlag(Ministry $ministry){
+        $asset=MediaAsset::resolveSlot(Ministry::class,$ministry->id,'ministry_flag_video');if($asset)app(\App\Services\NationalMediaService::class)->unpublish($asset,Auth::user());
+        return redirect()->route('national.admin.v2.dashboard',['tab'=>'media'])->with('success','Media returned to draft; the file is retained.');
     }
-
-    /* ─── NATIONAL FLAG ─── */
 
     public function uploadNationalFlag(Request $request)
     {
-        abort_if(!Auth::user()?->isAdmin(), 403);
-        $data = $request->validate(['video' => 'required|file|mimes:mp4,webm,mov|max:2048000']);
-        $file = $request->file('video');
-        $disk = Storage::disk('r2');
-        $filename = 'national-flag.' . $file->getClientOriginalExtension();
-        $r2Path = "national/flag/{$filename}";
-        $disk->writeStream($r2Path, fopen($file->getRealPath(), 'r'), ['visibility' => 'public']);
-
-        MediaAsset::forSlot(County::class, 0, 'national_flag_video')->delete();
-        $asset = MediaAsset::create([
-            'uuid' => (string) Str::uuid(),
-            'owner_id' => 0,
-            'owner_type' => County::class,
-            'slot' => 'national_flag_video',
-            'disk' => 'r2',
-            'path' => $r2Path,
-            'original_name' => $file->getClientOriginalName(),
-            'mime' => $file->getMimeType(),
-            'kind' => 'video',
-            'size_bytes' => $file->getSize(),
-            'status' => 'ready',
-        ]);
-        $asset->derivatives()->create([
-            'kind' => 'video_mp4', 'path' => $r2Path, 'mime' => 'video/mp4',
-            'size_bytes' => $file->getSize(), 'variant' => 'source',
-        ]);
-        app(\App\Services\CacheSyncService::class)->national();
-        return redirect()->route('national.admin.v2', ['tab' => 'flag'])->with('success', 'National animated flag uploaded.');
+        app(\App\Services\NationalMediaService::class)->authorize($request->user());
+        return redirect()->route('national.admin.v2.dashboard',['tab'=>'flag'])->withErrors(['video'=>'Use the resumable uploader on this page. Large files must not be submitted as one request.']);
     }
 
-    public function deleteNationalFlag()
-    {
-        abort_if(!Auth::user()?->isAdmin(), 403);
-        $assets = MediaAsset::forSlot(County::class, 0, 'national_flag_video')->get();
-        foreach ($assets as $a) {
-            if ($a->disk === 'r2') Storage::disk('r2')->delete($a->path);
-            $a->derivatives()->delete();
-            $a->delete();
-        }
-        app(\App\Services\CacheSyncService::class)->national();
-        return redirect()->route('national.admin.v2', ['tab' => 'flag'])->with('success', 'National animated flag removed.');
+    public function deleteNationalFlag(){
+        $asset=MediaAsset::resolveSlot(County::class,0,'national_flag_video');if($asset)app(\App\Services\NationalMediaService::class)->unpublish($asset,Auth::user());
+        return redirect()->route('national.admin.v2.dashboard',['tab'=>'flag'])->with('success','Media returned to draft; the file is retained.');
     }
-
-    /* ─── CRUD: kept from original ─── */
 
     public function storeMinistry(Request $request)
     {
@@ -309,7 +171,7 @@ class NationalAdminController extends Controller
         $data['slug'] = Str::slug($data['name']);
         Ministry::create($data);
         app(\App\Services\CacheSyncService::class)->national();
-        return redirect()->route('national.admin.v2', ['tab' => 'ministries'])->with('success', "Ministry created.");
+        return redirect()->route('national.admin.v2.dashboard', ['tab' => 'ministries'])->with('success', "Ministry created.");
     }
 
     public function updateMinistry(Request $request, Ministry $ministry)
@@ -322,14 +184,14 @@ class NationalAdminController extends Controller
         ]);
         $ministry->update($data);
         app(\App\Services\CacheSyncService::class)->national();
-        return redirect()->route('national.admin.v2', ['tab' => 'ministries'])->with('success', "Ministry updated.");
+        return redirect()->route('national.admin.v2.dashboard', ['tab' => 'ministries'])->with('success', "Ministry updated.");
     }
 
     public function deleteMinistry(Ministry $ministry)
     {
         $ministry->delete();
         app(\App\Services\CacheSyncService::class)->national();
-        return redirect()->route('national.admin.v2', ['tab' => 'ministries'])->with('success', "Ministry removed.");
+        return redirect()->route('national.admin.v2.dashboard', ['tab' => 'ministries'])->with('success', "Ministry removed.");
     }
 
     public function storeAgency(Request $request)
@@ -343,13 +205,16 @@ class NationalAdminController extends Controller
         $data['slug'] = Str::slug($data['name']);
         Agency::create($data);
         app(\App\Services\CacheSyncService::class)->national();
-        return redirect()->route('national.admin.v2', ['tab' => 'agencies'])->with('success', "Agency created.");
+        return redirect()->route('national.admin.v2.dashboard', ['tab' => 'agencies'])->with('success', "Agency created.");
     }
 
     public function deleteAgency(Agency $agency)
     {
         $agency->delete();
         app(\App\Services\CacheSyncService::class)->national();
-        return redirect()->route('national.admin.v2', ['tab' => 'agencies'])->with('success', "Agency removed.");
+        return redirect()->route('national.admin.v2.dashboard', ['tab' => 'agencies'])->with('success', "Agency removed.");
     }
+
+    public function publishMedia(Request $r,MediaAsset $asset){app(\App\Services\NationalMediaService::class)->publish($asset,$r->user());return back()->with('success','Media published. The public page now uses this verified video.');}
+    public function unpublishMedia(Request $r,MediaAsset $asset){app(\App\Services\NationalMediaService::class)->unpublish($asset,$r->user());return back()->with('success','Media returned to draft; its original file is retained.');}
 }

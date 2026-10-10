@@ -23,8 +23,9 @@ class PrepareProductVideo implements ShouldQueue {
    foreach($info['streams']??[] as $stream){if(($stream['codec_type']??'')==='video'&&!$video)$video=$stream;if(($stream['codec_type']??'')==='audio'&&!$audio)$audio=$stream;}
    if(!$video)throw new \RuntimeException('No decodable video stream');
    $compatible=($video['codec_name']??'')==='h264'&&($video['pix_fmt']??'')==='yuv420p'&&(!$audio||($audio['codec_name']??'')==='aac');
+   if(($a->metadata['namespace']??'')==='national')$compatible=false;
    $args=['ffmpeg','-nostdin','-y','-i',$source,'-map','0:v:0','-map','0:a:0?'];
-   $args=array_merge($args,$compatible?['-c','copy']:['-c:v','libx264','-preset','veryfast','-crf','23','-pix_fmt','yuv420p','-threads','2','-vf','scale=min(1920\\,iw):-2','-c:a','aac','-b:a','128k']);
+   $args=array_merge($args,$compatible?['-c','copy']:['-c:v','libx264','-preset','veryfast','-crf','23','-maxrate','4000k','-bufsize','8000k','-pix_fmt','yuv420p','-threads','2','-vf','scale=min(1920\\,iw):-2','-c:a','aac','-b:a','128k']);
    $args=array_merge($args,['-movflags','+faststart',$dest]);$p=new Process($args);$p->setTimeout(3000);$p->mustRun();
    $verify=new Process(['ffprobe','-v','error','-show_entries','stream=codec_name,codec_type:format=duration','-of','json',$dest]);$verify->setTimeout(90);$verify->mustRun();$output=json_decode($verify->getOutput(),true);
    if((float)($output['format']['duration']??0)<=0)throw new \RuntimeException('Prepared video verification failed');
@@ -40,7 +41,7 @@ class PrepareProductVideo implements ShouldQueue {
     if(is_file($poster)&&filesize($poster)>0){$fh=fopen($poster,'rb');try{$ok=$disk->put($posterKey,$fh,['ContentType'=>'image/webp']);}finally{fclose($fh);}if($ok)$a->derivatives()->updateOrCreate(['kind'=>'poster','variant'=>'720p'],['path'=>$posterKey,'mime'=>'image/webp','size_bytes'=>filesize($poster)]);}
     $meta=$a->metadata??[];$meta['playback']=['state'=>'ready','format'=>'faststart-mp4','method'=>$compatible?'remux':'transcode','duration'=>$output['format']['duration'],'prepared_at'=>now()->toIso8601String()];$a->update(['metadata'=>$meta,'status'=>'ready']);
    });
-   Cache::forget('reference.native.v1');Cache::increment('kicc_cache_version');Cache::forget('kicc:r2:keys');Cache::forget('kicc:r2:keyset');
+   Cache::forget('reference.native.v1');Cache::increment('kicc_cache_version');Cache::forget('kicc:r2:keys');Cache::forget('kicc:r2:keyset');if(($a->metadata['namespace']??'')==='national')app(\App\Services\NationalMediaService::class)->bust();
   }catch(\Throwable $e){$current=MediaAsset::find($this->assetId);if($current&&$current->path===$this->expectedPath){$m=$current->metadata??[];$m['playback']=['state'=>'failed','error'=>'Video processing failed; retry processing or upload an H.264 MP4.'];$current->update(['metadata'=>$m]);}Log::error('Product video preparation failed',['asset'=>$this->assetId,'error'=>$e->getMessage()]);throw $e;
   }finally{foreach(glob($dir.'/*')?:[] as $f)unlink($f);rmdir($dir);}
  }
