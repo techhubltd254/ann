@@ -14,10 +14,10 @@ foreach($originals as $r){
     $r->middleware(str_starts_with($uri,'api/')?[AdminConsole::class]:['auth',AdminConsole::class]);
     if($media||str_starts_with($uri,'api/media/')){$action=$r->getAction();$action['admin_mother_only']=true;$r->setAction($action);}
     $canonical=AdminPaths::canonical('/'.$uri);
-    if($media&&!str_starts_with($uri,'api/'))$canonical=str_starts_with($uri,'kicc-admin/site-images')?'/admin/media'.substr($uri,strlen('kicc-admin/site-images')):'/admin/'.$uri;
+    if($media&&!str_starts_with($uri,'api/'))$canonical=str_starts_with($uri,'kicc-admin/site-images')?'/admin/kicc/site-images'.substr($uri,strlen('kicc-admin/site-images')):'/admin/'.$uri;
     if($protected&&$canonical==='/'.$uri&&!str_starts_with($uri,'admin/'))$canonical='/admin/tools/'.$uri;
     if($uri==='admin'||$canonical==='/'.$uri)continue;
-    $copy=clone $r;$copy->setUri(ltrim($canonical,'/'));$copy->setAction($r->getAction());
+    $copy=clone $r;$copy->setUri(ltrim($canonical,'/'));$canonicalAction=$r->getAction();unset($canonicalAction['prefix']);$copy->setAction($canonicalAction);
     $router->getRoutes()->add($copy);
     $old=$r->getAction();unset($old['as']);$old['admin_canonical_uri']=$canonical;$r->setAction($old);
 }
