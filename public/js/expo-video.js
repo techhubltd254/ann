@@ -7,7 +7,7 @@
  function render(o){
   const named={'#39':"'",apos:"'",amp:'&',quot:'\"',lt:'<',gt:'>',nbsp:' '};
   o={...o,title:String(o.title||'').replace(/&(#39|apos|amp|quot|lt|gt|nbsp);/g,(_,k)=>named[k])};
-  const autoPlay=!navigator.connection?.saveData&&!matchMedia('(prefers-reduced-motion:reduce)').matches;const selectedVideo=matchMedia('(max-width:768px)').matches&&o.mobileVideo?o.mobileVideo:o.video;const video=videoUrl(selectedVideo),poster=url(o.poster),hero=o.variant==='hero';
+  const autoPlay=!navigator.connection?.saveData&&!matchMedia('(max-width:768px),(pointer:coarse),(prefers-reduced-motion:reduce)').matches;const selectedVideo=matchMedia('(max-width:768px)').matches&&o.mobileVideo?o.mobileVideo:o.video;const video=videoUrl(selectedVideo),poster=url(o.poster),hero=o.variant==='hero';
   const actions=o.actions||[];
   return `<section class="expo-video ${hero?'expo-video--hero':'expo-video--feature'}" ${o.id?`id="${esc(o.id)}"`:''} ${o.fallbackImage?`data-ai-fallback="${esc(url(o.fallbackImage))}"`:""} data-expo-video data-expo-owner="${esc(o.ownerId||'')}" data-expo-state="${video?'video':'poster'}">
    <div class="expo-video__asset">${poster?`<img class="expo-video__poster" src="${esc(poster)}" alt="${esc(o.title)}" ${hero?'fetchpriority="high"':'loading="lazy"'}>`:''}${video?`<video class="expo-video__film" muted ${autoPlay?'autoplay':''} loop playsinline preload="${autoPlay?'metadata':'none'}" ${poster?`poster="${esc(poster)}"`:''} aria-label="${esc(o.title)}"><source src="${esc(video)}"></video>`:''}</div>
@@ -35,18 +35,18 @@
   }
  }
  const visible=new IntersectionObserver(entries=>entries.forEach(e=>{
-  const v=e.target;if(document.hidden||!e.isIntersecting){v.pause();return;}
+  const v=e.target;if(matchMedia('(max-width:768px),(pointer:coarse)').matches){if(document.hidden||!e.isIntersecting)v.pause();return;}if(document.hidden||!e.isIntersecting){v.pause();return;}
   const tile=v.closest('[data-expo-variant="tile"]');
   if(tile&&matchMedia('(pointer:fine)').matches)return;
   if(tile){if(e.intersectionRatio<.6){v.pause();return;}if(activeTile&&activeTile!==v)activeTile.pause();activeTile=v;}
-  if(!navigator.connection?.saveData&&!matchMedia('(prefers-reduced-motion:reduce)').matches)v.play().catch(()=>{const host=v.closest('[data-expo-video]');if(!fallback(host,v))host?.setAttribute('data-expo-playback','tap-required');});
+  if(!navigator.connection?.saveData&&!matchMedia('(max-width:768px),(pointer:coarse),(prefers-reduced-motion:reduce)').matches)v.play().catch(()=>{const host=v.closest('[data-expo-video]');if(!fallback(host,v))host?.setAttribute('data-expo-playback','tap-required');});
  }),{threshold:[0,.25,.6,1]});
  function attach(host,v,tile){
   if(v.dataset.hierarchyManaged||watched.has(v))return;
   let changed=false;const current=v.getAttribute('src');if(current&&videoUrl(current)!==url(current)){v.src=videoUrl(current);changed=true;}v.querySelectorAll('source[src]').forEach(el=>{const old=el.getAttribute('src'),next=videoUrl(old);if(next!==url(old)){el.src=next;changed=true;}});if(changed)v.load();
   watched.add(v);if(!tile)feature(host,v);host.dataset.expoVideo='';if(tile)host.dataset.expoVariant='tile';
-  host.classList.add('expo-video-upgraded');v.classList.add('expo-video__film');v.muted=true;v.playsInline=true;v.loop=!v.closest('[data-live-stream]');
-  if(tile){v.autoplay=false;v.pause();host.addEventListener('pointerenter',e=>{if(e.pointerType!=='touch')v.play().catch(()=>{});});host.addEventListener('pointerleave',()=>v.pause());host.addEventListener('focusin',()=>v.play().catch(()=>{}));host.addEventListener('focusout',()=>v.pause());}else v.autoplay=!navigator.connection?.saveData&&!matchMedia('(prefers-reduced-motion:reduce)').matches;
+  host.classList.add('expo-video-upgraded');v.classList.add('expo-video__film');v.muted=true;v.playsInline=true;v.loop=!v.closest('[data-live-stream]');if(matchMedia('(max-width:768px),(pointer:coarse)').matches){v.autoplay=false;v.preload='none';}
+  if(tile){v.autoplay=false;v.pause();host.addEventListener('pointerenter',e=>{if(e.pointerType==='mouse'&&!matchMedia('(max-width:768px),(pointer:coarse)').matches)v.play().catch(()=>{});});host.addEventListener('pointerleave',()=>v.pause());host.addEventListener('focusin',()=>{if(!matchMedia('(max-width:768px),(pointer:coarse)').matches)v.play().catch(()=>{});});host.addEventListener('focusout',()=>v.pause());}else v.autoplay=!navigator.connection?.saveData&&!matchMedia('(max-width:768px),(pointer:coarse),(prefers-reduced-motion:reduce)').matches;
   // Transport is real, not a fake play toast. Leave native HLS quality/seek controls intact.
   const controls=document.createElement('div');controls.className='expo-video__controls';
   const pause=document.createElement('button');pause.type='button';pause.textContent='Pause';pause.setAttribute('aria-label','Pause video');

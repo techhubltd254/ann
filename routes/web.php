@@ -794,8 +794,8 @@ Route::middleware(['auth', 'verified'])->prefix('broadcast')->name('live.screens
 });
 
 // Media proxy — serves R2 files directly through Laravel (fallback when worker is unavailable)
-Route::get('/media/video/{path}', [\App\Http\Controllers\Web\MediaProxyController::class, 'video'])->where('path', '.*');
-Route::get('/media/derivatives/{path}', [\App\Http\Controllers\Web\MediaProxyController::class, 'derivative'])->where('path', '.*');
+Route::get('/media/video/{path}', [\App\Http\Controllers\Web\MediaProxyController::class, 'video'])->where('path', '.*')->withoutMiddleware('throttle:60,1')->middleware('throttle:300,1,public-media');
+Route::get('/media/derivatives/{path}', [\App\Http\Controllers\Web\MediaProxyController::class, 'derivative'])->where('path', '.*')->withoutMiddleware('throttle:60,1')->middleware('throttle:300,1,public-media');
 
 // Murang'a County Admin SPA (dark mode command center)
 Route::get('/muranga-admin/{path?}', function () {
@@ -923,7 +923,7 @@ Route::get('/experience/media/{id}', [\App\Http\Controllers\Web\ExperienceProduc
 // Original R2 bytes: bypass the edge video handler that advertises ranges
 // but streams the entire object. This existing controller redirects to R2,
 // which handles seeking natively without buffering films in PHP.
-Route::get('/media/original/{path}', [\App\Http\Controllers\Web\MediaProxyController::class, 'video'])->where('path', '.*')->name('media.original');
+Route::get('/media/original/{path}', [\App\Http\Controllers\Web\MediaProxyController::class, 'video'])->where('path', '.*')->name('media.original')->withoutMiddleware('throttle:60,1')->middleware('throttle:300,1,public-media');
 
 // Institution -> exact product ID -> product video administration.
 Route::middleware(['auth', \App\Http\Middleware\AdminConsole::class])->group(function(){
