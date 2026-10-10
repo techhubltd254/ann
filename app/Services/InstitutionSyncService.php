@@ -153,6 +153,7 @@ class InstitutionSyncService
                 "county_pins_{$county->id}",
                 'kicc_counties_index',
                 'kicc_home_page_data_v2',
+                'reference.native.v1',
             ] as $key) {
                 \Illuminate\Support\Facades\Cache::forget($key);
             }

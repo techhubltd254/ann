@@ -53,7 +53,7 @@ class InstitutionProductAdminController extends Controller
         $i->refresh();$summary=app(\App\Services\InstitutionSyncService::class)->sync($i);
         $p=Product::where('institution_id',(string)$i->id)->where('sync_key',$d['source_key'])->first();
         if(!$p)return back()->withErrors(['sync'=>'Saved the offering, but publication failed. Check the sync errors before retrying.'])->withInput();
-        Cache::increment('kicc_cache_version');return redirect()->route('institution.products.edit',[$i->slug,$p->id])->with('success','Offering created and synced. Upload its video below.');
+        Cache::forget('reference.native.v1');Cache::increment('kicc_cache_version');return redirect()->route('institution.products.edit',[$i->slug,$p->id])->with('success','Offering created and synced. Upload its video below.');
     }
     public function update(Request $r,string $institution,int $product){
         $i=$this->institution($r,$institution);$p=$this->product($i,$product);$d=$this->fields($r);
@@ -64,19 +64,19 @@ class InstitutionProductAdminController extends Controller
             if(!$found)$entries[]=array_merge($d,['marketplace_product_id'=>$p->id,'source_key'=>$p->sync_key?:('manual-'.$p->id)]);
             $locked->syncing=true;$locked->update(['products'=>$entries]);
         });
-        $i->refresh();$summary=app(\App\Services\InstitutionSyncService::class)->sync($i);Cache::increment('kicc_cache_version');
+        $i->refresh();$summary=app(\App\Services\InstitutionSyncService::class)->sync($i);Cache::forget('reference.native.v1');Cache::increment('kicc_cache_version');
         return back()->with('success','Offering saved and synced; existing videos were retained.');
     }
     public function storeOffer(Request $r,string $institution,int $product){
         $i=$this->institution($r,$institution);$p=$this->product($i,$product);
         $d=$r->validate(['title'=>'required|string|max:255','terms'=>'required|string|max:10000','price'=>'nullable|numeric|min:0','starts_at'=>'nullable|date','ends_at'=>'nullable|date|after:starts_at','is_published'=>'nullable|boolean','source_url'=>['nullable','url','regex:~^https?://~i']]);
         $d['is_published']=$r->boolean('is_published');$d['institution_id']=$i->id;$d['product_id']=$p->id;
-        \App\Models\InstitutionOffer::create($d);Cache::increment('kicc_cache_version');return back()->with('success','Offer saved. Only published offers within their date window appear publicly.');
+        \App\Models\InstitutionOffer::create($d);Cache::forget('reference.native.v1');Cache::increment('kicc_cache_version');return back()->with('success','Offer saved. Only published offers within their date window appear publicly.');
     }
     public function deleteOffer(Request $r,string $institution,int $product,int $offer){
         $i=$this->institution($r,$institution);$p=$this->product($i,$product);
         \App\Models\InstitutionOffer::where('institution_id',$i->id)->where('product_id',$p->id)->findOrFail($offer)->delete();
-        Cache::increment('kicc_cache_version');return back()->with('success','Offer removed.');
+        Cache::forget('reference.native.v1');Cache::increment('kicc_cache_version');return back()->with('success','Offer removed.');
     }
     public function destroyVideo(Request $r,string $institution,int $product,int $asset)
     {
@@ -85,6 +85,6 @@ class InstitutionProductAdminController extends Controller
         $oldPath=$a->path;$url=url('/media/original/'.$oldPath);
         DB::transaction(function()use($a,$p,$i,$url,$oldPath){$urls=array_values(array_filter($p->videos??[],fn($v)=>!str_contains($v,$oldPath)));$p->update(['videos'=>$urls,'video_url'=>str_contains($p->video_url??'',$oldPath)?($urls[0]??null):$p->video_url]);$entries=$i->products??[];foreach($entries as &$e)if((int)($e['marketplace_product_id']??0)===$p->id||($e['name']??'')===$p->name){$e['videos']=$urls;$e['video_url']=$p->video_url;$e['marketplace_product_id']=$p->id;}unset($e);$i->update(['products'=>$entries]);$a->derivatives()->delete();$a->delete();});
         if(!MediaAsset::where('disk','r2')->where('path',$oldPath)->exists()&&!\App\Models\MediaDerivative::where('path',$oldPath)->exists())Storage::disk('r2')->delete($oldPath);
-        Cache::increment('kicc_cache_version');return back()->with('success','This product video was removed.');
+        Cache::forget('reference.native.v1');Cache::increment('kicc_cache_version');return back()->with('success','This product video was removed.');
     }
 }

@@ -40,7 +40,7 @@ class PrepareProductVideo implements ShouldQueue {
     if(is_file($poster)&&filesize($poster)>0){$fh=fopen($poster,'rb');try{$ok=$disk->put($posterKey,$fh,['ContentType'=>'image/webp']);}finally{fclose($fh);}if($ok)$a->derivatives()->updateOrCreate(['kind'=>'poster','variant'=>'720p'],['path'=>$posterKey,'mime'=>'image/webp','size_bytes'=>filesize($poster)]);}
     $meta=$a->metadata??[];$meta['playback']=['state'=>'ready','format'=>'faststart-mp4','method'=>$compatible?'remux':'transcode','duration'=>$output['format']['duration'],'prepared_at'=>now()->toIso8601String()];$a->update(['metadata'=>$meta,'status'=>'ready']);
    });
-   Cache::increment('kicc_cache_version');Cache::forget('kicc:r2:keys');Cache::forget('kicc:r2:keyset');
+   Cache::forget('reference.native.v1');Cache::increment('kicc_cache_version');Cache::forget('kicc:r2:keys');Cache::forget('kicc:r2:keyset');
   }catch(\Throwable $e){$current=MediaAsset::find($this->assetId);if($current&&$current->path===$this->expectedPath){$m=$current->metadata??[];$m['playback']=['state'=>'failed','error'=>'Video processing failed; retry processing or upload an H.264 MP4.'];$current->update(['metadata'=>$m]);}Log::error('Product video preparation failed',['asset'=>$this->assetId,'error'=>$e->getMessage()]);throw $e;
   }finally{foreach(glob($dir.'/*')?:[] as $f)unlink($f);rmdir($dir);}
  }
