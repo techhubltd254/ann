@@ -1,0 +1,84 @@
+/* County layout release: responsive screens, content-led missing-media slots. */
+#app .ed-chapter:not(#chapter-top){min-height:0;padding-block:clamp(40px,5vw,76px)}
+#app .section:not(.expo-video){padding-block:clamp(30px,4vw,64px)}
+#app .page-head{padding-top:24px;padding-bottom:20px}
+#chapter-nation{display:block!important;overflow:hidden}
+#chapter-nation>.ed-layer.wrap{width:100%;max-width:none;padding-inline:clamp(18px,4.6vw,84px)!important}
+#chapter-nation .ed-grid{display:grid;grid-template-columns:1.15fr 1fr;gap:clamp(20px,5vw,80px);align-items:center;max-width:1260px;margin-inline:auto}
+#chapter-nation .ed-grid>*{grid-column:auto!important;min-width:0}
+#chapter-nation h2{font-size:clamp(1.85rem,3.4vw,3.7rem)!important;line-height:1.12;margin-top:12px!important}
+#chapter-nation .ed-lead{font-size:clamp(1rem,1.5vw,1.45rem);line-height:1.55;max-width:44ch}
+#chapter-nation .ed-figure{font-size:clamp(3.4rem,6vw,6rem);margin-top:20px!important}
+#chapter-nation .ed-figure small{margin-top:12px;letter-spacing:.13em}
+#chapter-nation .county-orbit{--county-screen-width:clamp(280px,58vw,820px);--county-screen-height:clamp(350px,34vw,470px);margin-top:24px;padding:0 0 12px;overflow:hidden}
+#chapter-nation .orbit-stage{height:calc(var(--county-screen-height) + 100px);perspective:1600px;transform:perspective(1800px) rotateX(var(--county-scroll-tilt,0deg));transform-origin:50% 50%;touch-action:pan-y;isolation:isolate}
+#chapter-nation .orbit-screen{width:var(--county-screen-width);height:var(--county-screen-height);margin-left:calc(var(--county-screen-width) / -2);top:24px;border-radius:24px;transform-style:preserve-3d;transition:transform 850ms cubic-bezier(.2,.75,.2,1),opacity 700ms;box-shadow:0 18px 44px rgba(0,0,0,.2)}
+#chapter-nation .orbit-screen::after{pointer-events:none;background:linear-gradient(0deg,rgba(8,15,18,.94),rgba(8,15,18,.45) 62%,rgba(8,15,18,.12))}
+#chapter-nation .orbit-screen[data-county-media="none"]{background:var(--ui-bg)!important;border-color:var(--ui-line)}
+#chapter-nation .orbit-screen[data-county-media="none"] .orbit-caption{inset:70px clamp(18px,3vw,38px) 24px;display:flex;flex-direction:column;justify-content:center}
+#chapter-nation .orbit-screen[data-county-media="none"]::after{display:none}
+#chapter-nation .orbit-caption{inset:auto clamp(18px,3vw,38px) 28px;max-width:690px}
+#chapter-nation .orbit-caption h3{font-size:clamp(2rem,4.2vw,4.6rem);line-height:1.05;margin:12px 0 14px;overflow-wrap:anywhere}
+#chapter-nation .orbit-caption p{font-size:clamp(12px,1.1vw,16px);line-height:1.55}
+#chapter-nation .orbit-description{display:-webkit-box;-webkit-line-clamp:3;-webkit-box-orient:vertical;overflow:hidden;margin-bottom:14px}
+#chapter-nation .orbit-screen[data-county-media="none"] .orbit-caption :is(h3,p,.orbit-code){color:var(--ui-ink)!important}
+#chapter-nation .orbit-screen[data-county-media="video"] .orbit-caption :is(h3,p,.orbit-code){color:#fff!important;text-shadow:0 2px 12px rgba(0,0,0,.5)}
+#chapter-nation .orbit-screen[data-county-media="image"] .orbit-caption :is(h3,p,.orbit-code){color:#fff!important;text-shadow:0 2px 12px rgba(0,0,0,.5)}
+#chapter-nation .orbit-controls{gap:8px;padding-inline:8px}
+#chapter-nation .orbit-controls :is(button,a){min-height:44px}
+#chapter-nation .orbit-note{max-width:65ch;margin:12px auto 0;font-size:11px;line-height:1.5}
+#countyFull,#countyFull.view-strip{grid-template-columns:repeat(auto-fit,minmax(min(100%,270px),1fr));gap:18px;align-items:stretch}
+#countyFull.view-grid{grid-template-columns:repeat(auto-fit,minmax(min(100%,230px),1fr));gap:14px}
+#countyFull .county-layout-card{border-radius:18px;min-width:0;border:1px solid var(--ui-line);background:var(--ui-soft);overflow:hidden;box-shadow:none}
+#countyFull .county-layout-card .tile-ratio{aspect-ratio:16/10!important}
+#countyFull .county-layout-card .tile-body{position:relative;inset:auto;justify-content:flex-start;overflow:visible;padding:20px!important;color:var(--ui-ink)!important;background:var(--ui-soft)}
+#countyFull .county-layout-card .tile-body .muted-xs{color:var(--ui-muted)!important}
+#countyFull .county-layout-card .tile-body h2{font-size:clamp(1.45rem,2vw,1.9rem);line-height:1.15;margin:12px 0 10px;overflow-wrap:anywhere}
+#countyFull .county-layout-card .tile-body .badge.grey{background:var(--ui-bg);color:var(--ui-muted);border:1px solid var(--ui-line)}
+#countyFull .county-layout-card .tile-body .badge.gold{color:var(--ui-ink);background:var(--ui-bg);border:1px solid var(--ui-line)}
+#countyFull .county-layout-card .tile-body .wrapflex{display:flex!important}
+#countyFull .county-description{font-size:13px;line-height:1.55;display:-webkit-box;-webkit-line-clamp:3;-webkit-box-orient:vertical;overflow:hidden;min-height:3.1em;margin-bottom:14px;color:var(--ui-muted)}
+#countyFull .county-layout-card .county-links{margin-top:16px;justify-content:space-between;flex-wrap:wrap;gap:12px}
+#countyFull .county-layout-card .county-links a{min-height:44px;display:inline-flex;align-items:center}
+#countyFull .county-layout-card .county-code{font-family:var(--font-mono);font-size:11px;color:var(--ui-muted);letter-spacing:.1em}
+#countyFull .county-layout-card .tile-media{inset:0 0 auto;height:auto;aspect-ratio:16/10;transform:none!important}
+#countyFull .county-layout-card .badge-3d{display:none}
+#countyFull .county-layout-card[data-county-media="none"] :is(.tile-ratio,.tile-media,.tile-scrim,.play-fab){display:none!important}
+#countyFull .county-layout-card .tile-scrim{display:none}
+#countyFull .county-layout-card .play-fab{display:none}
+#countyFull .county-layout-card[data-county-media="none"] .tile-body{min-height:230px}
+#app .hierarchy-tile[data-hierarchy-media-state="empty"] .hierarchy-tile__media{display:none}
+#app .hierarchy-grid{gap:clamp(14px,2vw,24px);align-items:stretch}
+#app .hierarchy-tile{border-radius:18px;min-width:0}
+#app .hierarchy-tile__body{padding:clamp(18px,2vw,25px)}
+#app .hierarchy-tile__body h3{line-height:1.25;overflow-wrap:anywhere}
+#app .county-story-panel{padding:24px 0 0;margin:0;max-width:76ch}
+#app .county-story-panel p{line-height:1.65}
+@media(max-width:700px){
+ #chapter-nation .ed-grid{grid-template-columns:1fr;gap:18px}
+ #chapter-nation .ed-grid>div:last-child{display:grid;grid-template-columns:1fr auto;gap:16px;align-items:center;margin-top:0!important}
+ #chapter-nation .ed-figure{font-size:3.2rem;margin-top:0!important}
+ #chapter-nation .ed-figure small{font-size:8px;letter-spacing:.06em;max-width:9em;line-height:1.6}
+ #chapter-nation .county-orbit{--county-screen-width:min(84vw,480px);--county-screen-height:360px;margin-top:18px}
+ #chapter-nation .orbit-stage{height:435px}
+ #chapter-nation .orbit-screen{top:14px;border-radius:20px}
+ #chapter-nation .orbit-caption{inset:auto 20px 24px}
+ #chapter-nation .orbit-caption h3{font-size:clamp(1.8rem,7vw,2.5rem)}
+ #chapter-nation .orbit-caption p{font-size:12px}
+ #chapter-nation .orbit-controls .orbit-status{order:5;flex:1 0 100%;margin-top:4px}
+ #chapter-nation .orbit-controls a{font-size:10px;padding-inline:12px}
+ #countyFull,#countyFull.view-strip{grid-template-columns:1fr;gap:14px}
+ #countyFull.view-grid{grid-template-columns:repeat(2,minmax(0,1fr));gap:10px}
+ #countyFull.view-grid .tile-body{padding:14px!important}
+ #countyFull.view-grid .tile-body h2{font-size:1.1rem}
+ #countyFull.view-grid .county-description{display:none}
+ #countyFull.view-grid .county-layout-card[data-county-media="none"] .tile-body{min-height:200px}
+ #countyFull.view-grid .tile-body .badge{font-size:8px;padding:3px 5px}
+ #countyFull.view-grid .county-links{gap:4px}
+ #app .ed-chapter:not(#chapter-top){padding-block:36px}
+}
+@media(prefers-reduced-motion:reduce){
+ #chapter-nation .orbit-stage{transform:none!important}
+ #chapter-nation .orbit-screen{transition:none!important}
+ #countyFull .county-layout-card{animation:none!important;transition:none!important;transform:none!important}
+}

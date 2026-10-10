@@ -598,7 +598,8 @@ table.tbl tbody tr:last-child td{border-bottom:none}
 <link rel="stylesheet" href="/css/expo-video.css?v=dab02ad56266">
 <script src="/js/expo-video.js?v=enterprise-native-films-20261010-clean-20261010-hierarchy-mobile-20261010-county-ai-fallback-20261010-20358f55afb7"></script>
 <link rel="stylesheet" href="/css/hierarchy-mobile.css?v=hierarchy-mobile-final-20261010">
-<style id="clean-real-media-only">[data-hierarchy-media-state="empty"]>.hierarchy-tile__media{display:none}.official-kicc-films{display:grid;grid-template-columns:repeat(auto-fit,minmax(min(100%,300px),1fr));gap:20px;margin:24px 0}.official-kicc-films video{width:100%;aspect-ratio:16/9;display:block;background:#171717;border-radius:12px}.official-kicc-films a{overflow-wrap:anywhere} [data-private-refined-story] textarea{width:100%;box-sizing:border-box}</style></head>
+<style id="clean-real-media-only">[data-hierarchy-media-state="empty"]>.hierarchy-tile__media{display:none}.official-kicc-films{display:grid;grid-template-columns:repeat(auto-fit,minmax(min(100%,300px),1fr));gap:20px;margin:24px 0}.official-kicc-films video{width:100%;aspect-ratio:16/9;display:block;background:#171717;border-radius:12px}.official-kicc-films a{overflow-wrap:anywhere} [data-private-refined-story] textarea{width:100%;box-sizing:border-box}</style><link rel="stylesheet" href="/css/county-layout.5e296bf9132a.css" data-county-layout-release="responsive-v1">
+</head>
 <style>
 /* ============================================================================
    VENUE 3D SPLAT SURFACE — gate, progress, and fallback
@@ -5574,15 +5575,28 @@ ${window.KiccExpoVideo.render({
    venues, screens, streams, travel, 3D worlds
    ============================================================================ */
 
+function countyLayoutImage(c){
+ const values=[c.tileMedia?.poster,c.tileMedia?.kind==='image'?c.tileMedia?.url:null,c.image,c.aiImage];
+ for(const value of values){if(!value)continue;try{const u=new URL(value,location.origin);if(!['http:','https:'].includes(u.protocol)||/\/placeholders\/|media-pending|existing-generated-preview/i.test(u.pathname))continue;return u.href;}catch{}}
+ return '';
+}
+function countyLayoutTile(c){
+ const e=v=>String(v??'').replace(/[&<>"']/g,x=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[x]));
+ const image=countyLayoutImage(c),available=Boolean(c.heroVideo||image);
+ return `<article class="media-tile county-layout-card" data-county-hero="${c.heroVideo?'1':'0'}" data-county-media="${c.heroVideo?'video':image?'image':'none'}" data-cname="${e(c.name.toLowerCase())}" data-cregioncard="${e(c.region)}" data-href="/counties/${e(c.slug)}">
+ ${available?`<div class="tile-ratio"></div><div class="tile-media">${image?`<img src="${e(image)}" alt="${e(c.name)}" loading="lazy" decoding="async" width="640" height="400" style="width:100%;height:100%;object-fit:cover">`:''}</div>`:''}
+ <div class="tile-body"><div class="between"><span class="county-code">${e(c.code)}</span><span class="badge grey">${e(c.region)}</span></div><h2>${e(c.name)}</h2><p class="county-description">${e(c.description)}</p><div class="wrapflex"><span class="badge gold">${c.sectors.length} sectors</span>${c.heroVideo?'<span class="badge green">County film</span>':''}</div><p class="muted-xs" style="margin-top:10px">${Number(c.pop).toLocaleString('en-KE')} people · ${e(c.populationYear||2024)}</p><div class="center county-links"><a href="#/exhibition-3d/terrain" data-link class="muted-xs">Map</a><a href="#/counties/${e(c.slug)}" data-link class="gold">Explore county →</a></div></div></article>`;
+}
+
 /* ════════════════════════ 02 · COUNTIES INDEX ════════════════════════ */
 Router.register('/counties', () => ({title:'Counties', html:`
 <div class="wrap">${T.crumb([['Home','/'],['Counties',null]])}</div>
 <div class="wrap page-head" data-depth="mid">
   <div class="eyebrow" data-reveal>Explore Kenya · 47 devolved units</div>
-  <h1 data-reveal style="font-size:clamp(2rem,4vw,3.2rem);margin-top:12px">County Video Tunnel</h1>
+  <h1 data-reveal style="font-size:clamp(2rem,4vw,3.2rem);margin-top:12px">Explore all 47 counties</h1>
   <p class="muted" data-reveal style="max-width:70ch;margin-top:14px">
-    County cards fly in from the right on scroll with spring bounce. Click → golden ring → terrain flyover → county detail.
-    Each tile is a Pipeline-3 media-tile: hover to play the county video, first-frame poster as fallback.</p>
+    Discover county economies, institutions and their products, services and experiences.
+    Open a county to explore its economic sectors. Published county films take priority when available.</p>
   <div class="between mt" style="flex-wrap:wrap;gap:14px">
     <div class="center" style="gap:10px;flex-wrap:wrap">
       <input class="input" id="countySearch" placeholder="Search county by name…" style="max-width:280px">
@@ -5597,20 +5611,7 @@ Router.register('/counties', () => ({title:'Counties', html:`
 </div>
 <div class="wrap section-sm">
   <div class="grid g4" id="countyFull">
-    ${COUNTIES.map(c=>`<div class="media-tile" data-county-hero="${c.heroVideo?'1':'0'}" data-cname="${c.name.toLowerCase()}" data-cregioncard="${c.region}" data-href="/counties/${c.slug}">
-      <div class="tile-ratio"></div>
-      <div class="tile-media" style="background-image:url('${c.aiImage||imgFor(c)}');background-color:var(--reference-tone-260)"></div><div class="tile-scrim"></div>
-      <span class="badge-3d">${c.code}</span><div class="play-fab">▶</div>
-      <div class="tile-body">
-        <div class="center" style="gap:6px;flex-wrap:wrap">
-          <span class="badge gold">${c.sectors.length} sectors</span><span class="badge grey">${c.region}</span></div>
-        <div style="font-family:var(--font-head);font-weight:800;font-size:1.15rem;margin-top:9px">${c.name}</div>
-        <div class="muted-xs" style="margin-top:5px">${nf(c.pop)} people</div>${!c.heroVideo?'<small class="county-image-disclosure">Hero video awaiting upload</small>':''}
-        <div class="wrapflex" style="margin-top:9px">${c.sectors.slice(0,2).map(s=>`<span class="badge grey">${s}</span>`).join('')}</div>
-        <div class="center mt-s" style="gap:10px">
-          <a href="#/exhibition-3d/terrain" class="muted-xs" data-link style="text-decoration:underline">Map</a>
-          <a href="#/counties/${c.slug}" class="muted-xs gold" data-link style="font-weight:600">Explore →</a></div>
-      </div></div>`).join('')}
+    ${COUNTIES.map(countyLayoutTile).join('')}
   </div>
 </div>
 `}));
@@ -7743,15 +7744,45 @@ const PUBLISH = (()=>{
  root.querySelector('[data-cms-system]')?.addEventListener('click',()=>theme('system'));root.querySelector('[data-cms-export]')?.addEventListener('click',()=>{const u=URL.createObjectURL(new Blob([JSON.stringify(REPO.snapshot(),null,2)],{type:'application/json'}));const a=document.createElement('a');a.href=u;a.download='kicc-content-backup.json';a.click();setTimeout(()=>URL.revokeObjectURL(u),1000);notify('Exported metadata. Keep media originals separately.')});
  root.querySelector('[data-cms-import]')?.addEventListener('change',async e=>{try{const raw=JSON.parse(await e.target.files[0].text());if(!raw.version||raw.version!==1)throw Error('Unsupported backup');const d=document.createElement('dialog');d.className='cms-dialog';d.innerHTML='<h2>Replace local content?</h2><p style="margin:20px 0">Import overwrites current local records. Export a backup first.</p><button class="btn gold" data-confirm>Replace records</button> <button class="btn ghost" data-cancel>Cancel</button>';document.body.append(d);d.showModal();d.querySelector('[data-cancel]').onclick=()=>d.remove();d.querySelector('[data-confirm]').onclick=()=>{try{REPO.restore(raw);d.remove();Router.render()}catch(err){d.remove();notify(err.message)}}}catch(err){notify(err.message)}});
  }
- let orbitCleanup=()=>{};
- function orbitHtml(){return `<div class="county-orbit" data-county-orbit tabindex="0" role="region" aria-label="County media carousel. Left and right arrows navigate; space pauses."><div class="orbit-stage" data-orbit-stage></div><div class="orbit-controls"><button class="btn ghost" data-orbit-prev aria-label="Previous county">←</button><button class="btn ghost" data-orbit-pause>Pause rotation</button><button class="btn ghost" data-orbit-next aria-label="Next county">→</button><span class="orbit-status" data-orbit-status aria-live="off"></span><a href="#/counties" class="btn ghost">Explore all counties →</a></div><p class="orbit-note">County-owned films and fallback images are selected by entity ID. Unavailable footage is withheld. Population: 2024 database values.</p></div>`}
- function mountOrbit(root){const rows=REPO.list('counties',true);if(!rows.length){root.innerHTML='<p>No counties published.</p>';return}const stage=root.querySelector('[data-orbit-stage]');let index=0,manual=reduced.matches,hover=false,focus=false,inView=true,disposed=false,timer;
- const paint=()=>{if(disposed)return;const retained=new Set();for(let offset=-2;offset<=2;offset++){const c=rows[(index+offset+rows.length)%rows.length];let card=[...stage.children].find(el=>el.dataset.county===c.slug);const fresh=!card;if(fresh){card=document.createElement('article');card.className='orbit-screen';card.dataset.county=c.slug;card.style.transform=`translate3d(${offset<0?-600:600}px,90px,-430px)`;card.style.opacity='0';stage.append(card)}retained.add(card);const x=offset===0?0:Math.sign(offset)*(Math.abs(offset)===1?300:490),z=offset===0?95:Math.abs(offset)===1?-130:-330,y=offset===0?0:Math.abs(offset)===1?32:74;requestAnimationFrame(()=>{card.style.transform=`translate3d(${x}px,${y}px,${z}px) rotateY(${-offset*18}deg)`;card.style.opacity=offset===0?'1':Math.abs(offset)===1?'.78':'.45'});card.style.zIndex=String(5-Math.abs(offset));if(fresh)card.innerHTML=`<img src="${esc(KICC.imgFor(c))}" alt="Entity-owned image or unpublished media placeholder"><a class="orbit-open" href="#/counties/${esc(c.slug)}" ${offset!==0?'tabindex="-1"':''}>Explore →</a><div class="orbit-caption"><span class="orbit-code">${esc(c.code)} / ${esc(c.region)}</span><h3>${esc(c.name)}</h3><p>${esc(c.sectors?.join(' · '))}</p><p class="orbit-pop">${Number(c.pop).toLocaleString('en-KE')} people · 2024 database</p></div>`;const a=card.querySelector('.orbit-open');if(a)a.tabIndex=offset===0?0:-1;const media=REPO.list('media',true).find(m=>m.target==='/counties/'+c.slug&&(m.role==='county'||m.kind==='video'));if(media&&fresh)(async()=>{const url=media.assetId?await ASSETS.url(media.assetId):safeUrl(media.url);if(!url||disposed||!card.isConnected)return;const el=document.createElement(media.kind==='video'?'video':'img');el.src=url;if(media.kind==='video'){el.muted=true;el.loop=true;el.playsInline=true;el.preload='metadata';el.poster=safeUrl(media.poster);if(offset===0&&!manual&&!hover&&!focus&&inView)el.play().catch(()=>{})}else el.alt=media.description||media.name;card.querySelector('img').replaceWith(el)})().catch(()=>{})}for(const old of [...stage.children])if(!retained.has(old)){old.querySelector('video')?.pause();old.remove()}
- root.querySelector('[data-orbit-status]').textContent=`${String(index+1).padStart(2,'0')} / ${rows.length} · ${rows[index].name}`;updatePause()};
- function updatePause(){root.querySelector('[data-orbit-pause]').textContent=manual?'Resume rotation':'Pause rotation';root.querySelector('[data-orbit-pause]').setAttribute('aria-pressed',String(manual));stage.querySelectorAll('video').forEach(v=>{const front=v.closest('[data-county]').dataset.county===rows[index].slug;if(!front||manual||hover||focus||!inView||document.hidden)v.pause();else v.play().catch(()=>{})})}
+ let orbitCleanup=()=>{},orbitSelection=null,orbitPaused=null;
+ function orbitHtml(){return `<div class="county-orbit" data-county-orbit tabindex="0" role="region" aria-label="County media carousel. Left and right arrows navigate; space pauses."><div class="orbit-stage" data-orbit-stage></div><div class="orbit-controls"><button class="btn ghost" data-orbit-prev aria-label="Previous county">←</button><button class="btn ghost" data-orbit-pause>Pause rotation</button><button class="btn ghost" data-orbit-next aria-label="Next county">→</button><span class="orbit-status" data-orbit-status aria-live="off"></span><a href="#/counties" class="btn ghost">Explore all counties →</a></div><p class="orbit-note">Explore every county through its economic sectors, institutions and marketplace offerings.</p></div>`}
+ function mountOrbit(root){const rows=REPO.list('counties',true);if(!rows.length){root.innerHTML='<p>No counties published.</p>';return}const stage=root.querySelector('[data-orbit-stage]');let index=Math.max(0,rows.findIndex(c=>c.slug===orbitSelection)),manual=orbitPaused??reduced.matches,hover=false,focus=false,inView=true,disposed=false,timer;
+ const paint=()=>{
+ if(disposed)return;orbitSelection=rows[index].slug;
+ const retained=new Set(),width=Math.min(stage.clientWidth*.84,parseFloat(getComputedStyle(stage).getPropertyValue('--county-screen-width'))||820);
+ for(let offset=-2;offset<=2;offset++){
+  const c=rows[(index+offset+rows.length)%rows.length];
+  let card=[...stage.children].find(el=>el.dataset.county===c.slug);const fresh=!card;
+  if(fresh){card=document.createElement('article');card.className='orbit-screen';card.dataset.county=c.slug;stage.append(card);}
+  retained.add(card);const actualWidth=card.offsetWidth||width;
+  const x=offset===0?0:Math.sign(offset)*actualWidth*(Math.abs(offset)===1?.80:1.47),z=offset===0?0:Math.abs(offset)===1?-180:-420,y=offset===0?0:Math.abs(offset)===1?26:48;
+  requestAnimationFrame(()=>{if(!card.isConnected)return;card.style.transform=`translate3d(${x}px,${y}px,${z}px) rotateY(${-offset*13}deg)`;card.style.opacity=offset===0?'1':Math.abs(offset)===1?'.64':'.25';});
+  card.style.zIndex=String(5-Math.abs(offset));card.dataset.orbitActive=String(offset===0);
+  if(fresh){
+   const image=countyLayoutImage(c);card.dataset.countyMedia=c.heroVideo?'video':image?'image':'none';
+   card.innerHTML=`${image?`<img src="${esc(image)}" alt="${esc(c.name)}" decoding="async" loading="lazy">`:''}<a class="orbit-open" href="#/counties/${esc(c.slug)}">Explore →</a><div class="orbit-caption"><span class="orbit-code">${esc(c.code)} / ${esc(c.region)}</span><h3>${esc(c.name)}</h3><p class="orbit-description">${esc(c.description)}</p><p>${esc((c.sectors||[]).slice(0,3).join(' · '))} · ${(c.sectors||[]).length} sectors</p><p class="orbit-pop">${Number(c.pop).toLocaleString('en-KE')} people · ${esc(c.populationYear||2024)}</p></div>`;
+   const media=REPO.list('media',true).find(m=>m.target==='/counties/'+c.slug&&m.kind==='video');
+   if(media||c.heroVideo)(async()=>{
+    const source=media?.assetId?await ASSETS.url(media.assetId):safeUrl(matchMedia('(max-width:768px)').matches&&c.heroMobileVideo?c.heroMobileVideo:media?.url||c.heroVideo);
+    if(!source||disposed||!card.isConnected)return;
+    const el=document.createElement('video');el.src=source;el.muted=true;el.loop=true;el.playsInline=true;el.preload='none';if(image)el.poster=image;el.setAttribute('aria-label',c.name+' county film');
+    card.querySelector('img')?.remove();card.prepend(el);el.addEventListener('error',()=>{el.hidden=true;card.dataset.countyMedia=image?'image':'none';if(image&&!card.querySelector('img')){const fallback=document.createElement('img');fallback.src=image;fallback.alt=c.name;card.prepend(fallback);}});
+    updatePause();
+   })().catch(()=>{});
+  }
+  const a=card.querySelector('.orbit-open');if(a)a.tabIndex=offset===0?0:-1;
+ }
+ for(const old of [...stage.children])if(!retained.has(old)){old.querySelector('video')?.pause();old.remove();}
+ root.querySelector('[data-orbit-status]').textContent=`${String(index+1).padStart(2,'0')} / ${rows.length} · ${rows[index].name}`;updatePause();
+ };
+ function updatePause(){
+ orbitPaused=manual;
+ root.querySelector('[data-orbit-pause]').textContent=manual?'Resume rotation':'Pause rotation';root.querySelector('[data-orbit-pause]').setAttribute('aria-pressed',String(manual));
+ stage.querySelectorAll('video').forEach(v=>{const front=v.closest('[data-county]').dataset.county===rows[index].slug;if(!front||!inView||document.hidden)v.pause();else if(!reduced.matches&&!navigator.connection?.saveData&&!v.dataset.manualPause)v.play().catch(()=>{});});
+ }
  function step(n){index=(index+n+rows.length)%rows.length;paint()}
  root.querySelector('[data-orbit-prev]').onclick=()=>{manual=true;step(-1)};root.querySelector('[data-orbit-next]').onclick=()=>{manual=true;step(1)};root.querySelector('[data-orbit-pause]').onclick=()=>{manual=!manual;updatePause()};root.onmouseenter=()=>{hover=true;updatePause()};root.onmouseleave=()=>{hover=false;updatePause()};root.onfocusin=()=>{focus=true;updatePause()};root.onfocusout=e=>{focus=!!e.relatedTarget&&root.contains(e.relatedTarget);updatePause()};root.onkeydown=e=>{if(e.target.matches('button,a'))return;if(e.key==='ArrowRight'||e.key==='ArrowLeft'){e.preventDefault();manual=true;step(e.key==='ArrowRight'?1:-1)}if(e.code==='Space'){e.preventDefault();manual=!manual;updatePause()}};
- const observer=new IntersectionObserver(entries=>{inView=entries[0].isIntersecting;updatePause()},{threshold:.15});observer.observe(root);const visibility=()=>updatePause();document.addEventListener('visibilitychange',visibility);const motion=()=>{if(reduced.matches){manual=true;updatePause()}};reduced.addEventListener('change',motion);timer=setInterval(()=>{if(!manual&&!hover&&!focus&&inView&&!document.hidden)step(1)},6500);paint();orbitCleanup=()=>{disposed=true;clearInterval(timer);observer.disconnect();document.removeEventListener('visibilitychange',visibility);reduced.removeEventListener('change',motion);stage.querySelectorAll('video').forEach(v=>v.pause())};
+ const observer=new IntersectionObserver(entries=>{inView=entries[0].isIntersecting;updatePause()},{threshold:.15});observer.observe(root);const visibility=()=>updatePause();document.addEventListener('visibilitychange',visibility);const motion=()=>{if(reduced.matches){manual=true;updatePause()}};reduced.addEventListener('change',motion);timer=setInterval(()=>{if(!manual&&!hover&&!focus&&inView&&!document.hidden)step(1)},6500);const resize=()=>paint();window.addEventListener('resize',resize,{passive:true});paint();orbitCleanup=()=>{disposed=true;window.removeEventListener('resize',resize);clearInterval(timer);observer.disconnect();document.removeEventListener('visibilitychange',visibility);reduced.removeEventListener('change',motion);stage.querySelectorAll('video').forEach(v=>v.pause())};
  }
  async function mountMedia(container,row){try{const u=row.assetId?await ASSETS.url(row.assetId):safeUrl(row.url);if(!u||!container.isConnected)return;const el=document.createElement(row.kind==='image'?'img':'video');el.src=u;if(row.kind!=='image'){el.controls=true;el.playsInline=true;el.preload='metadata';if(row.poster)el.poster=safeUrl(row.poster)}else el.alt=row.description||row.name;container.prepend(el)}catch(e){container.append('Local media unavailable. Re-upload this asset on this device.')}}
  let primed=false;
@@ -8160,7 +8191,7 @@ function PAGE_EVENTS(path){
     const institutionIndex=rest.indexOf('institutions');if(institutionIndex!==-1){const i=data().institutions.find(i=>i.slug===rest[institutionIndex+1]&&String(i.countyId)===String(c.id));return i?institution(c,s,i):missing('Institution not found in this county.');}
     const rows=institutions(c,s);return {title:c.name+' · '+s.name,html:`<div class="wrap">${T.crumb([['Home','/'],['Counties','/counties'],[c.name,countyPath(c)],[s.name,null]])}</div><section class="wrap section"><span class="eyebrow">${esc(c.name)} county sector</span><h1>${esc(s.name)}</h1><p class="muted mt">${rows.length} published institutions mapped to this sector. Open an institution for its sector-specific history, information and offerings.</p>${mediaFor(sectorPath(c,s))?film(mediaFor(sectorPath(c,s)),c.name+' · '+s.name):''}${institutionCards(c,s,rows)}</section>`};
   }
-  const rows=institutions(c);return {title:c.name,html:`<div class="wrap">${T.crumb([['Home','/'],['Counties','/counties'],[c.name,null]])}</div><section class="wrap section"><h1>${esc(c.name)} County</h1><p class="muted mt">${esc(c.description)}</p>${window.KiccExpoVideo.render({variant:'feature',video:c.heroVideo||null,poster:c.aiImage,fallbackImage:c.aiImage,title:c.name+' County',eyebrow:c.heroVideo?'Uploaded county hero':'County media awaiting upload',description:c.heroVideo?'Your uploaded county hero video. Tap Play to retry if playback is interrupted.':'Upload a county hero video to showcase this county.',ownerId:c.id,actions:[]})}<h2 class="mt-l">Explore economic sectors</h2><div class="grid g3 mt-l">${(c.sectorDetails||[]).map(s=>`<a class="glass-card pad" data-county-sector="${esc(s.slug)}" href="#${esc(sectorPath(c,s))}"><h3>${esc(s.name)}</h3><p>${institutions(c,s).length} mapped institutions</p><span class="gold">Enter sector →</span></a>`).join('')}</div><h2 class="mt-l">All published county institutions</h2>${institutionCards(c,null,rows)}</section>`};
+  const rows=institutions(c);return {title:c.name,html:`<div class="wrap">${T.crumb([['Home','/'],['Counties','/counties'],[c.name,null]])}</div><section class="wrap section"><h1>${esc(c.name)} County</h1><p class="muted mt">${esc(c.description)}</p>${c.heroVideo||countyLayoutImage(c)?window.KiccExpoVideo.render({variant:'feature',video:c.heroVideo||null,mobileVideo:c.heroMobileVideo,poster:countyLayoutImage(c),fallbackImage:countyLayoutImage(c),title:c.name+' County',eyebrow:c.region+' · County film',description:'Explore the county and its economic sectors.',ownerId:c.id,actions:[]}):''}<h2 class="mt-l">Explore economic sectors</h2><div class="grid g3 mt-l">${(c.sectorDetails||[]).map(s=>`<a class="glass-card pad" data-county-sector="${esc(s.slug)}" href="#${esc(sectorPath(c,s))}"><h3>${esc(s.name)}</h3><p>${institutions(c,s).length} mapped institutions</p><span class="gold">Enter sector →</span></a>`).join('')}</div><h2 class="mt-l">All published county institutions</h2>${institutionCards(c,null,rows)}</section>`};
  };
  Router.PAGES['/institutions']=(rest)=>{const i=data().institutions.find(i=>i.slug===rest[0]);if(!i)return missing('Institution not found.');const c=data().counties.find(c=>String(c.id)===String(i.countyId));if(!c)return missing('Institution county not found.');return institution(c,null,i);};
 })();
@@ -8170,7 +8201,7 @@ function PAGE_EVENTS(path){
  T.crumb=items=>`<div class="crumb wrap">${items.map((it,i)=>i===items.length-1?`<span>${esc(it[0])}</span>`:`<a href="#${esc(it[1])}" data-link>${esc(it[0])}</a><i>/</i>`).join('')}</div>`;
  const table=()=>window.KICC_NATIVE.tables;const countyPath=c=>'/counties/'+c.slug;const sectorPath=(c,s)=>countyPath(c)+'/sectors/'+s.slug;const instPath=(c,s,i)=>sectorPath(c,s)+'/institutions/'+i.slug;const mediaFor=p=>table().media.find(m=>m.target===p&&m.kind==='video');
  const ranked=rows=>[...rows].sort((a,b)=>(b.soldCount||0)-(a.soldCount||0)||(b.viewCount||0)-(a.viewCount||0)||Number(b.featured)-Number(a.featured)||String(b.updatedAt).localeCompare(String(a.updatedAt))||String(a.name).localeCompare(String(b.name)));
- function tile({kind,path,title,subtitle,media,extra=''}){const video=media?.kind==='video',poster=media?.poster||(video?media?.fallbackImage:media?.url)||table().counties[0]?.aiImage;return `<article class="hierarchy-tile" data-hierarchy-kind="${kind}" data-hierarchy-media-state="${media?.source==='media-pending'||media?.state==='empty'?'empty':'available'}" data-hierarchy-path="${esc(path)}" data-hierarchy-video="${video?'1':'0'}"><div class="hierarchy-tile__media" data-hierarchy-media='${esc(JSON.stringify(media||{}))}'><img src="${esc(poster)}" alt="${esc(title)}" loading="lazy" decoding="async" width="640" height="360">${video?'<button type="button" data-hierarchy-play aria-label="Play video preview">▶ Play preview</button>':''}</div><div class="hierarchy-tile__body"><span class="badge ${video?'green':'grey'}">${video?'Video available':kind}</span><h3>${esc(title)}</h3><p>${esc(subtitle)}</p>${extra}<a class="btn gold" data-hierarchy-open href="#${esc(path)}">Explore →</a></div></article>`;}
+ function tile({kind,path,title,subtitle,media,extra=''}){const video=media?.kind==='video',poster=countyLayoutImage({tileMedia:media,image:video?null:media?.url});return `<article class="hierarchy-tile" data-hierarchy-kind="${kind}" data-hierarchy-media-state="${media?.source==='media-pending'||media?.state==='empty'?'empty':'available'}" data-hierarchy-path="${esc(path)}" data-hierarchy-video="${video?'1':'0'}"><div class="hierarchy-tile__media" data-hierarchy-media='${esc(JSON.stringify(media||{}))}'>${poster?`<img src="${esc(poster)}" alt="${esc(title)}" loading="lazy" decoding="async" width="640" height="360">`:""}${video?'<button type="button" data-hierarchy-play aria-label="Play video preview">▶ Play preview</button>':''}</div><div class="hierarchy-tile__body"><span class="badge ${video?'green':'grey'}">${video?'Video available':kind}</span><h3>${esc(title)}</h3><p>${esc(subtitle)}</p>${extra}<a class="btn gold" data-hierarchy-open href="#${esc(path)}">Explore →</a></div></article>`;}
  const institutions=(c,s)=>table().institutions.filter(i=>String(i.countyId)===String(c.id)&&(!s||(i.sectorProfiles||[]).some(p=>p.slug===s.slug)));
  function instCards(c,s,rows){return rows.length?`<div class="hierarchy-grid" data-institution-tiles>${rows.map(i=>{const p=s?(i.sectorProfiles||[]).find(p=>p.slug===s.slug):null;const media=p?.tileMedia||i.tileMedia;return tile({kind:'institution',path:s?instPath(c,s,i):'/institutions/'+i.slug,title:i.name,subtitle:p?.description||i.description,media,extra:`<p class="hierarchy-count">${p?.productIds?.length??table().products.filter(p=>String(p.institutionId)===String(i.id)).length} linked marketplace offerings</p>`});}).join('')}</div>`:'<p class="reference-empty">No institutions are currently published in this sector.</p>';}
  const oldCounties=Router.PAGES['/counties'],oldInstitutions=Router.PAGES['/institutions'];
@@ -8208,5 +8239,6 @@ window.KiccRefreshCatalogue=refresh;refresh();setInterval(refresh,(navigator.con
 })();
 </script>
 <script defer src="/js/hierarchy-video-tiles.js?v=hierarchy-mobile-20261010"></script>
+<script defer src="/js/county-layout.fa9e818e7e92.js"></script>
 </body>
 </html>
