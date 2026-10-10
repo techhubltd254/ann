@@ -978,3 +978,5 @@ Route::get('/admin/model-preview/{asset}',[\App\Http\Controllers\Web\PublicModel
 
 Route::post('/admin/kicc/cms/timeline/{event}',[\App\Http\Controllers\Web\CmsController::class,'updateTimeline'])->middleware(['auth','admin:kicc'])->name('cms.admin.timeline.update');
 Route::post('/admin/kicc/cms/videos/{video}',[\App\Http\Controllers\Web\CmsController::class,'updateVideo'])->middleware(['auth','admin:kicc'])->name('cms.admin.video.update');
+
+Route::get('/models/{asset}/bytes',[\App\Http\Controllers\Web\PublicModelController::class,'bytes'])->name('public.model.bytes');
