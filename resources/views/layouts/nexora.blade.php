@@ -8,7 +8,7 @@
 <link rel="stylesheet" href="/css/admin-shell.css?v=admin-safe-v3">
 <link rel="stylesheet" href="/css/admin-safe.css?v=admin-safe-v3">
 <script defer src="https://cdn.jsdelivr.net/npm/chart.js@4.4.4/dist/chart.umd.min.js"></script>
-<link rel="stylesheet" href="/css/admin-workflow.css?v=admin-product-v1">@stack('styles')</head>
+<link rel="stylesheet" href="/css/admin-workflow.css?v=admin-product-v1"><link rel="stylesheet" href="/css/admin-complete.css?v=complete-v4">@stack('styles')</head>
 @php
  $actor=auth()->user();
  $adminLevel=$actor?app(\App\Services\AdminHierarchyScope::class)->level($actor):null;
@@ -50,5 +50,6 @@
 <main class="as-main">@yield('content')</main>
 </div>
 <script defer src="/js/admin-shell.js?v=admin-shell-v2"></script>
+<script src="/js/resumable-entity-upload.js?v=entity-v4"></script>
 @stack('scripts')
 </body></html>

@@ -90,7 +90,7 @@ class ChunkedUploadController extends Controller
         file_put_contents($dir.'/meta.json',json_encode($d,JSON_THROW_ON_ERROR),LOCK_EX);
         return response()->json(['upload_id'=>$id,'chunk_bytes'=>self::CHUNK_BYTES,'max_bytes'=>self::MAX_BYTES],201)->header('Cache-Control','no-store');
     }
-    public function status(Request $r,string $uploadId){[$dir,$m]=$this->session($r,$uploadId);$n=(int)ceil($m['size']/self::CHUNK_BYTES);$next=0;while($next<$n&&is_file($dir.'/'.sprintf('%06d.part',$next)))$next++;return response()->json(['upload_id'=>$uploadId,'next'=>$next,'chunk_bytes'=>self::CHUNK_BYTES,'size'=>$m['size'],'expires'=>$m['expires'],'result'=>is_file($dir.'/result.json')?json_decode(file_get_contents($dir.'/result.json'),true):null])->header('Cache-Control','no-store');}
+    public function status(Request $r,string $uploadId){[$dir,$m]=$this->session($r,$uploadId);$n=(int)ceil($m['size']/self::CHUNK_BYTES);$next=0;while($next<$n&&is_file($dir.'/'.sprintf('%06d.part',$next)))$next++;return response()->json(['upload_id'=>$uploadId,'next'=>$next,'chunk_bytes'=>self::CHUNK_BYTES,'size'=>$m['size'],'expires'=>$m['expires'],'error'=>is_file($dir.'/finalization-error.json')?json_decode(file_get_contents($dir.'/finalization-error.json'),true):null,'result'=>is_file($dir.'/result.json')?json_decode(file_get_contents($dir.'/result.json'),true):null])->header('Cache-Control','no-store');}
     public function cancel(Request $r,string $uploadId){[$dir,$m]=$this->session($r,$uploadId);$lock=fopen($dir.'/lock','c');abort_unless(flock($lock,LOCK_EX|LOCK_NB),409,'Upload is completing.');try{abort_if(is_file($dir.'/result.json'),409,'Completed media belongs to the media library.');foreach(glob($dir.'/*')?:[] as $f)if(is_file($f)&&basename($f)!=='lock')unlink($f);}finally{flock($lock,LOCK_UN);fclose($lock);}unlink($dir.'/lock');rmdir($dir);return response()->json(['cancelled'=>true]);}
     public function chunk(Request $r,string $uploadId)
     {
@@ -107,6 +107,12 @@ class ChunkedUploadController extends Controller
     public function complete(Request $r,string $uploadId)
     {
         [$dir,$m]=$this->session($r,$uploadId);
+        if($r->boolean('async')&&!$r->attributes->get('finalize_job')){
+            if(is_file($dir.'/result.json'))return response()->json(json_decode(file_get_contents($dir.'/result.json'),true));
+            $enqueue=fopen($dir.'/enqueue.lock','c');abort_unless(flock($enqueue,LOCK_EX|LOCK_NB),409,'Finalization is being scheduled.');
+            try{if(!is_file($dir.'/enqueued')||is_file($dir.'/finalization-error.json')){\App\Jobs\FinalizeChunkedUpload::dispatch($uploadId,(int)$m['actor_id']);file_put_contents($dir.'/enqueued',(string)time());if(is_file($dir.'/finalization-error.json'))unlink($dir.'/finalization-error.json');}}finally{flock($enqueue,LOCK_UN);fclose($enqueue);}
+            return response()->json(['upload_id'=>$uploadId,'status'=>'finalizing'],202)->header('Cache-Control','no-store');
+        }
         $lock=fopen($dir.'/lock','c');abort_unless(flock($lock,LOCK_EX|LOCK_NB),409,'Upload is being completed.');
         try{
             if(is_file($dir.'/result.json'))return response()->json(json_decode(file_get_contents($dir.'/result.json'),true));
@@ -121,7 +127,7 @@ class ChunkedUploadController extends Controller
             $mime=(new \finfo(FILEINFO_MIME_TYPE))->file($assembled);
             abort_unless(in_array($mime,['video/mp4','video/webm','video/quicktime','video/x-matroska','video/x-msvideo'],true),422,'File content is not a supported video.');
             $playbackReady=true;$sourceCodec=null;
-            if(in_array($m['owner_type'],[Product::class,'national_page',Ministry::class],true)){
+            if(true){
                 $probe=new \Symfony\Component\Process\Process(['ffprobe','-v','error','-show_streams','-show_format','-of','json',$assembled]);$probe->setTimeout(120);$probe->run();
                 abort_unless($probe->isSuccessful(),422,'The uploaded video is corrupt or cannot be decoded. Nothing was published.');
                 $info=json_decode($probe->getOutput(),true);$video=null;$audio=null;foreach($info['streams']??[] as $stream){if(($stream['codec_type']??'')==='video'&&!$video)$video=$stream;if(($stream['codec_type']??'')==='audio'&&!$audio)$audio=$stream;}
@@ -156,8 +162,9 @@ class ChunkedUploadController extends Controller
             foreach(['reference.native.v1','kicc_home','kicc_counties_index','resolve:county_hero_id_'.$m['owner_id']] as $k)Cache::forget($k);
             Cache::forget('kicc:r2:keys');Cache::forget('kicc:r2:keyset');
             Cache::increment('kicc_cache_version');
-            if($m['owner_type']===Product::class||$national){\App\Jobs\PrepareProductVideo::dispatch($a->id,$key);}
-            $result=['id'=>$a->id,'path'=>$key,'bytes'=>$total,'status'=>$a->status,'public_url'=>'/media/original/'.$key,'sha256'=>hash_file('sha256',$assembled)];
+            if(true){\App\Jobs\PrepareProductVideo::dispatch($a->id,$key);}
+            $ownerUrl=match($m['owner_type']){Product::class=>route('marketplace.show',Product::findOrFail($m['owner_id'])->slug),CountyInstitution::class=>url('/institutions/'.CountyInstitution::findOrFail($m['owner_id'])->slug),County::class=>url('/counties/'.County::findOrFail($m['owner_id'])->slug),default=>url('/venues')};if($national)$ownerUrl=url('/national-government');
+            $result=['owner_url'=>$ownerUrl,'id'=>$a->id,'path'=>$key,'bytes'=>$total,'status'=>$a->status,'public_url'=>'/media/original/'.$key,'sha256'=>hash_file('sha256',$assembled)];
             file_put_contents($dir.'/result.json',json_encode($result));
             foreach(glob($dir.'/*.part')?:[] as $p)unlink($p);unlink($assembled);
             return response()->json($result)->header('Cache-Control','no-store');

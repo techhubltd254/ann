@@ -177,11 +177,11 @@ Route::middleware('auth')->group(function () {
     // Media flow: the county -> institution -> sector -> media workspace that the
     // admin layouts link to. Without this route every layout using it throws 500.
     Route::get('/portal/media-flow', [\App\Http\Controllers\Web\MediaFlowController::class, 'index'])->name('admin.mediaflow');
-    Route::get('/portal/media-flow/{institution:id}/sectors', [\App\Http\Controllers\Web\MediaFlowController::class, 'sectors'])->name('admin.mediaflow.sectors');
-    Route::get('/portal/media-flow/{institution:id}/media', [\App\Http\Controllers\Web\MediaFlowController::class, 'media'])->name('admin.mediaflow.media');
-    Route::post('/portal/media-flow/{institution:id}/videos', [\App\Http\Controllers\Web\MediaFlowController::class, 'store'])->name('admin.mediaflow.store');
-    Route::post('/portal/media-flow/{institution:id}/videos/{asset}/replace', [\App\Http\Controllers\Web\MediaFlowController::class, 'replace'])->name('admin.mediaflow.replace');
-    Route::delete('/portal/media-flow/{institution:id}/videos/{asset}', [\App\Http\Controllers\Web\MediaFlowController::class, 'destroy'])->name('admin.mediaflow.destroy');
+    Route::get('/portal/media-flow/{institution:slug}/sectors', [\App\Http\Controllers\Web\MediaFlowController::class, 'sectors'])->name('admin.mediaflow.sectors');
+    Route::get('/portal/media-flow/{institution:slug}/media', [\App\Http\Controllers\Web\MediaFlowController::class, 'media'])->name('admin.mediaflow.media');
+    Route::post('/portal/media-flow/{institution:slug}/videos', [\App\Http\Controllers\Web\MediaFlowController::class, 'store'])->name('admin.mediaflow.store');
+    Route::post('/portal/media-flow/{institution:slug}/videos/{asset}/replace', [\App\Http\Controllers\Web\MediaFlowController::class, 'replace'])->name('admin.mediaflow.replace');
+    Route::delete('/portal/media-flow/{institution:slug}/videos/{asset}', [\App\Http\Controllers\Web\MediaFlowController::class, 'destroy'])->name('admin.mediaflow.destroy');
 
     // Chunked upload: the only path that can carry a 2 GB file past the edge's
     // ~100 MB request ceiling.
@@ -551,14 +551,14 @@ Route::middleware(['auth', 'admin:kicc'])->prefix('kicc-admin/cms')->name('cms.a
     Route::post('/pages', [\App\Http\Controllers\Web\CmsController::class, 'storePage'])->name('page.store');
     Route::post('/team', [\App\Http\Controllers\Web\CmsController::class, 'storeTeamMember'])->name('team.store');
     Route::post('/team/{member}', [\App\Http\Controllers\Web\CmsController::class, 'updateTeamMember'])->name('team.update');
-    Route::get('/team/{member}/delete', [\App\Http\Controllers\Web\CmsController::class, 'deleteTeamMember'])->name('team.delete');
+    Route::delete('/team/{member}/delete', [\App\Http\Controllers\Web\CmsController::class, 'deleteTeamMember'])->name('team.delete');
     Route::post('/timeline', [\App\Http\Controllers\Web\CmsController::class, 'storeTimelineEvent'])->name('timeline.store');
-    Route::get('/timeline/{event}/delete', [\App\Http\Controllers\Web\CmsController::class, 'deleteTimelineEvent'])->name('timeline.delete');
+    Route::delete('/timeline/{event}/delete', [\App\Http\Controllers\Web\CmsController::class, 'deleteTimelineEvent'])->name('timeline.delete');
     Route::post('/faq', [\App\Http\Controllers\Web\CmsController::class, 'storeFaq'])->name('faq.store');
     Route::post('/faq/{faq}', [\App\Http\Controllers\Web\CmsController::class, 'updateFaq'])->name('faq.update');
-    Route::get('/faq/{faq}/delete', [\App\Http\Controllers\Web\CmsController::class, 'deleteFaq'])->name('faq.delete');
+    Route::delete('/faq/{faq}/delete', [\App\Http\Controllers\Web\CmsController::class, 'deleteFaq'])->name('faq.delete');
     Route::post('/video', [\App\Http\Controllers\Web\CmsController::class, 'storeVideo'])->name('video.store');
-    Route::get('/video/{video}/delete', [\App\Http\Controllers\Web\CmsController::class, 'deleteVideo'])->name('video.delete');
+    Route::delete('/video/{video}/delete', [\App\Http\Controllers\Web\CmsController::class, 'deleteVideo'])->name('video.delete');
 });
 
 // National Government Admin (like counties)
@@ -963,3 +963,11 @@ Route::middleware(['auth','can:view-private-revenue'])->group(function () {
 });
 
 Route::get('/admin/kicc/intelligence',[\App\Http\Controllers\Web\IntelligenceController::class,'dashboard'])->middleware(['auth','can:view-private-revenue'])->name('mother.intelligence');
+
+Route::get('/api/public-catalog',[\App\Http\Controllers\Web\ReferenceExperienceController::class,'data'])->name('public.catalog')->withoutMiddleware('throttle:60,1')->middleware('throttle:120,1,public-catalog');
+Route::get('/models/{asset}',[\App\Http\Controllers\Web\PublicModelController::class,'show'])->name('public.model');
+Route::get('/kicc/pages/{slug}',[\App\Http\Controllers\Web\CmsController::class,'page'])->name('cms.public.page');
+Route::post('/admin/kicc/cms/services',[\App\Http\Controllers\Web\CmsController::class,'storeService'])->middleware(['auth','admin:kicc'])->name('cms.admin.service.store');
+Route::post('/admin/kicc/cms/services/{service}',[\App\Http\Controllers\Web\CmsController::class,'updateService'])->middleware(['auth','admin:kicc'])->name('cms.admin.service.update');
+Route::delete('/admin/kicc/cms/services/{service}',[\App\Http\Controllers\Web\CmsController::class,'deleteService'])->middleware(['auth','admin:kicc'])->name('cms.admin.service.delete');
+Route::delete('/admin/kicc/cms/pages/{page}',[\App\Http\Controllers\Web\CmsController::class,'deletePage'])->middleware(['auth','admin:kicc'])->name('cms.admin.page.delete');

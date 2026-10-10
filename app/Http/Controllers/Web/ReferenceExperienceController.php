@@ -42,7 +42,7 @@ class ReferenceExperienceController extends Controller
         $index->prime(CountyInstitution::class, $institutions->pluck('id')->all());
         $index->prime('institution', $institutions->pluck('id')->all());
 
-        $products = Product::with('county', 'images', 'variants', 'offers')->where('status', 'active')->orderBy('name')->get();
+        $products = Product::with(['county','category','images','variants','offers'=>fn($q)=>$q->current()])->where('status','active')->orderByDesc('updated_at')->orderByDesc('id')->get();
         $index->prime(Product::class, $products->pluck('id')->all());
 
         $venues = Venue::where('is_active', true)->orderBy('name')->get();
@@ -64,6 +64,7 @@ class ReferenceExperienceController extends Controller
         foreach ($institutions as $i) {
             $hero = MediaMapping::institutionHero($i, $index);
             $tables['institutions'][] = ['id'=>(string)$i->id,'countyId'=>(string)$i->county_id,'county'=>$countyNames[$i->county_id] ?? '', 'slug'=>$i->slug,'name'=>$i->name,'description'=>$i->description,'website'=>$i->website,'type'=>$i->type,'email'=>$i->email,'verified'=>(bool)$i->is_verified_trader,'sectors'=>$i->sectorEntities->pluck('sector_id')->unique()->values()->all(),'status'=>'published','tileMedia'=>$tiles->tile(\App\Models\CountyInstitution::class,(int)$i->id,'hero')];
+            $tables['institutions'][array_key_last($tables['institutions'])]['models']=app(\App\Services\PublicModelResolver::class)->forOwner(CountyInstitution::class,(int)$i->id,$index);
             if ($hero['video']) $tables['media'][] = ['id'=>'institution:'.$i->id,'ownerId'=>(string)$i->id,'kind'=>'video','role'=>'experience','target'=>'/institutions/'.$i->slug,'name'=>$i->name.' — institution film','url'=>$hero['video'],'poster'=>$hero['poster'] ?? null,'status'=>'published'];
         }
         $nationalHero=MediaAsset::resolveSlot(\App\Models\County::class,0,'national_hero_video');
@@ -93,21 +94,22 @@ class ReferenceExperienceController extends Controller
         $resolver = app(ProductMediaResolver::class)->withIndex($index)->withInstitutions($institutionMap);
         foreach ($products as $p) {
             $image = $resolver->resolve($p);
-            $tables['products'][] = ['id'=>(string)$p->id,'slug'=>$p->slug,'institutionId'=>(string)$p->institution_id,'n'=>$p->name,'name'=>$p->name,'c'=>$p->county?->name ?? '', 'cat'=>$p->category?->name ?? 'Product','p'=>(float)$p->price,'unit'=>$p->unit ?? '', 'r'=>0,'rv'=>0,'moq'=>(int)$p->moq,'incoterm'=>$p->incoterm,'v'=>'image','description'=>$p->short_description ?? $p->description,'image'=>$image['url'],'mediaLabel'=>$image['label'],'nativeUrl'=>route('marketplace.show',$p->slug),'status'=>'published','tileMedia'=>($t=$tiles->tile(\App\Models\Marketplace\Product::class,(int)$p->id,'product_image'))['state']==='published'?$t:($image['url']?['state'=>'published','kind'=>'image','url'=>$image['url'],'description'=>$image['label'] ?? $p->name,'alt'=>$image['label'] ?? $p->name,'source'=>'derived']:['state'=>'empty'])];
+            $tables['products'][] = ['updatedAt'=>$p->updated_at?->toIso8601String(),'id'=>(string)$p->id,'slug'=>$p->slug,'institutionId'=>(string)$p->institution_id,'n'=>$p->name,'name'=>$p->name,'c'=>$p->county?->name ?? '', 'cat'=>$p->category?->name ?? 'Product','p'=>(float)$p->price,'unit'=>$p->unit ?? '', 'r'=>0,'rv'=>0,'moq'=>(int)$p->moq,'incoterm'=>$p->incoterm,'v'=>'image','description'=>$p->short_description ?? $p->description,'image'=>$image['url'],'mediaLabel'=>$image['label'],'nativeUrl'=>route('marketplace.show',$p->slug),'status'=>'published','tileMedia'=>($t=$tiles->tile(\App\Models\Marketplace\Product::class,(int)$p->id,'product_image'))['state']==='published'?$t:($image['url']?['state'=>'published','kind'=>'image','url'=>$image['url'],'description'=>$image['label'] ?? $p->name,'alt'=>$image['label'] ?? $p->name,'source'=>'derived']:['state'=>'empty'])];
             $last=array_key_last($tables['products']);
+            $tables['products'][$last]['models']=app(\App\Services\PublicModelResolver::class)->forOwner(Product::class,(int)$p->id,$index);
             $tables['products'][$last]['offeringKind']=$p->offering_kind;
             $tables['products'][$last]['priceMode']=$p->price_mode;
             $tables['products'][$last]['priceLabel']=$p->price_mode==='enquiry'?'Price on enquiry':($p->price_mode==='from'?'From ':'').'KES '.number_format($p->price??0);
             $tables['products'][$last]['sourceUrl']=$p->source_url;
             $tables['products'][$last]['bookingUrl']=$p->booking_url;
             $tables['products'][$last]['offeringDetails']=$p->offering_details??[];
-            $tables['products'][$last]['offers']=$p->offers()->current()->get(['title','terms','price','starts_at','ends_at'])->toArray();
+            $tables['products'][$last]['offers']=$p->offers->map(fn($o)=>$o->only(['title','terms','price','starts_at','ends_at']))->all();
             $video=$index->forSlot(\App\Models\Marketplace\Product::class,(int)$p->id,'product_video');
             if($video && $video->kind==='video'){
                 $prepared=$video->derivatives->firstWhere('variant','stream-safe');
                 $videoUrl=url('/media/original/'.($prepared?->path?:$video->path));
                 $tables['media'][]=['id'=>'product:'.$p->id,'ownerId'=>(string)$p->id,'kind'=>'video','role'=>'product','target'=>'/marketplace/'.$p->slug,'name'=>$p->name.' — product film','url'=>$videoUrl,'poster'=>$video->posterUrl()?:$image['url'],'status'=>'published'];
-                $last=array_key_last($tables['products']);$tables['products'][$last]['v']='video';
+                $last=array_key_last($tables['products']);$tables['products'][$last]['v']='video';$tables['products'][$last]['mediaLabel']='Institution-uploaded product film';
                 $tables['products'][$last]['tileMedia']=['state'=>'published','kind'=>'video','url'=>$videoUrl,'poster'=>$video->posterUrl()?:$image['url'],'alt'=>$p->name,'source'=>'admin-upload'];
             }
         }
@@ -142,7 +144,7 @@ class ReferenceExperienceController extends Controller
 
     public function data()
     {
-        return response()->json(['source'=>'live-native-models','tables'=>$this->tables()])->withHeaders(['Cache-Control'=>'no-store','CDN-Cache-Control'=>'no-store']);
+        return response()->json(['source'=>'live-native-models','revision'=>(int)\Illuminate\Support\Facades\Cache::get('kicc_cache_version',0),'tables'=>$this->tables()])->withHeaders(['Cache-Control'=>'no-store','CDN-Cache-Control'=>'no-store']);
     }
 
     public function html(Request $request): string

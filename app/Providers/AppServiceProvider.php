@@ -39,6 +39,9 @@ class AppServiceProvider extends ServiceProvider
     {
         Gate::define('view-private-revenue', fn ($user) => ($user->status ?? 'active') === 'active'
             && ($user->hasRole('kicc_admin') || $user->hasRole('superadmin') || ($user->account_type ?? '') === 'superadmin'));
+        \Illuminate\Support\Facades\View::composer(['layouts.app','layouts.experience-live'], function ($view) {
+            if(request()->attributes->get('kicc_admin_console'))$view->setPath(resource_path('views/layouts/nexora.blade.php'));
+        });
         Blade::component('dashboards-shell', DashboardsShell::class);
 
         // The literal approved renderer reads these same models. Upload/delete

@@ -1,9 +1,9 @@
-@extends('layouts.experience-live')
+@extends('layouts.nexora')
 @section('title','Sequential media control — KICC')
 @push('styles')<link rel="stylesheet" href="/css/media-flow.css?v=owner-video-v1">@endpush
 @section('content')
 <x-experience.head eyebrow="County → Institution → Sector → Media" title="Control the right owner's media." lead="The existing county_sector and sector_entities relationships determine every choice. Files are changed by stable media ID, never by their position in a list." />
-<section class="wrap admin-module" data-media-flow data-base="/portal/media-flow">
+<section class="wrap admin-module" data-media-flow data-base="/admin/media-flow">
  <div class="media-flow-selectors">
   <label>1 · County<select data-flow-county><option value="">Choose county</option>@foreach($counties as $c)<option value="{{ $c->id }}">{{ $c->name }}</option>@endforeach</select></label>
   <label>2 · Institution<select data-flow-institution disabled><option value="">Choose county first</option>@foreach($institutions as $i)<option value="{{ $i->id }}" data-county="{{ $i->county_id }}" data-slug="{{ $i->slug }}">{{ $i->name }}</option>@endforeach</select></label>
@@ -14,7 +14,7 @@
  <div data-flow-display class="media-flow-panel"></div>
  <form data-flow-upload class="media-flow-panel" hidden>
   <h2>Add a video to this owner</h2>
-  <p>Up to 2 GiB per file. Same-origin uploads above ~100 MB must use the R2 direct-upload workflow, because the edge proxy caps request bodies; the server stores either path in R2.</p>
+  <p>Up to 2 GiB per file. Uses resumable 4 MiB chunks and background verification, including replacement videos.</p>
   <label>Title<input name="title" required maxlength="255"></label>
   <label>Display slot<select name="slot"><option value="institution_video">Institution video collection</option><option value="hero_video">Institution hero — changes the current public hero</option><option value="4d_video">4D video collection</option></select></label>
   <label>Video file<input name="video" type="file" accept="video/mp4,video/webm,video/quicktime" required></label>
@@ -29,4 +29,4 @@
  <progress data-flow-progress max="100" value="0" hidden aria-label="Video upload progress"></progress>
 </section>
 @endsection
-@push('scripts')<script defer src="/js/media-flow.js?v=owner-video-v1"></script>@endpush
+@push('scripts')<script defer src="/js/media-flow.js?v=owner-resumable-v4"></script>@endpush

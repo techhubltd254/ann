@@ -1,4 +1,4 @@
-@extends('layouts.app')
+@extends('layouts.nexora')
 @php $isInst = $inst !== null; @endphp
 
 @section('title', 'Upload 3D Asset — KICC Admin')
@@ -32,16 +32,16 @@
             <div class="grid grid-cols-2 gap-4">
                 <div>
                     <select name="entity_type" class="input-kicc" onchange="toggleEntitySelect(this.value)">
-                        <option value="">— None (unattached) —</option>
-                        <option value="App\Models\CountyInstitution">Institution</option>
-                        <option value="App\Models\CountyProduct">County Product</option>
+                        
+                        <option value="App\Models\CountyInstitution" selected>Institution</option>
+                        <option value="App\Models\Marketplace\Product">County Product</option>
                     </select>
                 </div>
                 <div>
                     <select name="entity_id" class="input-kicc" id="entity-select">
                         <option value="">— Select entity —</option>
                         @if($isInst)
-                        <option value="{{ $inst->id }}" selected>{{ $inst->name }}</option>
+                        <option value="{{ $inst->id }}" data-type="App\Models\CountyInstitution" selected>{{ $inst->name }}</option>
                         @else
                         @foreach($institutions as $instOpt)
                         <option value="{{ $instOpt->id }}" data-type="App\Models\CountyInstitution">
@@ -49,6 +49,7 @@
                         </option>
                         @endforeach
                         @endif
+                        @foreach($products as $product)<option value="{{ $product['id'] }}" data-type="App\Models\Marketplace\Product">{{ $product['name'] }}</option>@endforeach
                     </select>
                 </div>
             </div>
@@ -80,7 +81,7 @@ function toggleEntitySelect(val) {
     var sel = document.getElementById('entity-select');
     if (!val) { sel.value = ''; sel.disabled = true; return; }
     sel.disabled = false;
-    // Filter options by data-type if needed
+    [...sel.options].forEach(o=>{if(!o.value)return;o.hidden=!!o.dataset.type&&o.dataset.type!==val;o.disabled=o.hidden;});if(sel.selectedOptions[0]?.disabled)sel.value=[...sel.options].find(o=>o.value&&!o.disabled)?.value||'';
 }
 document.addEventListener('DOMContentLoaded', function() {
     toggleEntitySelect(document.querySelector('[name="entity_type"]')?.value || '');

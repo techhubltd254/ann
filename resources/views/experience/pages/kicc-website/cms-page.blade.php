@@ -1,10 +1,3 @@
 @extends('layouts.app')
-@section('title', $page->title ?? 'Page')
-@section('content')
-<div class="pt-20 max-w-4xl mx-auto px-5 py-10 prose prose-sm max-w-none">
-    <h1>{{ $page->title ?? 'Page' }}</h1>
-    @if($page->excerpt)<p class="text-gray-500">{{ $page->excerpt }}</p>@endif
-    <div class="mt-4">{!! $page->content ?? '<p>Content coming soon. For inquiries, contact us at info@kicc.co.ke or call (+254) 20 3261000.</p>' !!}</div>
-    <a href="{{ route('kicc.event-booking') }}" class="inline-block mt-6 h-11 px-6 rounded-xl bg-[#0B0B0B] text-white text-sm font-bold hover:bg-[#0B0B0B] transition-all">Book an Event</a>
-</div>
-@endsection
+@section('title',$page->title)
+@section('content')<article class="wrap" style="padding:40px;max-width:1000px"><h1>{{ $page->title }}</h1>@if($page->excerpt)<p>{{ $page->excerpt }}</p>@endif<div class="cms-content">{!! \App\Support\SafeCmsHtml::clean($page->content) !!}</div></article>@endsection

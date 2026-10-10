@@ -1,9 +1,3 @@
-@extends('layouts.app')
-
-@section('title', 'Coming Soon')
-@section('content')
-<div class="text-center py-20">
-    <h1 class="text-2xl font-bold text-gray-900">Coming Soon</h1>
-    <p class="text-gray-400 text-sm mt-2">This page is under construction.</p>
-</div>
-@endsection
+@extends('layouts.nexora')
+@section('title','Live broadcast analytics')
+@section('content')<section class="as-card"><h1>Live broadcast analytics</h1><p>Native recorded activity; unavailable measurements are not invented.</p><pre style="white-space:pre-wrap">{{ json_encode($data,JSON_PRETTY_PRINT|JSON_UNESCAPED_SLASHES) }}</pre></section>@endsection

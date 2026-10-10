@@ -23,11 +23,11 @@ class PrepareProductVideo implements ShouldQueue {
    foreach($info['streams']??[] as $stream){if(($stream['codec_type']??'')==='video'&&!$video)$video=$stream;if(($stream['codec_type']??'')==='audio'&&!$audio)$audio=$stream;}
    if(!$video)throw new \RuntimeException('No decodable video stream');
    $compatible=($video['codec_name']??'')==='h264'&&($video['pix_fmt']??'')==='yuv420p'&&(!$audio||($audio['codec_name']??'')==='aac');
-   if(($a->metadata['namespace']??'')==='national')$compatible=false;
+   // Compatible H.264/AAC masters are remuxed, not needlessly re-encoded.
    $args=['ffmpeg','-nostdin','-y','-i',$source,'-map','0:v:0','-map','0:a:0?'];
    $args=array_merge($args,$compatible?['-c','copy']:['-c:v','libx264','-preset','veryfast','-crf','23','-maxrate','4000k','-bufsize','8000k','-pix_fmt','yuv420p','-threads','2','-vf','scale=min(1920\\,iw):-2','-c:a','aac','-b:a','128k']);
    // A 60-fps master is unnecessary work and bandwidth for a web hero.
-   if(($a->metadata['namespace']??'')==='national')$args=array_merge($args,['-r','30']);
+   if(!$compatible)$args=array_merge($args,['-r','30']);
    $args=array_merge($args,['-movflags','+faststart',$dest]);$p=new Process($args);$p->setTimeout(3000);$p->mustRun();
    $verify=new Process(['ffprobe','-v','error','-show_entries','stream=codec_name,codec_type:format=duration','-of','json',$dest]);$verify->setTimeout(90);$verify->mustRun();$output=json_decode($verify->getOutput(),true);
    if((float)($output['format']['duration']??0)<=0)throw new \RuntimeException('Prepared video verification failed');
@@ -35,7 +35,7 @@ class PrepareProductVideo implements ShouldQueue {
    $fh=fopen($dest,'rb');try{$ok=$disk->put($streamKey,$fh,['ContentType'=>'video/mp4']);}finally{fclose($fh);}
    if(!$ok||$disk->size($streamKey)!==filesize($dest))throw new \RuntimeException('Prepared R2 video verification failed');
    $posterKey=dirname($a->path).'/poster/'.pathinfo($a->path,PATHINFO_FILENAME).'.webp';
-   $pp=new Process(['ffmpeg','-nostdin','-y','-ss','0','-i',$dest,'-frames:v','1','-vf','scale=720:-2','-c:v','libwebp','-q:v','75',$poster]);$pp->setTimeout(60);$pp->run();
+   $pp=new Process(['ffmpeg','-nostdin','-y','-ss',((float)($output['format']['duration']??0)>2?'1':'0'),'-i',$dest,'-frames:v','1','-vf','scale=720:-2','-c:v','libwebp','-q:v','75',$poster]);$pp->setTimeout(60);$pp->run();
    if(MediaAsset::where('id',$a->id)->where('path',$this->expectedPath)->doesntExist()){$disk->delete($streamKey);return;}
    DB::transaction(function()use($a,$disk,$streamKey,$poster,$posterKey,$dest,$output,$compatible){$a=MediaAsset::lockForUpdate()->findOrFail($a->id);if($a->path!==$this->expectedPath)return;
     $a->derivatives()->where('kind','video_mp4')->delete();

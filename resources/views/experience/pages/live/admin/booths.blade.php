@@ -1,9 +1,3 @@
-@extends('layouts.app')
-
-@section('title', 'Coming Soon')
-@section('content')
-<div class="text-center py-20">
-    <h1 class="text-2xl font-bold text-gray-900">Coming Soon</h1>
-    <p class="text-gray-400 text-sm mt-2">This page is under construction.</p>
-</div>
-@endsection
+@extends('layouts.nexora')
+@section('title','Live booth management')
+@section('content')<section class="as-card"><h1>Live booth management</h1><form method="GET"><label>Status<input name="status" value="{{ request('status') }}"></label><label>Search<input name="search" value="{{ request('search') }}"></label><button class="as-cta">Filter</button></form>@forelse($booths as $booth)<article class="as-card"><h2>{{ $booth->name??$booth->title??'Booth #'.$booth->id }}</h2><p>{{ $booth->status }}</p>@if(\Illuminate\Support\Facades\Route::has('live.admin.booth.show'))<a href="{{ route('live.admin.booth.show',$booth->id) }}">Manage booth</a>@endif</article>@empty<p>No live booths found.</p>@endforelse{{ $booths->links() }}</section>@endsection

@@ -3410,8 +3410,9 @@ const REPO = (()=>{
  const db={version:1,tables:window.KICC_NATIVE.tables,audit:[]};
  const safe=x=>Array.isArray(x)?x.map(safe):(x&&typeof x==='object')?Object.fromEntries(Object.entries(x).map(([k,v])=>[k,safe(v)])):typeof x==='string'?esc(x):x;
  for(const t of ['counties','products','venues','exhibitions','screens','streams']){KICC[t.toUpperCase()].splice(0,KICC[t.toUpperCase()].length,...safe(db.tables[t]||[]).map(r=>({...r,status:r.availability||r.status})));}
+ const refresh=tables=>{window.KICC_NATIVE.tables=tables;db.tables=tables;for(const name of ['counties','products','venues','exhibitions','screens','streams'])KICC[name.toUpperCase()].splice(0,KICC[name.toUpperCase()].length,...safe(tables[name]||[]).map(r=>({...r,status:r.availability||r.status})));};
  const unavailable=()=>{throw Error('Use the authenticated Admin portal for server-side changes. No local preview changes are saved.');};
- return {list:(t,p=false)=>clone((db.tables[t]||[]).filter(r=>!p||r.status==='published')),snapshot:()=>clone(db),put:unavailable,del:unavailable,restore:unavailable,track:()=>{},seedContent:()=>{},slug:x=>String(x).toLowerCase().replace(/[^a-z0-9]+/g,'-').replace(/^-|-$/g,''),storageOK:true,audit:[]};
+ return {refresh,list:(t,p=false)=>clone((db.tables[t]||[]).filter(r=>!p||r.status==='published')),snapshot:()=>clone(db),put:unavailable,del:unavailable,restore:unavailable,track:()=>{},seedContent:()=>{},slug:x=>String(x).toLowerCase().replace(/[^a-z0-9]+/g,'-').replace(/^-|-$/g,''),storageOK:true,audit:[]};
 })();
 /* Uploaded binaries live in IndexedDB, never localStorage. Backend hosting is not connected. */
 const ASSETS={store:async()=>{throw Error('Upload through the authenticated native Admin portal.');},url:async id=>'/experience/media/'+encodeURIComponent(id),remove:async()=>{throw Error('Delete through the authenticated native Admin portal.');}};
@@ -5855,17 +5856,17 @@ Router.register('/marketplace', () => ({title:'Marketplace', html:`
 </div>
 <div class="wrap section-sm">
   <div class="grid g4" id="prodGrid">
-    ${PRODUCTS.map(p=>{const sl=p.n.toLowerCase().replace(/[^a-z0-9]+/g,'-').slice(0,44);return `
+    ${PRODUCTS.map(p=>{const sl=p.slug;return `
     <div class="prod-card" data-native-product="${p.slug}" data-native-county="${p.c}" data-native-price="${p.p}" data-pname="${p.n.toLowerCase()}" data-pcat="${p.cat}" data-href="/marketplace/${sl}">
-      <div class="pc-media" style="background-image:url('${[BOOTH_POSTER,HALL_POSTER,SAVANNA_POSTER,LAND_POSTER,CITY_POSTER,HERO_POSTER][p.n.length%6]}')">
-        <span class="badge-3d">${p.mediaLabel?.includes('not a product')?'ILLUSTRATIVE IMAGE':p.v==='GLB'?'3D MODEL':p.v==='4D'?'4D VIDEO':p.v==='HLS'?'HLS STREAM':'MEDIA-TILE'}</span>
-        <div class="play-fab">▶</div></div>
+      <div class="pc-media" data-live-card-media data-product-id="${p.id}" style="background-image:none">
+        <span class="badge-3d">${p.tileMedia?.kind==='video'?'UPLOADED PRODUCT VIDEO':p.models?.length?'3D MODEL AVAILABLE':p.tileMedia?.source==='admin-upload'?'UPLOADED IMAGE':'NO VERIFIED PRODUCT MEDIA'}</span>
+        <button class="play-fab" type="button" data-product-play aria-label="Play ${p.n}">▶</button></div>
       <div class="pc-body">
         <div class="between"><span class="badge gold">${p.cat}</span><span class="muted-xs">${p.c}</span></div>
         <div style="font-weight:600;font-size:13.5px;line-height:1.35">${p.n}</div>
         ${T.stars(p.r)}
         <div class="between" style="margin-top:auto"><span class="price">${p.priceLabel||("KES "+nf(p.p))}</span></div>
-        <div class="muted-xs">${p.unit} · ${p.rv} reviews</div><small class="product-image-disclosure">${p.mediaLabel||''}</small>
+        <div class="muted-xs">${p.unit} · ${p.rv} reviews</div><small class="product-image-disclosure">${p.tileMedia?.kind==='video'?'Institution-uploaded product film':p.mediaLabel||''}</small>${(p.models||[]).map(m=>`<a href="${m.viewerUrl}" class="btn ghost sm">Open uploaded 3D model ↗</a>`).join('')}
         <button class="btn gold sm block" data-action="toast" data-msg="Choose product options in secure checkout">Select &amp; buy</button>
       </div></div>`;}).join('')}
   </div>
@@ -5890,16 +5891,7 @@ Router.register('/marketplace', (rest) => {
         ${T.hls({img:p.image,title:p.n,sub:'Product film · institution-uploaded video',q:'1080p',start:12})}
       </div>
       <div class="tabpane" data-pane="model">
-        <div class="viewer3d" data-alt="1,420" data-v3read data-turntable style="aspect-ratio:16/10">
-          <div class="v3d-ctrls"><span class="badge grey">GLTF/GLB · Draco</span><span class="badge grey">drag to orbit</span></div>
-          <div class="v3d-tag">js/product-viewer.js</div><div class="v3d-hud" data-v3-readout></div>
-          <div style="position:absolute;inset:0;display:grid;place-items:center;perspective:1000px">
-            <div class="tt-obj" style="width:190px;height:190px;transform-style:preserve-3d;position:relative">
-              ${['rotateY(0deg)','rotateY(90deg)','rotateY(180deg)','rotateY(270deg)'].map(r=>
-                `<div style="position:absolute;inset:0;border:2px solid var(--reference-tone-45);border-radius:18px;background:linear-gradient(135deg,var(--reference-tone-309),var(--reference-tone-310));transform:${r} translateZ(95px)"></div>`).join('')}
-              <div style="position:absolute;inset:0;border:2px solid var(--reference-tone-311);border-radius:18px;background:var(--reference-tone-60);transform:rotateX(90deg) translateZ(95px)"></div>
-              <div style="position:absolute;inset:0;border:2px solid var(--reference-tone-311);border-radius:18px;background:var(--reference-tone-60);transform:rotateX(90deg) translateZ(-95px)"></div>
-            </div></div></div>
+        ${(p.models||[]).length?p.models.map(m=>`<iframe title="Uploaded 3D model" src="${m.viewerUrl}" style="width:100%;height:500px;border:0" loading="lazy"></iframe>`).join(''):'<p>No 3D model uploaded for this offering. Upload and attach a real GLB or splat in admin.</p>'}
       </div>
       <div class="tabpane" data-pane="gallery">
         <div class="grid g3">
@@ -7791,7 +7783,7 @@ const TILEMEDIA=(()=>{
  let epoch=0,cleanups=[],dialogs=new Set();
  const states=new Map();
  const urlSafe=x=>{try{const u=new URL(x);return u.protocol==='https:'||u.protocol==='http:'?u.href:''}catch{return ''}};
- function route(table,r){return table==='venues'?'/venues/'+slug(r.name):'/marketplace/'+slug(r.n).slice(0,44)}
+ function route(table,r){return table==='venues'?'/venues/'+(r.slug||slug(r.name)):'/marketplace/'+r.slug}
  function config(table,r){if(r.tileMedia)return r.tileMedia;if(table==='products'&&r.image)return {state:'published',kind:'image',url:urlSafe(r.image),alt:name(r)};if(table==='venues')return {state:'demo',kind:'image',url:urlSafe(HALL_POSTER)||(typeof ED_IMG!=='undefined'?ED_IMG.hall:KICC.HALL_POSTER),alt:'Existing shared demonstration hall poster; not a photograph verified for this room.'};return {state:'empty'}}
  function label(c){return c.state==='demo'?'Shared demo poster · replace in admin':c.state==='empty'?'Your film belongs here':c.state==='draft'?'Media awaiting publication':c.kind==='video'?'Venue / maker film':'Uploaded photograph'}
  function tile(table,r,i){const c=config(table,r);const title=name(r),href=route(table,r),meta=table==='venues'?r.type+' · '+r.area:r.cat+' · '+r.c+' County';return `<article class="tm-tile" data-tm-id="${esc(r.id)}" data-tm-table="${table}" aria-label="${esc(title)}"><div class="tm-window" data-tm-window><div class="tm-empty"><span class="tm-initial" aria-hidden="true">${esc(table==='venues'?String(i+1).padStart(2,'0'):r.c?.slice(0,2)||'KE')}</span><p data-tm-empty>${c.state==='empty'?'No media published. Add your own image or video in the admin.':c.state==='draft'?'This media is a draft. Publish it from the admin to show it here.':'Preparing preview…'}</p></div><span class="tm-badge" data-tm-badge>${esc(label(c))}</span>${c.state!=='empty'&&c.state!=='draft'?`<button class="tm-open-film" type="button" data-tm-open aria-label="${c.kind==='video'?'Watch':'View'} ${esc(title)}"><span aria-hidden="true">${c.kind==='video'?'▶':'↗'}</span><span>${c.kind==='video'?'Watch the experience':table==='venues'?'View the space':'View the product'}</span></button>`:''}</div><div class="tm-copy"><div><div class="tm-metadata">${String(i+1).padStart(2,'0')} / ${esc(meta)}</div><h3>${esc(title)}</h3><p>${esc(table==='venues'?r.desc||'':r.description||'Discover the product through the maker’s own film.')}</p></div><div><div class="tm-price">${table==='venues'?esc((r.rate||'').split(' / ')[0]):esc(r.priceLabel||('KES '+Number(r.p).toLocaleString('en-KE')))}</div>${table==='venues'?`<p>${Number(r.cap).toLocaleString('en-KE')} seats</p>`:''}<a href="#${esc(href)}">${table==='venues'?'Explore this venue':'Meet this product'} <span aria-hidden="true">→</span></a>${table==='venues'?'<p class="tm-terms">Confirm availability and rates with venue</p>':''}</div></div></article>`}
@@ -8127,8 +8119,7 @@ function PAGE_EVENTS(path){
 })();
 (function nativeAdapters(){
  const esc=x=>String(x??'').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
- const media=window.KICC_NATIVE.tables.media;
- T.hls=o=>{const path=location.hash.replace(/^#/,'')||'/';const m=media.find(x=>x.target===path&&x.kind==='video');return window.KiccExpoVideo.render({variant:'feature',ownerId:m?.ownerId,video:m?.url,poster:m?.poster||o.img,title:o.title||m?.name||'Published film',description:o.sub||'',actions:[]});};
+ T.hls=o=>{const path=location.hash.replace(/^#/,'')||'/';const m=window.KICC_NATIVE.tables.media.find(x=>x.target===path&&x.kind==='video');return window.KiccExpoVideo.render({variant:'feature',ownerId:m?.ownerId,video:m?.url,poster:m?.poster||o.img,title:o.title||m?.name||'Published film',description:o.sub||'',actions:[]});};
  for(const t of ['exhibitions','screens','streams']){const old=Router.PAGES['/'+t];Router.PAGES['/'+t]=(rest,path)=>!window.KICC_NATIVE.tables[t].length?{title:t,html:`<section class="wrap section"><div class="eyebrow">${esc(t)}</div><h1>${t==='screens'?'Digital Screens':t==='streams'?'Live Streams':'Exhibitions'}</h1><div class="reference-empty mt-l">No published ${esc(t)} records in the database. The collection is empty, not populated with demonstration listings.</div></section>`}:old(rest,path);}
  document.addEventListener('click',e=>{const a=e.target.closest('[data-action="toast"],[data-action="link"]');if(!a)return;e.preventDefault();e.stopImmediatePropagation();const path=location.hash.replace(/^#/,'');let target='/portal';const card=a.closest('[data-native-product]');if(card){const p=window.KICC_NATIVE.tables.products.find(x=>x.slug===card.dataset.nativeProduct);if(p)target=p.nativeUrl+'?native=1';}else if(path.startsWith('/marketplace/')){const slug=path.split('/')[2];const p=window.KICC_NATIVE.tables.products.find(x=>REPO.slug(x.n).slice(0,44)===slug||x.slug===slug);if(p)target=p.nativeUrl+'?native=1';}else if(path.startsWith('/venues/'))target=path+'?native=1';else if(path==='/travel')target='/travel?native=1';location.assign(target);},true);
  document.querySelectorAll('a[href="#/login"],a[href="#/register"]').forEach(a=>{a.href=a.getAttribute('href').slice(1);a.removeAttribute('data-link');});
@@ -8146,6 +8137,12 @@ function PAGE_EVENTS(path){
 })();
 </script>
 <script type="module" src="https://static.cloudflareinsights.com/beacon.min.js/v31edd6df95cf4e85bb4c19e7a9bdbcba1788362987495" integrity="sha512-iIg7k2xntmwu6/uSb5tpc/hySgZc4eoL31yB29W6tJFo2akwjPWcEqnCEdJvGexCL0KEQwVYv5BlowfhVz26hg==" data-cf-beacon='{"version":"2024.11.0","token":"4edd5f8ec12a48cfa682ab8261b80a79","spa":2}' crossorigin="anonymous"></script>
-<script defer src="/js/tile-hover-video.js?v=8ce8d3743419"></script>
+<script defer src="/js/tile-hover-video.js?v=live-product-v4"></script>
+<script>
+(function liveCatalogue(){let busy=false,revision=null,lastPayload=null;const status=()=>{let el=document.querySelector('[data-catalog-sync]');if(!el&&document.getElementById('prodGrid')){el=document.createElement('p');el.dataset.catalogSync='1';el.className='muted-xs';document.getElementById('prodGrid').before(el);}return el;};
+async function refresh(){if(busy||document.hidden)return;busy=true;try{const r=await fetch('/api/public-catalog',{cache:'no-store',headers:{Accept:'application/json'}});if(!r.ok)throw Error('Catalogue refresh HTTP '+r.status);const d=await r.json();if(d.source!=='live-native-models')throw Error('Invalid data source');const changed=revision!==d.revision||lastPayload!==JSON.stringify(d.tables.products);revision=d.revision;lastPayload=JSON.stringify(d.tables.products);if(changed){const y=scrollY,q=document.getElementById('prodSearch')?.value||'',county=document.getElementById('productCounty')?.value||'';REPO.refresh(d.tables);if(!document.querySelector('dialog[open]')&&!document.querySelector('video[data-user-playing="1"]')){Router.render();setTimeout(()=>{scrollTo(0,y);const input=document.getElementById('prodSearch');if(input&&q){input.value=q;input.dispatchEvent(new Event('input',{bubbles:true}));}const sel=document.getElementById('productCounty');if(sel&&county){sel.value=county;sel.dispatchEvent(new Event('change',{bubbles:true}));}},700);}}const el=status();if(el)el.textContent='Live native catalogue · refreshed '+new Date().toLocaleTimeString();window.KICC_CATALOG_LAST_SYNC=Date.now();}catch(e){const el=status();if(el)el.textContent='Live refresh failed. Previously loaded records remain visible; retrying.';window.KICC_CATALOG_ERROR=e.message;}finally{busy=false;}}
+window.KiccRefreshCatalogue=refresh;refresh();setInterval(refresh,5000);addEventListener('focus',refresh);addEventListener('hashchange',refresh);document.addEventListener('visibilitychange',refresh);
+})();
+</script>
 </body>
 </html>

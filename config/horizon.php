@@ -212,6 +212,7 @@ return [
         ],
 
         // Adaptive HLS transcode pipeline — long-running ffmpeg jobs.
+        'upload-supervisor'=>['connection'=>'redis','queue'=>['uploads'],'balance'=>'simple','maxProcesses'=>1,'memory'=>512,'tries'=>2,'timeout'=>1250],
         'video-supervisor' => [
             'connection' => 'redis',
             'queue' => ['video'],
@@ -244,6 +245,7 @@ return [
 
     'environments' => [
         'production' => [
+            'upload-supervisor'=>['maxProcesses'=>1],
             'supervisor-1' => [
                 'maxProcesses' => 10,
                 'balanceMaxShift' => 1,
@@ -262,6 +264,7 @@ return [
         ],
 
         'local' => [
+            'upload-supervisor'=>['maxProcesses'=>1],
             'supervisor-1' => [
                 'maxProcesses' => 3,
             ],

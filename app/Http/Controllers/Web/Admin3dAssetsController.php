@@ -13,6 +13,7 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Facades\Log;
+use Illuminate\Support\Str;
 
 /**
  * Admin3dAssetsController — upload, list, attach, and delete 3D assets
@@ -42,10 +43,7 @@ class Admin3dAssetsController extends Controller
         if (!$slug) return null;
         $inst = CountyInstitution::where('slug', $slug)->firstOrFail();
         $user = Auth::user();
-        $allowed = $user->hasRole('kicc_admin')
-            || ($user->institution_id === $inst->id)
-            || ($user->hasRole('county_admin') && $user->county_id === $inst->county_id);
-        abort_unless($allowed, 403, 'Institution access denied.');
+        abort_unless(app(\App\Services\AdminHierarchyScope::class)->canInstitution($user,$inst),403,'Institution access denied.');
         return $inst;
     }
 
@@ -56,9 +54,9 @@ class Admin3dAssetsController extends Controller
         $this->authorize();
         $inst = $institution ? $this->resolveInstitution($institution) : null;
 
-        $query = MediaAsset::where('kind', 'model')->orWhereIn('id', function ($q) {
+        $query = MediaAsset::where(function($q){$q->where('kind','model')->orWhereIn('id',function($q){
             $q->select('media_asset_id')->from('media_derivatives')->whereIn('kind', ['model_glb', 'model_splat']);
-        });
+        });});
 
         if ($inst) {
             $query = $query->where('owner_type', CountyInstitution::class)->where('owner_id', $inst->id);
@@ -66,7 +64,7 @@ class Admin3dAssetsController extends Controller
 
         $assets = $query->with('derivatives')->latest()->take(100)->get();
 
-        $institutions = CountyInstitution::orderBy('name')->get(['id', 'name', 'slug']);
+        $institutions = app(\App\Services\AdminHierarchyScope::class)->institutions(Auth::user())->orderBy('name')->get(['id','name','slug']);
         $room3ds = $inst
             ? Room3d::where('entity_type', CountyInstitution::class)->where('entity_id', $inst->id)->latest()->get()
             : Room3d::latest()->take(50)->get();
@@ -82,9 +80,9 @@ class Admin3dAssetsController extends Controller
         $inst = $institution ? $this->resolveInstitution($institution) : null;
 
         if ($request->isMethod('get')) {
-            $institutions = CountyInstitution::orderBy('name')->get(['id', 'name', 'slug']);
+            $institutions = app(\App\Services\AdminHierarchyScope::class)->institutions(Auth::user())->orderBy('name')->get(['id','name','slug']);
             $products = $inst ? $this->loadInstitutionProducts($inst) : [];
-            return view('experience.pages.admin.3d.upload', compact('institutions', 'products', 'inst'));
+            return view('experience.pages.admin.3d.upload', compact('institutions', 'products', 'inst','institution'));
         }
 
         // POST — handle file upload
@@ -97,32 +95,18 @@ class Admin3dAssetsController extends Controller
         $allowedExts = ['splat', 'glb', 'gltf', 'ply'];
         abort_unless(in_array($ext, $allowedExts, true), 422, "Unsupported format: .{$ext}. Allowed: " . implode(', ', $allowedExts));
 
-        // Store to R2 via MediaLibraryService
-        $library = app(MediaLibraryService::class);
-        $asset = $library->store(
-            $file,
-            disk: 'r2',
-            kind: $ext === 'splat' ? 'model' : 'model',
-        );
-
-        // Register derivative
-        $derivativeKind = $ext === 'splat' ? 'model_splat' : 'model_glb';
-        MediaDerivative::create([
-            'media_asset_id' => $asset->id,
-            'kind' => $derivativeKind,
-            'path' => $asset->url(),
-            'mime' => $mime,
-            'size_bytes' => $file->getSize(),
-            'meta' => ['original_name' => $file->getClientOriginalName()],
-        ]);
-
-        // Attach to entity if requested
-        $entityType = $request->input('entity_type');
-        $entityId = $request->integer('entity_id');
-        if ($entityType && $entityId) {
-            $asset->attachTo($entityType, $entityId);
-        }
-
+        abort_unless($file->getSize()<=50*1024*1024,422,'3D form limit is 50 MiB. Videos use the separate resumable 2 GiB workflow.');
+        if($ext==='glb'){ $head=file_get_contents($file->getRealPath(),false,null,0,12);abort_unless(strlen($head)===12&&substr($head,0,4)==='glTF'&&unpack('V',substr($head,4,4))[1]===2&&unpack('V',substr($head,8,4))[1]===$file->getSize(),422,'Invalid GLB container.'); }
+        if($ext==='gltf'){$json=json_decode(file_get_contents($file->getRealPath()),true);abort_unless(($json['asset']['version']??'')==='2.0',422,'Invalid glTF 2.0 file.');foreach(array_merge($json['buffers']??[],$json['images']??[]) as $part)abort_if(isset($part['uri'])&&!str_starts_with($part['uri'],'data:'),422,'Upload a self-contained GLB or embedded glTF; external texture files are not included.');}
+        $entityType=$inst?CountyInstitution::class:$request->input('entity_type');$entityId=$inst?$inst->id:$request->integer('entity_id');
+        if($inst&&$request->input('entity_type')===Product::class){$entityType=Product::class;$entityId=$request->integer('entity_id');}
+        if($entityType===CountyInstitution::class){$owner=CountyInstitution::findOrFail($entityId);abort_unless(app(\App\Services\AdminHierarchyScope::class)->canInstitution(Auth::user(),$owner),403);}
+        elseif($entityType===Product::class){$owner=Product::findOrFail($entityId);$i=CountyInstitution::findOrFail($owner->institution_id);abort_unless(app(\App\Services\AdminHierarchyScope::class)->canInstitution(Auth::user(),$i)&&(!$inst||$inst->id===$i->id),403);}
+        else abort(422,'Choose the responsible institution or a real marketplace product.');
+        $path='models/'.($inst?->slug??'catalogue').'/'.Str::uuid().'.'.$ext;$disk=Storage::disk('r2');$in=fopen($file->getRealPath(),'rb');try{$ok=$disk->put($path,$in,['ContentType'=>$ext==='glb'?'model/gltf-binary':($ext==='gltf'?'model/gltf+json':'application/octet-stream')]);}finally{fclose($in);}abort_unless($ok&&$disk->size($path)===$file->getSize(),503,'Model storage verification failed.');
+        $asset=MediaAsset::create(['uuid'=>(string)Str::uuid(),'disk'=>'r2','path'=>$path,'kind'=>'model','mime'=>$ext==='glb'?'model/gltf-binary':'application/octet-stream','size_bytes'=>$file->getSize(),'original_name'=>$file->getClientOriginalName(),'status'=>'ready','owner_type'=>$entityType,'owner_id'=>$entityId,'slot'=>'model_3d','alt_text'=>$file->getClientOriginalName()]);
+        $derivativeKind=match($ext){'splat'=>'model_splat','ply'=>'model_ply',default=>'model_glb'};
+        $asset->derivatives()->create(['kind'=>$derivativeKind,'variant'=>'source','path'=>$path,'mime'=>$asset->mime,'size_bytes'=>$asset->size_bytes]);\Illuminate\Support\Facades\Cache::increment('kicc_cache_version');
         Log::info('3D asset uploaded', ['asset_id' => $asset->id, 'kind' => $derivativeKind, 'file' => $file->getClientOriginalName()]);
 
         return redirect()->route($institution ? 'admin.3d.institution' : 'admin.3d.assets', $institution ? ['institution' => $institution] : [])
@@ -133,13 +117,16 @@ class Admin3dAssetsController extends Controller
 
     public function attach(Request $request, int $assetId)
     {
-        $this->authorize();
+        $this->authorizeKicc();
         $asset = MediaAsset::findOrFail($assetId);
 
         $entityType = $request->input('entity_type');
         $entityId = $request->integer('entity_id');
 
         abort_unless($entityType && $entityId, 422, 'entity_type and entity_id required');
+        abort_unless(in_array($entityType,[CountyInstitution::class,Product::class],true),422,'Only native institutions and marketplace products may own models.');
+        $owner=$entityType===CountyInstitution::class?CountyInstitution::findOrFail($entityId):CountyInstitution::findOrFail(Product::findOrFail($entityId)->institution_id);
+        abort_unless(app(\App\Services\AdminHierarchyScope::class)->canInstitution(Auth::user(),$owner),403);
 
         $asset->owner_type = $entityType;
         $asset->owner_id = $entityId;
@@ -154,7 +141,7 @@ class Admin3dAssetsController extends Controller
 
     public function detach(int $assetId)
     {
-        $this->authorize();
+        $this->authorizeKicc();
         $asset = MediaAsset::findOrFail($assetId);
         $asset->owner_type = null;
         $asset->owner_id = null;
@@ -200,7 +187,7 @@ class Admin3dAssetsController extends Controller
             'user_id' => Auth::id(),
             'title' => $data['title'],
             'slug' => Str::slug($data['title']) . '-' . uniqid(),
-            'description' => $data['description'],
+            'description' => $data['description']??'',
             'image_paths' => $data['image_paths'] ?? [],
             'entity_type' => CountyInstitution::class,
             'entity_id' => $inst->id,
@@ -217,8 +204,6 @@ class Admin3dAssetsController extends Controller
 
     private function loadInstitutionProducts(CountyInstitution $inst): array
     {
-        $productsJson = $inst->products;
-        if (!$productsJson || !is_array($productsJson)) return [];
-        return array_map($productsJson, fn ($p, $i) => ['index' => $i, 'name' => $p['name'] ?? "Product #{$i}"]);
+        return Product::where('institution_id',$inst->id)->get(['id','name'])->map(fn($p)=>['id'=>$p->id,'name'=>$p->name])->all();
     }
 }

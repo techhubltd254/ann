@@ -1,25 +1,7 @@
-(function tileHoverVideo(){
- const esc=x=>String(x??'');
- const mediaOf=href=>{const t=(window.KICC_NATIVE?.tables?.media)||[];return t.find(m=>m.kind==='video'&&m.target===href);};
- function attach(el){
-  const a=el.querySelector('a[href^="#/counties/"],a[href^="#/institutions/"],a[href^="#/venues/"],a[href^="#/marketplace/"]');if(!a)return;
-  const m=mediaOf(a.getAttribute('href').slice(1));if(!m||!m.url)return;
-  if(el.querySelector('video'))return;
-  const host=el.querySelector('.tile-media,.pc-media,.tm-window,.orbit-screen')||el;
-  host.style.position=host.style.position||'relative';
-  const v=document.createElement('video');v.dataset.hoverVideo='1';v.muted=true;v.loop=true;v.playsInline=true;v.preload='none';if(m.poster)v.poster=m.poster;v.src=m.url;
-  v.style.cssText='position:absolute;inset:0;width:100%;height:100%;object-fit:cover;opacity:0;transition:opacity .35s ease;pointer-events:none';
-  host.appendChild(v);
-  const play=()=>{v.preload='auto';v.style.opacity='1';v.play().catch(()=>{});};
-  const stop=()=>{v.pause();v.style.opacity='0';};
-  el.addEventListener('pointerenter',e=>{if(e.pointerType!=='touch')play()});
-  el.addEventListener('pointerleave',stop);el.addEventListener('focusin',play);el.addEventListener('focusout',stop);
-  if(matchMedia('(pointer: coarse)').matches){ // Instagram-style: the tile in view plays, others pause
-   const io=new IntersectionObserver(es=>es.forEach(en=>{if(en.intersectionRatio>=.6)play();else stop();}),{threshold:[0,.6,1]});io.observe(el);
-  }
- }
- const scan=()=>document.querySelectorAll('.tile,.prod-card,.tm-tile,.orbit-screen').forEach(attach);
- new MutationObserver(scan).observe(document.getElementById('app')||document.body,{childList:true,subtree:true});
- document.addEventListener('DOMContentLoaded',scan);setTimeout(scan,800);
-})();
-
+(()=>{'use strict';const esc=x=>String(x??'');const observer=new IntersectionObserver(entries=>entries.forEach(e=>{const v=e.target;if(e.intersectionRatio>.5&&!document.hidden&&!v.dataset.manualPause)v.play().catch(()=>{});else v.pause();}),{threshold:[0,.5,1]});
+function attach(card){if(card.dataset.liveMounted)return;const id=card.dataset.nativeProduct;let record;if(id)record=window.KICC_NATIVE?.tables.products.find(x=>x.slug===id);const link=card.querySelector('a[href^="#/counties/"],a[href^="#/institutions/"]');const media=id?record?.tileMedia:window.KICC_NATIVE?.tables.media.find(m=>m.target===link?.getAttribute('href').slice(1)&&m.kind==='video');if(!media?.url)return;card.dataset.liveMounted='1';const host=card.querySelector('.pc-media,.tile-media,.tm-window')||card;if(host.querySelector('video'))return;host.style.position='relative';host.style.backgroundImage='none';const kind=media.kind;const element=document.createElement(kind==='video'?'video':'img');element.style.cssText='position:absolute;inset:0;width:100%;height:100%;object-fit:cover';element.src=media.url;host.prepend(element);
+if(kind==='video'){element.dataset.hoverVideo='1';element.muted=true;element.loop=true;element.playsInline=true;element.preload='metadata';if(media.poster)element.poster=media.poster;observer.observe(element);const button=host.querySelector('[data-product-play]');if(button){button.style.zIndex='3';button.onclick=e=>{e.stopPropagation();if(element.paused){delete element.dataset.manualPause;element.play().catch(()=>{});button.textContent='Ⅱ';}else{element.dataset.manualPause='1';element.pause();button.textContent='▶';}};}card.onpointerenter=()=>{if(!element.dataset.manualPause)element.play().catch(()=>{});};card.onpointerleave=()=>{if(!element.dataset.manualPause&&element.getBoundingClientRect().bottom<0)element.pause();};}
+else{element.alt=media.alt||record?.name||'Published image';host.querySelector('[data-product-play]')?.remove();}
+element.onerror=()=>{element.remove();const note=document.createElement('span');note.textContent='Uploaded media unavailable — open listing or retry.';host.append(note);};}
+function scan(){document.querySelectorAll('.prod-card,.tile').forEach(attach);document.querySelectorAll('[data-live-card-media]').forEach(host=>{if(!host.querySelector('video,img')&&!host.querySelector('[data-no-media]')){const row=window.KICC_NATIVE?.tables.products.find(x=>String(x.id)===host.dataset.productId);if(!row?.tileMedia?.url){const note=document.createElement('span');note.dataset.noMedia='1';note.textContent='No product media uploaded';host.append(note);host.querySelector('[data-product-play]')?.remove();}}});}
+new MutationObserver(scan).observe(document.getElementById('app')||document.body,{childList:true,subtree:true});document.addEventListener('DOMContentLoaded',scan);scan();document.addEventListener('visibilitychange',()=>{if(document.hidden)document.querySelectorAll('[data-hover-video]').forEach(v=>v.pause());else scan();});})();

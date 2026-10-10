@@ -106,7 +106,7 @@ class CmsController extends Controller
             'sort_order' => 'nullable|integer',
             'is_published' => 'nullable|boolean',
         ]);
-        $page->update($data);
+        $data['content']=\App\Support\SafeCmsHtml::clean($data['content']??'');$page->update($data);\Illuminate\Support\Facades\Cache::increment('kicc_cache_version');
         return back()->with('success', "Page '{$page->title}' updated.");
     }
 
@@ -117,8 +117,9 @@ class CmsController extends Controller
             'category' => 'nullable|string|max:50',
             'content' => 'nullable|string',
             'excerpt' => 'nullable|string|max:500',
-            'sort_order' => 'nullable|integer',
+            'sort_order' => 'nullable|integer','is_published'=>'required|boolean',
         ]);
+        $data['content']=\App\Support\SafeCmsHtml::clean($data['content']??'');$data['slug']=\Illuminate\Support\Str::slug($data['title']).'-'.\Illuminate\Support\Str::lower(\Illuminate\Support\Str::random(6));
         Page::create($data);
         return back()->with('success', 'Page created.');
     }
@@ -198,4 +199,9 @@ return back()->with('success', 'FAQ removed.');
                 app(\App\Services\CacheSyncService::class)->national();
 return back()->with('success', 'Video removed.');
     }
+
+ public function deletePage(Page $page){$page->delete();\Illuminate\Support\Facades\Cache::increment('kicc_cache_version');return back()->with('success','Page removed.');}
+ public function storeService(Request $r){ServiceItem::create($r->validate(['title'=>'required|string|max:255','description'=>'nullable|string|max:5000','category'=>'nullable|string|max:80','is_published'=>'required|boolean']));return back()->with('success','Service saved.');}
+ public function updateService(Request $r,ServiceItem $service){$service->update($r->validate(['title'=>'required|string|max:255','description'=>'nullable|string|max:5000','category'=>'nullable|string|max:80','is_published'=>'required|boolean']));return back()->with('success','Service updated.');}
+ public function deleteService(ServiceItem $service){$service->delete();return back()->with('success','Service removed.');}
 }

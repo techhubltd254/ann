@@ -14,10 +14,11 @@
  <label>File<input type="file" data-up-file accept="video/mp4,video/webm,video/quicktime,video/x-matroska"></label>
  </div>
  <button type="button" class="as-cta" data-up-start>Upload & publish</button>
+ <button type="button" class="as-cta" data-up-pause hidden>Pause upload</button><button type="button" class="as-cta" data-up-cancel hidden>Cancel pending upload</button><a data-up-preview hidden target="_blank" rel="noopener">Open public preview</a>
  <progress data-up-progress max="100" value="0"></progress>
  <p data-up-status role="status">Choose the county, responsible owner and linked sector before uploading.</p>
  <pre data-up-log hidden></pre>
  <script type="application/json" data-up-entities>@json(['counties'=>$counties,'institutions'=>$institutions,'venues'=>$venues])</script>
 </section>
 @endsection
-@push('scripts')<script defer src="/js/chunk-upload.js?v=safe-v3"></script>@endpush
+@push('scripts')<script defer src="/js/chunk-upload.js?v=resumable-v4"></script>@endpush

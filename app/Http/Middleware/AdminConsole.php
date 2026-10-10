@@ -20,6 +20,7 @@ class AdminConsole
             $url=preg_replace('~/?\{[^}]+\?\}~','',$url);
             return redirect($url.($request->getQueryString()?'?'.$request->getQueryString():''));
         }
+        $request->attributes->set('kicc_admin_console',true);
         $response=$next($request);
         $location=$response->headers->get('Location');
         if($location){$url=parse_url($location);if(($url['host']??$request->getHost())===$request->getHost()){
