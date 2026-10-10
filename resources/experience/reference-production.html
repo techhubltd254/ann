@@ -5933,6 +5933,8 @@ Router.register('/marketplace', () => ({title:'Marketplace', html:`
 /* ════════════════════════ 06 · MARKETPLACE SHOW ════════════════════════ */
 Router.register('/marketplace', (rest) => {
   const p = PRODUCTS.find(x=>x.slug===rest[0]||x.n.toLowerCase().replace(/[^a-z0-9]+/g,'-').slice(0,44)===rest[0]); if(!p)return {title:'Product unavailable',html:'<section class="wrap section"><h1>Product not found.</h1></section>'};
+  const offeringEsc=x=>String(x??'').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
+  const offeringSafeUrl=x=>{try{const u=new URL(x);return /^https?:$/.test(u.protocol)?u.href:''}catch(e){return ''}};
   return {title:p.n, html:`
 <div class="wrap">${T.crumb([['Home','/'],['Marketplace','/marketplace'],[p.cat,'/marketplace'],[p.n.slice(0,34)+'…',null]])}</div>
 <div class="wrap section-sm">
@@ -5977,13 +5979,13 @@ Router.register('/marketplace', (rest) => {
         <div class="fee-row"><span class="muted">Payment</span><span>Use secure native checkout</span></div>
         <div class="fee-row"><span class="muted">Certification</span><span>Confirm with producer</span></div>
       </div>
-      <p class="cms-public-copy" style="margin-top:20px">${esc(p.description||'')}</p>
+      <p class="cms-public-copy" style="margin-top:20px">${offeringEsc(p.description||'')}</p>
       ${p.offeringDetails?.duration_minutes?`<p>Duration: ${Number(p.offeringDetails.duration_minutes)} minutes</p>`:''}
       ${p.offeringDetails?.max_guests?`<p>Maximum guests: ${Number(p.offeringDetails.max_guests)}</p>`:''}
-      ${(p.offeringDetails?.inclusions||[]).length?`<h3>Included</h3><ul>${p.offeringDetails.inclusions.map(x=>`<li>${esc(x)}</li>`).join('')}</ul>`:''}
-      ${p.sourceUrl&&safeUrl(p.sourceUrl)?`<p><a href="${esc(safeUrl(p.sourceUrl))}" target="_blank" rel="noopener noreferrer">Official source ↗</a></p>`:''}
-      ${p.bookingUrl&&safeUrl(p.bookingUrl)?`<a class="btn gold" href="${esc(safeUrl(p.bookingUrl))}" target="_blank" rel="noopener noreferrer">${p.offeringKind==='product'?'Buy / enquire with institution':'Book / enquire with institution'} ↗</a>`:`<p>Contact the institution to confirm availability and price.</p>`}
-      ${(p.offers||[]).map(o=>`<article class="glass-card pad mt"><h3>${esc(o.title)}</h3><p>${esc(o.terms||'')}</p>${o.price!==null?`<p>KES ${Number(o.price).toLocaleString('en-KE')}</p>`:''}${o.ends_at?`<p>Ends ${esc(o.ends_at)}</p>`:''}</article>`).join('')}
+      ${(p.offeringDetails?.inclusions||[]).length?`<h3>Included</h3><ul>${p.offeringDetails.inclusions.map(x=>`<li>${offeringEsc(x)}</li>`).join('')}</ul>`:''}
+      ${p.sourceUrl&&offeringSafeUrl(p.sourceUrl)?`<p><a href="${offeringEsc(offeringSafeUrl(p.sourceUrl))}" target="_blank" rel="noopener noreferrer">Official source ↗</a></p>`:''}
+      ${p.bookingUrl&&offeringSafeUrl(p.bookingUrl)?`<a class="btn gold" href="${offeringEsc(offeringSafeUrl(p.bookingUrl))}" target="_blank" rel="noopener noreferrer">${p.offeringKind==='product'?'Buy / enquire with institution':'Book / enquire with institution'} ↗</a>`:`<p>Contact the institution to confirm availability and price.</p>`}
+      ${(p.offers||[]).map(o=>`<article class="glass-card pad mt"><h3>${offeringEsc(o.title)}</h3><p>${offeringEsc(o.terms||'')}</p>${o.price!==null?`<p>KES ${Number(o.price).toLocaleString('en-KE')}</p>`:''}${o.ends_at?`<p>Ends ${offeringEsc(o.ends_at)}</p>`:''}</article>`).join('')}
 
       <div class="mt-l">
         <h3 style="font-size:1rem">Related products</h3>
