@@ -78,7 +78,7 @@ class AlgorithmsClient
             'rows'         => $rows,
             'group_by_key' => $groupByKey,
             'k'            => $k,
-        ], fn () => $rows);
+        ], fn () => []); // Fail closed: an outage must never export unredacted source rows.
     }
 
     public function recommend(array $history, array $catalog, string $seasonTag = '', int $limit = 6): array
