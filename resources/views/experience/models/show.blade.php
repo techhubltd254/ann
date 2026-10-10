@@ -6,6 +6,7 @@
 @if(in_array($format,['glb','gltf']))<model-viewer src="{{ $modelUrl }}" camera-controls auto-rotate shadow-intensity="1" style="width:100%;height:100%" aria-label="Uploaded 3D model"></model-viewer>@endif
 </div><p id="model-state" role="status">Loading verified uploaded model…</p><a href="{{ $modelUrl }}">Download original model</a></section>
 @endsection
+@push('styles')<script type="importmap">{"imports":{"three":"https://cdn.jsdelivr.net/npm/three@0.170.0/build/three.module.js","three/addons/":"https://cdn.jsdelivr.net/npm/three@0.170.0/examples/jsm/"}}</script>@endpush
 @push('scripts')
 @if(in_array($format,['glb','gltf']))<script type="module" src="https://cdn.jsdelivr.net/npm/@google/model-viewer@4.0.0/dist/model-viewer.min.js"></script><script>const m=document.querySelector('model-viewer');m.addEventListener('load',()=>document.getElementById('model-state').textContent='Uploaded model loaded.');m.addEventListener('error',()=>document.getElementById('model-state').textContent='Model viewer could not decode this file. Download the original or replace it in admin.');</script>
 @else

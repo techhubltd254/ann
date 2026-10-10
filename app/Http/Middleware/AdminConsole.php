@@ -35,6 +35,7 @@ class AdminConsole
                 $html=preg_replace('~(["\'])'.preg_quote($from,'~').'(?=[/"\'?])~','$1'.$to,$html);
                 $html=str_replace($request->getSchemeAndHttpHost().$from,$request->getSchemeAndHttpHost().$to,$html);
             }
+            $html=preg_replace_callback('~<a\b[^>]*href=["\'][^"\']*/admin(?:/|["\'])[^>]*>~i',fn($m)=>preg_replace('~\s+target=["\']_blank["\']~i','',$m[0]),$html);
             $response->setContent($html);
         }
         $response->headers->set('Cache-Control','private, no-store, max-age=0');
