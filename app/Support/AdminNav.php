@@ -39,6 +39,8 @@ class AdminNav
    $add('Operations','County → Sector → Institution','admin.portal');
   }
   if($level==='kicc'){
+   $add('Commerce','Private revenue allocation','mother.private-revenue');
+   $add('Operations','Private pipeline registry','mother.revenue-pipelines');
    foreach(['experience.images.index'=>['Content','Image add / replace / delete'],'admin.media.index'=>['Content','Media library'],'cms.admin.index'=>['Content','CMS / FAQ'],'admin.3d.assets'=>['Content','3D library'],'admin.components.ui'=>['Content','Source components'],'admin.users'=>['People','Users & roles'],'admin.audit'=>['Analytics','Audit trail'],'admin.enquiries'=>['Operations','Enquiries'],'admin.ecommerce.dashboard'=>['Commerce','Commerce workspace']] as $name=>[$g,$label])$add($g,$label,$name);
   }
   if($institution)$add('Commerce','Products, Services & Experiences','institution.products.index',[$institution->slug]);
