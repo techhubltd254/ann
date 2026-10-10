@@ -50,6 +50,7 @@ rsync -az --delete \
     --exclude ".env" \
     --exclude ".env.*" \
     --exclude "storage/" \
+    --exclude "integrations-service/run/" \
     --exclude "bootstrap/cache/" \
     --exclude "vendor/" \
     --exclude "node_modules/" \

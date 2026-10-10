@@ -3,8 +3,8 @@ set -euo pipefail
 ROOT=/opt/kicc-laravel
 id kicc-services >/dev/null 2>&1 || useradd --system --user-group --no-create-home --home-dir /nonexistent --shell /usr/sbin/nologin kicc-services
 mkdir -p "$ROOT/integrations-service/run"
-chown -R kicc-services:kicc-services "$ROOT/integrations-service/run"
-find "$ROOT/integrations-service/run" -type d -exec chmod 0750 {} +
+chown -R kicc-services:www-data "$ROOT/integrations-service/run"
+find "$ROOT/integrations-service/run" -type d -exec chmod 2750 {} +
 find "$ROOT/integrations-service/run" -type f -exec chmod 0640 {} +
 if test -f "$ROOT/integrations-service/.env"; then chown root:kicc-services "$ROOT/integrations-service/.env"; chmod 0640 "$ROOT/integrations-service/.env"; fi
 for service in kicc-algorithms kicc-integration kicc-pipeline-bus kicc-consumers; do
