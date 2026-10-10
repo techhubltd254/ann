@@ -145,7 +145,7 @@
             $entityHover = $entityHoverLoops[$e->id] ?? $institutionHeroLoops[$e->id] ?? null;
             $entitySplat = $entitySplats[$e->id] ?? null;
             $linkUrl = $isInst && $instSlug
-                ? route('counties.institution', $instSlug)
+                ? route('institutions', $instSlug)
                 : ($e->entry_fee > 0 ? route('attractions.show', $e->id) : '#');
             @endphp
             <div class="entity-card group bg-white rounded-2xl overflow-hidden border border-gray-200 hover:border-[#FFCD05]/40 transition-all">

@@ -59,7 +59,7 @@ class Admin3dAssetsController extends Controller
         });});
 
         if ($inst) {
-            $query = $query->where('owner_type', CountyInstitution::class)->where('owner_id', $inst->id);
+             $productIds=Product::where('institution_id',$inst->id)->pluck('id');$query=$query->where(fn($q)=>$q->where(fn($q)=>$q->where('owner_type',CountyInstitution::class)->where('owner_id',$inst->id))->orWhere(fn($q)=>$q->where('owner_type',Product::class)->whereIn('owner_id',$productIds)));
         }
 
         $assets = $query->with('derivatives')->latest()->take(100)->get();

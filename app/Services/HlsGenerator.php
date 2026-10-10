@@ -30,8 +30,9 @@ class HlsGenerator
         $info = pathinfo($sourcePath);
         $hlsDir = $info['dirname'] . '/hls/' . $info['filename'];
 
-        $tempSource = tempnam(sys_get_temp_dir(), 'hls_') . '.mp4';
-        $tempOut = sys_get_temp_dir() . '/hls_output_' . Str::random(8);
+        $work=storage_path('app/hls-processing');if(!is_dir($work))mkdir($work,0700,true);
+        $tempSource=$work.'/source_'.Str::random(12).'.mp4';
+        $tempOut=$work.'/output_'.Str::random(12);
 
         try {
             // Download source to temp (streamed — files can be hundreds of MB)
@@ -75,7 +76,7 @@ class HlsGenerator
 
             // 4-tier adaptive ladder: 1080p / 720p / 480p / 360p (low-first for weak networks)
             $cmd = sprintf(
-                'ffmpeg -y -i %s ' .
+                'ffmpeg -nostdin -y -threads 2 -filter_complex_threads 1 -i %s ' .
                 '-filter_complex ' .
                 '"[0:v]split=4[v360][v480][v720][v1080];' .
                 '[v360]scale=-2:360,format=yuv420p[v360out];' .
@@ -96,7 +97,7 @@ class HlsGenerator
                 '%s/v%%v/playlist.m3u8',
                 escapeshellarg($tempSource),
                 $audioOpts,
-                escapeshellarg($tempOut),
+                $tempOut,
                 escapeshellarg($tempOut)
             );
 

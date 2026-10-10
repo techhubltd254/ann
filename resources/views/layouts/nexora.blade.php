@@ -11,6 +11,9 @@
 <link rel="stylesheet" href="/css/admin-workflow.css?v=admin-product-v1"><link rel="stylesheet" href="/css/admin-complete.css?v=complete-v4">@stack('styles')</head>
 @php
  $actor=auth()->user();
+ if(isset($institution)&&is_string($institution))$institution=($inst??null) instanceof \App\Models\CountyInstitution?$inst:\App\Models\CountyInstitution::where('slug',$institution)->first();
+ if(!isset($institution)&&isset($inst)&&$inst instanceof \App\Models\CountyInstitution)$institution=$inst;
+
  $adminLevel=$actor?app(\App\Services\AdminHierarchyScope::class)->level($actor):null;
 
  $adminContext=request()->is('county-admin/*','admin/counties/*')?'county':(request()->is('institution-admin/*','admin/institutions/*')?'institution':(request()->is('*national*')?'national':(request()->is('kicc-admin*','admin/kicc*')?'kicc':($adminLevel??'kicc'))));
