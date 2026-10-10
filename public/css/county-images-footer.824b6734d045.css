@@ -1,0 +1,13 @@
+/* Contrasting footer for all public themes. */
+html[data-theme] #footer.footer,#footer.footer{background:#103a34!important;color:#f4f0e7!important;border-top:1px solid #486158;--ui-ink:#f4f0e7;--ui-muted:#c6d9cf;--bone:#f4f0e7;--text:#f4f0e7;padding-top:0!important}
+#footer.footer::before{display:none!important}
+html[data-theme] #footer :is(.logo,.logo small,p,.footer-bottom){color:#c6d9cf!important}
+html[data-theme] #footer :is(h4,.logo>span){color:#f4f0e7!important}
+html[data-theme] #footer a{color:#e5ece5!important;line-height:1.5}
+html[data-theme] #footer a:hover,html[data-theme] #footer a:focus-visible{color:#f5ce7d!important;text-decoration:underline;text-underline-offset:4px}
+#footer .footer-grid{padding-block:44px 30px;gap:28px}
+#footer .footer-bottom{border-top:1px solid #486158}
+#footer :focus-visible{outline:3px solid #f5ce7d!important;outline-offset:4px}
+#footer .county-photo-credit-link{font-size:12px;min-height:44px;display:inline-flex;align-items:center;gap:8px}
+@media(max-width:700px){#footer .footer-grid{grid-template-columns:repeat(2,minmax(0,1fr));gap:24px;padding-block:32px 24px}#footer .footer-grid>div:first-child{grid-column:1/-1}#footer .footer-grid>div{min-width:0}#footer a{padding-block:7px;overflow-wrap:anywhere}}
+@media(max-width:360px){#footer .footer-grid{grid-template-columns:1fr}}
