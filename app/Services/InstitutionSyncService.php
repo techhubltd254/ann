@@ -320,7 +320,7 @@ class InstitutionSyncService
 
         $data = [
             'county_id' => $county->id,
-            'user_id' => $ownerId ?? 0,
+            'user_id' => $ownerId ?: null,
             'institution_id' => $i->id,
             'name' => $name,
             'description' => $product['description'] ?? ($i->name . ' product'),
@@ -343,7 +343,10 @@ class InstitutionSyncService
 
     protected function upsertMarketplaceProduct(CountyInstitution $i, County $county, array $product): void
     {
-        $ownerId = $i->user_id ?? null;
+        // Unknown commercial owner is not user 0. Use the existing platform publishing account, with zero unverified stock.
+        $ownerId = $i->user_id ?: Product::where('institution_id',(string)$i->id)->where('user_id','>',0)->value('user_id');
+        $ownerId = $ownerId ?: \App\Models\User::whereHas('roles',fn($q)=>$q->where('name','kicc_admin'))->value('id');
+        if(!$ownerId)throw new \RuntimeException('A real publishing account is required');
         $name = $product['name'];
         $slug = Str::slug($i->name . ' ' . $name . ' ' . $county->slug);
 
@@ -405,7 +408,7 @@ class InstitutionSyncService
 
         $data = [
             'county_id' => $county->id,
-            'user_id' => $ownerId ?? 0,
+            'user_id' => $ownerId,
             'category_id' => $categoryId,
             'institution_id' => (string)$i->id,
             'offering_kind' => $product['offering_kind'] ?? ($mp->offering_kind ?? 'product'),

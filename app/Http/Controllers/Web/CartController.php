@@ -50,6 +50,7 @@ class CartController extends Controller
         abort_unless($variant->product && $variant->product->status==='active' && $variant->product->price_mode==='fixed' && $variant->product->offering_kind==='product',422,'This offering requires a confirmed quote or booking, not a shopping-cart purchase.');
         $cart = $this->currentCart($request);
         $qty = $data['quantity'] ?? 1;
+        abort_unless($variant->stock >= $qty,422,'Available stock must be confirmed before purchase.');
 
         $item = $cart->items()->where('variant_id', $variant->id)->whereNull('itemable_type')->first();
         if ($item) {
