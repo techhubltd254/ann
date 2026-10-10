@@ -218,7 +218,7 @@ return [
             'queue' => ['video'],
             'balance' => 'auto',
             'autoScalingStrategy' => 'time',
-            'maxProcesses' => 3,
+            'maxProcesses' => 1,
             'maxTime' => 0,
             'maxJobs' => 0,
             'memory' => 1024,
@@ -252,7 +252,7 @@ return [
                 'balanceCooldown' => 3,
             ],
             'video-supervisor' => [
-                'maxProcesses' => 3,
+                'maxProcesses' => 1,
                 'balanceMaxShift' => 1,
                 'balanceCooldown' => 3,
             ],
@@ -266,7 +266,7 @@ return [
         'local' => [
             'upload-supervisor'=>['maxProcesses'=>1],
             'supervisor-1' => [
-                'maxProcesses' => 3,
+                'maxProcesses' => 1,
             ],
             'video-supervisor' => [
                 'maxProcesses' => 1,
