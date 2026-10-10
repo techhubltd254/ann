@@ -162,13 +162,15 @@ class NationalAdminController extends Controller
     {
         $data = $request->validate([
             'name' => 'required|string|max:255',
-            'code' => 'nullable|string|max:20',
+            'code' => 'required|string|max:10',
             'color' => 'nullable|string|max:20',
             'description' => 'nullable|string|max:2000',
-            'website' => 'nullable|url|max:500',
+            'website' => 'nullable|url|max:255',
             'contact_email' => 'nullable|email|max:255',
         ]);
         $data['slug'] = Str::slug($data['name']);
+        abort_if(Ministry::where('slug',$data['slug'])->orWhere('code',$data['code'])->exists(),422,'A ministry with this name or code already exists.');
+        $data['color']=($data['color']??null)?:'#0B1E57';
         Ministry::create($data);
         app(\App\Services\CacheSyncService::class)->national();
         return redirect()->route('national.admin.v2.dashboard', ['tab' => 'ministries'])->with('success', "Ministry created.");
@@ -178,10 +180,11 @@ class NationalAdminController extends Controller
     {
         $data = $request->validate([
             'name' => 'required|string|max:255',
-            'code' => 'nullable|string|max:20',
+            'code' => 'required|string|max:10',
             'description' => 'nullable|string|max:2000',
             'is_active' => 'nullable|boolean',
         ]);
+        abort_if(Ministry::where('code',$data['code'])->where('id','!=',$ministry->id)->exists(),422,'This ministry code is already used.');
         $ministry->update($data);
         app(\App\Services\CacheSyncService::class)->national();
         return redirect()->route('national.admin.v2.dashboard', ['tab' => 'ministries'])->with('success', "Ministry updated.");
@@ -199,10 +202,11 @@ class NationalAdminController extends Controller
         $data = $request->validate([
             'ministry_id' => 'required|exists:ministries,id',
             'name' => 'required|string|max:255',
-            'code' => 'nullable|string|max:20',
+            'code' => 'required|string|max:10',
             'description' => 'nullable|string|max:2000',
         ]);
         $data['slug'] = Str::slug($data['name']);
+        abort_if(Agency::where('slug',$data['slug'])->orWhere('code',$data['code'])->exists(),422,'An agency with this name or code already exists.');
         Agency::create($data);
         app(\App\Services\CacheSyncService::class)->national();
         return redirect()->route('national.admin.v2.dashboard', ['tab' => 'agencies'])->with('success', "Agency created.");

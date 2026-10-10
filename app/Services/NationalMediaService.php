@@ -3,7 +3,7 @@ namespace App\Services;
 use App\Models\{MediaAsset,County,Ministry};
 use Illuminate\Support\Facades\{DB,Cache};
 class NationalMediaService {
- public function authorize($user):void {abort_unless($user&&in_array(app(AdminHierarchyScope::class)->level($user),['kicc','national'],true),403,'National media requires national or KICC administration.');}
+ public function authorize($user):void {abort_unless($user&&($user->status??'active')==='active'&&in_array(app(AdminHierarchyScope::class)->level($user),['kicc','national'],true),403,'National media requires national or KICC administration.');}
  public function target(MediaAsset $a):string {
   $slot=$a->metadata['target_slot']??$a->slot;
   $national=$a->owner_type===County::class&&(int)$a->owner_id===0&&in_array($slot,['national_hero_video','national_flag_video'],true);

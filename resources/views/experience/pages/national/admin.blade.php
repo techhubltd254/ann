@@ -43,14 +43,14 @@
                         <div><div class="font-bold text-white text-sm">{{ $m->name }}</div><div class="text-xs text-zinc-500">{{ $m->agencies->count() }} agencies</div></div>
                     </div>
                     <div class="flex gap-1">
-                        <button onclick="this.closest('.border').querySelector('form.hidden')?.classList.toggle('hidden')" class="text-xs px-2 py-1 rounded border border-white/10 text-zinc-400 hover:text-white">Edit</button>
-                        <form method="POST" action="{{ route('national.admin.v2.ministry.delete', $m->id) }}" style="display:inline" onsubmit="return confirm('Confirm this action?')">@csrf<button type="submit" class="text-xs px-2 py-1 rounded border border-red-500/30 text-red-400 hover:bg-red-500/10">×</button></form>
+                        <button onclick="this.parentElement.parentElement.parentElement.querySelector('form.mt-3')?.classList.toggle('hidden')" class="text-xs px-2 py-1 rounded border border-white/10 text-zinc-400 hover:text-white">Edit</button>
+                        <form method="POST" action="{{ route('national.admin.v2.ministry.delete', $m->slug) }}" style="display:inline" onsubmit="return confirm('Confirm this action?')">@csrf<button type="submit" class="text-xs px-2 py-1 rounded border border-red-500/30 text-red-400 hover:bg-red-500/10">×</button></form>
                     </div>
                 </div>
                 @if($m->description)<p class="text-xs text-zinc-500 mt-2">{{ Str::limit($m->description, 120) }}</p>@endif
-                <form method="POST" action="{{ route('national.admin.v2.ministry.update', $m->id) }}" class="hidden mt-3 space-y-2">@csrf
+                <form method="POST" action="{{ route('national.admin.v2.ministry.update', $m->slug) }}" class="hidden mt-3 space-y-2">@csrf
                     <input type="text" name="name" value="{{ $m->name }}" class="w-full h-8 px-3 rounded-lg glass-card/5 border border-white/10 text-white text-xs">
-                    <input type="text" name="code" value="{{ $m->code }}" class="w-full h-8 px-3 rounded-lg glass-card/5 border border-white/10 text-white text-xs">
+                    <input type="text" name="code" required maxlength="10" value="{{ $m->code }}" class="w-full h-8 px-3 rounded-lg glass-card/5 border border-white/10 text-white text-xs">
                     <button class="h-8 px-3 rounded-lg bg-[#0B0B0B] text-white text-[10px] font-bold">Save</button>
                 </form>
             </div>
@@ -68,14 +68,14 @@
         <form id="addAgencyForm" method="POST" action="{{ route('national.admin.v2.agency.store') }}" class="hidden space-y-2 mb-4 p-4 border border-white/10 rounded-xl">@csrf
             <select name="ministry_id" required class="w-full h-9 px-3 rounded-lg glass-card/5 border border-white/10 text-white text-sm">@foreach($ministries as $m)<option value="{{ $m->id }}" class="bg-[#0B0B0B]">{{ $m->name }}</option>@endforeach</select>
             <input type="text" name="name" required placeholder="Agency name" class="w-full h-9 px-3 rounded-lg glass-card/5 border border-white/10 text-white text-sm placeholder-zinc-500">
-            <input type="text" name="code" placeholder="Code" class="w-full h-9 px-3 rounded-lg glass-card/5 border border-white/10 text-white text-sm placeholder-zinc-500">
+            <input type="text" name="code" required maxlength="10" placeholder="Unique code (max 10 characters)" class="w-full h-9 px-3 rounded-lg glass-card/5 border border-white/10 text-white text-sm placeholder-zinc-500">
             <button class="h-9 px-4 rounded-lg bg-[#0B0B0B] text-white text-xs font-bold">Create</button>
         </form>
         <div class="space-y-2 max-h-[600px] overflow-y-auto">
             @foreach($agencies as $a)
             <div class="flex items-center justify-between border border-white/10 rounded-xl p-3">
                 <div><span class="font-semibold text-white text-sm">{{ $a->name }}</span><div class="text-xs text-zinc-500">{{ $a->ministry?->name }}</div></div>
-                <form method="POST" action="{{ route('national.admin.v2.agency.delete', $a->id) }}" style="display:inline" onsubmit="return confirm('Confirm this action?')">@csrf<button type="submit" class="text-xs px-2 py-1 rounded border border-red-500/30 text-red-400 hover:bg-red-500/10">×</button></form>
+                <form method="POST" action="{{ route('national.admin.v2.agency.delete', $a->slug) }}" style="display:inline" onsubmit="return confirm('Confirm this action?')">@csrf<button type="submit" class="text-xs px-2 py-1 rounded border border-red-500/30 text-red-400 hover:bg-red-500/10">×</button></form>
             </div>
             @endforeach
         </div>

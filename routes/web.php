@@ -948,3 +948,8 @@ Route::middleware(['auth',\App\Http\Middleware\AdminConsole::class])->group(func
  Route::post('/admin/national/media/{asset}/publish',[\App\Http\Controllers\Web\NationalAdminController::class,'publishMedia'])->name('national.media.publish');
  Route::post('/admin/national/media/{asset}/unpublish',[\App\Http\Controllers\Web\NationalAdminController::class,'unpublishMedia'])->name('national.media.unpublish');
 });
+
+Route::middleware(['auth',\App\Http\Middleware\AdminConsole::class])->group(function(){
+ Route::get('/admin/national/hero',fn()=>redirect()->route('national.admin.v2.dashboard',['tab'=>'hero']));
+ Route::get('/admin/national/flag',fn()=>redirect()->route('national.admin.v2.dashboard',['tab'=>'flag']));
+});

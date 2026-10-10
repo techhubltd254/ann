@@ -26,6 +26,8 @@ class PrepareProductVideo implements ShouldQueue {
    if(($a->metadata['namespace']??'')==='national')$compatible=false;
    $args=['ffmpeg','-nostdin','-y','-i',$source,'-map','0:v:0','-map','0:a:0?'];
    $args=array_merge($args,$compatible?['-c','copy']:['-c:v','libx264','-preset','veryfast','-crf','23','-maxrate','4000k','-bufsize','8000k','-pix_fmt','yuv420p','-threads','2','-vf','scale=min(1920\\,iw):-2','-c:a','aac','-b:a','128k']);
+   // A 60-fps master is unnecessary work and bandwidth for a web hero.
+   if(($a->metadata['namespace']??'')==='national')$args=array_merge($args,['-r','30']);
    $args=array_merge($args,['-movflags','+faststart',$dest]);$p=new Process($args);$p->setTimeout(3000);$p->mustRun();
    $verify=new Process(['ffprobe','-v','error','-show_entries','stream=codec_name,codec_type:format=duration','-of','json',$dest]);$verify->setTimeout(90);$verify->mustRun();$output=json_decode($verify->getOutput(),true);
    if((float)($output['format']['duration']??0)<=0)throw new \RuntimeException('Prepared video verification failed');

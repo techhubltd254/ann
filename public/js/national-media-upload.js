@@ -18,7 +18,7 @@ document.addEventListener('DOMContentLoaded',()=>{
   }throw Error('Could not confirm the request. Your progress is saved; reselect the same file to resume.');}
   root.querySelector('form[data-nm-form]').addEventListener('submit',e=>e.preventDefault());
   pause.addEventListener('click',()=>{paused=true;request?.abort();});
-  cancel.addEventListener('click',async()=>{if(busy)return;const state=stored();try{if(state)await api('/'+state.upload_id,'DELETE');localStorage.removeItem(key);cancel.hidden=true;progress.value=0;status.textContent='Pending upload cancelled; live videos were not changed.';}catch(e){status.textContent=e.message;}});
+  cancel.addEventListener('click',async()=>{if(busy)return;paused=false;const state=stored();try{if(state)await api('/'+state.upload_id,'DELETE');localStorage.removeItem(key);cancel.hidden=true;progress.value=0;status.textContent='Pending upload cancelled; live videos were not changed.';}catch(e){status.textContent=e.message;}});
   start.addEventListener('click',async()=>{
    if(busy)return;const f=file.files[0];if(!f){status.textContent='Choose a video file first.';return;}
    if(f.size>2147483648){status.textContent='Maximum file size is 2 GiB (2,147,483,648 bytes).';return;}
