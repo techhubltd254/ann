@@ -28,7 +28,7 @@ class ReferenceExperienceController extends Controller
 
     private function buildTables(): array
     {
-        $tables = array_fill_keys(['counties','institutions','products','venues','exhibitions','screens','streams','content','media','analytics','travel_groups','airports','tileDefaults'], []);
+        $tables = array_fill_keys(['counties','institutions','products','venues','exhibitions','screens','streams','content','media','analytics','travel_groups','airports','tileDefaults','sectors','heroMedia'], []);
 
         // ---- load the entities once, then prime one media index for all of them.
         // Every tile lookup below is answered from this index, which is what
@@ -41,6 +41,7 @@ class ReferenceExperienceController extends Controller
         $institutions = CountyInstitution::where('is_published', true)->with('sectorEntities')->orderBy('name')->get();
         $index->prime(CountyInstitution::class, $institutions->pluck('id')->all());
         $index->prime('institution', $institutions->pluck('id')->all());
+        $index->prime(\App\Models\SectorEntity::class,$institutions->flatMap(fn($i)=>$i->sectorEntities->pluck('id'))->all());
 
         $products = Product::with(['county','category','images','variants','offers'=>fn($q)=>$q->current()])->where('status','active')->where(fn($q)=>$q->whereNull('institution_id')->orWhereIn('institution_id',CountyInstitution::where('is_published',true)->select('id')))->orderByDesc('updated_at')->orderByDesc('id')->get();
         $index->prime(Product::class, $products->pluck('id')->all());
@@ -51,26 +52,46 @@ class ReferenceExperienceController extends Controller
         $index->prime(TileMediaResolver::OWNER_TYPE, [TileMediaResolver::OWNER_ID]);
         $index->prime(TileMediaResolver::SEED_TYPE, [TileMediaResolver::OWNER_ID]);
 
+        $sectorCatalogue = app(\App\Services\InstitutionSectorCatalogue::class);
+        $tables['sectors']=$sectorCatalogue->sectors();
+        $productsByInstitution=$products->groupBy('institution_id');
         $tiles = app(TileMediaResolver::class)->withIndex($index);
         $tables['tileDefaults'] = $tiles->defaults();
 
         $countyNames = $counties->pluck('name', 'id');
+        $countySlugs = $counties->pluck('slug','id');
         foreach ($counties as $c) {
             $hero = MediaMapping::countyHero($c, $index);
             $poster = $hero['poster'] ?? MediaMapping::countyFallbackImage($c, $index);
             $tables['counties'][] = ['id'=>(string)$c->id,'slug'=>$c->slug,'name'=>$c->name,'code'=>str_pad((string)$c->code,3,'0',STR_PAD_LEFT),'region'=>$c->region ?? $c->former_province,'pop'=>(int)$c->population_2024,'populationYear'=>2024,'sectors'=>$c->sectors->pluck('name')->all(),'description'=>$c->description,'image'=>$poster,'mediaState'=>$hero['state'],'mediaReason'=>$hero['reason'],'status'=>'published','tileMedia'=>$tiles->tile(\App\Models\County::class,(int)$c->id,'hero')];
+            if ($hero['video']) $tables['counties'][array_key_last($tables['counties'])]['tileMedia']=['state'=>'published','kind'=>'video','url'=>$hero['video'],'poster'=>$poster,'source'=>'county-owned-film'];
+            $tables['counties'][array_key_last($tables['counties'])]['sectorDetails']=$c->sectors->map(fn($sector)=>['id'=>(int)$sector->id,'slug'=>$sector->slug,'name'=>$sector->name])->all();
             if ($hero['video']) $tables['media'][] = ['id'=>'county:'.$c->id,'ownerId'=>(string)$c->id,'kind'=>'video','role'=>'county','target'=>'/counties/'.$c->slug,'name'=>$c->name.' — county film','url'=>$hero['video'],'poster'=>$poster,'status'=>'published'];
         }
         foreach ($institutions as $i) {
             $hero = MediaMapping::institutionHero($i, $index);
             $tables['institutions'][] = ['id'=>(string)$i->id,'countyId'=>(string)$i->county_id,'county'=>$countyNames[$i->county_id] ?? '', 'slug'=>$i->slug,'name'=>$i->name,'description'=>$i->description,'website'=>$i->website,'type'=>$i->type,'email'=>$i->email,'verified'=>(bool)$i->is_verified_trader,'sectors'=>$i->sectorEntities->pluck('sector_id')->unique()->values()->all(),'status'=>'published','tileMedia'=>$tiles->tile(\App\Models\CountyInstitution::class,(int)$i->id,'hero')];
+            $last=array_key_last($tables['institutions']);
+            $tables['institutions'][$last]['sectorProfiles']=$sectorCatalogue->profiles($i,$productsByInstitution->get($i->id,collect()));
+            $tables['institutions'][$last]['sectors']=array_column($tables['institutions'][$last]['sectorProfiles'],'id');
+            $tables['institutions'][$last]['story']=$i->story;
+            $tables['institutions'][$last]['foundedYear']=$i->founded_year;
+            $tables['institutions'][$last]['location']=$i->location;
+            foreach($tables['institutions'][$last]['sectorProfiles'] as $profile){
+                $entry=$i->sectorEntities->first(fn($entry)=>(int)$entry->sector_id===(int)$profile['id']&&$entry->is_published);
+                $candidates=$index->forOwner(CountyInstitution::class,(int)$i->id)->filter(fn($asset)=>(int)($asset->metadata['sector_id']??0)===(int)$profile['id']);
+                if($entry)$candidates=$candidates->merge($index->forOwner(\App\Models\SectorEntity::class,(int)$entry->id));
+                $scoped=$candidates->filter(fn($asset)=>$asset->kind==='video'&&!str_starts_with($asset->slot??'','draft__')&&!str_starts_with($asset->slot??'','archived__')&&($asset->metadata['publication']??'')!=='draft'&&MediaMapping::classify($asset,$i->slug,(int)$i->id)['state']===MediaMapping::DISTINCT)->sortByDesc('id')->first();
+                if($scoped)$tables['media'][]=['id'=>'institution-sector:'.$i->id.':'.$profile['id'],'ownerId'=>(string)$i->id,'sectorId'=>$profile['id'],'kind'=>'video','role'=>'institution-sector','target'=>'/counties/'.($countySlugs[$i->county_id]??'').'/sectors/'.$profile['slug'].'/institutions/'.$i->slug,'url'=>$scoped->mp4Url()?:$scoped->url(),'poster'=>$scoped->posterUrl(),'name'=>$i->name.' — '.$profile['name'],'status'=>'published'];
+            }
+            if($hero['video'])$tables['institutions'][$last]['tileMedia']=['state'=>'published','kind'=>'video','url'=>$hero['video'],'poster'=>$hero['poster']??null,'source'=>'institution-owned-film'];
             $tables['institutions'][array_key_last($tables['institutions'])]['models']=app(\App\Services\PublicModelResolver::class)->forOwner(CountyInstitution::class,(int)$i->id,$index);
             if ($hero['video']) $tables['media'][] = ['id'=>'institution:'.$i->id,'ownerId'=>(string)$i->id,'kind'=>'video','role'=>'experience','target'=>'/institutions/'.$i->slug,'name'=>$i->name.' — institution film','url'=>$hero['video'],'poster'=>$hero['poster'] ?? null,'status'=>'published'];
         }
         $nationalHero=MediaAsset::resolveSlot(\App\Models\County::class,0,'national_hero_video');
         if($nationalHero){$tables['media'][]=['id'=>'national:hero','ownerId'=>'national','kind'=>'video','role'=>'national','target'=>'/national-government','name'=>$nationalHero->alt_text?:'National Government — hero film','url'=>app(\App\Services\NationalMediaService::class)->stream($nationalHero),'poster'=>$nationalHero->posterUrl(),'status'=>'published'];}
         // Landing page hero video (kiccwalkin.mp4)
-        $landingHero = MediaAsset::where('owner_type', 'landing_page')->where('slot', 'hero_video')->first();
+        $landingHero = MediaAsset::where('owner_type', 'landing_page')->where('owner_id',1)->where('slot', 'hero_video')->where('kind','video')->ready()->with('derivatives')->latest('id')->first();
         if ($landingHero) {
             $tables['media'][] = [
                 'id' => 'landing:1',
@@ -79,11 +100,16 @@ class ReferenceExperienceController extends Controller
                 'role' => 'hero',
                 'target' => '/',
                 'name' => 'KICC Landing Hero',
-                'url' => url('/media/video/' . $landingHero->path),
+                'url' => $landingHero->mp4Url() ?: $landingHero->url(),
                 'poster' => null,
                 'status' => 'published',
             ];
         }
+
+        $landingTile=$tiles->tile(TileMediaResolver::OWNER_TYPE,TileMediaResolver::OWNER_ID,'hero');
+        $tables['heroMedia']=['ownerId'=>1,'video'=>$landingHero?($landingHero->mp4Url()?:$landingHero->url()):(($landingTile['kind']??null)==='video'?($landingTile['url']??null):null),'poster'=>$landingHero?->posterUrl()?:($landingTile['poster']??$tables['tileDefaults']['ed_nairobi']??null)];
+        // Sector films are scoped to their original county and slot, never another county's film.
+        foreach($counties as $county)foreach($county->sectors as $sector){$asset=$index->forSlot(County::class,(int)$county->id,'sector_video_'.$sector->slug);if(!$asset||$asset->kind!=='video')continue;$verdict=MediaMapping::classify($asset,$county->slug,(int)$county->id,$county->code);if($verdict['state']!==MediaMapping::DISTINCT)continue;$tables['media'][]=['id'=>'sector:'.$county->id.':'.$sector->id,'ownerId'=>(string)$county->id,'sectorId'=>(int)$sector->id,'kind'=>'video','role'=>'sector','target'=>'/counties/'.$county->slug.'/sectors/'.$sector->slug,'url'=>$asset->mp4Url()?:$asset->url(),'poster'=>$asset->posterUrl(),'name'=>$county->name.' — '.$sector->name,'status'=>'published'];}
 
         // Institutions are keyed by id for the product fallback, and the media
         // index is primed for every one of them so the fallback costs no query.
@@ -98,6 +124,7 @@ class ReferenceExperienceController extends Controller
             $last=array_key_last($tables['products']);
             $tables['products'][$last]['models']=app(\App\Services\PublicModelResolver::class)->forOwner(Product::class,(int)$p->id,$index);
             $tables['products'][$last]['offeringKind']=$p->offering_kind;
+            $tables['products'][$last]['sectorSlugs']=$sectorCatalogue->offeringSectors($p);
             $tables['products'][$last]['priceMode']=$p->price_mode;
             $tables['products'][$last]['priceLabel']=$p->price_mode==='enquiry'?'Price on enquiry':($p->price_mode==='from'?'From ':'').'KES '.number_format($p->price??0);
             $tables['products'][$last]['sourceUrl']=$p->source_url;
@@ -154,12 +181,17 @@ class ReferenceExperienceController extends Controller
         $paletteHash = substr(hash_file('sha256', public_path('css/reference-palette.css')), 0, 12);
         $html = str_replace('/css/reference-palette.css?v=reference-replica-v2', '/css/reference-palette.css?v='.$paletteHash, $html);
         $tables = $this->tables();
-        $hero = \App\Models\MediaAsset::where('owner_type','landing_page')->where('owner_id',1)->where('slot','hero_video')->where('kind','video')->where('status','ready')->with('derivatives')->latest('id')->first();
-        $tile = app(\App\Services\TileMediaResolver::class)->tile(\App\Services\TileMediaResolver::OWNER_TYPE, \App\Services\TileMediaResolver::OWNER_ID, 'hero');
-        $tables['heroMedia'] = ['ownerId'=>1,'video'=>$hero ? ($hero->mp4Url() ?: $hero->url()) : (($tile['kind'] ?? null)==='video' ? ($tile['url'] ?? null) : null), 'poster'=>$hero?->posterUrl() ?: ($tile['poster'] ?? $tables['tileDefaults']['ed_nairobi'] ?? null)];
         $payload = ['path'=>$request->getPathInfo(),'tables'=>$tables];
         $boot = json_encode($payload, JSON_HEX_TAG|JSON_HEX_AMP|JSON_HEX_APOS|JSON_HEX_QUOT|JSON_THROW_ON_ERROR);
         // This inserts JSON only; the approved document is never compiled as Blade.
         return str_replace('/*__KICC_NATIVE_BOOT__*/', 'window.KICC_NATIVE='.$boot.';', $html);
     }
+    public function context(Request $request, string $county, string $sector, ?string $institution=null)
+    {
+        $tables=$this->tables();$c=collect($tables['counties'])->firstWhere('slug',$county);abort_unless($c,404);
+        $selected=collect($c['sectorDetails']??[])->firstWhere('slug',$sector);abort_unless($selected,404);
+        if($institution){$i=collect($tables['institutions'])->first(fn($i)=>$i['slug']===$institution&&(string)$i['countyId']===(string)$c['id']);abort_unless($i&&collect($i['sectorProfiles']??[])->contains('slug',$sector),404);}
+        return response($this->html($request))->withHeaders(['Cache-Control'=>'no-store','CDN-Cache-Control'=>'no-store']);
+    }
+
 }

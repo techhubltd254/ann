@@ -55,7 +55,7 @@ Route::get('/counties', [CountyController::class, 'index'])->name('counties.inde
 Route::get('/counties/{county}', [CountyController::class, 'show'])->name('counties.show')
     ->middleware($publicCache)
     ->withoutMiddleware($noSession);
-Route::get('/counties/{county}/sector/{sector}', [CountyController::class, 'sector'])->name('counties.sector')
+Route::get('/counties/{county}/sector/{sector}', [\App\Http\Controllers\Web\ReferenceExperienceController::class, 'context'])->name('counties.sector')
     ->middleware($publicCache)
     ->withoutMiddleware($noSession);
 Route::get('/national-sector', [\App\Http\Controllers\Web\NationalSectorController::class, 'index'])
@@ -980,3 +980,7 @@ Route::post('/admin/kicc/cms/timeline/{event}',[\App\Http\Controllers\Web\CmsCon
 Route::post('/admin/kicc/cms/videos/{video}',[\App\Http\Controllers\Web\CmsController::class,'updateVideo'])->middleware(['auth','admin:kicc'])->name('cms.admin.video.update');
 
 Route::get('/models/{asset}/bytes',[\App\Http\Controllers\Web\PublicModelController::class,'bytes'])->name('public.model.bytes');
+
+// Public sector-context deep links retain county ownership and offering niche.
+Route::get('/counties/{county}/sectors/{sector}', [\App\Http\Controllers\Web\ReferenceExperienceController::class, 'context'])->name('counties.sector.context');
+Route::get('/counties/{county}/sectors/{sector}/institutions/{institution}', [\App\Http\Controllers\Web\ReferenceExperienceController::class, 'context'])->name('counties.sector.institution');

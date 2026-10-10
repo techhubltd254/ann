@@ -109,6 +109,10 @@ class InstitutionSyncService
             $errors[] = ['task' => 'cleanup', 'error' => $e->getMessage()];
         }
 
+        // Reconcile evidence-based many-to-many links for admin and public sector navigation.
+        try { app(InstitutionSectorCatalogue::class)->persistLinks($institution); }
+        catch (\Throwable $e) { $errors[]=['task'=>'automatic_sector_mapping','error'=>$e->getMessage()]; }
+
         // Update sync timestamp — always last, bare minimum
         try {
             $institution->syncing = true;
@@ -570,6 +574,8 @@ class InstitutionSyncService
             ->map(fn ($m) => $this->resolveSector($m['sector_slug'] ?? null)?->id)
             ->filter();
 
+        $automatic=app(InstitutionSectorCatalogue::class)->profiles($i,Product::with('category')->where('institution_id',$i->id)->where('status','active')->get());
+        $keptSectorIds=$keptSectorIds->merge(array_column($automatic,'id'))->unique();
         SectorEntity::where('county_id', $county->id)
             ->whereIn('entity_type', [\App\Models\CountyInstitution::class, self::ENTITY_TYPE])
             ->where('entity_id', $i->id)

@@ -3392,7 +3392,7 @@ window.BLANK = BLANK;
 window.TILE_DEFAULTS = TILE_DEFAULTS;
 
 const imgFor = (c) => (c && c.tileMedia && c.tileMedia.state === "published" && c.tileMedia.url)
-  ? c.tileMedia.url
+  ? (c.tileMedia.kind === "video" ? (c.tileMedia.poster || c.image || "") : c.tileMedia.url)
   : (c && c.image) || "data:image/svg+xml,%3Csvg xmlns=\"http://www.w3.org/2000/svg\" width=\"800\" height=\"600\"%3E%3C/svg%3E";
 const nf = n => n.toLocaleString("en-KE");
 
@@ -5598,13 +5598,13 @@ Router.register('/counties', () => ({title:'Counties', html:`
   <div class="grid g4" id="countyFull">
     ${COUNTIES.map(c=>`<div class="media-tile" data-cname="${c.name.toLowerCase()}" data-cregioncard="${c.region}" data-href="/counties/${c.slug}">
       <div class="tile-ratio"></div>
-      <div class="tile-media" style="background-image:url('${imgFor(c)}')"></div><div class="tile-scrim"></div>
+      <div class="tile-media" style="background-image:${c.mediaState==='distinct'?`url('${imgFor(c)}')`:'none'};background-color:var(--reference-tone-260)"></div><div class="tile-scrim"></div>
       <span class="badge-3d">${c.code}</span><div class="play-fab">▶</div>
       <div class="tile-body">
         <div class="center" style="gap:6px;flex-wrap:wrap">
           <span class="badge gold">${c.sectors.length} sectors</span><span class="badge grey">${c.region}</span></div>
         <div style="font-family:var(--font-head);font-weight:800;font-size:1.15rem;margin-top:9px">${c.name}</div>
-        <div class="muted-xs" style="margin-top:5px">${nf(c.pop)} people</div>${c.mediaState!=='distinct'?'<small class="county-image-disclosure">Illustrative fallback · not verified county footage</small>':''}
+        <div class="muted-xs" style="margin-top:5px">${nf(c.pop)} people</div>${c.mediaState!=='distinct'?'<small class="county-image-disclosure">No county-specific film published</small>':''}
         <div class="wrapflex" style="margin-top:9px">${c.sectors.slice(0,2).map(s=>`<span class="badge grey">${s}</span>`).join('')}</div>
         <div class="center mt-s" style="gap:10px">
           <a href="#/exhibition-3d/terrain" class="muted-xs" data-link style="text-decoration:underline">Map</a>
@@ -5837,9 +5837,7 @@ Router.register('/marketplace', () => ({title:'Marketplace', html:`
 <div class="wrap">${T.crumb([['Home','/'],['Marketplace',null]])}</div>
 <div class="wrap page-head" data-depth="mid">
   <div class="eyebrow" data-reveal>KICC Marketplace</div>
-  <h1 data-reveal style="font-size:clamp(2rem,4vw,3.2rem);margin-top:12px">Golden Vortex Product Grid</h1>
   <p class="muted" data-reveal style="max-width:74ch;margin-top:14px">
-    Products spiral out of the golden vortex → land with a spring-bounce stagger (0→70→140→210ms).
     On category filter the current grid dissolves and the new grid spirals in.</p>
   <div class="between mt" style="flex-wrap:wrap;gap:14px">
     <div class="center" style="gap:10px;flex-wrap:wrap">
@@ -8126,6 +8124,46 @@ function PAGE_EVENTS(path){
  let path=window.KICC_NATIVE.path==='/'?'/':window.KICC_NATIVE.path;if(/^\/counties\/[^/]+\/institutions\//.test(path))path='/institutions/'+path.split('/').pop();
  if(!location.hash.startsWith('#/'))history.replaceState(null,'',location.pathname+location.search+'#'+path);
 })();
+(function sectorContextRoutes(){
+ 'use strict';
+ const esc=x=>String(x??'').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
+ const data=()=>window.KICC_NATIVE.tables;
+ const countyPath=c=>'/counties/'+c.slug;
+ const sectorPath=(c,s)=>countyPath(c)+'/sectors/'+s.slug;
+ const institutionPath=(c,s,i)=>sectorPath(c,s)+'/institutions/'+i.slug;
+ const missing=message=>({title:'Unavailable',html:`<section class="wrap section"><h1>${esc(message)}</h1><a href="#/counties" class="btn gold">Back to counties</a></section>`});
+ const film=(media,title)=>window.KiccExpoVideo.render({variant:'feature',video:media?.url||null,poster:media?.poster||null,title,description:media?'Published owner-linked footage.':'No verified film has been published for this entry.',ownerId:media?.ownerId||'',actions:[]});
+ const mediaFor=path=>data().media.find(m=>m.target===path&&m.kind==='video');
+ const profiles=i=>i.sectorProfiles||[];
+ const matches=(i,s)=>profiles(i).some(p=>p.slug===s.slug);
+ const institutions=(c,s)=>data().institutions.filter(i=>String(i.countyId)===String(c.id)&&(!s||matches(i,s)));
+ const offeringCards=rows=>rows.length?`<div class="grid g3 mt-l">${rows.map(p=>`<article class="prod-card" data-native-product="${esc(p.slug)}" data-sector-product-id="${esc(p.id)}"><div class="pc-media" style="position:relative;min-height:190px;background-size:cover;background-position:center;${p.image?`background-image:url('${esc(p.image)}')`:''}">${p.tileMedia?.kind==='video'?'<button type="button" class="btn ghost sm" data-product-play style="position:absolute;bottom:10px;left:10px">▶ Play film</button>':''}</div><div class="pc-body"><span class="badge grey">${esc(p.offeringKind||'product')}</span><h3>${esc(p.name)}</h3><p class="muted-xs">${esc(p.description)}</p><p class="price">${esc(p.priceLabel)}</p><a class="btn gold sm" href="${esc(p.nativeUrl)}">View offering →</a></div></article>`).join('')}</div>`:'<p class="reference-empty mt">No published offerings in this sector. Unverified or draft entries are not shown.</p>';
+ const institutionCards=(c,s,rows)=>rows.length?`<div class="grid g3 mt-l">${rows.map(i=>{const profile=s?profiles(i).find(p=>p.slug===s.slug):null;const path=s?institutionPath(c,s,i):'/institutions/'+i.slug;return `<article class="glass-card pad" data-sector-institution="${esc(i.slug)}"><span class="badge gold">${esc(s?.name||i.type)}</span><h3>${esc(i.name)}</h3><p class="muted-xs">${esc(profile?.description||i.description)}</p><a class="btn ghost sm" href="#${esc(path)}">Explore ${esc(s?.name||'institution')} →</a></article>`}).join('')}</div>`:'<p class="reference-empty mt">No published institutions are mapped to this county sector.</p>';
+ function institution(c,s,i){
+  const profile=s?profiles(i).find(p=>p.slug===s.slug):null;
+  if(s&&!profile)return missing('This institution is not published in the selected sector.');
+  const offerings=data().products.filter(p=>String(p.institutionId)===String(i.id)&&(!s||(profile.productIds||[]).includes(String(p.id))));
+  const scopePath=s?institutionPath(c,s,i):'/institutions/'+i.slug;
+  const offeringFilm=s?offerings.map(p=>p.tileMedia?.kind==='video'?{url:p.tileMedia.url,poster:p.tileMedia.poster,ownerId:p.id,name:p.name}:null).find(Boolean):null;
+  const media=mediaFor(scopePath)||offeringFilm||(!s?mediaFor('/institutions/'+i.slug):null);
+  const sectorMedia=s?mediaFor(sectorPath(c,s)):null;
+  const scopedFilm=media||sectorMedia;
+  return {title:i.name+(s?' · '+s.name:''),html:`<div class="wrap">${T.crumb([['Home','/'],['Counties','/counties'],[c.name,countyPath(c)],...(s?[[s.name,sectorPath(c,s)]]:[]),[i.name,null]])}</div><section class="wrap section"><span class="eyebrow">${esc(c.name)} · ${esc(s?.name||'Institution profile')}</span><h1>${esc(i.name)}</h1><p class="muted mt" data-sector-profile>${esc(profile?.description||i.description)}</p><div class="wrapflex mt">${profiles(i).map(p=>`<a class="pill ${s?.slug===p.slug?'active':''}" href="#${esc(institutionPath(c,p,i))}">${esc(p.name)}</a>`).join('')}</div><div class="glass-card pad mt"><h2>History & institution information</h2>${!s&&i.foundedYear?`<p>Established in ${esc(i.foundedYear)}.</p>`:''}<p>${esc(s?profile.history:(i.story||i.description))}</p>${(profile?.operations||[]).length?`<h3>${esc(s.name)} operations</h3><ol>${profile.operations.map(step=>`<li><strong>${esc(step.step)}</strong> — ${esc(step.description)}</li>`).join('')}</ol>`:''}<p>${esc(i.location||i.county)}</p>${i.website?`<a href="${esc(i.website)}" target="_blank" rel="noopener noreferrer">Official website ↗</a>`:''}</div>${scopedFilm?`<div class="mt-l">${offeringFilm&&media===offeringFilm?`<p class="muted-xs">Offering film: ${esc(offeringFilm.name)} — matched to this institution and sector.</p>`:sectorMedia&&!media?'<p class="muted-xs">County sector film — not institution-specific footage.</p>':''}${film(scopedFilm,i.name+(s?' · '+s.name:''))}</div>`:'<p class="muted mt">No institution-specific video has been published yet.</p>'}<section class="mt-l" data-sector-offerings><h2>${esc(s?.name||'Published')} products, services & experiences</h2>${offeringCards(offerings)}</section>${!s?(i.models||[]).map(m=>`<a class="btn ghost" href="${esc(m.viewerUrl)}">Open uploaded 3D model ↗</a>`).join(''):''}</section>`};
+ }
+ const oldCounty=Router.PAGES['/counties'];
+ Router.PAGES['/counties']=(rest,path)=>{
+  if(!rest.length)return oldCounty(rest,path);
+  const c=data().counties.find(c=>c.slug===rest[0]);if(!c)return missing('County not found.');
+  const sectorSlug=['sector','sectors'].includes(rest[1])?rest[2]:rest[1];
+  if(sectorSlug){const s=(c.sectorDetails||[]).find(s=>s.slug===sectorSlug);if(!s)return missing('County sector not found.');
+    const institutionIndex=rest.indexOf('institutions');if(institutionIndex!==-1){const i=data().institutions.find(i=>i.slug===rest[institutionIndex+1]&&String(i.countyId)===String(c.id));return i?institution(c,s,i):missing('Institution not found in this county.');}
+    const rows=institutions(c,s);return {title:c.name+' · '+s.name,html:`<div class="wrap">${T.crumb([['Home','/'],['Counties','/counties'],[c.name,countyPath(c)],[s.name,null]])}</div><section class="wrap section"><span class="eyebrow">${esc(c.name)} county sector</span><h1>${esc(s.name)}</h1><p class="muted mt">${rows.length} published institutions mapped to this sector. Open an institution for its sector-specific history, information and offerings.</p>${mediaFor(sectorPath(c,s))?film(mediaFor(sectorPath(c,s)),c.name+' · '+s.name):''}${institutionCards(c,s,rows)}</section>`};
+  }
+  const rows=institutions(c);return {title:c.name,html:`<div class="wrap">${T.crumb([['Home','/'],['Counties','/counties'],[c.name,null]])}</div><section class="wrap section"><h1>${esc(c.name)} County</h1><p class="muted mt">${esc(c.description)}</p>${film(mediaFor(countyPath(c)),c.name+' · County film')}<h2 class="mt-l">Explore economic sectors</h2><div class="grid g3 mt-l">${(c.sectorDetails||[]).map(s=>`<a class="glass-card pad" data-county-sector="${esc(s.slug)}" href="#${esc(sectorPath(c,s))}"><h3>${esc(s.name)}</h3><p>${institutions(c,s).length} mapped institutions</p><span class="gold">Enter sector →</span></a>`).join('')}</div><h2 class="mt-l">All published county institutions</h2>${institutionCards(c,null,rows)}</section>`};
+ };
+ Router.PAGES['/institutions']=(rest)=>{const i=data().institutions.find(i=>i.slug===rest[0]);if(!i)return missing('Institution not found.');const c=data().counties.find(c=>String(c.id)===String(i.countyId));if(!c)return missing('Institution county not found.');return institution(c,null,i);};
+})();
+
 (function boot(){
   if(!location.hash) location.hash='#/';
   if(typeof STUDIO!=='undefined') STUDIO.boot();   // seed the curation store before first paint
@@ -8137,9 +8175,9 @@ function PAGE_EVENTS(path){
 })();
 </script>
 <script type="module" src="https://static.cloudflareinsights.com/beacon.min.js/v31edd6df95cf4e85bb4c19e7a9bdbcba1788362987495" integrity="sha512-iIg7k2xntmwu6/uSb5tpc/hySgZc4eoL31yB29W6tJFo2akwjPWcEqnCEdJvGexCL0KEQwVYv5BlowfhVz26hg==" data-cf-beacon='{"version":"2024.11.0","token":"4edd5f8ec12a48cfa682ab8261b80a79","spa":2}' crossorigin="anonymous"></script>
-<script defer src="/js/tile-hover-video.js?v=live-product-v4"></script>
+<script defer src="/js/tile-hover-video.js?v=sector-context-20261010"></script>
 <script>
-(function liveCatalogue(){let busy=false,revision=null,lastPayload=null;const status=()=>{let el=document.querySelector('[data-catalog-sync]');if(!el&&document.getElementById('prodGrid')){el=document.createElement('p');el.dataset.catalogSync='1';el.className='muted-xs';document.getElementById('prodGrid').before(el);}return el;};
+(function liveCatalogue(){let busy=false,revision=null,lastPayload=JSON.stringify(window.KICC_NATIVE.tables);const status=()=>{let el=document.querySelector('[data-catalog-sync]');if(!el&&document.getElementById('prodGrid')){el=document.createElement('p');el.dataset.catalogSync='1';el.className='muted-xs';document.getElementById('prodGrid').before(el);}return el;};
 async function refresh(){if(busy||document.hidden)return;busy=true;try{const r=await fetch('/api/public-catalog',{cache:'no-store',headers:{Accept:'application/json'}});if(!r.ok)throw Error('Catalogue refresh HTTP '+r.status);const d=await r.json();if(d.source!=='live-native-models')throw Error('Invalid data source');const changed=lastPayload!==JSON.stringify(d.tables);revision=d.revision;lastPayload=JSON.stringify(d.tables);if(changed){const y=scrollY,q=document.getElementById('prodSearch')?.value||'',county=document.getElementById('productCounty')?.value||'';REPO.refresh(d.tables);if(!document.querySelector('dialog[open]')&&!document.querySelector('video[data-user-playing="1"]')){Router.render();setTimeout(()=>{scrollTo(0,y);const input=document.getElementById('prodSearch');if(input&&q){input.value=q;input.dispatchEvent(new Event('input',{bubbles:true}));}const sel=document.getElementById('productCounty');if(sel&&county){sel.value=county;sel.dispatchEvent(new Event('change',{bubbles:true}));}},700);}}const el=status();if(el)el.textContent='Live native catalogue · refreshed '+new Date().toLocaleTimeString();window.KICC_CATALOG_LAST_SYNC=Date.now();}catch(e){const el=status();if(el)el.textContent='Live refresh failed. Previously loaded records remain visible; retrying.';window.KICC_CATALOG_ERROR=e.message;}finally{busy=false;}}
 window.KiccRefreshCatalogue=refresh;refresh();setInterval(refresh,5000);addEventListener('focus',refresh);addEventListener('hashchange',refresh);document.addEventListener('visibilitychange',refresh);
 })();
