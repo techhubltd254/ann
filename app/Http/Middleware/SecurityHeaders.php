@@ -11,6 +11,8 @@ class SecurityHeaders
     {
         $response = $next($request);
 
+        $r2Host=parse_url((string)config('filesystems.disks.r2.endpoint'),PHP_URL_HOST);
+        $r2Connect=is_string($r2Host)&&preg_match('/^[a-z0-9.-]+\.r2\.cloudflarestorage\.com$/i',$r2Host)?$r2Host:'';
         // Content Security Policy
         $response->headers->set('Content-Security-Policy',
             "default-src 'self' *.cloudflarestream.com cloudflarestream.com *.workers.dev media.kicctest.org kicctest.org *.kicctest.org; " .
@@ -19,7 +21,7 @@ class SecurityHeaders
             "font-src 'self' fonts.gstatic.com data:; " .
             "img-src 'self' data: blob: https://sspark.genspark.ai *.cloudflarestream.com *.workers.dev media.kicctest.org *.r2.cloudflarestorage.com *.google.com *.gstatic.com www.google-analytics.com google-analytics.com; " .
             "media-src 'self' blob: data: *.cloudflarestream.com *.workers.dev media.kicctest.org *.r2.cloudflarestorage.com; " .
-            "connect-src 'self' kicctest.org *.kicctest.org *.cloudflarestream.com cloudflarestream.com *.workers.dev media.kicctest.org wss://* ws://* cdn.jsdelivr.net accounts.google.com *.google.com www.google-analytics.com google-analytics.com *.googletagmanager.com; " .
+            "connect-src 'self' ".$r2Connect." kicctest.org *.kicctest.org *.cloudflarestream.com cloudflarestream.com *.workers.dev media.kicctest.org wss://* ws://* cdn.jsdelivr.net accounts.google.com *.google.com www.google-analytics.com google-analytics.com *.googletagmanager.com; " .
             "frame-ancestors 'self'; " .
             "base-uri 'self'; " .
             "form-action 'self' accounts.google.com"
