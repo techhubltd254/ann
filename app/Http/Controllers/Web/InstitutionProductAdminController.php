@@ -56,7 +56,7 @@ class InstitutionProductAdminController extends Controller
         Cache::forget('reference.native.v1');Cache::increment('kicc_cache_version');return redirect()->route('institution.products.edit',[$i->slug,$p->id])->with('success','Offering created and synced. Upload its video below.');
     }
     public function update(Request $r,string $institution,int $product){
-        $i=$this->institution($r,$institution);$p=$this->product($i,$product);$d=$this->fields($r);
+        $i=$this->institution($r,$institution);$p=$this->product($i,$product);$d=$this->fields($r);$d['offering_details']=array_merge($p->offering_details??[],$d['offering_details']);
         DB::transaction(function()use($i,$p,$d){$oldName=$p->name;$data=$d;unset($data['price'],$data['stock'],$data['category'],$data['publication_status']);$data['status']=$d['publication_status'];$p->update($data);
             $v=$p->variants()->first();if($v)$v->update(['price'=>$d['price'],'stock'=>$d['stock']]);
             $locked=CountyInstitution::lockForUpdate()->findOrFail($i->id);$entries=$locked->products??[];$found=false;
