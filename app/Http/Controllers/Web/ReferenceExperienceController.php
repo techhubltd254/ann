@@ -153,10 +153,14 @@ class ReferenceExperienceController extends Controller
             }
         }
         foreach ($venues as $v) {
-            $asset = $index->forOwner(Venue::class, (int) $v->id)->last();
-            $tile = ['state'=>'empty'];
-            if ($asset && MediaMapping::inR2($asset->path)) $tile=['state'=>'published','kind'=>$asset->kind,'url'=>url('/media/video/'.$asset->path),'alt'=>$v->name];
-            $tables['venues'][]=['id'=>(string)$v->id,'slug'=>$v->slug,'name'=>$v->name,'type'=>$v->venue_type,'cap'=>(int)$v->capacity,'area'=>'Area on enquiry','rate'=>'Rate on enquiry','desc'=>$v->description,'am'=>is_array($v->amenities)?$v->amenities:[],'availability'=>'Available','status'=>'published','tileMedia'=>($vt=$tiles->tile(\App\Models\Venue::class,(int)$v->id,'hero'))['state']==='published'?$vt:$tile];
+            $owned=$index->forOwner(Venue::class,(int)$v->id)->filter(fn($a)=>$a->status==='ready'&&!str_starts_with($a->slot??'','draft__')&&!str_starts_with($a->slot??'','archived__')&&($a->metadata['publication']??'')!=='draft');
+            $asset=$owned->filter(fn($a)=>$a->kind==='video'&&in_array($a->slot,['hero_video','hero'],true))->sortByDesc('id')->first()?:$owned->filter(fn($a)=>$a->kind==='image')->sortByDesc('id')->first();
+            $tile=['state'=>'empty','kind'=>'image','url'=>url('/images/placeholders/media-pending.svg')];
+            if($asset&&MediaMapping::inR2($asset->path))$tile=['state'=>'published','kind'=>$asset->kind,'url'=>$asset->kind==='video'?$asset->mp4Url():$asset->url(),'mobileUrl'=>$asset->derivativeUrl('video_mobile'),'poster'=>$asset->posterUrl(),'assetId'=>(string)$asset->id,'alt'=>$v->name,'source'=>'venue-admin-upload'];
+            $official=$v->source_details['official_source']??[];if(!is_array($official))$official=[];
+            $verifiedCapacity=($official['capacity_verified']??false)?(int)($official['verified_capacity']??0):null;
+            $area=isset($official['area_m2'])?number_format((float)$official['area_m2'],floor((float)$official['area_m2'])===(float)$official['area_m2']?0:2).' m²':'Confirm with KICC';
+            $tables['venues'][]=['id'=>(string)$v->id,'slug'=>$v->slug,'name'=>$v->name,'type'=>$v->venue_type,'cap'=>$verifiedCapacity,'area'=>$area,'rate'=>'Current quote on enquiry','desc'=>$v->description,'am'=>is_array($v->amenities)?$v->amenities:[],'availability'=>'Enquiry required','status'=>'published','sourceUrl'=>$official['source_url']??null,'tileMedia'=>$tile];
         }
         foreach (Exhibition::whereNotIn('status',['draft','cancelled'])->with('venue')->get() as $e) $tables['exhibitions'][]=['id'=>(string)$e->id,'slug'=>$e->slug,'n'=>$e->name,'d'=>(string)$e->start_date,'venue'=>$e->venue?->name ?? '', 'availability'=>$e->status,'status'=>'published','booths'=>0,'reg'=>0];
         foreach (Screen::where('active',true)->get() as $s) $tables['screens'][]=['id'=>(string)$s->id,'slug'=>(string)$s->id,'n'=>$s->label,'loc'=>$s->location,'dim'=>'Dimensions on enquiry','pitch'=>$s->terminal_type,'price'=>'Rate on enquiry','tier'=>'screen','status'=>'published'];
