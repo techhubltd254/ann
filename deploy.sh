@@ -77,8 +77,13 @@ fi
 # .env
 if [ ! -f .env ]; then cp .env.example .env; fi
 
-# Generate key if missing
-php artisan key:generate --force 2>/dev/null || true
+# Preserve encryption keys and active sessions on every routine deployment.
+# Generate only during initial installation when no application key exists.
+if ! grep -Eq '^APP_KEY=.+$' .env; then
+    php artisan key:generate --force >> "$LOG" 2>&1
+else
+    echo "  existing application encryption key preserved" >> "$LOG"
+fi
 
 # Migrate + seed
 php artisan migrate --force >> "$LOG" 2>&1 || echo "migrate warn" >> "$LOG"
@@ -93,20 +98,9 @@ else
     echo "  content seeders skipped: preserving live institution edits and source-backed offerings" >> "$LOG"
 fi
 
-# Reset known admin password via web endpoint (uses full framework)
-curl -s --connect-timeout 10 --max-time 30 "https://kicctest.org/kicc-admin/reset-pwd" >> "$LOG" 2>&1 || echo "admin password reset warn" >> "$LOG"
-
-# Assign admin roles automatically
-php -r '
-$app = require "/opt/kicc-laravel/bootstrap/app.php";
-$kernel = $app->make(Illuminate\Contracts\Console\Kernel::class);
-$kernel->bootstrap();
-$admin = App\Models\User::first();
-if ($admin && !$admin->hasRole("kicc_admin")) {
-    $admin->assignRole("kicc_admin", "county_admin", "national_admin");
-    echo "  Roles assigned\n";
-}
-' 2>/dev/null >> "$LOG" || echo "role assign warn" >> "$LOG"
+# Routine deployments must not reset passwords or escalate the first user.
+# Administration roles and account credentials are provisioned separately.
+echo "  existing account credentials and role assignments preserved" >> "$LOG"
 
 # Fix logo_url columns
 php -r '
