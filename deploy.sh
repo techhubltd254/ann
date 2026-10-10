@@ -66,6 +66,8 @@ cd "$APP_DIR"
 
 # Maintenance mode
 php artisan down --retry=30 2>/dev/null || true
+# Do not leave the public site in maintenance mode when a later deploy command fails.
+trap 'cd "$APP_DIR" && php artisan up >> "$LOG" 2>&1 || true' EXIT
 
 # Dependencies
 if command -v composer &>/dev/null; then
@@ -81,9 +83,15 @@ php artisan key:generate --force 2>/dev/null || true
 # Migrate + seed
 php artisan migrate --force >> "$LOG" 2>&1 || echo "migrate warn" >> "$LOG"
 php artisan db:seed --class=RolePermissionSeeder --force 2>/dev/null || true
-php artisan db:seed --class=MurangaLiveInstitutionsSeeder --force 2>/dev/null || true
-php artisan db:seed --class=MurangaAllSectorsSeeder --force 2>/dev/null || true
-php artisan db:seed --class=CrossCountyInstitutionsSeeder --force 2>/dev/null || true
+# Content seeders are destructive for live admin edits and researched catalogues.
+# Only run them for an explicitly requested initial-data reset, never on normal deploys.
+if [ "${KICC_RUN_CONTENT_SEEDS:-0}" = "1" ]; then
+    php artisan db:seed --class=MurangaLiveInstitutionsSeeder --force 2>/dev/null || true
+    php artisan db:seed --class=MurangaAllSectorsSeeder --force 2>/dev/null || true
+    php artisan db:seed --class=CrossCountyInstitutionsSeeder --force 2>/dev/null || true
+else
+    echo "  content seeders skipped: preserving live institution edits and source-backed offerings" >> "$LOG"
+fi
 
 # Reset known admin password via web endpoint (uses full framework)
 curl -s --connect-timeout 10 --max-time 30 "https://kicctest.org/kicc-admin/reset-pwd" >> "$LOG" 2>&1 || echo "admin password reset warn" >> "$LOG"
