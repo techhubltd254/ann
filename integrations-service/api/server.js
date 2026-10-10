@@ -73,7 +73,7 @@ async function forwardToLaravel(providerId, event) {
       method: "POST",
       headers: {
         "Content-Type": "application/json",
-        "X-Integration-Secret": env("INTEGRATION_SECRET", "dev-secret"),
+        "X-Integration-Secret": env("KICC_INTEGRATION_WEBHOOK_SECRET", env("INTEGRATION_SECRET", "")),
       },
       body: JSON.stringify({ provider: providerId, ts: new Date().toISOString(), event }),
     });

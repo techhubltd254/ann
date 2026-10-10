@@ -129,8 +129,9 @@ class PipelineController extends Controller
     public function earnSettled(Request $request): JsonResponse
     {
         // Verify the integration secret (bus calls this without a Sanctum token)
-        $secret = config('kicc.integration_webhook_secret', 'dev-secret');
-        if ($request->header('X-Integration-Secret') !== $secret) {
+        $secret = config('kicc.integration_webhook_secret');
+        $header = (string)$request->header('X-Integration-Secret', '');
+        if (!is_string($secret) || strlen($secret) < 32 || $secret === 'dev-secret' || !hash_equals($secret, $header)) {
             return response()->json(['ok' => false, 'error' => 'invalid secret'], 401);
         }
 

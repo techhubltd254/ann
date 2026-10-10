@@ -492,7 +492,7 @@ return [
     */
     'integration_service_url' => env('KICC_INTEGRATION_URL', 'http://127.0.0.1:8787'),
 
-    'integration_webhook_secret' => env('KICC_INTEGRATION_WEBHOOK_SECRET', 'dev-secret'),
+    'integration_webhook_secret' => env('KICC_INTEGRATION_WEBHOOK_SECRET'),
 
     /*
     | Inter-pipeline automation bus (Node.js on :8790)

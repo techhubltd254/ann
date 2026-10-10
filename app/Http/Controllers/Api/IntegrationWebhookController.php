@@ -14,10 +14,10 @@ class IntegrationWebhookController extends Controller
 {
     public function forward(Request $request)
     {
-        $secret = config('kicc.integration_webhook_secret', 'dev-secret');
+        $secret = config('kicc.integration_webhook_secret');
         $header = $request->header('X-Integration-Secret');
 
-        if ($header !== $secret) {
+        if (!is_string($secret) || strlen($secret) < 32 || $secret === 'dev-secret' || !hash_equals($secret, (string)$header)) {
             Log::warning('integration-webhook: invalid secret', [
                 'ip' => $request->ip(),
                 'provider' => $request->input('provider'),

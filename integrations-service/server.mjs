@@ -106,7 +106,7 @@ http.createServer(async (req, res) => {
 
       // ── Bridge: notify Laravel to turn settled pipelines into real DB revenue ──
       const laravelUrl = process.env.LARAVEL_BASE_URL || "http://127.0.0.1:8000";
-      const laravelSecret = process.env.KICC_INTEGRATION_WEBHOOK_SECRET || "dev-secret";
+      const laravelSecret = process.env.KICC_INTEGRATION_WEBHOOK_SECRET || "";
       try {
         await fetch(`${laravelUrl}/api/pipeline/earn-settled`, {
           method: "POST",
