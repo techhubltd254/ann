@@ -87,7 +87,7 @@ class ChunkedUploadController extends Controller
         $id=(string)Str::uuid();$dir=storage_path('app/chunked/'.$id);
         $root=dirname($dir);if(!is_dir($root))mkdir($root,02770,true);chmod($root,02770);abort_unless(mkdir($dir,02770,true),503,'Cannot create upload session.');chmod($dir,02770);
         $d+=['actor_id'=>$u->id,'expires'=>time()+86400,'slug'=>$o->slug?:('entity-'.$o->id),'extension'=>$ext];
-        file_put_contents($dir.'/meta.json',json_encode($d,JSON_THROW_ON_ERROR),LOCK_EX);chmod($dir.'/meta.json',0660);
+        file_put_contents($dir.'/meta.json',json_encode($d,JSON_THROW_ON_ERROR),LOCK_EX);chmod($dir.'/meta.json',0660);touch($dir.'/lock');chmod($dir.'/lock',0660);
         return response()->json(['upload_id'=>$id,'chunk_bytes'=>self::CHUNK_BYTES,'max_bytes'=>self::MAX_BYTES],201)->header('Cache-Control','no-store');
     }
     public function status(Request $r,string $uploadId){[$dir,$m]=$this->session($r,$uploadId);$n=(int)ceil($m['size']/self::CHUNK_BYTES);$next=0;while($next<$n&&is_file($dir.'/'.sprintf('%06d.part',$next)))$next++;return response()->json(['upload_id'=>$uploadId,'next'=>$next,'chunk_bytes'=>self::CHUNK_BYTES,'size'=>$m['size'],'expires'=>$m['expires'],'error'=>is_file($dir.'/finalization-error.json')?json_decode(file_get_contents($dir.'/finalization-error.json'),true):null,'result'=>is_file($dir.'/result.json')?json_decode(file_get_contents($dir.'/result.json'),true):null])->header('Cache-Control','no-store');}

@@ -204,4 +204,7 @@ return back()->with('success', 'Video removed.');
  public function storeService(Request $r){ServiceItem::create($r->validate(['title'=>'required|string|max:255','description'=>'nullable|string|max:5000','category'=>'nullable|string|max:80','is_published'=>'required|boolean']));return back()->with('success','Service saved.');}
  public function updateService(Request $r,ServiceItem $service){$service->update($r->validate(['title'=>'required|string|max:255','description'=>'nullable|string|max:5000','category'=>'nullable|string|max:80','is_published'=>'required|boolean']));return back()->with('success','Service updated.');}
  public function deleteService(ServiceItem $service){$service->delete();return back()->with('success','Service removed.');}
+
+ public function updateTimeline(Request $r,TimelineEvent $event){$event->update($r->validate(['year'=>'required|integer','title'=>'required|string|max:255','description'=>'nullable|string','sort_order'=>'nullable|integer']));return back()->with('success','Timeline event updated.');}
+ public function updateVideo(Request $r,VideoItem $video){$video->update($r->validate(['title'=>'required|string|max:255','url'=>'required|url:http,https','description'=>'nullable|string','category'=>'nullable|string|max:100','is_published'=>'required|boolean']));return back()->with('success','Video entry updated.');}
 }

@@ -975,3 +975,6 @@ Route::delete('/admin/kicc/cms/pages/{page}',[\App\Http\Controllers\Web\CmsContr
 Route::get('/admin/model-preview/{asset}',[\App\Http\Controllers\Web\PublicModelController::class,'preview'])->middleware(['auth','admin:kicc,national,county,institution'])->name('admin.model.preview');
 
 Route::get('/admin/model-preview/{asset}',[\App\Http\Controllers\Web\PublicModelController::class,'preview'])->middleware('auth')->name('admin.model.preview');
+
+Route::post('/admin/kicc/cms/timeline/{event}',[\App\Http\Controllers\Web\CmsController::class,'updateTimeline'])->middleware(['auth','admin:kicc'])->name('cms.admin.timeline.update');
+Route::post('/admin/kicc/cms/videos/{video}',[\App\Http\Controllers\Web\CmsController::class,'updateVideo'])->middleware(['auth','admin:kicc'])->name('cms.admin.video.update');
