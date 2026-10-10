@@ -228,7 +228,7 @@ class InstitutionSyncService
             ->where('entity_id', $i->id)
             ->first();
 
-        $description = $mapping['description'] ?? Str::limit($i->story ?? $i->description ?? '', 240);
+        $description = Str::limit($mapping['description'] ?? $i->story ?? $i->description ?? '',240);
 
         if ($entity) {
             $entity->update([
