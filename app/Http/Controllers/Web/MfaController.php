@@ -71,9 +71,11 @@ class MfaController extends Controller
         return back()->withErrors(['code' => 'Invalid code.']);
     }
 
-    public function disable()
+    public function disable(Request $request)
     {
         $user = Auth::user();
+        $data=$request->validate(['password'=>'required|string']);
+        abort_unless(\Illuminate\Support\Facades\Hash::check($data['password'],$user->password),403,'Confirm your current password before disabling MFA.');
         $user->mfa_enabled = false;
         $user->mfa_secret = null;
         $user->save();

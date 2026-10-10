@@ -50,7 +50,7 @@
             </form>
 
             <form method="POST" action="{{ route('admin.venues.delete-cover', $venue->id) }}" class="mt-3"
-                  onsubmit="return confirm('Delete the cover image for {{ $venue->name }}?')">
+                  onsubmit="return confirm('Delete this cover image?')">
                 @csrf
                 <button class="bg-red-600 text-white px-4 py-2 rounded text-sm">Delete cover</button>
             </form>
@@ -83,19 +83,12 @@
             </form>
 
             <form method="POST" action="{{ route('admin.venues.delete-video', $venue->id) }}" class="mt-3"
-                  onsubmit="return confirm('Delete the hero video for {{ $venue->name }}?')">
+                  onsubmit="return confirm('Delete this hero video?')">
                 @csrf
                 <button class="bg-red-600 text-white px-4 py-2 rounded text-sm">Delete video</button>
             </form>
 
-            {{-- direct-to-R2 for large files --}}
-            <div class="mt-5 pt-4 border-t">
-                <h3 class="font-medium text-sm mb-2">Large file (direct to R2, bypasses the 100 MB edge limit)</h3>
-                <input type="file" id="r2file-{{ $venue->id }}" accept="video/mp4,video/webm,video/quicktime"
-                       class="block w-full text-sm border rounded px-3 py-2">
-                <button type="button" id="r2go-{{ $venue->id }}" class="mt-2 bg-gray-900 text-white px-4 py-2 rounded text-sm">Upload large video</button>
-                <p id="r2msg-{{ $venue->id }}" class="text-xs mt-2 text-gray-500"></p>
-            </div>
+            <div class="mt-5 rounded border bg-gray-50 p-4"><h3>Large resumable uploads</h3><p>Upload up to 2 GiB with verified chunks. Select Venue and this venue in the uploader.</p><a href="/admin/uploads" class="block px-4 py-3 border rounded">Open scoped uploader →</a></div>
         </section>
     </div>
 
@@ -142,68 +135,5 @@
     </section>
 </div>
 
-<script>
-(function () {
-  const venueId = {{ $venue->id }};
-  const input = document.getElementById('r2file-' + venueId);
-  const btn   = document.getElementById('r2go-' + venueId);
-  const msg   = document.getElementById('r2msg-' + venueId);
-  if (!btn) return;
 
-  btn.addEventListener('click', async function () {
-    const file = input.files && input.files[0];
-    if (!file) { msg.textContent = 'Choose a file first.'; return; }
-    btn.disabled = true;
-    try {
-      msg.textContent = 'Requesting upload URL…';
-      const pre = await fetch("{{ route('admin.venues.r2-presigned') }}", {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-          'X-CSRF-TOKEN': "{{ csrf_token() }}",
-          'Accept': 'application/json'
-        },
-        body: JSON.stringify({
-          venue_id: venueId,
-          slot: 'hero_video',
-          mime: file.type || 'video/mp4',
-          original_name: file.name
-        })
-      });
-      if (!pre.ok) throw new Error('presign HTTP ' + pre.status);
-      const p = await pre.json();
-      const putUrl = p.url || p.upload_url || p.presigned_url;
-      if (!putUrl) throw new Error('no presigned URL returned');
-
-      msg.textContent = 'Uploading ' + (file.size / 1048576).toFixed(1) + ' MB straight to R2…';
-      const put = await fetch(putUrl, { method: 'PUT', body: file, headers: { 'Content-Type': file.type || 'video/mp4' } });
-      if (!put.ok) throw new Error('R2 PUT HTTP ' + put.status);
-
-      msg.textContent = 'Confirming…';
-      const conf = await fetch("{{ route('admin.venues.r2-confirm') }}", {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-          'X-CSRF-TOKEN': "{{ csrf_token() }}",
-          'Accept': 'application/json'
-        },
-        body: JSON.stringify({
-          venue_id: venueId,
-          slot: 'hero_video',
-          path: p.path,
-          mime: file.type || 'video/mp4',
-          size_bytes: file.size,
-          original_name: file.name
-        })
-      });
-      if (!conf.ok) throw new Error('confirm HTTP ' + conf.status);
-      msg.textContent = 'Done — reloading…';
-      location.reload();
-    } catch (e) {
-      msg.textContent = 'Upload failed: ' + e.message;
-      btn.disabled = false;
-    }
-  });
-})();
-</script>
 @endsection

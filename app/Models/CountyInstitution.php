@@ -9,6 +9,7 @@ use Illuminate\Support\Str;
 
 class CountyInstitution extends Model
 {
+    protected $hidden = ['research_dossier','expected_video_description'];
 protected $fillable = [
         'county_id', 'countyId', 'name', 'type', 'description', 'location', 'phone', 'email', 'website',
         'student_count', 'is_published', 'isPublished', 'slug', 'user_id', 'logo_url', 'cover_image_url',

@@ -63,7 +63,7 @@ class N8nService
             $path = env('N8N_WEBHOOK_' . strtoupper($event));
 
             if (!$path) {
-                Log::debug("n8n: no webhook configured for event [{$event}] — skipped", $payload);
+                Log::debug("n8n: no webhook configured for event [{$event}] — skipped");
                 return;
             }
             $url = str_starts_with($path, 'http') ? $path : $base . '/' . ltrim($path, '/');

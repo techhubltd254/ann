@@ -107,8 +107,7 @@ class VenueAdminController extends Controller
 
     protected function storeInto(Venue $venue, $file, string $slot, string $directory, string $disk): MediaAsset
     {
-        $this->retireSlot($venue, $slot);
-
+        // Keep the confirmed old upload until the new source has passed validation/preparation.
         $asset = app(MediaLibraryService::class)->store($file, [
             'disk' => $disk,
             'directory' => $directory,
@@ -119,7 +118,8 @@ class VenueAdminController extends Controller
         ]);
 
         // store() writes status "uploaded"; a tile only binds on "ready".
-        $asset->forceFill(['status' => 'ready'])->save();
+        $asset->forceFill(['status' => $asset->kind==='video'?'processing':'ready'])->save();
+        if($asset->kind==='video')\App\Jobs\PrepareProductVideo::dispatch($asset->id,$asset->path);
 
         if ($asset->kind === 'video') {
             MediaDerivative::create([
@@ -306,78 +306,12 @@ class VenueAdminController extends Controller
 
     public function r2PresignedUrl(Request $request)
     {
-        $this->guard();
-
-        $data = $request->validate([
-            'venue_id' => 'required|integer',
-            'slot' => 'required|in:cover,hero_video',
-            'mime' => 'required|string|max:100',
-            'original_name' => 'required|string|max:255',
-        ]);
-
-        $venue = Venue::findOrFail($data['venue_id']);
-
-        $ext = strtolower(pathinfo($data['original_name'], PATHINFO_EXTENSION) ?: 'bin');
-        $sub = $data['slot'] === 'cover' ? 'cover' : 'hero';
-        $path = 'venues/' . $venue->slug . '/' . $sub . '/' . Str::uuid() . '.' . $ext;
-
-        $result = app(R2PresignedUploadService::class)
-            ->generateUploadPresignedUrl($path, $data['mime']);
-
-        return response()->json($result + ['path' => $path, 'slot' => $data['slot']]);
+        $this->guard();abort(410,'Direct object confirmation is retired. Use /admin/uploads and select Venue.');
     }
 
     public function confirmR2Upload(Request $request)
     {
-        $this->guard();
-
-        $data = $request->validate([
-            'venue_id' => 'required|integer',
-            'slot' => 'required|in:cover,hero_video',
-            'path' => 'required|string|max:500',
-            'mime' => 'required|string|max:100',
-            'size_bytes' => 'required|integer|min:1',
-            'original_name' => 'nullable|string|max:255',
-        ]);
-
-        $venue = Venue::findOrFail($data['venue_id']);
-        $isVideo = str_contains($data['mime'], 'video');
-
-        $this->retireSlot($venue, $data['slot']);
-
-        $asset = MediaAsset::create([
-            'uuid' => (string) Str::uuid(),
-            'owner_id' => $venue->id,
-            'owner_type' => self::OWNER_TYPE,
-            'slot' => $data['slot'],
-            'disk' => 'r2',
-            'path' => $data['path'],
-            'original_name' => $data['original_name'] ?? basename($data['path']),
-            'mime' => $data['mime'],
-            'kind' => $isVideo ? 'video' : 'image',
-            'size_bytes' => $data['size_bytes'],
-            'status' => 'ready',
-            'alt_text' => $venue->name . ' — ' . $data['slot'],
-            'uploadedByUserId' => auth()->id(),
-        ]);
-
-        MediaDerivative::create([
-            'media_asset_id' => $asset->id,
-            'kind' => $isVideo ? 'video_mp4' : 'original',
-            'path' => $data['path'],
-            'mime' => $data['mime'],
-            'size_bytes' => $data['size_bytes'],
-            'variant' => $isVideo ? '1080p' : 'source',
-        ]);
-
-        $venue->forceFill(
-            $data['slot'] === 'cover'
-                ? ['cover_image' => $data['path']]
-                : ['hero_video_url' => $data['path']]
-        )->save();
-
-        $this->forgetPublic();
-
-        return response()->json(['asset_id' => $asset->id, 'path' => $data['path']]);
+        $this->guard();abort(410,'Direct object confirmation is retired. Use /admin/uploads and select Venue.');
     }
+
 }
