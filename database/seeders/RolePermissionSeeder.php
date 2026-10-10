@@ -88,6 +88,6 @@ class RolePermissionSeeder extends Seeder
 
         $this->command->info('Roles and permissions seeded successfully');
 
-        \Spatie\Permission\Models\Role::create(['name' => 'institution_admin']);
+        \Spatie\Permission\Models\Role::findOrCreate('institution_admin', 'web');
     }
 }

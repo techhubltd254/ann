@@ -106,7 +106,12 @@ fi
 
 # Migrate + seed
 php artisan migrate --force >> "$LOG" 2>&1 || echo "migrate warn" >> "$LOG"
-php artisan db:seed --class=RolePermissionSeeder --force 2>/dev/null || true
+# Routine releases must not overwrite custom permission assignments.
+if [ "${KICC_RUN_PERMISSION_SEEDS:-0}" = "1" ]; then
+    php artisan db:seed --class=RolePermissionSeeder --force >> "$LOG" 2>&1
+else
+    echo "  permission reseeding skipped: preserving approved role permissions" >> "$LOG"
+fi
 # Content seeders are destructive for live admin edits and researched catalogues.
 # Only run them for an explicitly requested initial-data reset, never on normal deploys.
 if [ "${KICC_RUN_CONTENT_SEEDS:-0}" = "1" ]; then
@@ -153,7 +158,13 @@ php artisan view:clear >> "$LOG" 2>&1
 php artisan route:clear >> "$LOG" 2>&1 || true
 php artisan config:cache >> "$LOG" 2>&1
 php artisan route:cache >> "$LOG" 2>&1
-php artisan view:cache >> "$LOG" 2>&1
+# Blade may touch/recompile cache files during web requests: do not create them as root.
+install -d -o www-data -g www-data -m 2775 "$APP_DIR/storage/framework/views"
+chown -R www-data:www-data "$APP_DIR/storage/framework/views"
+find "$APP_DIR/storage/framework/views" -type f -exec chmod 0660 {} +
+runuser -u www-data -- php artisan view:cache >> "$LOG" 2>&1
+chown -R www-data:www-data "$APP_DIR/storage/framework/views"
+find "$APP_DIR/storage/framework/views" -type f -exec chmod 0660 {} +
 
 # Opcache reset
 php -r "opcache_reset();" 2>/dev/null || true
