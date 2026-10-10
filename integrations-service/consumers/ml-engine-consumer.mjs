@@ -16,6 +16,8 @@ export const EMITS = [CONSUMER_TOPICS.ML_PREDICTION];
 
 const band = (s) => (s >= 0.75 ? "high" : s >= 0.45 ? "medium" : "low");
 
+export function validateLiveModelScore(body){const score=body?.score;if(typeof score!=="number"||!Number.isFinite(score)||score<0||score>1)throw new Error("Invalid live model score");return score;}
+
 async function infer(payload) {
   if (MOCK_MODE) {
     const raw = parseInt(idemKey(`ml|${payload.pipeline_id}`).slice(0, 8), 16) % 10000;
@@ -27,16 +29,18 @@ async function infer(payload) {
     method: "POST",
     headers: { "content-type": "application/json", "x-consumer-group": GROUP },
     body: JSON.stringify(payload),
+    signal: AbortSignal.timeout(15000),
   });
   if (!res.ok) throw new Error(`ml-engine responded ${res.status}`);
-  const body = await res.json().catch(() => ({}));
-  const score = Number(body.score ?? 0);
-  return { score, band: body.band || band(score), mode: "live" };
+  const body = await res.json();
+  const score = validateLiveModelScore(body);
+  return { score, band: band(score), mode: "live" };
 }
 
 export function buildMlEngineConsumer(opts = {}) {
   return new Consumer({
     group: GROUP,
+    mode: MOCK_MODE?"mock":"live",
     topics: TOPICS_SUBSCRIBED,
     stateDir: opts.stateDir || path.join(ROOT, "run", "offsets", GROUP),
     journal: opts.journal,
@@ -49,10 +53,10 @@ export function buildMlEngineConsumer(opts = {}) {
       const p = ev.payload;
       const r = await infer(p);
       // Write prediction to SQL table (replaces CSV file)
-      insertPrediction(p.pipeline_id, r.score, r.band, p.edge_score, ev.correlationId).catch(() => {});
+      await insertPrediction(p.pipeline_id, r.score, r.band, p.edge_score, ev.correlationId);
       if (ev.topic === CONSUMER_TOPICS.ML_REQUEST && typeof opts.publish === "function") {
         await opts.publish(CONSUMER_TOPICS.ML_PREDICTION, {
-          pipeline_id: p.pipeline_id, score: r.score, band: r.band, correlationId: ev.correlationId,
+          pipeline_id: p.pipeline_id, score: r.score, band: r.band, mode:r.mode, correlationId: ev.correlationId,
         }, { correlationId: ev.correlationId, causationId: ev.id, hop: (ev.hop ?? 0) + 1, key: String(p.pipeline_id) });
       }
     },

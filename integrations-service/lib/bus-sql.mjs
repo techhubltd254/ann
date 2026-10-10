@@ -53,7 +53,6 @@ async function getPool() {
             ? { rejectUnauthorized: true }
             : { rejectUnauthorized: false },
         connectTimeout: 10000,
-        maxReconnects: 3,
         charset: 'utf8mb4',
     };
 
@@ -99,8 +98,8 @@ export async function fetchEventsSince(offset = 0, limit = 200, topics = null) {
 
             if (topics && topics.length > 0 && !topics.includes('*')) {
                 const placeholders = topics.map(() => '?').join(',');
-                sql += ` AND topic IN (${placeholders})`;
-                params.push(...topics);
+                sql += ' AND ('+topics.map(t=>t.includes('*')?"topic LIKE ? ESCAPE '='":'topic = ?').join(' OR ')+')';
+                params.push(...topics.map(t=>t.includes('*')?t.replace(/=/g,'==').replace(/%/g,'=%').replace(/_/g,'=_').replace(/\*/g,'%'):t));
             }
 
             sql += ` ORDER BY id ASC LIMIT ${Math.max(1, limit)}`;
@@ -126,7 +125,7 @@ export async function fetchEventsSince(offset = 0, limit = 200, topics = null) {
         return { rows: result, maxId };
     } catch (e) {
         log.error(`bus-sql: fetch failed after retries: ${e.message}`);
-        return { rows: [], maxId: offset };
+        throw e;
     }
 }
 
@@ -141,6 +140,13 @@ export async function countEvents() {
     }
 }
 
+/** Count pending subscribed rows, not COUNT(all rows) minus a sparse event ID. */
+export async function countPendingEvents(offset=0,topics=null){
+ const db=await getPool();let q='SELECT COUNT(*) AS c FROM bus_events WHERE id > ?';const params=[offset];
+ if(topics&&topics.length&&!topics.includes('*')){q+=' AND ('+topics.map(t=>t.includes('*')?"topic LIKE ? ESCAPE '='":'topic = ?').join(' OR ')+')';params.push(...topics.map(t=>t.includes('*')?t.replace(/=/g,'==').replace(/%/g,'=%').replace(/_/g,'=_').replace(/\*/g,'%'):t));}
+ const [[r]]=await db.execute(q,params);return Number(r.c);
+}
+
 /** Update consumer offset (checkpoint). */
 export async function updateOffset(consumerGroup, ackOffset, processedCount = 0, dlqCount = 0) {
     try {
@@ -148,11 +154,12 @@ export async function updateOffset(consumerGroup, ackOffset, processedCount = 0,
         await db.execute(
             `INSERT INTO consumer_offsets (consumer_group, ack_offset, processed_count, dlq_count, updated_at)
              VALUES (?, ?, ?, ?, NOW())
-             ON DUPLICATE KEY UPDATE ack_offset = VALUES(ack_offset), processed_count = VALUES(processed_count), dlq_count = VALUES(dlq_count), updated_at = NOW()`,
+             ON DUPLICATE KEY UPDATE ack_offset = GREATEST(ack_offset, VALUES(ack_offset)), processed_count = GREATEST(processed_count, VALUES(processed_count)), dlq_count = GREATEST(dlq_count, VALUES(dlq_count)), updated_at = NOW()`,
             [consumerGroup, ackOffset, processedCount, dlqCount]
         );
     } catch (e) {
         log.warn(`bus-sql: offset update failed (${consumerGroup}): ${e.message}`);
+        throw e;
     }
 }
 
@@ -165,8 +172,8 @@ export async function loadOffset(consumerGroup) {
             [consumerGroup]
         );
         return r || { ack_offset: 0, processed_count: 0, dlq_count: 0 };
-    } catch {
-        return { ack_offset: 0, processed_count: 0, dlq_count: 0 };
+    } catch (e) {
+        throw e;
     }
 }
 
@@ -179,8 +186,8 @@ export async function hasEventKey(eventKey, consumerGroup) {
             [eventKey, consumerGroup]
         );
         return !!r;
-    } catch {
-        return false;
+    } catch (e) {
+        throw e;
     }
 }
 
@@ -194,6 +201,7 @@ export async function insertEventKey(eventKey, consumerGroup, eventOffset) {
         );
     } catch (e) {
         log.warn(`bus-sql: event key insert failed: ${e.message}`);
+        throw e;
     }
 }
 
@@ -208,6 +216,7 @@ export async function insertDlq(consumerGroup, topic, eventKey, eventOffset, err
         );
     } catch (e) {
         log.warn(`bus-sql: dlq insert failed: ${e.message}`);
+        throw e;
     }
 }
 
@@ -236,6 +245,7 @@ export async function insertPrediction(pipelineId, score, band, edgeScore, corre
         );
     } catch (e) {
         log.warn(`bus-sql: prediction insert failed: ${e.message}`);
+        throw e;
     }
 }
 
@@ -249,6 +259,7 @@ export async function insertAlgorithmResult(pipelineId, edgeScore, mechanism, va
         );
     } catch (e) {
         log.warn(`bus-sql: algorithm result insert failed: ${e.message}`);
+        throw e;
     }
 }
 
