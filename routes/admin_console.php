@@ -8,11 +8,13 @@ foreach($originals as $r){
     $uri=$r->uri();$action=$r->getAction();$controller=$action['controller']??'';
     $media=str_contains($controller,'MediaLibraryController')||str_contains($controller,'MediaApiController');
     $protected=(bool)preg_match('~^(portal|kicc-admin|county-admin|institution-admin|national-admin|records-admin|admin)(/|$)~',$uri)||preg_match('~^(admin\.|cms\.admin\.|dashboard\.admin|kicc\.admin\.|county\.admin\.|institution\.admin\.|national\.admin\.)~',$r->getName()??'');
+    $legacyOperations=preg_match('~^(__admin|__reset-admin-pwd|kicc-v2-deploy|kicc-v2-seed-deploy)(/|$)~',$uri);
+    if($legacyOperations)$protected=true;
     $login=preg_match('~(?:login|reset-pwd)$~',$uri);
     if($login)continue;
     if(!$protected&&!$media&&!str_starts_with($uri,'api/media/'))continue;
     $r->middleware(str_starts_with($uri,'api/')?['auth:sanctum',AdminConsole::class]:['auth',AdminConsole::class]);
-    if($media||str_starts_with($uri,'api/media/')){$action=$r->getAction();$action['admin_mother_only']=true;$r->setAction($action);}
+    if($media||str_starts_with($uri,'api/media/')||$legacyOperations){$action=$r->getAction();$action['admin_mother_only']=true;if($legacyOperations && in_array('GET',$r->methods(),true))$action['admin_disable_http_deploy']=true;$r->setAction($action);}
     $canonical=AdminPaths::canonical('/'.$uri);
     if($media&&!str_starts_with($uri,'api/'))$canonical=str_starts_with($uri,'kicc-admin/site-images')?'/admin/kicc/site-images'.substr($uri,strlen('kicc-admin/site-images')):'/admin/'.$uri;
     if($protected&&$canonical==='/'.$uri&&!str_starts_with($uri,'admin/'))$canonical='/admin/tools/'.$uri;

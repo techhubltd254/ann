@@ -13,6 +13,7 @@ class AdminConsole
         abort_unless(($actor->status??'active')==='active' && app(AdminHierarchyScope::class)->level($actor),403,'An active administration role is required.');
         $action=$request->route()->getAction();
         if($action['admin_mother_only']??false)abort_unless($actor->hasRole('kicc_admin'),403,'Mother/KICC administration access required.');
+        abort_if($action['admin_disable_http_deploy']??false,410,'HTTP deployment and password-reset helpers are disabled. Use the controlled deployment or normal password-reset workflow.');
         if($request->isMethod('GET') && ($old=$action['admin_canonical_uri']??null)){
             $url=$old;
             foreach($request->route()->parameters() as $key=>$value){$value=$value instanceof \Illuminate\Contracts\Routing\UrlRoutable?$value->getRouteKey():$value;$url=str_replace(['{'.$key.'}','{'.$key.'?}'],rawurlencode((string)$value),$url);}
