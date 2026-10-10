@@ -158,8 +158,9 @@ class ReferenceExperienceController extends Controller
             $tile=['state'=>'empty','kind'=>'image','url'=>url('/images/placeholders/media-pending.svg')];
             if($asset&&MediaMapping::inR2($asset->path))$tile=['state'=>'published','kind'=>$asset->kind,'url'=>$asset->kind==='video'?$asset->mp4Url():$asset->url(),'mobileUrl'=>$asset->derivativeUrl('video_mobile'),'poster'=>$asset->posterUrl(),'assetId'=>(string)$asset->id,'alt'=>$v->name,'source'=>'venue-admin-upload'];
             $official=$v->source_details['official_source']??[];if(!is_array($official))$official=[];
-            $verifiedCapacity=($official['capacity_verified']??false)?(int)($official['verified_capacity']??0):null;
-            $area=isset($official['area_m2'])?number_format((float)$official['area_m2'],floor((float)$official['area_m2'])===(float)$official['area_m2']?0:2).' m²':'Confirm with KICC';
+            $reference=$official['reference_data']??$official;if(!is_array($reference))$reference=[];
+            $verifiedCapacity=isset($reference['source_verified_capacity'])?(int)$reference['source_verified_capacity']:(($reference['capacity_verified']??false)?(int)($reference['verified_capacity']??0):null);
+            $area=isset($reference['area_m2'])&&$v->slug!=='bilateral-rooms'?number_format((float)$reference['area_m2'],floor((float)$reference['area_m2'])===(float)$reference['area_m2']?0:2).' m²':'Confirm with KICC';
             $tables['venues'][]=['id'=>(string)$v->id,'slug'=>$v->slug,'name'=>$v->name,'type'=>$v->venue_type,'cap'=>$verifiedCapacity,'area'=>$area,'rate'=>'Current quote on enquiry','desc'=>$v->description,'am'=>is_array($v->amenities)?$v->amenities:[],'availability'=>'Enquiry required','status'=>'published','sourceUrl'=>$official['source_url']??null,'tileMedia'=>$tile];
         }
         foreach (Exhibition::whereNotIn('status',['draft','cancelled'])->with('venue')->get() as $e) $tables['exhibitions'][]=['id'=>(string)$e->id,'slug'=>$e->slug,'n'=>$e->name,'d'=>(string)$e->start_date,'venue'=>$e->venue?->name ?? '', 'availability'=>$e->status,'status'=>'published','booths'=>0,'reg'=>0];
