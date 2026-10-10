@@ -420,7 +420,7 @@ class InstitutionSyncService
             'booking_url' => $product['booking_url'] ?? ($mp->booking_url ?? null),
             'offering_details' => $product['offering_details'] ?? ($mp->offering_details ?? []),
             'name' => $name,
-            'slug' => $slug,
+            'slug' => $mp?->slug ?: $slug,
             'description' => $product['description'] ?? ($i->name . ' — ' . $name),
             'short_description' => Str::limit($product['description'] ?? ($i->name . ' — ' . $name), 120),
             'sku' => $mp->sku ?? ('KICC-INS-' . strtoupper(Str::random(6))),
