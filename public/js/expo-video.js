@@ -19,9 +19,9 @@
   if(!host?.dataset.aiFallback)return false;
   v.hidden=true;host.dataset.expoPlayback='ai-fallback';
   let img=host.querySelector('.expo-video__poster,.expo-video__fallback');
-  if(!img){img=document.createElement('img');img.className='expo-video__poster';img.alt='AI-generated illustrative county preview';(host.querySelector('.expo-video__asset')||host).prepend(img);}
+  if(!img){img=document.createElement('img');img.className='expo-video__poster';img.alt='Media awaiting upload';(host.querySelector('.expo-video__asset')||host).prepend(img);}
   img.src=host.dataset.aiFallback;img.hidden=false;
-  let label=host.querySelector('[data-ai-fallback-label]');if(!label){label=document.createElement('span');label.dataset.aiFallbackLabel='1';label.className='expo-video__availability';label.textContent='AI preview · uploaded video could not start; tap Play to retry';host.append(label);}
+  let label=host.querySelector('[data-ai-fallback-label]');if(!label){label=document.createElement('span');label.dataset.aiFallbackLabel='1';label.className='expo-video__availability';label.textContent='Video could not start · tap Play to retry';host.append(label);}
   return true;
  }
  const watched=new WeakSet();let activeTile=null,queued=false;

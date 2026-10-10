@@ -1,3 +1,4 @@
+import { createHmac, randomBytes } from 'node:crypto';
 // api/server.js — KICC Integration API + Webhook Receiver
 // In mock mode: returns deterministic mock responses directly (no provider code runs).
 // In live mode: calls the provider method with `this` bound correctly.
@@ -69,13 +70,14 @@ function callProvider(provider, action, args = {}) {
 async function forwardToLaravel(providerId, event) {
   try {
     const url = env("LARAVEL_WEBHOOK_URL", "http://127.0.0.1:8000/api/webhooks/integration-forward");
+    const ts=Math.floor(Date.now()/1000),nonce=randomBytes(24).toString('hex');const secret=env("KICC_INTEGRATION_WEBHOOK_SECRET",env("INTEGRATION_SECRET",""));if(secret.length<32)throw new Error('Integration signing is not provisioned');const payload=JSON.stringify({provider:providerId,ts,event});const signature=createHmac('sha256',secret).update(ts+'.'+nonce+'.'+payload).digest('hex');
     const r = await fetch(url, {
       method: "POST",
       headers: {
         "Content-Type": "application/json",
-        "X-Integration-Secret": env("KICC_INTEGRATION_WEBHOOK_SECRET", env("INTEGRATION_SECRET", "")),
+        "X-Integration-Secret": secret,"X-Integration-Nonce":nonce,"X-Integration-Signature":signature,
       },
-      body: JSON.stringify({ provider: providerId, ts: new Date().toISOString(), event }),
+      body: payload,
     });
     if (!r.ok) log.warn(`forward to laravel: HTTP ${r.status}`);
   } catch (e) {

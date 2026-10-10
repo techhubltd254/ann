@@ -15,7 +15,7 @@ protected $fillable = [
         'headquarters', 'founded_year', 'lat', 'lng', 'social_links',
         'story', 'production_chain', 'sector_mappings', 'products', 'videos',
         'synced_at', 'is_verified_trader', 'trader_type', 'spotlight_video_id',
-        'whatsapp', 'department_leads',
+        'whatsapp', 'department_leads', 'expected_video_description', 'research_dossier',
     ];
 
     protected function casts(): array
@@ -33,6 +33,7 @@ protected $fillable = [
             'synced_at' => 'datetime',
             'is_verified_trader' => 'boolean',
             'department_leads' => 'array',
+            'research_dossier'=>'array',
         ];
     }
 

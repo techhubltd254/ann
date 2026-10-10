@@ -20,6 +20,9 @@
         </div>
     @endif
 
+    @if($venue->source_details['official_source']??null)
+    <section class="border rounded-xl bg-white p-5 mb-5" data-venue-source><h2>Official venue source</h2><a href="{{ $venue->source_details['official_source']['source_url'] }}" target="_blank" rel="noopener noreferrer">KICC venue page</a> · <a href="https://kicc.co.ke/pricing-guideline/" target="_blank" rel="noopener noreferrer">Published pricing guideline</a><p>Rack rates are reference data, not a confirmed bookable quote. Verify the period, setup, capacity and current rate with KICC.</p>@foreach($venue->source_details['official_source']['source_conflicts']??[] as $conflict)<p role="alert">{{ $conflict }}</p>@endforeach</section>
+    @endif
     <div class="grid md:grid-cols-2 gap-6">
         {{-- ─── COVER IMAGE ─── --}}
         <section class="border rounded-xl bg-white p-5">
@@ -55,7 +58,7 @@
 
         {{-- ─── HERO VIDEO ─── --}}
         <section class="border rounded-xl bg-white p-5">
-            <h2 class="font-semibold text-lg mb-3">Hero video</h2>
+            <h2 class="font-semibold text-lg mb-3">Hero video</h2><p data-venue-video-brief>{{ $venue->source_details['expected_video_description']??'Record the actual venue, layout and confirmed facilities. Obtain participant consent.' }}</p>
 
             <div class="mb-4">
                 @if($video)
@@ -76,7 +79,7 @@
                 <input type="file" name="video" accept="video/mp4,video/webm,video/quicktime" required
                        class="block w-full text-sm border rounded px-3 py-2">
                 <button class="bg-blue-600 text-white px-4 py-2 rounded text-sm">Upload / replace video</button>
-                <p class="text-xs text-gray-500">Up to 90 MB through this form. Larger files use the direct-to-R2 uploader below.</p>
+                <p class="text-xs text-gray-500">For resumable video uploads up to 2 GiB, use the scoped uploader: choose Venue, then {{ $venue->name }}.</p><a href="/admin/uploads" class="block px-4 py-3 border rounded" data-safe-venue-upload>Open resumable admin uploader →</a>
             </form>
 
             <form method="POST" action="{{ route('admin.venues.delete-video', $venue->id) }}" class="mt-3"
@@ -128,6 +131,7 @@
             <label class="text-sm md:col-span-2">Description
                 <textarea name="description" rows="4" class="mt-1 block w-full border rounded px-3 py-2">{{ old('description', $venue->description) }}</textarea>
             </label>
+            <label class="text-sm md:col-span-2">Expected video — filming brief<textarea name="expected_video_description" maxlength="2000" rows="3" class="block w-full border rounded px-3 py-2">{{ old('expected_video_description',$venue->source_details['expected_video_description']??null) }}</textarea></label>
             <label class="text-sm flex items-center gap-2">
                 <input type="checkbox" name="is_active" value="1" @checked(old('is_active', $venue->is_active))> Active
             </label>

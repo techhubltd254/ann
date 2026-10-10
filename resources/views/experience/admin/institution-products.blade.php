@@ -1,6 +1,14 @@
 @extends('layouts.nexora')
 @section('title',$institution->name.' · Products, Services & Experiences')
 @section('content')
+@php
+$reviewPath=storage_path('app/private/institution-source-review/'.(int)$institution->id.'.json');
+$sourceReview=is_file($reviewPath)?json_decode(file_get_contents($reviewPath),true):null;
+@endphp
+@if($sourceReview)
+<section class="as-card" data-institution-source-review><h2>Institution source review · not published</h2><p><strong>{{ $sourceReview['identity_status'] }}</strong> · Review source evidence before changing names, counties, products or visitor access.</p>@if($sourceReview['editorial_warning']??null)<p role="alert">{{ $sourceReview['editorial_warning'] }}</p>@endif<p>{{ $sourceReview['identity_notes']??'' }}</p><p>{{ $sourceReview['duplicate_warnings']??'' }}</p><details><summary>Proposed offering research</summary><p style="white-space:pre-wrap">{{ $sourceReview['verified_products_services']??'No verified catalogue found.' }}</p><p><strong>Proposed footage:</strong> {{ $sourceReview['proposed_video_brief']??'Confirm the identity and actual offering before filming.' }}</p><ul>@foreach($sourceReview['source_urls']??[] as $sourceUrl)@if(preg_match('~^https?://~i',$sourceUrl))<li><a href="{{ $sourceUrl }}" target="_blank" rel="noopener noreferrer">{{ $sourceUrl }}</a></li>@endif @endforeach</ul></details><small>Research candidates and review snapshots are not automatic publication approval. Existing uploaded media remain authoritative for playback.</small></section>
+@endif
+
 <section class="as-card"><span class="as-eyebrow">{{ $institution->county?->name }} → {{ $institution->name }} → Offerings</span><h1>Products, Services & Experiences</h1><p>Each offering belongs to this institution. Edit its details, offers and product videos; published records sync to the county and public marketplace.</p><p><a class="as-cta" href="{{ route('institution.offerings.create',$institution->slug) }}">+ Add product / service / experience</a> <a href="{{ route('institution.admin',[$institution->slug,'tab'=>'overview']) }}">Institution dashboard</a></p></section>
 @if(session('success'))<div class="as-card" role="status">{{ session('success') }}</div>@endif
 <section class="as-card"><form method="GET" class="up-grid"><label>Search<input name="q" value="{{ request('q') }}"></label><label>Offering type<select name="kind"><option value="">All offerings</option>@foreach(['product','service','experience'] as $kind)<option value="{{ $kind }}" @selected(request('kind')===$kind)>{{ ucfirst($kind) }}</option>@endforeach</select></label><button class="as-cta">Filter</button></form></section>

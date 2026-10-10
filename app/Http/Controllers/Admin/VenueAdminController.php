@@ -209,6 +209,7 @@ class VenueAdminController extends Controller
             'address' => 'nullable|string|max:255',
             'capacity' => 'nullable|integer|min:0|max:1000000',
             'description' => 'nullable|string|max:8000',
+            'expected_video_description'=>'nullable|string|max:2000',
             'conference_rate' => 'nullable|numeric|min:0',
             'exhibition_rate' => 'nullable|numeric|min:0',
             'concert_rate' => 'nullable|numeric|min:0',
@@ -217,6 +218,7 @@ class VenueAdminController extends Controller
 
         $data['is_active'] = $request->boolean('is_active');
 
+        $source=$venue->source_details??[];$source['expected_video_description']=$data['expected_video_description']??($source['expected_video_description']??null);unset($data['expected_video_description']);$data['source_details']=$source;
         $venue->fill($data)->save();
 
         $this->forgetPublic();

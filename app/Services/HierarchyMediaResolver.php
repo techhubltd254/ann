@@ -17,12 +17,12 @@ class HierarchyMediaResolver
         $generic=$index->forOwner(CountyInstitution::class,(int)$i->id)->filter(fn($a)=>$this->published($a)&&in_array($a->slot,['hero_video','institution_video'],true)&&empty($a->metadata['sector_id']));
         if($a=$generic->sortByDesc('id')->first())return $this->video($a,'institution-admin-introduction')+['fallbackImage'=>$fallback];
         foreach($products as $p){if(!in_array((string)$p->id,$profile['productIds'],true))continue;$a=$index->forSlot(Product::class,(int)$p->id,'product_video');if($a&&$this->published($a))return $this->video($a,'linked-product-admin-upload')+['fallbackImage'=>$fallback,'productId'=>(string)$p->id];}
-        return ['state'=>'published','kind'=>'image','url'=>$fallback,'poster'=>$fallback,'fallbackImage'=>$fallback,'source'=>'illustrative-ai-preview','priority'=>'fallback'];
+        $neutral=url('/images/placeholders/media-pending.svg');return ['state'=>'published','kind'=>'image','url'=>$neutral,'poster'=>$neutral,'fallbackImage'=>$neutral,'source'=>'media-pending','priority'=>'fallback'];
     }
     public function sector(County $county,array $sector,array $institutions,MediaAssetIndex $index,string $fallback): array
     {
         $a=$index->forSlot(County::class,(int)$county->id,'sector_video_'.$sector['slug']);if($a&&$this->published($a))return $this->video($a,'county-sector-admin-upload')+['fallbackImage'=>$fallback];
         foreach($institutions as $i){if((string)$i['countyId']!==(string)$county->id)continue;foreach($i['sectorProfiles']??[] as $p)if($p['slug']===$sector['slug']&&($p['tileMedia']['kind']??'')==='video')return $p['tileMedia']+['institutionId'=>$i['id'],'institutionName'=>$i['name']];}
-        return ['state'=>'published','kind'=>'image','url'=>$fallback,'poster'=>$fallback,'fallbackImage'=>$fallback,'source'=>'illustrative-ai-preview','priority'=>'fallback'];
+        $neutral=url('/images/placeholders/media-pending.svg');return ['state'=>'published','kind'=>'image','url'=>$neutral,'poster'=>$neutral,'fallbackImage'=>$neutral,'source'=>'media-pending','priority'=>'fallback'];
     }
 }

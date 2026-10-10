@@ -979,3 +979,5 @@ Route::get('/models/{asset}/bytes',[\App\Http\Controllers\Web\PublicModelControl
 // Public sector-context deep links retain county ownership and offering niche.
 Route::get('/counties/{county}/sectors/{sector}', [\App\Http\Controllers\Web\ReferenceExperienceController::class, 'context'])->name('counties.sector.context');
 Route::get('/counties/{county}/sectors/{sector}/institutions/{institution}', [\App\Http\Controllers\Web\ReferenceExperienceController::class, 'context'])->name('counties.sector.institution');
+
+Route::post('/admin/institutions/{institution:slug}/video-brief',[\App\Http\Controllers\Web\InstitutionResearchAdminController::class,'update'])->middleware(['auth',\App\Http\Middleware\AdminConsole::class,'throttle:20,1'])->name('institution.video-brief.update');

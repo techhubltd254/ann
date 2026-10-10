@@ -13,4 +13,5 @@
 <label>Duration in minutes (experiences)<input name="duration_minutes" type="number" min="1" value="{{ old('duration_minutes',$product->offering_details['duration_minutes']??null) }}"></label>
 <label>Maximum guests (if verified)<input name="max_guests" type="number" min="1" value="{{ old('max_guests',$product->offering_details['max_guests']??null) }}"></label>
 <label>Inclusions (one per line)<textarea name="inclusions" rows="5">{{ old('inclusions',implode("\n",$product->offering_details['inclusions']??[])) }}</textarea></label>
+<label>Expected video — filming brief<textarea name="expected_video_description" rows="3" maxlength="2000">{{ old('expected_video_description',$product->offering_details['expected_video_description']??null) }}</textarea><small>Describe footage to record for this exact offering. Obtain consent; show only verified inclusions. This brief is not a claim that a video exists.</small></label>
 </div>

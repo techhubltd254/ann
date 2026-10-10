@@ -12,7 +12,7 @@ class Venue extends Model
     use SoftDeletes;
 
     protected $fillable = [
-        'name', 'slug', 'description', 'venue_type',
+        'name', 'slug', 'description', 'venue_type', 'source_details',
         'address', 'city', 'county', 'latitude', 'longitude',
         'capacity', 'amenities', 'contact_info', 'cover_image', 'is_active',
         'institution_id', 'pipeline_code',
@@ -24,6 +24,7 @@ class Venue extends Model
             'latitude' => 'decimal:6',
             'longitude' => 'decimal:6',
             'capacity' => 'integer',
+            'source_details' => 'array',
             'amenities' => 'array',
             'contact_info' => 'array',
             'is_active' => 'boolean',
