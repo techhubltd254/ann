@@ -13,7 +13,7 @@
 const JSON_CT = { "content-type": "application/json" };
 // Bump on every deploy that changes origin output — instantly invalidates all
 // edge page-cache entries (they key on this version).
-const CACHE_VERSION = "v39";
+const CACHE_VERSION = "v40";
 
 // Purge must cover the live cache version (and the previous one, in case a
 // deploy is mid-flight) — not a stale hardcoded list.
@@ -123,106 +123,14 @@ async function handle(request, env, ctx) {
       return withCookies(await proxy(request, upstream, url, { cache: false, scheme: env.ORIGIN_SCHEME ?? "http" }), url.host);
     }
 
-    // ---- Media DERIVATIVES from R2 (transcode outputs only). Everything else
-    // under /media/* belongs to Laravel's media library — do not shadow it.
-    if (url.pathname.startsWith("/media/derivatives/")) {
-      const r2Key = url.pathname.slice(7);
-      // 1. Check Cache API first (edge hit = zero origin/R2 traffic)
-      const cacheKey = `r2:deriv:${r2Key}::${CACHE_VERSION}`;
-      let cachedObj = await edgeCacheMatch("deriv", cacheKey);
-      if (cachedObj) {
-        return new Response(cachedObj.body, mergeHeaders(cachedObj, { "X-CDN-Cache": "HIT", "Cache-Tag": `media:deriv:${hashKey(r2Key)}` }));
-      }
-      // 2. Cache miss — fetch from R2
-      const obj = await env.MEDIA_BUCKET.get(r2Key);
-      if (!obj) return new Response("Not found", { status: 404 });
-      const headers = new Headers();
-      obj.writeHttpMetadata(headers);
-      headers.set("Cache-Control", "public, s-maxage=86400, stale-while-revalidate=604800, immutable");
-      headers.set("CDN-Cache-Control", "max-age=86400");
-      headers.set("X-CDN-Cache", "MISS");
-      headers.set("Cache-Tag", `media:deriv:${hashKey(r2Key)}`);
-      const res = new Response(obj.body, { headers });
-      ctx.waitUntil(edgeCachePut("deriv", cacheKey, res, ctx));
-      return res;
-    }
-
-    // ---- VIDEO assets from R2 — serve directly from edge, zero VPS load ----
-    // Paths stored in R2 under institutions/county/sector-videos/ prefixes.
-    // The origin returns URLs pointing to kicc-r2-media.worker.dev/storage/*,
-    // but routing through this worker gives us:
-    //   - Fine-grained cache purge via HMAC-guarded /edge/purge endpoint
-    //   - Cache tags for granular invalidation
-    //   - Consolidated rate limiting (no separate worker budget)
-    //   - Proper CACHE_VERSION keying so stale versions self-expire
-    //   - Byte-range support (206 Partial Content) for video seeking + HLS
-    // CORS preflight for cross-origin video playback (hls.js, video.js)
-    if (request.method === "OPTIONS" && url.pathname.startsWith("/media/video/")) {
-      return new Response(null, {
-        status: 204,
-        headers: {
-          "Access-Control-Allow-Origin": "*",
-          "Access-Control-Allow-Methods": "GET, HEAD, OPTIONS",
-          "Access-Control-Allow-Headers": "Content-Type, Range, Origin",
-          "Access-Control-Expose-Headers": "Content-Type, Content-Length, Content-Range, Accept-Ranges",
-          "Access-Control-Max-Age": "86400",
-        },
-      });
-    }
-
-    if (url.pathname.startsWith("/media/video/")) {
-      let r2Key = url.pathname.replace("/media/video/", "storage/");
-      const rangeHeader = request.headers.get("Range");
-      // Cache key includes range so partial fetches don't collide with full fetches
-      const cacheSuffix = rangeHeader ? `::range:${rangeHeader}` : "";
-      const cacheKey = `r2:video:${r2Key}${cacheSuffix}::${CACHE_VERSION}`;
-
-      // 1. Check Cache API first
-      let cachedVideo = await edgeCacheMatch("video", cacheKey);
-      if (cachedVideo) {
-        const ch = new Headers(cachedVideo.headers);
-        ch.set("X-CDN-Cache", "HIT");
-        ch.set("Cache-Tag", `media:video:${hashKey(r2Key)}`);
-        return new Response(cachedVideo.body, { status: cachedVideo.status, headers: ch });
-      }
-
-      // 2. Cache miss — fetch from R2
-      let obj = await env.MEDIA_BUCKET.get(r2Key);
-      if (!obj && r2Key.startsWith("storage/")) {
-        obj = await env.MEDIA_BUCKET.get(r2Key.slice(8));
-      }
-      if (!obj) return await proxy(request, env.ORIGIN_HOST, url, { cache: true, scheme: "https" });
-      const headers = new Headers();
-      obj.writeHttpMetadata(headers);
-      headers.set("Cache-Control", "public, max-age=86400, immutable");
-      headers.set("CDN-Cache-Control", "max-age=86400");
-      headers.set("Access-Control-Allow-Origin", "*");
-      headers.set("Access-Control-Allow-Methods", "GET, HEAD, OPTIONS");
-      headers.set("Access-Control-Allow-Headers", "Content-Type, Range, Origin");
-      headers.set("Access-Control-Expose-Headers", "Content-Type, Content-Length, Content-Range, Accept-Ranges");
-      headers.set("Accept-Ranges", "bytes");
-      headers.set("X-CDN-Cache", "MISS");
-      headers.set("Cache-Tag", `media:video:${hashKey(r2Key)}`);
-      // Handle byte-range requests for video seeking/HLS
-      let status = 200;
-      if (rangeHeader) {
-        const range = parseRange(rangeHeader);
-        if (range) {
-          status = 206;
-          const end = range.length !== undefined
-            ? range.offset + range.length - 1
-            : (range.suffix !== undefined
-              ? Math.min(obj.size - 1, range.suffix - 1)
-              : obj.size - 1);
-          const start = range.offset ?? (range.suffix !== undefined ? obj.size - range.suffix : 0);
-          headers.set("Content-Range", `bytes ${start}-${end}/${obj.size}`);
-          headers.set("Content-Length", String(end - start + 1));
-        }
-      }
-      const res = new Response(obj.body, { status, headers });
-      // Only cache full responses (200); range responses are ephemeral
-      if (status === 200) ctx.waitUntil(edgeCachePut("video", cacheKey, res, ctx));
-      return res;
+    // All byte delivery aliases pass the origin publication and owner guard.
+    // Never expose private bucket objects or stale cached bytes at the edge.
+    if (["/media/video/", "/media/derivatives/", "/media/original/"].some(p => url.pathname.startsWith(p))) {
+      const response = await proxy(request, env.ORIGIN_HOST, url, {cache: false, scheme: env.ORIGIN_SCHEME ?? "http"});
+      const guarded = new Response(response.body, response);
+      guarded.headers.set("Cache-Control", "private, no-store");
+      guarded.headers.set("CDN-Cache-Control", "no-store");
+      return withCookies(guarded, url.host);
     }
 
     // ---- Immutable static assets (JS/CSS/fonts/images — 1-year, versioned by CACHE_VERSION) ----
@@ -257,8 +165,8 @@ async function handle(request, env, ctx) {
     // ---- Geo-routing: KE users → HTML page cache; intl → same but no personalisation ----
     // NEVER cache stateful paths (login/register/cart/checkout/dashboard) — a cached
     // page has no session cookie, which breaks CSRF for every subsequent visitor.
-    const NO_CACHE_PATHS = ["/login", "/register", "/cart", "/checkout", "/dashboard", "/logout", "/media", "/room3d", "/kicc-admin/login"];
-    const cacheable = request.method === "GET" && !NO_CACHE_PATHS.some((p) => url.pathname.startsWith(p))
+    const NO_CACHE_PATHS = ["/admin", "/portal", "/kicc-admin", "/county-admin", "/institution-admin", "/national-admin", "/records-admin", "/login", "/register", "/cart", "/checkout", "/dashboard", "/logout", "/media", "/room3d", "/kicc-admin/login"];
+    const cacheable = request.method === "GET" && !request.headers.has("Cookie") && !request.headers.has("Authorization") && !NO_CACHE_PATHS.some((p) => url.pathname.startsWith(p))
         && url.pathname !== "/counties" && url.pathname !== "/counties/";
     const country = request.cf?.country ?? "XX";
     // Include the query string so filtered views (marketplace?county=x, ?page=n)
