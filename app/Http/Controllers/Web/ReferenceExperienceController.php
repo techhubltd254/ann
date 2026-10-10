@@ -141,7 +141,7 @@ class ReferenceExperienceController extends Controller
             $tables['products'][$last]['priceLabel']=$p->price_mode==='enquiry'?'Price on enquiry':($p->price_mode==='from'?'From ':'').'KES '.number_format($p->price??0);
             $tables['products'][$last]['sourceUrl']=$p->source_url;
             $tables['products'][$last]['bookingUrl']=$p->booking_url;
-            $tables['products'][$last]['offeringDetails']=$p->offering_details??[];
+            $tables['products'][$last]['offeringDetails']=array_diff_key($p->offering_details??[],array_flip(['expected_video_description','research_dossier','refined_story','proposed_video_brief']));
             $tables['products'][$last]['offers']=$p->offers->map(fn($o)=>$o->only(['title','terms','price','starts_at','ends_at']))->all();
             $video=$index->forSlot(\App\Models\Marketplace\Product::class,(int)$p->id,'product_video');
             if($video && $video->kind==='video'){
@@ -154,7 +154,8 @@ class ReferenceExperienceController extends Controller
         }
         foreach ($venues as $v) {
             $owned=$index->forOwner(Venue::class,(int)$v->id)->filter(fn($a)=>$a->status==='ready'&&!str_starts_with($a->slot??'','draft__')&&!str_starts_with($a->slot??'','archived__')&&($a->metadata['publication']??'')!=='draft');
-            $asset=$owned->filter(fn($a)=>$a->kind==='video'&&in_array($a->slot,['hero_video','hero'],true))->sortByDesc('id')->first()?:$owned->filter(fn($a)=>$a->kind==='image')->sortByDesc('id')->first();
+            $manual=$owned->filter(fn($a)=>!($a->metadata['official_import']??false));
+            $asset=$manual->filter(fn($a)=>$a->kind==='video'&&in_array($a->slot,['hero_video','hero'],true))->sortByDesc('id')->first()?:$manual->filter(fn($a)=>$a->kind==='image')->sortByDesc('id')->first()?:$owned->filter(fn($a)=>$a->kind==='image')->sortByDesc('id')->first();
             $tile=['state'=>'empty','kind'=>'image','url'=>url('/images/placeholders/media-pending.svg')];
             if($asset&&MediaMapping::inR2($asset->path))$tile=['state'=>'published','kind'=>$asset->kind,'url'=>$asset->kind==='video'?$asset->mp4Url():$asset->url(),'mobileUrl'=>$asset->derivativeUrl('video_mobile'),'poster'=>$asset->posterUrl(),'assetId'=>(string)$asset->id,'alt'=>$v->name,'source'=>'venue-admin-upload'];
             $official=$v->source_details['official_source']??[];if(!is_array($official))$official=[];
@@ -163,6 +164,7 @@ class ReferenceExperienceController extends Controller
             $area=isset($reference['area_m2'])&&$v->slug!=='bilateral-rooms'?number_format((float)$reference['area_m2'],floor((float)$reference['area_m2'])===(float)$reference['area_m2']?0:2).' m²':'Confirm with KICC';
             $tables['venues'][]=['id'=>(string)$v->id,'slug'=>$v->slug,'name'=>$v->name,'type'=>$v->venue_type,'cap'=>$verifiedCapacity,'area'=>$area,'rate'=>'Current quote on enquiry','desc'=>$v->description,'am'=>is_array($v->amenities)?$v->amenities:[],'availability'=>'Enquiry required','status'=>'published','sourceUrl'=>$official['source_url']??null,'tileMedia'=>$tile];
         }
+        $tables['kiccFilms']=MediaAsset::where('owner_type',CountyInstitution::class)->where('owner_id',30001)->where('kind','video')->where('status','ready')->get()->filter(fn($a)=>($a->metadata['official_import']??false)&&($a->metadata['publication']??'')==='published')->map(fn($a)=>['id'=>(string)$a->id,'title'=>$a->metadata['official_title']??'Official KICC film','url'=>$a->mp4Url(),'mobileUrl'=>$a->derivativeUrl('video_mobile'),'poster'=>$a->posterUrl(),'sourceUrl'=>$a->metadata['source_url']??'https://kicc.co.ke/virtual-tour/'])->values()->all();
         foreach (Exhibition::whereNotIn('status',['draft','cancelled'])->with('venue')->get() as $e) $tables['exhibitions'][]=['id'=>(string)$e->id,'slug'=>$e->slug,'n'=>$e->name,'d'=>(string)$e->start_date,'venue'=>$e->venue?->name ?? '', 'availability'=>$e->status,'status'=>'published','booths'=>0,'reg'=>0];
         foreach (Screen::where('active',true)->get() as $s) $tables['screens'][]=['id'=>(string)$s->id,'slug'=>(string)$s->id,'n'=>$s->label,'loc'=>$s->location,'dim'=>'Dimensions on enquiry','pitch'=>$s->terminal_type,'price'=>'Rate on enquiry','tier'=>'screen','status'=>'published'];
         foreach (LiveStream::whereIn('status',['live','scheduled','upcoming'])->get() as $s) $tables['streams'][]=['id'=>(string)$s->id,'slug'=>(string)$s->id,'n'=>$s->name,'venue'=>'','q'=>'Auto','viewers'=>(int)$s->viewer_count,'url'=>$s->hls_url ?? $s->playback_url,'availability'=>$s->status,'status'=>'published'];

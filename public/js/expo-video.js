@@ -60,7 +60,7 @@
  }
  function scan(){queued=false;if(document.body.classList.contains('admin-shell')||/\/(?:portal|.*admin)(\/|$)/.test(location.pathname))return;
   document.querySelectorAll('#app video,main video,.sx-hero video').forEach(v=>{
-   if(v.closest('[data-upload-preview],dialog,[data-selected-preview],.modal,.splat-gate,.viewer3d'))return;
+   if(v.closest('[data-upload-preview],dialog,[data-selected-preview],.modal,.splat-gate,.viewer3d,.official-kicc-films'))return;
    let host=v.closest('[data-expo-video],.hls-stage,.hologram,.cinematic-media,.media-tile,.tm-window,.tile-media,.orbit-screen,.pc-media,.ex-shot,.rb-media');
    if(!host){host=v.closest('.public-media');if(!host){host=document.createElement('div');host.className='expo-video-native';v.parentElement.insertBefore(host,v);host.append(v);}if(host.tagName==='PICTURE')return;}
    const tile=!!host.closest('.tm-tile,.prod-card,.orbit-screen,.tile,.media-tile,.ex-card')&&!host.classList.contains('hls-stage')&&!v.closest('.media-tile[data-county-hero="1"]');
