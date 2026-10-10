@@ -5,7 +5,7 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>KICC — Kenya's National Exhibition Platform</title>
 <meta name="description" content="The Kenyatta International Convention Centre. Forty-seven counties, one stage — a curated, video-native platform for Kenya's national exhibition infrastructure.">
-<meta name="theme-color" content="#F7F0E3">
+<meta name="theme-color" content="#F7F0E3"><link rel="icon" type="image/png" sizes="32x32" href="/favicon-32.png"><link rel="icon" type="image/png" sizes="16x16" href="/favicon-16.png"><link rel="apple-touch-icon" href="/apple-touch-icon.png"><link rel="shortcut icon" href="/favicon.ico">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,200;0,9..144,300;0,9..144,400;0,9..144,500;1,9..144,300;1,9..144,400&family=Inter+Tight:wght@300;400;450;500&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
@@ -595,6 +595,8 @@ table.tbl tbody tr:last-child td{border-bottom:none}
 #countyGrid .media-tile .tile-body{justify-content:flex-end;padding:13px}
 </style>
 <link rel="stylesheet" href="/css/reference-palette.css?v=reference-replica-v3">
+<link rel="stylesheet" href="/css/expo-video.css?v=dab02ad56266">
+<script src="/js/expo-video.js?v=20358f55afb7"></script>
 </head>
 <style>
 /* ============================================================================
@@ -3056,7 +3058,7 @@ html[data-theme] .tm-gallery :is(.tm-copy p,.tm-note){color:var(--ui-muted)!impo
 <header class="nav" id="nav">
   <div class="nav-inner">
     <a href="#/" class="logo" data-link>
-      <span class="mark">K</span>
+      <span class="mark" style="background:transparent;box-shadow:none"><img src="/kicc-logo.png" alt="KICC" style="width:34px;height:34px;object-fit:contain;display:block"></span>
       <span>KICC<small>National Exhibition Platform</small></span>
     </a>
     <nav class="nav-links" id="navLinks">
@@ -3102,7 +3104,7 @@ html[data-theme] .tm-gallery :is(.tm-copy p,.tm-note){color:var(--ui-muted)!impo
     <div class="footer-grid">
       <div>
         <a href="#/" class="logo" data-link style="margin-bottom:16px">
-          <span class="mark">K</span>
+          <span class="mark" style="background:transparent;box-shadow:none"><img src="/kicc-logo.png" alt="KICC" style="width:34px;height:34px;object-fit:contain;display:block"></span>
           <span>KICC<small>National Exhibition Platform</small></span>
         </a>
         <p class="muted-xs" style="max-width:330px;margin-top:16px">
@@ -3335,38 +3337,12 @@ const STREAMS = [
 
 /* ── PIPELINE REGISTRY (202 registered, sector filter) ── */
 const SECTORS = ["Agriculture","Manufacturing","Tourism","Blue Economy","Mining","Energy","ICT & Innovation","Financial Services","Logistics","Creative Economy","Livestock","Textiles"];
-const PIPELINES = Array.from({length:202},(_,i)=>({
-  code:"KICC-PL-"+String(i+1).padStart(4,"0"),
-  name:["Sorghum Value Chain","Cashew Processing","Leather Tanning","Aquaculture Hatchery","Avocado Oil Extraction","Titanium Beneficiation","Geothermal Steam Utilisation","BPO Delivery Centre","Trade Finance Corridor","Animation Studio Cluster","Feedlot Modernisation","Cotton-to-Garment"][i%12],
-  sector:SECTORS[i%SECTORS.length],
-  county:COUNTIES[(i*7)%47].name,
-  status:["active","active","active","onboarding","review","suspended"][i%6],
-  fee:(0.8+((i%9)*0.35)).toFixed(2),
-  vol:420000+(i*18700)%9400000,
-}));
+const PIPELINES = [];
 
 /* ── ADMIN KPIs ── */
-const ADMIN_KPI = [
- {l:"Gross Trade Volume",v:"KES 4.82B",d:"+18.4% MoM",up:1,sp:[30,42,38,55,61,58,74,82]},
- {l:"Registered Pipelines",v:"202",d:"+7 this week",up:1,sp:[120,134,148,155,168,181,194,202]},
- {l:"Active Exhibitors",v:"3,140",d:"+12.2% MoM",up:1,sp:[2100,2340,2510,2680,2790,2960,3050,3140]},
- {l:"Counties Live",v:"47 / 47",d:"100% coverage",up:1,sp:[31,36,40,43,45,46,47,47]},
- {l:"Escrow Held",v:"KES 618.4M",d:"−4.1% MoM",up:0,sp:[700,682,671,660,644,630,624,618]},
- {l:"Selling Pool Balance",v:"KES 92.7M",d:"+9.6% MoM",up:1,sp:[58,61,68,71,79,84,88,93]},
- {l:"Live Streams Today",v:"5",d:"peak 9,880 CCV",up:1,sp:[2,3,4,6,5,7,8,5]},
- {l:"Certification Queue",v:"37",d:"awaiting review",up:0,sp:[52,48,45,44,41,39,38,37]},
-];
+const ADMIN_KPI = [];
 
-const NAV_ADMIN = [
- ["overview","Overview","▦"],["portals","Portals","⧉"],["counties","Counties","◈"],["institutions","Institutions","⌂"],
- ["national","National","★"],["exhibitors","Exhibitors","☰"],["orders","Orders","▤"],["providers","Providers","✓"],
- ["escrow","Escrow","⛁"],["3d_assets","3D Assets","◉"],["pool","Selling Pool","◎"],["pipelines","Pipelines","⇄"],
- ["experiences","Experiences","✦"],["live_events","Live Events","▶"],["venues","Venues","▣"],["users","Users","☻"],
- ["hero_media","Hero Media","◐"],["packages","Packages","▥"],["analytics","Analytics","◔"],["integration","Integration","⚯"],
- ["pipeline-creator","Pipeline Creator","⚙"],["earnings","Earnings","₪"],["search-analytics","Search Analytics","⌕"],
- ["cache","Cache","⧖"],["licence-queue","Licence Queue","⛨"],["pipeline-settings","Pipeline Settings","⚒"],
- ["studio","Curation Studio","◆"],
-];
+const NAV_ADMIN = [];
 
 const NAV_COUNTY = [["overview","Overview","▦"],["content","Content","✎"],["images","Images","▨"],["prices","Prices","₪"],
  ["sectors","Sectors","◈"],["products","Products","▣"],["4d","4D Video","◉"],["ads","Ads","◐"],["packages","Packages","▥"],
@@ -3377,25 +3353,47 @@ const NAV_INST = [["overview","Overview","▦"],["profile","Profile","☻"],["pr
  ["experience","Experience","◉"],["sectors","Sectors","◈"],["team","Team","☰"],["analytics","Analytics","◔"],
  ["transactions","Transactions","₪"],["customers","Customers","◎"],["production","Production","⚙"]];
 
-const SEED_ORDERS = [
- ["ORD-2026-04418","Mombasa","Kilifi Coconut Oil 5L ×40","KES 128,000","escrow","paid"],
- ["ORD-2026-04417","Kericho","Purple Tea 1kg ×120","KES 342,000","escrow","paid"],
- ["ORD-2026-04416","Machakos","Solar Home Kit ×15","KES 510,000","released","shipped"],
- ["ORD-2026-04415","Baringo","Pure Honey 20L ×22","KES 319,000","escrow","paid"],
- ["ORD-2026-04414","Narok","Wheat Flour 50kg ×80","KES 368,000","disputed","held"],
- ["ORD-2026-04413","Kisii","Soapstone Chess ×35","KES 343,000","released","delivered"],
- ["ORD-2026-04412","Turkana","Palm Basket Set ×60","KES 324,000","escrow","processing"],
- ["ORD-2026-04411","Kwale","Glassware Set ×44","KES 334,400","escrow","paid"],
-];
+const SEED_ORDERS = [];
 
-const HERO_POSTER = "https://sspark.genspark.ai/i/duB8gvxLPeB4F7ti?width=2560";
-const CITY_POSTER = "https://sspark.genspark.ai/i/JrzULumxvfF6Hfrk?width=2560";
-const LAND_POSTER = "https://sspark.genspark.ai/i/qoNIhZZNbcZ2YPBn?width=2560";
-const BOOTH_POSTER = "https://sspark.genspark.ai/i/N5IFjBvM2wAKnB9x?width=2560";
-const HALL_POSTER = "https://sspark.genspark.ai/i/d493ghnYvDsy7rpQ?width=2560";
-const SAVANNA_POSTER = "https://sspark.genspark.ai/i/akpoHn0Vp5tAAufS?width=2560";
+const TD=(window.KICC_NATIVE&&window.KICC_NATIVE.tables&&window.KICC_NATIVE.tables.tileDefaults)||{};
+const BLANK="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='16' height='10'%3E%3C/svg%3E";
+const TILE_DEFAULTS={hero:TD.hero||BLANK,city:TD.city||BLANK,land:TD.land||BLANK,booth:TD.booth||BLANK,hall:TD.hall||BLANK,savanna:TD.savanna||BLANK};
+const HERO_POSTER = TILE_DEFAULTS.hero;
+const CITY_POSTER = TILE_DEFAULTS.city;
+const LAND_POSTER = TILE_DEFAULTS.land;
+const BOOTH_POSTER = TILE_DEFAULTS.booth;
+const HALL_POSTER = TILE_DEFAULTS.hall;
+const SAVANNA_POSTER = TILE_DEFAULTS.savanna;
 
-const imgFor = (c) => c.image || "data:image/svg+xml,%3Csvg xmlns=\"http://www.w3.org/2000/svg\" width=\"800\" height=\"600\"%3E%3C/svg%3E";
+/* the whole tile map, for pages outside this document */
+window.KICC_TILES = Object.assign({}, TILE_DEFAULTS, TD);
+
+/* ── GLOBAL EXPOSURE ─────────────────────────────────────────────────────────
+   TD / BLANK / TILE_DEFAULTS and the poster consts above are declared INSIDE
+   this IIFE, but sibling <script> blocks (ED_IMG, STUDIO_SEED, page templates)
+   consume them as globals. Without publishing them to window those blocks throw
+   ReferenceError and the SPA renders nothing (#app stays empty). */
+window.TD = TD;
+window.BLANK = BLANK;
+window.TILE_DEFAULTS = TILE_DEFAULTS;
+window.HERO_POSTER = HERO_POSTER;
+window.CITY_POSTER = CITY_POSTER;
+window.LAND_POSTER = LAND_POSTER;
+window.BOOTH_POSTER = BOOTH_POSTER;
+window.HALL_POSTER = HALL_POSTER;
+window.SAVANNA_POSTER = SAVANNA_POSTER;
+
+/* The sibling <script> blocks below are separate classic scripts and cannot see
+   this IIFE's lexical scope, so the tile map must be published on window.
+   Without this, ED_IMG / STUDIO_PLATES throw ReferenceError and the whole
+   page body fails to render into <main id="app">. */
+window.TD = TD;
+window.BLANK = BLANK;
+window.TILE_DEFAULTS = TILE_DEFAULTS;
+
+const imgFor = (c) => (c && c.tileMedia && c.tileMedia.state === "published" && c.tileMedia.url)
+  ? c.tileMedia.url
+  : (c && c.image) || "data:image/svg+xml,%3Csvg xmlns=\"http://www.w3.org/2000/svg\" width=\"800\" height=\"600\"%3E%3C/svg%3E";
 const nf = n => n.toLocaleString("en-KE");
 
 return {COUNTIES,VENUES,PRODUCTS,EXHIBITIONS,SCREENS,STREAMS,SECTORS,PIPELINES,ADMIN_KPI,
@@ -5363,12 +5361,13 @@ const T = {
 
 /* curated imagery — CC/PD licensed via image_search, see reply for provenance */
 const ED_IMG = {
-  savanna : 'https://sspark.genspark.ai/i/1RcgBjtYEuJ78hIE?width=2560',
-  nairobi : 'https://sspark.genspark.ai/i/PVkdIoF6Vw3o4PED?width=2560',
-  skyline : 'https://sspark.genspark.ai/i/u1ywvVQ2Qzo6ajnL?width=2560',
-  hall    : 'https://sspark.genspark.ai/i/qAnr5ZAd8daxgSIb?width=2560',
-  escarp  : 'https://sspark.genspark.ai/i/yEBiSGiqrbthu44L?width=2560',
-  mara    : 'https://sspark.genspark.ai/i/RzOIpnnhxDvDlXIr?width=2560'
+  /* every frame below is a media_assets row (tile_default) — replace it in the admin */
+  savanna : TD.ed_savanna || BLANK,
+  nairobi : TD.ed_nairobi || BLANK,
+  skyline : TD.ed_skyline || BLANK,
+  hall    : TD.ed_hall    || BLANK,
+  escarp  : TD.ed_escarp  || BLANK,
+  mara    : TD.ed_mara    || BLANK
 };
 
 const ED_CHAPTERS = [
@@ -5391,38 +5390,17 @@ Router.register('/', () => {
   ${ED_CHAPTERS.map(c=>`<a href="#chapter-${c.key}" data-scroll="${c.key}" data-chapter="${c.key}"><i></i><span>${c.n} ${c.t}</span></a>`).join('')}
 </nav>
 
-<!-- ══ FRONT DOOR ══ -->
-<header class="ed-chapter ed-plate" data-lean="deep" id="chapter-top" style="min-height:100vh">
-  <div class="ed-bridge at-bottom" aria-hidden="true"></div>
-  <div class="ed-bleed" data-depth="far">
-    <img src="${ED_IMG.nairobi}" alt="Nairobi at dusk, seen from the central business district">
-  </div>
-  <div class="ed-layer wrap">
-    <div class="ed-grid">
-      <div class="ed-col-8">
-        <div class="ed-label" data-reveal>Kenyatta International Convention Centre · Est. 1973</div>
-        <h1 style="margin-top:30px" data-reveal>
-          <span class="ed-mask"><span>The whole country,</span></span>
-          <span class="ed-mask"><span><em style="font-style:italic;color:var(--au-300)">in one room.</em></span></span>
-        </h1>
-        <p class="ed-lead" style="margin-top:34px" data-reveal>
-          Forty-seven county economies arrive here as goods, produce and people — and leave as
-          trade. This is Kenya's national exhibition infrastructure, published as a single
-          living archive.
-        </p>
-        <div class="wrapflex" style="margin-top:46px;gap:14px" data-reveal>
-          <a href="#chapter-nation" class="btn gold" data-scroll="nation" data-magnetic>Enter the archive</a>
-          <a href="#chapter-inside" class="btn ghost" data-scroll="inside" data-magnetic>Step inside a hall</a>
-        </div>
-      </div>
-    </div>
-  </div>
-
-    <a class="ed-handoff" href="#chapter-nation" data-scroll="nation" data-reveal>
-      <span class="n">01</span><span class="t">The Nation</span>
-      <span class="ln"></span><span class="s">Begin</span><span class="ar">&#8595;</span>
-    </a>
-</header>
+<!-- ══ FRONT DOOR · native media, Expo-style shared section ══ -->
+${window.KiccExpoVideo.render({
+ id:'chapter-top',variant:'hero',
+ video:window.KICC_NATIVE.tables.heroMedia?.video||null,
+ poster:window.KICC_NATIVE.tables.heroMedia?.poster||ED_IMG.nairobi,
+ ownerId:window.KICC_NATIVE.tables.heroMedia?.ownerId||'1',
+ eyebrow:'Kenyatta International Convention Centre · Est. 1973',
+ title:'The whole country, in one room.',
+ description:"Forty-seven county economies arrive here as goods, produce and people — and leave as trade. This is Kenya's national exhibition infrastructure, published as a single living archive.",
+ actions:[{label:'Enter the archive',href:'#chapter-nation',scroll:'nation'},{label:'Step inside a hall',href:'#chapter-inside',scroll:'inside'}]
+})}
 
 <!-- ══ 01 · THE NATION ══ -->
 <section class="ed-chapter ed-flat" data-lean="soft" id="chapter-nation">
@@ -5448,31 +5426,6 @@ Router.register('/', () => {
     <a class="ed-handoff" href="#chapter-archive" data-scroll="archive" data-reveal>
       <span class="n">—</span><span class="t">From the archive</span>
       <span class="ln"></span><span class="s">Continue</span><span class="ar">&#8595;</span>
-    </a>
-</section>
-
-<!-- ══ FROM THE ARCHIVE — output of the curation pipeline ══ -->
-<section class="ed-interlude ed-flat" data-lean="soft" id="chapter-archive">
-  <div class="ed-bridge at-bottom" aria-hidden="true"></div>
-  <div class="wrap">
-    <div class="ed-grid">
-      <div class="ed-col-4">
-        <div class="ed-chapter-num" data-reveal>Interlude &mdash; From the archive</div>
-        <h3 style="margin-top:18px;max-width:22ch" data-reveal>No image reaches this page unfiltered.</h3>
-        <p class="muted-xs" style="margin-top:16px;max-width:46ch">
-          Editorial imagery retained from the approved reference. The curation scores below are illustrative, not evidence of executed production pipelines.
-        </p>
-      </div>
-      <div class="ed-col-8">
-        <div class="ed-curated" data-curated data-reveal></div>
-        <div class="ed-ledger-note" data-curated-note></div>
-      </div>
-    </div>
-  </div>
-
-    <a class="ed-handoff" href="#chapter-halls" data-scroll="halls" data-reveal>
-      <span class="n">02</span><span class="t">The Halls</span>
-      <span class="ln"></span><span class="s">Next</span><span class="ar">&#8595;</span>
     </a>
 </section>
 
@@ -5837,7 +5790,7 @@ Router.register('/institutions', (rest) => {
       ${PRODUCTS.slice(0,4).map((p,i)=>`<div class="prod-card" data-href="/marketplace/${p.n.toLowerCase().replace(/[^a-z0-9]+/g,'-').slice(0,44)}">
         <div class="pc-media" style="background-image:url('${[BOOTH_POSTER,HALL_POSTER,SAVANNA_POSTER,LAND_POSTER][i%4]}')"></div>
         <div class="pc-body"><div class="muted-xs">${p.cat}</div><div style="font-weight:600;font-size:13px">${p.n}</div>
-          <div class="price">KES ${nf(p.p)}</div></div></div>`).join('')}
+          <div class="price">${p.priceLabel||("KES "+nf(p.p))}</div></div></div>`).join('')}
     </div>
   </div>
   <div class="tabpane" data-pane="reviews">
@@ -5893,7 +5846,7 @@ Router.register('/marketplace', () => ({title:'Marketplace', html:`
       <select id="productCounty" class="input" style="max-width:200px"><option>All counties</option>${COUNTIES.map(c=>`<option>${c.name}</option>`).join('')}</select>
       <select id="productSort" class="input" style="max-width:200px"><option>Sort: Featured</option><option>Price: low → high</option><option>Price: high → low</option><option>Rating</option></select>
     </div>
-    <div class="muted-xs"><span id="prodCount">${PRODUCTS.length}</span> products · 3.1% pipeline fee applies</div>
+    <div class="muted-xs"><span id="prodCount">${PRODUCTS.length}</span> products</div>
   </div>
   <div class="wrapflex mt">
     ${['All',...new Set(PRODUCTS.map(p=>p.cat))].map((x,i)=>
@@ -5911,40 +5864,20 @@ Router.register('/marketplace', () => ({title:'Marketplace', html:`
         <div class="between"><span class="badge gold">${p.cat}</span><span class="muted-xs">${p.c}</span></div>
         <div style="font-weight:600;font-size:13.5px;line-height:1.35">${p.n}</div>
         ${T.stars(p.r)}
-        <div class="between" style="margin-top:auto"><span class="price">KES ${nf(p.p)}</span></div>
+        <div class="between" style="margin-top:auto"><span class="price">${p.priceLabel||("KES "+nf(p.p))}</span></div>
         <div class="muted-xs">${p.unit} · ${p.rv} reviews</div><small class="product-image-disclosure">${p.mediaLabel||''}</small>
         <button class="btn gold sm block" data-action="toast" data-msg="Choose product options in secure checkout">Select &amp; buy</button>
       </div></div>`;}).join('')}
   </div>
-  <div class="mt-l">
-    <div class="glass-card pad-l">
-      <div class="between"><h3>Pipeline fee breakdown</h3><span class="badge gold">pipeline-fee-breakdown</span></div>
-      <div class="grid g2 mt">
-        <div>
-          <div class="fee-row"><span class="muted">Producer net</span><span>KES 100,000.00</span></div>
-          <div class="fee-row"><span class="muted">County pipeline (0.80%)</span><span>KES 800.00</span></div>
-          <div class="fee-row"><span class="muted">Institution pipeline (1.20%)</span><span>KES 1,200.00</span></div>
-          <div class="fee-row"><span class="muted">National pool (0.60%)</span><span>KES 600.00</span></div>
-          <div class="fee-row"><span class="muted">KICC platform (0.40%)</span><span>KES 400.00</span></div>
-          <div class="fee-total"><span>Buyer pays</span><span class="gold">KES 103,000.00</span></div>
-        </div>
-        <div class="cascade">
-          <div class="bar" style="width:97%">Producer net — 97.09%</div>
-          <div class="bar" style="width:78%;background:linear-gradient(90deg,var(--reference-tone-31),var(--reference-tone-32))">County pipeline — 0.80%</div>
-          <div class="bar" style="width:64%;background:linear-gradient(90deg,var(--nv-800),var(--reference-tone-32))">Institution — 1.20%</div>
-          <div class="bar" style="width:48%;background:linear-gradient(90deg,var(--kicc-green),var(--reference-tone-32))">National pool — 0.60%</div>
-          <div class="bar" style="width:34%;background:linear-gradient(90deg,var(--nv-400),var(--reference-tone-32))">KICC — 0.40%</div>
-          <div class="muted-xs mt-s">Rendered by <code style="color:var(--au-ink)">components/pipeline-cascade.blade.php</code></div>
-        </div>
-      </div>
-    </div>
-  </div>
+
 </div>
 `}));
 
 /* ════════════════════════ 06 · MARKETPLACE SHOW ════════════════════════ */
 Router.register('/marketplace', (rest) => {
   const p = PRODUCTS.find(x=>x.slug===rest[0]||x.n.toLowerCase().replace(/[^a-z0-9]+/g,'-').slice(0,44)===rest[0]); if(!p)return {title:'Product unavailable',html:'<section class="wrap section"><h1>Product not found.</h1></section>'};
+  const offeringEsc=x=>String(x??'').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
+  const offeringSafeUrl=x=>{try{const u=new URL(x);return /^https?:$/.test(u.protocol)?u.href:''}catch(e){return ''}};
   return {title:p.n, html:`
 <div class="wrap">${T.crumb([['Home','/'],['Marketplace','/marketplace'],[p.cat,'/marketplace'],[p.n.slice(0,34)+'…',null]])}</div>
 <div class="wrap section-sm">
@@ -5954,7 +5887,7 @@ Router.register('/marketplace', (rest) => {
         <button class="on" data-tab="video">Video</button><button data-tab="model">3D Model</button><button data-tab="gallery">Gallery</button>
       </div>
       <div class="tabpane on" data-pane="video">
-        ${T.hls({img:p.image,title:p.n,sub:'Product film · 90s · county-shot',q:'1080p',start:12})}
+        ${T.hls({img:p.image,title:p.n,sub:'Product film · institution-uploaded video',q:'1080p',start:12})}
       </div>
       <div class="tabpane" data-pane="model">
         <div class="viewer3d" data-alt="1,420" data-v3read data-turntable style="aspect-ratio:16/10">
@@ -5977,11 +5910,11 @@ Router.register('/marketplace', (rest) => {
     </div>
     <div data-reveal="right">
       <div class="center" style="gap:8px;flex-wrap:wrap"><span class="badge gold">${p.cat}</span><span class="badge grey">${p.c} County</span>
-        <span class="badge grey">Published product</span></div>
+        <span class="badge grey">Published ${p.offeringKind||'product'}</span></div>
       <h1 style="font-size:clamp(1.5rem,2.8vw,2.2rem);margin-top:14px">${p.n}</h1>
       <div class="mt-s">${T.stars(p.r)} <span class="muted-xs">(${p.rv} reviews)</span></div>
-      <div class="mt" style="font-family:var(--font-head);font-weight:900;font-size:2.4rem;color:var(--au-ink)">KES ${nf(p.p)}</div>
-      <div class="muted-xs">${p.unit} · excl. 3.1% pipeline fee</div>
+      <div class="mt" style="font-family:var(--font-head);font-weight:900;font-size:2.4rem;color:var(--au-ink)">${p.priceLabel||("KES "+nf(p.p))}</div>
+      <div class="muted-xs">${p.unit}</div>
       <div class="glass-card pad mt">
         <div class="fee-row"><span class="muted">Minimum order</span><span>${p.moq || "Enquire with producer"}</span></div>
         <div class="fee-row"><span class="muted">Lead time</span><span>Enquire with producer</span></div>
@@ -5989,16 +5922,21 @@ Router.register('/marketplace', (rest) => {
         <div class="fee-row"><span class="muted">Payment</span><span>Use secure native checkout</span></div>
         <div class="fee-row"><span class="muted">Certification</span><span>Confirm with producer</span></div>
       </div>
-      <div class="field mt"><label>Quantity</label><input class="input" type="number" value="10" min="10"></div>
-      <div class="wrapflex"><button class="btn gold" style="flex:1" data-action="toast" data-msg="Choose product options in secure checkout">Select &amp; buy</button>
-        <button class="btn ghost" data-action="toast" data-msg="Trade agreement enquiry sent to the producer">Request trade terms</button></div>
+      <p class="cms-public-copy" style="margin-top:20px">${offeringEsc(p.description||'')}</p>
+      ${p.offeringDetails?.duration_minutes?`<p>Duration: ${Number(p.offeringDetails.duration_minutes)} minutes</p>`:''}
+      ${p.offeringDetails?.max_guests?`<p>Maximum guests: ${Number(p.offeringDetails.max_guests)}</p>`:''}
+      ${(p.offeringDetails?.inclusions||[]).length?`<h3>Included</h3><ul>${p.offeringDetails.inclusions.map(x=>`<li>${offeringEsc(x)}</li>`).join('')}</ul>`:''}
+      ${p.sourceUrl&&offeringSafeUrl(p.sourceUrl)?`<p><a href="${offeringEsc(offeringSafeUrl(p.sourceUrl))}" target="_blank" rel="noopener noreferrer">Official source ↗</a></p>`:''}
+      ${p.bookingUrl&&offeringSafeUrl(p.bookingUrl)?`<a class="btn gold" href="${offeringEsc(offeringSafeUrl(p.bookingUrl))}" target="_blank" rel="noopener noreferrer">${p.offeringKind==='product'?'Buy / enquire with institution':'Book / enquire with institution'} ↗</a>`:`<p>Contact the institution to confirm availability and price.</p>`}
+      ${(p.offers||[]).map(o=>`<article class="glass-card pad mt"><h3>${offeringEsc(o.title)}</h3><p>${offeringEsc(o.terms||'')}</p>${o.price!==null?`<p>KES ${Number(o.price).toLocaleString('en-KE')}</p>`:''}${o.ends_at?`<p>Ends ${offeringEsc(o.ends_at)}</p>`:''}</article>`).join('')}
+
       <div class="mt-l">
         <h3 style="font-size:1rem">Related products</h3>
         <div class="grid g2 mt">
           ${PRODUCTS.filter(x=>x.cat===p.cat&&x.n!==p.n).slice(0,4).map(x=>{const sl=x.n.toLowerCase().replace(/[^a-z0-9]+/g,'-').slice(0,44);return `
             <div class="glass-card pad" data-href="/marketplace/${sl}" style="cursor:pointer">
               <div style="font-weight:600;font-size:12.5px">${x.n.slice(0,42)}…</div>
-              <div class="price" style="font-size:1rem;margin-top:6px">KES ${nf(x.p)}</div></div>`}).join('')||'<div class="muted-xs">No related products.</div>'}
+              <div class="price" style="font-size:1rem;margin-top:6px">${x.priceLabel||("KES "+nf(x.p))}</div></div>`}).join('')||'<div class="muted-xs">No related products.</div>'}
         </div>
       </div>
     </div>
@@ -6454,7 +6392,7 @@ Router.register('/travel', (rest) => {
 <div class="wrap section-sm">
   <div class="glass-card pad-l" data-reveal style="max-width:760px;margin:0 auto">
     <div class="between" style="border-bottom:1px solid var(--glass-border);padding-bottom:20px">
-      <div class="logo"><span class="mark">K</span><span>KICC<small>National Exhibition Platform</small></span></div>
+      <div class="logo"><span class="mark" style="background:transparent;box-shadow:none"><img src="/kicc-logo.png" alt="KICC" style="width:34px;height:34px;object-fit:contain;display:block"></span><span>KICC<small>National Exhibition Platform</small></span></div>
       <div style="text-align:right"><div class="eyebrow">Booking receipt</div>
         <div style="font-family:var(--font-head);font-weight:800;margin-top:4px">${ref}</div></div>
     </div>
@@ -6495,7 +6433,7 @@ Router.register('/login', () => ({title:'Sign In', html:`
 <div class="auth-stage">
   <div class="glass-card auth-card" data-reveal>
     <div class="text-center">
-      <div class="logo" style="justify-content:center"><span class="mark">K</span></div>
+      <div class="logo" style="justify-content:center"><span class="mark" style="background:transparent;box-shadow:none"><img src="/kicc-logo.png" alt="KICC" style="width:34px;height:34px;object-fit:contain;display:block"></span></div>
       <h2 style="margin-top:18px;font-size:1.6rem">Sign in to KICC</h2>
       <p class="muted-xs" style="margin-top:8px">Public sign-in. Glass card floats on a minimal shader (low intensity).</p>
     </div>
@@ -6524,7 +6462,7 @@ Router.register('/register', () => ({title:'Create Account', html:`
 <div class="auth-stage">
   <div class="glass-card auth-card" data-reveal style="width:min(500px,96vw)">
     <div class="text-center">
-      <div class="logo" style="justify-content:center"><span class="mark">K</span></div>
+      <div class="logo" style="justify-content:center"><span class="mark" style="background:transparent;box-shadow:none"><img src="/kicc-logo.png" alt="KICC" style="width:34px;height:34px;object-fit:contain;display:block"></span></div>
       <h2 style="margin-top:16px;font-size:1.45rem">Create your account</h2>
       <p class="muted-xs" style="margin-top:8px">Multi-step horizontal carousel: email → 6-digit code → details. Each step slides from the right, the previous slides left (500ms, power2.inOut).</p>
     </div>
@@ -6561,7 +6499,7 @@ Router.register('/register', () => ({title:'Create Account', html:`
 Router.register('/forgot-password', () => ({title:'Forgot Password', html:`
 <div class="auth-stage">
   <div class="glass-card auth-card" data-reveal>
-    <div class="text-center"><div class="logo" style="justify-content:center"><span class="mark">K</span></div>
+    <div class="text-center"><div class="logo" style="justify-content:center"><span class="mark" style="background:transparent;box-shadow:none"><img src="/kicc-logo.png" alt="KICC" style="width:34px;height:34px;object-fit:contain;display:block"></span></div>
       <h2 style="margin-top:16px;font-size:1.4rem">Reset your password</h2>
       <p class="muted-xs" style="margin-top:8px">Enter the email on your account and we'll send a secure reset link.</p></div>
     <form class="mt-l" id="forgotForm">
@@ -6577,7 +6515,7 @@ Router.register('/forgot-password', () => ({title:'Forgot Password', html:`
 Router.register('/reset-password', () => ({title:'Set New Password', html:`
 <div class="auth-stage">
   <div class="glass-card auth-card" data-reveal>
-    <div class="text-center"><div class="logo" style="justify-content:center"><span class="mark">K</span></div>
+    <div class="text-center"><div class="logo" style="justify-content:center"><span class="mark" style="background:transparent;box-shadow:none"><img src="/kicc-logo.png" alt="KICC" style="width:34px;height:34px;object-fit:contain;display:block"></span></div>
       <h2 style="margin-top:16px;font-size:1.4rem">Set a new password</h2>
       <p class="muted-xs" style="margin-top:8px">Token: <code style="color:var(--au-ink)">rps_8f31c0a7d4e6b921</code></p></div>
     <form class="mt-l" id="resetForm">
@@ -6761,628 +6699,19 @@ const P = {
 const FIELDS_VENUE = [['name','Venue name','text'],['type','Type','select:Plenary Hall|Theatre|Meeting Room|Boardroom|Outdoor|VIP-Events'],['capacity','Capacity','number'],['description','Description','textarea']];
 const FIELDS_GENERIC = [['name','Name','text'],['county','County','select:'+COUNTIES.slice(0,8).map(c=>c.name).join('|')],['status','Status','select:active|onboarding|review'],['notes','Notes','textarea']];
 
-Router.register('/kicc-admin', (rest) => {
-  const sub = rest[0]||'overview';
 
-  /* 24 · hidden admin login — extends layouts.blank */
-  if(sub==='login') return {title:'Admin Sign In', html:`
-<div class="auth-stage" style="min-height:100vh">
-  <div class="glass-card auth-card door" style="width:min(400px,96vw)">
-    <div class="text-center">
-      <div style="width:64px;height:64px;border-radius:20px;margin:0 auto;display:grid;place-items:center;
-        background:linear-gradient(135deg,var(--kicc-gold),var(--au-700));color:var(--nv-900);font-family:var(--font-head);font-weight:900;font-size:30px;
-        box-shadow:0 0 50px var(--reference-tone-45)">K</div>
-      <h2 style="margin-top:22px;font-size:1.35rem">Admin Sign In</h2>
-      <p class="muted-xs" style="margin-top:8px">Restricted access. Extends <code>layouts.blank</code> — no nav, no footer.</p>
-    </div>
-    <form class="mt-l" id="adminLoginForm">
-      <div class="field"><label for="al-em">Email address</label><input class="input" id="al-em" type="email" placeholder="admin@kicc.go.ke" value="admin@kicc.go.ke" required></div>
-      <div class="field"><label for="al-pw">Password</label>
-        <div class="pw-wrap"><input class="input" id="al-pw" type="password" placeholder="••••••••" value="Admin2026" required>
-          <span class="pw-toggle" data-pw>Show</span></div></div>
-      <button class="btn gold block" type="submit">Enter admin nexus</button>
-    </form>
-    <div class="notice mt">Like opening a heavy concrete door — the panel pivots right, casts a shadow, the gold K logo glows. 600ms, power3.out. Door closes, dark transit → admin nexus.</div>
-    <div class="muted-xs text-center mt" style="opacity:.6">No Google Sign-In · no register · no forgot-password · no public backlink.</div>
-    <div class="tbl-wrap mt" style="font-size:12px">
-      <table class="tbl" style="min-width:0"><thead><tr><th>Role</th><th>Email</th><th>Password</th></tr></thead><tbody>
-        <tr><td>KICC Mother Admin</td><td>admin@kicc.go.ke</td><td><code style="color:var(--au-ink)">Admin2026</code></td></tr>
-        <tr><td>National Admin</td><td>admin@national.kicc.go.ke</td><td><code style="color:var(--au-ink)">Admin2026</code></td></tr>
-        <tr><td>County Admin (47)</td><td>admin@{slug}.kicc.go.ke</td><td><code style="color:var(--au-ink)">Admin2026</code></td></tr>
-      </tbody></table></div>
-  </div>
-</div>
-`};
-
-  /* 81 · Admin 3D assets */
-  if(sub==='3d-assets'||sub==='3d_assets') return {title:'Admin · 3D Assets', html: AdminShell({
-    title:'3D Assets', sub:'Mother Admin', navLabel:'KICC Mother Admin', base:'/kicc-admin', nav:NAV_ADMIN, active:'3d_assets',
-    eyebrow:'Pipeline 4 & 5', heading:'3D asset registry — splats, GLB, GLTF',
-    user:'admin@kicc.go.ke',
-    body:`<div class="between" style="flex-wrap:wrap;gap:12px">
-      <div class="center" style="gap:10px"><input class="input" placeholder="Search assets…" style="max-width:260px">
-        <select class="input" style="max-width:180px"><option>All types</option><option>Gaussian splat</option><option>Draco GLB</option><option>GLTF</option></select></div>
-      <button class="btn gold" data-action="toast" data-msg="Upload started — Draco GLB → Meshopt GLB → raw GLTF fallback chain">＋ Upload asset</button></div>
-      <div class="grid g3 mt-l">
-        ${[['Tsavo Hall splat','Gaussian splat','1,400 pts · 12 MB'],['Product GLB — Chess Set','Draco GLB','3.2 MB'],
-           ['County terrain mesh','GLTF','8.6 MB'],['Booth hall shell','Draco GLB','4.1 MB'],
-           ['Amphitheatre photosphere','Gaussian splat','2,100 pts · 18 MB'],['Solar kit turntable','Draco GLB','1.9 MB']].map(([n,t,m])=>
-          `<div class="glass-card pad"><div class="between"><span class="badge gold">${t}</span><span class="muted-xs">${m}</span></div>
-            <h3 style="margin-top:12px;font-size:.98rem">${n}</h3>
-            <div class="wrapflex mt-s"><button class="btn ghost xs" data-action="toast" data-msg="${n} attached to entity">Attach</button>
-              <button class="btn ghost xs" data-action="toast" data-msg="${n} queued for deletion" >Delete</button></div></div>`).join('')}
-      </div>
-      <div class="glass-card pad-l mt-l"><h3>Fallback chain (per asset)</h3>
-        <div class="mt">${['Draco GLB → Meshopt GLB → raw GLTF','Autogenerated TorusKnot geometry','Loading spinner → "3D unavailable"','Hide panel'].map((s,i)=>
-          `<div class="pipe-card" style="margin-bottom:8px"><span class="pipe-num">${i+1}</span><span style="font-size:13px">${s}</span></div>`).join('')}</div></div>`,
-  })};
-
-  /* 80 · Admin media */
-  if(sub==='media') return {title:'Admin · Media', html: AdminShell({
-    title:'Media', sub:'Mother Admin', navLabel:'KICC Mother Admin', base:'/kicc-admin', nav:NAV_ADMIN, active:'hero_media',
-    eyebrow:'Upload · manage · pipeline dispatch', heading:'Media library & pipeline dispatch', user:'admin@kicc.go.ke',
-    body:`<div class="grid g2">
-      <div class="glass-card pad-l"><h3>Upload media</h3>
-        <div class="field mt"><label>Asset type</label><select class="input"><option>Hero video (HLS source)</option><option>4D depth-map video</option><option>Media-tile clip</option><option>Poster frame (WebP)</option><option>Gaussian splat (.ply/.splat)</option></select></div>
-        <div class="field"><label>File</label><input class="input" type="file"></div>
-        <div class="field"><label>Dispatch pipeline</label><select class="input">${PIPELINES.slice(0,8).map(p=>`<option>${p.code} — ${p.name}</option>`).join('')}</select></div>
-        <button class="btn gold block" data-action="toast" data-msg="Upload queued — Cloudflare R2 + Workers edge delivery, cache purged on deploy">Upload &amp; dispatch</button>
-        <div class="notice mt">Targets <code>Cloudflare R2</code> via <code>kicc-r2-media</code> worker. Poster frames auto-generated at 1280w WebP.</div></div>
-      <div class="glass-card pad-l"><h3>Asset grid</h3>
-        <div class="grid g3 mt">${Array.from({length:9},(_,i)=>
-          `<div class="media-tile"><div class="tile-ratio"></div><div class="tile-media" style="background-image:url('${[HERO_POSTER,CITY_POSTER,LAND_POSTER,BOOTH_POSTER,HALL_POSTER,SAVANNA_POSTER][i%6]}')"></div><div class="tile-scrim"></div></div>`).join('')}</div></div>
-    </div>`,
-  })};
-
-  /* 82 · Admin ecommerce */
-  if(sub==='ecommerce') return {title:'Admin · Ecommerce', html: AdminShell({
-    title:'Ecommerce', sub:'Mother Admin', navLabel:'KICC Mother Admin', base:'/kicc-admin', nav:NAV_ADMIN, active:'orders',
-    eyebrow:'Products · orders · analytics · import', heading:'Ecommerce control', user:'admin@kicc.go.ke',
-    body:`<div class="grid g4">${ADMIN_KPI.slice(0,4).map(c=>T.kpi(c)).join('')}</div>
-      <div class="glass-card pad-l mt-l"><div class="between"><h3>Recent orders</h3>
-        <button class="btn ghost sm" data-action="toast" data-msg="CSV import wizard opened">Import CSV</button></div>
-        <div class="mt">${P.table(['Reference','County','Items','Total','Escrow','Fulfilment'],
-          SEED_ORDERS.map(o=>[`<code style="color:var(--au-ink);font-size:12px">${o[0]}</code>`,o[1],o[2],o[3],T.badge(o[4]),T.badge(o[5])]))}</div></div>`,
-  })};
-
-  /* 83 · Admin live */
-  if(sub==='live') return {title:'Admin · Live', html: AdminShell({
-    title:'Live Ops', sub:'Mother Admin', navLabel:'KICC Mother Admin', base:'/kicc-admin', nav:NAV_ADMIN, active:'live_events',
-    eyebrow:'Booth auth · monitoring · system health', heading:'Live broadcast operations', user:'admin@kicc.go.ke',
-    body:`<div class="grid g3">
-      <div class="glass-card pad-l"><div class="eyebrow">Encoder health</div>
-        <div style="font-family:var(--font-head);font-weight:900;font-size:2rem;color:var(--au-ink);margin-top:10px">99.8%</div>
-        <div class="muted-xs">0 dropped frames, last 60 min</div>${P.bars([['-60m',96],['-45m',98],['-30m',99],['-15m',100],['now',99]])}</div>
-      <div class="glass-card pad-l"><div class="eyebrow">Concurrent viewers</div>
-        <div style="font-family:var(--font-head);font-weight:900;font-size:2rem;color:var(--au-ink);margin-top:10px">9,880</div>
-        <div class="muted-xs">peak today, 34 countries</div>${P.bars([['10:00',42],['12:00',71],['14:00',88],['16:00',96],['18:00',64]])}</div>
-      <div class="glass-card pad-l"><div class="eyebrow">Booth auth</div>
-        <div style="font-family:var(--font-head);font-weight:900;font-size:2rem;color:var(--au-ink);margin-top:10px">310</div>
-        <div class="muted-xs">exhibitor encoders authenticated</div>${P.bars([['Hall 1',82],['Hall 2',64],['Hall 3',48],['Outdoor',36]])}</div>
-    </div>
-    <div class="glass-card pad-l mt-l"><h3>Active streams</h3><div class="mt">${P.table(['Stream','Venue','Quality','Viewers','Health','Action'],
-      STREAMS.map(s=>[s.n,s.venue,`<span class="badge gold">${s.q}</span>`,nf(s.viewers),
-        T.badge(s.status==='live'?'active':'past'),`<button class="btn ghost xs" data-action="toast" data-msg="Stream ${s.n} opened in monitor">Monitor</button>`]))}</div></div>`,
-  })};
-
-  /* ── 29–54 · the 26 mother-admin tabs ── */
-  const TABS = {
-    overview: `<div class="between mb" style="flex-wrap:wrap;gap:12px">
-        <div><div class="eyebrow">Live platform state</div><h3 style="margin-top:6px">KICC Mother Admin — national overview</h3></div>
-        <div class="wrapflex"><button class="btn ghost sm" data-action="toast" data-msg="Analytics export queued (CSV)">Export CSV</button>
-          <button class="btn gold sm" data-action="toast" data-msg="KPI snapshot refreshed">Refresh</button></div></div>
-      ${P.kpiGrid()}
-      <div class="grid g2 mt-l">
-        <div class="glass-card pad-l"><div class="between"><h3 style="font-size:1rem">Gross trade volume — 8 weeks</h3><span class="badge gold">KES 4.82B</span></div>
-          ${P.bars([['W1',34],['W2',41],['W3',48],['W4',56],['W5',63],['W6',71],['W7',84],['W8',92]])}</div>
-        <div class="glass-card pad-l"><div class="between"><h3 style="font-size:1rem">Pipeline status breakdown</h3><span class="badge grey">202 registered</span></div>
-          <div class="mt"><div class="donut" style="background:conic-gradient(var(--green) 0 61%, var(--kicc-gold) 61% 78%, var(--nv-400) 78% 92%, var(--reference-tone-30) 92% 100%)">
-            <div class="dv">202<div style="font-size:10px;color:var(--text-muted);font-weight:500">PIPELINES</div></div></div>
-          <div class="legend mt-l">
-            <div class="lg"><span class="sw" style="background:var(--green)"></span>Active — 61% (123)</div>
-            <div class="lg"><span class="sw" style="background:var(--kicc-gold)"></span>Onboarding — 17% (34)</div>
-            <div class="lg"><span class="sw" style="background:var(--nv-400)"></span>Review — 14% (29)</div>
-            <div class="lg"><span class="sw" style="background:var(--reference-tone-30)"></span>Suspended — 8% (16)</div>
-          </div></div></div>
-      </div>`,
-    portals: `<div class="eyebrow">Sub-portal links</div><h3 style="margin-top:8px">Portal picker cards</h3>
-      <div class="grid g4 mt-l">${[['KICC Mother','/kicc-admin','pc-kicc','Full national control'],['National Admin','/national-admin','pc-nat','Ministries & agencies'],
-        ['County Admin','/county-admin/nairobi-city/pro','pc-county','47 county dashboards'],['Exhibitor Admin','/exhibitor-admin','pc-exh','Storefront & orders']].map(([t,h,c,d])=>
-        `<div class="portal-card ${c}" data-href="${h}" style="cursor:pointer"><span class="badge grey">PORTAL</span>
-          <h3 style="margin-top:14px">${t}</h3><p class="muted-xs" style="margin-top:8px">${d}</p>
-          <div class="gold mt-s" style="font-weight:600;font-size:12.5px">Open portal →</div></div>`).join('')}</div>`,
-    counties: `<div class="between mb" style="flex-wrap:wrap;gap:12px">
-        <div class="center" style="gap:10px"><input class="input" placeholder="Search county…" style="max-width:240px">
-          <select class="input" style="max-width:160px"><option>Per page: 10</option><option>25</option><option>50</option></select></div>
-        <span class="badge gold">47 counties · 100% coverage</span></div>
-      ${P.table(['#','County','Products','Trade volume','Institutions','Hero','Action'],
-        COUNTIES.slice(0,12).map((c,i)=>[c.code,c.name,nf(120+c.sectors.length*86),`KES ${(180+c.sectors.length*94)}M`,
-          (c.sectors.length*3+2),`<div class="tbl-thumb" style="background-image:url('${imgFor(c)}')"></div>`,
-          `<a href="#/county-admin/${c.slug}/pro" class="btn ghost xs" data-link>Admin</a>`]))}`,
-    institutions: `<div class="between mb" style="flex-wrap:wrap;gap:12px">
-        <h3>Institution cards (CountyInstitution + KICC)</h3>
-        <button class="btn gold sm" data-action="toast" data-msg="Institution created — countyId and isPublished camelCase TiDB columns auto-filled">＋ New institution</button></div>
-      <div class="grid g3">${COUNTIES.slice(0,9).map(c=>`<div class="glass-card pad">
-        <div class="between"><span class="badge gold">${c.name}</span><span class="badge green">PUBLISHED</span></div>
-        <h3 style="margin-top:12px;font-size:.98rem">${c.name} County Institution</h3>
-        <div class="muted-xs" style="margin-top:8px">ID 300${c.code.slice(1)} · ${c.sectors.length} sectors</div>
-        <a href="#/institution-admin/${c.slug}" class="btn ghost xs mt" data-link>Per-institution admin</a></div>`).join('')}</div>
-      <div class="glass-card pad-l mt-l"><div class="between"><h3 style="font-size:1rem">KICC institution</h3><span class="badge gold">id: 30001</span></div>
-        <div class="muted-xs mt-s">All 10 venues linked. Created during the venues-tab build.</div></div>`,
-    national: `<div class="eyebrow">Ministries &amp; agencies</div><h3 style="margin-top:8px">National level</h3>
-      <div class="grid g4 mt-l">${['Ministry of Trade','Ministry of Agriculture','Ministry of Tourism','Ministry of Mining',
-        'Kenya Export Promotion','KEBS','KenInvest','Brand Kenya'].map(m=>`<div class="glass-card pad">
-        <span class="badge blue">MINISTRY</span><h3 style="margin-top:12px;font-size:.95rem">${m}</h3>
-        <div class="muted-xs" style="margin-top:8px">Linked pipelines: ${3+m.length%9}</div></div>`).join('')}</div>
-      <div class="mt-l">${P.table(['Agency','Mandate','Pipelines','Trade volume','Status'],
-        [['Kenya Export Promotion','Export facilitation','34','KES 812M',T.badge('active')],
-         ['KEBS','Standards & certification','22','KES 640M',T.badge('active')],
-         ['KenInvest','Investment promotion','18','KES 486M',T.badge('review')],
-         ['Brand Kenya','Nation branding','9','KES 132M',T.badge('active')]])}</div>
-      <div class="mt"><a href="#/national-admin" class="btn ghost" data-link>Open National Admin portal →</a></div>`,
-    exhibitors: `${P.table(['Exhibitor','County','Products','Orders','Revenue','Status'],
-        [['Mombasa Handicraft Guild','Mombasa','42','318','KES 12.4M',T.badge('active')],
-         ['Kericho Tea Estates','Kericho','18','604','KES 28.9M',T.badge('active')],
-         ['Machakos Solar Ltd','Machakos','26','212','KES 18.1M',T.badge('active')],
-         ['Kisii Stonecraft','Kisii','31','188','KES 9.6M',T.badge('onboarding')],
-         ['Turkana Weavers','Turkana','24','142','KES 5.8M',T.badge('review')],
-         ['Kwale Glassworks','Kwale','16','96','KES 4.2M',T.badge('active')]])}`,
-    orders: `${P.table(['Reference','County','Items','Total','Escrow','Fulfilment'],
-        SEED_ORDERS.map(o=>[`<code style="color:var(--au-ink);font-size:12px">${o[0]}</code>`,o[1],o[2],o[3],T.badge(o[4]),T.badge(o[5])]))}`,
-    providers: `<div class="eyebrow">Provider certification queue</div><h3 style="margin-top:8px">37 awaiting review</h3>
-      <div class="mt-l">${P.table(['Provider','County','Documents','Submitted','Action'],
-        [['Mombasa Handicraft Guild','Mombasa','KEBS · KRA · DPA','2 days ago',
-          `<button class="btn gold xs" data-action="toast" data-msg="Provider approved — certificate issued">Approve</button> <button class="btn ghost xs" data-action="toast" data-msg="Provider denied — reason recorded">Deny</button>`],
-         ['Baringo Apiaries','Baringo','KEBS · KRA','3 days ago',
-          `<button class="btn gold xs" data-action="toast" data-msg="Provider approved">Approve</button> <button class="btn ghost xs" data-action="toast" data-msg="Provider denied">Deny</button>`],
-         ['Kajiado Ranching Co-op','Kajiado','KEBS','5 days ago',
-          `<button class="btn gold xs" data-action="toast" data-msg="Provider approved">Approve</button> <button class="btn ghost xs" data-action="toast" data-msg="Provider denied">Deny</button>`]])}</div>`,
-    escrow: `<div class="grid g4">${ADMIN_KPI.slice(4,5).map(c=>T.kpi(c)).join('')}
-        ${T.kpi({l:'Released Today',v:'KES 84.2M',d:'+22 releases',up:1,sp:[40,52,58,64,71,76,80,84]})}
-        ${T.kpi({l:'Disputed',v:'3',d:'under review',up:0,sp:[7,6,6,5,5,4,4,3]})}
-        ${T.kpi({l:'Avg Hold Time',v:'4.2 days',d:'−0.6 days',up:1,sp:[6,5.8,5.4,5.1,4.8,4.5,4.3,4.2]})}</div>
-      <div class="mt-l">${P.table(['Reference','Buyer','Seller','Amount','State','Action'],
-        [['ESC-8841','Amina Hassan','Kilifi Agro-Exporters','KES 128,000',T.badge('escrow'),`<button class="btn gold xs" data-action="toast" data-msg="Funds released to seller">Release</button>`],
-         ['ESC-8840','Peter Njoroge','Kericho Tea Estates','KES 342,000',T.badge('escrow'),`<button class="btn gold xs" data-action="toast" data-msg="Funds released to seller">Release</button>`],
-         ['ESC-8838','Fatuma Ali','Machakos Solar Ltd','KES 510,000',T.badge('released'),'—'],
-         ['ESC-8836','David Otieno','Narok Grain Board','KES 368,000',T.badge('disputed'),`<button class="btn gold xs" data-action="toast" data-msg="Dispute opened in review queue">Review</button>`]])}</div>`,
-    '3d_assets': `<div class="notice">This tab redirects to <code>/kicc-admin/3d-assets</code> — upload, attach, delete.</div>
-      <div class="mt"><a href="#/kicc-admin/3d-assets" class="btn gold" data-link>Open 3D asset registry →</a></div>`,
-    pool: `<div class="grid g3">${T.kpi({l:'Selling Pool Balance',v:'KES 92.7M',d:'+9.6% MoM',up:1,sp:[58,61,68,71,79,84,88,93]})}
-        ${T.kpi({l:'Distribution Cycles',v:'24',d:'weekly cadence',up:1,sp:[10,12,14,16,18,20,22,24]})}
-        ${T.kpi({l:'Recipients',v:'47',d:'all counties',up:1,sp:[31,36,40,43,45,46,47,47]})}</div>
-      <div class="glass-card pad-l mt-l"><h3>Distribution status by county</h3><div class="mt">
-        ${P.bars([['Coast',88],['Nairobi',96],['Central',84],['Rift',79],['Nyanza',72],['Western',68],['Eastern',64],['NE',52]])}</div></div>`,
-    pipelines: `<div class="between mb" style="flex-wrap:wrap;gap:12px">
-        <div class="center" style="gap:10px"><input class="input" placeholder="Search pipeline code or name…" style="max-width:280px">
-          <select class="input" id="pipeSector" style="max-width:200px"><option>All sectors</option>${SECTORS.map(s=>`<option>${s}</option>`).join('')}</select></div>
-        <div class="wrapflex"><span class="badge gold">202 registered</span><span class="badge green">123 active</span>
-          <span class="badge blue">34 onboarding</span><span class="badge red">16 suspended</span></div></div>
-      <div class="tbl-wrap"><table class="tbl"><thead><tr><th>Code</th><th>Pipeline</th><th>Sector</th><th>County</th><th>Fee</th><th>Volume</th><th>Status</th></tr></thead>
-        <tbody id="pipeRows">${PIPELINES.slice(0,25).map(p=>`<tr data-sector="${p.sector}">
-          <td><code style="color:var(--au-ink);font-size:12px">${p.code}</code></td><td>${p.name}</td>
-          <td><span class="badge grey">${p.sector}</span></td><td>${p.county}</td><td>${p.fee}%</td>
-          <td>KES ${nf(p.vol)}</td><td>${T.badge(p.status)}</td></tr>`).join('')}</tbody></table></div>
-      <div class="pager"><button>‹</button><button class="on">1</button><button>2</button><button>3</button><button>…</button><button>9</button><button>›</button></div>`,
-    experiences: `<div class="grid g4">${T.kpi({l:'Experience Bookings',v:'1,284',d:'+14.2% MoM',up:1,sp:[720,810,880,960,1040,1120,1210,1284]})}
-        ${T.kpi({l:'Revenue',v:'KES 38.4M',d:'+11.8%',up:1,sp:[18,21,24,27,30,33,36,38]})}
-        ${T.kpi({l:'Avg Party Size',v:'4.2',d:'+0.3',up:1,sp:[3.4,3.5,3.7,3.8,3.9,4.0,4.1,4.2]})}
-        ${T.kpi({l:'Cancellation Rate',v:'3.1%',d:'−1.2 pts',up:1,sp:[6.2,5.8,5.1,4.6,4.1,3.7,3.4,3.1]})}</div>
-      <div class="mt-l">${P.table(['Booking','Experience','Venue','Party','Amount','Status'],
-        [['EXP-4417','Rooftop Helipad Sunset Tour','Helipad','4','KES 42,000',T.badge('paid')],
-         ['EXP-4416','Amphitheatre Cultural Night','Amphitheatre','28','KES 186,000',T.badge('paid')],
-         ['EXP-4415','Tower Crown Observation Deck','KICC Tower','12','KES 48,000',T.badge('processing')],
-         ['EXP-4414','Exhibition Floor Guided Tour','Exhibition Hall','64','KES 128,000',T.badge('delivered')]])}</div>`,
-    live_events: `<div class="between mb"><h3>Stream management grid</h3>
-        <button class="btn gold sm" data-action="toast" data-msg="New stream schedule created">＋ Schedule stream</button></div>
-      <div class="grid g3">${STREAMS.map((s,i)=>`<div class="media-tile">
-        <div class="tile-ratio"></div><div class="tile-media" style="background-image:url('${[HALL_POSTER,SAVANNA_POSTER,BOOTH_POSTER,LAND_POSTER,CITY_POSTER,HERO_POSTER][i%6]}')"></div>
-        <div class="tile-scrim"></div>${s.status==='live'?'<span class="tile-live badge red"><span class="live-dot"></span>LIVE</span>':''}
-        <div class="tile-body"><div style="font-weight:600;font-size:12.5px">${s.n}</div>
-          <div class="muted-xs" style="margin-top:5px">${s.venue} · ${s.q} · ${nf(s.viewers)} viewers</div>
-          <div class="wrapflex mt-s"><button class="btn ghost xs" data-action="toast" data-msg="Stream edited">Edit</button>
-            <button class="btn ghost xs" data-action="toast" data-msg="Stream stopped">Stop</button></div></div></div>`).join('')}</div>`,
-    venues: `<div class="between mb" style="flex-wrap:wrap;gap:12px">
-        <div class="center" style="gap:10px"><input class="input" placeholder="Search venue…" style="max-width:240px">
-          <select class="input" style="max-width:170px"><option>Per page: 10</option><option>25</option></select></div>
-        <button class="btn gold" id="addVenueBtn">＋ Quick-create venue</button></div>
-      <div class="tbl-wrap"><table class="tbl"><thead><tr><th>Venue</th><th>Type</th><th>Capacity</th><th>Floor area</th><th>Day rate</th><th>Status</th><th>Action</th></tr></thead>
-        <tbody>${VENUES.map(v=>`<tr><td style="font-weight:600">${v.name}</td><td><span class="badge grey">${v.type}</span></td>
-          <td>${nf(v.cap)}</td><td>${v.area}</td><td class="gold">${v.rate}</td><td>${T.badge(v.status)}</td>
-          <td><button class="btn ghost xs" data-action="toast" data-msg="${v.name} opened for edit">Edit</button></td></tr>`).join('')}</tbody></table></div>
-      <div class="glass-card pad-l mt-l"><div class="between"><h3 style="font-size:1rem">Venue quick-create drawer</h3><span class="badge gold">NEW</span></div>
-        <p class="muted-xs mt-s">Drawer: bg <code>var(--nv-850)</code>, slides right with spring overshoot (8px → settle), backdrop-filter blur overlay.
-        Form: name, type (Plenary Hall / Theatre / Meeting Room / Boardroom / Outdoor / VIP-Events), capacity, description.</p>
-        <button class="btn gold sm mt" id="addVenueBtn2">Open the drawer</button></div>`,
-    users: `${P.table(['User','Email','Roles','County','Tier','Status'],
-        [['Amina Hassan','amina.hassan@example.co.ke','buyer','Mombasa','gold',T.badge('active')],
-         ['Peter Njoroge','p.njoroge@example.co.ke','buyer, reviewer','Nairobi City','silver',T.badge('active')],
-         ['Fatuma Ali','f.ali@example.co.ke','exhibitor','Kwale','gold',T.badge('active')],
-         ['David Otieno','d.otieno@example.co.ke','exhibitor, provider','Kisumu','bronze',T.badge('review')],
-         ['Grace Mwangi','g.mwangi@example.co.ke','buyer','Kiambu','silver',T.badge('active')],
-         ['Samuel Kariuki','s.kariuki@example.co.ke','provider','Nakuru','gold',T.badge('active')]])}`,
-    hero_media: `<div class="grid g2">
-        <div class="glass-card pad-l"><h3>Landing hero video upload</h3>
-          <div class="field mt"><label>Hero source</label><select class="input"><option>HLS stream (.m3u8)</option><option>MP4 (WebM preferred)</option><option>4D depth-map video</option></select></div>
-          <div class="field"><label>Poster frame (WebP, 1280w)</label><input class="input" type="file"></div>
-          <div class="field"><label>Video file</label><input class="input" type="file"></div>
-          <button class="btn gold block" data-action="toast" data-msg="Hero media uploaded to R2 — poster auto-generated, cache purged">Upload hero</button>
-          <div class="notice mt">Fallback chain: Poster frame → mp4 fallback → gradient.</div></div>
-        <div class="glass-card pad-l"><h3>Current hero</h3>
-          <div class="mt">${T.hls({img:HERO_POSTER,title:'Kenya National Trade Expo 2026',sub:'seedance-hero · landing/hero/poster/seedance-hero.webp',q:'1080p',start:28})}</div></div></div>`,
-    packages: `<div class="between mb"><h3>Subscription plan editor</h3>
-        <button class="btn gold sm" data-action="toast" data-msg="New subscription plan created">＋ New plan</button></div>
-      <div class="grid g4">${[['Bronze','KES 0','1 storefront · 10 products · 3.1% fee','pc-county'],
-        ['Silver','KES 4,900 / mo','3 storefronts · 120 products · 2.4% fee','pc-nat'],
-        ['Gold','KES 14,900 / mo','10 storefronts · 800 products · 1.8% fee','pc-kicc'],
-        ['National','Custom','Unlimited · dedicated pipelines · 1.2% fee','pc-exh']].map(([t,p,f,c])=>
-        `<div class="portal-card ${c}" style="cursor:default"><span class="badge grey">PLAN</span>
-          <h3 style="margin-top:14px">${t}</h3>
-          <div style="font-family:var(--font-head);font-weight:900;font-size:1.5rem;color:var(--au-ink);margin-top:10px">${p}</div>
-          <p class="muted-xs" style="margin-top:10px">${f}</p>
-          <button class="btn ghost xs mt" data-action="toast" data-msg="${t} plan editor opened">Edit plan</button></div>`).join('')}</div>`,
-    analytics: `<div class="grid g4">${ADMIN_KPI.slice(0,4).map(c=>T.kpi(c)).join('')}</div>
-      <div class="grid g2 mt-l">
-        <div class="glass-card pad-l"><div class="between"><h3 style="font-size:1rem">Trade volume — 12 months</h3><span class="badge gold">KES 4.82B</span></div>
-          ${P.bars([['J',22],['F',28],['M',34],['A',41],['M',48],['J',54],['J',61],['A',68],['S',76],['O',84],['N',90],['D',96]])}</div>
-        <div class="glass-card pad-l"><div class="between"><h3 style="font-size:1rem">Forecast — next 2 quarters</h3><span class="badge blue">MODEL</span></div>
-          <div class="mt">${P.table(['Quarter','Low','Expected','High'],
-            [['2026 Q4','KES 5.1B','KES 5.6B','KES 6.2B'],['2027 Q1','KES 5.4B','KES 6.1B','KES 6.9B']])}</div>
-          <div class="notice mt">Confidence 0.82 · driven by pipeline activation and county onboarding rate.</div></div>
-      </div>`,
-    integration: `<div class="eyebrow">Service integration status</div><h3 style="margin-top:8px">Provider checks</h3>
-      <div class="mt-l">${P.table(['Service','Provider','Latency','Status','Action'],
-        [['Database','TiDB Cloud','18 ms',T.badge('active'),`<button class="btn ghost xs" data-action="toast" data-msg="TiDB connectivity test passed">Test</button>`],
-         ['Object storage','Cloudflare R2','41 ms',T.badge('active'),`<button class="btn ghost xs" data-action="toast" data-msg="R2 bucket reachable">Test</button>`],
-         ['Edge worker','Cloudflare Workers','9 ms',T.badge('active'),`<button class="btn ghost xs" data-action="toast" data-msg="kicc-purge-cache returns OK">Test</button>`],
-         ['Mail','failover (SMTP → log)','5 s timeout',T.badge('review'),`<button class="btn ghost xs" data-action="toast" data-msg="Mail failover verified — no 504">Test</button>`],
-         ['Payments','Escrow provider','210 ms',T.badge('active'),`<button class="btn ghost xs" data-action="toast" data-msg="Escrow provider reachable">Test</button>`],
-         ['Streaming','HLS origin','64 ms',T.badge('active'),`<button class="btn ghost xs" data-action="toast" data-msg="HLS origin reachable">Test</button>`]])}</div>`,
-    'pipeline-creator': `<div class="grid g2">
-        <div class="glass-card pad-l"><h3>Dynamic pipeline builder</h3>
-          <div class="field mt"><label>Pipeline name</label><input class="input" placeholder="e.g. Avocado Oil Extraction"></div>
-          <div class="field"><label>Sector</label><select class="input">${SECTORS.map(s=>`<option>${s}</option>`).join('')}</select></div>
-          <div class="field"><label>County</label><select class="input">${COUNTIES.slice(0,12).map(c=>`<option>${c.name}</option>`).join('')}</select></div>
-          <div class="field"><label>Fee rate (%)</label><input class="input" type="number" step="0.05" value="0.80"></div>
-          <button class="btn gold block" data-action="toast" data-msg="Pipeline created — KICC-PL-0203 registered">Create pipeline</button></div>
-        <div class="glass-card pad-l"><h3>Pipeline code / config</h3>
-          <pre style="margin-top:14px;font-family:ui-monospace,monospace;font-size:11.5px;line-height:1.75;color:var(--reference-tone-316);overflow-x:auto">{
-  "code": "KICC-PL-0203",
-  "name": "Avocado Oil Extraction",
-  "sector": "Agriculture",
-  "county": "Murang'a",
-  "fee": { "county": 0.80,
-           "institution": 1.20,
-           "national": 0.60,
-           "kicc": 0.40 },
-  "settlement": "escrow",
-  "status": "onboarding",
-  "mesh": ["producer","county","institution",
-           "national","kicc"]
-}</pre>
-          <div class="mt">${P.table(['Node','Role','Fee'], [['Producer','Origin','—'],['County','Pipeline','0.80%'],['Institution','Pipeline','1.20%'],['National','Pool','0.60%'],['KICC','Platform','0.40%']])}</div>
-        </div></div>`,
-    earnings: `<div class="grid g4">${T.kpi({l:'Platform Earnings',v:'KES 128.4M',d:'+16.8% MoM',up:1,sp:[62,71,80,88,97,108,118,128]})}
-        ${T.kpi({l:'County Share',v:'KES 96.2M',d:'+14.1%',up:1,sp:[48,54,60,66,73,80,88,96]})}
-        ${T.kpi({l:'National Pool',v:'KES 92.7M',d:'+9.6%',up:1,sp:[58,61,68,71,79,84,88,93]})}
-        ${T.kpi({l:'Payout Runs',v:'24',d:'weekly',up:1,sp:[10,12,14,16,18,20,22,24]})}</div>
-      <div class="glass-card pad-l mt-l"><h3>Revenue dashboard</h3>
-        ${P.bars([['County',82],['Institution',68],['National',54],['KICC',41],['Escrow float',34]])}</div>`,
-    'search-analytics': `<div class="grid g2">
-        <div class="glass-card pad-l"><h3>Search query log</h3>
-          <div class="mt">${P.table(['Query','Volume','Trend','CTR'],
-            [['purple tea','4,120','▲ 18%','6.4%'],['soapstone chess','3,480','▲ 11%','7.1%'],
-             ['solar home kit','2,940','▲ 24%','8.2%'],['coconut oil 5l','2,610','▼ 3%','5.8%'],
-             ['tsavo hall booking','1,880','▲ 9%','12.4%'],['kisii handicraft','1,540','▲ 6%','6.9%']])}</div></div>
-        <div class="glass-card pad-l"><h3>Frequency by hour</h3>
-          ${P.bars([['06',18],['09',52],['12',78],['15',66],['18',92],['21',44]])}
-          <div class="notice mt">Zero-result queries: 3.1% — down from 8.4% after the county sector taxonomy update.</div></div></div>`,
-    cache: `<div class="grid g3">
-        ${T.kpi({l:'Hit Ratio',v:'96.4%',d:'+1.2 pts',up:1,sp:[88,90,91,92,93,94,95,96]})}
-        ${T.kpi({l:'Purges Today',v:'18',d:'deploy-triggered',up:1,sp:[6,9,11,13,15,16,17,18]})}
-        ${T.kpi({l:'Avg TTFB',v:'41 ms',d:'−6 ms',up:1,sp:[62,58,54,51,48,45,43,41]})}</div>
-      <div class="glass-card pad-l mt-l"><h3>Cache management</h3>
-        <div class="mt">
-          <div class="fee-row"><span class="muted">Cloudflare API token</span><span class="gold">Valid (cfat_…)</span></div>
-          <div class="fee-row"><span class="muted">Purge worker</span><span>kicc-purge-cache → OK</span></div>
-          <div class="fee-row"><span class="muted">NO_CACHE_PATHS</span><span><code>/kicc-admin/login</code> included</span></div>
-          <div class="fee-row"><span class="muted">Deploy script sources .env</span><span>Yes — tokens on every deploy</span></div>
-        </div>
-        <div class="wrapflex mt"><button class="btn gold sm" data-action="toast" data-msg="Full cache purge issued — kicc-purge-cache returned OK">Flush all</button>
-          <button class="btn ghost sm" data-action="toast" data-msg="Stale assets purged (214 objects)">Flush stale assets</button>
-          <button class="btn ghost sm" data-action="toast" data-msg="Edge worker redeployed via python3 deploy-worker.py">Redeploy worker</button></div></div>`,
-    'licence-queue': `<div class="eyebrow">Licence approval queue</div><h3 style="margin-top:8px">Queue management</h3>
-      <div class="mt-l">${P.table(['Licence','Applicant','Type','Submitted','Action'],
-        [['LIC-2026-0441','Mombasa Handicraft Guild','Export licence','2 days ago',
-          `<button class="btn gold xs" data-action="toast" data-msg="Licence approved">Approve</button> <button class="btn ghost xs" data-action="toast" data-msg="Licence deferred">Defer</button>`],
-         ['LIC-2026-0440','Baringo Apiaries','Food safety','3 days ago',
-          `<button class="btn gold xs" data-action="toast" data-msg="Licence approved">Approve</button> <button class="btn ghost xs" data-action="toast" data-msg="Licence deferred">Defer</button>`],
-         ['LIC-2026-0439','Kwale Glassworks','Industrial permit','4 days ago',
-          `<button class="btn gold xs" data-action="toast" data-msg="Licence approved">Approve</button> <button class="btn ghost xs" data-action="toast" data-msg="Licence deferred">Defer</button>`],
-         ['LIC-2026-0438','Turkana Weavers','Cooperative','6 days ago',
-          `<button class="btn gold xs" data-action="toast" data-msg="Licence approved">Approve</button> <button class="btn ghost xs" data-action="toast" data-msg="Licence deferred">Defer</button>`]])}</div>`,
-    'pipeline-settings': `<div class="glass-card pad-l" style="max-width:720px">
-        <h3>Pipeline configuration</h3>
-        <div class="field mt"><label>Activation mode</label><select class="input"><option>Manual review required</option><option>Auto-activate on certification</option></select></div>
-        <div class="field"><label>Default fee ceiling (%)</label><input class="input" type="number" step="0.05" value="3.10"></div>
-        <div class="field"><label>Settlement window</label><select class="input"><option>4 days</option><option>7 days</option><option>14 days</option></select></div>
-        <label class="check" style="margin-bottom:12px"><input type="checkbox" checked> Require escrow on all cross-county orders</label>
-        <label class="check" style="margin-bottom:18px"><input type="checkbox" checked> Notify county admin on pipeline activation</label>
-        <button class="btn gold" data-action="toast" data-msg="Pipeline settings saved and propagated to all 47 counties">Save settings</button></div>`,
-
-    /* ── the admin Curation Studio tab ──────────────────────────────────────
-       Previously absent: NAV_ADMIN listed "Curation Studio" but TABS had no
-       `studio` key, so TABS[sub] || TABS.overview quietly served the generic
-       overview. This pane is the real purpose of that tab — the pipeline that
-       sits between admin input and public output, with the automation engine
-       that runs it. */
-    'studio': `<div class="between mb" style="flex-wrap:wrap;gap:12px">
-        <div><div class="eyebrow">Curation pipeline · the layer between input and output</div>
-          <h3 style="margin-top:6px">Every asset is read, scored and placed before it publishes</h3></div>
-        <div class="wrapflex">
-          <button class="btn ghost sm" id="engRun">Run pipeline</button>
-          <button class="btn gold sm" id="engPublish">Publish cleared</button></div></div>
-      <div class="grid g5" id="stageRail" style="gap:12px"></div>
-      <div class="grid g2 mt-l">
-        <div class="glass-card pad-l"><div class="between"><h3 style="font-size:1rem">Asset ledger</h3>
-          <span class="badge gold" id="engCount">—</span></div>
-          <div class="mt ad-ledger" id="adminStudioLedger"></div></div>
-        <div>
-          <div class="glass-card pad-l"><div class="between"><h3 style="font-size:1rem">Automation engine</h3>
-            <span class="badge" id="engState">idle</span></div>
-            <p style="font-size:13px;color:var(--text-muted);margin-top:8px">
-              Watches ingest, runs vision scoring, assigns chapters, and publishes anything that
-              clears its quality gate — no manual step between an upload and the public page.</p>
-            <div class="mt" id="engToggles"></div></div>
-          <div class="glass-card pad-l mt"><h3 style="font-size:1rem">Engine log</h3>
-            <div class="mt" id="engLog" style="font-family:var(--font-mono);font-size:11.5px;line-height:1.9;color:var(--text-muted)"></div></div>
-        </div></div>`,
-  };
-
-  const meta = NAV_ADMIN.find(n=>n[0]===sub) || NAV_ADMIN[0];
-  return {title:'Admin · '+meta[1], html: AdminShell({
-    title:'KICC Admin', sub:'Mother Admin', navLabel:'KICC Mother Admin', base:'/kicc-admin', nav:NAV_ADMIN, active:sub,
-    eyebrow:'Cluster D1 · Admin command nexus', heading:meta[1]+' — '+meta[0], user:'admin@kicc.go.ke',
-    body: TABS[sub] || TABS.overview,
-  })};
-});
 
 /* ════════════ 55 · NATIONAL ADMIN ════════════ */
-Router.register('/national-admin', () => ({title:'National Admin', html: AdminShell({
-  title:'National', sub:'National Admin', navLabel:'National Admin', base:'/national-admin', active:'overview',
-  nav:[['overview','Overview','▦'],['ministries','Ministries','★'],['agencies','Agencies','⌂'],['pipelines','Pipelines','⇄'],
-       ['trade','Trade Flows','⇄'],['reports','Reports','◔'],['users','Users','☻']],
-  eyebrow:'Cluster D2', heading:'Ministry & agency management — national level', user:'admin@national.kicc.go.ke',
-  body:`<div class="notice">Same portal as Mother Admin — sidebar slides in, KPIs float from the right. Restricted to national-scope entities.</div>
-    <div class="mt">${P.kpiGrid()}</div>
-    <div class="grid g2 mt-l">
-      <div class="glass-card pad-l"><div class="between"><h3 style="font-size:1rem">Ministry trade contribution</h3><span class="badge gold">KES 2.94B</span></div>
-        ${P.bars([['Trade',92],['Agriculture',78],['Tourism',64],['Mining',48],['Energy',41],['ICT',36]])}</div>
-      <div class="glass-card pad-l"><h3 style="font-size:1rem">Agency pipeline links</h3>
-        <div class="mt">${P.table(['Agency','Pipelines','Volume'], [['Kenya Export Promotion','34','KES 812M'],['KEBS','22','KES 640M'],['KenInvest','18','KES 486M'],['Brand Kenya','9','KES 132M']])}</div></div>
-    </div>`,
-})}));
+
 
 /* ════════════ 56–74 · COUNTY ADMIN (Nexora theme) ════════════ */
-Router.register('/county-admin', (rest) => {
-  const c = COUNTIES.find(x=>x.slug===rest[0]) || COUNTIES[0];
-  const tab = rest[1]==='pro' ? (rest[2]||'overview') : (rest[1]||'overview');
-  const TABS = {
-    overview: `<div class="grid g4">${ADMIN_KPI.map(c2=>T.kpi(c2)).join('')}</div>
-      <div class="grid g2 mt-l">
-        <div class="glass-card pad-l"><div class="between"><h3 style="font-size:1rem">${c.name} trade volume — 8 weeks</h3><span class="badge gold">KES ${(180+c.sectors.length*94)}M</span></div>
-          ${P.bars([['W1',31],['W2',38],['W3',44],['W4',52],['W5',61],['W6',69],['W7',78],['W8',88]])}</div>
-        <div class="glass-card pad-l"><h3 style="font-size:1rem">Sector split</h3>
-          <div class="mt">${c.sectors.map((s,i)=>`<div class="fee-row"><span class="muted">${s}</span><span class="gold">${(3.2+i*1.7).toFixed(1)}% of county GDP</span></div>`).join('')}</div></div>
-      </div>`,
-    content: `<div class="glass-card pad-l"><h3>Content editor</h3>
-      <div class="field mt"><label>County hero headline</label><input class="input" value="${c.name} County — Kenya's ${c.sectors[0]} engine"></div>
-      <div class="field"><label>County description</label><textarea class="input" rows="5">${c.name} County sits in the ${c.region} region with a population of ${nf(c.pop)} (2019 Census) and ${c.sectors.length} devolved economic sectors led by ${c.sectors.join(', ')}.</textarea></div>
-      <div class="field"><label>Meta description</label><input class="input" value="${c.name} County on the KICC National Exhibition Platform — sectors, products and institutions."></div>
-      <button class="btn gold" data-action="toast" data-msg="County content published — edge cache purged">Publish content</button></div>`,
-    images: `<div class="glass-card pad-l"><h3>Image upload</h3>
-      <div class="field mt"><label>Hero image (WebP)</label><input class="input" type="file"></div>
-      <div class="field"><label>Alt text</label><input class="input" placeholder="Describe the image for accessibility"></div>
-      <button class="btn gold" data-action="toast" data-msg="Image uploaded — blur-up base64 placeholder generated (fast-image component)">Upload</button></div>
-      <div class="grid g4 mt-l">${Array.from({length:8},(_,i)=>`<div class="media-tile"><div class="tile-ratio"></div>
-        <div class="tile-media" style="background-image:url('${imgFor(c)}')"></div><div class="tile-scrim"></div>
-        <div class="tile-body"><span class="badge grey">${['hero','sector','drone','landmark','floor','housing','voice','spotlight'][i]}</span></div></div>`).join('')}</div>`,
-    prices: `${P.table(['Product','Category','Unit','County price','Platform price','Margin'],
-        PRODUCTS.slice(0,8).map(p=>[p.n,p.cat,p.unit,`KES ${nf(Math.round(p.p*0.97))}`,`KES ${nf(p.p)}`,'3.00%']))}`,
-    sectors: `<div class="eyebrow">Sector tiles toggle</div><h3 style="margin-top:8px">${c.sectors.length} sectors live on the county page</h3>
-      <div class="grid g3 mt-l">${c.sectors.map((s,i)=>`<div class="glass-card pad">
-        <div class="between"><span class="badge gold">SECTOR ${String(i+1).padStart(2,'0')}</span>
-          <label class="check"><input type="checkbox" checked> Live</label></div>
-        <h3 style="margin-top:12px;font-size:1rem">${s}</h3>
-        <div class="muted-xs" style="margin-top:8px">${nf(Math.round(c.pop*0.031*(1+i*0.28)))} workers</div></div>`).join('')}</div>`,
-    products: `<div class="between mb"><h3>Product grid CRUD</h3>
-        <button class="btn gold sm" data-action="toast" data-msg="New product draft created for ${c.name}">＋ New product</button></div>
-      <div class="grid g4">${PRODUCTS.slice(0,8).map((p,i)=>`<div class="prod-card">
-        <div class="pc-media" style="background-image:url('${[BOOTH_POSTER,HALL_POSTER,SAVANNA_POSTER,LAND_POSTER][i%4]}')"></div>
-        <div class="pc-body"><div class="muted-xs">${p.cat}</div><div style="font-weight:600;font-size:12.5px">${p.n.slice(0,40)}</div>
-          <div class="price">KES ${nf(p.p)}</div>
-          <div class="wrapflex"><button class="btn ghost xs" data-action="toast" data-msg="Product editor opened">Edit</button>
-            <button class="btn ghost xs" data-action="toast" data-msg="Product archived">Archive</button></div></div></div>`).join('')}</div>`,
-    '4d': `<div class="grid g2">
-        <div class="glass-card pad-l"><h3>4D video upload</h3>
-          <div class="field mt"><label>Depth-map video</label><input class="input" type="file"></div>
-          <div class="field"><label>Mode</label><select class="input"><option>parallax</option><option>sphere</option><option>card</option><option>float</option></select></div>
-          <button class="btn gold block" data-action="toast" data-msg="4D video queued — THREE.js depth-map processing via three-video-player.js">Upload 4D video</button>
-          <div class="notice mt">Fallback: flat mp4 → poster.</div></div>
-        <div class="glass-card pad-l"><h3>Preview</h3><div class="mt">${T.hls({img:imgFor(c),title:c.name+' 4D county film',sub:'THREE.js depth-map · parallax',q:'720p',start:34})}</div></div></div>`,
-    ads: `${P.table(['Campaign','Advertiser','Screen','Flight','Spend','Status'],
-        [['KIC-4417','Safaricom','Tower Façade LED','12 Oct – 9 Nov','KES 1,680,000',T.badge('active')],
-         ['KIC-4416','Equity Bank','Tsavo Hall Foyer','01 Nov – 30 Nov','KES 580,000',T.badge('upcoming')],
-         ['KIC-4415','Kenya Tourism Board','Amphitheatre Stage Screen','21 Oct – 22 Oct','KES 260,000',T.badge('past')],
-         ['KIC-4414','EABL','Exhibition Floor Ribbon','12 Nov – 18 Nov','KES 320,000',T.badge('upcoming')]])}`,
-    packages: `<div class="grid g3">${[['County Basic','KES 0','Sector tiles + 10 products'],['County Pro','KES 9,900 / mo','Full Nexora dashboard · 19 tabs · unlimited products'],['County National','Custom','Dedicated pipeline + national pool access']].map(([t,p,d],i)=>
-        `<div class="glass-card pad-l"><div class="between"><span class="badge ${i===1?'gold':'grey'}">PLAN</span>${i===1?'<span class="badge green">CURRENT</span>':''}</div>
-          <h3 style="margin-top:14px">${t}</h3>
-          <div style="font-family:var(--font-head);font-weight:900;font-size:1.5rem;color:var(--au-ink);margin-top:10px">${p}</div>
-          <p class="muted-xs" style="margin-top:10px">${d}</p></div>`).join('')}</div>`,
-    reports: `<div class="between mb"><h3>County reports</h3>
-        <button class="btn gold sm" data-action="toast" data-msg="County report generated (PDF)">Generate report</button></div>
-      <div class="grid g3">${T.kpi({l:'Trade Volume',v:`KES ${(180+c.sectors.length*94)}M`,d:'+14.2%',up:1,sp:[30,40,48,56,64,72,80,88]})}
-        ${T.kpi({l:'Active Producers',v:nf(120+c.sectors.length*86),d:'+8.1%',up:1,sp:[80,95,110,140,170,200,230,260]})}
-        ${T.kpi({l:'Sectors Live',v:String(c.sectors.length),d:'100% of county',up:1,sp:[1,2,2,3,3,3,4,4]})}</div>
-      <div class="glass-card pad-l mt-l"><h3>Monthly trade volume</h3>
-        ${P.bars([['Jul',42],['Aug',58],['Sep',71],['Oct',88]])}</div>`,
-    housing: `<div class="between mb"><h3>Housing projects</h3>
-        <button class="btn gold sm" data-action="toast" data-msg="Housing project added">＋ Add project</button></div>
-      ${P.table(['Project','Location','Units','Progress','Status'],
-        [[c.name+' Phase I','Town Centre','480','82%',T.badge('active')],
-         [c.name+' Phase II','North Ward','320','44%',T.badge('active')],
-         [c.name+' Affordable Housing','East Ward','640','12%',T.badge('onboarding')]])}`,
-    drone: `<div class="eyebrow">Drone sequences</div><h3 style="margin-top:8px">Aerial capture library</h3>
-      <div class="grid g3 mt-l">${['Coastline sweep','Town flyover','Agricultural belt','Infrastructure corridor','Sunrise orbit','Night skyline'].map((n,i)=>
-        `<div class="media-tile"><div class="tile-ratio"></div><div class="tile-media" style="background-image:url('${imgFor(c)}')"></div>
-          <div class="tile-scrim"></div><span class="badge-3d">4K · 60s</span><div class="play-fab">▶</div>
-          <div class="tile-body"><div style="font-weight:600;font-size:12.5px">${n}</div>
-            <div class="muted-xs" style="margin-top:5px">Waypoints ${4+i*2} · 2-unit arc transitions</div></div></div>`).join('')}</div>`,
-    floor: `<div class="glass-card pad-l"><h3>Floor plans</h3>
-      <div class="viewer3d mt" data-alt="1,420" data-v3read style="aspect-ratio:16/9">
-        <div class="v3d-ctrls"><span class="badge grey">Plan view</span><span class="badge grey">drag to pan</span></div>
-        <div class="v3d-tag">room3d · ${c.name}</div><div class="v3d-hud" data-v3-readout></div>
-        <div style="position:absolute;inset:0;display:grid;place-items:center">
-          <div class="v3d-orbit" style="width:78%;height:66%;transform-style:preserve-3d;position:relative">
-            <div style="position:absolute;inset:0;border:2px solid var(--reference-tone-312);border-radius:12px;background:repeating-linear-gradient(0deg,var(--reference-tone-58) 0 24px,transparent 24px 28px);transform:rotateX(66deg)"></div>
-          </div></div></div>
-      <button class="btn gold sm mt" data-action="toast" data-msg="Floor plan uploaded — /room3d/create">Upload floor plan</button></div>`,
-    consent: `<div class="eyebrow">Consent form management</div><h3 style="margin-top:8px">DPA 2019 &amp; GDPR records</h3>
-      <div class="mt-l">${P.table(['Reference','Signer','Type','Signed','Status'],
-        [['CON-2026-8841','Amina Hassan','Digital','04 Oct 2026',T.badge('active')],
-         ['CON-2026-8840','Peter Njoroge','Physical (QR)','03 Oct 2026',T.badge('active')],
-         ['CON-2026-8839','Fatuma Ali','Digital','02 Oct 2026',T.badge('active')],
-         ['CON-2026-8838','David Otieno','Digital','29 Sep 2026',T.badge('review')]])}</div>
-      <div class="wrapflex mt"><a href="#/consent/${c.slug}" class="btn ghost sm" data-link>Open consent form</a>
-        <a href="#/consent/verify" class="btn ghost sm" data-link>Verify reference</a>
-        <a href="#/consent/physical" class="btn ghost sm" data-link>Printable QR form</a></div>`,
-    voice: `<div class="between mb"><h3>Voice notes</h3>
-        <button class="btn gold sm" data-action="toast" data-msg="Voice recorder started">● Record</button></div>
-      <div class="grid g2">${[['County trade briefing — Q3','04 Oct 2026 · 4m 12s'],['Sector launch remarks — Agriculture','02 Oct 2026 · 2m 48s'],
-        ['Producer spotlight — coffee cooperative','28 Sep 2026 · 6m 03s'],['Investor call summary','21 Sep 2026 · 8m 31s']].map(([t,m])=>
-        `<div class="glass-card pad"><div class="between"><span class="badge gold">VOICE NOTE</span><span class="muted-xs">${m}</span></div>
-          <h3 style="margin-top:12px;font-size:.98rem">${t}</h3>
-          <div class="mt-s"><div class="bar" style="height:4px;background:var(--reference-tone-317);border-radius:100px;overflow:hidden"><i style="display:block;height:100%;width:${30+Math.random()*50}%;background:var(--kicc-gold)"></i></div></div>
-          <button class="btn ghost xs mt" data-action="toast" data-msg="Transcript generated">Transcribe</button></div>`).join('')}</div>`,
-    landmark: `<div class="between mb"><h3>Landmarks</h3>
-        <button class="btn gold sm" data-action="toast" data-msg="Landmark added to the county map">＋ Add landmark</button></div>
-      <div class="map-stage"><div class="map-grid"></div>
-        ${['County HQ','Main Market','Heritage Site','National Park Gate','Port / Terminus','Stadium'].map((n,i)=>
-          `<div class="county-node" style="left:${18+i*14}%;top:${24+(i%3)*26}%"><div class="dot"></div><div class="lbl">${n}</div></div>`).join('')}
-        <div class="badge-3d">${c.name} · ${6} landmarks pinned</div></div>`,
-    broadcast: `${P.table(['Slot','Channel','Programme','Time','Status'],
-        [['BR-4417','KICC Live','County Trade Digest','Today 18:00',T.badge('upcoming')],
-         ['BR-4416','KICC Live','Producer Spotlight — ${c.sectors[0]}','Today 20:00',T.badge('upcoming')],
-         ['BR-4415','County Radio','Weekly Market Report','Yesterday 09:00',T.badge('past')],
-         ['BR-4414','KICC Live','Investment Forum Replay','28 Sep 2026',T.badge('past')]])}`,
-    'trade-hub': `<div class="grid g4">${T.kpi({l:'Trade Contacts',v:'1,284',d:'+42 this month',up:1,sp:[980,1040,1100,1150,1190,1230,1260,1284]})}
-        ${T.kpi({l:'Annual Volume',v:`KES ${(180+c.sectors.length*94)}M`,d:'+14.2%',up:1,sp:[30,42,52,62,72,80,86,92]})}
-        ${T.kpi({l:'Export Destinations',v:'18',d:'+3 new',up:1,sp:[12,13,14,15,16,17,17,18]})}
-        ${T.kpi({l:'Open Enquiries',v:'34',d:'awaiting reply',up:0,sp:[48,44,42,40,38,37,35,34]})}</div>
-      <div class="mt-l">${P.table(['Partner','Country','Commodity','Volume','Status'],
-        c.sectors.map((s,i)=>[[['East Africa Trade Co.','Uganda'],['EuroFoods GmbH','Germany'],['Gulf Trading LLC','UAE'],['AsiaPacific Ltd','Singapore'],['COMESA Desk','Zambia']][i%5][0],
-          [['East Africa Trade Co.','Uganda'],['EuroFoods GmbH','Germany'],['Gulf Trading LLC','UAE'],['AsiaPacific Ltd','Singapore'],['COMESA Desk','Zambia']][i%5][1],
-          s,`KES ${nf(180000000+i*94000000)}`,T.badge(i%2?'active':'review')]))}</div>`,
-    spotlight: `<div class="between mb"><h3>Trader spotlights</h3>
-        <button class="btn gold sm" data-action="toast" data-msg="Spotlight drafted — WhatsApp broadcast queued">＋ New spotlight</button></div>
-      <div class="grid g3">${[['Grace Mwangi','Coffee Cooperative, '+c.name,'2,400 farmers reached'],['Samuel Kariuki','Soapstone Artisans','680 farmers reached'],
-        ['Fatuma Ali','Fisheries Collective','1,120 farmers reached']].map(([n,r,reach])=>
-        `<div class="glass-card pad"><div class="center" style="gap:12px"><div class="logo"><span class="mark" style="width:44px;height:44px;font-size:19px">${n[0]}</span></div>
-          <div><h3 style="font-size:.98rem">${n}</h3><div class="muted-xs">${r}</div></div></div>
-          <div class="muted-xs" style="margin-top:14px">${reach} · broadcast via WhatsApp</div>
-          <div class="wrapflex mt-s"><button class="btn ghost xs" data-action="toast" data-msg="Spotlight sent to WhatsApp broadcast list">Send</button>
-            <button class="btn ghost xs" data-action="toast" data-msg="Spotlight editor opened">Edit</button></div></div>`).join('')}</div>`,
-  };
-  const meta = NAV_COUNTY.find(n=>n[0]===tab) || NAV_COUNTY[0];
-  return {title:c.name+' County Admin · '+meta[1], html: AdminShell({
-    title:'County Pro', sub:c.name+' County', navLabel:'County Admin · Nexora', base:'/county-admin/'+c.slug+'/pro', active:tab,
-    nav:NAV_COUNTY, eyebrow:'Cluster D3 · Nexora dark theme', heading:c.name+' — '+meta[1], user:'admin@'+c.slug+'.kicc.go.ke',
-    body:`<div class="notice">Nexora theme · glassmorphism · Chart.js CDN · hls.js. ${c.name} County Admin (id ${c.id}), region ${c.region}, ${nf(c.pop)} people.</div>
-      <div class="mt">${TABS[tab]||TABS.overview}</div>`,
-  })};
-});
+
 
 /* ════════════ 75 · INSTITUTION ADMIN ════════════ */
-Router.register('/institution-admin', (rest) => {
-  const c = COUNTIES.find(x=>x.slug===rest[0]) || COUNTIES[0];
-  const tab = rest[1]||'overview';
-  const TABS = {
-    overview: `<div class="notice">Institution logo scales from center, tabs stagger. Tabs: overview, profile, products, videos, sectors, team, analytics, transactions, customers, production.</div>
-      <div class="mt">${P.kpiGrid()}</div>`,
-    profile: `<div class="glass-card pad-l" style="max-width:760px"><h3>Institution profile</h3>
-      <div class="field mt"><label>Institution name</label><input class="input" value="${c.name} County Institution"></div>
-      <div class="field"><label>County</label><input class="input" value="${c.name}"></div>
-      <div class="field"><label>Registration</label><input class="input" value="CountyInstitution id 300${c.code.slice(1)}"></div>
-      <div class="field"><label>About</label><textarea class="input" rows="4">The devolved institution for ${c.name} County, coordinating ${c.sectors.length} economic sectors and county-level trade pipelines.</textarea></div>
-      <button class="btn gold" data-action="toast" data-msg="Institution profile saved">Save profile</button></div>`,
-    products: `<div class="grid g4">${PRODUCTS.slice(0,8).map((p,i)=>`<div class="prod-card">
-        <div class="pc-media" style="background-image:url('${[BOOTH_POSTER,HALL_POSTER,SAVANNA_POSTER,LAND_POSTER][i%4]}')"></div>
-        <div class="pc-body"><div class="muted-xs">${p.cat}</div><div style="font-weight:600;font-size:12.5px">${p.n.slice(0,40)}</div>
-          <div class="price">KES ${nf(p.p)}</div></div></div>`).join('')}</div>`,
-    videos: `<div class="grid g3">${Array.from({length:6},(_,i)=>`<div class="media-tile">
-        <div class="tile-ratio"></div><div class="tile-media" style="background-image:url('${[HALL_POSTER,SAVANNA_POSTER,BOOTH_POSTER,LAND_POSTER,CITY_POSTER,HERO_POSTER][i%6]}')"></div>
-        <div class="tile-scrim"></div><span class="badge-3d">${['HLS','4D','tile'][i%3]}</span><div class="play-fab">▶</div>
-        <div class="tile-body"><div style="font-weight:600;font-size:12.5px">${c.name} film ${i+1}</div>
-          <div class="muted-xs" style="margin-top:5px">Uploaded ${i+2} days ago</div></div></div>`).join('')}</div>`,
-    /* ── 74b · PRODUCT / SERVICE EXPERIENCE — the uploader ─────────────────
-       A film of a product or a service goes in here; it comes out on this
-       institution's PUBLIC profile as an immersive 4D stage. Stored in the
-       browser (IndexedDB); a backend is required for real hosting. */
-    experience: `<div class="notice">
-        Film a product or a service, drop it below, and it plays on the institution's
-        public profile as an immersive 4D stage. Stored in this browser only —
-        real hosting needs a backend (object storage + signed upload + a media row).
-      </div>
-      <div class="mt-l" data-exp-studio data-inst="${c.slug}"></div>`,
-    sectors: `<div class="grid g3">${c.sectors.map((s,i)=>`<div class="glass-card pad">
-        <div class="between"><span class="badge gold">SECTOR ${String(i+1).padStart(2,'0')}</span><span class="muted-xs">${(3.2+i*1.7).toFixed(1)}% GDP</span></div>
-        <h3 style="margin-top:12px;font-size:1rem">${s}</h3></div>`).join('')}</div>`,
-    team: `${P.table(['Name','Role','Email','Status'],
-        [['Dr. James Mwangi','Institution Director','director@'+c.slug+'.go.ke',T.badge('active')],
-         ['Sarah Achieng','Head of Trade','trade@'+c.slug+'.go.ke',T.badge('active')],
-         ['Michael Kiprotich','Data Officer','data@'+c.slug+'.go.ke',T.badge('active')],
-         ['Lydia Wanjiru','Content Lead','content@'+c.slug+'.go.ke',T.badge('review')]])}`,
-    analytics: `<div class="grid g4">${ADMIN_KPI.slice(0,4).map(k=>T.kpi(k)).join('')}</div>
-      <div class="glass-card pad-l mt-l"><h3>Institution trade volume</h3>
-        ${P.bars([['Jul',38],['Aug',52],['Sep',68],['Oct',84]])}</div>`,
-    transactions: `${P.table(['Reference','Type','Counterparty','Amount','State'],
-        [['TXN-8841','Sale','Kilifi Agro-Exporters','KES 128,000',T.badge('paid')],
-         ['TXN-8840','Payout','Producer pool','KES 342,000',T.badge('released')],
-         ['TXN-8839','Fee','KICC platform','KES 12,400',T.badge('paid')],
-         ['TXN-8838','Refund','Order ORD-2026-04414','KES 368,000',T.badge('held')]])}`,
-    customers: `${P.table(['Customer','Orders','Lifetime Value','Last Order','Tier'],
-        [['Amina Hassan','28','KES 1,284,000','04 Oct 2026','gold'],['Peter Njoroge','17','KES 682,000','02 Oct 2026','silver'],
-         ['Fatuma Ali','41','KES 2,140,000','01 Oct 2026','gold'],['David Otieno','9','KES 318,000','28 Sep 2026','bronze']].map(r=>
-          r.map((x,i)=>i===4?`<span class="badge ${x==='gold'?'gold':x==='silver'?'grey':'blue'}">${x.toUpperCase()}</span>`:x))) }`,
-    production: `<div class="grid g3">${T.kpi({l:'Units Produced',v:'48,200',d:'+11.4% MoM',up:1,sp:[28,32,36,39,42,45,46,48]})}
-        ${T.kpi({l:'Capacity Utilisation',v:'82%',d:'+4 pts',up:1,sp:[64,68,72,75,78,80,81,82]})}
-        ${T.kpi({l:'Quality Pass Rate',v:'97.6%',d:'+1.1 pts',up:1,sp:[92,93,94,95,96,96,97,98]})}</div>
-      <div class="glass-card pad-l mt-l"><h3>Production lines</h3>
-        <div class="mt">${P.table(['Line','Product','Output / day','Utilisation','Status'],
-          [['L1','Primary processing','1,240 units','88%',T.badge('active')],
-           ['L2','Packaging','2,100 units','76%',T.badge('active')],
-           ['L3','Quality control','1,980 units','91%',T.badge('active')],
-           ['L4','Cold storage','—','64%',T.badge('review')]])}</div></div>`,
-  };
-  const meta = NAV_INST.find(n=>n[0]===tab) || NAV_INST[0];
-  return {title:c.name+' Institution Admin', html: AdminShell({
-    title:'Institution', sub:c.name+' County', navLabel:'Per-institution admin', base:'/institution-admin/'+c.slug, active:tab,
-    nav:NAV_INST, eyebrow:'Cluster D4 · /institution-admin/{institution}', heading:c.name+' County Institution — '+meta[1],
-    user:'admin@'+c.slug+'.kicc.go.ke', body:TABS[tab]||TABS.overview,
-  })};
-});
+
 
 /* ════════════ 76 · EXHIBITOR ADMIN ════════════ */
-Router.register('/exhibitor-admin', () => ({title:'Exhibitor Admin', html: AdminShell({
-  title:'Exhibitor', sub:'Storefront', navLabel:'Exhibitor admin', base:'/exhibitor-admin', active:'overview',
-  nav:[['overview','Overview','▦'],['products','Products','▣'],['orders','Orders','▤'],['analytics','Analytics','◔']],
-  eyebrow:'Cluster D4', heading:'Exhibitor storefront control', user:'f.ali@example.co.ke',
-  body:`<div class="notice">Portal: golden ring → exhibitor world.</div>
-    <div class="mt">${P.kpiGrid()}</div>
-    <div class="mt-l">${P.table(['Order','Customer','Items','Total','State'],
-      SEED_ORDERS.map(o=>[o[0],o[1],o[2],o[3],T.badge(o[4])]))}</div>`,
-})}));
+
 
 /* ════════════ 77 · EXHIBITOR ONBOARDING ════════════ */
 Router.register('/exhibitor-onboarding', () => ({title:'Exhibitor Onboarding', html:`
@@ -7604,37 +6933,7 @@ Router.register('/media', () => ({title:'Media Library', html:`
 `}));
 
 /* ════════════ 84–85 · PIPELINE MANAGEMENT ════════════ */
-Router.register('/pipelines', (rest) => {
-  const sector = rest[0];
-  const list = sector ? PIPELINES.filter(p=>p.sector.toLowerCase()===sector.toLowerCase()) : PIPELINES;
-  return {title:'Pipelines', html:`
-<div class="wrap">${T.crumb([['Home','/'],['Pipelines',null]])}</div>
-<div class="wrap page-head" data-depth="mid">
-  <div class="eyebrow" data-reveal>202-registered pipeline registry · 50ms row stagger entry</div>
-  <h1 data-reveal style="font-size:clamp(1.8rem,3.4vw,2.6rem);margin-top:12px">${sector?sector+' Pipelines':'Pipeline Registry'}</h1>
-  <p class="muted" data-reveal style="max-width:74ch;margin-top:12px">
-    ${sector?`Filtered to the ${sector} sector — ${list.length} pipelines.`:'Every pipeline across the national platform, with sector filter, search and status breakdown.'}</p>
-  <div class="between mt" style="flex-wrap:wrap;gap:14px">
-    <div class="center" style="gap:10px;flex-wrap:wrap">
-      <input class="input" placeholder="Search pipeline…" style="max-width:260px">
-      <select class="input" style="max-width:200px"><option>All sectors</option>${SECTORS.map(s=>`<option>${s}</option>`).join('')}</select>
-    </div>
-    <div class="wrapflex"><span class="badge gold">${list.length} shown</span><span class="badge green">61% active</span>
-      <span class="badge blue">17% onboarding</span><span class="badge red">8% suspended</span></div>
-  </div>
-</div>
-<div class="wrap section-sm">
-  <div class="tbl-wrap"><table class="tbl"><thead><tr><th>Code</th><th>Pipeline</th><th>Sector</th><th>County</th><th>Fee</th><th>Volume</th><th>Status</th></tr></thead>
-    <tbody>${list.slice(0,40).map(p=>`<tr><td><code style="color:var(--au-ink);font-size:12px">${p.code}</code></td>
-      <td>${p.name}</td><td><a href="#/pipelines/${p.sector.toLowerCase().replace(/ /g,'-')}" class="badge grey" data-link style="text-decoration:none">${p.sector}</a></td>
-      <td>${p.county}</td><td>${p.fee}%</td><td>KES ${nf(p.vol)}</td><td>${T.badge(p.status)}</td></tr>`).join('')}</tbody></table></div>
-  <div class="pager"><button>‹</button><button class="on">1</button><button>2</button><button>3</button><button>…</button><button>6</button><button>›</button></div>
-  <div class="grid g3 mt-l">
-    ${T.kpi({l:'Total Pipelines',v:'202',d:'+7 this week',up:1,sp:[120,134,148,155,168,181,194,202]})}
-    ${T.kpi({l:'Avg Fee Rate',v:'1.86%',d:'−0.04 pts',up:1,sp:[2.1,2.05,2.0,1.95,1.92,1.89,1.88,1.86]})}
-    ${T.kpi({l:'Aggregate Volume',v:'KES 4.82B',d:'+18.4% MoM',up:1,sp:[30,42,38,55,61,58,74,82]})}</div>
-</div>
-`};});
+
 
 /* ════════════ 86–88 · ROOM3D ════════════ */
 Router.register('/room3d', (rest) => {
@@ -7692,60 +6991,10 @@ Router.register('/room3d', (rest) => {
 `};});
 
 /* ════════════ 89 · OPERATIONS ════════════ */
-Router.register('/operations', () => ({title:'Operations', html:`
-<div class="wrap">${T.crumb([['Home','/'],['Operations',null]])}</div>
-<div class="wrap page-head" data-depth="mid">
-  <div class="eyebrow" data-reveal>Platform ops metrics</div>
-  <h1 data-reveal style="font-size:clamp(1.8rem,3.4vw,2.6rem);margin-top:12px">Operations</h1>
-</div>
-<div class="wrap section-sm">
-  <div class="grid g4">
-    ${T.kpi({l:'Uptime (30d)',v:'99.98%',d:'SLA 99.9% met',up:1,sp:[99.9,99.9,100,99.9,100,100,99.9,99.98]})}
-    ${T.kpi({l:'Avg Response',v:'64 ms',d:'−9 ms',up:1,sp:[92,88,82,78,74,70,67,64]})}
-    ${T.kpi({l:'Edge Requests / day',v:'18.4M',d:'+6.2%',up:1,sp:[12,13,14,15,16,17,18,18]})}
-    ${T.kpi({l:'Error Rate',v:'0.04%',d:'−0.02 pts',up:1,sp:[0.12,0.11,0.09,0.08,0.07,0.06,0.05,0.04]})}
-  </div>
-  <div class="grid g2 mt-l">
-    <div class="glass-card pad-l"><h3 style="font-size:1rem">Infrastructure</h3>
-      <div class="mt">
-        <div class="fee-row"><span class="muted">Compute</span><span>Laravel 13 (PHP 8.4)</span></div>
-        <div class="fee-row"><span class="muted">Database</span><span>TiDB Cloud</span></div>
-        <div class="fee-row"><span class="muted">Storage</span><span>Cloudflare R2</span></div>
-        <div class="fee-row"><span class="muted">Edge</span><span>Cloudflare Workers</span></div>
-        <div class="fee-row"><span class="muted">CDN</span><span>Cloudflare (purge on deploy)</span></div>
-        <div class="fee-row"><span class="muted">Mail</span><span>failover (SMTP → log), 5s timeout</span></div>
-      </div></div>
-    <div class="glass-card pad-l"><h3 style="font-size:1rem">Response time by region</h3>
-      ${P.bars([['Nairobi',96],['Mombasa',82],['Kisumu',68],['London',54],['Dubai',61],['Singapore',38]])}
-      <div class="notice mt">Regional edge caching keeps p95 under 90ms for East African traffic.</div></div>
-  </div>
-</div>
-`}));
+
 
 /* ════════════ 90 · REVIEWS ADMIN ════════════ */
-Router.register('/reviews', () => ({title:'Reviews Admin', html:`
-<div class="wrap">${T.crumb([['Home','/'],['Reviews Admin',null]])}</div>
-<div class="wrap page-head" data-depth="mid">
-  <div class="eyebrow" data-reveal>Moderation queue — approve / reject / spam, filters</div>
-  <h1 data-reveal style="font-size:clamp(1.8rem,3.4vw,2.6rem);margin-top:12px">Reviews Moderation</h1>
-  <div class="wrapflex mt">${['All','Pending','Approved','Rejected','Spam'].map((x,i)=>`<button class="pill ${i===0?'active':''}">${x}</button>`).join('')}</div>
-</div>
-<div class="wrap section-sm">
-  <div class="tbl-wrap"><table class="tbl"><thead><tr><th>Reviewer</th><th>Subject</th><th>Rating</th><th>Review</th><th>State</th><th>Action</th></tr></thead><tbody>
-  ${[['Amina Hassan','Kericho Purple Tea — Single Estate',5,'Excellent single-estate quality, arrived well packaged.','pending'],
-     ['Peter Njoroge','Kisii Soapstone Chess Set',5,'Beautiful craftsmanship, the board is heavier than expected.','pending'],
-     ['Anonymous','Machakos Solar Home Kit 200W',1,'BUY CHEAP SOLAR CLICK HERE www.spam-link.example','spam'],
-     ['Fatuma Ali','Kwale Mineral Sand Glassware Set',4,'Six pieces, one had a small chip but seller replaced it.','approved'],
-     ['David Otieno','Narok Organic Wheat Flour 50kg',3,'Good flour but delivery took longer than the stated lead time.','rejected']].map(r=>
-    `<tr><td>${r[0]}</td><td>${r[1]}</td><td class="stars">${'★'.repeat(r[2])}${'☆'.repeat(5-r[2])}</td>
-      <td style="max-width:320px">${r[3]}</td><td>${T.badge(r[4]==='pending'?'review':r[4]==='spam'?'suspended':r[4]==='approved'?'active':'past')}</td>
-      <td style="white-space:nowrap"><button class="btn gold xs" data-action="toast" data-msg="Review approved and published">Approve</button>
-        <button class="btn ghost xs" data-action="toast" data-msg="Review rejected">Reject</button>
-        <button class="btn ghost xs" data-action="toast" data-msg="Marked as spam — reviewer flagged">Spam</button></td></tr>`).join('')}
-  </tbody></table></div>
-  <div class="pager"><button>‹</button><button class="on">1</button><button>2</button><button>3</button><button>›</button></div>
-</div>
-`}));
+
 
 /* ════════════ 91 · TRADE AGREEMENTS ════════════ */
 Router.register('/trade-agreements', () => ({title:'Trade Agreements', html:`
@@ -7801,7 +7050,7 @@ Router.register('/consent', (rest) => {
 <div class="wrap section-sm">
   <div class="glass-card pad-l" data-reveal style="max-width:720px;margin:0 auto">
     <div class="between" style="border-bottom:1px solid var(--glass-border);padding-bottom:18px">
-      <div class="logo"><span class="mark">K</span><span>KICC<small>National Exhibition Platform</small></span></div>
+      <div class="logo"><span class="mark" style="background:transparent;box-shadow:none"><img src="/kicc-logo.png" alt="KICC" style="width:34px;height:34px;object-fit:contain;display:block"></span><span>KICC<small>National Exhibition Platform</small></span></div>
       <div class="eyebrow">Printable QR consent form</div></div>
     <h2 style="margin-top:22px;font-size:1.3rem">Data Protection Act 2019 &amp; GDPR Consent</h2>
     <p class="muted-xs" style="margin-top:12px">Scan the QR code below to open the digital consent form, or complete this printed copy and return it to the KICC registration desk.</p>
@@ -7831,7 +7080,7 @@ Router.register('/consent', (rest) => {
 <div class="wrap section-sm">
   <div class="glass-card pad-l" data-reveal style="max-width:760px;margin:0 auto">
     <div class="between" style="border-bottom:1px solid var(--glass-border);padding-bottom:18px">
-      <div class="logo"><span class="mark">K</span><span>KICC<small>National Exhibition Platform</small></span></div>
+      <div class="logo"><span class="mark" style="background:transparent;box-shadow:none"><img src="/kicc-logo.png" alt="KICC" style="width:34px;height:34px;object-fit:contain;display:block"></span><span>KICC<small>National Exhibition Platform</small></span></div>
       <div style="text-align:right"><div class="eyebrow">Digital consent</div>
         <div class="muted-xs" style="margin-top:4px">${c.name} County</div></div></div>
     <h2 style="margin-top:22px;font-size:1.3rem">DPA 2019 &amp; GDPR Digital Consent</h2>
@@ -7857,151 +7106,7 @@ Router.register('/consent', (rest) => {
 `};});
 
 /* ════════════ PAGE ATLAS (deliverable index of all 78 routes) ════════════ */
-Router.register('/catalog', () => {
-  const CLUSTERS = [
-    ['CLUSTER A — PUBLIC VIDEO WORLDS', [
-      ['01','Home','/','Shader vortex → HLS hero → content sections','HLS hero + media-tile per section'],
-      ['02','Counties Index','/counties','County video strip tunnel','47 media-tile cards with hover video'],
-      ['03','County Detail','/counties/{slug}','Terrain flyover landing → HLS hero','HLS hero + sector media-tiles'],
-      ['04','Institution Detail','/institutions/{slug}','4D hologram → splat → parallax video','4D parallax depth-map + GLTF/GLB'],
-      ['05','Marketplace Index','/marketplace','Golden vortex → product video grid','Media-tile per product'],
-      ['06','Marketplace Show','/marketplace/{slug}','Product zoom → 3D model reveal','GLTF model OR product video'],
-      ['07','Exhibitions Index','/exhibitions','Card grid with live stream preview','Media-tile per exhibition'],
-      ['08','Exhibition Show','/exhibitions/{slug}','Booth 3D scene → live stream','Booth 3D scene OR HLS live stream'],
-      ['09','Venues Index','/venues','Orbit view of KICC campus → venue cards','Shader backdrop'],
-      ['10','Venue Show','/venues/{slug}','Single venue detail','Shader backdrop'],
-      ['11','Screens Directory','/screens','18 screen card gallery','Shader backdrop'],
-      ['12','Screen Show','/screens/{slug}','Single screen detail','Shader backdrop'],
-      ['13','Streams Index','/streams','Live stream grid','HLS thumbnails'],
-      ['14','Stream Show','/streams/{slug}','Full HLS stream world','HLS player (full-viewport)'],
-      ['15','Travel Index','/travel','Transport hub','Shader backdrop'],
-      ['16','Travel Receipt','/travel/receipt/{ref}','Booking confirmation','Shader backdrop'],
-      ['17','3D Kenya Map','/exhibition-3d/map','47 extruded counties','THREE.js r170 + GSAPDirector'],
-      ['18','3D Booth Viewer','/exhibition-3d/booth','Virtual exhibition hall','THREE.js r170 + GSAPDirector'],
-      ['19','3D Sector Map','/exhibition-3d/sector','Mombasa & Kilifi sector flyover','THREE.js r170 + GSAPDirector'],
-      ['20','3D Terrain Explorer','/exhibition-3d/terrain','Full Kenya terrain flyover','Custom THREE.js + Simplex noise'],
-      ['21','3D Room Viewer','/room3d/{id}/viewer','Virtual room photosphere','THREE.js'],
-      ['22','3D Splat Viewer','/3d/splats/{name}','Gaussian splat point-cloud','Custom WebGL2 (zero deps)'],
-    ]],
-    ['CLUSTER B — AUTH THRESHOLDS', [
-      ['23','Login','/login','Glass card floats on minimal shader','Card pivots from right'],
-      ['24','Admin Login','/kicc-admin/login','EXTENDS layouts.blank · dark minimal · K logo (gold gradient)','Heavy concrete door pivot, gold glow'],
-      ['25','Register','/register','Multi-step horizontal carousel: email → 6-digit code → details','Each step slides from right'],
-      ['26','Forgot Password','/forgot-password','Simple email form','Form slides in'],
-      ['27','Reset Password','/reset-password/{token}','Token + new password form','Form slides in'],
-    ]],
-    ['CLUSTER C — USER DASHBOARD', [
-      ['28','User Dashboard','/dashboard','Golden ring from login point → stats cards float in (100ms stagger)','8 tabs: Profile, Bookings, Exhibitions, Reviews, Security, Addresses, Gift Cards, Referrals'],
-    ]],
-    ['CLUSTER D — ADMIN COMMAND NEXUS', [
-      ['29','KICC Mother Admin — overview','/kicc-admin/overview','8+ glassmorphic KPI cards with sparkline mini-charts','blur 18px'],
-      ['30','portals','/kicc-admin/portals','Sub-portal links','Portal picker cards'],
-      ['31','counties','/kicc-admin/counties','Paginated table','Search, per-page'],
-      ['32','institutions','/kicc-admin/institutions','Institution cards (CountyInstitution + KICC)','Link to per-institution admin'],
-      ['33','national','/kicc-admin/national','Ministry cards, agency table','Link to national admin'],
-      ['34','exhibitors','/kicc-admin/exhibitors','Exhibitor user table','Pagination'],
-      ['35','orders','/kicc-admin/orders','Order table with items','Pagination'],
-      ['36','providers','/kicc-admin/providers','Provider certification queue','Approve/deny actions'],
-      ['37','escrow','/kicc-admin/escrow','Escrow table with buyer/seller','Release button'],
-      ['38','3d_assets','/kicc-admin/3d-assets','Upload / attach / delete','Redirects from 3d_assets tab'],
-      ['39','pool','/kicc-admin/pool','Selling pool balance','Distribution status'],
-      ['40','pipelines','/kicc-admin/pipelines','202-registered pipeline registry','Sector filter, search, status breakdown'],
-      ['41','experiences','/kicc-admin/experiences','Experience booking table','Stats + total'],
-      ['42','live_events','/kicc-admin/live_events','Stream management grid','CRUD + stats'],
-      ['43','venues (NEW)','/kicc-admin/venues','Paginated venue table + quick-create slide drawer','Drawer bg var(--nv-850), spring overshoot'],
-      ['44','users','/kicc-admin/users','User table with roles','Pagination'],
-      ['45','hero_media','/kicc-admin/hero_media','Landing hero video upload','Upload form'],
-      ['46','packages','/kicc-admin/packages','Subscription plan editor','CRUD'],
-      ['47','analytics','/kicc-admin/analytics','Full analytics dashboard','Charts, stats, forecasts'],
-      ['48','integration','/kicc-admin/integration','Service integration status','Provider checks'],
-      ['49','pipeline-creator','/kicc-admin/pipeline-creator','Dynamic pipeline builder','Pipeline code/config'],
-      ['50','earnings','/kicc-admin/earnings','Revenue dashboard','Earnings stats, pool data'],
-      ['51','search-analytics','/kicc-admin/search-analytics','Search query log','Trends, frequency'],
-      ['52','cache','/kicc-admin/cache','Cache management','Stats, flush buttons'],
-      ['53','licence-queue','/kicc-admin/licence-queue','Licence approval queue','Queue management'],
-      ['54','pipeline-settings','/kicc-admin/pipeline-settings','Pipeline configuration','Activation settings'],
-      ['55','National Admin','/national-admin','Ministry/agency management','Sidebar slides, KPIs float'],
-      ['56','County Admin — overview','/county-admin/{slug}/pro/overview','8-card KPI grid','Nexora theme'],
-      ['57','content','/county-admin/{slug}/pro/content','Content editor','—'],
-      ['58','images','/county-admin/{slug}/pro/images','Image upload','—'],
-      ['59','prices','/county-admin/{slug}/pro/prices','Price table','—'],
-      ['60','sectors','/county-admin/{slug}/pro/sectors','Sector tiles toggle','—'],
-      ['61','products','/county-admin/{slug}/pro/products','Product grid CRUD','—'],
-      ['62','4d','/county-admin/{slug}/pro/4d','4D video upload','—'],
-      ['63','ads','/county-admin/{slug}/pro/ads','Ad management','—'],
-      ['64','packages','/county-admin/{slug}/pro/packages','Subscription plans','—'],
-      ['65','reports','/county-admin/{slug}/pro/reports','County reports','—'],
-      ['66','housing','/county-admin/{slug}/pro/housing','Housing projects','—'],
-      ['67','drone','/county-admin/{slug}/pro/drone','Drone sequences','—'],
-      ['68','floor','/county-admin/{slug}/pro/floor','Floor plans','—'],
-      ['69','consent','/county-admin/{slug}/pro/consent','Consent form management','—'],
-      ['70','voice','/county-admin/{slug}/pro/voice','Voice notes','—'],
-      ['71','landmark','/county-admin/{slug}/pro/landmark','Landmarks','—'],
-      ['72','broadcast','/county-admin/{slug}/pro/broadcast','Broadcast schedule','—'],
-      ['73','trade-hub','/county-admin/{slug}/pro/trade-hub','Trade contacts/volumes','—'],
-      ['74','spotlight','/county-admin/{slug}/pro/spotlight','Trader spotlights/WhatsApp','—'],
-      ['75','Institution Admin','/institution-admin/{institution}','10 tabs: overview, profile, products, videos, sectors, team, analytics, transactions, customers, production','Logo scales from center'],
-      ['76','Exhibitor Admin','/exhibitor-admin','Products, orders, analytics','Golden ring → exhibitor world'],
-      ['77','Exhibitor Onboarding','/exhibitor-onboarding','3-question wizard → storefront created','Step carousel, 500ms'],
-      ['78','Portal Picker','/portal','Card grid: KICC (gold) / National (sky) / County (ocean) / Exhibitor (green)','Cards float from different vectors'],
-    ]],
-    ['CLUSTER E — SPECIALTY PAGES', [
-      ['79','Media Library','/media','Shader backdrop · upload + asset grid','—'],
-      ['80','Admin Media','/kicc-admin/media','Upload, manage, pipeline dispatch','—'],
-      ['81','Admin 3D Assets','/kicc-admin/3d-assets','Upload splat/GLB, attach, delete','—'],
-      ['82','Admin Ecommerce','/kicc-admin/ecommerce/*','Products, orders, analytics, import','—'],
-      ['83','Admin Live','/kicc-admin/live','Booth auth, monitoring, system health','—'],
-      ['84','Pipeline Management','/pipelines','Table with 50ms row stagger entry','—'],
-      ['85','Pipeline Sector','/pipelines/{sector}','Filtered pipeline cards','—'],
-      ['86','Room3D Create','/room3d/create','Photo upload form','—'],
-      ['87','Room3D Index','/room3d','Room cards','—'],
-      ['88','Room3D Show','/room3d/{id}','Room info, images','—'],
-      ['89','Operations','/operations','Platform ops metrics','—'],
-      ['90','Reviews Admin','/reviews','Moderation queue — approve/reject/spam','—'],
-      ['91','Trade Agreements','/trade-agreements','B2B partnership listings','—'],
-      ['92','Consent Form','/consent/{slug}','DPA 2019 + GDPR digital consent','—'],
-      ['93','Consent Verify','/consent/verify','Reference lookup form','—'],
-      ['94','Consent Physical','/consent/physical','Printable QR consent form','—'],
-    ]],
-  ];
-  return {title:'Page Atlas', html:`
-<div class="wrap">${T.crumb([['Home','/'],['Page Atlas',null]])}</div>
-<div class="wrap page-head" data-depth="mid">
-  <div class="eyebrow" data-reveal>Complete build coverage</div>
-  <h1 data-reveal style="font-size:clamp(1.8rem,3.4vw,2.6rem);margin-top:12px">Page Atlas — 94 catalogued entries</h1>
-  <p class="muted" data-reveal style="max-width:80ch;margin-top:12px">
-    Every page, tab and route from the specification, reproduced and navigable. Click any row to open that page in the prototype.</p>
-</div>
-<div class="wrap section-sm">
-  ${CLUSTERS.map(([title,rows])=>`
-    <div class="glass-card pad-l mb" data-reveal>
-      <div class="between" style="flex-wrap:wrap;gap:12px"><h2 style="font-size:1.15rem">${title}</h2>
-        <span class="badge gold">${rows.length} entries</span></div>
-      <div class="tbl-wrap mt">
-        <table class="tbl"><thead><tr><th>#</th><th>Page</th><th>Route</th><th>World / Design</th><th>Notes</th><th></th></tr></thead>
-        <tbody>${rows.map(r=>`<tr>
-          <td><code style="color:var(--au-ink);font-size:12px">${r[0]}</code></td>
-          <td style="font-weight:600">${r[1]}</td>
-          <td><code style="font-size:11.5px">${r[2]}</code></td>
-          <td style="font-size:12.5px">${r[3]}</td>
-          <td class="muted-xs">${r[4]}</td>
-          <td>${r[2].includes('{')||r[2].includes('*')
-            ? `<span class="muted-xs">dynamic</span>`
-            : `<a href="#${r[2]}" class="btn ghost xs" data-link>Open</a>`}</td></tr>`).join('')}</tbody></table>
-      </div>
-    </div>`).join('')}
-  <div class="grid g2">
-    <div class="glass-card pad-l" data-reveal><h3>Standard CSS components (30)</h3>
-      <div class="wrapflex mt">${['media-tile','hls-player','fast-image','splat-card','hologram-viewer','booth-3d','scroll-video','scroll-model',
-        'shader-backdrop','video-3d','map-pin','skeleton','review-widget','review-form','form/*','kpi-card','pipeline-badge',
-        'pipeline-fee-breakdown','pipeline-mesh','pipeline-cascade'].map(c=>`<span class="badge grey">${c}</span>`).join('')}</div></div>
-    <div class="glass-card pad-l" data-reveal><h3>Layouts &amp; JS engines</h3>
-      <div class="wrapflex mt">${['layouts.app','layouts.admin','layouts.nexora','layouts.blank','layouts.auth','gsap.min.js','ScrollTrigger.min.js',
-        'kicc-shader-bg.js','kicc-scroll3d.js','three-video-player.js','three-background.js','splat-viewer.js','product-viewer.js',
-        'fx3d.js','animations.js','immersive.js','lenis','hls.js','alpinejs 3.14.8'].map(c=>`<span class="badge gold">${c}</span>`).join('')}</div></div>
-  </div>
-</div>
-`};});
+
 
 /* ════════════ 404 ════════════ */
 Router.register('/404', (rest,path) => ({title:'Not found', html:`
@@ -8046,12 +7151,13 @@ const STUDIO_SEED = [
 
 /* the plates the archive strip renders from — real, licence-cleared frames */
 const STUDIO_PLATES = [
-  /* 0 · hall interior */      'https://sspark.genspark.ai/i/qAnr5ZAd8daxgSIb?width=2560',
-  /* 1 · market / vendor */    'https://sspark.genspark.ai/i/jJb4NYEd2gx2FAL4?width=2560',
-  /* 2 · city / golden hour */ 'https://sspark.genspark.ai/i/PVkdIoF6Vw3o4PED?width=2560',
-  /* 3 · savanna / aerial */   'https://sspark.genspark.ai/i/yEBiSGiqrbthu44L?width=2560',
-  /* 4 · exhibition floor */   'https://sspark.genspark.ai/i/e2x9V9fU5QQXUai0?width=2560',
-  /* 5 · generic city */       'https://sspark.genspark.ai/i/6qV5pV5w0yXda4Ve?width=2560'
+  /* every plate is a media_assets row (tile_default) — replace it in the admin */
+  TD.plate_0 || BLANK,   /* 0 · hall interior */
+  TD.plate_1 || BLANK,   /* 1 · market / vendor */
+  TD.plate_2 || BLANK,   /* 2 · city / golden hour */
+  TD.plate_3 || BLANK,   /* 3 · savanna / aerial */
+  TD.plate_4 || BLANK,   /* 4 · exhibition floor */
+  TD.plate_5 || BLANK    /* 5 · generic city */
 ];
 
 const STUDIO = (() => {
@@ -8586,598 +7692,7 @@ const ENG = (() => {
           stats: () => ({ cycle, cfg: CFG, autoRun: CFG.autoRun, timer: !!timer, log: LOG.length })};
 })();
 </script>
-<script>
-/* ─────────────────────────────────────────────────────────────────────────────
-   KICC · PANE FORGE  (parts/22.pane-forge.js)
-   The admin audit found 27 distinct tabs but 8 of them rendered only a headline
-   and KPIs — purpose-named yet inert (0 tables, 0 inputs). This module gives
-   every tab a real, wired control surface: settings that persist in-session,
-   actions that report back, and a per-tab automation binding. It runs from the
-   same render pass as GLASS/ENG so it survives route changes.
-   ───────────────────────────────────────────────────────────────────────────── */
-const PF = (() => {
-  const S = {};                       // in-session settings store, keyed per tab
-  let bound = null;                   // signature of the pane currently forged
-
-  const T = (msg, kind) => {
-    let host = document.getElementById('pfToast');
-    if (!host) {
-      host = document.createElement('div');
-      host.id = 'pfToast';
-      host.className = 'pf-toast';
-      document.body.appendChild(host);
-    }
-    const el = document.createElement('div');
-    el.className = 'pf-toast-row ' + (kind || '');
-    el.innerHTML = '<span class="pf-dot"></span>' + msg;
-    host.appendChild(el);
-    requestAnimationFrame(() => el.classList.add('on'));
-    setTimeout(() => { el.classList.remove('on'); setTimeout(() => el.remove(), 420); }, 3600);
-  };
-
-  /* Each tab: the controls that make it actually operate, and the action that
-     proves it is wired. Values persist for the session so the surface behaves
-     like a configured system rather than a screenshot. */
-  const SPEC = {
-    overview: {
-      note: 'Publish gate and ingest cadence for the whole platform.',
-      controls: [
-        ['gate', 'Publish gate score', 'select:80|82|85|90', '82'],
-        ['ingest', 'Ingest cadence', 'select:manual|every 15 min|hourly|on upload', 'on upload'],
-        ['autostage', 'Auto-assign chapters', 'toggle', 'on'],
-      ],
-      action: ['Re-run ingest sweep', 'Ingest sweep queued — 8 staged assets re-scored against the 82 gate.'],
-    },
-    portals: {
-      note: 'Every public surface, and whether it is serving traffic.',
-      controls: [
-        ['serve', 'Serving mode', 'select:live|staged|maintenance', 'live'],
-        ['cache', 'Edge cache TTL', 'select:5 min|30 min|2 h', '30 min'],
-        ['autobind', 'Bind new portals automatically', 'toggle', 'on'],
-      ],
-      action: ['Refresh portal registry', 'Portal registry rebuilt — 7 surfaces reporting, 0 unhealthy.'],
-    },
-    counties: {
-      note: 'Onboarding and ledger state across all 47 county nodes.',
-      controls: [
-        ['assign', 'Auto-assign county admin', 'toggle', 'on'],
-        ['target', 'Onboarding target', 'number', '47'],
-        ['cadence', 'Ledger sync', 'select:daily|weekly|on publish', 'on publish'],
-      ],
-      action: ['Sync 47 county ledgers', 'Ledger sync issued to 47 county nodes — 46 acknowledged, 1 queued (Mandera).'],
-    },
-    institutions: {
-      note: 'Verification state for ministries, agencies and parastatals.',
-      controls: [
-        ['verify', 'Verification cadence', 'select:on upload|monthly|quarterly', 'on upload'],
-        ['docs', 'Required documents', 'select:registration only|registration + KRA|full compliance pack', 'registration + KRA'],
-        ['autoapprove', 'Auto-approve verified institutions', 'toggle', 'off'],
-      ],
-      action: ['Request documents', 'Document request sent to 3 institutions with incomplete packs.'],
-    },
-    national: {
-      note: 'National pool contribution and the ceiling that governs it.',
-      controls: [
-        ['contrib', 'Pool contribution %', 'number', '3.1'],
-        ['ceiling', 'Fee ceiling %', 'number', '3.10'],
-        ['window', 'Settlement window', 'select:4 days|7 days|14 days', '7 days'],
-      ],
-      action: ['Recompute national pool', 'Pool recomputed — KES 92.7M against a 3.10% ceiling, all 47 counties within bounds.'],
-    },
-    exhibitors: {
-      note: 'Onboarding gate applied to every exhibitor application.',
-      controls: [
-        ['gate', 'Onboarding gate', 'select:manual review|auto under KES 50k|auto all', 'auto under KES 50k'],
-        ['batch', 'Review batch size', 'number', '10'],
-        ['notify', 'Notify applicant on decision', 'toggle', 'on'],
-      ],
-      action: ['Approve next batch', 'Batch approved — 10 exhibitor applications cleared the gate.'],
-    },
-    orders: {
-      note: 'Settlement behaviour for every marketplace order.',
-      controls: [
-        ['window', 'Settlement window', 'select:4 days|7 days|14 days', '7 days'],
-        ['autoescrow', 'Hold in escrow until delivery', 'toggle', 'on'],
-        ['split', 'County split', 'number', '72'],
-      ],
-      action: ['Release escrow batch', 'Escrow batch released — 24 orders settled, KES 4.18M disbursed to 19 counties.'],
-    },
-    providers: {
-      note: 'Provider identity checks and the policy that enforces them.',
-      controls: [
-        ['kyc', 'KYC provider', 'select:IPRS|Smile ID|internal', 'IPRS'],
-        ['reverify', 'Re-verification interval', 'select:30 days|90 days|annual', '90 days'],
-        ['block', 'Block unverified automatically', 'toggle', 'on'],
-      ],
-      action: ['Re-verify all providers', 'Re-verification issued to 38 providers — 36 cleared, 2 escalated for manual review.'],
-    },
-    escrow: {
-      note: 'Escrow float, release rules and reconciliation.',
-      controls: [
-        ['release', 'Release rule', 'select:on delivery|on acceptance|manual', 'on delivery'],
-        ['float', 'Minimum float', 'number', '2500000'],
-        ['alert', 'Alert on low float', 'toggle', 'on'],
-      ],
-      action: ['Reconcile float', 'Float reconciled — KES 18.6M held, 0 mismatched orders, 0 disputes open.'],
-    },
-    '3d_assets': {
-      note: 'How raw captures become the room scenes served to the public site.',
-      controls: [
-        ['fmt', 'Delivery format', 'select:spz|ply|glb|ktx2', 'spz'],
-        ['quality', 'Train iterations', 'select:7k|10k|30k', '10k'],
-        ['autocompress', 'Auto-compress on upload', 'toggle', 'on'],
-      ],
-      action: ['Queue compression', 'Compression queued — 3 captures to SPZ, est. 10x reduction on delivery.'],
-    },
-    pool: {
-      note: 'How the national pool is divided between counties.',
-      controls: [
-        ['rule', 'Distribution rule', 'select:equal|weighted by volume|by population', 'weighted by volume'],
-        ['period', 'Distribution period', 'select:monthly|quarterly', 'monthly'],
-        ['min', 'Minimum county payout', 'number', '50000'],
-      ],
-      action: ['Recompute shares', 'Shares recomputed — 47 counties, 0 below the KES 50,000 floor.'],
-    },
-    pipelines: {
-      note: 'The curation pipelines that move an upload to the public page.',
-      controls: [
-        ['tick', 'Tick interval', 'select:2 s|5 s|10 s', '5 s'],
-        ['retry', 'Retry policy', 'select:none|3 attempts|exponential backoff', 'exponential backoff'],
-        ['halt', 'Halt pipeline on repeated failure', 'toggle', 'on'],
-      ],
-      action: ['Run pipeline now', 'Pipeline run issued — ingest, vision, frame and story stages all returned OK.'],
-    },
-    experiences: {
-      note: 'The quality bar an experience must clear to publish.',
-      controls: [
-        ['score', 'Publish gate score', 'number', '82'],
-        ['chapters', 'Minimum chapters fed', 'number', '3'],
-        ['autopub', 'Publish automatically when it clears', 'toggle', 'on'],
-      ],
-      action: ['Re-score experience library', 'Library re-scored — 6 published, 2 held for review, mean quality 87.'],
-    },
-    live_events: {
-      note: 'Stream health and failover for every live surface.',
-      controls: [
-        ['abr', 'Streaming ladder', 'select:360p only|360-720p|360-1080p', '360-1080p'],
-        ['failover', 'Failover', 'select:poster|mp4|gradient', 'mp4'],
-        ['probe', 'Health probe interval', 'select:15 s|60 s|5 min', '60 s'],
-      ],
-      action: ['Ping all streams', 'Health check complete — 4 streams live, ABR ladder 360→1080 intact, 0 dropped segments.'],
-    },
-    venues: {
-      note: 'Venue inventory, capacity and how each room is rendered in 3D.',
-      controls: [
-        ['room3d', 'Room 3D source', 'select:gaussian splat|4D parallax|photosphere', 'gaussian splat'],
-        ['capacity', 'Default capacity basis', 'select:theatre|banquet|classroom', 'theatre'],
-        ['gate', 'Load 3D on demand', 'toggle', 'on'],
-      ],
-      action: ['Rebuild venue index', 'Venue index rebuilt — 10 facilities, 8,860 seats, 10 room scenes registered.'],
-    },
-    users: {
-      note: 'Admin roles, reviewers and their access scope.',
-      controls: [
-        ['role', 'Default new-user role', 'select:viewer|reviewer|editor|county admin', 'reviewer'],
-        ['scope', 'Scope', 'select:own county|own institution|all counties', 'own county'],
-        ['mfa', 'Require MFA', 'toggle', 'on'],
-      ],
-      action: ['Invite reviewer', 'Invitation sent — reviewer scoped to own county, MFA required on first sign-in.'],
-    },
-    hero_media: {
-      note: 'What leads every public surface, and how often it turns over.',
-      controls: [
-        ['rotation', 'Hero rotation', 'select:daily|weekly|monthly|manual', 'weekly'],
-        ['gate', 'Minimum quality to lead', 'number', '85'],
-        ['chapters', 'Hero must be chapter-assigned', 'toggle', 'on'],
-      ],
-      action: ['Refresh hero pool', 'Hero pool refreshed — 6 candidates cleared the 85 gate, 1 promoted to lead.'],
-    },
-    packages: {
-      note: 'Booth and sponsorship packages, and how they price.',
-      controls: [
-        ['tier', 'Commission tier', 'select:standard|volume|strategic', 'standard'],
-        ['currency', 'Display currency', 'select:KES|USD|EUR', 'KES'],
-        ['autoquote', 'Auto-quote on enquiry', 'toggle', 'on'],
-      ],
-      action: ['Re-price packages', '12 packages re-priced against the standard tier — KES 100,000 producer to KES 103,000 buyer.'],
-    },
-    analytics: {
-      note: 'What is measured and how often it leaves the platform.',
-      controls: [
-        ['cadence', 'Report cadence', 'select:daily|weekly|monthly', 'weekly'],
-        ['retain', 'Raw event retention', 'select:30 days|90 days|1 year', '90 days'],
-        ['anon', 'Anonymise before export', 'toggle', 'on'],
-      ],
-      action: ['Export report', 'Report generated — 47 counties, DPA 2019 consent references attached, anonymised.'],
-    },
-    integration: {
-      note: 'The services the platform depends on and their failure behaviour.',
-      controls: [
-        ['retry', 'Retry policy', 'select:none|3 attempts|exponential backoff', 'exponential backoff'],
-        ['mail', 'Mail failover timeout', 'select:5 s|15 s|60 s', '15 s'],
-        ['alert', 'Alert on endpoint failure', 'toggle', 'on'],
-      ],
-      action: ['Test all endpoints', 'Endpoints tested — TiDB 18 ms, R2 41 ms, Workers 9 ms, Mail failover 15 s.'],
-    },
-    'pipeline-creator': {
-      note: 'Compose a new curation pipeline from the available stages.',
-      controls: [
-        ['model', 'Vision model', 'select:vision v3|vision v2|generic', 'vision v3'],
-        ['stages', 'Stages enabled', 'select:ingest + vision|ingest + vision + frame|all four', 'ingest + vision + frame'],
-        ['shadow', 'Run in shadow before enabling', 'toggle', 'on'],
-      ],
-      action: ['Save pipeline', 'Pipeline saved and shadowed — 8 staged assets will run against it before it goes live.'],
-    },
-    earnings: {
-      note: 'Revenue, county share and the payout run that distributes it.',
-      controls: [
-        ['cadence', 'Payout cadence', 'select:weekly|biweekly|monthly', 'weekly'],
-        ['hold', 'Hold period before payout', 'select:0 days|4 days|7 days', '4 days'],
-        ['notify', 'Notify counties on payout', 'toggle', 'on'],
-      ],
-      action: ['Run payout', 'Payout run issued — KES 128.4M gross, KES 96.2M to counties, 24 runs this cycle.'],
-    },
-    'search-analytics': {
-      note: 'Query behaviour and the ranking rules that answer it.',
-      controls: [
-        ['boost', 'Boost rule', 'select:recency|popularity|county relevance', 'county relevance'],
-        ['synonym', 'Synonym expansion', 'toggle', 'on'],
-        ['index', 'Index rebuild', 'select:on publish|hourly|nightly', 'on publish'],
-      ],
-      action: ['Rebuild search index', 'Index rebuilt — 4,120 queries re-scored, CTR 6.4% to 8.2% on boosted terms.'],
-    },
-    cache: {
-      note: 'Edge cache lifetime and purge behaviour.',
-      controls: [
-        ['ttl', 'Default TTL (minutes)', 'number', '30'],
-        ['purge', 'Purge on publish', 'toggle', 'on'],
-        ['stale', 'Serve stale while revalidating', 'toggle', 'on'],
-      ],
-      action: ['Purge cache', 'Cache purged — kicc-purge-cache returned OK across 7 surfaces.'],
-    },
-    'licence-queue': {
-      note: 'Cultural and trade licences awaiting a reviewer.',
-      controls: [
-        ['reviewer', 'Assigned reviewer', 'select:auto-assign|Alice W.|Joseph K.|Fatuma A.', 'auto-assign'],
-        ['sla', 'Review SLA', 'select:48 h|5 days|10 days', '48 h'],
-        ['autoapprove', 'Auto-approve clean licences', 'toggle', 'off'],
-      ],
-      action: ['Approve batch', 'Batch approved — 4 licences cleared, 1 held (LIC-2026-0438 Turkana Weavers, awaiting cultural clearance).'],
-    },
-    'pipeline-settings': {
-      note: 'Global activation rules, propagated to every county node.',
-      controls: [
-        ['mode', 'Activation mode', 'select:manual|automatic|scheduled', 'automatic'],
-        ['ceiling', 'Default fee ceiling %', 'number', '3.10'],
-        ['window', 'Settlement window', 'select:4 days|7 days|14 days', '7 days'],
-      ],
-      action: ['Propagate to 47 counties', 'Settings propagated — 47 county nodes acknowledged the new activation mode.'],
-    },
-    studio: {
-      note: 'Curation studio throughput and ledger presentation.',
-      controls: [
-        ['pagesize', 'Ledger page size', 'number', '6'],
-        ['tick', 'Automation tick', 'select:2 s|5 s|10 s', '5 s'],
-        ['gate', 'Publish gate', 'number', '82'],
-      ],
-      action: ['Rebuild studio ledger', 'Studio ledger rebuilt from the curation store — 6 records, chapters re-indexed.'],
-    },
-
-    /* ── county-admin tabs (/county-admin/{slug}/pro/{tab}) ─────────────── */
-    'county:overview': {
-      note: 'Publishing gate and ingest behaviour for this county node.',
-      controls: [['gate','Publish gate score','select:78|82|85|90','82'],
-                 ['ingest','Ingest cadence','select:manual|every 30 min|hourly|on upload','hourly'],
-                 ['autochapters','Auto-assign story chapters','toggle','on']],
-      action: ['Re-run county ingest sweep','County ingest swept — staged assets re-scored against the 82 gate.'],
-    },
-    'county:content': {
-      note: 'How this county\'s public copy is authored and released.',
-      controls: [['locale','Primary locale','select:en-KE|sw-KE|bilingual','bilingual'],
-                 ['autotranslate','Auto-translate to Kiswahili','toggle','on'],
-                 ['release','Release mode','select:instant|scheduled|review','review']],
-      action: ['Publish county content','County content published — edge cache purged, both locales live.'],
-    },
-    'county:images': {
-      note: 'Derivative generation and delivery for the county gallery.',
-      controls: [['formats','Derivative set','select:WebP|AVIF|WebP + AVIF','WebP + AVIF'],
-                 ['focal','Auto focal crop','toggle','on'],
-                 ['widths','Max delivery width','number','2000']],
-      action: ['Regenerate derivatives','Derivatives rebuilt — 6 widths per asset, AVIF first, WebP fallback.'],
-    },
-    'county:prices': {
-      note: 'Currency, tax and rounding applied to this county\'s catalogue.',
-      controls: [['currency','Display currency','select:KES|USD|both','KES'],
-                 ['vat','VAT treatment','select:inclusive|exclusive|exempt','inclusive'],
-                 ['rounding','Rounding rule','select:none|nearest 5|nearest 10','nearest 5']],
-      action: ['Reprice county catalogue','Catalogue repriced — 312 listings updated, no orphaned variants.'],
-    },
-    'county:sectors': {
-      note: 'Sector weighting drives the county narrative and search ranking.',
-      controls: [['top','Flagship sector','select:auto|Agriculture|Manufacturing|Tourism|Blue Economy|Mining|Energy|ICT','auto'],
-                 ['weight','Weighting strength','number','1.20'],
-                 ['benchmark','Benchmark against national mean','toggle','on']],
-      action: ['Recompute sector shares','Sector shares recomputed from the latest county statistics.'],
-    },
-    'county:products': {
-      note: 'How listings from this county enter the marketplace.',
-      controls: [['approval','Listing approval','select:auto|producer confirms|county reviews','county reviews'],
-                 ['stock','Low-stock alert floor','number','25'],
-                 ['autotag','Auto-tag from vision','toggle','on']],
-      action: ['Re-index county catalogue','Catalogue re-indexed — 312 listings, 0 duplicates, tags refreshed.'],
-    },
-    'county:4d': {
-      note: 'The 4D parallax layer rendered over this county\'s hero media.',
-      controls: [['model','Depth model','select:MiDaS|Depth-Anything|LiDAR','Depth-Anything'],
-                 ['strength','Parallax strength','number','30'],
-                 ['autoplay','Autoplay on entry','toggle','on']],
-      action: ['Re-render 4D layer','Depth pass re-rendered — 1 hero, 4 tiles, fallback poster retained.'],
-    },
-    'county:ads': {
-      note: 'Inventory rules for county ad slots.',
-      controls: [['fill','Fill strategy','select:house|network|blended','blended'],
-                 ['floor','Floor CPM (KES)','number','420'],
-                 ['safety','Brand-safety filter','toggle','on']],
-      action: ['Refresh ad slots','Ad slots refreshed — 8 creatives in rotation, brand-safety pass clean.'],
-    },
-    'county:packages': {
-      note: 'Promotional packages offered to this county\'s producers.',
-      controls: [['tier','Default tier','select:Bronze|Silver|Gold','Silver'],
-                 ['commission','Platform commission %','number','3.10'],
-                 ['renew','Auto-renew','toggle','on']],
-      action: ['Republish packages','Packages republished — 3 tiers live, commission unchanged at 3.10%.'],
-    },
-    'county:reports': {
-      note: 'Recurring reporting out of this county node.',
-      controls: [['cadence','Cadence','select:weekly|monthly|quarterly','monthly'],
-                 ['format','Format','select:PDF|CSV|both','PDF'],
-                 ['recipients','Recipients','select:county exec|county exec + national|all admins','county exec']],
-      action: ['Generate county report','County report generated — trade, licences and housing in one PDF.'],
-    },
-    'county:housing': {
-      note: 'Accommodation inventory surfaced to visiting exhibitors.',
-      controls: [['source','Occupancy source','select:manual|channel manager|API','channel manager'],
-                 ['rate','Default nightly rate (KES)','number','9500'],
-                 ['sync','Sync availability hourly','toggle','on']],
-      action: ['Sync housing inventory','Housing synced — 14 properties, 62 rooms, availability current.'],
-    },
-    'county:drone': {
-      note: 'Aerial capture programme for county landmarks and venues.',
-      controls: [['ceiling','Flight ceiling (m)','number','120'],
-                 ['ortho','Orthomosaic output','toggle','on'],
-                 ['cadence','Capture cadence','select:on request|quarterly|monthly','quarterly']],
-      action: ['Queue drone survey','Survey queued — operator notified, CAA flight window requested.'],
-    },
-    'county:floor': {
-      note: 'Floor plans published for county venues and stands.',
-      controls: [['units','Units','select:metres|feet','metres'],
-                 ['snap','Grid snap (cm)','number','25'],
-                 ['publish','Publish plans publicly','toggle','on']],
-      action: ['Rebuild floor plans','Floor plans rebuilt — 6 halls, stand numbering re-verified.'],
-    },
-    'county:consent': {
-      note: 'Data-protection posture for this county\'s submissions.',
-      controls: [['retention','Retention (months)','number','24'],
-                 ['reconsent','Re-consent on policy change','toggle','on'],
-                 ['export','Subject-access format','select:JSON|CSV|PDF','JSON']],
-      action: ['Audit consent records','Consent audit complete — 1,284 records, 0 expired, 3 re-consents due.'],
-    },
-    'county:voice': {
-      note: 'Voice notes from the field, transcribed and published.',
-      controls: [['model','Transcription model','select:whisper-1|scribe-v2|on-device','scribe-v2'],
-                 ['language','Language','select:auto|en-KE|sw-KE','auto'],
-                 ['autopublish','Auto-publish transcript','toggle','off']],
-      action: ['Transcribe queue','Queue transcribed — 6 notes, 2 flagged for speaker review.'],
-    },
-    'county:landmark': {
-      note: 'Heritage and landmark records, including AR entry points.',
-      controls: [['tier','Heritage tier','select:local|county|national|UNESCO tentative','county'],
-                 ['geofence','Geofence radius (m)','number','150'],
-                 ['ar','Enable AR entry point','toggle','on']],
-      action: ['Publish landmarks','Landmarks published — 12 records live, AR entry points active.'],
-    },
-    'county:broadcast': {
-      note: 'Outbound messaging from the county admin desk.',
-      controls: [['channel','Primary channel','select:WhatsApp|SMS|email|all','WhatsApp'],
-                 ['retry','Retry attempts','number','2'],
-                 ['quiet','Respect quiet hours','toggle','on']],
-      action: ['Send county broadcast','Broadcast sent — 2,418 recipients, 96.2% delivered.'],
-    },
-    'county:trade-hub': {
-      note: 'Buyer–producer matching run for this county.',
-      controls: [['rule','Matching rule','select:commodity|capacity|proximity|blended','blended'],
-                 ['cap','Leads per producer per week','number','10'],
-                 ['autointro','Auto-introduce matches','toggle','on']],
-      action: ['Recompute trade matches','Matches recomputed — 84 introductions queued for approval.'],
-    },
-    'county:spotlight': {
-      note: 'Trader spotlight stories drafted from county activity.',
-      controls: [['cadence','Draft cadence','select:weekly|fortnightly|monthly','fortnightly'],
-                 ['channel','Distribution','select:WhatsApp|web|both','both'],
-                 ['autodraft','Auto-draft from top traders','toggle','on']],
-      action: ['Draft spotlight','Spotlight drafted — top 3 traders by volume, awaiting editor review.'],
-    },
-
-    /* ── institution-admin tabs (/institution-admin/{slug}/{tab}) ───────── */
-    'inst:overview': {
-      note: 'Institution profile visibility and sync state.',
-      controls: [['visibility','Profile visibility','select:public|verified partners|private','public'],
-                 ['gate','Publish gate score','select:78|82|85|90','82'],
-                 ['autosync','Auto-sync from registry','toggle','on']],
-      action: ['Refresh institution profile','Profile refreshed — registry match confirmed, 0 conflicts.'],
-    },
-    'inst:profile': {
-      note: 'The public face of this institution on the platform.',
-      controls: [['legal','Legal name display','select:full|trading name|abbreviated','full'],
-                 ['badge','Verification badge','toggle','on'],
-                 ['contact','Contact routing','select:inbox|assigned officer|both','assigned officer']],
-      action: ['Submit for verification','Submitted for verification — documents queued for registrar review.'],
-    },
-    'inst:products': {
-      note: 'Catalogue this institution publishes to the marketplace.',
-      controls: [['approval','Catalogue approval','select:auto|institution confirms|KICC reviews','institution confirms'],
-                 ['moq','Show minimum order quantity','toggle','on'],
-                 ['currency','Quoting currency','select:KES|USD|both','KES']],
-      action: ['Re-index products','Catalogue re-indexed — 148 items, 0 orphaned images.'],
-    },
-    'inst:videos': {
-      note: 'Video ladder and captioning for institution media.',
-      controls: [['ladder','Transcode ladder','select:360p|360-720p|360-1080p|ABR full','360-1080p'],
-                 ['captions','Auto-generate captions','toggle','on'],
-                 ['poster','Poster source','select:auto frame|uploaded|first frame','auto frame']],
-      action: ['Queue transcodes','Transcodes queued — 9 sources, ABR ladder to 1080p.'],
-    },
-    'inst:sectors': {
-      note: 'Sector fit used for discovery and matching.',
-      controls: [['primary','Primary sector','select:auto|Agriculture|Manufacturing|Tourism|Blue Economy|Mining|Energy|ICT','auto'],
-                 ['weight','Weighting strength','number','1.00'],
-                 ['benchmark','Benchmark against peers','toggle','on']],
-      action: ['Recompute sector fit','Sector fit recomputed against 202 registered institutions.'],
-    },
-    'inst:team': {
-      note: 'Who can act on behalf of this institution.',
-      controls: [['role','Default invite role','select:viewer|editor|approver','editor'],
-                 ['expiry','Invite expiry (days)','number','14'],
-                 ['sso','Require SSO','toggle','off']],
-      action: ['Sync team directory','Team directory synced — 6 members, 1 invite pending.'],
-    },
-    'inst:analytics': {
-      note: 'Reporting window and rollup for this institution.',
-      controls: [['window','Window','select:30 days|90 days|12 months','90 days'],
-                 ['cohort','Comparison cohort','select:none|same sector|same region|all','same sector'],
-                 ['export','Export format','select:CSV|PDF|both','CSV']],
-      action: ['Rebuild analytics rollup','Rollup rebuilt — 90-day window against same-sector cohort.'],
-    },
-    'inst:transactions': {
-      note: 'Settlement and escrow rules for this institution\'s orders.',
-      controls: [['window','Settlement window','select:4 days|7 days|14 days','7 days'],
-                 ['escrow','Require escrow','toggle','on'],
-                 ['ceiling','Fee ceiling %','number','3.10']],
-      action: ['Reconcile transactions','Reconciled — 96 orders matched, 0 exceptions outstanding.'],
-    },
-    'inst:customers': {
-      note: 'How buyer relationships are segmented.',
-      controls: [['segment','Segment rule','select:value|frequency|recency|blended','blended'],
-                 ['consent','Require marketing consent','toggle','on'],
-                 ['export','Export format','select:CSV|JSON','CSV']],
-      action: ['Rebuild customer segments','Segments rebuilt — 412 buyers across 4 tiers.'],
-    },
-    'inst:production': {
-      note: 'Capacity planning and quality gate for output.',
-      controls: [['shift','Shift pattern','select:single|double|24 h','double'],
-                 ['capacity','Weekly capacity (units)','number','4800'],
-                 ['qc','Quality gate before dispatch','toggle','on']],
-      action: ['Replan production','Production replanned — capacity held at 4,800 units/week.'],
-    },
-  };
-
-  const ctrl = (id, label, kind, dflt) => {
-    const v = S[id] !== undefined ? S[id] : dflt;
-    let field;
-    if (kind === 'toggle') {
-      const on = String(v) === 'on';
-      field = `<button class="pf-toggle ${on ? 'on' : ''}" data-pf="${id}" role="switch" aria-checked="${on}">
-        <span class="pf-knob"></span></button>`;
-    } else if (kind === 'number') {
-      field = `<input class="pf-input" data-pf="${id}" type="number" value="${v}">`;
-    } else {
-      const opts = kind.replace(/^select:/, '').split('|');
-      field = `<select class="pf-input" data-pf="${id}">${opts
-        .map(o => `<option${String(v) === o ? ' selected' : ''}>${o}</option>`).join('')}</select>`;
-    }
-    return `<label class="pf-row"><span class="pf-label">${label}</span>${field}</label>`;
-  };
-
-  /* which admin family are we in, and which tab? */
-  function routeOf(hash) {
-    let m = hash.match(/^\/kicc-admin\/([^\/?]+)/);
-    if (m) return { key: m[1] || 'overview', hash };
-    m = hash.match(/^\/county-admin\/[^\/]+\/pro\/([^\/?]+)/);
-    if (m) return { key: 'county:' + (m[1] || 'overview'), hash };
-    m = hash.match(/^\/county-admin\/([^\/?]+)$/);
-    if (m) return { key: 'county:overview', hash };
-    m = hash.match(/^\/institution-admin\/[^\/]+\/([^\/?]+)/);
-    if (m) return { key: 'inst:' + (m[1] || 'overview'), hash };
-    m = hash.match(/^\/institution-admin\/([^\/?]+)$/);
-    if (m) return { key: 'inst:overview', hash };
-    return null;
-  }
-
-  function forge() {
-    const app = document.getElementById('app');
-    if (!app) return;
-    const hash = (location.hash || '').replace(/^#/, '');
-    const r = routeOf(hash);
-    if (!r) return;
-    const spec = SPEC[r.key];
-    if (!spec) return;
-    if (bound === hash) return;                     // already forged for this route
-
-    const pane = app.querySelector('.pane') || app.querySelector('.admin-body');
-    if (!pane || pane.querySelector('.pf-block')) { bound = hash; return; }
-
-    const block = document.createElement('div');
-    block.className = 'pf-block';
-    block.innerHTML = `
-      <div class="pf-head">
-        <div>
-          <div class="pf-eyebrow">Operational controls</div>
-          <div class="pf-note">${spec.note}</div>
-        </div>
-        <span class="pf-live"><i></i>bound to this pane</span>
-      </div>
-      <div class="pf-grid">${spec.controls.map(c => ctrl(c[0], c[1], c[2], c[3])).join('')}</div>
-      <div class="pf-foot">
-        <button class="btn gold sm" data-pf-action>${spec.action[0]}</button>
-        <span class="pf-state" data-pf-state>Settings held for this session</span>
-      </div>`;
-
-    pane.appendChild(block);
-    bound = hash;
-
-    /* ── wiring: settings persist, toggles flip, actions report back ── */
-    block.querySelectorAll('[data-pf]').forEach(el => {
-      const id = el.getAttribute('data-pf');
-      const isToggle = el.classList.contains('pf-toggle');
-      const handler = () => {
-        if (isToggle) {
-          const on = !el.classList.contains('on');
-          el.classList.toggle('on', on);
-          el.setAttribute('aria-checked', String(on));
-          S[id] = on ? 'on' : 'off';
-        } else {
-          S[id] = el.value;
-        }
-        const st = block.querySelector('[data-pf-state]');
-        if (st) st.textContent = 'Saved · ' + id + ' = ' + S[id];
-        T('Setting saved — <b>' + id + '</b> is now <b>' + S[id] + '</b>', 'ok');
-      };
-      el.addEventListener(isToggle ? 'click' : 'change', handler);
-      if (!isToggle) el.addEventListener('input', e => { S[id] = e.target.value; });
-    });
-
-    const act = block.querySelector('[data-pf-action]');
-    if (act) act.addEventListener('click', () => {
-      act.disabled = true;
-      const lbl = act.textContent;
-      act.textContent = 'Working…';
-      setTimeout(() => {
-        act.disabled = false;
-        act.textContent = lbl;
-        T(spec.action[1], 'ok');
-        const st = block.querySelector('[data-pf-state]');
-        if (st) st.textContent = 'Action completed · ' + new Date().toLocaleTimeString();
-        /* any real pipeline in this pane gets nudged too */
-        if (typeof ENG !== 'undefined' && ENG.tick) { try { ENG.tick(); } catch (e) {} }
-      }, 620);
-    });
-  }
-
-  const refresh = () => { try { forge(); } catch (e) {} };
-  const state = () => ({ forged: bound, settings: Object.keys(S).length, spec: SPEC });
-  return { refresh, state, S, toast: T };
-})();
-</script>
+<script>const PF={refresh(){},state(){return {}}};</script>
 <script>
 /* WARM THEME + ORBIT + SINGLE PUBLISHING WORKSPACE */
 const PUBLISH = (()=>{
@@ -9200,7 +7715,7 @@ const PUBLISH = (()=>{
  function theme(value){mode=value;const u=new URL(location.href);if(u.searchParams.has('theme')){u.searchParams.delete('theme');history.replaceState(null,'',u.pathname+u.search+u.hash);}const resolved=value==='system'?(pref.matches?'dark':'light'):value;document.documentElement.dataset.theme=resolved;try{localStorage.setItem('kicc.theme',value)}catch(e){}document.querySelectorAll('[data-theme-control]').forEach(b=>{b.textContent=`Theme · ${value==='system'?'Auto':value==='light'?'Warm light':'Warm dark'}`;b.setAttribute('aria-label','Colour theme: '+value+'. Activate to cycle warm light, warm dark, automatic.')})}
  pref.addEventListener('change',()=>{if(mode==='system')theme('system')});theme(mode);
  function chrome(){const nav=document.querySelector('.nav-cta');if(nav&&!nav.querySelector('[data-theme-control]')){const b=document.createElement('button');b.className='theme-control';b.dataset.themeControl='';b.onclick=()=>theme(mode==='system'?'light':mode==='light'?'dark':'system');nav.prepend(b)}theme(mode)}
- function link(table,r){if(table==='content'||table==='media')return r.route||r.target||'/';if(table==='counties')return '/counties/'+r.slug;if(table==='institutions')return '/institutions/'+r.slug;if(table==='products')return '/marketplace/'+REPO.slug(r.n).slice(0,44);if(table==='venues')return '/venues/'+REPO.slug(r.name);return '/'+table}
+ function link(table,r){if(table==='content'||table==='media')return r.route||r.target||'/';if(table==='counties')return '/counties/'+r.slug;if(table==='institutions')return '/institutions/'+r.slug;if(table==='products')return '/marketplace/'+(r.slug||REPO.slug(r.n).slice(0,44));if(table==='venues')return '/venues/'+REPO.slug(r.name);return '/'+table}
  function cmsPage(table,scope){table=labels[table]?table:'content';let rows=REPO.list(table),scopeText='';
  if(scope?.type==='county'){const c=REPO.list('counties').find(r=>r.slug===scope.id);scopeText=c?.name||scope.id;if(['products','institutions'].includes(table))rows=rows.filter(r=>(r.c||r.county)===scopeText);if(table==='counties')rows=rows.filter(r=>r.slug===scope.id);if(['media','content'].includes(table))rows=rows.filter(r=>(r.route||r.target||'').includes('/counties/'+scope.id))}
  if(scope?.type==='institution'){const inst=REPO.list('institutions').find(r=>r.slug===scope.id);scopeText=inst?.name||scope.id;if(table==='institutions')rows=rows.filter(r=>r.slug===scope.id);if(table==='products')rows=rows.filter(r=>r.institutionId===inst?.id);if(['media','content'].includes(table))rows=rows.filter(r=>(r.route||r.target||'')==='/institutions/'+scope.id)}
@@ -9253,7 +7768,7 @@ const PUBLISH = (()=>{
  function refresh(){primeContent();orbitCleanup();chrome();const app=document.getElementById('app'),path=location.hash.slice(1)||'/';app.querySelectorAll('[data-cms-root]').forEach(bindCMS);
  if(!/admin/.test(path)){REPO.track(path);const contentNodes=[...app.querySelectorAll('h1,h2,h3,.ed-lead,.page-head p')].filter(e=>!e.closest('.public-media,.tm-gallery'));REPO.seedContent(contentNodes.map((el,i)=>({id:'copy:'+path+':'+i,name:el.textContent.trim().slice(0,60),route:path,selector:el.id?'#'+el.id:'@text:'+i,body:el.textContent.trim()})));
  for(const row of REPO.list('content').filter(r=>r.route===path)){if(row.selector){try{const el=row.selector.startsWith('@text:')?contentNodes[Number(row.selector.slice(6))]:app.querySelector(row.selector);if(el){el.hidden=row.status!=='published';if(row.body&&row.body!==el.textContent.trim()&&/^(H[1-6]|P|SPAN|DIV)$/.test(el.tagName))el.textContent=row.body}}catch(e){}}else if(row.status==='published'){const s=document.createElement('section');s.className='wrap public-media';const h=document.createElement('h2');h.textContent=row.name;const p=document.createElement('p');p.className='cms-public-copy';p.textContent=row.body;s.append(h,p);app.append(s)}}
- const media=REPO.list('media',true).filter(m=>m.target===path);if(path==='/streams')media.push(...REPO.list('streams',true).filter(r=>r.url).map(r=>({...r,name:r.n,kind:'video',url:r.url})));for(const row of media){if(path==='/'&&row.role==='hero'){const hero=app.querySelector('#chapter-top .ed-bleed');if(hero){const u=row.assetId?ASSETS.url(row.assetId):Promise.resolve(safeUrl(row.url));u.then(url=>{if(!url||!hero.isConnected)return;hero.innerHTML='';const el=document.createElement(row.kind==='video'?'video':'img');el.src=url;el.style.cssText='width:100%;height:100%;object-fit:cover';if(row.kind==='video'){el.loop=true;el.muted=true;el.playsInline=true;el.controls=reduced.matches;if(!reduced.matches)el.play().catch(()=>{})}else el.alt=row.description||row.name;hero.append(el)})}continue}const section=document.createElement('section');section.className='public-media';const h=document.createElement('h2');h.textContent=row.name;const p=document.createElement('p');p.className='cms-public-copy';p.textContent=row.description||'';section.append(h,p);if(row.format==='360'){const note=document.createElement('small');note.textContent='360° asset · flat playback preview; spherical renderer not connected.';section.append(note)}app.append(section);mountMedia(section,row)}
+ const media=REPO.list('media',true).filter(m=>m.target===path);if(path==='/streams')media.push(...REPO.list('streams',true).filter(r=>r.url).map(r=>({...r,name:r.n,kind:'video',url:r.url})));for(const row of media){if(row.role==='product'&&path.startsWith('/marketplace/')&&app.querySelector('.hls-stage,.expo-video,[data-expo-video]'))continue;if(path==='/'&&row.role==='hero'){const hero=app.querySelector('#chapter-top .ed-bleed');if(hero){const u=row.assetId?ASSETS.url(row.assetId):Promise.resolve(safeUrl(row.url));u.then(url=>{if(!url||!hero.isConnected)return;hero.innerHTML='';const el=document.createElement(row.kind==='video'?'video':'img');el.src=url;el.style.cssText='width:100%;height:100%;object-fit:cover';if(row.kind==='video'){el.loop=true;el.muted=true;el.playsInline=true;el.controls=reduced.matches;if(!reduced.matches)el.play().catch(()=>{})}else el.alt=row.description||row.name;hero.append(el)})}continue}const section=document.createElement('section');section.className='public-media';const h=document.createElement('h2');h.textContent=row.name;const p=document.createElement('p');p.className='cms-public-copy';p.textContent=row.description||'';section.append(h,p);if(row.format==='360'){const note=document.createElement('small');note.textContent='360° asset · flat playback preview; spherical renderer not connected.';section.append(note)}app.append(section);mountMedia(section,row)}
  app.querySelectorAll('[data-pname]').forEach(card=>{const p=REPO.list('products',true).find(r=>r.n?.toLowerCase()===card.dataset.pname);if(p?.image){const el=card.querySelector('.pc-media');if(el)el.style.backgroundImage=`url("${safeUrl(p.image).replace(/"/g,'%22')}")`}});
  }
  app.querySelectorAll('[data-county-orbit]').forEach(mountOrbit);
@@ -9263,7 +7778,7 @@ const PUBLISH = (()=>{
  const mother=Router.PAGES['/kicc-admin'];Router.PAGES['/kicc-admin']=(rest,path)=>labels[rest[0]]?cmsPage(rest[0]):mother(rest,path);
  const county=Router.PAGES['/county-admin'];Router.PAGES['/county-admin']=(rest,path)=>{const t=rest[1]==='pro'?rest[2]:rest[1];const mapping={counties:'counties',institutions:'institutions',content:'content',media:'media',images:'media','4d':'media',drone:'media',products:'products',prices:'products'};return mapping[t]?cmsPage(mapping[t],{type:'county',id:rest[0]}):county(rest,path)};
  const inst=Router.PAGES['/institution-admin'];Router.PAGES['/institution-admin']=(rest,path)=>{const mapping={profile:'institutions',institutions:'institutions',content:'content',media:'media',videos:'media',experience:'media',products:'products'};return mapping[rest[1]]?cmsPage(mapping[rest[1]],{type:'institution',id:rest[0]}):inst(rest,path)};
- Router.PAGES['/institutions']=(rest)=>{const rows=REPO.list('institutions',true);if(!rest.length)return {title:'Institutions',html:`<section class="wrap section"><div class="eyebrow">Published institutions</div><h1>Institutions, in their own words.</h1>${rows.map(r=>`<div class="public-media"><h2>${esc(r.name)}</h2><p class="cms-public-copy">${esc(r.description)}</p><a class="btn ghost" href="#/institutions/${esc(r.slug)}">Visit profile →</a></div>`).join('')||'<p>No institutions published.</p>'}</section>`};const r=rows.find(r=>r.slug===rest[0]);if(!r)return {title:'Institution unavailable',html:'<section class="wrap section"><h1>Not currently published.</h1><a href="#/institutions" class="btn ghost">All institutions</a></section>'};return {title:r.name,html:`<section class="wrap section"><div class="eyebrow">Institution · ${esc(r.county)}</div><h1>${esc(r.name)}</h1><p class="cms-public-copy" style="max-width:70ch;margin-top:25px">${esc(r.description)}</p>${safeUrl(r.website)?`<a class="btn ghost" href="${esc(safeUrl(r.website))}" target="_blank" rel="noopener">Official website →</a>`:''}<h2 style="margin-top:60px">Products & services</h2>${REPO.list('products',true).filter(p=>p.institutionId===r.id).map(p=>`<div class="public-media"><h3>${esc(p.n)}</h3><p>${esc(p.description)}</p><a href="#${esc(link('products',p))}" class="btn ghost">View product · KES ${Number(p.p).toLocaleString('en-KE')}</a></div>`).join('')||'<p class="cms-public-copy">No products published yet.</p>'}<h2 style="margin-top:45px">Experience this institution</h2><p class="cms-public-copy">Published films appear below. Media is selected by entity ID from the native admin records and verified R2 objects.</p></section>`}};
+ Router.PAGES['/institutions']=(rest)=>{const rows=REPO.list('institutions',true);if(!rest.length)return {title:'Institutions',html:`<section class="wrap section"><div class="eyebrow">Published institutions</div><h1>Institutions, in their own words.</h1>${rows.map(r=>`<div class="public-media"><h2>${esc(r.name)}</h2><p class="cms-public-copy">${esc(r.description)}</p><a class="btn ghost" href="#/institutions/${esc(r.slug)}">Visit profile →</a></div>`).join('')||'<p>No institutions published.</p>'}</section>`};const r=rows.find(r=>r.slug===rest[0]);if(!r)return {title:'Institution unavailable',html:'<section class="wrap section"><h1>Not currently published.</h1><a href="#/institutions" class="btn ghost">All institutions</a></section>'};return {title:r.name,html:`<section class="wrap section"><div class="eyebrow">Institution · ${esc(r.county)}</div><h1>${esc(r.name)}</h1><p class="cms-public-copy" style="max-width:70ch;margin-top:25px">${esc(r.description)}</p>${safeUrl(r.website)?`<a class="btn ghost" href="${esc(safeUrl(r.website))}" target="_blank" rel="noopener">Official website →</a>`:''}<h2 style="margin-top:60px">Products, services & experiences</h2>${REPO.list('products',true).filter(p=>p.institutionId===r.id).map(p=>`<div class="public-media"><h3>${esc(p.n)}</h3><p>${esc(p.description)}</p><a href="#${esc(link('products',p))}" class="btn ghost">View offering · ${esc(p.priceLabel||("KES "+Number(p.p).toLocaleString('en-KE')))}</a></div>`).join('')||'<p class="cms-public-copy">No products published yet.</p>'}<h2 style="margin-top:45px">Experience this institution</h2><p class="cms-public-copy">Published films appear below. Media is selected by entity ID from the native admin records and verified R2 objects.</p></section>`}};
  return {refresh,theme,orbitHtml,editor,cmsPage};
 })();
 </script>
@@ -9277,9 +7792,9 @@ const TILEMEDIA=(()=>{
  const states=new Map();
  const urlSafe=x=>{try{const u=new URL(x);return u.protocol==='https:'||u.protocol==='http:'?u.href:''}catch{return ''}};
  function route(table,r){return table==='venues'?'/venues/'+slug(r.name):'/marketplace/'+slug(r.n).slice(0,44)}
- function config(table,r){if(r.tileMedia)return r.tileMedia;if(table==='products'&&r.image)return {state:'published',kind:'image',url:urlSafe(r.image),alt:name(r)};if(table==='venues')return {state:'demo',kind:'image',url:typeof ED_IMG!=='undefined'?ED_IMG.hall:KICC.HALL_POSTER,alt:'Existing shared demonstration hall poster; not a photograph verified for this room.'};return {state:'empty'}}
+ function config(table,r){if(r.tileMedia)return r.tileMedia;if(table==='products'&&r.image)return {state:'published',kind:'image',url:urlSafe(r.image),alt:name(r)};if(table==='venues')return {state:'demo',kind:'image',url:urlSafe(HALL_POSTER)||(typeof ED_IMG!=='undefined'?ED_IMG.hall:KICC.HALL_POSTER),alt:'Existing shared demonstration hall poster; not a photograph verified for this room.'};return {state:'empty'}}
  function label(c){return c.state==='demo'?'Shared demo poster · replace in admin':c.state==='empty'?'Your film belongs here':c.state==='draft'?'Media awaiting publication':c.kind==='video'?'Venue / maker film':'Uploaded photograph'}
- function tile(table,r,i){const c=config(table,r);const title=name(r),href=route(table,r),meta=table==='venues'?r.type+' · '+r.area:r.cat+' · '+r.c+' County';return `<article class="tm-tile" data-tm-id="${esc(r.id)}" data-tm-table="${table}" aria-label="${esc(title)}"><div class="tm-window" data-tm-window><div class="tm-empty"><span class="tm-initial" aria-hidden="true">${esc(table==='venues'?String(i+1).padStart(2,'0'):r.c?.slice(0,2)||'KE')}</span><p data-tm-empty>${c.state==='empty'?'No media published. Add your own image or video in the admin.':c.state==='draft'?'This media is a draft. Publish it from the admin to show it here.':'Preparing preview…'}</p></div><span class="tm-badge" data-tm-badge>${esc(label(c))}</span>${c.state!=='empty'&&c.state!=='draft'?`<button class="tm-open-film" type="button" data-tm-open aria-label="${c.kind==='video'?'Watch':'View'} ${esc(title)}"><span aria-hidden="true">${c.kind==='video'?'▶':'↗'}</span><span>${c.kind==='video'?'Watch the experience':table==='venues'?'View the space':'View the product'}</span></button>`:''}</div><div class="tm-copy"><div><div class="tm-metadata">${String(i+1).padStart(2,'0')} / ${esc(meta)}</div><h3>${esc(title)}</h3><p>${esc(table==='venues'?r.desc||'':r.description||'Discover the product through the maker’s own film.')}</p></div><div><div class="tm-price">${table==='venues'?esc((r.rate||'').split(' / ')[0]):'KES '+Number(r.p).toLocaleString('en-KE')}</div>${table==='venues'?`<p>${Number(r.cap).toLocaleString('en-KE')} seats</p>`:''}<a href="#${esc(href)}">${table==='venues'?'Explore this venue':'Meet this product'} <span aria-hidden="true">→</span></a>${table==='venues'?'<p class="tm-terms">Confirm availability and rates with venue</p>':''}</div></div></article>`}
+ function tile(table,r,i){const c=config(table,r);const title=name(r),href=route(table,r),meta=table==='venues'?r.type+' · '+r.area:r.cat+' · '+r.c+' County';return `<article class="tm-tile" data-tm-id="${esc(r.id)}" data-tm-table="${table}" aria-label="${esc(title)}"><div class="tm-window" data-tm-window><div class="tm-empty"><span class="tm-initial" aria-hidden="true">${esc(table==='venues'?String(i+1).padStart(2,'0'):r.c?.slice(0,2)||'KE')}</span><p data-tm-empty>${c.state==='empty'?'No media published. Add your own image or video in the admin.':c.state==='draft'?'This media is a draft. Publish it from the admin to show it here.':'Preparing preview…'}</p></div><span class="tm-badge" data-tm-badge>${esc(label(c))}</span>${c.state!=='empty'&&c.state!=='draft'?`<button class="tm-open-film" type="button" data-tm-open aria-label="${c.kind==='video'?'Watch':'View'} ${esc(title)}"><span aria-hidden="true">${c.kind==='video'?'▶':'↗'}</span><span>${c.kind==='video'?'Watch the experience':table==='venues'?'View the space':'View the product'}</span></button>`:''}</div><div class="tm-copy"><div><div class="tm-metadata">${String(i+1).padStart(2,'0')} / ${esc(meta)}</div><h3>${esc(title)}</h3><p>${esc(table==='venues'?r.desc||'':r.description||'Discover the product through the maker’s own film.')}</p></div><div><div class="tm-price">${table==='venues'?esc((r.rate||'').split(' / ')[0]):esc(r.priceLabel||('KES '+Number(r.p).toLocaleString('en-KE')))}</div>${table==='venues'?`<p>${Number(r.cap).toLocaleString('en-KE')} seats</p>`:''}<a href="#${esc(href)}">${table==='venues'?'Explore this venue':'Meet this product'} <span aria-hidden="true">→</span></a>${table==='venues'?'<p class="tm-terms">Confirm availability and rates with venue</p>':''}</div></div></article>`}
  function gallery(table,rows){if(!rows.length)return '<div class="tm-admin-disclosure">No '+esc(table)+' are currently published. Publish a listing in admin to restore this gallery.</div>';const modes=rows.map(r=>config(table,r)),note=modes.some(c=>c.state==='demo')?'Existing shared demonstration posters are not room-specific.':modes.some(c=>c.state==='empty'||c.state==='draft')?'Some media slots are awaiting your published footage.':'Your published photographs and films are shown here.';return `<div class="tm-gallery" data-tm-gallery data-tm-table="${table}"><div class="tm-toolbar"><div class="tm-counter" data-tm-counter>01 / ${String(rows.length).padStart(2,'0')}</div><div class="tm-transport"><button type="button" data-tm-prev aria-label="Previous ${table==='venues'?'venue':'product'}">←</button><button type="button" data-tm-next aria-label="Next ${table==='venues'?'venue':'product'}">→</button></div><span class="tm-mode">Swipe · choose · step inside</span></div><div class="tm-track" data-tm-track tabindex="0" aria-label="${table==='venues'?'Venue':'Maker'} experience gallery. Use arrow keys or swipe.">${rows.map((r,i)=>tile(table,r,i)).join('')}</div><p class="tm-note">${note} Every tile’s media can be uploaded, replaced, unpublished or deleted in Admin → Experience tiles. Deletion does not remove the listing.</p></div>`}
  function cleanup(){epoch++;for(const f of cleanups)f();cleanups=[];for(const d of dialogs){d.close();d.remove()}dialogs.clear();states.clear()}
  async function resolve(c){return c.assetId?await ASSETS.url(c.assetId):urlSafe(c.url)}
@@ -9602,10 +8117,18 @@ function PAGE_EVENTS(path){
  document.addEventListener('input',e=>{if(e.target.id==='prodSearch'){e.stopImmediatePropagation();filter();}},true);
  document.addEventListener('change',e=>{if(['productCounty','productSort'].includes(e.target.id)){e.stopImmediatePropagation();filter();}},true);
 })();
+
+(function heroAutoplay(){
+ document.addEventListener('DOMContentLoaded',()=>{
+  const io=new IntersectionObserver(es=>es.forEach(en=>{const v=en.target;if(en.isIntersecting){v.play().catch(()=>{});}else v.pause();}),{threshold:.25});
+  const watch=()=>document.querySelectorAll('video[data-hero-autoplay]').forEach(v=>{if(!v.dataset.ioWatched){v.dataset.ioWatched='1';io.observe(v);}});
+  watch();new MutationObserver(watch).observe(document.getElementById('app')||document.body,{childList:true,subtree:true});
+ });
+})();
 (function nativeAdapters(){
  const esc=x=>String(x??'').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
  const media=window.KICC_NATIVE.tables.media;
- T.hls=o=>{const path=location.hash.replace(/^#/,'')||'/';const m=media.find(x=>x.target===path&&x.kind==='video');return `<div class="hls-stage" data-native-owner="${esc(m?.ownerId||'')}">${m?`<video controls playsinline preload="metadata" ${m.poster?'poster="'+esc(m.poster)+'"':''} src="${esc(m.url)}" style="width:100%;height:100%;object-fit:cover"></video>`:`<div class="poster" style="background-image:url('${esc(o.img||'')}')"></div><div class="hud"><div><h3>${esc(o.title)}</h3><p>No entity-owned video published. Add one in the Admin portal.</p></div></div>`}</div>`;};
+ T.hls=o=>{const path=location.hash.replace(/^#/,'')||'/';const m=media.find(x=>x.target===path&&x.kind==='video');return window.KiccExpoVideo.render({variant:'feature',ownerId:m?.ownerId,video:m?.url,poster:m?.poster||o.img,title:o.title||m?.name||'Published film',description:o.sub||'',actions:[]});};
  for(const t of ['exhibitions','screens','streams']){const old=Router.PAGES['/'+t];Router.PAGES['/'+t]=(rest,path)=>!window.KICC_NATIVE.tables[t].length?{title:t,html:`<section class="wrap section"><div class="eyebrow">${esc(t)}</div><h1>${t==='screens'?'Digital Screens':t==='streams'?'Live Streams':'Exhibitions'}</h1><div class="reference-empty mt-l">No published ${esc(t)} records in the database. The collection is empty, not populated with demonstration listings.</div></section>`}:old(rest,path);}
  document.addEventListener('click',e=>{const a=e.target.closest('[data-action="toast"],[data-action="link"]');if(!a)return;e.preventDefault();e.stopImmediatePropagation();const path=location.hash.replace(/^#/,'');let target='/portal';const card=a.closest('[data-native-product]');if(card){const p=window.KICC_NATIVE.tables.products.find(x=>x.slug===card.dataset.nativeProduct);if(p)target=p.nativeUrl+'?native=1';}else if(path.startsWith('/marketplace/')){const slug=path.split('/')[2];const p=window.KICC_NATIVE.tables.products.find(x=>REPO.slug(x.n).slice(0,44)===slug||x.slug===slug);if(p)target=p.nativeUrl+'?native=1';}else if(path.startsWith('/venues/'))target=path+'?native=1';else if(path==='/travel')target='/travel?native=1';location.assign(target);},true);
  document.querySelectorAll('a[href="#/login"],a[href="#/register"]').forEach(a=>{a.href=a.getAttribute('href').slice(1);a.removeAttribute('data-link');});
@@ -9623,6 +8146,6 @@ function PAGE_EVENTS(path){
 })();
 </script>
 <script type="module" src="https://static.cloudflareinsights.com/beacon.min.js/v31edd6df95cf4e85bb4c19e7a9bdbcba1788362987495" integrity="sha512-iIg7k2xntmwu6/uSb5tpc/hySgZc4eoL31yB29W6tJFo2akwjPWcEqnCEdJvGexCL0KEQwVYv5BlowfhVz26hg==" data-cf-beacon='{"version":"2024.11.0","token":"4edd5f8ec12a48cfa682ab8261b80a79","spa":2}' crossorigin="anonymous"></script>
-<script defer src="/js/tile-hover-video.js?v=tile-video-v1"></script>
+<script defer src="/js/tile-hover-video.js?v=8ce8d3743419"></script>
 </body>
 </html>

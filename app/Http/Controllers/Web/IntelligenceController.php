@@ -19,7 +19,7 @@ class IntelligenceController extends Controller
 {
     public function dashboard(Request $request)
     {
-        abort_if(!auth()->check() || !auth()->user()->is_admin, 403);
+        \Illuminate\Support\Facades\Gate::authorize('view-private-revenue');
 
         $period = $request->get('period', 'month');
         $dateFrom = match($period) {

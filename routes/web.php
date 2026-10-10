@@ -473,7 +473,7 @@ Route::get('/tourism/restaurants', [\App\Http\Controllers\Web\TourismEntityContr
 Route::get('/tourism/event-organizers', [\App\Http\Controllers\Web\TourismEntityController::class, 'organizers'])->name('tourism.organizers');
 
 // Tourism Intelligence Dashboard
-Route::get('/intelligence', [\App\Http\Controllers\Web\IntelligenceController::class, 'dashboard'])->name('intelligence.dashboard');
+Route::get('/intelligence', function () {abort_unless(\Illuminate\Support\Facades\Gate::allows('view-private-revenue'),404);return redirect('/admin/kicc/intelligence');})->name('intelligence.dashboard');
 
 // AI Features
 Route::get('/ai/chat', [\App\Http\Controllers\Web\AIController::class, 'chatPage'])->name('ai.chat');
@@ -632,6 +632,7 @@ Route::middleware('auth')->group(function () {
 // Commission & Licensing Admin
 Route::middleware(['auth', 'admin:kicc'])->group(function () {
     Route::get('/kicc-admin/commissions', function () {
+        \Illuminate\Support\Facades\Gate::authorize('view-private-revenue');
         $commissions = \App\Models\CommissionLog::with('agent', 'order')->latest()->paginate(25);
         $totalPending = \App\Models\CommissionLog::where('status', 'pending')->sum('commission_amount');
         $totalSettled = \App\Models\CommissionLog::where('status', 'settled')->sum('commission_amount');
@@ -960,3 +961,5 @@ Route::middleware(['auth','can:view-private-revenue'])->group(function () {
  Route::get('/admin/kicc/revenue-pipelines',[\App\Http\Controllers\Web\PipelineController::class,'index'])->name('mother.revenue-pipelines');
  Route::get('/admin/kicc/revenue-pipelines/{sector}',[\App\Http\Controllers\Web\PipelineController::class,'sector'])->name('mother.revenue-pipelines.sector');
 });
+
+Route::get('/admin/kicc/intelligence',[\App\Http\Controllers\Web\IntelligenceController::class,'dashboard'])->middleware(['auth','can:view-private-revenue'])->name('mother.intelligence');
