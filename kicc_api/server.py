@@ -27,7 +27,12 @@ class Handler(BaseHTTPRequestHandler):
         self._send(404, {"error": "not found"})
 
     def do_POST(self):
-        length = int(self.headers.get("Content-Length", 0))
+        try:
+            length = int(self.headers.get("Content-Length", 0))
+        except (TypeError, ValueError):
+            return self._send(400, {"error": "invalid content length"})
+        if length < 0 or length > 2 * 1024 * 1024:
+            return self._send(413, {"error": "request body too large"})
         raw = self.rfile.read(length)
         try:
             body = json.loads(raw) if raw else {}
@@ -108,4 +113,4 @@ class Handler(BaseHTTPRequestHandler):
 
 if __name__ == "__main__":
     port = int(os.environ.get("KICC_API_PORT", "8400"))
-    HTTPServer(("0.0.0.0", port), Handler).serve_forever()
+    HTTPServer(("127.0.0.1", port), Handler).serve_forever()

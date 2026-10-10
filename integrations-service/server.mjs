@@ -127,4 +127,4 @@ http.createServer(async (req, res) => {
   } catch (e) {
     return json(res, 500, { ok: false, error: String((e && e.message) || e) });
   }
-}).listen(PORT, () => console.log(`kicc-pipeline-bus on :${PORT}`));
+}).listen(PORT, "127.0.0.1", () => console.log(`kicc-pipeline-bus on :${PORT}`));

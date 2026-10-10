@@ -20,10 +20,11 @@ const ALL_FREIGHT = Object.values(FREIGHT);
 const ALL_SERVICES = Object.values(SERVICES);
 
 function readBody(req) {
-  return new Promise((resolve) => {
-    let raw = "";
-    req.on("data", (c) => raw += c);
+  return new Promise((resolve, reject) => {
+    let raw = "", bytes = 0;
+    req.on("data", (c) => { bytes += c.length; if (bytes > 2 * 1024 * 1024) { const e=new Error("Request body too large");e.status=413;reject(e);req.pause();return;} raw += c; });
     req.on("end", () => resolve(raw));
+    req.on("error", reject);
   });
 }
 
@@ -89,14 +90,14 @@ function verifyWebhook(provider, rawBody, headers) {
   const w = provider.webhook;
   if (!w) return { ok: false, reason: "no webhook defined" };
   if (w.verify) return w.verify(rawBody, headers);
-  return { ok: true, scheme: "none", warning: "unsigned" };
+  return { ok: false, scheme: "none", reason: "Webhook signature verification is not provisioned" };
 }
 
 const server = http.createServer(async (req, res) => {
   const url = new URL(req.url, `http://${req.headers.host}`);
-  const rawBody = await readBody(req);
+  let rawBody;try{rawBody=await readBody(req);}catch(e){res.setHeader("Connection","close");json(res,e.status||400,{ok:false,error:e.status===413?"Request body too large":"Invalid request body"});return;}
   let body = {};
-  try { body = JSON.parse(rawBody || "{}"); } catch {}
+  try { body = JSON.parse(rawBody || "{}"); } catch { return json(res,400,{ok:false,error:"Invalid JSON"}); }
 
   if (req.method === "OPTIONS") {
     res.writeHead(204, {
@@ -306,7 +307,7 @@ const server = http.createServer(async (req, res) => {
     const check = verifyWebhook(provider, rawBody, req.headers);
     emit({ kind: "webhook.received", provider: parts[1], verified: check.ok, scheme: check.scheme, reason: check.reason });
 
-    if (!check.ok) {
+    if (!check.ok || check.scheme === "none" || check.warning === "unsigned") {
       log.warn(`webhook ${parts[1]} REJECTED: ${check.reason}`);
       return json(res, 401, { ok: false, error: check.reason });
     }
@@ -328,8 +329,8 @@ const server = http.createServer(async (req, res) => {
 
 const port = Number(env("INTEGRATION_PORT", "8787"));
 if (process.argv[1] && (process.argv[1].endsWith("server.js") || process.argv[1].endsWith("api/server.js"))) {
-  server.listen(port, "0.0.0.0", () => {
-    log.info(`KICC Integration API + Webhooks on http://0.0.0.0:${port}`);
+  server.listen(port, "127.0.0.1", () => {
+    log.info(`KICC Integration API + Webhooks on http://127.0.0.1:${port}`);
     log.info(`  webhooks:  ${Object.keys(BY_ID).map((k) => `/webhook/${k}`).join(", ")}`);
     log.info(`  api:       /health, /api/{payment,freight,customs,escrow,fx}/*`);
     log.info(`  mock mode: ${MOCK_MODE}`);

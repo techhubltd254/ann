@@ -37,7 +37,7 @@ const server = http.createServer((req, res) => {
   res.writeHead(404, { "content-type": "text/plain" });
   res.end("not found");
 });
-server.listen(port, () => {
+server.listen(port, "127.0.0.1", () => {
   console.log(`kicc-bus-consumers up: ${consumers.map((c) => c.group).join(", ")} | journal=${consumers[0].journal} | status :${port}/api/consumers/status`);
 });
 

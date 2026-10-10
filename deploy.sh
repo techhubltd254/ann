@@ -285,6 +285,11 @@ else
     echo "  ⚠ CLOUDFLARE_API_TOKEN not set — skipping cache purge" >> "$LOG"
 fi
 
+# Persist least-privilege internal service boundaries across every release.
+if [ -f "$APP_DIR/deployment/hardening/install-service-boundaries.sh" ]; then
+    bash "$APP_DIR/deployment/hardening/install-service-boundaries.sh" >> "$LOG" 2>&1
+fi
+
 # Bring app back
 php artisan up 2>/dev/null || true
 
