@@ -243,7 +243,7 @@ class InstitutionSyncService
                 'latitude' => $i->lat,
                 'longitude' => $i->lng,
                 'tags' => [$sector->slug, Str::slug($i->name)],
-                'is_published' => $i->is_published,
+                'is_published' => $i->is_published && ($mapping['publication_status']??'active')==='active',
                 'entity_type' => \App\Models\CountyInstitution::class, // normalize
             ]);
             return $entity;
@@ -272,8 +272,8 @@ class InstitutionSyncService
             'latitude' => $i->lat,
             'longitude' => $i->lng,
             'tags' => [$sector->slug, Str::slug($i->name)],
-            'is_published' => $i->is_published,
-            'isPublished' => $i->is_published,
+            'is_published' => $i->is_published && ($mapping['publication_status']??'active')==='active',
+            'isPublished' => $i->is_published && ($mapping['publication_status']??'active')==='active',
             'language_primary' => 'en',
             'languagePrimary' => 'en',
             'capture_target' => 'manual',
@@ -296,8 +296,8 @@ class InstitutionSyncService
             'latitude' => $i->lat,
             'longitude' => $i->lng,
             'contact' => $i->phone,
-            'is_published' => $i->is_published,
-            'isPublished' => $i->is_published,
+            'is_published' => $i->is_published && ($mapping['publication_status']??'active')==='active',
+            'isPublished' => $i->is_published && ($mapping['publication_status']??'active')==='active',
         ];
 
         if ($attr) {

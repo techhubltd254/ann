@@ -37,10 +37,10 @@ class InstitutionProductAdminController extends Controller
         return response()->view('experience.admin.product-edit',compact('institution','product','sectors','media'))->header('Cache-Control','private,no-store');
     }
     private function fields(Request $r):array {
-        $d=$r->validate(['name'=>'required|string|max:255','description'=>'nullable|string|max:10000','unit'=>'nullable|string|max:50','price'=>'nullable|numeric|min:0','stock'=>'required|integer|min:0','offering_kind'=>'required|in:product,service,experience','price_mode'=>'required|in:fixed,from,enquiry','publication_status'=>'required|in:draft,active','booking_url'=>['nullable','url','regex:~^https?://~i'],'source_url'=>['nullable','url','regex:~^https?://~i'],'duration_minutes'=>'nullable|integer|min:1|max:100000','max_guests'=>'nullable|integer|min:1|max:100000','inclusions'=>'nullable|string|max:6000']);
+        $d=$r->validate(['name'=>'required|string|max:255','category'=>'nullable|string|max:255','description'=>'nullable|string|max:10000','unit'=>'nullable|string|max:50','price'=>'nullable|numeric|min:0','stock'=>'required|integer|min:0','offering_kind'=>'required|in:product,service,experience','price_mode'=>'required|in:fixed,from,enquiry','publication_status'=>'required|in:draft,active','booking_url'=>['nullable','url','regex:~^https?://~i'],'source_url'=>['nullable','url','regex:~^https?://~i'],'duration_minutes'=>'nullable|integer|min:1|max:100000','max_guests'=>'nullable|integer|min:1|max:100000','inclusions'=>'nullable|string|max:6000']);
         if($d['price_mode']!=='enquiry' && !isset($d['price']))throw \Illuminate\Validation\ValidationException::withMessages(['price'=>'Enter a published price or use Price on enquiry.']);
         $d['offering_details']=['duration_minutes'=>$d['duration_minutes']??null,'max_guests'=>$d['max_guests']??null,'inclusions'=>array_values(array_filter(array_map('trim',explode("\n",$d['inclusions']??''))))];
-        $d['price']=$d['price_mode']==='enquiry'?0:$d['price'];$d['category']=$d['offering_kind']==='experience'?'Tourism':($d['offering_kind']==='service'?'Services':'General');
+        $d['price']=$d['price_mode']==='enquiry'?0:$d['price'];$d['category']=$d['category']??($d['offering_kind']==='experience'?'Tourism':($d['offering_kind']==='service'?'Services':'General'));
         unset($d['duration_minutes'],$d['max_guests'],$d['inclusions']);return $d;
     }
     public function create(Request $r,string $institution){

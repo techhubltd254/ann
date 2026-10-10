@@ -1,5 +1,6 @@
 <div class="up-grid">
 <label>Name<input name="name" value="{{ old('name',$product->name) }}" required></label>
+<label>Category<input name="category" value="{{ old('category',$product->category?->name) }}" placeholder="Coffee, Crafts, Tourism, Education…"></label>
 <label>Type<select name="offering_kind">@foreach(['product','service','experience'] as $v)<option value="{{ $v }}" @selected(old('offering_kind',$product->offering_kind)===$v)>{{ ucfirst($v) }}</option>@endforeach</select></label>
 <label>Publication<select name="publication_status">@foreach(['draft','active'] as $v)<option value="{{ $v }}" @selected(old('publication_status',$product->status)===$v)>{{ $v==='active'?'Publish to public site':'Draft · private' }}</option>@endforeach</select></label>
 <label>Pricing<select name="price_mode">@foreach(['fixed'=>'Published fixed price','from'=>'Published starting price','enquiry'=>'Price on enquiry'] as $v=>$label)<option value="{{ $v }}" @selected(old('price_mode',$product->price_mode)===$v)>{{ $label }}</option>@endforeach</select></label>
