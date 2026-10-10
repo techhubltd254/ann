@@ -11,7 +11,7 @@ foreach($originals as $r){
     $login=preg_match('~(?:login|reset-pwd)$~',$uri);
     if($login)continue;
     if(!$protected&&!$media&&!str_starts_with($uri,'api/media/'))continue;
-    $r->middleware(str_starts_with($uri,'api/')?[AdminConsole::class]:['auth',AdminConsole::class]);
+    $r->middleware(str_starts_with($uri,'api/')?['auth:sanctum',AdminConsole::class]:['auth',AdminConsole::class]);
     if($media||str_starts_with($uri,'api/media/')){$action=$r->getAction();$action['admin_mother_only']=true;$r->setAction($action);}
     $canonical=AdminPaths::canonical('/'.$uri);
     if($media&&!str_starts_with($uri,'api/'))$canonical=str_starts_with($uri,'kicc-admin/site-images')?'/admin/kicc/site-images'.substr($uri,strlen('kicc-admin/site-images')):'/admin/'.$uri;
