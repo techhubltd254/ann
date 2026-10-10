@@ -56,9 +56,9 @@ class MediaFlowController extends Controller
         $items=[];
         foreach($assets as $a){$bound=(int)($a->metadata['sector_id']??0);if($bound && $bound!==$id)continue;
             $v=MediaMapping::classify($a,(string)$institution->slug,(int)$institution->id);
-            $items[]=['id'=>$a->id,'slot'=>$a->slot,'kind'=>$a->kind,'status'=>$a->status,'path'=>$a->path,'sector_id'=>$bound?:null,'legacy_shared_scope'=>!$bound && $a->owner_type===CountyInstitution::class,'in_r2'=>MediaMapping::inR2($a->path),'algorithm_state'=>$v['state'],'algorithm_reason'=>$v['reason'],'serves'=>$v['state']===MediaMapping::DISTINCT?'/media/video/'.ltrim($a->path,'/'):null];}
+            $items[]=['id'=>$a->id,'slot'=>$a->slot,'kind'=>$a->kind,'status'=>$a->status,'path'=>$a->path,'sector_id'=>$bound?:null,'legacy_shared_scope'=>!$bound && $a->owner_type===CountyInstitution::class,'in_r2'=>MediaMapping::inR2($a->path),'algorithm_state'=>$v['state'],'algorithm_reason'=>$v['reason'],'serves'=>$v['state']===MediaMapping::DISTINCT?'/media/original/'.ltrim($a->path,'/'):null];}
         $hero=MediaMapping::institutionHero($institution);
-        return response()->json(['institution'=>['id'=>$institution->id,'slug'=>$institution->slug],'sector_id'=>$id,'display'=>['state'=>$hero['state'],'reason'=>$hero['reason'],'video'=>$hero['video']?'/media/video/'.ltrim($hero['path'],'/'):null],'media'=>$items])->header('Cache-Control','private,no-store');
+        return response()->json(['institution'=>['id'=>$institution->id,'slug'=>$institution->slug],'sector_id'=>$id,'display'=>['state'=>$hero['state'],'reason'=>$hero['reason'],'video'=>$hero['video']?'/media/original/'.ltrim($hero['path'],'/'):null],'media'=>$items])->header('Cache-Control','private,no-store');
     }
     public function store(Request $r, CountyInstitution $institution, ScopedVideoMedia $library)
     {

@@ -136,7 +136,7 @@ class MediaAsset extends Model
     {
         $cdn = media_url();
         if ($cdn !== '') return $cdn . '/' . ltrim($path, '/');
-        if (($this->disk ?? 'r2') === 'r2') return url('/media/video/' . ltrim($path, '/'));
+        if (($this->disk ?? 'r2') === 'r2') return url((str_ends_with(strtolower($path),'.m3u8')?'/media/video/':'/media/original/') . ltrim($path, '/'));
         return url('/storage/' . ltrim($path, '/'));
     }
 
