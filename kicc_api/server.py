@@ -44,7 +44,9 @@ class Handler(BaseHTTPRequestHandler):
             elif self.path == "/classify":
                 r = get().classify_counties([body])[0]
             elif self.path == "/pool/distribute":
-                r = get().run_pool_distribution(body.get("contributions", []), body.get("qualities", {}))
+                # Calculate only; never drain the orchestrator's pending ledger contributions.
+                qualities = {int(k): float(v) for k, v in body.get("qualities", {}).items()}
+                r = get().pool.distribute(body.get("contributions", []), qualities)
             elif self.path == "/anonymize":
                 a = get().anonymizer
                 # A string is one quasi-identifier, never an iterable of letters.
