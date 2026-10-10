@@ -106,14 +106,22 @@ class ChunkedUploadController extends Controller
             abort_unless($total===(int)$m['size'],422,'Assembled size mismatch.');
             $mime=(new \finfo(FILEINFO_MIME_TYPE))->file($assembled);
             abort_unless(in_array($mime,['video/mp4','video/webm','video/quicktime','video/x-matroska','video/x-msvideo'],true),422,'File content is not a supported video.');
+            $playbackReady=true;$sourceCodec=null;
+            if($m['owner_type']===Product::class){
+                $probe=new \Symfony\Component\Process\Process(['ffprobe','-v','error','-show_streams','-show_format','-of','json',$assembled]);$probe->setTimeout(120);$probe->run();
+                abort_unless($probe->isSuccessful(),422,'The uploaded video is corrupt or cannot be decoded. Nothing was published.');
+                $info=json_decode($probe->getOutput(),true);$video=null;$audio=null;foreach($info['streams']??[] as $stream){if(($stream['codec_type']??'')==='video'&&!$video)$video=$stream;if(($stream['codec_type']??'')==='audio'&&!$audio)$audio=$stream;}
+                abort_unless($video&&(float)($info['format']['duration']??0)>0,422,'The file has no playable video stream. Nothing was published.');
+                $sourceCodec=$video['codec_name'];$playbackReady=$mime==='video/mp4'&&$sourceCodec==='h264'&&($video['pix_fmt']??'')==='yuv420p'&&(!$audio||($audio['codec_name']??'')==='aac');
+            }
             $prefix=match($m['owner_type']){County::class=>'counties',CountyInstitution::class=>'institutions',default=>'venues'};
             $key=$m['owner_type']===Product::class?'institutions/'.$m['institution_slug'].'/products/'.$m['owner_id'].'/videos/'.$uploadId.'.'.$m['extension']:$prefix.'/'.$m['slug'].'/videos/'.$uploadId.'.'.$m['extension'];$disk=Storage::disk('r2');
             $in=fopen($assembled,'rb');
             try{$ok=$disk->put($key,$in,['ContentType'=>$mime]);}finally{if(is_resource($in))fclose($in);}
             abort_unless($ok && $disk->exists($key) && $disk->size($key)===$total,503,'R2 did not verify the complete file. Nothing was published.');
             try{
-                $a=DB::transaction(function()use($m,$key,$mime,$total){
-                    $fields=['disk'=>'r2','path'=>$key,'original_name'=>$m['filename'],'mime'=>$mime,'kind'=>'video','size_bytes'=>$total,'status'=>'ready','alt_text'=>$m['title'],'metadata'=>['sector_id'=>$m['sector_id']??null,'title'=>$m['title'],'uploaded_via'=>'chunked','actor_id'=>$m['actor_id']]];
+                $a=DB::transaction(function()use($m,$key,$mime,$total,$playbackReady,$sourceCodec){
+                    $fields=['disk'=>'r2','path'=>$key,'original_name'=>$m['filename'],'mime'=>$mime,'kind'=>'video','size_bytes'=>$total,'status'=>$playbackReady?'ready':'processing','alt_text'=>$m['title'],'metadata'=>['sector_id'=>$m['sector_id']??null,'title'=>$m['title'],'uploaded_via'=>'chunked','actor_id'=>$m['actor_id'],'playback'=>['state'=>$playbackReady?'source-ready':'queued','source_codec'=>$sourceCodec]]];
                     if(!empty($m['replace_id'])){
                         $a=MediaAsset::lockForUpdate()->findOrFail($m['replace_id']);
                         abort_unless($a->path===$m['replace_path'] && $a->owner_type===$m['owner_type'] && (int)$a->owner_id===(int)$m['owner_id'],409,'Media changed during upload.');
@@ -133,7 +141,7 @@ class ChunkedUploadController extends Controller
             Cache::forget('kicc:r2:keys');Cache::forget('kicc:r2:keyset');
             Cache::increment('kicc_cache_version');
             if($m['owner_type']===Product::class){\App\Jobs\PrepareProductVideo::dispatch($a->id,$key);}
-            $result=['id'=>$a->id,'path'=>$key,'bytes'=>$total,'status'=>'ready','public_url'=>'/media/original/'.$key,'sha256'=>hash_file('sha256',$assembled)];
+            $result=['id'=>$a->id,'path'=>$key,'bytes'=>$total,'status'=>$a->status,'public_url'=>'/media/original/'.$key,'sha256'=>hash_file('sha256',$assembled)];
             file_put_contents($dir.'/result.json',json_encode($result));
             foreach(glob($dir.'/*.part')?:[] as $p)unlink($p);unlink($assembled);
             return response()->json($result)->header('Cache-Control','no-store');
