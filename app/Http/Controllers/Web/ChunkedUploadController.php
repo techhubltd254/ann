@@ -59,6 +59,27 @@ class ChunkedUploadController extends Controller
         $this->owner($r,$meta);
         return [$dir,$meta];
     }
+    private function uploadLock(string $path)
+    {
+        // Both FPM and the queue share www-data group, but cannot chmod each other's files.
+        $mask=umask(0007);
+        try{$handle=fopen($path,'c+');}finally{umask($mask);}
+        abort_unless(is_resource($handle),503,'Upload lock is unavailable. Your chunks are retained.');
+        $stat=fstat($handle);
+        if(function_exists('posix_geteuid')&&(int)$stat['uid']===posix_geteuid()&&(($stat['mode']&0777)!==0660)){
+            abort_unless(chmod($path,0660),503,'Cannot secure the upload lock. Your chunks are retained.');
+        }
+        return $handle;
+    }
+    private function uploadState(string $path,string $contents): void
+    {
+        $tmp=tempnam(dirname($path),'.state-');
+        abort_unless($tmp!==false,503,'Cannot write upload state. Your chunks are retained.');
+        try{
+            abort_unless(file_put_contents($tmp,$contents,LOCK_EX)===strlen($contents),503,'Cannot persist upload state.');
+            abort_unless(chmod($tmp,0660)&&rename($tmp,$path),503,'Cannot commit upload state.');
+        }finally{if(is_file($tmp))unlink($tmp);}
+    }
     public function index(Request $r)
     {
         $u=$this->actor($r);$scope=app(AdminHierarchyScope::class);
@@ -85,13 +106,13 @@ class ChunkedUploadController extends Controller
         }
         abort_unless(disk_free_space(storage_path())>($d['size']*2+1073741824),507,'Insufficient temporary disk space.');
         $id=(string)Str::uuid();$dir=storage_path('app/chunked/'.$id);
-        $root=dirname($dir);if(!is_dir($root))mkdir($root,02770,true);chmod($root,02770);abort_unless(mkdir($dir,02770,true),503,'Cannot create upload session.');chmod($dir,02770);
+        $root=dirname($dir);if(!is_dir($root)){abort_unless(mkdir($root,02770,true),503,'Cannot create upload directory.');chmod($root,02770);}elseif(function_exists('posix_geteuid')&&fileowner($root)===posix_geteuid()){chmod($root,02770);}abort_unless(mkdir($dir,02770,true),503,'Cannot create upload session.');chmod($dir,02770);
         $d+=['actor_id'=>$u->id,'expires'=>time()+86400,'slug'=>$o->slug?:('entity-'.$o->id),'extension'=>$ext];
         file_put_contents($dir.'/meta.json',json_encode($d,JSON_THROW_ON_ERROR),LOCK_EX);chmod($dir.'/meta.json',0660);touch($dir.'/lock');chmod($dir.'/lock',0660);
         return response()->json(['upload_id'=>$id,'chunk_bytes'=>self::CHUNK_BYTES,'max_bytes'=>self::MAX_BYTES],201)->header('Cache-Control','no-store');
     }
     public function status(Request $r,string $uploadId){[$dir,$m]=$this->session($r,$uploadId);$n=(int)ceil($m['size']/self::CHUNK_BYTES);$next=0;while($next<$n&&is_file($dir.'/'.sprintf('%06d.part',$next)))$next++;return response()->json(['upload_id'=>$uploadId,'next'=>$next,'chunk_bytes'=>self::CHUNK_BYTES,'size'=>$m['size'],'expires'=>$m['expires'],'error'=>is_file($dir.'/finalization-error.json')?json_decode(file_get_contents($dir.'/finalization-error.json'),true):null,'result'=>is_file($dir.'/result.json')?json_decode(file_get_contents($dir.'/result.json'),true):null])->header('Cache-Control','no-store');}
-    public function cancel(Request $r,string $uploadId){[$dir,$m]=$this->session($r,$uploadId);$lock=fopen($dir.'/lock','c');chmod($dir.'/lock',0660);abort_unless(flock($lock,LOCK_EX|LOCK_NB),409,'Upload is completing.');try{abort_if(is_file($dir.'/result.json'),409,'Completed media belongs to the media library.');foreach(glob($dir.'/*')?:[] as $f)if(is_file($f)&&basename($f)!=='lock')unlink($f);}finally{flock($lock,LOCK_UN);fclose($lock);}unlink($dir.'/lock');rmdir($dir);return response()->json(['cancelled'=>true]);}
+    public function cancel(Request $r,string $uploadId){[$dir,$m]=$this->session($r,$uploadId);$lock=$this->uploadLock($dir.'/lock');abort_unless(flock($lock,LOCK_EX|LOCK_NB),409,'Upload is completing.');try{abort_if(is_file($dir.'/result.json'),409,'Completed media belongs to the media library.');foreach(glob($dir.'/*')?:[] as $f)if(is_file($f)&&basename($f)!=='lock')unlink($f);}finally{flock($lock,LOCK_UN);fclose($lock);}unlink($dir.'/lock');rmdir($dir);return response()->json(['cancelled'=>true]);}
     public function chunk(Request $r,string $uploadId)
     {
         [$dir,$m]=$this->session($r,$uploadId);
@@ -100,7 +121,7 @@ class ChunkedUploadController extends Controller
         abort_unless($off<(int)$m['size'],422,'Chunk index out of range.');
         $expected=min(self::CHUNK_BYTES,(int)$m['size']-$off);
         abort_unless($r->file('chunk')->getSize()===$expected,422,'Chunk size mismatch.');
-        $lock=fopen($dir.'/lock','c');chmod($dir.'/lock',0660);abort_unless(flock($lock,LOCK_EX),503);
+        $lock=$this->uploadLock($dir.'/lock');abort_unless(flock($lock,LOCK_EX),503);
         try{$r->file('chunk')->move($dir,sprintf('%06d.part',$i));chmod($dir.'/'.sprintf('%06d.part',$i),0660);}finally{flock($lock,LOCK_UN);fclose($lock);}
         return response()->json(['index'=>$i,'received'=>count(glob($dir.'/*.part')?:[]),'bytes'=>$expected])->header('Cache-Control','no-store');
     }
@@ -109,11 +130,11 @@ class ChunkedUploadController extends Controller
         [$dir,$m]=$this->session($r,$uploadId);
         if($r->boolean('async')&&!$r->attributes->get('finalize_job')){
             if(is_file($dir.'/result.json'))return response()->json(json_decode(file_get_contents($dir.'/result.json'),true));
-            $enqueue=fopen($dir.'/enqueue.lock','c');abort_unless(flock($enqueue,LOCK_EX|LOCK_NB),409,'Finalization is being scheduled.');
-            try{if(!is_file($dir.'/enqueued')||is_file($dir.'/finalization-error.json')){\App\Jobs\FinalizeChunkedUpload::dispatch($uploadId,(int)$m['actor_id']);file_put_contents($dir.'/enqueued',(string)time());if(is_file($dir.'/finalization-error.json'))unlink($dir.'/finalization-error.json');}}finally{flock($enqueue,LOCK_UN);fclose($enqueue);}
+            $enqueue=$this->uploadLock($dir.'/enqueue.lock');abort_unless(flock($enqueue,LOCK_EX|LOCK_NB),409,'Finalization is being scheduled.');
+            try{if(!is_file($dir.'/enqueued')||is_file($dir.'/finalization-error.json')){\App\Jobs\FinalizeChunkedUpload::dispatch($uploadId,(int)$m['actor_id']);$this->uploadState($dir.'/enqueued',(string)time());if(is_file($dir.'/finalization-error.json'))unlink($dir.'/finalization-error.json');}}finally{flock($enqueue,LOCK_UN);fclose($enqueue);}
             return response()->json(['upload_id'=>$uploadId,'status'=>'finalizing'],202)->header('Cache-Control','no-store');
         }
-        $lock=fopen($dir.'/lock','c');chmod($dir.'/lock',0660);abort_unless(flock($lock,LOCK_EX|LOCK_NB),409,'Upload is being completed.');
+        $lock=$this->uploadLock($dir.'/lock');abort_unless(flock($lock,LOCK_EX|LOCK_NB),409,'Upload is being completed.');
         try{
             if(is_file($dir.'/result.json'))return response()->json(json_decode(file_get_contents($dir.'/result.json'),true));
             $n=(int)ceil($m['size']/self::CHUNK_BYTES);
@@ -165,7 +186,7 @@ class ChunkedUploadController extends Controller
             if(true){\App\Jobs\PrepareProductVideo::dispatch($a->id,$key);}
             $ownerUrl=match($m['owner_type']){Product::class=>route('marketplace.show',Product::findOrFail($m['owner_id'])->slug),CountyInstitution::class=>url('/institutions/'.CountyInstitution::findOrFail($m['owner_id'])->slug),County::class=>url('/counties/'.County::findOrFail($m['owner_id'])->slug),default=>url('/venues')};if($national)$ownerUrl=url('/national-government');
             $result=['owner_url'=>$ownerUrl,'id'=>$a->id,'path'=>$key,'bytes'=>$total,'status'=>$a->status,'public_url'=>'/media/original/'.$key,'sha256'=>hash_file('sha256',$assembled)];
-            file_put_contents($dir.'/result.json',json_encode($result));chmod($dir.'/result.json',0660);if(is_file($dir.'/finalization-error.json'))unlink($dir.'/finalization-error.json');
+            $this->uploadState($dir.'/result.json',json_encode($result,JSON_THROW_ON_ERROR));if(is_file($dir.'/finalization-error.json'))unlink($dir.'/finalization-error.json');
             foreach(glob($dir.'/*.part')?:[] as $p)unlink($p);unlink($assembled);
             return response()->json($result)->header('Cache-Control','no-store');
         }finally{flock($lock,LOCK_UN);fclose($lock);}

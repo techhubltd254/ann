@@ -72,6 +72,17 @@ fi
 
 cd "$APP_DIR"
 
+# SDK/video reads need a writable temporary directory for both FPM and queues.
+# Never use the release-owned tmp/ tree, which rsync may recreate as root.
+KICC_SAFE_TMP="$APP_DIR/storage/app/php-tmp"
+install -d -o www-data -g www-data -m 2770 "$KICC_SAFE_TMP"
+export TMPDIR="$KICC_SAFE_TMP"
+if grep -q '^TMPDIR=' .env; then
+    sed -i "s#^TMPDIR=.*#TMPDIR=$KICC_SAFE_TMP#" .env
+else
+    printf '\nTMPDIR=%s\n' "$KICC_SAFE_TMP" >> .env
+fi
+
 # Maintenance mode
 php artisan down --retry=30 2>/dev/null || true
 # Do not leave the public site in maintenance mode when a later deploy command fails.
