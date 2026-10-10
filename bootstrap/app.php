@@ -40,6 +40,7 @@ return Application::configure(basePath: dirname(__DIR__))
             \App\Http\Middleware\CachePublicResponse::class,
         ]);
         $middleware->web(append: [
+            \App\Http\Middleware\ProtectPrivateRevenue::class,
             \App\Http\Middleware\EnforceAdminHierarchy::class,
             \App\Http\Middleware\AppendAuditContext::class,
             \App\Http\Middleware\HandleInertiaRequests::class,
@@ -50,6 +51,7 @@ return Application::configure(basePath: dirname(__DIR__))
             \Illuminate\Session\Middleware\StartSession::class,
         ]);
         $middleware->api(prepend: [
+            \App\Http\Middleware\ProtectPrivateRevenue::class,
             \App\Http\Middleware\AgenticSEO::class,
             'throttle:api',
             \App\Http\Middleware\ThrottleApi::class,

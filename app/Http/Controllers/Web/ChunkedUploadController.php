@@ -71,7 +71,8 @@ class ChunkedUploadController extends Controller
     public function init(Request $r)
     {
         $u=$this->actor($r);
-        $d=$r->validate(['filename'=>'required|string|max:255','size'=>'required|integer|min:1|max:'.self::MAX_BYTES,'mime'=>'required|in:video/mp4,video/webm,video/quicktime,video/x-matroska,video/x-msvideo','owner_type'=>'required|string|max:200','owner_id'=>'required|integer|min:1','sector_id'=>'nullable|integer|min:1','slot'=>'required|string|max:150','title'=>'required|string|max:255','replace_id'=>'nullable|integer|min:1']);
+        $d=$r->validate(['filename'=>'required|string|max:255','size'=>'required|integer|min:1|max:'.self::MAX_BYTES,'mime'=>'required|in:video/mp4,video/webm,video/quicktime,video/x-matroska,video/x-msvideo','owner_type'=>'required|string|max:200','owner_id'=>'required|integer|min:1','sector_id'=>'nullable|integer|min:1','slot'=>'required|string|max:150','title'=>'required|string|max:255','replace_id'=>'nullable|integer|min:1','publish_on_ready'=>'nullable|boolean']);
+        $d['publish_on_ready']=$r->boolean('publish_on_ready',true);
         $o=$this->owner($r,$d);
         if($d['owner_type']===Product::class){$inst=CountyInstitution::findOrFail((int)$o->institution_id);$d['institution_id']=$inst->id;$d['institution_slug']=$inst->slug;}
         $ext=strtolower(pathinfo($d['filename'],PATHINFO_EXTENSION));
@@ -135,8 +136,8 @@ class ChunkedUploadController extends Controller
             abort_unless($ok && $disk->exists($key) && $disk->size($key)===$total,503,'R2 did not verify the complete file. Nothing was published.');
             try{
                 $a=DB::transaction(function()use($m,$key,$mime,$total,$playbackReady,$sourceCodec,$national){
-                    $fields=['disk'=>'r2','path'=>$key,'original_name'=>$m['filename'],'mime'=>$mime,'kind'=>'video','size_bytes'=>$total,'status'=>$playbackReady?'ready':'processing','alt_text'=>$m['title'],'metadata'=>['sector_id'=>$m['sector_id']??null,'title'=>$m['title'],'uploaded_via'=>'chunked','actor_id'=>$m['actor_id'],'playback'=>['state'=>$playbackReady?'source-ready':'queued','source_codec'=>$sourceCodec]]];
-                    if($national){$fields['status']='processing';$fields['metadata']=array_merge($fields['metadata'],['namespace'=>'national','publication'=>'draft','target_slot'=>$m['slot']]);}
+                    $fields=['disk'=>'r2','path'=>$key,'original_name'=>$m['filename'],'mime'=>$mime,'kind'=>'video','size_bytes'=>$total,'status'=>$playbackReady?'ready':'processing','alt_text'=>$m['title'],'metadata'=>['sector_id'=>$m['sector_id']??null,'title'=>$m['title'],'uploaded_via'=>'chunked','actor_id'=>$m['actor_id'],'publish_on_ready'=>$m['publish_on_ready']??true,'playback'=>['state'=>$playbackReady?'source-ready':'queued','source_codec'=>$sourceCodec]]];
+                    if($national){$fields['status']='processing';$fields['metadata']=array_merge($fields['metadata'],['namespace'=>'national','publication'=>'draft','publish_on_ready'=>$m['publish_on_ready']??true,'target_slot'=>$m['slot']]);}
                     if(!empty($m['replace_id'])){
                         $a=MediaAsset::lockForUpdate()->findOrFail($m['replace_id']);
                         abort_unless($a->path===$m['replace_path'] && $a->owner_type===$m['owner_type'] && (int)$a->owner_id===(int)$m['owner_id'],409,'Media changed during upload.');
@@ -145,9 +146,9 @@ class ChunkedUploadController extends Controller
                     if($mime==='video/mp4')$a->derivatives()->create(['kind'=>'video_mp4','variant'=>'source','path'=>$key,'mime'=>$mime,'size_bytes'=>$total]);
                     if($m['owner_type']===Product::class){
                         $p=Product::lockForUpdate()->findOrFail($m['owner_id']);abort_unless((int)$p->institution_id===(int)$m['institution_id'],409,'Product ownership changed during upload.');
-                        $newUrl=url('/media/original/'.$key);$oldPath=$m['replace_path']??null;$urls=array_values(array_filter($p->videos??[],fn($v)=>!$oldPath||!str_contains($v,$oldPath)));array_unshift($urls,$newUrl);$p->update(['video_url'=>$newUrl,'videos'=>array_values(array_unique($urls))]);
+                        $newUrl=url('/media/original/'.$key);$oldPath=$m['replace_path']??null;$urls=array_values(array_filter($p->videos??[],fn($v)=>!$oldPath||!str_contains($v,$oldPath)));array_unshift($urls,$newUrl);$p->update(['video_url'=>$newUrl,'videos'=>array_values(array_unique($urls))]+(($m['publish_on_ready']??true)?['status'=>'active']:[]));
                         $i=CountyInstitution::lockForUpdate()->findOrFail($m['institution_id']);$entries=$i->products??[];
-                        foreach($entries as &$entry)if((int)($entry['marketplace_product_id']??0)===$p->id||($entry['name']??'')===$p->name){$entry['marketplace_product_id']=$p->id;$entry['videos']=$p->videos;$entry['video_url']=$newUrl;}unset($entry);$i->update(['products'=>$entries]);
+                        foreach($entries as &$entry)if((int)($entry['marketplace_product_id']??0)===$p->id||($entry['name']??'')===$p->name){$entry['marketplace_product_id']=$p->id;$entry['videos']=$p->videos;$entry['video_url']=$newUrl;if($m['publish_on_ready']??true)$entry['publication_status']='active';}unset($entry);$i->update(['products'=>$entries]);
                     }
                     return $a;
                 });

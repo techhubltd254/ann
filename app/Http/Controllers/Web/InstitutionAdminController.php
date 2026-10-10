@@ -583,6 +583,11 @@ class InstitutionAdminController extends Controller
     public function sync(string $slug)
     {
         $institution = $this->authorizeInstitution($slug);
+        $uploadedIds=\App\Models\MediaAsset::where('owner_type',Product::class)->where('kind','video')->where('slot','product_video')->whereIn('status',['ready','processing'])->pluck('owner_id');
+        $uploaded=Product::where('institution_id',$institution->id)->whereIn('id',$uploadedIds)->get();
+        $entries=$institution->products??[];
+        foreach($uploaded as $product){if($product->status==='draft')$product->update(['status'=>'active']);foreach($entries as &$entry){if((int)($entry['marketplace_product_id']??0)===$product->id)$entry['publication_status']='active';}unset($entry);}
+        $institution->update(['products'=>$entries,'is_published'=>true]);
         $summary = app(InstitutionSyncService::class)->sync($institution);
 
         return back()->with('success',

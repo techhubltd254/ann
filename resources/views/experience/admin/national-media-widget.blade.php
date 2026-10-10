@@ -8,15 +8,16 @@ $versions=$mediaLibrary->filter(fn($a)=>$a->owner_type===$actualOwner&&(int)$a->
 @if($liveAsset)
 <video controls muted playsinline preload="metadata" poster="{{ $liveAsset->posterUrl() }}" src="{{ app(\App\Services\NationalMediaService::class)->stream($liveAsset) }}"></video>
 @else
-<div class="nm-empty">No live video. Upload a draft below, wait for processing, preview it, then publish.</div>
+<div class="nm-empty">No live video. Upload below. Verified browser-ready video syncs publicly automatically.</div>
 @endif
 <form data-nm-form method="GET" action="{{ route('national.admin.v2.dashboard') }}">
 <div class="nm-fields"><label>Video title<input data-nm-title required maxlength="255" value="{{ $label }}"></label><label>Video file · up to 2 GiB<input data-nm-file type="file" accept="video/mp4,video/webm,video/quicktime,video/x-matroska" required></label></div>
-<div class="nm-actions"><button type="button" data-nm-start class="as-cta" disabled>Upload new draft</button><button type="button" data-nm-pause hidden>Pause</button><button type="button" data-nm-cancel hidden>Cancel pending upload</button></div>
+<label><input data-nm-auto type="checkbox" checked> Sync publicly automatically when processing finishes</label>
+<div class="nm-actions"><button type="button" data-nm-start class="as-cta" disabled>Upload & sync to public</button><button type="button" data-nm-pause hidden>Pause</button><button type="button" data-nm-cancel hidden>Cancel pending upload</button></div>
 <progress data-nm-progress max="100" value="0"></progress><p data-nm-status role="status" aria-live="polite">Safe 4 MiB chunks · resume by reselecting the same file · the live video stays untouched.</p>
 <noscript>Enable JavaScript to upload large files. This form never sends a full video as one request.</noscript>
 </form>
-<div class="nm-versions"><h3>Drafts & version history</h3>
+<div class="nm-versions"><h3>Processing & version history</h3>
 @forelse($versions->take(5) as $asset)
 <article data-nm-asset="{{ $asset->id }}"><div class="nm-between"><strong>{{ $asset->alt_text?:$asset->original_name }}</strong><span class="nm-status">{{ strtoupper($asset->metadata['publication']??($asset->slot===$slot?'published':'draft')) }} · {{ strtoupper($asset->status) }}</span></div><p>{{ number_format($asset->size_bytes/1048576,1) }} MiB · Asset {{ $asset->id }}</p>
 @if($asset->status==='ready')
@@ -32,7 +33,7 @@ $versions=$mediaLibrary->filter(fn($a)=>$a->owner_type===$actualOwner&&(int)$a->
 @elseif(($asset->metadata['playback']['state']??'')==='failed')
 <p role="alert">Processing failed. The existing live video has not changed. Upload a compatible MP4 and retry.</p>
 @else
-<p data-nm-processing role="status">Processing browser-ready MP4 and poster. This draft cannot be published yet.</p>
+<p data-nm-processing role="status">Processing browser-ready MP4 and poster. It will sync publicly automatically when ready.</p>
 @endif
 </article>
 @empty

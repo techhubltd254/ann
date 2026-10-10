@@ -216,7 +216,7 @@ Route::post('/webhooks/integration-forward', [\App\Http\Controllers\Api\Integrat
     ->name('api.webhooks.integration-forward');
 
 // ── Inter-pipeline automation (auth-guarded) ──
-Route::middleware('auth:sanctum')->prefix('pipeline')->group(function () {
+Route::middleware(['auth:sanctum','can:view-private-revenue'])->prefix('pipeline')->group(function () {
     Route::get('/graph', [\App\Http\Controllers\Api\PipelineController::class, 'graph'])->name('api.pipeline.graph');
     Route::get('/status', [\App\Http\Controllers\Api\PipelineController::class, 'busStatus'])->name('api.pipeline.bus-status');
     Route::get('/ledger', [\App\Http\Controllers\Api\PipelineController::class, 'ledger'])->name('api.pipeline.ledger');

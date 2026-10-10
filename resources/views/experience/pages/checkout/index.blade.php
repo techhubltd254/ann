@@ -90,28 +90,7 @@
                     <div class="flex justify-between text-lg font-black text-kicc-gold pt-2 border-t border-gray-100"><span>Total</span><span>KES {{ number_format($cart->subtotal) }}</span></div>
                 </div>
 
-                <div class="mt-4 space-y-2">
-                    @php
-                        $resolver = app(\App\Services\PipelineResolver::class);
-                        $pipelineGroups = $cart->items->groupBy(fn($item) => $item->variant?->product
-                            ? $resolver->forProduct($item->variant->product)
-                            : 'A1');
-                    @endphp
-                    @foreach($pipelineGroups as $pCode => $pItems)
-                        @php
-                            $pTotal = $pItems->sum(fn($i) => $i->unit_price * $i->quantity);
-                            $pFee = $resolver->feeRate($pCode);
-                        @endphp
-                        @include('components.pipeline-fee-breakdown', [
-                            'pipelineCode' => $pCode,
-                            'pipelineName' => $pCode . ' Pipeline',
-                            'feeRate' => $pFee,
-                            'subtotal' => $pTotal,
-                            'isLocked' => \Illuminate\Support\Facades\DB::table('pipeline_registrations')
-                                ->where('code', $pCode)->value('earning_locked') ?? false,
-                        ])
-                    @endforeach
-                </div>
+
             </div>
 
             <div class="bg-white rounded-2xl border border-gray-100 p-6 text-sm text-gray-400 card-hover" data-reveal>

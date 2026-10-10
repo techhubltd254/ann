@@ -915,8 +915,8 @@ Route::middleware('auth')->group(function () {
 });
 
 // Public pipeline sector pages — views existed, routes were never registered.
-Route::get('/pipelines', [\App\Http\Controllers\Web\PipelineController::class, 'index'])->name('pipelines.index');
-Route::get('/pipelines/{sector}', [\App\Http\Controllers\Web\PipelineController::class, 'sector'])->name('pipelines.sector');
+Route::get('/pipelines', function () {abort_unless(\Illuminate\Support\Facades\Gate::allows('view-private-revenue'),404);return redirect('/admin/kicc/revenue-pipelines');})->name('pipelines.index');
+Route::get('/pipelines/{sector}', function (string $sector) {abort_unless(\Illuminate\Support\Facades\Gate::allows('view-private-revenue'),404);return redirect('/admin/kicc/revenue-pipelines/'.rawurlencode($sector));})->name('pipelines.sector');
 
 // Alias: views call route('institutions', $slug); canonical name is counties.institution.
 Route::get('/institutions/{institution}', [\App\Http\Controllers\Web\CountyController::class, 'institution'])->name('institutions');
@@ -952,4 +952,11 @@ Route::middleware(['auth',\App\Http\Middleware\AdminConsole::class])->group(func
 Route::middleware(['auth',\App\Http\Middleware\AdminConsole::class])->group(function(){
  Route::get('/admin/national/hero',fn()=>redirect()->route('national.admin.v2.dashboard',['tab'=>'hero']));
  Route::get('/admin/national/flag',fn()=>redirect()->route('national.admin.v2.dashboard',['tab'=>'flag']));
+});
+
+// Organization-private finance is exclusively delivered within the mother console.
+Route::middleware(['auth','can:view-private-revenue'])->group(function () {
+ Route::get('/admin/kicc/private-revenue',fn()=>response()->view('experience.admin.private-revenue')->header('Cache-Control','private,no-store'))->name('mother.private-revenue');
+ Route::get('/admin/kicc/revenue-pipelines',[\App\Http\Controllers\Web\PipelineController::class,'index'])->name('mother.revenue-pipelines');
+ Route::get('/admin/kicc/revenue-pipelines/{sector}',[\App\Http\Controllers\Web\PipelineController::class,'sector'])->name('mother.revenue-pipelines.sector');
 });

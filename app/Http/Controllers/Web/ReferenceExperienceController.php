@@ -137,7 +137,7 @@ class ReferenceExperienceController extends Controller
             if (is_string($value)) return preg_replace('~^http://kicctest\\.org(?=/|$)~', 'https://kicctest.org', $value);
             return $value;
         };
-        return $secure($tables);
+        return \App\Support\PrivateRevenue::redact($secure($tables));
     }
 
     public function data()

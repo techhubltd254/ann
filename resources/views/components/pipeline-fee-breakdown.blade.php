@@ -1,3 +1,4 @@
+@if(request()->is('admin/kicc','admin/kicc/*','kicc-admin','kicc-admin/*') && \Illuminate\Support\Facades\Gate::allows('view-private-revenue'))
 @php
     // Single source of truth for the split — every rendered row derives from this table.
     $pipelineCode = $pipelineCode ?? 'A1';
@@ -46,3 +47,5 @@
     </div>
     @endif
 </div>
+
+@endif

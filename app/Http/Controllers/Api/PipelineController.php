@@ -56,28 +56,33 @@ class PipelineController extends Controller
     /** The 87-pipeline dependency graph. */
     public function graph(): JsonResponse
     {
+        \Illuminate\Support\Facades\Gate::authorize('view-private-revenue');
         return response()->json(app(PipelineBusClient::class)->graph());
     }
 
     /** Aggregate bus metrics for the Mother Admin monitoring page. */
     public function busStatus(): JsonResponse
     {
+        \Illuminate\Support\Facades\Gate::authorize('view-private-revenue');
         return response()->json(app(PipelineBusClient::class)->status());
     }
 
     public function ledger(Request $request): JsonResponse
     {
+        \Illuminate\Support\Facades\Gate::authorize('view-private-revenue');
         return response()->json(app(PipelineBusClient::class)->ledger((int) $request->integer('limit', 100)));
     }
 
     public function dlq(Request $request): JsonResponse
     {
+        \Illuminate\Support\Facades\Gate::authorize('view-private-revenue');
         return response()->json(app(PipelineBusClient::class)->dlq((int) $request->integer('limit', 100)));
     }
 
     /** CONTROL — settle roots and cascade into every dependent pipeline. */
     public function cascade(Request $request): JsonResponse
     {
+        \Illuminate\Support\Facades\Gate::authorize('view-private-revenue');
         $roots = (array) $request->input('roots', []);
         if ($roots === []) {
             return response()->json(['ok' => false, 'error' => 'roots required'], 422);
@@ -107,6 +112,7 @@ class PipelineController extends Controller
     /** CONTROL — trigger one pipeline directly (also used to retry the DLQ). */
     public function trigger(Request $request): JsonResponse
     {
+        \Illuminate\Support\Facades\Gate::authorize('view-private-revenue');
         $id = (int) $request->integer('pipeline_id');
         if ($id < 1) {
             return response()->json(['ok' => false, 'error' => 'pipeline_id required'], 422);

@@ -37,6 +37,8 @@ class AppServiceProvider extends ServiceProvider
 
     public function boot(): void
     {
+        Gate::define('view-private-revenue', fn ($user) => ($user->status ?? 'active') === 'active'
+            && ($user->hasRole('kicc_admin') || $user->hasRole('superadmin') || ($user->account_type ?? '') === 'superadmin'));
         Blade::component('dashboards-shell', DashboardsShell::class);
 
         // The literal approved renderer reads these same models. Upload/delete

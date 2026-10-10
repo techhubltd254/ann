@@ -44,6 +44,7 @@ class PrepareProductVideo implements ShouldQueue {
     $meta=$a->metadata??[];$meta['playback']=['state'=>'ready','format'=>'faststart-mp4','method'=>$compatible?'remux':'transcode','duration'=>$output['format']['duration'],'prepared_at'=>now()->toIso8601String()];$a->update(['metadata'=>$meta,'status'=>'ready']);
    });
    Cache::forget('reference.native.v1');Cache::increment('kicc_cache_version');Cache::forget('kicc:r2:keys');Cache::forget('kicc:r2:keyset');if(($a->metadata['namespace']??'')==='national')app(\App\Services\NationalMediaService::class)->bust();
+   app(\App\Services\AutomaticMediaPublication::class)->publishIfReady($a);
   }catch(\Throwable $e){$current=MediaAsset::find($this->assetId);if($current&&$current->path===$this->expectedPath){$m=$current->metadata??[];$m['playback']=['state'=>'failed','error'=>'Video processing failed; retry processing or upload an H.264 MP4.'];$current->update(['metadata'=>$m]);}Log::error('Product video preparation failed',['asset'=>$this->assetId,'error'=>$e->getMessage()]);throw $e;
   }finally{foreach(glob($dir.'/*')?:[] as $f)unlink($f);rmdir($dir);}
  }
