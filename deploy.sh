@@ -1,12 +1,16 @@
 #!/usr/bin/env bash
 set -euo pipefail
 
+# Serialize duplicate webhook deliveries before touching the live tree.
+exec 9>/var/lock/kicc-deploy.lock
+flock -w 600 9
+
 APP_DIR="/opt/kicc-laravel"
 REPO="techhubltd254/ann"
 BRANCH="main"
 : "${GITHUB_DEPLOY_TOKEN:?GITHUB_DEPLOY_TOKEN is not set - export it in the droplet env, never commit it}"
 TOKEN="$GITHUB_DEPLOY_TOKEN"
-WORK="/tmp/ann-deploy"
+WORK="$(mktemp -d /tmp/ann-deploy.XXXXXXXX)"
 LOG="/opt/deploy-webhook/deploy.log"
 
 # Source .env so Cloudflare tokens are available for cache purge
@@ -30,7 +34,11 @@ fi
 # Extract tarball. --strip-components=1 removes the top-level repo dir.
 # Ignore minor tar errors (symlinks, special chars) — the source files we
 # need (app/, config/, routes/, resources/) always extract cleanly.
-tar -xzf "$WORK/ann.tar.gz" -C "$WORK" --strip-components=1 2>> "$LOG" || echo "tarball extract warn (non-fatal)" >> "$LOG"
+tar -xzf "$WORK/ann.tar.gz" -C "$WORK" --strip-components=1 2>> "$LOG"
+# Never rsync --delete from a partial or invalid release.
+for required in artisan bootstrap/app.php public/index.php composer.json routes/web.php; do
+    test -s "$WORK/$required" || { echo "FAIL: incomplete release: $required" >> "$LOG"; exit 1; }
+done
 echo "tarball extracted" >> "$LOG"
 
 # Remove generated/storage dirs that rsync already skips — these commonly
@@ -67,7 +75,7 @@ cd "$APP_DIR"
 # Maintenance mode
 php artisan down --retry=30 2>/dev/null || true
 # Do not leave the public site in maintenance mode when a later deploy command fails.
-trap 'cd "$APP_DIR" && php artisan up >> "$LOG" 2>&1 || true' EXIT
+trap 'cd "$APP_DIR" && php artisan up >> "$LOG" 2>&1 || true; rm -rf "$WORK"' EXIT
 
 # Dependencies
 if command -v composer &>/dev/null; then
