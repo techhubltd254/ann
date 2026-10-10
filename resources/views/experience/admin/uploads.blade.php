@@ -8,8 +8,8 @@
  <label>County<select data-up-county><option value="">Choose county</option>@foreach($counties as $c)<option value="{{ $c->id }}">{{ $c->name }}</option>@endforeach</select></label>
  <label>Owner type<select data-up-owner-type><option value="App\Models\County">County</option><option value="App\Models\CountyInstitution">Institution</option>@if($venues->count())<option value="App\Models\Venue">KICC venue</option>@endif</select></label>
  <label>Owner<select data-up-owner-id><option value="">Choose responsible owner</option></select></label>
- <label>Linked sector<select data-up-sector disabled><option value="">Choose institution first</option></select></label>
- <label>Display slot<select data-up-slot><option value="hero_video">Hero video</option><option value="institution_video">Video collection</option><option value="4d_video">4D video</option><option value="flag_video">Flag video</option></select></label>
+ <label>Linked sector<select data-up-sector disabled><option value="">Choose county or institution first</option></select></label>
+ <label>Display slot<select data-up-slot><option value="hero_video">Hero video</option><option value="institution_video">Video collection</option><option value="4d_video">4D video</option><option value="flag_video">Flag video</option><option value="sector_video">Selected sector video</option></select></label>
  <label>Title<input type="text" data-up-title required maxlength="255"></label>
  <label>File<input type="file" data-up-file accept="video/mp4,video/webm,video/quicktime,video/x-matroska"></label>
  </div>
@@ -21,4 +21,4 @@
  <script type="application/json" data-up-entities>@json(['counties'=>$counties,'institutions'=>$institutions,'venues'=>$venues])</script>
 </section>
 @endsection
-@push('scripts')<script defer src="/js/chunk-upload.js?v=resumable-v4"></script>@endpush
+@push('scripts')<script defer src="/js/chunk-upload.js?v=hierarchy-video-v1"></script>@endpush

@@ -52,6 +52,7 @@ class ReferenceExperienceController extends Controller
         $index->prime(TileMediaResolver::OWNER_TYPE, [TileMediaResolver::OWNER_ID]);
         $index->prime(TileMediaResolver::SEED_TYPE, [TileMediaResolver::OWNER_ID]);
 
+        $hierarchyMedia=app(\App\Services\HierarchyMediaResolver::class);
         $sectorCatalogue = app(\App\Services\InstitutionSectorCatalogue::class);
         $tables['sectors']=$sectorCatalogue->sectors();
         $productsByInstitution=$products->groupBy('institution_id');
@@ -68,6 +69,8 @@ class ReferenceExperienceController extends Controller
             $lastCounty=array_key_last($tables['counties']);
             foreach(['heroVideo','aiImage','image','mediaState','mediaReason','tileMedia'] as $field)$tables['counties'][$lastCounty][$field]=$presentation[$field];
             $hero=$presentation['hero'];$poster=$presentation['aiImage'];
+            $countyAsset=$index->forSlot(County::class,(int)$c->id,'hero_video');if($countyAsset&&$hierarchyMedia->published($countyAsset)){$tables['counties'][$lastCounty]['heroMobileVideo']=$countyAsset->derivativeUrl('video_mobile');$tables['counties'][$lastCounty]['tileMedia']['mobileUrl']=$countyAsset->derivativeUrl('video_mobile');}
+            $countyAsset=$index->forSlot(County::class,(int)$c->id,'hero_video');if($countyAsset&&$hierarchyMedia->published($countyAsset)){$tables['counties'][$lastCounty]['heroMobileVideo']=$countyAsset->derivativeUrl('video_mobile');$tables['counties'][$lastCounty]['tileMedia']['mobileUrl']=$countyAsset->derivativeUrl('video_mobile');}
             $tables['counties'][array_key_last($tables['counties'])]['sectorDetails']=$c->sectors->map(fn($sector)=>['id'=>(int)$sector->id,'slug'=>$sector->slug,'name'=>$sector->name])->all();
             if ($hero['video']) $tables['media'][] = ['id'=>'county:'.$c->id,'ownerId'=>(string)$c->id,'kind'=>'video','role'=>'county','target'=>'/counties/'.$c->slug,'name'=>$c->name.' — county film','url'=>$hero['video'],'poster'=>$poster,'fallbackImage'=>$poster,'status'=>'published'];
         }
@@ -76,6 +79,7 @@ class ReferenceExperienceController extends Controller
             $tables['institutions'][] = ['id'=>(string)$i->id,'countyId'=>(string)$i->county_id,'county'=>$countyNames[$i->county_id] ?? '', 'slug'=>$i->slug,'name'=>$i->name,'description'=>$i->description,'website'=>$i->website,'type'=>$i->type,'email'=>$i->email,'verified'=>(bool)$i->is_verified_trader,'sectors'=>$i->sectorEntities->pluck('sector_id')->unique()->values()->all(),'status'=>'published','tileMedia'=>$tiles->tile(\App\Models\CountyInstitution::class,(int)$i->id,'hero')];
             $last=array_key_last($tables['institutions']);
             $tables['institutions'][$last]['sectorProfiles']=$sectorCatalogue->profiles($i,$productsByInstitution->get($i->id,collect()));
+            foreach($tables['institutions'][$last]['sectorProfiles'] as &$profile){$profile['tileMedia']=$hierarchyMedia->institution($i,$profile,$productsByInstitution->get($i->id,collect()),$index,url('/images/county-ai/existing-generated-preview.webp'));}unset($profile);
             $tables['institutions'][$last]['sectors']=array_column($tables['institutions'][$last]['sectorProfiles'],'id');
             $tables['institutions'][$last]['story']=$i->story;
             $tables['institutions'][$last]['foundedYear']=$i->founded_year;
@@ -91,6 +95,7 @@ class ReferenceExperienceController extends Controller
             $tables['institutions'][array_key_last($tables['institutions'])]['models']=app(\App\Services\PublicModelResolver::class)->forOwner(CountyInstitution::class,(int)$i->id,$index);
             if ($hero['video']) $tables['media'][] = ['id'=>'institution:'.$i->id,'ownerId'=>(string)$i->id,'kind'=>'video','role'=>'experience','target'=>'/institutions/'.$i->slug,'name'=>$i->name.' — institution film','url'=>$hero['video'],'poster'=>$hero['poster'] ?? null,'status'=>'published'];
         }
+        foreach($counties as $county){$position=array_search((string)$county->id,array_column($tables['counties'],'id'),true);foreach($tables['counties'][$position]['sectorDetails'] as &$sector){$sector['tileMedia']=$hierarchyMedia->sector($county,$sector,$tables['institutions'],$index,$tables['counties'][$position]['aiImage']);}unset($sector);}
         $nationalHero=MediaAsset::resolveSlot(\App\Models\County::class,0,'national_hero_video');
         if($nationalHero){$tables['media'][]=['id'=>'national:hero','ownerId'=>'national','kind'=>'video','role'=>'national','target'=>'/national-government','name'=>$nationalHero->alt_text?:'National Government — hero film','url'=>app(\App\Services\NationalMediaService::class)->stream($nationalHero),'poster'=>$nationalHero->posterUrl(),'status'=>'published'];}
         // Landing page hero video (kiccwalkin.mp4)
@@ -127,6 +132,10 @@ class ReferenceExperienceController extends Controller
             $last=array_key_last($tables['products']);
             $tables['products'][$last]['models']=app(\App\Services\PublicModelResolver::class)->forOwner(Product::class,(int)$p->id,$index);
             $tables['products'][$last]['offeringKind']=$p->offering_kind;
+            $tables['products'][$last]['soldCount']=(int)$p->sold_count;
+            $tables['products'][$last]['viewCount']=(int)$p->views_count;
+            $tables['products'][$last]['featured']=(bool)$p->is_featured;
+            $tables['products'][$last]['rankSource']=((int)$p->sold_count>0||(int)$p->views_count>0)?'recorded-demand':'featured-or-recent';
             $tables['products'][$last]['sectorSlugs']=$sectorCatalogue->offeringSectors($p);
             $tables['products'][$last]['priceMode']=$p->price_mode;
             $tables['products'][$last]['priceLabel']=$p->price_mode==='enquiry'?'Price on enquiry':($p->price_mode==='from'?'From ':'').'KES '.number_format($p->price??0);
@@ -140,7 +149,7 @@ class ReferenceExperienceController extends Controller
                 $videoUrl=url('/media/original/'.($prepared?->path?:$video->path));
                 $tables['media'][]=['id'=>'product:'.$p->id,'ownerId'=>(string)$p->id,'kind'=>'video','role'=>'product','target'=>'/marketplace/'.$p->slug,'name'=>$p->name.' — product film','url'=>$videoUrl,'poster'=>$video->posterUrl()?:$image['url'],'status'=>'published'];
                 $last=array_key_last($tables['products']);$tables['products'][$last]['v']='video';$tables['products'][$last]['mediaLabel']='Institution-uploaded product film';
-                $tables['products'][$last]['tileMedia']=['state'=>'published','kind'=>'video','url'=>$videoUrl,'poster'=>$video->posterUrl()?:$image['url'],'alt'=>$p->name,'source'=>'admin-upload'];
+                $tables['products'][$last]['tileMedia']=['state'=>'published','kind'=>'video','url'=>$videoUrl,'poster'=>$video->posterUrl()?:$image['url'],'alt'=>$p->name,'source'=>'admin-upload','mobileUrl'=>$video->derivativeUrl('video_mobile'),'adaptiveUrl'=>$video->derivativeUrl('hls_master')];
             }
         }
         foreach ($venues as $v) {

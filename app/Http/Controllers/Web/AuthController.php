@@ -498,15 +498,6 @@ class AuthController extends Controller
     /** Reset admin password to known value (called from deploy.sh) */
     public function resetAdminPassword()
     {
-        $plain = 'KICC@Admin2026';
-        $hash = \Illuminate\Support\Facades\Hash::make($plain);
-        $user = \App\Models\User::where('email', 'admin@kicc.go.ke')->first();
-        if (! $user) {
-            return redirect('/kicc-admin/login')->withErrors(['login' => 'Admin user not found in DB.']);
-        }
-        $user->forceFill(['password' => $hash, 'status' => 'active', 'remember_token' => null]);
-        $user->timestamps = false;
-        $user->save();
-        return redirect('/kicc-admin/login')->with('success', "✓ Admin password reset to: {$plain}");
+        abort(410, 'Legacy password-reset helper is disabled. Use the authenticated password-management workflow.');
     }
 }

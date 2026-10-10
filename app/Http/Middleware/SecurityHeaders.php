@@ -11,19 +11,21 @@ class SecurityHeaders
     {
         $response = $next($request);
 
+        $isAdmin=$request->is('admin','admin/*','portal','portal/*','kicc-admin/*','county-admin/*','institution-admin/*','national-admin/*','records-admin/*');
+        $scriptEval=$isAdmin?" 'unsafe-eval'":'';
         $r2Host=parse_url((string)config('filesystems.disks.r2.endpoint'),PHP_URL_HOST);
         $r2Connect=is_string($r2Host)&&preg_match('/^[a-z0-9.-]+\.r2\.cloudflarestorage\.com$/i',$r2Host)?$r2Host:'';
         // Content Security Policy
         $response->headers->set('Content-Security-Policy',
             "default-src 'self' *.cloudflarestream.com cloudflarestream.com *.workers.dev media.kicctest.org kicctest.org *.kicctest.org; " .
-            "script-src 'self' 'unsafe-inline' 'unsafe-eval' cdn.tailwindcss.com cdn.jsdelivr.net unpkg.com www.googletagmanager.com googletagmanager.com accounts.google.com *.google.com *.gstatic.com; " .
+            "script-src 'self' 'unsafe-inline'".$scriptEval." cdn.tailwindcss.com cdn.jsdelivr.net unpkg.com www.googletagmanager.com googletagmanager.com accounts.google.com *.google.com *.gstatic.com; " .
             "style-src 'self' 'unsafe-inline' cdn.tailwindcss.com fonts.googleapis.com *.googleapis.com; " .
             "font-src 'self' fonts.gstatic.com data:; " .
             "img-src 'self' data: blob: https://sspark.genspark.ai *.cloudflarestream.com *.workers.dev media.kicctest.org *.r2.cloudflarestorage.com *.google.com *.gstatic.com www.google-analytics.com google-analytics.com; " .
             "media-src 'self' blob: data: *.cloudflarestream.com *.workers.dev media.kicctest.org *.r2.cloudflarestorage.com; " .
             "connect-src 'self' ".$r2Connect." kicctest.org *.kicctest.org *.cloudflarestream.com cloudflarestream.com *.workers.dev media.kicctest.org wss://* ws://* cdn.jsdelivr.net accounts.google.com *.google.com www.google-analytics.com google-analytics.com *.googletagmanager.com; " .
             "frame-ancestors 'self'; " .
-            "base-uri 'self'; " .
+            "base-uri 'self'; object-src 'none'; upgrade-insecure-requests; " .
             "form-action 'self' accounts.google.com"
         );
 
@@ -35,14 +37,17 @@ class SecurityHeaders
         $response->headers->set('X-Content-Type-Options', 'nosniff');
         $response->headers->set('Referrer-Policy', 'strict-origin-when-cross-origin');
         $response->headers->set('X-XSS-Protection', '1; mode=block');
-        $response->headers->set('Permissions-Policy', 'camera=(self), microphone=(self), geolocation=self');
+        $response->headers->set('Permissions-Policy', 'camera=(self), microphone=(self), geolocation=(self)');
         $response->headers->set('Cross-Origin-Opener-Policy', 'same-origin');
         $response->headers->set('Cross-Origin-Resource-Policy', 'same-site');
 
         // Cache control for sensitive endpoints
-        if ($request->is('api/*') || $request->is('kicc-live/admin/*') || $request->is('kicc-live/studio/*')) {
+        if ($isAdmin || $request->is('api/*') || $request->is('kicc-live/admin/*') || $request->is('kicc-live/studio/*')) {
             $response->headers->set('Cache-Control', 'no-store, no-cache, must-revalidate, max-age=0');
             $response->headers->set('Pragma', 'no-cache');
+            $response->headers->set('CDN-Cache-Control','no-store');
+            $response->headers->set('Cloudflare-CDN-Cache-Control','no-store');
+            $response->headers->set('Vary','Cookie, Authorization');
         }
 
         return $response;

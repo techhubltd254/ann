@@ -10,8 +10,8 @@ foreach($originals as $r){
     $protected=(bool)preg_match('~^(portal|kicc-admin|county-admin|institution-admin|national-admin|records-admin|admin)(/|$)~',$uri)||preg_match('~^(admin\.|cms\.admin\.|dashboard\.admin|kicc\.admin\.|county\.admin\.|institution\.admin\.|national\.admin\.)~',$r->getName()??'');
     if(str_contains($controller,'Controllers\\Admin\\')||str_contains($controller,'Controllers\\Live\\LiveAdminController'))$protected=true;
     $legacyOperations=preg_match('~^(__admin|__reset-admin-pwd|kicc-v2-deploy|kicc-v2-seed-deploy)(/|$)~',$uri);
-    if($legacyOperations)$protected=true;
-    $login=preg_match('~(?:login|reset-pwd)$~',$uri);
+    if($legacyOperations||str_ends_with($uri,'reset-pwd'))$protected=true;
+    $login=preg_match('~(?:login)$~',$uri);
     if($login)continue;
     if(!$protected&&!$media&&!str_starts_with($uri,'api/media/'))continue;
     $r->middleware(str_starts_with($uri,'api/')?['auth:sanctum',AdminConsole::class]:['auth',AdminConsole::class]);

@@ -48,6 +48,9 @@ class MediaProxyController extends Controller
                     $public = $public && \App\Models\Marketplace\Product::find($asset->owner_id)?->status === 'active';
                 }
             }
+            if($asset->owner_type===\App\Models\County::class){$owner=\App\Models\County::find($asset->owner_id);if((int)$asset->owner_id!==0)$public=$public&&$owner?->is_active;$admin=$user&&($user->status??'active')==='active'&&((int)$asset->owner_id===0?$scope->global($user):($owner&&$scope->canCounty($user,$owner)));}
+            if($asset->owner_type===\App\Models\SectorEntity::class){$entry=\App\Models\SectorEntity::find($asset->owner_id);$public=$public&&$entry?->is_published;$owner=in_array($entry?->entity_type,[\App\Models\CountyInstitution::class,'institution'],true)?\App\Models\CountyInstitution::find($entry->entity_id):null;if($owner)$public=$public&&$owner->is_published;$admin=$user&&($user->status??'active')==='active'&&($owner?$scope->canInstitution($user,$owner):($entry&&$scope->canCounty($user,\App\Models\County::findOrFail($entry->county_id))));}
+            if($asset->owner_type===\App\Models\Venue::class){$public=$public&&\App\Models\Venue::find($asset->owner_id)?->is_active;}
             abort_unless($public || $admin, 404);
         } elseif (str_starts_with($key, 'models/') || str_starts_with($key, 'institutions/')) {
             // Unregistered institutional objects are not published catalogue media.
@@ -76,7 +79,7 @@ class MediaProxyController extends Controller
         }
 
         return redirect()->away($url, 302, [
-            'Cache-Control'                 => 'private, max-age=3600',
+            'Cache-Control'                 => 'private, no-store',
             'Access-Control-Allow-Origin'   => '*',
             'Access-Control-Expose-Headers' => 'Content-Type, Content-Length, Content-Range, Accept-Ranges',
         ]);

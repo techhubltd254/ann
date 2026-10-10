@@ -37,9 +37,14 @@ class ChunkedUploadController extends Controller
         $ok=match($type){County::class=>$scope->canCounty($u,$o),CountyInstitution::class=>$scope->canInstitution($u,$o),Product::class=>$scope->canInstitution($u,$inst)&&(int)$o->county_id===(int)$inst->county_id,default=>$u->hasRole('kicc_admin')};
         abort_unless($ok,403,'This owner is outside your administration scope.');
         if($type===Product::class)abort_unless(($d['slot']??'')==='product_video',422,'A product upload requires the product video slot.');
-        if($type===County::class)abort_unless(in_array($d['slot']??'',['hero_video','flag_video','4d_video'],true),422,'Invalid county slot.');
+        if($type===County::class)abort_unless(in_array($d['slot']??'',['hero_video','flag_video','4d_video'],true)||str_starts_with($d['slot']??'','sector_video_'),422,'Invalid county slot.');
         if($type===Venue::class)abort_unless(($d['slot']??'')==='hero_video',422,'Invalid venue slot.');
-        if($type===CountyInstitution::class)abort_unless(in_array($d['slot']??'',['institution_video','hero_video','4d_video','flag_video'],true),422,'Invalid institution slot.');
+        if($type===CountyInstitution::class)abort_unless(in_array($d['slot']??'',['institution_video','hero_video','4d_video','flag_video'],true)||str_starts_with($d['slot']??'','sector_video_'),422,'Invalid institution slot.');
+        if(str_starts_with($d['slot']??'','sector_video_')){
+            abort_unless(in_array($type,[County::class,CountyInstitution::class],true),422,'Sector video requires a county or institution owner.');
+            $sector=\App\Models\Sector::find((int)($d['sector_id']??0));$county=$type===County::class?$o:$o->county;
+            abort_unless($sector&&$county->sectors()->where('sectors.id',$sector->id)->exists()&&$d['slot']==='sector_video_'.$sector->slug,422,'Sector slot does not match the selected county sector.');
+        }
         if($type===CountyInstitution::class||$type===Product::class){
             $context=$inst??$o;
             $sector=(int)($d['sector_id']??0);
@@ -84,7 +89,7 @@ class ChunkedUploadController extends Controller
     {
         $u=$this->actor($r);$scope=app(AdminHierarchyScope::class);
         return response()->view('experience.admin.uploads',[
-            'counties'=>$scope->counties($u)->orderBy('name')->get(['id','name','slug']),
+            'counties'=>$scope->counties($u)->with('sectors:id,name,slug')->orderBy('name')->get(['id','name','slug']),
             'institutions'=>$scope->institutions($u)->orderBy('name')->get(['id','county_id','name','slug']),
             'venues'=>$u->hasRole('kicc_admin')?Venue::orderBy('name')->get(['id','name','slug']):collect(),
         ])->header('Cache-Control','private,no-store');
