@@ -64,9 +64,12 @@ class ReferenceExperienceController extends Controller
             $hero = MediaMapping::countyHero($c, $index);
             $poster = $hero['poster'] ?? MediaMapping::countyFallbackImage($c, $index);
             $tables['counties'][] = ['id'=>(string)$c->id,'slug'=>$c->slug,'name'=>$c->name,'code'=>str_pad((string)$c->code,3,'0',STR_PAD_LEFT),'region'=>$c->region ?? $c->former_province,'pop'=>(int)$c->population_2024,'populationYear'=>2024,'sectors'=>$c->sectors->pluck('name')->all(),'description'=>$c->description,'image'=>$poster,'mediaState'=>$hero['state'],'mediaReason'=>$hero['reason'],'status'=>'published','tileMedia'=>$tiles->tile(\App\Models\County::class,(int)$c->id,'hero')];
-            if ($hero['video']) $tables['counties'][array_key_last($tables['counties'])]['tileMedia']=['state'=>'published','kind'=>'video','url'=>$hero['video'],'poster'=>$poster,'source'=>'county-owned-film'];
+            $presentation=app(\App\Services\CountyMediaPresentation::class)->present($c,$index,$hero);
+            $lastCounty=array_key_last($tables['counties']);
+            foreach(['heroVideo','aiImage','image','mediaState','mediaReason','tileMedia'] as $field)$tables['counties'][$lastCounty][$field]=$presentation[$field];
+            $hero=$presentation['hero'];$poster=$presentation['aiImage'];
             $tables['counties'][array_key_last($tables['counties'])]['sectorDetails']=$c->sectors->map(fn($sector)=>['id'=>(int)$sector->id,'slug'=>$sector->slug,'name'=>$sector->name])->all();
-            if ($hero['video']) $tables['media'][] = ['id'=>'county:'.$c->id,'ownerId'=>(string)$c->id,'kind'=>'video','role'=>'county','target'=>'/counties/'.$c->slug,'name'=>$c->name.' — county film','url'=>$hero['video'],'poster'=>$poster,'status'=>'published'];
+            if ($hero['video']) $tables['media'][] = ['id'=>'county:'.$c->id,'ownerId'=>(string)$c->id,'kind'=>'video','role'=>'county','target'=>'/counties/'.$c->slug,'name'=>$c->name.' — county film','url'=>$hero['video'],'poster'=>$poster,'fallbackImage'=>$poster,'status'=>'published'];
         }
         foreach ($institutions as $i) {
             $hero = MediaMapping::institutionHero($i, $index);
