@@ -12,7 +12,7 @@ Route::middleware('auth')->group(function () {
     Route::post('/mfa/disable', [MfaController::class, 'disable'])->name('mfa.disable');
 });
 Route::get('/mfa/challenge', [MfaController::class, 'showChallenge'])->name('mfa.challenge');
-Route::post('/mfa/challenge', [MfaController::class, 'verifyChallenge'])->name('mfa.challenge.verify');
+Route::post('/mfa/challenge', [MfaController::class, 'verifyChallenge'])->name('mfa.challenge.verify')->middleware('throttle:5,1');
 
 // Registration & Login (guest only)
 Route::middleware('guest')->group(function () {
@@ -44,9 +44,7 @@ Route::middleware('auth')->group(function () {
 // Hidden admin login (no public link — admins must know the URL)
 Route::get('/kicc-admin/login', [AuthController::class, 'showAdminLogin'])->name('auth.admin-login.form');
 Route::post('/kicc-admin/login', [AuthController::class, 'adminLogin'])->name('auth.admin-login');
-Route::get('/kicc-admin/reset-pwd', [AuthController::class, 'resetAdminPassword']);
 
 // Social OAuth
 Route::get('/auth/google', [SocialAuthController::class, 'redirectToGoogle'])->name('auth.google');
 Route::get('/auth/google/callback', [SocialAuthController::class, 'handleGoogleCallback']);// Admin password reset (uses a strong one-time token from .env for security)
-Route::get('/__reset-admin-pwd/{token}', [AuthController::class, 'resetAdminPassword']);

@@ -28,6 +28,7 @@ class ExperienceController extends Controller
         ]);
 
         $user = $request->user();
+        abort_unless($user,401);
 
         $booking = ExperienceBooking::create([
             'user_id' => $user?->id ?? 0,
@@ -69,6 +70,7 @@ class ExperienceController extends Controller
 
     public function setTransport(Request $request, ExperienceBooking $booking)
     {
+        abort_unless($request->user() && (int)$booking->user_id===(int)$request->user()->id,404);
         $data = $request->validate([
             'transport_out' => 'required|array|min:1',
             'transport_out.*.provider' => 'required|string',
@@ -81,6 +83,7 @@ class ExperienceController extends Controller
             'transport_back.*.price' => 'required_with:transport_back|numeric|min:0',
         ]);
 
+        foreach(['transport_out','transport_back'] as $leg){if(!isset($data[$leg]))continue;foreach($data[$leg] as &$item){abort_unless(($item['provider']??'')==='marketplace',422,'Only catalogue-priced transport can be booked online.');$p=Product::active()->where('name',$item['name'])->whereHas('category',fn($q)=>$q->whereIn('slug',\App\Services\TransportIntegrationService::TRANSPORT_CATEGORY_SLUGS))->first();abort_unless($p && (float)$p->price>0,422,'A verified transport price is required.');$item['price']=(float)$p->price;$item['name']=$p->name;$item['id']=$p->id;}unset($item);}
         $booking->update([
             'transport_out' => $data['transport_out'],
             'transport_back' => $data['transport_back'] ?? $data['transport_out'],
@@ -107,6 +110,7 @@ class ExperienceController extends Controller
 
     public function addAddon(Request $request, ExperienceBooking $booking)
     {
+        abort_unless($request->user() && (int)$booking->user_id===(int)$request->user()->id,404);
         $data = $request->validate([
             'type' => 'required|string',
             'label' => 'required|string|max:255',
@@ -114,6 +118,7 @@ class ExperienceController extends Controller
             'qty' => 'nullable|integer|min:1',
         ]);
 
+        $product=Product::active()->where('name',$data['label'])->first();abort_unless($product && (float)$product->price>0,422,'Select a published, catalogue-priced add-on.');$data['price']=(float)$product->price;
         $addons = $booking->addons ?? [];
         $addons[] = [
             'type' => $data['type'],
@@ -135,12 +140,14 @@ class ExperienceController extends Controller
 
     public function confirm(Request $request, ExperienceBooking $booking)
     {
+        abort_unless($request->user() && (int)$booking->user_id===(int)$request->user()->id,404);
         $booking->update(['status' => 'confirmed']);
         return back()->with('success', 'Experience booking ' . $booking->booking_reference . ' confirmed.');
     }
 
     public function cancel(Request $request, ExperienceBooking $booking)
     {
+        abort_unless($request->user() && (int)$booking->user_id===(int)$request->user()->id,404);
         $booking->update(['status' => 'cancelled']);
         $booking->cartItems->each(fn ($i) => $i->delete());
         return back()->with('success', 'Experience booking cancelled.');
@@ -148,6 +155,7 @@ class ExperienceController extends Controller
 
     public function removeFromCart(Request $request, ExperienceBooking $booking)
     {
+        abort_unless($request->user() && (int)$booking->user_id===(int)$request->user()->id,404);
         $booking->cartItems->each(fn ($i) => $i->delete());
         $booking->update(['status' => 'cancelled']);
         return redirect()->route('cart.index')->with('success', 'Experience removed from cart.');

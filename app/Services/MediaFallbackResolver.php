@@ -185,6 +185,10 @@ class MediaFallbackResolver
 
     public function extractFrame(string $videoUrl, ?MediaAsset $asset = null): ?string
     {
+        // Never fetch caller-controlled URLs. Resolve only registered local object keys.
+        if(!$asset){$parts=parse_url($videoUrl);$host=strtolower($parts['host']??'');if(($parts['scheme']??'')!=='https'||!in_array($host,['kicctest.org','media.kicctest.org'],true)||!str_starts_with($parts['path']??'','/media/original/'))return null;$key=rawurldecode(substr($parts['path'],16));if(str_contains($key,'..')||str_contains($key,"\0"))return null;$asset=MediaAsset::where('path',$key)->first();if(!$asset){$d=\App\Models\MediaDerivative::where('path',$key)->first();$asset=$d?MediaAsset::find($d->media_asset_id):null;}}
+        if(!$asset||$asset->kind!=='video'||!in_array($asset->disk,['r2','public'],true))return null;
+
         $hash = md5($videoUrl);
         $existing = ImageVariant::byHash($hash);
         if ($existing) return $existing->cardUrl();
@@ -201,9 +205,7 @@ class MediaFallbackResolver
             $tmpVideo = tempnam(sys_get_temp_dir(), 'kicc_mf_') . '.mp4';
             $tmpFrame = tempnam(sys_get_temp_dir(), 'kicc_mf_') . '.jpg';
 
-            $videoContent = @file_get_contents($videoUrl);
-            if (!$videoContent) return null;
-            file_put_contents($tmpVideo, $videoContent);
+            $input=\Illuminate\Support\Facades\Storage::disk($asset->disk)->readStream($asset->path);if(!is_resource($input))return null;$output=fopen($tmpVideo,'wb');try{stream_copy_to_stream($input,$output);}finally{fclose($input);fclose($output);}
 
             $cmd = sprintf(
                 '%s -y -ss 1 -i %s -vframes 1 -vf scale=640:-1 -q:v 3 %s 2>/dev/null',

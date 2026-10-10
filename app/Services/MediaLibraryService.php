@@ -12,6 +12,15 @@ class MediaLibraryService
 {
     public function store(UploadedFile $file, array $opts = []): MediaAsset
     {
+        $ext=strtolower($file->getClientOriginalExtension());$mime=$file->getMimeType();
+        $images=['jpg'=>'image/jpeg','jpeg'=>'image/jpeg','png'=>'image/png','webp'=>'image/webp'];
+        if(isset($images[$ext]))abort_unless($mime===$images[$ext]&&getimagesize($file->getRealPath())!==false,422,'Invalid image content.');
+        elseif($ext==='glb'){$h=fopen($file->getRealPath(),'rb');$magic=fread($h,4);fclose($h);abort_unless($magic==='glTF',422,'Invalid GLB content.');}
+        elseif($ext==='gltf'){$model=json_decode(file_get_contents($file->getRealPath()),true);abort_unless(is_array($model)&&($model['asset']['version']??'')==='2.0',422,'Invalid GLTF content.');foreach(array_merge($model['buffers']??[],$model['images']??[]) as $resource)if(isset($resource['uri']))abort_unless(str_starts_with($resource['uri'],'data:'),422,'External GLTF resources are not supported; upload a self-contained GLB.');}
+        elseif(in_array($ext,['mp4','webm','mov'],true))abort_unless(in_array($mime,['video/mp4','video/webm','video/quicktime','application/mp4'],true),422,'Invalid video content.');
+        elseif(in_array($ext,['mp3','ogg'],true))abort_unless(in_array($mime,['audio/mpeg','audio/ogg','application/ogg'],true),422,'Invalid audio content.');
+        else abort(422,'This file type cannot be published.');
+
         $uuid = (string) Str::uuid();
         $ext = strtolower($file->getClientOriginalExtension() ?: $file->guessExtension() ?: 'bin');
         $dir = $opts['directory'] ?? 'media';
@@ -22,7 +31,7 @@ class MediaLibraryService
         Storage::disk($disk)->writeStream($path, $stream, ['visibility' => 'public']);
         if (is_resource($stream)) fclose($stream);
 
-        $kind = match (strtolower($file->getClientMimeType() ?: $file->getMimeType() ?: '')) {
+        $kind = match (strtolower($file->getMimeType() ?: '')) {
             'video/webm', 'video/mp4', 'video/quicktime' => 'video',
             'model/gltf-binary', 'model/gltf+json' => 'model',
             'audio/mpeg', 'audio/ogg' => 'audio',
@@ -52,7 +61,7 @@ class MediaLibraryService
             'disk' => $disk,
             'path' => $path,
             'original_name' => $file->getClientOriginalName(),
-            'mime' => $file->getClientMimeType() ?: $file->getMimeType(),
+            'mime' => $file->getMimeType(),
             'kind' => $kind,
             'size_bytes' => $file->getSize(),
             'width' => $width,

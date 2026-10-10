@@ -15,7 +15,7 @@
             'sectors' => $c->sectors_count ?? 0,
         ];
     }
-    $pointsJson = json_encode($points);
+    $pointsJson = json_encode($points, JSON_HEX_TAG|JSON_HEX_APOS|JSON_HEX_AMP|JSON_HEX_QUOT);
 @endphp
 
 <div class="rounded-2xl overflow-hidden border border-gray-200 bg-white" style="height: {{ $height }}">

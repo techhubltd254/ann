@@ -30,24 +30,12 @@ class SocialAuthController extends Controller
                 Log::warning('Google avatar truncated (exceeded 500 chars)');
             }
 
-            $user = User::updateOrCreate([
-                'email' => $googleUser->getEmail(),
-            ], [
-                'name' => $name,
-                'fullName' => $name,
-                'google_id' => $googleId,
-                'avatar' => $avatar,
-                'password' => bcrypt(\Illuminate\Support\Str::random(24)),
-                'email_verified_at' => now(),
-                'mfaEnabled' => false,
-                'tier' => 'EXHIBITOR',
-                'account_type' => 'exhibitor',
-                'status' => 'active',
-            ]);
-
-            $user->assignRole('exhibitor');
-
+            abort_unless(filter_var($googleUser->getEmail(),FILTER_VALIDATE_EMAIL),401);
+            $user=User::where('email',$googleUser->getEmail())->first();
+            if($user){abort_unless(($user->status??'active')==='active' && $user->google_id && hash_equals((string)$user->google_id,(string)$googleId),403,'Sign in normally and link your verified Google identity first.');}
+            else{$user=User::create(['email'=>$googleUser->getEmail(),'name'=>$name,'fullName'=>$name,'google_id'=>$googleId,'avatar'=>$avatar,'password'=>bcrypt(\Illuminate\Support\Str::random(64)),'email_verified_at'=>now(),'tier'=>'EXHIBITOR','account_type'=>'exhibitor','status'=>'active']);$user->assignRole('exhibitor');}
             Auth::login($user, true);
+            request()->session()->regenerate();
 
             // Route by role (same as login)
             if ($user->hasRole('kicc_admin')) {

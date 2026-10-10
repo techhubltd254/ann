@@ -34,7 +34,7 @@ class AuthController extends Controller
 
         $user = User::where('email', $request->email)->first();
 
-        if (! $user || ! Hash::check($request->password, $user->password)) {
+        if (! $user || ($user->status??'active')!=='active' || ! Hash::check($request->password, $user->password)) {
             throw ValidationException::withMessages([
                 'email' => ['The provided credentials are incorrect.'],
             ]);
@@ -57,7 +57,7 @@ class AuthController extends Controller
 
         $user = User::where('email', $request->email)->first();
 
-        if (! $user || ! Hash::check($request->password, $user->password)) {
+        if (! $user || ($user->status??'active')!=='active' || ! Hash::check($request->password, $user->password)) {
             throw ValidationException::withMessages(['email' => ['Invalid credentials.']]);
         }
 

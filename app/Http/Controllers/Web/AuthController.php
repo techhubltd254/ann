@@ -389,7 +389,7 @@ class AuthController extends Controller
         $record->update(['used_at' => now()]);
 
         $user = User::where('email', $email)->first();
-        if ($user) {
+        if ($user && ($user->status??'active')==='active') {
             Auth::login($user);
             session()->forget('login_code_email');
             $request->session()->regenerate();
@@ -408,8 +408,10 @@ class AuthController extends Controller
     /** Send password reset link (mock — logs the link instead of sending mail). */
     public function sendResetLink(Request $request)
     {
-        $request->validate(['email' => 'required|email|exists:users,email']);
+        $request->validate(['email' => 'required|email']);
 
+        $key='password-reset:'.hash('sha256',strtolower($request->email).'|'.$request->ip());if(RateLimiter::tooManyAttempts($key,3))return back()->with('success','If the account is eligible, reset instructions will be sent.');RateLimiter::hit($key,600);
+        if(!User::where('email',$request->email)->exists())return back()->with('success','If the account is eligible, reset instructions will be sent.');
         $token = \Illuminate\Support\Str::random(60);
         \Illuminate\Support\Facades\DB::table('password_reset_tokens')->updateOrInsert(
             ['email' => $request->email],
@@ -417,7 +419,7 @@ class AuthController extends Controller
         );
 
         $resetUrl = route('password.reset', ['token' => $token, 'email' => $request->email]);
-        \Illuminate\Support\Facades\Log::info('Password reset link: ' . $resetUrl);
+        // Password reset tokens must never be written to logs.
 
         // In production, send email via NotificationService
         try {
@@ -429,7 +431,7 @@ class AuthController extends Controller
             // Log-only fallback
         }
 
-        return back()->with('success', "Password reset link sent to {$request->email}. Check your email (or check the logs).");
+        return back()->with('success', 'If the account is eligible, reset instructions will be sent.');
     }
 
     /** Show the reset-password form. */
@@ -442,7 +444,7 @@ class AuthController extends Controller
     public function resetPassword(Request $request)
     {
         $data = $request->validate([
-            'email' => 'required|email|exists:users,email',
+            'email' => 'required|email',
             'token' => 'required|string',
             'password' => 'required|string|min:8|confirmed',
         ]);
@@ -450,14 +452,16 @@ class AuthController extends Controller
         $record = \Illuminate\Support\Facades\DB::table('password_reset_tokens')
             ->where('email', $data['email'])->first();
 
-        if (! $record || ! \Illuminate\Support\Facades\Hash::check($data['token'], $record->token)) {
+        if (! $record || ! $record->created_at || \Carbon\Carbon::parse($record->created_at)->lt(now()->subMinutes((int)config('auth.passwords.users.expire',60))) || ! \Illuminate\Support\Facades\Hash::check($data['token'], $record->token)) {
             return back()->withErrors(['email' => 'Invalid or expired reset token.']);
         }
 
+        $resetUser=User::where('email',$data['email'])->firstOrFail();
         \App\Models\User::where('email', $data['email'])->update([
             'password' => \Illuminate\Support\Facades\Hash::make($data['password']),
         ]);
 
+        $resetUser->forceFill(['remember_token'=>\Illuminate\Support\Str::random(60)])->save();$resetUser->tokens()->delete();app(\App\Services\RevokeAccountSessions::class)->revoke((int)$resetUser->id);
         \Illuminate\Support\Facades\DB::table('password_reset_tokens')->where('email', $data['email'])->delete();
 
         return redirect()->route('login')->with('success', 'Password reset successfully. Sign in with your new password.');

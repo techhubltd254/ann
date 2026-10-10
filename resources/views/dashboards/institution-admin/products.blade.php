@@ -112,7 +112,7 @@ document.addEventListener('alpine:init', () => {
                     'image_url' => $p->images->first()?->url ?? '',
                     'sku' => $p->sku,
                     'id' => $p->id,
-                ]);
+                ], JSON_HEX_TAG|JSON_HEX_APOS|JSON_HEX_AMP|JSON_HEX_QUOT);
                 @endphp
                 <tr class="hover:bg-white/5 transition"
                     x-show="filter === 'All' || (filter === 'Active' && '{{ $status }}' === 'Active') || (filter === 'Draft' && '{{ $status }}' === 'Draft') || (filter === 'Low Stock' && '{{ $stockLevel }}' === 'low')">

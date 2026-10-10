@@ -23,7 +23,7 @@ use Illuminate\Support\Facades\Route;
 // Auth
 Route::post('/auth/register', [AuthController::class, 'register'])->middleware('throttle:20,1')->name('api.auth.register');
 Route::post('/auth/login', [AuthController::class, 'login'])->middleware('throttle:20,1')->name('api.auth.login');
-Route::post('/auth/token', [\App\Http\Controllers\Api\AuthController::class, 'token'])->name('api.auth.token');
+Route::post('/auth/token', [\App\Http\Controllers\Api\AuthController::class, 'token'])->name('api.auth.token')->middleware('throttle:5,1');
 
 // Public county routes
 Route::get('/counties', [CountyController::class, 'index'])->middleware(\App\Http\Middleware\CachePublicResponse::class)->name('api.counties.index');
@@ -159,7 +159,7 @@ Route::get('/unity/manifest', [\App\Http\Controllers\Api\UnityManifestController
 Route::post('/unity/manifest', [\App\Http\Controllers\Api\UnityManifestController::class, 'store'])
     ->middleware('auth:sanctum')->name('api.unity.manifest.store');
 Route::post('/webhooks/n8n', [\App\Http\Controllers\Api\N8nWebhookController::class, 'handle'])
-    ->middleware('throttle:10,1')->name('api.webhooks.n8n');
+    ->middleware([\App\Http\Middleware\VerifyN8nWebhook::class,'throttle:10,1'])->name('api.webhooks.n8n');
 Route::get('/updates/manifest', [\App\Http\Controllers\Api\UpdateManifestController::class, 'show'])
     ->middleware('throttle:300,1')->name('api.updates.manifest');
 

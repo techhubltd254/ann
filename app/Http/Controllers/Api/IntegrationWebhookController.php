@@ -25,6 +25,11 @@ class IntegrationWebhookController extends Controller
             return response()->json(['ok' => false, 'error' => 'invalid secret'], 401);
         }
 
+        $request->validate(['provider'=>'required|string|max:80','event'=>'required|array','ts'=>'required|integer']);
+        $ts=(int)$request->input('ts');if(abs(time()-$ts)>300)return response()->json(['ok'=>false],401);
+        $nonce=(string)$request->header('X-Integration-Nonce');$sig=(string)$request->header('X-Integration-Signature');
+        if(!preg_match('/^[A-Za-z0-9_-]{16,128}$/',$nonce)||!hash_equals(hash_hmac('sha256',$ts.'.'.$nonce.'.'.$request->getContent(),$secret),$sig))return response()->json(['ok'=>false],401);
+        if(!\Illuminate\Support\Facades\Cache::add('integration-replay:'.hash('sha256',$nonce),1,600))return response()->json(['ok'=>false],409);
         $provider = $request->input('provider');
         $event = $request->input('event', []);
         $ts = $request->input('ts');
@@ -49,27 +54,8 @@ class IntegrationWebhookController extends Controller
         $amount = $event['amount'] ?? null;
         $providerRef = $event['providerRef'] ?? null;
 
-        // Payment succeeded -> release escrow
-        if ($state === 'paid' && $orderRef) {
-            try {
-                $escrow = \App\Models\EscrowTransaction::where('escrow_id', $orderRef)->first();
-                if ($escrow && $escrow->status === 'held') {
-                    app(\App\Services\EscrowService::class)->confirmByBuyer($escrow);
-                    app(\App\Services\EscrowService::class)->releaseFunds($escrow);
-                    Log::info('integration-webhook: escrow auto-released', [
-                        'escrow_id' => $escrow->id,
-                        'provider' => $provider,
-                        'orderRef' => $orderRef,
-                    ]);
-                }
-            } catch (\Throwable $e) {
-                Log::error('integration-webhook: escrow release failed', [
-                    'orderRef' => $orderRef,
-                    'error' => $e->getMessage(),
-                ]);
-            }
-        }
-
+        // A forwarded payment event is not buyer consent or verified settlement.
+        // Fund release is deliberately disabled here; use the authorized escrow workflow.
         // Delivery verified -> auto-release escrow
         if ($event['deliveryVerified'] ?? false) {
             try {

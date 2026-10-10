@@ -40,7 +40,7 @@ class VenueController extends Controller
         Log::info('Venue booking inquiry', [
             'venue' => $venue->name,
             'venue_id' => $venue->id,
-            ...$validated,
+            'event_type'=>$validated['event_type'],'event_date'=>$validated['event_date'],
         ]);
 
         event(new GenericDomainEvent('venue_inquiry', [
@@ -82,6 +82,7 @@ class VenueController extends Controller
     /** POST /venues/{venue}/reserve — persist a reservation request. */
     public function reserve(Request $request, Venue $venue)
     {
+        abort_unless($request->user(),401);
         $data = $this->validateQuote($request);
 
         $quote = $this->priceQuote($venue, $data);
@@ -124,9 +125,10 @@ class VenueController extends Controller
     }
 
     /** GET /venues/{venue}/booking/{booking}/confirm */
-    public function confirm(Venue $venue, int $booking)
+    public function confirm(Request $request, Venue $venue, int $booking)
     {
         $record = VenueBooking::where('venue_id', $venue->id)->findOrFail($booking);
+        abort_unless($request->user() && ((int)$record->user_id === (int)$request->user()->id || \Illuminate\Support\Facades\Gate::forUser($request->user())->allows('view-private-revenue')),404);
 
         return view('experience.pages.venues.booking-confirm', [
             'venue' => $venue,
@@ -137,37 +139,11 @@ class VenueController extends Controller
     /** POST /venues/{venue}/booking/{booking}/pay — record the deposit payment. */
     public function payDeposit(Request $request, Venue $venue, int $booking)
     {
-        $record = VenueBooking::where('venue_id', $venue->id)->findOrFail($booking);
-
-        $request->validate([
-            'payment_reference' => 'nullable|string|max:120',
-        ]);
-
-        $record->forceFill([
-            'deposit_paid_at' => now(),
-            'confirmed_at' => now(),
-            'status' => 'confirmed',
-        ])->save();
-
-        Log::info('Venue deposit recorded', [
-            'venue_id' => $venue->id,
-            'booking_reference' => $record->booking_reference,
-            'payment_reference' => $request->input('payment_reference'),
-            'deposit_amount' => $record->deposit_amount,
-        ]);
-
-        event(new GenericDomainEvent('venue_deposit_paid', [
-            'venue' => $venue->name,
-            'venue_id' => $venue->id,
-            'booking_reference' => $record->booking_reference,
-            'deposit_amount' => $record->deposit_amount,
-        ], n8nEventName: 'venue_deposit_paid'));
-
-        return redirect()->route('venues.booking.confirm', [$venue->slug, $record->id])
-            ->with('success', 'Deposit recorded — your reservation is confirmed.');
+        $record=VenueBooking::where('venue_id',$venue->id)->findOrFail($booking);
+        abort_unless($request->user() && (int)$record->user_id===(int)$request->user()->id,404);
+        abort(409,'Online deposit confirmation is unavailable until a verified payment provider is connected. Contact the venue finance team; no payment was recorded.');
     }
 
-    /** GET /my-venues */
     public function bookingHistory(Request $request)
     {
         $bookings = VenueBooking::with('venue')

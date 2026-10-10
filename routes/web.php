@@ -152,7 +152,7 @@ Route::patch('/cart/{item}', [CartController::class, 'update'])->name('cart.upda
 Route::delete('/cart/{item}', [CartController::class, 'destroy'])->name('cart.destroy');
 Route::get('/checkout', [CheckoutController::class, 'index'])->name('checkout.index');
 Route::post('/checkout', [CheckoutController::class, 'store'])->name('checkout.store')->middleware('throttle:30,1');
-Route::get('/checkout/success/{orderNumber}', [CheckoutController::class, 'success'])->name('checkout.success');
+Route::get('/checkout/success/{orderNumber}', [CheckoutController::class, 'success'])->name('checkout.success')->middleware('auth');
 Route::post('/api/mpesa/callback', [CheckoutController::class, 'mpesaCallback'])->name('mpesa.callback');
 
 // County subscriptions
@@ -682,12 +682,12 @@ Route::get('/venues', [\App\Http\Controllers\Web\ExhibitionController::class, 'v
 Route::get('/venues/{venue}', [VenueController::class, 'show'])->name('venues.show')
     ->middleware($publicCache)
     ->withoutMiddleware($noSession);
-Route::post('/venues/{venue}/inquire', [VenueController::class, 'inquire'])->name('venues.inquire');
+Route::post('/venues/{venue}/inquire', [VenueController::class, 'inquire'])->name('venues.inquire')->middleware('throttle:10,1');
 Route::get('/venues/{venue}/book', [VenueController::class, 'book'])->name('venues.book');
 Route::post('/venues/{venue}/quote', [VenueController::class, 'quote'])->name('venues.quote');
-Route::post('/venues/{venue}/reserve', [VenueController::class, 'reserve'])->name('venues.reserve');
-Route::get('/venues/{venue}/booking/{booking}/confirm', [VenueController::class, 'confirm'])->name('venues.booking.confirm');
-Route::post('/venues/{venue}/booking/{booking}/pay', [VenueController::class, 'payDeposit'])->name('venues.booking.pay');
+Route::post('/venues/{venue}/reserve', [VenueController::class, 'reserve'])->name('venues.reserve')->middleware(['auth','throttle:20,1']);
+Route::get('/venues/{venue}/booking/{booking}/confirm', [VenueController::class, 'confirm'])->name('venues.booking.confirm')->middleware(['auth','throttle:20,1']);
+Route::post('/venues/{venue}/booking/{booking}/pay', [VenueController::class, 'payDeposit'])->name('venues.booking.pay')->middleware(['auth','throttle:20,1']);
 Route::get('/my-venues', [VenueController::class, 'bookingHistory'])->name('venues.my-bookings')->middleware('auth');
 
 // Exhibition screen videos
@@ -750,15 +750,10 @@ Route::post('/__admin/optimize-images', function () {
     $artisan = new \App\Console\Commands\OptimizeImages();
     $artisan->setLaravel(app());
     return $artisan->handle(app(\App\Services\ImageOptimizer::class));
-})->middleware('auth');
+})->middleware(['auth','can:view-private-revenue','throttle:2,1']);
 
 // ── One-shot seeder trigger (run via curl) ──
-Route::any('/trigseed/{token}', function (string $token) {
-    if ($token !== 'kicc-seed-2026x') abort(403);
-    \Illuminate\Support\Facades\Artisan::call('db:seed', ['--class' => 'CrossCountyInstitutionsSeeder', '--force' => true]);
-    \Illuminate\Support\Facades\Cache::flush();
-    return response('<pre>' . \Illuminate\Support\Facades\Artisan::output() . '</pre>');
-});
+
 
 
 // SEO & metadata
