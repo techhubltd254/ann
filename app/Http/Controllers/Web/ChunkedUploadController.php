@@ -85,9 +85,9 @@ class ChunkedUploadController extends Controller
         }
         abort_unless(disk_free_space(storage_path())>($d['size']*2+1073741824),507,'Insufficient temporary disk space.');
         $id=(string)Str::uuid();$dir=storage_path('app/chunked/'.$id);
-        abort_unless(mkdir($dir,0700,true),503,'Cannot create upload session.');
+        $root=dirname($dir);if(!is_dir($root))mkdir($root,02770,true);chmod($root,02770);abort_unless(mkdir($dir,02770,true),503,'Cannot create upload session.');chmod($dir,02770);
         $d+=['actor_id'=>$u->id,'expires'=>time()+86400,'slug'=>$o->slug?:('entity-'.$o->id),'extension'=>$ext];
-        file_put_contents($dir.'/meta.json',json_encode($d,JSON_THROW_ON_ERROR),LOCK_EX);
+        file_put_contents($dir.'/meta.json',json_encode($d,JSON_THROW_ON_ERROR),LOCK_EX);chmod($dir.'/meta.json',0660);
         return response()->json(['upload_id'=>$id,'chunk_bytes'=>self::CHUNK_BYTES,'max_bytes'=>self::MAX_BYTES],201)->header('Cache-Control','no-store');
     }
     public function status(Request $r,string $uploadId){[$dir,$m]=$this->session($r,$uploadId);$n=(int)ceil($m['size']/self::CHUNK_BYTES);$next=0;while($next<$n&&is_file($dir.'/'.sprintf('%06d.part',$next)))$next++;return response()->json(['upload_id'=>$uploadId,'next'=>$next,'chunk_bytes'=>self::CHUNK_BYTES,'size'=>$m['size'],'expires'=>$m['expires'],'error'=>is_file($dir.'/finalization-error.json')?json_decode(file_get_contents($dir.'/finalization-error.json'),true):null,'result'=>is_file($dir.'/result.json')?json_decode(file_get_contents($dir.'/result.json'),true):null])->header('Cache-Control','no-store');}
@@ -101,7 +101,7 @@ class ChunkedUploadController extends Controller
         $expected=min(self::CHUNK_BYTES,(int)$m['size']-$off);
         abort_unless($r->file('chunk')->getSize()===$expected,422,'Chunk size mismatch.');
         $lock=fopen($dir.'/lock','c');abort_unless(flock($lock,LOCK_EX),503);
-        try{$r->file('chunk')->move($dir,sprintf('%06d.part',$i));}finally{flock($lock,LOCK_UN);fclose($lock);}
+        try{$r->file('chunk')->move($dir,sprintf('%06d.part',$i));chmod($dir.'/'.sprintf('%06d.part',$i),0660);}finally{flock($lock,LOCK_UN);fclose($lock);}
         return response()->json(['index'=>$i,'received'=>count(glob($dir.'/*.part')?:[]),'bytes'=>$expected])->header('Cache-Control','no-store');
     }
     public function complete(Request $r,string $uploadId)

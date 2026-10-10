@@ -90,7 +90,7 @@ class Admin3dAssetsController extends Controller
         abort_unless($file, 422, 'No file provided.');
         abort_unless($file->isValid() && $file->getSize() > 0, 422, 'Invalid or empty file.');
 
-        $mime = $file->getClientOriginalMime() ?? 'application/octet-stream';
+        $mime = $file->getClientMimeType() ?? 'application/octet-stream';
         $ext = strtolower(pathinfo($file->getClientOriginalName(), PATHINFO_EXTENSION));
         $allowedExts = ['splat', 'glb', 'gltf', 'ply'];
         abort_unless(in_array($ext, $allowedExts, true), 422, "Unsupported format: .{$ext}. Allowed: " . implode(', ', $allowedExts));
